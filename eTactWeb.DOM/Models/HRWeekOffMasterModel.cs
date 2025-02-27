@@ -7,18 +7,20 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-    public class HRWeekOffMasterModel: TimeStamp
+    public class HRWeekOffMasterModel : TimeStamp
     {
-        public int WeekoffEntryId {  get; set; }
-        public int WeekoffYearCode {  get; set; }
-        public string? WeekoffName {  get; set; }
+        public int WeekoffEntryId { get; set; }
+        public int WeekoffYearCode { get; set; }
+        public string? WeekoffName { get; set; }
         public string? WeekoffTypefixRot { get; set; }
+        public string? DeptName { get; set; }
+        public string? EmpCateg { get; set; }
         public int EmpCategoryId { get; set; }
         public int DeptId { get; set; }
         public string? WeekoffDays { get; set; }
-        public string? MinWorkDaysRequired { get; set; }
+        public int MinWorkDaysRequired { get; set; }
         public string? halfdayFulldayOff { get; set; }
-        public string? MaxWorkingDaysReqForWeekOff { get; set; }
+        public int MaxWorkingDaysReqForWeekOff { get; set; }
         public string? OverrideForHolidays { get; set; }
         public string? CompensatoryOffApplicable { get; set; }
         public string? ExtraPayApplicable { get; set; }
@@ -28,6 +30,14 @@ namespace eTactWeb.DOM.Models
 
         public int EntryByEmpId { get; set; }
         public int UpdatedbyId { get; set; }
+        public string Searchbox { get; set; }
+       
+        public string? EntryByMachine {  get; set; }
+
+        
+
+        public IList<HRWeekOffMasterModel>? HRWeekOffMasterDashBoard { get; set; }
+
 
     }
 }

@@ -47,7 +47,7 @@
                                     @*Model.Mode = "U";*@
                                     <div class="col-auto">
                                         @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" onclick="validateAmounts()">
                                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                             UPDATE
                                         </button>
@@ -58,7 +58,7 @@
                                 {
                                     <div class="col-auto">
                                         @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" onclick="validateAmounts()">
                                             <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                             SUBMIT
                                         </button>
@@ -92,7 +92,7 @@
                                 </div>
                                 <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
                                     <label asp-for="SalHeadEntryDate" class="form-label">Entry Date</label>
-                                        <input asp-for="SalHeadEntryDate" class="form-control" value="@Model.SalHeadEntryDate" readonly />
+                                        <input asp-for="SalHeadEntryDate" class="form-control"  readonly />
                                 </div>
 
 
@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="SalHeadEffectiveDate" class="form-label">Eff Date</label>
-                                    <input asp-for="SalHeadEffectiveDate" class="form-control" value="@Model.SalHeadEffectiveDate" />
+                                    <input asp-for="SalHeadEffectiveDate" class="form-control"  />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label id="Types" class="form-label">Type Of Salary Head</label>
@@ -488,7 +488,7 @@
                                                 @*Model.Mode = "U";*@
                                                 <div class="col-auto">
                                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" onclick="validateAmounts()">
                                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                                         UPDATE
                                                     </button>
@@ -499,7 +499,7 @@
                                             {
                                                 <div class="col-auto">
                                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" onclick="validateAmounts()">
                                                         <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                                         SUBMIT
                                                     </button>
@@ -524,20 +524,7 @@
         $('.submitBTN').click(function (e) {
              
             e.preventDefault();
-            var Err = 0;
-            var minAmount = parseFloat($('#minAmount').val());
-            var maxAmount = parseFloat($('#maxAmount').val());
-
-            // Check if min amount is greater than max amount
-            if (minAmount > maxAmount) {
-                $('#minAmount').removeClass('valid').addClass('is-invalid');
-                Err = 1; // Exit the function to prevent form submission
-            }
-            if ($('#EmpCateg').val() == "" || $('#DeptName').val() == "") {
-                $('#EmpCateg').removeClass('valid').addClass('is-invalid');
-                $('#DeptName').removeClass('valid').addClass('is-invalid');
-                Err = 1;
-            }
+            maxTaxPercentage();
             $('form').submit();
         });
 
@@ -552,38 +539,10 @@
             }
         });
 
-        function validateMax() {
-            var minValue = parseFloat(document.getElementById('MinAmount').value);
-            var maxValue = parseFloat(document.getElementById('MaxAmount').value);
-
-            // If max value is less than min value, set max value to min value
-            if (maxValue < minValue) {
-                document.getElementById('MaxAmount').value = minValue;
-                alert("Max value cannot be less than Min value.");
-            }
-        }
-
-
-
         
         $(function () {
-            
-
-          
-
            
            
-           
-            
-
-            $('#Item_Name').change(function () {
-
-                const format = /['\']/;
-                var string = $(this).val();
-
-                
-
-            });
 
            
 
@@ -664,12 +623,23 @@
             if (dropdown.value == "Percentage") {
                 textbox1.disabled = false; // Disable the first textbox
                 textbox2.disabled = true; // Enable the second textbox
-            } else if (dropdown.value == "Basic Salary") {
+                textbox2.value = '0';
+
+            } else if (dropdown.value == "Formula") {
                 textbox1.disabled = true; // Enable the first textbox
-                textbox2.disabled = false; // Disable the second textbox
+                textbox2.disabled = false;
+                textbox1.value = '0';// Disable the second textbox
+            }
+            else if (dropdown.value == "Basic Salary") {
+                textbox1.disabled = true; // Enable the first textbox
+                textbox2.disabled = true;
+                textbox1.value = '0';
+                textbox2.value = '0';// Disable the second textbox
             } else {
                 textbox1.disabled = true; // Enable both textboxes
                 textbox2.disabled = true;
+                textbox1.value = '0';
+                textbox2.value = '0';
             }
         }
 
@@ -683,8 +653,18 @@
                 textbox1.disabled = false; 
             }
              else {
-                textbox1.disabled = true; 
+                textbox1.disabled = true;
+                textbox1.value = "0";
                
+            }
+        }
+
+        function maxTaxPercentage() {
+            var percentage = document.getElementById("Taxpercentage");
+            if (percentage.value > 50) {
+                
+                alert("Tex Should be Less Then 50%");
+                event.preventDefault();
             }
         }
 
@@ -718,12 +698,17 @@
           
            
 
-            
-                var SalHeadEntryDate = parseDateToFormat($('#SalHeadEntryDate').val().split(" ")[0]);
-                $('#SalHeadEntryDate').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", SalHeadEntryDate);
+           
 
-                var SalHeadEffectiveDate = parseDateToFormat($('#SalHeadEffectiveDate').val().split(" ")[0]);
-                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", SalHeadEffectiveDate);
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+
+                $('#SalHeadEntryDate').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
+                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
+            }
+            else {
+                $('#SalHeadEntryDate').datepicker({ dateFormat: 'yy/mm/dd' });
+                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'yy/mm/dd' });
+            }
             
            
            
@@ -733,7 +718,7 @@
 
             
 
-            validateMax();
+            
 
             let SalaryHead = $('#SalaryHead').val();
             $('#SalaryHead').change(function () 
@@ -785,9 +770,23 @@
            
             FillPaymentFrequency();
             FillDeductionOfTax();
+           
 
 
         });
+
+        function validateAmounts() {
+            // Get the values from the input fields
+            const minAmount = document.getElementById('MinAmount').value;
+            const maxAmount = document.getElementById('MaxAmount').value;
+
+            // Check if max amount is less than min amount
+            if (parseFloat(maxAmount) < parseFloat(minAmount)) {
+                // Show alert if condition is met
+                alert("Max amount cannot be less than Min amount!");
+                event.preventDefault();
+            } 
+        }
 
         function FillEntryID() {
             $.ajax({

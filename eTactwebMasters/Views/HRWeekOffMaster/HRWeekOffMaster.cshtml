@@ -9,9 +9,9 @@
         <div class="card-header card-headerBG text-light bg-gradient">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h5>
-                    <strong>Store Master </strong>
+                    <strong>HR WeekOff Master </strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-controller="HRWeekOffMaster" asp-action="DashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <a asp-controller="HRWeekOffMaster" asp-action="HRWeekOffMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                             <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                             Dashboard
                         </a>
@@ -87,14 +87,7 @@
                                         <label asp-for="WeekoffTypefixRot" class="form-label" >WeekoffTypefixRot</label>
                                         <input asp-for="WeekoffTypefixRot" class="form-control"  />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="EmpCategoryId" class="form-label" >EmpCategoryId</label>
-                                        <input asp-for="EmpCategoryId" class="form-control" />
-                                    </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="DeptId" class="form-label">DeptId</label>
-                                        <input asp-for="DeptId" class="form-control" required />
-                                    </div>
+                                   
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="WeekoffDays" class="form-label" >WeekoffDays</label>
                                         <input asp-for="WeekoffDays" class="form-control"  />
@@ -103,7 +96,94 @@
                                         <label asp-for="MinWorkDaysRequired" class="form-label" >MinWorkDaysRequired</label>
                                         <input asp-for="MinWorkDaysRequired" class="form-control"  />
                                     </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="halfdayFulldayOff" class="form-label">halfdayFulldayOff</label>
+                                        <select asp-for="halfdayFulldayOff" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="HARFDAY" selected>HARFDAY</option>
+                                            <option value="FULLDAY">FULLDAY</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="MaxWorkingDaysReqForWeekOff" class="form-label">MaxWorkingDaysReq</label>
+                                        <input asp-for="MaxWorkingDaysReqForWeekOff" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="OverrideForHolidays" class="form-label">OverrideForHolidays</label>
+                                        <input asp-for="OverrideForHolidays" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="CompensatoryOffApplicable" class="form-label">CompensatoryOffApplicable</label>
+                                        <select asp-for="CompensatoryOffApplicable" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="ExtraPayApplicable" class="form-label">ExtraPayApplicable</label>
+                                        <select asp-for="ExtraPayApplicable" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="Remark" class="form-label">Remark</label>
+                                        <input asp-for="Remark" class="form-control" />
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Active" class="form-label">Active</label>
+                                        <select asp-for="Active" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom</label>
+                                        <input asp-for="EffectiveFrom" class="form-control" />
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;display:none">
+                                        <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
+                                        <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
+                                    </div>
                                    
+
+                                    
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmpCateg" class="form-label">Employee Category </label>
+                                        <input asp-for="EmpCategoryId" class="form-control" type="hidden" value="@Model.EmpCategoryId" />
+                                        <select asp-for="EmpCateg" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.EmpCategoryId">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.EmpCategoryId" selected>@Model.EmpCateg</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="DeptName" class="form-label">Department Category </label>
+                                        <input asp-for="DeptId" class="form-control" type="hidden" value="@Model.DeptId" />
+                                        <select asp-for="DeptName" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.DeptId">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.DeptId" selected>@Model.DeptName</option>
+                                            }
+                                        </select>
+                                    </div>
 
 
 
@@ -127,11 +207,11 @@
                     <div class="row justify-content-between g-2">
                         <div class="card-header card-headerBG text-light bg-gradient">
                             <h5>
-                                <strong>Store Master</strong>
+                                <strong>HR WeekOff Master</strong>
                                 <span class="d-flex float-end" style="margin-top:-2px;">
 
                                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                                    <a asp-controller="HRWeekOffMaster" asp-action="DashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <a asp-controller="HRWeekOffMaster" asp-action="HRWeekOffMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
                                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                         Dashboard
                                     </a>
@@ -206,123 +286,55 @@
 
         $(document).ready(function () {
 
-            $('#StoreType').rules("remove", "required");
-            $('#StoreType').select2();
-            // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name
-            //     $.notify("SaleBill Nunmber is required.", "warn");
-            // }
-
-
-            FillStoreType();
-            if ($("#Store_Name").val() == "") {
-                $.notify("StoreName Can not be Blanck", "error");
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                $('#EffectiveFrom').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
             }
-            var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+            else {
+                $('#EffectiveFrom').datepicker({ dateFormat: 'yy/mm/dd' });
+            }
+            $('#EmpCateg').select2();
+            $('#DeptName').select2();
 
-            //     FillStoreType();
-            // if ($("#Store_Name").val() == "") {
-            //     $.notify("StoreName Can not be Blanck", "error");
-            // }
+            $('#DeptName').change(function () {
+                $('#DeptId').val($('#DeptName').val());
+            });
+            $('#EmpCateg').change(function () {
+                $('#EmpCategoryId').val($('#EmpCateg').val());
+            });
+            FillEmpCat();
+            FillDeptCat();
 
+
+            
         });
 
 
         if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-            FillStoreID();
+            FillEntryID();
         }
 
-        // if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-        //     $('#Store_Name').change(function () {
-        //         ChkForDuplicate();
-        //     });
-        //     $('#StoreType').change(function () {
-        //         ChkForDuplicateStoreType();
-        //     });
-        // }
-        let originalStoreName = $('#Store_Name').val();
-        let originalStoreType = $('#StoreType').val();
-
-
-        $('#Store_Name').change(function () {
-            if ($('#Mode').val() === 'U') {
-                if ($(this).val() !== originalStoreName) {
-                    ChkForDuplicate();
-                }
-            } else if ($('#Mode').val() !== 'V') {
-                ChkForDuplicate();
-            }
-        });
-
-
-        $('#StoreType').change(function () {
-            if ($('#Mode').val() === 'U') {
-                if ($(this).val() !== originalStoreType) {
-                    ChkForDuplicateStoreType();
-                }
-            } else if ($('#Mode').val() !== 'V') {
-                ChkForDuplicateStoreType();
-            }
-        });
-
-        
-        function ChkForDuplicate() {
-
-            var storeName = $('#StoreName').val();
+        function FillEmpCat() {
             $.ajax({
-                url: '@Url.Action("ChkForDuplicate", "StoreMaster")',
-                type: 'POST',
-                data: { StoreName: storeName },
-                success: function (data, status, xhr) {
-                    var obj = $.parseJSON(data);
-                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                        $.notify('The store name already exists. Please choose another name.', 'error');
-                    }
-                    else {
-                        $.notify('The store name is available.', 'success');
+                url: '@Url.Action("GetEmpCat", "HRWeekOffMaster")',
 
-                    }
-                },
-                error: function (xhr, status, error) {
-                    notify('Error occurred while checking for duplicate store names.', 'error');
-                }
-            });
-        }
-        function ChkForDuplicateStoreType() {
-
-            var StoreType = $('#StoreType').val();
-            $.ajax({
-                url: '@Url.Action("ChkForDuplicateStoreType", "StoreMaster")',
-                type: 'POST',
-                data: { StoreType: StoreType },
-                success: function (data, status, xhr) {
-                    var obj = $.parseJSON(data);
-                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                        $.notify('The store Type already exists. Please choose another name.', 'error');
-                        FillStoreType();
-                    }
-                    else {
-                        $.notify('The store Type is available.', 'success');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    notify('Error occurred while checking for duplicate store names.', 'error');
-                }
-            });
-        }
-
-        function FillStoreID() {
-            $.ajax({
-                url: '@Url.Action("FillStoreID", "StoreMaster")',
-                type: 'POST',
+                type: 'GET',
                 async: false,
-                success: function (data, status, xhr) {
-                    console.log(data);
-                    var obj = $.parseJSON(data);
-                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                        $('#StoreId').val(0);
-                        $('#StoreId').val(obj.Result[0].Storeid);
+                success: function (response, status, error) {
+
+                    var EmpCategDropdown = $('#EmpCateg');
+                    var obj = $.parseJSON(response);
+                    EmpCategDropdown.empty();
+                    // CurrencyDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        EmpCategDropdown.append('<option value="' + item.CategoryId + '">' + item.EmpCateg + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpCategoryId = '@Model.EmpCategoryId';
+                        $('#EmpCateg').val(EmpCategoryId).trigger("change");
+                        $('#EmpCateg').val(EmpCategoryId);
                     }
+
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load groups.');
@@ -330,6 +342,53 @@
             });
         }
 
+        function FillDeptCat() {
+            $.ajax({
+                url: '@Url.Action("GetDeptCat", "HRWeekOffMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var EmpCategDropdown = $('#DeptName');
+                    var obj = $.parseJSON(response);
+                    EmpCategDropdown.empty();
+                    // CurrencyDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        EmpCategDropdown.append('<option value="' + item.DeptId + '">' + item.DeptName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var DeptCategoryId = '@Model.DeptId';
+                        $('#DeptName').val(DeptCategoryId).trigger("change");
+                        $('#DeptName').val(DeptCategoryId);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillEntryID() {
+            $.ajax({
+                url: '@Url.Action("FillEntryId", "HRWeekOffMaster")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#WeekoffEntryId').val(0);
+                        $('#WeekoffEntryId').val(obj.Result[0].EntryId);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
 
         function TotalNoOfRows() {
             var Row = $('#divStockGrid tr').length;
@@ -341,33 +400,7 @@
             }
         }
 
-        function CheckBeforeUpdate() {
-            $.ajax({
-                url: '@Url.Action("CheckBeforeUpdate")',
-                type: "POST",
-                data: { "Type": $('#Entry_id').val() },
-                success: function (data) {
-                    console.log("success");
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.Result != null) {
-                            if (obj.Result.Table[0].Column1 > 0) {
-                                $.notify("You cannot update this Category as Item with this category already exists", "error");
-                            }
-                            else {
-                                $('form').submit();
-                            }
-                        }
-                    }
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
+       
 
 
 

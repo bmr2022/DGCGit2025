@@ -1,16 +1,16 @@
-﻿@model eTactWeb.DOM.Models.HRSalaryHeadMasterModel;
+﻿@model eTactWeb.DOM.Models.HRWeekOffMasterModel;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <div class="shadow-lg">
-    <form id="SParam" method="post" asp-controller="HRSalaryHeadMaster" asp-action="DashBoard" autocomplete="off">
+    <form id="SParam" method="post" asp-controller="HRWeekOffMaster" asp-action="HRWeekOffMasterDashBoard" autocomplete="off">
         <div class="card rounded border-light bg-gradient">
             <div class="card-header card-headerBG text-light bg-gradient">
                 <h5>
-                    HR SalaryHead Master - <strong>Dashboard</strong>
+                    HR WeekOff Master - <strong>Dashboard</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="HRSalaryHeadMaster" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <a asp-action="HRWeekOffMaster" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
@@ -21,45 +21,45 @@
                 <div class="card overflow-auto">
                     <div class="card-body">
                         <div class="row">
-                           @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                                <div class="row">
-                                    <div class="col">
-                                        <label class="form-label">From Date</label>
-                                        <input asp-for="FromDate" class="form-control" />
-                                    </div>
-                                    <div class="col">
-                                        <label class="form-label">To Date</label>
-                                        <input asp-for="ToDate" class="form-control" />
-                                    </div>
-                                    <input asp-for="FromDate1" type="hidden" />
-                                    <input asp-for="ToDate1" type="hidden" />
-                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                            @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                            <div class="row">
+                            <div class="col">
+                            <label class="form-label">From Date</label>
+                            <input asp-for="FromDate" class="form-control" />
+                            </div>
+                            <div class="col">
+                            <label class="form-label">To Date</label>
+                            <input asp-for="ToDate" class="form-control" />
+                            </div>
+                            <input asp-for="FromDate1" type="hidden" />
+                            <input asp-for="ToDate1" type="hidden" />
+                            <input type="hidden" value="@Model.Mode" asp-for="Mode" />
 
-                                </div>
+                            </div>
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                <label asp-for="MainPartCode" class="form-label">Main Part Code</label>
-                                <input type="text" class="form-control" id="MainPartCode" asp-for="MainPartCode" />
-                            </div>
-
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                <label asp-for="MainItemName" class="form-label">Main Item Name</label>
-                                <input type="text" class="form-control" id="MainItemName" asp-for="MainItemName" />
+                            <label asp-for="MainPartCode" class="form-label">Main Part Code</label>
+                            <input type="text" class="form-control" id="MainPartCode" asp-for="MainPartCode" />
                             </div>
 
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                <label asp-for="AltPartCode" class="form-label">Alternate Part Code</label>
-                                <input type="text" class="form-control" id="AltPartCode" asp-for="AltPartCode" />
+                            <label asp-for="MainItemName" class="form-label">Main Item Name</label>
+                            <input type="text" class="form-control" id="MainItemName" asp-for="MainItemName" />
                             </div>
 
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                <label class="form-label" asp-for="AltItemName">Alternate Item Name</label>
-                                <input type="hidden" asp-for="ItemCode" />
-                                <input type="text" class="form-control" asp-for="AltItemName" id="AltItemName" />
+                            <label asp-for="AltPartCode" class="form-label">Alternate Part Code</label>
+                            <input type="text" class="form-control" id="AltPartCode" asp-for="AltPartCode" />
+                            </div>
+
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                            <label class="form-label" asp-for="AltItemName">Alternate Item Name</label>
+                            <input type="hidden" asp-for="ItemCode" />
+                            <input type="text" class="form-control" asp-for="AltItemName" id="AltItemName" />
                             </div>
 
 
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -75,7 +75,7 @@
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
-                        </div> 
+                        </div>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
             <div class="card-body">
                 <div class="card overflow-auto">
                     <div class="card-body" id="divDashboardGrid">
-                        <partial name="_HRSalaryDashBoardGrid" />
+                        <partial name="_HRWeekOffMasterDashBBoardGrid" />
                     </div>
                 </div>
             </div>
@@ -202,10 +202,10 @@
 
             }
         });
-        
 
-        
-        
+
+
+
 
         $("#search-box").on("keyup", function () {
 
@@ -317,7 +317,7 @@
             $.ajax({
                 url: '@Url.Action("CheckBeforeDelete")',
                 type: "POST",
-                data: { "SalHeadEntryId": SalHeadEntryId},
+                data: { "SalHeadEntryId": SalHeadEntryId },
                 async: false,
                 success: function (data) {
 

@@ -35,7 +35,7 @@ namespace eTactWeb.Controllers
         }
 
         
-        public async Task<ActionResult> HRSalaryHeadMaster(int ID, string Mode,string SalHeadEntryDate)//, ILogger logger)
+        public async Task<ActionResult> HRSalaryHeadMaster(int ID, string Mode)//, ILogger logger)
         {
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
@@ -43,13 +43,12 @@ namespace eTactWeb.Controllers
             // _MemoryCache.Remove("KeyPartCodePartyWiseGrid");
             MainModel.SalHeadEntryId = ID;
             MainModel.Mode = Mode;
-            MainModel.SalHeadEntryDate = SalHeadEntryDate;
+            //MainModel.SalHeadEntryDate = SalHeadEntryDate;
             if (Mode != "U")
             {
                 MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-                //MainModel.SalHeadEntryDate = HttpContext.Session.GetString("SalHeadEntryDate");
-               // MainModel.SalHeadEffectiveDate = HttpContext.Session.GetString("SalHeadEffectiveDate");
+               
 
             }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U"|| Mode == "V")
@@ -59,9 +58,7 @@ namespace eTactWeb.Controllers
                 MainModel = await _ISalaryHeadMaster.GetViewByID(ID).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.SalHeadEntryId = ID;
-                //MainModel.SalHeadEntryDate = HttpContext.Session.GetString("SalHeadEntryDate");
-               // MainModel.SalHeadEffectiveDate = HttpContext.Session.GetString("SalHeadEffectiveDate");
-
+               
 
                 if (Mode == "U")
                 {
@@ -148,6 +145,14 @@ namespace eTactWeb.Controllers
 
 
             return model;
+        }
+
+        public async Task<JsonResult> CheckBeforeDelete(int SalHeadEntryId)
+        {
+            var JSON = await _ISalaryHeadMaster.CheckBeforeDelete(SalHeadEntryId);
+            _logger.LogError(JsonConvert.SerializeObject(JSON));
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
 
         public async Task<JsonResult> ChkForDuplicateHeadName(string SalaryHead, int SalHeadEntryId)
