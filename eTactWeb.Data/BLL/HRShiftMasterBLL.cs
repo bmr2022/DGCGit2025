@@ -1,4 +1,5 @@
 ﻿using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -20,9 +21,21 @@ namespace eTactWeb.Data.BLL
             _HRShiftMasterDAL = new HRShiftMasterDAL(config, dataLogicDAL);
             _DataLogicDAL = dataLogicDAL;
         }
+        public async Task<ResponseResult> SaveHrShiftMaster(HRShiftMasterModel model)
+        {
+            return await _HRShiftMasterDAL.SaveHrShiftMaster(model);
+        }
         public async Task<ResponseResult> GetShiftId()
         {
             return await _HRShiftMasterDAL.GetShiftId();
+        }
+        public async Task<ResponseResult> GetDashBoardData()
+        {
+            return await _HRShiftMasterDAL.GetDashBoardData();
+        }
+        public async Task<HRShiftMasterModel> GetDashBoardDetailData()
+        {
+            return await _HRShiftMasterDAL.GetDashBoardDetailData();
         }
     }
 }

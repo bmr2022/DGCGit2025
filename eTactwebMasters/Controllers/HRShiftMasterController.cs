@@ -4,6 +4,11 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
+
+using System.Net;
+using System.Data;
 
 namespace eTactWeb.Controllers
 {
@@ -38,11 +43,89 @@ namespace eTactWeb.Controllers
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             return View(MainModel); // Pass the model with old data to the view
         }
+        [Route("{controller}/Index")]
+        [HttpPost]
+        public async Task<IActionResult> HRShiftMaster(HRShiftMasterModel model)
+        {
+            try
+            {
+                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+                var Result = await _IHRShiftMaster.SaveHrShiftMaster(model);
+                if (Result != null)
+                {
+                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["200"] = "200";
+                        //_MemoryCache.Remove("KeyLedgerOpeningEntryGrid");
+                    }
+                    else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["202"] = "202";
+                    }
+                    else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ViewBag.isSuccess = false;
+                        TempData["500"] = "500";
+                        _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+                        return View("Error", Result);
+                    }
+                }
+
+                return RedirectToAction(nameof(HRShiftMaster));
+
+            }
+            catch (Exception ex)
+            {
+                // Log and return the error
+                LogException<HRShiftMasterController>.WriteException(_logger, ex);
+                var ResponseResult = new ResponseResult
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+                return View("Error", ResponseResult);
+            }
+        }
         public async Task<JsonResult> GetShiftId()
         {
             var JSON = await _IHRShiftMaster.GetShiftId();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        [HttpGet]
+        public async Task<IActionResult> HRShiftMasterDashBoard()
+        {
+            try
+            {
+                var model = new HRShiftMasterModel();
+                //model.FromDate = HttpContext.Session.GetString("FromDate");
+               // model.ToDate = HttpContext.Session.GetString("ToDate");
+                var Result = await _IHRShiftMaster.GetDashBoardData().ConfigureAwait(true);
+                //if (Result != null)
+                //{
+                //    DataSet ds = Result.Result;
+                //    if (ds != null && ds.Tables.Count > 0)
+                //    {
+                //        var dt = ds.Tables[0];
+                //        model.CostCenterMasterGrid = CommonFunc.DataTableToList<CostCenterMasterModel>(dt, "CostCenterMasterDashBoard");
+                //    }
+                //}
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<IActionResult> GetDashBoardDetailData()
+        {
+            var model = new HRShiftMasterModel();
+            model = await _IHRShiftMaster.GetDashBoardDetailData();
+            return PartialView("_HRShiftMasterDashBoardGrid", model);
         }
     }
 }
