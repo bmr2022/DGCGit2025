@@ -9,8 +9,6 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-   
-
     public class HRSalaryHeadMasterModel: TimeStamp
     {
         public int SalHeadEntryId { get; set; }
