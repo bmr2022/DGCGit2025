@@ -1,0 +1,431 @@
+﻿@model eTactWeb.DOM.Models.SaleOrderDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<style>
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>
+
+<div class="table-responsive" style="max-height:300px;">
+    @if (Model.SummaryDetail == "Summary")
+    {
+        <table class="table table-bordered TbCss text-nowrap mb-0" id="SOGrid">
+            <thead class="bg-gradient card-headerBG text-light" id="SOThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th>
+                        Action
+                        @*<div style="display: flex; align-items: center;justify-content: space-evenly;">
+                    <span>Action</span>
+                    <div style="display: flex; flex-direction: column;">
+                    <span class="fa-stack" style="margin-bottom: -10px;">
+                    <i class="fa fa-sort-asc" aria-hidden="true"></i>
+                    </span>
+                    <span class="fa-stack" style="margin-top: -10px;">
+                    <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                    </span>
+                    </div>
+                    </div>*@
+                    </th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol" style="color:  red;">
+                        <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO NO</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year</th>
+                    <th data-columnno="5  " data-sortorder="asc" class="sortCol" style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol" style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Order No</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol" style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Type</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol" style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Type</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol" style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO For</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol" style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WEF</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol" style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Close Date</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol" style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Address</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Address</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol" style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Amount</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"  style="color:  red;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Net Amount</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Confirm Date</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Complete</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved Date</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated On</th>
+                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created On</th>
+                </tr>
+            </thead>
+            <tbody id="divSOGrid">
+                @{
+                    var @Cntr = 0;
+
+                    if (Model.SODashboard == null || Model.SODashboard.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.SODashboard)
+                        {
+                            Cntr = Cntr + 1;
+                            <input type="hidden" asp-for="Approved" id="hiddenApproved-@Cntr" value="@item.Approved" />
+                            <input type="hidden" asp-for="AmmApproved" id="hiddenAmendApproved-@Cntr" value="@item.AmmApproved" />
+                            <tr id="SOGridrow-@Cntr">
+                                <td class="FWB">@Cntr</td>
+                                <td style="text-align:center;white-space: nowrap;">
+                                    <div id="container">
+                                        <div id="viewCursorDiv-@Cntr">
+                                            <a class="table-link link-success" asp-action="OrderDetail" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.Year">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        @if (@item.Approved == "Y" || item.Year != yearCode)
+                                        {
+                                            <div>
+                                                <a class="table-link link-primary noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="editCursorDiv-@Cntr">
+                                                <a class="table-link link-primary" asp-action="OrderDetail" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.Year">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        @if (@item.Approved == "Y" || item.Year != yearCode)
+                                        {
+                                            <div>
+                                                <a class="table-link link-danger noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="deleteCursorDiv-@Cntr">
+                                                <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.Year">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="FWB">@item.EntryID</td>
+                                <td class="FWB">@item.SONo</td>
+                                <td>@item.Year</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.CustOrderNo</td>
+                                <td>@item.OrderType</td>
+                                <td>@item.SOType</td>
+                                <td>@item.SOFor</td>
+                                <td>@item.WEF.Split(" ")[0]</td>
+                                <td>@item.SOCloseDate.Split(" ")[0]</td>
+                                <td>@item.Currency</td>
+                                <td>@item.CustomerAddress</td>
+                                <td>@item.DeliveryAddress</td>
+                                <td>@item.Consignee</td>
+                                <td>@item.ConsigneeAddress</td>
+                                <td>@item.OrderAmt</td>
+                                <td>@item.OrderNetAmt</td>
+                                <td>@item.SOConfirmDate.Split(" ")[0]</td>
+                                <td>@item.Approved</td>
+                                <td>@item.SOComplete</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.ApprovedDate))
+                                    {
+                                        @item.ApprovedDate.Split(" ")[0]
+                                    }
+                                    else
+                                    {
+                                        @item.ApprovedDate
+                                    }
+                                </td>
+                                <td>@item.CC</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.UpdatedOn))
+                                    {
+                                        @item.UpdatedOn.Split(" ")[0]
+                                    }
+                                    else
+                                    {
+                                        @item.UpdatedOn
+                                    }
+                                </td>
+                                <td>@item.CreatedOn.Split(" ")[0]</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <table class="table table-bordered TbCss text-nowrap mb-0" id="SOGrid">
+            <thead class="bg-gradient card-headerBG text-light" id="SOThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th>
+                        Action
+                    </th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>So no</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Order No</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Type</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Type</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO For</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WEF</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Close Date</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Address</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Address</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN NO</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltQty</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltUnit</th>
+                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OtherRateCurr</th>
+                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate/Unit</th>
+                    <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc%</th>
+                    <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Rs</th>
+                    <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                    <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol Limit</th>
+                    <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description</th>
+                    <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amend No</th>
+                    <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amend Date</th>
+                    <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amend Reason</th>
+                    <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
+                    <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejPer</th>
+                    <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Excessper</th>
+                    <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Proj Qty1</th>
+                    <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Proj Qty2</th>
+                    <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Amount</th>
+                    <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Net Amount</th>
+                    <th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Confirm Date</th>
+                    <th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved</th>
+                    <th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Complete</th>
+                    <th data-columnno="45" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved Date</th>
+                    <th data-columnno="46" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                    <th data-columnno="47" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated On</th>
+                    <th data-columnno="48" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created On</th>
+                </tr>
+            </thead>
+            <tbody id="divSOGrid">
+                @{
+                    var @Cntr = 0;
+
+                    if (Model.SODashboard == null || Model.SODashboard.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.SODashboard)
+                        {
+                            Cntr = Cntr + 1;
+                            <input type="hidden" asp-for="Approved" id="hiddenApproved-@Cntr" value="@item.Approved" />
+                            <input type="hidden" asp-for="AmmApproved" id="hiddenAmendApproved-@Cntr" value="@item.AmmApproved" />
+                            <tr id="SOGridrow-@Cntr">
+                                <td class="FWB">@Cntr</td>
+                                <td style="text-align:center;white-space: nowrap;">
+                                    <div id="container">
+                                        <div id="viewCursorDiv-@Cntr">
+                                            <a class="table-link link-success" asp-action="OrderDetail" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.Year">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        @if (@item.Approved == "Y" || item.Year != yearCode)
+                                        {
+                                            <div>
+                                                <a class="table-link link-primary noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="editCursorDiv-@Cntr">
+                                                <a class="table-link link-primary" asp-action="OrderDetail" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.Year">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        @if (@item.Approved == "Y" || item.Year != yearCode)
+                                        {
+                                            <div>
+                                                <a class="table-link link-danger noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="deleteCursorDiv-@Cntr">
+                                                <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.Year">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="FWB">@item.EntryID</td>
+                                <td class="FWB">@item.SONo</td>
+                                <td>@item.Year</td>
+                                <td>@item.CustomerName</td>
+                                <td>@item.CustOrderNo</td>
+                                <td>@item.OrderType</td>
+                                <td>@item.SOType</td>
+                                <td>@item.SOFor</td>
+                                <td>@item.WEF.Split(" ")[0]</td>
+                                <td>@item.SOCloseDate.Split(" ")[0]</td>
+                                <td>@item.Currency</td>
+                                <td>@item.CustomerAddress</td>
+                                <td>@item.DeliveryAddress</td>
+                                <td>@item.Consignee</td>
+                                <td>@item.ConsigneeAddress</td>
+                                <td>@item.PartCode</td>
+                                <td>@item.ItemName</td>
+                                <td>@item.HSNNO</td>
+                                <td>@item.Qty</td>
+                                <td>@item.Unit</td>
+                                <td>@item.AltQty</td>
+                                <td>@item.AltUnit</td>
+                                <td>@item.Rate</td>
+                                <td>@item.OtherRateCurr</td>
+                                <td>@item.UnitRate</td>
+                                <td>@item.DiscPer</td>
+                                <td>@item.TotalDiscAmt</td>
+                                <td>@item.Amount</td>
+                                <td>@item.TolLimit</td>
+                                <td>@item.Description</td>
+                                <td>@item.AmmNo</td>
+                                <td>@item.AmendmentDate</td>
+                                <td>@item.AmendmentReason</td>
+                                <td>@item.Color</td>
+                                <td>@item.Rejper</td>
+                                <td>@item.Excessper</td>
+                                <td>@item.ProjQty1</td>
+                                <td>@item.ProjQty2</td>
+                                <td>@item.OrderAmt</td>
+                                <td>@item.OrderNetAmt</td>
+                                <td>@item.SOConfirmDate.Split(" ")[0]</td>
+                                <td>@item.Approved</td>
+                                <td>@item.SOComplete</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.ApprovedDate))
+                                    {
+                                        @item.ApprovedDate.Split(" ")[0]
+                                    }
+                                    else
+                                    {
+                                        @item.ApprovedDate
+                                    }
+                                </td>
+                                <td>@item.CC</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.UpdatedOn))
+                                    {
+                                        @item.UpdatedOn.Split(" ")[0]
+                                    }
+                                    else
+                                    {
+                                        @item.UpdatedOn
+                                    }
+                                </td>
+                                <td>@item.CreatedOn.Split(" ")[0]</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    }
+
+</div>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #SOGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #SOThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        height: 40px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /*/ Table cell styles /*/
+    }
+
+</style>
+

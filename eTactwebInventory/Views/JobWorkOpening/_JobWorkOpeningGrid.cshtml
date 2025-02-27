@@ -1,0 +1,56 @@
+﻿@model eTactWeb.DOM.Models.JobWorkOpeningModel
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="30" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        <tr class="small" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                <a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+            <td>@item.EntryID</td>
+            <td>@item.YearCode</td>
+            <td>@item.EntryDate</td>
+            <td>@item.ItemName</td>
+            <td>@item.IssJWChallanNo</td>
+            <td>@item.IssChallanYearcode</td>
+            <td>@item.Isschallandate</td>
+            <td>@item.AccountName</td>
+            <td id="Rate-@item.SeqNo">@item.Rate</td>
+            <td>@item.unit</td>
+            <td>@item.Amount</td>
+            <td>@item.RecQty</td>
+            <td id="Qty-@item.SeqNo">@item.pendqty</td>
+            <td>@item.ScrapQty</td>
+            <td>@item.ChallanQty</td>
+            <td>@item.ScrapItemName</td>
+            <td>@item.RecItemName</td>
+            <td>@item.PendScrapToRec</td>
+            <td>@item.BomStatus</td>
+            <td>@item.BatchWise</td>
+            <td>@item.BatchNo</td>
+            <td>@item.UniqueBatchNo</td>
+            @* <td>@item.cc</td>
+            <td>@item.UID</td>
+            <td>@item.EnteredByEmpId</td>*@
+            <td>@item.Closed</td>
+        </tr>
+    }
+}

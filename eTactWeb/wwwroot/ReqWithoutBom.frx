@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/14/2025 12:05:27" ReportInfo.Modified="01/14/2025 16:22:42" ReportInfo.CreatorVersion="2024.1.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSizSnatWWXyD7ChSA8jNmLA==">
+      <TableDataSource Name="VRequisitionMainDetail" DataType="System.Int32" Enabled="true" TableName="VRequisitionMainDetail" SelectCommand="select * from VRequisitionMainDetail where entryid=@entryparam and yearcode=@yearparam">
+        <Column Name="REQNo" DataType="System.String"/>
+        <Column Name="ReqDate" DataType="System.DateTime"/>
+        <Column Name="WONo" DataType="System.String"/>
+        <Column Name="WOYearcode" DataType="System.Int32"/>
+        <Column Name="EntryId" DataType="System.Int64"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="MachineName" DataType="System.String"/>
+        <Column Name="MachineId" DataType="System.Int64"/>
+        <Column Name="WorkcenterId" DataType="System.Int64"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="ReqReason" DataType="System.String"/>
+        <Column Name="UID" DataType="System.Int64"/>
+        <Column Name="Completed" DataType="System.String"/>
+        <Column Name="WorkCenter" DataType="System.String"/>
+        <Column Name="Prefix" DataType="System.String"/>
+        <Column Name="Cancel" DataType="System.String"/>
+        <Column Name="Approved" DataType="System.String"/>
+        <Column Name="LineRejEntryId" DataType="System.Int64"/>
+        <Column Name="LineRejYearCode" DataType="System.Int64"/>
+        <Column Name="LastUpdatedBy" DataType="System.Int64"/>
+        <Column Name="DeptName" DataType="System.String"/>
+        <Column Name="LastUpdationdate" DataType="System.DateTime"/>
+        <Column Name="ApproveBy" DataType="System.Int64"/>
+        <Column Name="NeedApproval" DataType="System.String"/>
+        <Column Name="ApproveDate" DataType="System.DateTime"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="ItemPartCode" DataType="System.String"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="AltQty" DataType="System.Decimal"/>
+        <Column Name="Qty" DataType="System.Decimal"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="TotalStock" DataType="System.Decimal"/>
+        <Column Name="ExpectedDate" DataType="System.DateTime"/>
+        <Column Name="PendAltQty" DataType="System.Decimal"/>
+        <Column Name="PendQty" DataType="System.Decimal"/>
+        <Column Name="ItemModel" DataType="System.String"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="ItemCancel" DataType="System.String"/>
+        <Column Name="ProjectNo" DataType="System.String"/>
+        <Column Name="ProjectYearCode" DataType="System.Int64"/>
+        <Column Name="ItemLocation" DataType="System.String"/>
+        <Column Name="ItemBinRackNo" DataType="System.String"/>
+        <Column Name="CostCenterId" DataType="System.Int64"/>
+        <Column Name="StoreId" DataType="System.Int64"/>
+        <Column Name="Store_Name" DataType="System.String"/>
+        <Column Name="CostCenterName" DataType="System.String"/>
+        <Column Name="FromDepartmentId" DataType="System.Int64"/>
+        <Column Name="BranchName" DataType="System.String"/>
+        <Column Name="CancelDate" DataType="System.DateTime"/>
+        <Column Name="CancelReason" DataType="System.String"/>
+        <Column Name="EneterdBy" DataType="System.Int64"/>
+        <Column Name="RequByEmpId" DataType="System.Int64"/>
+        <Column Name="CreatedByName" DataType="System.String"/>
+        <Column Name="SeqNo" DataType="System.Int64"/>
+        <Column Name="ItemSize" DataType="System.String"/>
+        <Column Name="Com_Name" DataType="System.String"/>
+        <Column Name="CompAddress" DataType="System.String"/>
+        <Column Name="WODate" DataType="System.DateTime"/>
+        <Column Name="EntryByMachineName" DataType="System.String"/>
+        <Column Name="CreatedBy" DataType="System.Int64"/>
+        <Column Name="CreatedOn" DataType="System.DateTime"/>
+        <Column Name="UpdatedByName" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+      <TableDataSource Name="Company_Detail" DataType="System.Int32" Enabled="true" TableName="Company_Detail">
+        <Column Name="EntryID" DataType="System.Int64"/>
+        <Column Name="DispName" DataType="System.String"/>
+        <Column Name="Com_Name" DataType="System.String"/>
+        <Column Name="WebSite" DataType="System.String"/>
+        <Column Name="OfficeAdd1" DataType="System.String"/>
+        <Column Name="OfficeAdd2" DataType="System.String"/>
+        <Column Name="PinCode" DataType="System.String"/>
+        <Column Name="Email" DataType="System.String"/>
+        <Column Name="Phone" DataType="System.String"/>
+        <Column Name="Mobile" DataType="System.String"/>
+        <Column Name="StateCode" DataType="System.String"/>
+        <Column Name="StateName" DataType="System.String"/>
+        <Column Name="Commodity" DataType="System.String"/>
+        <Column Name="Start_Date" DataType="System.DateTime"/>
+        <Column Name="End_Date" DataType="System.DateTime"/>
+        <Column Name="PhoneF" DataType="System.String"/>
+        <Column Name="Division" DataType="System.String"/>
+        <Column Name="OrgType" DataType="System.String"/>
+        <Column Name="PANNo" DataType="System.String"/>
+        <Column Name="TDSAccount" DataType="System.String"/>
+        <Column Name="Range" DataType="System.String"/>
+        <Column Name="TDSRange" DataType="System.String"/>
+        <Column Name="GSTNO" DataType="System.String"/>
+        <Column Name="UserName" DataType="System.String"/>
+        <Column Name="Passwd" DataType="System.String"/>
+        <Column Name="DataBase_Name" DataType="System.String"/>
+        <Column Name="PFApplicable" DataType="System.String"/>
+        <Column Name="PFNO" DataType="System.String"/>
+        <Column Name="Registration_No" DataType="System.String"/>
+        <Column Name="VENDOR_CODE" DataType="System.String"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="SoftwareStartDate" DataType="System.DateTime"/>
+        <Column Name="Prefix" DataType="System.String"/>
+        <Column Name="ContactPersonSales" DataType="System.String"/>
+        <Column Name="ContacPersonPurchase" DataType="System.String"/>
+        <Column Name="ContactPersonQC" DataType="System.String"/>
+        <Column Name="ContactPersonAccounts" DataType="System.String"/>
+        <Column Name="Country" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="179.55">
+      <TextObject Name="Text1" Left="37.8" Width="132.3" Height="28.35" Text="Requisition" Font="Arial, 16pt, style=Bold"/>
+      <TextObject Name="Text3" Left="37.8" Top="94.5" Width="66.15" Height="18.9" Text="Req No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="37.8" Top="122.85" Width="122.85" Height="18.9" Text="From DepartMent:" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="151.2" Top="122.85" Width="94.5" Height="18.9" Text="[VRequisitionMainDetail.DeptName]" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="330.75" Top="94.5" Width="113.4" Height="18.9" Text="Requisition Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Left="444.15" Top="94.5" Width="94.5" Height="18.9" Text="[VRequisitionMainDetail.ReqDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="330.75" Top="122.85" Width="94.5" Height="18.9" Text="Work Center:" Font="Arial, 10pt"/>
+      <TextObject Name="Text12" Left="415.8" Top="122.85" Width="94.5" Height="18.9" Text="[VRequisitionMainDetail.WorkCenter]" Font="Arial, 10pt"/>
+      <TextObject Name="Text14" Left="37.8" Top="151.2" Width="94.5" Height="18.9" Text="Print Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="113.4" Top="151.2" Width="132.3" Height="18.9" Text="[Date]" Font="Arial, 10pt"/>
+      <TextObject Name="Text25" Left="-9450" Top="-9450" Width="94.5" Height="18.9" Font="Arial, 10pt"/>
+      <TextObject Name="Text26" Left="94.5" Top="94.5" Width="94.5" Height="18.9" Text="[VRequisitionMainDetail.REQNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text44" Left="330.75" Top="151.2" Width="66.15" Height="18.9" Text="Plan No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text45" Left="387.45" Top="151.2" Width="94.5" Height="18.9" Text="[VRequisitionMainDetail.WONo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text51" Left="37.8" Top="28.35" Width="198.45" Height="18.9" Text="[Company_Detail.Com_Name]" Font="Arial, 10pt"/>
+      <TextObject Name="Text52" Left="37.8" Top="47.25" Width="179.55" Height="18.9" Text="[Company_Detail.OfficeAdd1]" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="182.31" Width="718.2" Height="47.25">
+      <LineObject Name="Line1" Left="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
+      <LineObject Name="Line3" Left="9.45" Height="47.25" Border.Style="Dot"/>
+      <LineObject Name="Line4" Left="708.75" Height="47.25" Border.Style="Dot"/>
+      <TextObject Name="Text17" Left="37.8" Top="9.45" Width="75.6" Height="18.9" Text="Part Code" Font="Arial, 10pt"/>
+      <TextObject Name="Text18" Left="132.3" Top="9.45" Width="85.05" Height="18.9" Text="Item Name" Font="Arial, 10pt"/>
+      <TextObject Name="Text20" Left="274.05" Top="9.45" Width="66.15" Height="18.9" Text="Qty Req" Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Left="340.2" Top="9.45" Width="47.25" Height="18.9" Text="Stock" Font="Arial, 10pt"/>
+      <TextObject Name="Text22" Left="557.55" Top="4.16" Width="75.6" Height="37.8" Text="Expected Date" Font="Arial, 10pt"/>
+      <TextObject Name="Text23" Left="633.15" Top="9.45" Width="56.7" Height="18.9" Text="Remark" Font="Arial, 10pt"/>
+      <TextObject Name="Text24" Left="9.45" Top="4.16" Width="28.35" Height="37.8" Text="Sr No" Font="Arial, 10pt"/>
+      <LineObject Name="Line7" Left="37.8" Height="47.25" Border.Style="Dot"/>
+      <LineObject Name="Line10" Left="113.4" Height="47.25" Border.Style="Dot"/>
+      <LineObject Name="Line17" Left="274.05" Height="47.25" Border.Style="Dot"/>
+      <LineObject Name="Line18" Left="330.75" Height="47.25" Border.Style="Dot"/>
+      <LineObject Name="Line19" Left="396.9" Height="47.25" Border.Style="Dot"/>
+      <LineObject Name="Line20" Left="434.7" Height="47.25" Border.Style="Dot"/>
+      <LineObject Name="Line21" Left="633.15" Height="47.25" Border.Style="Dot"/>
+      <TextObject Name="Text19" Left="396.9" Top="9.45" Width="37.8" Height="18.9" Text="Unit" Font="Arial, 10pt"/>
+      <LineObject Name="Line23" Left="557.55" Height="47.25" Border.Style="Dot"/>
+      <LineObject Name="Line25" Left="493.29" Height="47.25" Border.Style="Dot"/>
+      <TextObject Name="Text46" Left="434.7" Top="9.45" Width="66.15" Height="18.9" Text="Location" Font="Arial, 10pt"/>
+      <TextObject Name="Text47" Left="491.4" Top="9.45" Width="66.15" Height="18.9" Text="Rack No" Font="Arial, 10pt"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="232.32" Width="718.2" Height="28.35" DataSource="VRequisitionMainDetail">
+      <LineObject Name="Line5" Left="9.45" Height="28.35" Border.Style="Dot"/>
+      <LineObject Name="Line6" Left="37.8" Height="28.35" Border.Style="Dot"/>
+      <LineObject Name="Line9" Left="113.4" Height="28.35" Border.Style="Dot"/>
+      <LineObject Name="Line11" Left="708.75" Height="28.35" Border.Style="Dot"/>
+      <LineObject Name="Line12" Left="274.05" Height="28.35" Border.Style="Dot"/>
+      <LineObject Name="Line13" Left="330.75" Height="28.35" Border.Style="Dot"/>
+      <LineObject Name="Line14" Left="396.9" Height="28.35" Border.Style="Dot"/>
+      <LineObject Name="Line15" Left="434.7" Height="28.35" Border.Style="Dot"/>
+      <LineObject Name="Line16" Left="633.15" Height="28.35" Border.Style="Dot"/>
+      <TextObject Name="Text27" Left="9.45" Top="9.45" Width="47.25" Height="18.9" Text="[Row#]" Font="Arial, 8pt"/>
+      <TextObject Name="Text29" Left="642.6" Top="9.45" Width="56.7" Height="18.9" Text="[VRequisitionMainDetail.Remarks]" Font="Arial, 8pt"/>
+      <TextObject Name="Text30" Left="37.8" Top="9.45" Width="85.05" Height="18.9" Text="[VRequisitionMainDetail.PartCode]" Font="Arial, 8pt"/>
+      <TextObject Name="Text31" Left="113.4" Top="9.45" Width="170.1" Height="18.9" Text="[VRequisitionMainDetail.Item_Name]" Font="Arial, 8pt"/>
+      <TextObject Name="Text33" Left="330.75" Top="9.45" Width="66.15" Height="18.9" Text="[VRequisitionMainDetail.TotalStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text43" Left="274.05" Top="9.45" Width="56.7" Height="18.9" Text="[VRequisitionMainDetail.Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text32" Left="396.9" Top="9.45" Width="47.25" Height="18.9" Text="[VRequisitionMainDetail.Unit]" Font="Arial, 8pt"/>
+      <LineObject Name="Line24" Left="557.55" Height="28.35" Border.Style="Dot"/>
+      <LineObject Name="Line26" Left="493.29" Height="28.35" Border.Style="Dot"/>
+      <TextObject Name="Text48" Left="444.15" Top="9.45" Width="47.25" Height="18.9" Text="[VRequisitionMainDetail.ItemLocation]" Font="Arial, 8pt"/>
+      <TextObject Name="Text49" Left="500.85" Top="9.45" Width="56.7" Height="18.9" Text="[VRequisitionMainDetail.ItemBinRackNo]" Font="Arial, 8pt"/>
+      <LineObject Name="Line2" Left="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
+      <TextObject Name="Text50" Left="557.55" Top="9.45" Width="94.5" Height="18.9" Text="[VRequisitionMainDetail.ExpectedDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+    </DataBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="263.43" Width="718.2" Height="75.6">
+      <TextObject Name="Text34" Left="132.3" Top="56.7" Width="94.5" Height="18.9" Text="Prepared By" Font="Arial, 10pt"/>
+      <TextObject Name="Text35" Left="463.05" Top="56.7" Width="94.5" Height="18.9" Text="Approved By" Font="Arial, 10pt"/>
+      <TextObject Name="Text39" Left="444.15" Top="28.35" Width="189" Height="18.9" Text="[VRequisitionMainDetail.CreatedByName]" Font="Arial, 10pt"/>
+      <TextObject Name="Text40" Left="113.4" Top="28.35" Width="189" Height="18.9" Text="[VRequisitionMainDetail.CreatedByName]" Font="Arial, 10pt"/>
+      <LineObject Name="Line22" Left="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
+    </ReportSummaryBand>
+    <PageFooterBand Name="PageFooter1" Top="341.78" Width="718.2" Height="18.9">
+      <TextObject Name="Text42" Left="292.95" Width="66.15" Height="18.9" Text="Page No" Font="Arial, 10pt"/>
+      <TextObject Name="Text41" Left="359.1" Width="56.7" Height="18.9" Text="[Page#]" Font="Arial, 10pt"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

@@ -1,0 +1,515 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model eTactWeb.DOM.Models.PrimaryAccountGroupMasterDashBoardModel;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <form id="SParam" method="post" asp-controller="SubVoucher" asp-action="SubVoucherDashboard" autocomplete="off">
+        <div class="card rounded border-light bg-gradient">
+            <div class="card-header card-headerBG text-light bg-gradient">
+                <h5>
+                    Primary Account Group Master - <strong>Dashboard</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="PrimaryAccountGroupMaster" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                            <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                            Add New
+                        </a>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" class="form-control" />
+                                    </div>
+                                    <input asp-for="FromDate1" type="hidden" />
+                                    <input asp-for="ToDate1" type="hidden" />
+                                    <input asp-for="EnteredEMPID" type="hidden" class="form-control" value="@Model.EnteredEMPID" />
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="Account_Name" class="form-label">Group Name</label>
+                                <input asp-for="Account_Name" class="form-control" value="@Model.Account_Name" />
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="Parent_Account_Code" class="form-label">Parent Group</label>
+                                <select asp-for="Account_Code" id="Account_Code" class="form-control">
+                                    <option value="@Model.Account_Code">-Select-</option>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <option value="@Model.Account_Code" selected>@Model.Parent_Account_Code</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="Main_Group" class="form-label">Main Group </label>
+                                <input id="Main_Group" type="text" asp-for="Main_Group" class="form-control" readonly />
+                                <span asp-validation-for="Main_Group" class="text-danger"></span>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="SubGroup" class="form-label">Sub Group </label>
+                                <input id="SubGroup" type="text" asp-for="SubGroup" class="form-control" readonly />
+                                <span asp-validation-for="SubGroup" class="text-danger"></span>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="SubSubGroup" class="form-label">Sub Sub Group </label>
+                                <input id="SubSubGroup" type="text" asp-for="SubSubGroup" class="form-control" readonly />
+                                <span asp-validation-for="SubSubGroup" class="text-danger"></span>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="UnderGroup" class="form-label">Under Group  </label>
+                                <input id="UnderGroup" type="text" asp-for="UnderGroup" class="form-control" readonly />
+                                <span asp-validation-for="UnderGroup" class="text-danger"></span>
+                            </div>
+
+                           
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class=" d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+                                <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="PrimaryAccountGroupMaster" asp-action="PrimaryAccountGroupMasterDashBoard">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pb-0 pt-0">
+                <div class="progress" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body" id="divDashboardGrid">
+                        <partial name="_PrimaryAccountGroupMasterDashBoardGrid" />
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="OtherGrid">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                    </button>
+                </h2>
+                <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                    <div class="accordion-body">
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="row g-2 gx-3" id="_ItemGrid">
+
+                           @*  @if (Model.Mode != "U" && Model.Mode != "V")
+                            {
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="EntryByEmpName" class="form-label">Created By</label>
+                                    <input type="hidden" asp-for="ActualEntryBy" class="form-control" />
+                                    <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ActualEntryDate" class="form-label">Created On</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
+                            }
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
+                                <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
+                            </div> *@
+                            @if (Model.Mode == "U" || Model.Mode == "V")
+                            {
+                               @*  <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="EntryByEmpName" class="form-label">Created By</label>
+                                    <input type="hidden" asp-for="ActualEntryBy" class="form-control" />
+                                    <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ActualEntryDate" class="form-label">Created On</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="UpdateByEmpName" class="form-label" style="width:150px">Updated By</label>
+                                    <input type="hidden" asp-for="UpdatedBy" class="form-control" readonly />
+                                    <input type="hidden" asp-for="UpdationDate" class="form-control" readonly />
+                                    <input asp-for="UpdateByEmpName" class="form-control" readonly />
+                                    @if (Model.UpdationDate.HasValue)
+                                    {
+                                        <div>Last Updated: @Model.UpdationDate.Value.ToString("yyyy-MM-dd HH:mm")</div>
+                                    }
+                                    else
+                                    {
+                                        <div>No Update Date Available</div>
+                                    } 
+                                </div>*@
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            GetDetailData();
+        });
+        $('.submitBTN').click(function (e) {
+             
+            e.preventDefault();
+            $('form').submit();
+        });
+        $('#updateSubVoucherPrefixForm').submit(function (e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: '@Url.Action("UpdateSubVoucherPrefixSetting", "YourController")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.status === "Updated Successfully") {
+                        alert("Data updated successfully!");
+                        // Refresh grid or perform any UI action needed after update
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function (error) {
+                    alert("An error occurred: " + error.responseText);
+                }
+            });
+        });
+        $(document).ready(function () {
+             
+            var date = $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            console.log(date);
+
+            AutoComplete('Item_Master_Type', 'Type_Item', 'Main_Category_Type', null);
+
+            $('#Account_Code').rules("remove", "required");
+            $('#Account_Code').select2();
+
+            if ($('#Mode').val() !== 'U' && $('#Mode').val() !== 'V') {
+                GetParentGroup();
+            }
+
+           
+
+        });
+        $(function () {
+
+            if ($('#gateDashboardtable tr').length < 1) {
+                var dashGrid = 0;
+                $('#totalRows').text(dashGrid);
+            } else {
+                var dashGrid = $('#gateDashboardtable tr').length;
+                $('#totalRows').text(dashGrid);
+            }
+
+            var currentDate = new Date();
+
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            // function formatDate(date) {
+            //     var day = ("0" + date.getDate()).slice(-2);
+            //     var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            //     var year = date.getFullYear();
+            //     var dateString = day + "/" + month + "/" + year;
+            //     return dateString;
+
+            // }
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            // AutoComplete('gateDashboardtable', 'SrNO', 'SrNO', null);
+            // AutoComplete('VAccLedgerOpening', 'LedgerName', 'LedgerName', null);
+            // AutoComplete('VAccLedgerOpening', 'ClosingYearCode', 'ClosingYearCode', null);
+            // AutoComplete('VAccLedgerOpening', 'DrCr', 'DrCr', null);
+            // AutoComplete('VAccLedgerOpening', 'EntryByEmployee', 'EntryByEmployee', null);
+            // AutoComplete('VAccLedgerOpening', 'ActualEntryDate', 'ActualEntryDate', null);
+            // AutoComplete('VAccLedgerOpening', 'UpdatedByEmployee', 'UpdatedByEmployee', null);
+            // AutoComplete('VAccLedgerOpening', 'Updationdate', 'Updationdate', null);
+            // AutoComplete('VAccLedgerOpening', 'EntryByMachine', 'EntryByMachine', null);
+
+            if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
+
+                var inputFromDateString = $('#FromDate1').val().split(" ")[0];
+                var inputToDateString = $('#ToDate1').val().split(" ")[0];
+
+                var originalFromDate = new Date(inputFromDateString);
+                var originalToDate = new Date(inputToDateString);
+
+
+                //fromdate
+                var day = originalFromDate.getDate();
+                var month = originalFromDate.getMonth() + 1;
+                var year = originalFromDate.getFullYear();
+
+                var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+                //todate
+                var day = originalToDate.getDate();
+                var month = originalToDate.getMonth() + 1; // Months are zero-based
+                var year = originalToDate.getFullYear();
+
+                var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+
+                $('#FromDate').val(convertedFromDateText);
+                $('#ToDate').val(convertedToDateText);
+
+            }
+        });
+        function GetParentGroup() {
+             
+            $.ajax({
+                url: '@Url.Action("GetParentGroup", "PrimaryAccountGroupMaster")', // Action that returns FillGroup data
+                type: 'GET',
+                success: function (response, status, error) {
+                    var groupDropdown = $('#Account_Code');
+                    var obj = $.parseJSON(response);
+                    groupDropdown.empty(); // Clear existing options
+                    groupDropdown.append('<option value="">-- Select Group --</option>');
+
+                    // Populate the group dropdown with options
+                    $.each(obj.Result, function (index, group) {
+                        groupDropdown.append('<option value="' + group.AccountCode + '">' + group.ParentGroup + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var GroupCode = '@Model.Parent_Account_Code';
+                        $('#Parent_Account_Code').val(GroupCode).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+
+        }
+        $('#Account_Code').change(function () {
+            var parentGroupCode = $(this).val();
+             
+            $.ajax({
+                url: '@Url.Action("GetAccountGroupDetails", "PrimaryAccountGroupMaster")',
+                type: 'GET',
+                data: { parentAccountCode: parentGroupCode },
+                success: function (data) {
+                     
+                    console.log(data);
+                    var response = JSON.parse(data);
+                    if (response.Result && response.Result.length > 0) {
+                        $('#Main_Group').val(response.Result[0].MainGroup);
+                        $('#Main_Group').val(response.Result[0].MainGroup);
+                        $('#SubGroup').val(response.Result[0].SubGroup);
+                        $('#UnderGroup').val(response.Result[0].UnderGroup);
+                        $('#SubSubGroup').val(response.Result[0].SubSubGroup);
+                    }
+
+                },
+                error: function () {
+                    alert("Failed to retrieve data. Please check the Parent Group code.");
+                }
+            });
+        });
+        function GetDetailData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetDetailData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    if ($('#gateDashboardtable').val() == '') {
+                        var dashGrid = 0;
+                        $('#totalRows').text(dashGrid);
+                    } else {
+                        var dashGrid = $('#gateDashboardtable tr').length;
+                        $('#totalRows').text(dashGrid);
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+         var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#gateDashboardtable tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        $('#sendToExcel').click(function () {
+            $("#GateDataTable").table2excel({
+                filename: "WorkOrderProcessDetailData.xls"
+            });
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('GateDataTable', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('GateDataTable', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function TotalNoOfRows() {
+            var Row = $('#divStockGrid tr').length;
+            var tdCount = $('#divStockGrid tr td').length;
+            if (tdCount >= 1) {
+                $('#lblTotalNoOfBelowItems').text(Row);
+            } else {
+                $('#lblTotalNoOfBelowItems').text(0);
+            }
+        }
+        // function confirmEdit(event) {
+        //     event.preventDefault();
+
+        //     if (confirm("Are you sure you want to Edit this entry?")) {
+        //         // Extract the automatically generated href
+        //         var linkUrl = $(event.currentTarget).attr("href");
+
+        //         // Extract additional parameters from your input fields
+        //         var fromDate = $('#FromDate').val();
+        //         var toDate = $('#ToDate').val();
+        //         var EnteredEMPID = $('#EnteredEMPID').val();
+        //         var Account_Name = $('#Account_Name').val();
+        //         var Account_Code = $('#Account_Code').val();
+        //         var Parent_Account_Code = $('#Parent_Account_Code').val();
+        //         var ParentAccountName = $('#ParentAccountName').val();
+        //         var Main_Group = $('#Main_Group').val();
+        //         var SubGroup = $('#SubGroup').val();
+        //         var SubSubGroup = $('#SubSubGroup').val();
+        //         var UnderGroup = $('#UnderGroup').val();
+        //         var searchBox = $('#search-box').val();
+
+        //         // Build the query string with the specified parameters
+        //         linkUrl += "?FromDate=" + encodeURIComponent(fromDate)
+        //             + "&ToDate=" + encodeURIComponent(toDate)
+        //             + "&EnteredEMPID=" + encodeURIComponent(EnteredEMPID)
+        //             + "&Account_Name=" + encodeURIComponent(Account_Name)
+        //             + "&Account_Code=" + encodeURIComponent(Account_Code)
+        //             + "&Parent_Account_Code=" + encodeURIComponent(Parent_Account_Code)
+        //             + "&ParentAccountName=" + encodeURIComponent(ParentAccountName)
+        //             + "&Main_Group=" + encodeURIComponent(Main_Group)
+        //             + "&SubGroup=" + encodeURIComponent(SubGroup)
+        //             + "&SubSubGroup=" + encodeURIComponent(SubSubGroup)
+        //             + "&UnderGroup=" + encodeURIComponent(UnderGroup)
+        //             + "&Searchbox=" + encodeURIComponent(searchBox);
+
+        //         // Redirect to the new URL with GET request
+        //         window.location.href = linkUrl;
+        //     }
+        // }
+
+
+        function confirmEdit(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to Edit this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+
+                // Redirect without appending additional parameters manually
+                window.location.href = linkUrl;
+            }
+        }
+
+        function confirmDelete(event) {
+             
+            event.preventDefault();
+            if (confirm("Are you sure you want to delete this entry?")) {
+                var urlHref = $(event.currentTarget).attr("href");
+                var linkUrl = urlHref;
+                linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() +
+                    "&ToDate=" + $('#ToDate').val() +
+                    "&GroupName=" + $('#GroupName').val() +
+                    "&LedgerName=" + $('#LedgerName').val() +
+                    "&ClosingYearCode=" + $('#ClosingYearCode').val() +
+                    "&Searchbox=" + $('#search-box').val() +
+                    "&DrCr=" + $('#DrCr').val() +
+                    "&Amount=" + $('#Amount').val() +
+                    "&CC=" + $('#CC').val() +
+                    "&EntryByEmployee=" + $('#EntryByEmployee').val() +
+                    "&ActualEntryDate=" + $('#ActualEntryDate').val() +
+                    "&UpdatedByEmployee=" + $('#UpdatedByEmployee').val() +
+                    "&Updationdate=" + $('#Updationdate').val() +
+                    "&EntryByMachine=" + $('#EntryByMachine').val();
+                window.location.href = linkUrl;
+            }
+        }
+
+
+
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+}
+

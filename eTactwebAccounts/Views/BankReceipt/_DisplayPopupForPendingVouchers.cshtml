@@ -1,0 +1,64 @@
+﻿@model eTactWeb.DOM.Models.BankReceiptModel
+
+@{
+    var Cntr = 0;
+    if (Model.BankReceiptGrid == null || Model.BankReceiptGrid.Count == 0)
+    {
+        <tr class="text-center"><td colspan="11" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+    }
+    else
+    {
+        foreach (var item in Model.BankReceiptGrid)
+        {
+            Cntr = Cntr + 1;
+            <tr id="AdjustData-@Cntr">
+                <td style="text-align:center;white-space: nowrap;">
+                    <div id="container">
+                        <div id="deleteCursorDiv-@Cntr">
+                            <a class="table-link link-danger" onclick='DeleteItemRow(@Cntr,"PopUpData")'>
+                                <span class="fa-stack">
+                                    <i class="fa fa-square fa-stack-2x"></i>
+                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </td>
+                <td>@Cntr</td>
+                <td><input type="checkbox" id="CheckUnCheck-@Cntr" onchange="CheckUnCheckCheck(@Cntr)" /></td>
+                <td id="PopUpVoucherType-@Cntr">@item.VoucherType</td>
+                <td id="PopUpYearCode-@Cntr">@item.YearCode</td>
+                <td id="PopUpVoucherNo-@Cntr">@item.VoucherNo</td>
+                <td id="PopUpInVoiceNo-@Cntr">@item.InVoiceNo</td>
+                @if(item.VoucherDate != null)
+                {
+                    <td id="popUpVoucherDate-@Cntr">@item.VoucherDate.Split(" ")[0]</td>
+                }
+                else
+                {
+                    <td id="popUpVoucherDate-@Cntr">@item.VoucherDate</td>
+                }
+                @if(item.DueDate != null)
+                {
+                    <td>@item.DueDate.Split(" ")[0]</td>
+                }
+                else
+                {
+                    <td>@item.DueDate</td>
+                }
+                <td id="BalanceAmt-@Cntr">@item.Balance</td>
+                <td id="PopUpType-@Cntr">@item.DRCR</td>
+                <td><input id="AdjustAmt-@Cntr" style="width:50px" value="@item.AdjustmentAmt" onchange="ChangeAdjustAmt(@Cntr)"></td>
+                <td>@item.Adjusted</td>
+                <td id="PopUpDrAmt-@Cntr">@item.DrAmt</td>
+                <td id="PopUpCrAmt-@Cntr">@item.CrAmt</td>
+                <td id="ActualBalance-@Cntr">@item.PendBillAmt</td>
+                <td>@item.NewrefNo</td>
+                <td>@item.ModeOfAdjustment</td>
+                <td id="PopUpAccEntryId-@Cntr">@item.AccEntryId</td>
+                <td>@item.ActualDrCr</td>
+            </tr>
+        }
+    }
+}
+

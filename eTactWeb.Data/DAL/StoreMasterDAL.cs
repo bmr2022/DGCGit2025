@@ -1,0 +1,245 @@
+﻿using eTactWeb.DOM.Models;
+using eTactWeb.Services.Interface;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
+
+namespace eTactWeb.Data.DAL
+{
+    public class StoreMasterDAL
+    {
+        private readonly IDataLogic _IDataLogic;
+        private readonly string DBConnectionString = string.Empty;
+        private IDataReader? Reader;
+
+        public StoreMasterDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        {
+            //configuration = config;
+            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _IDataLogic = iDataLogic;
+        }
+        public async Task<ResponseResult> FillStoreType()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillStoreType"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPStoreMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> ChkForDuplicate(string StoreName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ChkForDuplicate"));
+                SqlParams.Add(new SqlParameter("@Store_Name", StoreName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPStoreMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> ChkForDuplicateStoreType(string StoreType)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ChkForDuplicateStoreType"));
+                SqlParams.Add(new SqlParameter("@StoreType", StoreType));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPStoreMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveStoreMaster(StoreMasterModel model)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                if (model.Mode == "U" || model.Mode == "V")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "Update"));
+                    SqlParams.Add(new SqlParameter("@StoreId", model.StoreId > 0 ? model.StoreId : (object)DBNull.Value));
+                    SqlParams.Add(new SqlParameter("@Store_Name", string.IsNullOrEmpty(model.Store_Name) ? DBNull.Value : model.Store_Name));
+                    SqlParams.Add(new SqlParameter("@Entry_Date", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : model.EntryDate));
+                    SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
+                    SqlParams.Add(new SqlParameter("@StoreType", string.IsNullOrEmpty(model.StoreType) ? DBNull.Value : model.StoreType));
+                }
+                else
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "Insert"));
+                    SqlParams.Add(new SqlParameter("@StoreId", model.StoreId > 0 ? model.StoreId : (object)DBNull.Value));
+                    SqlParams.Add(new SqlParameter("@Store_Name", string.IsNullOrEmpty(model.Store_Name) ? DBNull.Value : model.Store_Name));
+                    SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
+                    SqlParams.Add(new SqlParameter("@Entry_Date", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : model.EntryDate));
+                    SqlParams.Add(new SqlParameter("@StoreType", string.IsNullOrEmpty(model.StoreType) ? DBNull.Value : model.StoreType));
+                }
+                
+
+                // Call the stored procedure with the provided parameters
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPStoreMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and prepare the error response
+                _ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
+                _ResponseResult.StatusText = "Error";
+                _ResponseResult.Result = new { ex.Message, ex.StackTrace };
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<StoreMasterModel> GetViewByID(int ID)
+        {
+            var model = new StoreMasterModel();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "ViewById"));
+                SqlParams.Add(new SqlParameter("@StoreId", ID));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPStoreMaster", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    //PrepareView(_ResponseResult.Result, ref model);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+
+        public async Task<ResponseResult> FillStoreID()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "NewRef"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPStoreMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetDashBoardData()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DashBaord"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPStoreMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<StoreMasterModel> GetDashBoardDetailData()
+        {
+            DataSet? oDataSet = new DataSet();
+            var model = new StoreMasterModel();
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("SPStoreMaster", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", "DashBaord");
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    model.StoreMasterDashBoardGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                      select new StoreMasterModel
+                                                      {
+                                                          StoreId = Convert.ToInt32(dr["Storeid"]),
+                                                          Store_Name = dr["Store_Name"].ToString(),
+                                                          StoreType = dr["Store_Type"].ToString(),
+                                                          CC = dr["CC"].ToString(),
+                                                          EntryDate = dr["Entry_Date"].ToString(),
+
+                                                      }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                oDataSet.Dispose();
+            }
+            return model;
+        }
+        public async Task<ResponseResult> DeleteByID(int ID)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "Delete"));
+                SqlParams.Add(new SqlParameter("@StoreId", ID));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPStoreMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+                // Optional: log the error using a logger
+                Console.WriteLine($"Error: {Error.Message}");
+                Console.WriteLine($"Source: {Error.Source}");
+            }
+
+            return _ResponseResult;
+        }
+    }
+}

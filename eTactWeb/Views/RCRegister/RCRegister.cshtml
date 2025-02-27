@@ -1,0 +1,493 @@
+﻿@model RCRegisterModel
+@{
+    ViewData["Title"] = "RC Register";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>RC Register</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartyName" class="form-label">Party Name</label>
+                                    <input asp-for="PartyName" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="IssueChallanNo" class="form-label">Issue ChallanNo</label>
+                                    <input asp-for="IssueChallanNo" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="recChallanno" class="form-label">Rec ChallanNo</label>
+                                    <input asp-for="recChallanno" class="form-control" />
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">PartCode</label>
+                                    <input asp-for="PartCode" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label">Item Name</label>
+                                    <input asp-for="ItemName" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="RGPNRGP" class="form-label">RGP/NRGP</label>
+                                    <select class="form-select" asp-for="RGPNRGP">
+                                        <option value="">-Select-</option>
+                                        <option value="RGP">RGP</option>
+                                        <option value="NRGP">NRGP</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="IssueChallanType" class="form-label">Challan Type</label>
+                                    <select class="form-select" asp-for="IssueChallanType">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportMode" class="form-label">Report Type</label>
+                                    <select asp-for="ReportMode" class="form-select" onchange="GetRCRegisterData()">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="ISSUEDETAIL">IssueChallan Detail</option>
+                                        <option value="ISSUESUMMARY">IssueChallan Summary</option>
+                                        <option value="ISSUEPARTYSUMMARY">IssueChallan Partywise Summary</option>
+                                        <option value="ISSUEITEMSUMMARY">IssueChallan Itemwise Summary</option>
+                                        <option value="RECDETAIL">RecChallan Detail</option>
+                                        <option value="RECSUMMARY">RecChallan Summary</option>
+                                        <option value="RECPARTYSUMMARY">RecChallan Partywise Summary</option>
+                                        <option value="RECITEMSUMMARY">RecChallan Itemwise Summary</option>
+                                        <option value="RECONCILATIONSUMMARY">Reco Summary</option>
+                                        <option value="RECONCILATIONDETAIL">Reco Detail</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label">Global search</label>
+                                    <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
+                                </div>
+                                <div class="col-sm-3 col-md-6 col-lg-2 col-xl-3 justify-content-center mt-4" style="margin-left:50px;margin-top:10px;">
+                                    <label class="color-box mt-3" style="background-color: #f3dea1;"></label><label style="margin-left:5px;margin-top:-5px;">Closed Challan</label>
+                                    <label class="color-box mt-3" style="background-color: rgb(158 225 149);margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Pending Challan</label>
+                                </div>
+                                <div class=" d-flex justify-content-center mt-3" width="inherit">
+
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetRCRegisterData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="RCRegister" asp-action="RCRegister">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase" id="ItemHeading"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Challan Grid</strong>
+                                    </button>
+                                </h2>
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12" id="divRCRegister">
+                                                    <partial name="_RCRegisterGrid" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label">Total POQty</label>
+                                        <input id="ToTalQty" class="form-control" readonly style="width:97px" />
+                                        </div>*@
+                                        <div class="row" id="TOTALIssueDetail">
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total IssueChallan Qty</label>
+                                                <input id="TotalIssueChallanQty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Amount</label>
+                                                <input id="TotalAmount" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Pend Qty</label>
+                                                <input id="TotalPendQty" class="form-control" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="row" id="TOTALRecChallanDetail">
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Rec Qty</label>
+                                                <input id="TotalRecQty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Amount</label>
+                                                <input id="TotalRecAmount" class="form-control" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="row" id="TOTALRecoDetail">
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Rec Qty</label>
+                                                <input id="TotalRecoRecQty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total IssueChallan Qty</label>
+                                                <input id="TotalRecoIssueChallanQty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Pend Qty</label>
+                                                <input id="TotalRecoPendQty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Amount</label>
+                                                <input id="TotalRecoAmount" class="form-control" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            GetServerDate();
+            $('#ReportMode').select2();
+            AutoComplete('Account_Head_Master', 'PartyName', 'Account_Name', null);
+            AutoComplete('VIssueNRGPMainDetail', 'IssueChallanNo', 'ChallanNo', null);
+            AutoComplete('VReceiveChallanmainDetail', 'recChallanno', 'ChallanNo', null);
+            AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
+            AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
+            AutoComplete('VIssueNRGPMainDetail', 'IssueChallanType', 'ChallanType', null);
+            AutoComplete('VIssueNRGPMainDetail', 'RGPNRGP', 'RGPNRGP', null);
+            GetRCRegisterData();
+            $('#TOTALSUMRatingdata').hide();
+            $('#TOTALDetailData').hide();
+            $('#TotalPOSummary').hide();
+            $('#TotalConsolidated').hide();
+            $('#TotalItemConsoled').hide();
+            FillChallanType();
+            $('#TOTALRecoDetail').hide();
+            $('#TOTALRecChallanDetail').hide();
+
+
+            $('#ReportMode').change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue === 'ISSUEDETAIL') {
+                     $('#TOTALIssueDetail').show();
+                    $('#TOTALRecoDetail').hide();
+                    $('#TOTALRecChallanDetail').hide();
+                }
+                else if (selectedValue === 'ISSUESUMMARY') {
+                     $('#TOTALIssueDetail').show();
+                    $('#TOTALRecoDetail').hide();
+                    $('#TOTALRecChallanDetail').hide();
+                }
+                else if (selectedValue === 'ISSUEPARTYSUMMARY') {
+                     $('#TOTALIssueDetail').show();
+                    $('#TOTALRecoDetail').hide();
+                    $('#TOTALRecChallanDetail').hide();
+                }
+                else if (selectedValue === 'ISSUEITEMSUMMARY') {
+                     $('#TOTALIssueDetail').show();
+                    $('#TOTALRecoDetail').hide();
+                    $('#TOTALRecChallanDetail').hide();
+                }
+               else if (selectedValue === 'RECDETAIL') {
+                    $('#TOTALIssueDetail').hide();
+                    $('#TOTALRecoDetail').hide();
+                    $('#TOTALRecChallanDetail').show();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Receive Challan Grid');
+                } else if (selectedValue === 'RECSUMMARY') {
+                    $('#TOTALIssueDetail').hide();
+                    $('#TOTALRecoDetail').hide();
+                    $('#TOTALRecChallanDetail').show();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Receive Challan Grid');
+                } else if (selectedValue === 'RECPARTYSUMMARY') {
+                    $('#TOTALIssueDetail').hide();
+                    $('#TOTALRecoDetail').hide();
+                    $('#TOTALRecChallanDetail').show();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Receive Challan Grid');
+                }
+                else if (selectedValue === 'RECITEMSUMMARY') {
+                    $('#TOTALIssueDetail').hide();
+                    $('#TOTALRecoDetail').hide();
+                    $('#TOTALRecChallanDetail').show();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Receive Challan Grid');
+                }
+                else if (selectedValue === 'RECONCILATIONSUMMARY') {
+                    $('#TOTALIssueDetail').hide();
+                    $('#TOTALRecoDetail').show();
+                    $('#TOTALRecChallanDetail').hide();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Reconcilation Grid');
+                }
+                else if (selectedValue === 'RECONCILATIONDETAIL') {
+                    $('#TOTALIssueDetail').hide();
+                    $('#TOTALRecoDetail').show();
+                    $('#TOTALRecChallanDetail').hide();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Reconcilation Grid');
+                } else {
+                    $('#TOTALIssueDetail').show();
+                }
+            });
+        });
+
+        function DeleteRow(i) {
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
+            countAllTotal();
+        }
+
+        function FreezeSelection(Currentrow) {
+             
+            FillColorAccordingPendQty();
+            $(Currentrow).css({ 'background-color': '#00bcd4' });
+        }
+
+        function countAllTotal() {
+            var Rowcount = 0;
+            if ($('#divStockRegisterBody tr td').length > 1) {
+                Rowcount = $('#divStockRegisterBody tr').length;
+            } else {
+                Rowcount = 0;
+            }
+            $('#TotalIssueChallanQty').val(0);
+            $('#TotalPendQty').val(0);
+            $('#TotalAmount').val(0);
+            var IssueChallanQty = 0;
+            var TotalIssueDetailPendQty = 0;
+            var TotalAmount = 0;
+            var TotalRecQty = 0;
+            for (i = 1; i <= Rowcount; i++) {
+                IssueChallanQty += $('#SAGridRow-'+i).find('#GridICQty').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#GridICQty').text());
+                TotalIssueDetailPendQty += $('#SAGridRow-' + i).find('#GridPendQty').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#GridPendQty').text());
+                TotalAmount += $('#SAGridRow-' + i).find('#GridAmount').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#GridAmount').text());
+                TotalRecQty += $('#SAGridRow-' + i).find('#GridRCQty').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#GridRCQty').text());
+            }
+            $('#TotalIssueChallanQty').val(IssueChallanQty);
+            $('#TotalAmount').val(TotalAmount.toFixed(2));
+            $('#TotalPendQty').val(TotalIssueDetailPendQty);
+            $('#TotalRecQty').val(TotalRecQty);
+            $('#TotalRecAmount').val(TotalAmount.toFixed(2));
+            $('#TotalRecoIssueChallanQty').val(IssueChallanQty);
+            $('#TotalRecoAmount').val(TotalAmount.toFixed(2));
+            $('#TotalRecoPendQty').val(TotalIssueDetailPendQty);
+            $('#TotalRecoRecQty').val(TotalRecQty);
+            FillColorAccordingPendQty();
+        }
+
+        $('#RGPNRGP').change(function () {
+            FillChallanType();
+        });
+
+        function FillChallanType() {
+            var RGPNRGP = $('#RGPNRGP').val();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FillChallanType","NRGP")",
+                data: { "RGPNRGP": RGPNRGP },
+                dataType: "json",
+                ayns: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            $('#IssueChallanType').empty();
+                            $('#IssueChallanType').append('<option value="">-Select-</option>');
+                            $(obj.Result).each(function (index, val) {
+                                $('#IssueChallanType').append('<option value="' + val.ChallanType + '">' + val.ChallanType + '</option>');
+                            });
+
+                        } else {
+
+                        }
+
+                    }
+                }
+            });
+        }
+
+        function FillColorAccordingPendQty() {
+            var Rowcount = $('#divStockRegisterBody tr').length;
+            for (i = 1; i <= Rowcount; i++) {
+                if (parseFloat($('#GridPendQty-' + i).text()) == 0) {
+                    $('#SAGridRow-' + i).css({ 'background-color': '#f3dea1' });
+                    $('#StickyHearder-' + i).css({ 'background-color': '#f3dea1' });
+                } else {
+                    $('#SAGridRow-' + i).css({
+                        'background-color': 'rgb(158 225 149)'
+                    });
+                    $('#StickyHearder-' + i).css({
+                        'background-color': 'rgb(158 225 149)'
+                    });
+                }
+            }
+        }
+
+        function GetRCRegisterData() {
+             
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetRCRegisterData")",
+                async: false,
+                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), Partyname: $('#PartyName').val(), IssueChallanNo: $('#IssueChallanNo').val(), RecChallanNo: $('#recChallanno').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), IssueChallanType: $('#IssueChallanType').val(), RGPNRGP: $('#RGPNRGP').val(), ReportMode: $('#ReportMode').val() },
+                success: function (result, status, error) {
+                     
+                    $('#divRCRegister').empty();
+                    $('#divRCRegister').html(result);
+                    $('#totalRows').text($('#divRCRegister tr').length - 1);
+                    countAllTotal();
+                }
+            });
+        }
+
+        $('#sendToExcel').click(function () {
+            let table = $("#ReportTable");
+            console.log(table);
+            TableToExcel.convert(table[0], {
+                name: `ReportTable.xlsx`,
+                sheet: {
+                    name: 'ReportTable'
+                }
+            });
+        });
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate","SaleOrder")",
+                async: false,
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+
+                        var firstDayOfMonth = getFirstDayOfMonth(result);
+                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                    }
+                }
+            });
+        }
+
+        function getFirstDayOfMonth(dateString) {
+            const [day, month, year] = dateString.split('/');
+
+            const currentDate = new Date(year, month - 1, day);
+
+            currentDate.setDate(1);
+
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
+        }
+
+
+        var currentSearchColumn = null;
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); 
+        });
+
+        $("#search-box").on("keyup", function () {
+             
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+            countAllTotal();
+            $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
+        });
+
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable('ReportTable', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('ReportTable', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+
+}

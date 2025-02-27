@@ -1,0 +1,103 @@
+﻿@model eTactWeb.DOM.Models.DayBookModel
+
+<div class="card-body table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+            <tr>
+                <th>Action</th>
+                <th>Sr#</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ledger Name</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No </th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Date</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DR Amt</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CR Amt</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Category</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>parent Head</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entered By</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By Machine</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Code</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc Entry ID</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc Year Code</th>
+            </tr>
+        </thead>
+        <tbody id="divStockRegisterBody">
+            @{
+                var @Cntr = 0;
+                if (Model.DayBookGrid == null)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.DayBookGrid)
+                    {
+                        Cntr = Cntr + 1;
+
+                        <tr id="@Cntr" onclick="selection(this)">
+                            <td>
+                                <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </td>
+                            <th>@Cntr</th>
+                            <td>@item.Ledger</td>
+                            <td>@item.VoucherNo</td>
+                            <td>@item.InvoiceNo</td>
+                            <td>@item.VoucherDate</td>
+
+                            <td>@item.VoucherType</td>
+                            <td id="totDrG-@Cntr">@item.DrAmt</td>
+                            <td id="totCrG-@Cntr">@item.CrAmt</td>
+                            <td>@item.EntryDate</td>
+                            <td>@item.Category</td>
+                            <td>@item.ParentHead</td>
+                            <td>@item.EnteredBy</td>
+                            <td>@item.EntryByMachine</td>
+                            <td>@item.AccountCode</td>
+                            <td>@item.AccEntryId</td>
+
+                            <td>@item.AccYearCode</td>
+
+
+
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    #dashRThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -18px;
+        z-index: 1;
+    }
+</style>

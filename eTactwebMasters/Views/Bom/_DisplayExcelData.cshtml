@@ -1,0 +1,50 @@
+﻿@model eTactWeb.DOM.Models.BomModel
+@{
+    var Cntr = 0;
+    var ErrorCntr = 0;
+}
+
+@if (Model.ExcelDataList == null)
+{
+    <tr class="text-center">
+        <td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ExcelDataList)
+    {
+        Cntr = Cntr + 1;
+        
+        <tr class="small @Cntr" style="white-space:nowrap">        
+            <td style="white-space:nowrap;">
+
+                <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+           
+            <td id="FGPartCode-@Cntr">@item.FGPartCode<input type="hidden" id="FGItemCode-@Cntr" value="@item.FGItemCode" /></td>
+            <td id="FGItemName-@Cntr">@item.FGItemName</td>
+            <td id="RMPartCode-@Cntr">@item.RMPartCode<input type="hidden" id="RMItemCode-@Cntr" value="@item.RMItemCode" /></td>
+            <td id="RMItemName-@Cntr">@item.RMItemName</td>            
+            <td id="BomName-@Cntr">@item.BomName<input type="hidden" id="BomNo-@Cntr" value="@item.BomNo" /></td>            
+            <td id="RMQty-@Cntr">@item.RMQty</td>
+            <td id="RMUnit-@Cntr">@item.RMUnit</td>
+            <td id="Location-@Cntr">@item.Location <input type="hidden" value="@item.ConstraintExists" id="Constraint-@Cntr" /></td>
+            <td id="MPNNumber-@Cntr">@item.MPNNumber</td>
+            <td id="AltPartCode1-@Cntr">@item.AltPartCode1<input type="hidden" id="AltItemCode1-@Cntr" value="@item.AltItemCode1" /></td>
+            <td id="AltPartCode2-@Cntr">@item.AltPartCode2<input type="hidden" id="AltItemCode2-@Cntr" value="@item.AltItemCode2" /></td>
+            <td id="AltQty1-@Cntr">@item.AltQty1</td>
+            <td id="AltQty2-@Cntr">@item.AltQty2</td>
+            <td id="Scrap-@Cntr">@item.Scrap</td>
+            <td id="GrossWeight-@Cntr">@item.GrossWeight</td>
+            <td id="NetWeight-@Cntr">@item.NetWeight</td>
+            <td id="Remark-@Cntr">@item.Remark</td>
+
+        </tr>
+    }
+}

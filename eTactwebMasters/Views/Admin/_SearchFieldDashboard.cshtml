@@ -1,0 +1,136 @@
+﻿@model eTactWeb.DOM.Models.UserRightModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    int UID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("UID"));
+    string UserType = HttpContextAccessor.HttpContext.Session.GetString("UserType");
+}
+@if (Model.Mode == "Detail")
+{
+    <partial name="_SearchFieldDetailDashboard" />
+}
+else
+{
+    <div class="card-body">
+        <div class="card">
+            <div class="card-body table-responsive" style="max-height:350px;">
+                <table class="table table-hover table-bordered table-striped TbCss" id='UserData'>
+                    <thead class="bg-gradient card-headerBG text-light" id="dashThead" style="position:static;">
+                        <tr>
+                            <th style="display:none">@Html.DisplayNameFor(model => model.EmpID)</th>
+                            <th>Action</th>
+                            <th>Sr#</th>
+                            <th>UserName</th>
+                            <th>@Html.DisplayNameFor(model => model.EmpName)</th>
+                            @* <th>@Html.DisplayNameFor(model => model.Module)</th>
+                        <th>@Html.DisplayNameFor(model => model.MainMenu)</th>*@
+                            @*<th>@Html.DisplayNameFor(model => model.SubMenu)</th>*@
+                            @*<th>@Html.DisplayNameFor(model => model.All)</th>
+                        <th>@Html.DisplayNameFor(model => model.Update)</th>
+                        <th>@Html.DisplayNameFor(model => model.Save)</th>
+                        <th>@Html.DisplayNameFor(model => model.Delete)</th>
+                        <th>@Html.DisplayNameFor(model => model.View)</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var @Cntr = 0;
+                        }
+                        @if (Model.UserRights == null || Model.UserRights.Count == 0)
+                        {
+                            <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model.UserRights)
+                            {
+                                Cntr = Cntr + 1;
+                                <tr>
+                                    <td style="display:none">@Html.DisplayFor(modelItem => item.EmpID)</td>
+                                    <td style="display: -webkit-box;-webkit-box-pack: center;">
+                                        <a class="table-link link-success" asp-action="UserRights" asp-route-ID="@item.ID" asp-route-Mode="V">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                        @if (UserType == "Admin")
+                                        {
+                                            <a class="table-link link-primary" asp-action="UserRights" asp-route-ID="@item.ID" asp-route-Mode="U">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                            <a class="table-link link-danger" asp-action="DeleteRightByID" asp-controller="Admin" asp-route-ID="@item.ID">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            @if (item.EmpID != UID)
+                                            {
+                                                <a class="table-link link-primary noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a class="table-link link-primary" asp-action="UserRights" asp-route-ID="@item.ID" asp-route-Mode="U">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            }
+                                            @if (item.EmpID != UID)
+                                            {
+                                                <a class="table-link link-danger noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a class="table-link link-danger" asp-action="DeleteRightByID" asp-controller="Admin" asp-route-ID="@item.ID">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                    <th>@Cntr</th>
+                                    <td>@Html.DisplayFor(modelItem => item.EmpName)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+
+<style>
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+</style>

@@ -1,0 +1,339 @@
+﻿@model eTactWeb.DOM.Models.ProductionEntryDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+@if (Model.DashboardType == "Detail")
+{
+    <partial name="_ProductionEntryDetailDashboardGrid" />
+}
+else if (Model.DashboardType == "DetailWithBatchwise")
+{
+    <partial name="_ProductionEntryDetailBatchwiseDashboard" />
+}
+else if (Model.DashboardType == "Breakdown")
+{
+    <partial name="_ProductionEntryBreakdownDashboardGrid" />
+}
+else if (Model.DashboardType == "Operator")
+{
+    <partial name="_ProductionEntryOperatorDashboardGrid" />
+}
+else if (Model.DashboardType == "Scrap")
+{
+    <partial name="_ProductionEntryScrapDashboardGrid" />
+}
+else
+{
+    <div class="table-responsive" style="max-height:350px;">
+        <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable">
+            <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th style="width:50px !important">Action</th>
+                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdDate</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdSlipNo</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdAgainst PlanManual</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>NewProdRework</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdInWC</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Procee Name</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Plan Qty</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Qty</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FGOKQty</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG RejQty</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transfer To NextStore</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transfer To NextWc</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store/WC</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejQTy In Wc</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejQty</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>startup RejQty</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transfer Rej</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store/WC</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BOMNO</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BOMDate</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MachineName</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCOffered</th>
+                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdPlanNo</th>
+                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdPlanYearCode</th>
+                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdPlanDate</th>
+                    <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdPlanSchNo</th>
+                    <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdPlanSchYearCode</th>
+                    <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdPlanSchDate</th>
+                    <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Reqno</th>
+                    <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReqYearcode</th>
+                    <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReqDate</th>
+                    <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
+                    <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UniqueBatchNo</th>
+                    <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StartTime</th>
+                    <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ToTime</th>
+                    <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>setupTime</th>
+                    <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevWC</th>
+                    <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Id</th>
+                    <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                    <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                    <th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WOQTY</th>
+                    <th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendingQtyToIssue</th>
+                    <th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejQtyDuetoTrail</th>
+                    <th data-columnno="45" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendQtyForProd</th>
+                    <th data-columnno="46" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendQtyForQC</th>
+                    <th data-columnno="47" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>rejStore</th>
+                    <th data-columnno="48" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCMandatory</th>
+                    <th data-columnno="49" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProducedINLineNo</th>
+                    <th data-columnno="50" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCChecked</th>
+                    <th data-columnno="51" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InitialReading</th>
+                    <th data-columnno="52" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FinalReading</th>
+                    <th data-columnno="53" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shots</th>
+                    <th data-columnno="54" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Completed</th>
+                    <th data-columnno="55" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UtilisedHours</th>
+                    <th data-columnno="56" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdLineNo</th>
+                    <th data-columnno="57" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>stdShots</th>
+                    <th data-columnno="58" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>stdCycletime</th>
+                    <th data-columnno="59" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                    <th data-columnno="60" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CyclicTime</th>
+                    <th data-columnno="61" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProductionHour</th>
+                    <th data-columnno="62" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemModel</th>
+                    <th data-columnno="63" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>cavity</th>
+                    <th data-columnno="64" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>efficiency</th>
+                    <th data-columnno="65" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualTimeRequired</th>
+                    <th data-columnno="66" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>parentProdSchNo</th>
+                    <th data-columnno="67" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>parentProdSchDate</th>
+                    <th data-columnno="68" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>parentProdSchYearcode</th>
+                    <th data-columnno="69" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
+                    <th data-columnno="70" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SOYearcode</th>
+                    <th data-columnno="71" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SODate</th>
+                    <th data-columnno="72" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>sotype</th>
+                    <th data-columnno="73" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCOfferDate</th>
+                    <th data-columnno="74" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCQTy</th>
+                    <th data-columnno="75" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OKQty</th>
+                    <th data-columnno="76" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StockQTy</th>
+                    <th data-columnno="77" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>matTransferd</th>
+                    <th data-columnno="78" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RewQcYearCode</th>
+                    <th data-columnno="79" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RewQcDate</th>
+                    <th data-columnno="80" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>shiftclose</th>
+                    <th data-columnno="81" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ComplProd</th>
+                    <th data-columnno="82" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                    <th data-columnno="83" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByMachineNo</th>
+                    <th data-columnno="84" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEntryByEmp</th>
+                    <th data-columnno="85" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEntryDate</th>
+                    <th data-columnno="86" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LastUpdatedBy</th>
+                    <th data-columnno="87" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LastUpdationDate</th>
+                    <th data-columnno="88" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByDesignation</th>
+                    <th data-columnno="89" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>operatorName</th>
+                    <th data-columnno="90" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>supervisior</th>
+                </tr>
+            </thead>
+            <tbody id="gateDashboardtable">
+                @{
+                    var @Cntr = 0;
+                    if (Model.ProductionDashboard == null || Model.ProductionDashboard.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.ProductionDashboard)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr onclick="selection(this)">
+                                <th class="seqno-@Cntr">@Cntr</th>
+                                <td style="text-align:center;white-space: nowrap;">
+                                    <div id="container">
+                                        <div id="printData-@Cntr">
+                                            <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.PRODEntryId" asp-route-YearCode="@item.PRODYearcode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="viewCursorDiv-@Cntr">
+                                            <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="ProductionEntry" asp-route-Mode="V" asp-route-ID="@item.PRODEntryId" asp-route-YC="@item.PRODYearcode" onclick="BackButtonData(event);">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        @if (item.PRODYearcode == yearCode)
+                                        {
+
+                                            <div id="editCursorDiv-@Cntr">
+                                                <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="ProductionEntry" asp-route-Mode="U" asp-route-ID="@item.PRODEntryId" asp-route-YC="@item.PRODYearcode" onclick="confirmEdit(event,'@item.PRODEntryId','@item.PRODYearcode')">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div id="deleteCursorDiv-@Cntr">
+                                                <a class="table-link link-danger" id="deleteCursor-@Cntr" asp-action="DeleteByID" asp-route-ID="@item.PRODEntryId" asp-route-YC="@item.PRODYearcode" asp-route-CC="@item.CC" asp-route-EntryByMachineName="@item.MachineName" asp-route-EntryDate="@item.Entrydate" asp-route-ActualEntryBy="@item.ActualEntryByEmp" onclick="confirmDelete(event,'@item.PRODEntryId','@item.PRODYearcode')">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                <a class="table-link link-primary noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a class="table-link link-danger noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td class="partcode-@Cntr">@item.FGPartCode</td>
+                                <td class="itemname-@Cntr">@item.FGItemName</td>
+                                <td class="proddate-@Cntr">@item.ProdDate.Split(" ")[0]</td>
+                                <td class="prodslipno-@Cntr">@item.ProdSlipNo</td>
+                                <td class="prodagainst-@Cntr">@item.ProdAgainstPlanManual</td>
+                                <td class="newprod-@Cntr">@item.NewProdRework</td>
+                                <td class="prodinwc-@Cntr">@item.ProdInWC</td>
+                                <td class="stagedescription-@Cntr">@item.StageDescription</td>
+                                <td class="prodschqty-@Cntr">@item.ProdSchQty</td>
+                                <td class="fgprodqty-@Cntr">@item.FGProdQty</td>
+                                <td class="fgokqty-@Cntr">@item.FGOKQty</td>
+                                <td class="fgrej-@Cntr">@item.FGRejQty</td>
+                                <td class="nexttostore-@Cntr">@item.NextToStore</td>
+                                <td class="nexttoworkcenter-@Cntr">@item.NextToWorkCenter</td>
+                                <td class="transferwcorstore-@Cntr">@item.TransferFGToWCorSTORE</td>
+                                <td class="rejqtyinwc-@Cntr">@item.RejQtyInWC</td>
+                                <td class="rejqty-@Cntr">@item.RejQTy</td>
+                                <td class="stratuprejqty-@Cntr">@item.startupRejQty</td>
+                                <td class="transfertoqc-@Cntr">@item.TransferToQc</td>
+                                <td class="storewc-@Cntr">@item.StoreWC</td>
+                                <td class="bomno-@Cntr">@item.BOMNO</td>
+                                <td class="bomdate-@Cntr">@item.BOMDate.Split(" ")[0]</td>
+                                <td class="machinename-@Cntr">@item.MachineName</td>
+                                <td class="qcchecked-@Cntr">@item.QCChecked</td>
+                                <td class="prodplanno-@Cntr">@item.ProdPlanNo</td>
+                                <td class="prodplanyearcode-@Cntr">@item.ProdPlanYearCode</td>
+                                <td class="prodplandate-@Cntr">@item.ProdPlanDate.Split(" ")[0]</td>
+                                <td class="prodplanschno-@Cntr">@item.ProdPlanSchNo</td>
+                                <td class="prodplanschyear-@Cntr">@item.ProdPlanSchYearCode</td>
+                                <td class="prodplanschdate-@Cntr">@item.ProdPlanSchDate.Split(" ")[0]</td>
+                                <td class="reqno-@Cntr">@item.Reqno</td>
+                                <td class="reqyearcode-@Cntr">@item.ReqThrBOMYearCode</td>
+                                <td class="reqdate-@Cntr">@item.ReqDate.Split(" ")[0]</td>
+                                <td class="batchno-@Cntr">@item.BatchNo</td>
+                                <td class="uniquebatchno-@Cntr">@item.UniqueBatchNo</td>
+                                <td class="strattime-@Cntr">@item.StartTime.Split(" ")[0]</td>
+                                <td class="totime-@Cntr">@item.ToTime.Split(" ")[0]</td>
+                                <td class="setuptime-@Cntr">@item.setupTime</td>
+                                <td class="prevwc-@Cntr">@item.PrevWC</td>
+                                <td class="prodentryid-@Cntr">@item.PRODEntryId</td>
+                                <td class="entrydate-@Cntr">@item.Entrydate.Split(" ")[0]</td>
+                                <td class="prodyearcode-@Cntr">@item.PRODYearcode</td>
+                                <td class="woqty-@Cntr">@item.WOQTY</td>
+                                <td class="pendingqtytoissue-@Cntr">@item.PendingQtyToIssue</td>
+                                <td class="rejqtyduetotrail-@Cntr">@item.RejQtyDuetoTrail</td>
+                                <td class="pendqtyforprod-@Cntr">@item.PendQtyForProd</td>
+                                <td class="pendqtyforqc-@Cntr" id="PendQtyForQc-@Cntr">@item.PendQtyForQC</td>
+                                <td class="rejstore-@Cntr">@item.rejStore</td>
+                                <td class="qcmandatory-@Cntr" id="QcMandatory-@Cntr">@item.QCMandatory</td>
+                                <td class="producelineno-@Cntr">@item.ProducedINLineNo</td>
+                                <td class="qcchecked-@Cntr">@item.QCChecked</td>
+                                <td class="initialreading-@Cntr">@item.InitialReading</td>
+                                <td class="finalreading-@Cntr">@item.FinalReading</td>
+                                <td class="shots-@Cntr">@item.Shots</td>
+                                <td class="completed-@Cntr">@item.Completed</td>
+                                <td class="utilisedhr-@Cntr">@item.UtilisedHours</td>
+                                <td class="prodline-@Cntr">@item.ProdLineNo</td>
+                                <td class="stdshots-@Cntr">@item.stdShots</td>
+                                <td class="stdcycletime-@Cntr">@item.stdCycletime</td>
+                                <td class="remark-@Cntr">@item.Remark</td>
+                                <td class="cyclictime-@Cntr">@item.CyclicTime</td>
+                                <td class="productionhour-@Cntr">@item.ProductionHour</td>
+                                <td class="itemmodel-@Cntr">@item.ItemModel</td>
+                                <td class="cavity-@Cntr">@item.cavity</td>
+                                <td class="efficiency-@Cntr">@item.efficiency</td>
+                                <td class="actualtimerequired-@Cntr">@item.ActualTimeRequired</td>
+                                <td class="parentprodschno-@Cntr">@item.parentProdSchNo</td>
+                                <td class="parentprodschdate-@Cntr">@item.parentProdSchDate</td>
+                                <td class="parentprodschyearcode-@Cntr">@item.parentProdSchYearcode</td>
+                                <td class="sono-@Cntr">@item.SONO</td>
+                                <td class="soyearcode-@Cntr">@item.SOYearcode</td>
+                                <td class="sodate-@Cntr">@item.SODate.Split(" ")[0]</td>
+                                <td class="sotype-@Cntr">@item.sotype</td>
+                                <td class="qcofferdate-@Cntr">@item.QCOfferDate.Split(" ")[0]</td>
+                                <td class="qcqty-@Cntr">@item.QCQTy</td>
+                                <td class="okqty-@Cntr">@item.OKQty</td>
+                                <td class="stockqty-@Cntr">@item.StockQTy</td>
+                                <td class="mattransfer-@Cntr">@item.matTransferd</td>
+                                <td class="rewqcyearcode-@Cntr">@item.RewQcYearCode</td>
+                                <td class="rewqcdate-@Cntr">@item.RewQcDate.Split(" ")[0]</td>
+                                <td class="shiftclose-@Cntr">@item.shiftclose</td>
+                                <td class="complprod-@Cntr">@item.ComplProd</td>
+                                <td class="cc-@Cntr">@item.CC</td>
+                                <td class="entrybymachine-@Cntr">@item.EntryByMachineNo</td>
+                                <td class="actualentrybyname-@Cntr">@item.ActualEmpByName</td>
+                                <td class="actualentrydate-@Cntr">@item.ActualEntryDate.Split(" ")[0]</td>
+                                <td class="lastupdateby-@Cntr">@item.LastUpdatedByName</td>
+                                <td class="lastupdationdate-@Cntr">@item.LastUpdationDate</td>
+                                <td class="entrydesignation-@Cntr">@item.EntryByDesignation</td>
+                                <td class="operatorname-@Cntr">@item.OperatorName</td>
+                                <td class="supervisior-@Cntr">@item.supervisior</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+}
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

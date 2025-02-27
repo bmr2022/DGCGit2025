@@ -1,0 +1,309 @@
+﻿@model eTactWeb.DOM.Models.InProcessDashboard
+
+@{
+    ViewData["Title"] = "InProcessQcDashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                In Process Qc - <strong>Dashboard</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="PendingInProcesstoQc" asp-route-ID="0" asp-controller="PendingInProcesstoQc" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                        Add New
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" class="form-control" />
+                                    </div>
+                                    <input asp-for="FromDate1" type="hidden" />
+                                    <input asp-for="ToDate1" type="hidden" />
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="InProcQcSlipNo" class="form-label">Qc slip No</label>
+                                <input asp-for="InProcQcSlipNo" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="ItemName" class="form-label">Item Name</label>
+                                <input asp-for="ItemName" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="PartCode" class="form-label">Part Code</label>
+                                <input asp-for="PartCode" class="form-control" />
+                            </div>
+                            <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="ProdSlipNo" class="form-label">Prod Slip No</label>
+                                <input asp-for="ProdSlipNo" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="Workcenter" class="form-label">Workcenter</label>
+                                <input asp-for="Workcenter" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="ProcessName" class="form-label">ProcessName </label>
+                                <input asp-for="ProcessName" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="ProdPlanSchNo" class="form-label">Prod Sch No </label>
+                                <input asp-for="ProdPlanSchNo" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="ProdPlanNo" class="form-label">Prod Plan No</label>
+                                <input asp-for="ProdPlanNo" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
+                                <select asp-for="DashboardType" class="form-select" onchange="GetSearchData();">
+                                    <option value="" disabled>-Select-</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class=" d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+                                <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="InProcessQc" asp-action="InProcessQcDashboard">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0 pt-0">
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body" id="divDashboardGrid">
+                    <partial name="_InProcessQcDashboardGrid" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(function () {
+             
+            var FromDateBack = sessionStorage.getItem('FromDateBack');
+            var ToDateBack = sessionStorage.getItem('ToDateBack');
+            var QcSlipNoBack = sessionStorage.getItem('QcSlipNoBack');
+            var PartCodeBack = sessionStorage.getItem('PartCodeBack');
+            var ItemNameBack = sessionStorage.getItem('ItemNameBack');
+            var ProdSlipNoBack = sessionStorage.getItem('ProdSlipNoBack');
+            var WorkCenterBack = sessionStorage.getItem('WorkCenterBack');
+            var ProcessNameBack = sessionStorage.getItem('ProcessNameBack');
+            var ProdSchNoBack = sessionStorage.getItem('ProdSchNoBack');
+            var ProdPlanNoBack = sessionStorage.getItem('ProdPlanNoBack');
+            var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
+
+            var currentDate = new Date();
+
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            function formatDate(date) {
+                var day = ("0" + date.getDate()).slice(-2);
+                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                var dateString = day + "/" + month + "/" + year;
+                return dateString;
+                GetSearchData();
+            }
+
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            var rowcount = $('#gateDashboardtable tr').length;
+            $('#totalRows').text(rowcount);
+
+            if (FromDateBack != null && FromDateBack != '') {
+
+                $('#FromDate').val(FromDateBack);
+                $('#ToDate').val(ToDateBack);
+                $('#QcSlipNo').val(QcSlipNoBack);
+                $('#PartCode').val(PartCodeBack);
+                $('#ItemName').val(ItemNameBack);
+                $('#ProdSlipNo').val(ProdSlipNoBack);
+                $('#WorkCenter').val(WorkCenterBack);
+                $('#ProcessName').val(ProcessNameBack);
+                $('#ProdSchNo').val(ProdSchNoBack);
+                $('#ProdPlanNo').val(ProdPlanNoBack);
+                $('#search-box').val(GlobalSearchBack);
+                $('#DashboardType').val(DashboardTypeBack);
+            }
+            GetSearchData();
+            $("#search-box").val($('#search-box').val()).trigger('keyup');
+
+            sessionStorage.removeItem('FromDateBack');
+            sessionStorage.removeItem('ToDateBack');
+            sessionStorage.removeItem('QcSlipNoBack');
+            sessionStorage.removeItem('PartCodeBack');
+            sessionStorage.removeItem('ItemNameBack');
+            sessionStorage.removeItem('ProdSlipNoBack');
+            sessionStorage.removeItem('WorkCenterBack');
+            sessionStorage.removeItem('ProcessNameBack');
+            sessionStorage.removeItem('ProdSchNoBack');
+            sessionStorage.removeItem('ProdPlanNoBack');
+            sessionStorage.removeItem('GlobalSearchBack');
+            sessionStorage.removeItem('DashboardTypeBack');
+
+        });
+
+        function GetSearchData() {
+            if ($('#DashboardType').val() == "Summary") {
+                GetSummaryData();
+            }
+            else {
+                GetDetailData();
+            }
+        }
+
+        function GetSummaryData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty().append(data);
+                    var dashGrid = $('#gateDashboardtable tr').length;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetDetailData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetDetailData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    var dashGrid = $('#gateDashboardtable tr').length;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#gateDashboardtable tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        $('#sendToExcel').click(function () {
+            $("#GateDataTable").table2excel({
+                filename: "ProductionDetailData.xls"
+            });
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('GateDataTable', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('GateDataTable', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function confirmEdit(event) {
+             
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&QcSlipNo=" + $('#InProcQcSlipNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&ProdSlipNo=" + $('#ProdSlipNo').val() + "&WorkCenter=" + $('#Workcenter').val() + "&ProcessName=" + $('#ProcessName').val() + "&ProdSchNo=" + $('#ProdPlanSchNo').val() + "&ProdPlanNo=" + $('#ProdPlanNo').val() + "&SearchBox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+            window.location.href = linkUrl;
+        }
+
+        function confirmDelete(event) {
+
+            event.preventDefault();
+            if (confirm("Are you sure you want to delete this entry?")) {
+                var urlHref = $(event.currentTarget).attr("href");
+                var linkUrl = urlHref;
+                linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&QcSlipNo=" + $('#InProcQcSlipNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&ProdSlipNo=" + $('#ProdSlipNo').val() + "&WorkCenter=" + $('#Workcenter').val() + "&ProcessName=" + $('#ProcessName').val() + "&ProdSchNo=" + $('#ProdPlanSchNo').val() + "&ProdPlanNo=" + $('#ProdPlanNo').val() + "&SearchBox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+                window.location.href = linkUrl;
+            }
+        }
+
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+}

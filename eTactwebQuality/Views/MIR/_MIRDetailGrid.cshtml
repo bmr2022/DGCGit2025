@@ -1,0 +1,65 @@
+﻿@model eTactWeb.DOM.Models.MirModel
+
+@if (Model.ItemDetail == null)
+{
+    <tr class="text-center" id="nodata">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetail)//2000
+    {
+        //for 10
+        Cntr = Cntr + 1;
+        <tr class="small" style="white-space:nowrap" id="MIRRowGrid-@item.SeqNo">
+            <td><i class="fa fa-trash" aria-hidden="true" style="color: red; font-size: 18px;" onclick="deletebyitemcode('@item.ItemCode','@item.SeqNo')"></i></td>
+            <td>@item.SeqNo</td>
+            <td><input id="PartCode-@item.SeqNo" value="@item.PartCode" readonly><input type="hidden" id="mirtotalRows" value="@item.MirTotalRows" /></td>
+            <td><input id="ItemName-@item.SeqNo" value="@item.ItemName" readonly><input type="hidden" id="ItemCode-@item.SeqNo" value="@item.ItemCode"></td>
+            <td><input style="width:50px !important;" id="BillQty-@item.SeqNo" value="@item.BillQty" readonly></td>
+            <td><input style="width:50px !important;" id="RECQTY-@item.SeqNo" value="@item.RecQty" readonly></td>
+            <td><input style="width:50px !important;" onchange="ToggleOkRecStore(@item.SeqNo);AcceptedQtyChange(@item.SeqNo,@item.ItemCode)" value="@item.AcceptedQty" id="AcceptedQty-@item.SeqNo"></td>
+            <td><input style="width:50px !important;" id="AltAcceptedQty{@item.SeqNo}"></td>
+            <td><select style="width:150px;height:25px" id="OkRecStore-@item.SeqNo" onchange="StoreChange(@item.SeqNo)"></select></td>
+            <td><input type="number" onchange="ToggleRejRecStore(@item.SeqNo);RejectedQtyChange(@item.SeqNo,@item.ItemCode)" style="width:50px !important;" id="RejectedQty-@item.SeqNo" /></td>
+            <td><input style="width:50px !important;" type="number" id="AltRejectedQty-@item.SeqNo" /></td>
+            <td><select style="width:150px;height:25px" id="RejRecStore-@item.SeqNo" onchange="RejStoreChange(@item.SeqNo)"></select></td>
+            <td><input id="RejReason-@item.SeqNo" /></td>
+            <td><input type="number" style="width:50px !important;" onchange="ToggleHoldStore(@item.SeqNo);HoldQtyChange(@item.SeqNo,@item.ItemCode)" id="HoldQty-@item.SeqNo" /></td>
+            <td><select style="width:150px;height:25px" id="HoldStoreId-@item.SeqNo" onchange="HoldStoreChange(@item.SeqNo)"></select></td>
+            <td><input style="width:50px !important;" onchange="ToggleReworkStore(@item.SeqNo);ReworkQtyChange(@item.SeqNo,@item.ItemCode)" id="ReworkQty-@item.SeqNo" /></td>
+            <td><select style="width:150px;height:25px" readonly id="RewokStoreId-@item.SeqNo" onchange="ReworkStoreChange(@item.SeqNo)"></select></td>
+            <td><input id="ReworkReason(@item.SeqNo)" /></td>
+            <td><input style="width:50px !important;" onchange="ToggleDeviationQty(@item.SeqNo);DeviationQtyChange(@item.SeqNo,@item.ItemCode)" type="number" id="DeviationQty-@item.SeqNo" /></td>
+            <td><input id="ResponsibleEmp-@item.SeqNo" /></td>
+            <td><input style="width:70px;" id="PONo-@item.SeqNo" value="@item.PONo" readonly></td>
+            <td><input style="width:70px;" id="POYearCode-@item.SeqNo" value="@item.POYearCode" readonly></td>
+            <td><input style="width:70px;" id="SchNo-@item.SeqNo" readonly value=@item.SchNo></td>
+            <td><input style="width:70px;" id="SchYearCode-@item.SeqNo" value="@item.SchYearCode" readonly></td>
+            <td><input style="width:70px;" id="Unit-@item.SeqNo" value="@item.Unit" readonly></td>
+            <td><input style="width:70px;" id="AltUnit-@item.SeqNo" readonly value="@item.AltUnit"></td>
+            <td><input style="width:70px !important;" id="AltRecQty-@item.SeqNo" value="@item.ALtRecQty" readonly></td>
+            <td><input id="Remarks-@item.SeqNo" /></td>
+            <td><select style="width:150px;height:25px" id="DefaultType-@item.SeqNo"></select></td>
+            <td><select style="width:150px;height:25px" id="ApprovedByEmp-@item.SeqNo"></select></td>
+            <td><input readonly id="ProcessId-@item.SeqNo" /></td>
+            <td><input readonly id="Color-@item.SeqNo" value="@item.Color"></td>
+            <td><input readonly id="ItemSize-@item.SeqNo" value="@item.ItemSize"></td>
+            <td><input readonly id="ResponsibleFactor-@item.SeqNo" /></td>
+            <td><input readonly value="@item.SupplierBatchNo" id="SupplierBatchNo-@item.SeqNo" /></td>
+            <td><input readonly id="ShelfLife-@item.SeqNo" value="@item.ShelfLife" /></td>
+            <td><input readonly id="BatchNo-@item.SeqNo" value="@item.BatchNo" /></td>
+            <td><input id="uniquebatchno-@item.SeqNo" value="@item.UniqueBatchNo" readonly /></td>
+            <td><input readonly id="AllowDebitNote-@item.SeqNo" /></td>
+            <td><input type="file" data-val="false" id="UploadedFilePath-@item.SeqNo" /></td>
+            <td><a class="btn btn-primary" onclick="readURL(UploadedFilePath-@item.SeqNo)"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
+
+        </tr>
+    }
+}
+
+
+
+

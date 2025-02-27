@@ -1,0 +1,99 @@
+﻿@model eTactWeb.DOM.Models.SaleBillModel
+
+<input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+@if (Model.saleBillDetails == null)
+{
+    <tr class="text-center">
+        <td colspan="40" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.saleBillDetails)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small @item.SeqNo" id="saleBillRow-@item.SeqNo" style="white-space:nowrap">
+            <td style="width:4%">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <th>@item.SeqNo <input type="hidden" id="SeqNo-@Cntr" value="@item.SeqNo" /></th>
+            <td>@item.PartCode<input type="hidden" id="GridIC-@Cntr" value="@item.ItemCode" /></td>
+            <td>@item.ItemName</td>
+            <td id="GridSONO-@Cntr">@item.SONO</td>
+            <td>@(item.SODate != null ? (item.SODate).Split(" ")[0] : item.SODate)</td>
+            <td>@item.CustOrderNo</td>
+            <td>@item.SchNo</td>
+            <td>@(item.Schdate != null ? (item.Schdate).Split(" ")[0] : item.Schdate)</td>
+            <td>@item.HSNNo</td>
+            <td>@item.StoreName</td>
+            <td id="billQty">@item.Qty</td>
+            <td class="rate">@item.Rate</td>
+            <td class="DiscPer">@item.DiscountPer</td>
+            <td class="DiscAmt">@item.DiscountAmt</td>
+            <td id="GridAmount-@Cntr">@item.Amount.ToString("F2")</td>
+            <td id="GridBatchNo-@Cntr">@item.Batchno</td>
+            <td id="GridUniqueBatchNo-@Cntr">@item.Uniquebatchno</td>
+            <td>@item.SOYearCode</td>
+            <td>@item.SaleSchYearCode</td>
+            <td>@item.Unit</td>
+            <td>@item.LotStock</td>
+            <td>@item.TotalStock</td>
+            <td>@item.SOPendQty</td>
+            <td>@item.NoofPcs</td>
+            <td>@item.CustomerPartCode</td>
+            <td>@item.ItemSize</td>
+            <td>@item.Itemcolor</td>
+            <td>@item.ProcessName</td>
+            <td>@item.GSTPer</td>
+            <td>@item.GSTType</td>
+            <td>@item.UnitOfRate</td>
+            <td>@item.OriginalMRP</td>
+            <td>@item.MRP</td>
+            <td>@item.AltSOPendQty</td>
+            <td>@item.AdviceNo</td>
+            <td>@item.AdviseEntryId</td>
+            <td>@item.AdviceYearCode</td>
+            <td>@item.AdviseDate</td>
+            <td>@item.ProdSchno</td>
+            <td>@item.AgainstProdPlanNo</td>
+            <td>@item.AgainstProdPlanYearCode</td>
+            <td>@item.AgaisntProdPlanDate</td>
+            <td>@item.SOAmendNo</td>
+            <td>@item.SOAmendDate</td>
+            <td>@item.ProdSchYearcode</td>
+            <td>@item.ProdSchEntryId</td>
+            <td>@item.ProdSchDate</td>
+            <td>@item.SchdeliveryDate</td>
+            <td>@item.PacketsDetail</td>
+            <td>@item.OtherDetail</td>
+            <td>@item.ItemRemark</td>
+        </tr>
+
+    }
+}
+

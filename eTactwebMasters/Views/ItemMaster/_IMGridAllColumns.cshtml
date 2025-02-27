@@ -1,0 +1,252 @@
+﻿@model eTactWeb.DOM.Models.ItemMasterModel
+<div class="card">
+    <div class="card-body table-responsive" style="max-height:350px;">
+        <table class="table table-bordered TbCss text-nowrap mb-0" id="IMData">
+            <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th>Action</th>
+                    <th data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Item_Code  </th>
+                    <th data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>PartCode  </th>
+                    <th data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Item_Name </th>
+                    <th data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>ParentCode  </th>
+                    <th data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>ItemGroup  </th>
+                    <th data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>EntryDate  </th>
+                    <th data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>LastUpdatedDate  </th>
+                    <th data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>LeadTime  </th>
+                    <th data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>CC </th>
+                    <th data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Unit </th>
+                    <th data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>SalePrice  </th>
+                    <th data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>PurchasePrice  </th>
+                    <th data-columnno="12"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>CostPrice  </th>
+                    <th data-columnno="13"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>WastagePercent  </th>
+                    <th data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>WtSingleItem  </th>
+                    <th data-columnno="15"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>NoOfPcs  </th>
+                    <th data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>QcReq </th>
+                    <th data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>TypeName  </th>
+                    <th data-columnno="18"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>ItemType  </th>
+                    <th data-columnno="19"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>ImageURL  </th>
+                    <th data-columnno="20"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>UID </th>
+                    <th data-columnno="21"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>DrawingNo  </th>
+                    <th data-columnno="22"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>MinimumLevel  </th>
+                    <th data-columnno="23"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>MaximumLevel  </th>
+                    <th data-columnno="24"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>ReorderLevel  </th>
+                    <th data-columnno="25"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>YearCode  </th>
+                    <th data-columnno="26"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>AlternateUnit </th>
+                    <th data-columnno="27"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>RackID</th>
+                    <th data-columnno="28"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>BinNo </th>
+                    <th data-columnno="29"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>ItemSize  </th>
+                    <th data-columnno="30"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Colour </th>
+                    <th data-columnno="31"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>NeedPO </th>
+                    <th data-columnno="32"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>StdPacking  </th>
+                    <th data-columnno="33"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>PackingType  </th>
+                    <th data-columnno="34"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>ModelNo  </th>
+                    <th data-columnno="35"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>YearlyConsumedQty  </th>
+                    <th data-columnno="36"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>DispItemName  </th>
+                    <th data-columnno="37"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>PurchaseAccountcode  </th>
+                    <th data-columnno="38"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>SaleAccountcode  </th>
+                    <th data-columnno="39"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>MinLevelDays  </th>
+                    <th data-columnno="40"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>MaxLevelDays  </th>
+                    <th data-columnno="41"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>EmpName  </th>
+                    <th data-columnno="42"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>DailyRequirment  </th>
+                    <th data-columnno="43"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Stockable  </th>
+                    <th data-columnno="44"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>WipStockable  </th>
+                    <th data-columnno="45"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Store</th>
+                    <th data-columnno="46"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>ProductLifeInus  </th>
+                    <th data-columnno="47"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>ItemDesc  </th>
+                    <th data-columnno="48"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>MaxWipStock  </th>
+                    <th data-columnno="49"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>NeedSo</th>
+                    <th data-columnno="50"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>BomRequired  </th>
+                    <th data-columnno="51"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>HSNNO  </th>
+                    <th data-columnno="52"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Universal Part Code </th>
+                    <th data-columnno="53"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Universal Description </th>
+                    <th data-columnno="54"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>CreatedByName  </th>
+                    <th data-columnno="55"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>CreatedOn  </th>
+                    <th data-columnno="56"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>UpdatedByName  </th>
+                    <th data-columnno="57"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>UpdatedOn  </th>
+                    <th data-columnno="58"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Active </th>
+                     </tr>
+            </thead>
+            <tbody id="divDashboardGrid">
+                @if (Model.MasterList.Count == 0)
+                {
+                    <tr class="text-center">
+                        <td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                    </tr>
+                }
+                else
+                {
+                    var @Cntr = 0;
+                    foreach (var item in Model.MasterList)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr>
+                            <td class="FWB">@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="ItemDetail" asp-route-ID="@item.Item_Code" asp-route-Mode="V">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary" asp-action="ItemDetail" asp-route-ID="@item.Item_Code" asp-route-Mode="U">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteItemByID" asp-controller="ItemMaster" asp-route-ID="@item.Item_Code">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.Item_Code  </td>
+                            <td>@item.PartCode  </td>
+                            <td>@item.Item_Name </td>
+                            <td>@item.ParentCode  </td>
+                            <td>@item.ItemGroup  </td>
+                            <td>@item.EntryDate  </td>
+                            <td>@item.LastUpdatedDate  </td>
+                            <td>@item.LeadTime  </td>
+                            <td>@item.CC </td>
+                            <td>@item.Unit </td>
+                            <td>@item.SalePrice  </td>
+                            <td>@item.PurchasePrice  </td>
+                            <td>@item.CostPrice  </td>
+                            <td>@item.WastagePercent  </td>
+                            <td>@item.WtSingleItem  </td>
+                            <td>@item.NoOfPcs  </td>
+                            <td>@item.QcReq </td>
+                            <td>@item.ItemType  </td>
+                            <td>@item.TypeName  </td>
+                            <td>@item.ImageURL  </td>
+                            <td>@item.UID </td>
+                            <td>@item.DrawingNo  </td>
+                            <td>@item.MinimumLevel  </td>
+                            <td>@item.MaximumLevel  </td>
+                            <td>@item.ReorderLevel  </td>
+                            <td>@item.YearCode  </td>
+                            <td>@item.AlternateUnit </td>
+                            <td>@item.RackID</td>
+                            <td>@item.BinNo </td>
+                            <td>@item.ItemSize  </td>
+                            <td>@item.Colour </td>
+                            <td>@item.NeedPO </td>
+                            <td>@item.StdPacking  </td>
+                            <td>@item.PackingType  </td>
+                            <td>@item.ModelNo  </td>
+                            <td>@item.YearlyConsumedQty  </td>
+                            <td>@item.DispItemName  </td>
+                            <td>@item.PurchaseAccountcode  </td>
+                            <td>@item.SaleAccountcode  </td>
+                            <td>@item.MinLevelDays  </td>
+                            <td>@item.MaxLevelDays  </td>
+                            <td>@item.EmpName  </td>
+                            <td>@item.DailyRequirment  </td>
+                            <td>@item.Stockable  </td>
+                            <td>@item.WipStockable  </td>
+                            <td>@item.Store</td>
+                            <td>@item.ProductLifeInus  </td>
+                            <td>@item.ItemDesc  </td>
+                            <td>@item.MaxWipStock  </td>
+                            <td>@item.NeedSo</td>
+                            <td>@item.BomRequired  </td>
+                            <td>@item.HSNNO  </td>
+                            <td>@item.UniversalPartCode  </td>
+                            <td>@item.UniversalDescription  </td>
+                            <td>@item.CreatedByName  </td>
+                            <td>@item.CreatedOn  </td>
+                            <td>@item.UpdatedByName  </td>
+                            <td>@item.UpdatedOn  </td>
+                            <td>@item.Active </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+
+            @*            <tfoot>
+            <tr>
+            <th colspan="11" class="ts-pager">
+            <div class="form-inline">
+            <div class="btn-group btn-group-sm mx-1" role="group">
+            <button type="button" class="btn btn-secondary first" title="first">⇤</button>
+            <button type="button" class="btn btn-secondary prev" title="previous">←</button>
+            </div>
+            <span class="pagedisplay"></span>
+            <div class="btn-group btn-group-sm mx-1" role="group">
+            <button type="button" class="btn btn-secondary next" title="next">→</button>
+            <button type="button" class="btn btn-secondary last" title="last">⇥</button>
+            </div>
+            <select class="form-control-sm custom-select px-1 pagesize" title="Select page size">
+            <option selected="selected" value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="all">All Rows</option>
+            </select>
+            <select class="form-control-sm custom-select px-4 mx-1 pagenum" title="Select page number"></select>
+            </div>
+            </th>
+            </tr>
+            </tfoot>*@
+
+        </table>
+    </div>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #IMData {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>
+
+@*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/css/theme.default.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/css/theme.bootstrap_4.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/css/jquery.tablesorter.pager.min.css" />*@

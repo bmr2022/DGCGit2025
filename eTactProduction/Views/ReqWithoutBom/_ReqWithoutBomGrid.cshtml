@@ -1,0 +1,73 @@
+﻿@model eTactWeb.DOM.Models.RequisitionWithoutBOMModel
+
+@if (Model.ReqDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ReqDetailGrid)
+    {
+        <tr id="itemGrid" class="small" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor"  asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" asp-action="PrintReport">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" id="editButton-@item.SeqNo" onclick="EditItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.ItemName</td>
+            <td>@item.PartCode</td>
+            <td>@item.Qty</td>
+            @if (item.ExpectedDate != null)
+            {
+                
+                <td>@item.ExpectedDate.Split(" ")[0]</td>
+            }
+            else
+            {
+                <td>@item.ExpectedDate</td>
+            }
+            <td>@item.PendQty</td>
+            <td>@item.StoreName</td>
+            <td>@item.TotalStock</td>
+            <td>@item.ProjectNo</td>
+            <td>@item.ProjectYearCode</td>
+            <td>@item.CostCenterName</td>
+            <td>@item.AltUnit</td>
+            <td>@item.AltQty</td>
+            <td>@item.ItemModel</td>
+            <td>@item.ItemSize</td>
+            <td>@item.PendAltQty</td>
+            <td>@item.ItemLocation</td>
+            <td>@item.ItemBinRackNo</td>
+        </tr>
+    }
+}

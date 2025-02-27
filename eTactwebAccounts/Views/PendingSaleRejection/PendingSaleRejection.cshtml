@@ -1,0 +1,422 @@
+﻿@model eTactWeb.DOM.Models.PendingSaleRejectionModel
+
+@{
+    ViewData["Title"] = "Pending Sale Rejection";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Pending Sale Rejection
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="ReqWithoutBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                    Add New
+                    </a>*@
+                    <a asp-action="Dashboard" asp-controller="SaleRejection" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" width:50px;>
+                                <label asp-for="CustInvoiceNo" class="form-label">Customer Invoice No</label>
+                                <select asp-for="CustInvoiceNo" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="GateNo" class="form-label">Gate No</label>
+                                <select asp-for="GateNo" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="MrnNo" class="form-label">Mrn No </label>
+                                <select asp-for="MrnNo" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="CustomerName" class="form-label">Customer Name </label>
+                                <select asp-for="CustomerName" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="GlobalSearch" class="form-label">Global Search</label>
+                                <input type="text" class="form-control" asp-for="GlobalSearch" id="search-box" value="@Model.GlobalSearch" placeholder="Search..." />
+                            </div>
+
+                            <div class=" d-flex justify-content-center mt-3" width="inherit">
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="ShowDetailBtn">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
+                                </button>
+                                @*<a class="btn btn-sm btn-outline-info" id="TransertoIssBtn" style="padding:3px;height:30px;width:200px;margin-left:20px;pointer-events:none;" onclick="TransferToIssue()">
+                                <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>TRANSFER TO ISSUE
+                                </a>*@
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingSaleRejection" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-action="PendingSaleRejection">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="progress my-3 mb-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="card">
+            <div class="card-body overflow-auto pb-0">
+                <div class="table-responsive myclass" style="max-height:350px;">
+                    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="pendingMRNSaleRejection">
+                        <thead class="bg-gradient card-headerBG text-light" style="position:static;white-space:nowrap" id="IssueWOBomThead">
+                            <tr>
+                                <th data-columnno="0" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SR#</th>
+                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN No</th>
+                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
+                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN EntryDate</th>
+                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate No</th>
+                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Date</th>
+                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv No</th>
+                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv Date</th>
+                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Amt</th>
+                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Amt</th>
+                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Check Qc</th>
+                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QC Completed</th>
+                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
+                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryDate</th>
+                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN EntryId</th>
+                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN YearCode</th>    
+                            </tr>
+                        </thead>
+                        <tbody id="divSaleRejectionGrid" style="white-space:nowrap;">
+                            <tr class="text-center">
+                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+</style>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            PendingMRNForSaleRejection();
+            FillMRNNO();
+            FillGateNO();
+            FillCustomerInvNO();
+            FillPartyName();
+            TotalRows();
+            var fromDate = parseDateToFormat($('#FromDate').val().split(" ")[0]);
+            var toDate = parseDateToFormat($('#ToDate').val().split(" ")[0]);
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", fromDate);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDate);
+        });
+
+        function TotalRows(){
+            var rowCount = $('#divSaleRejectionGrid tr').length;
+            var columnCount = $('#divSaleRejectionGrid tr td').length;
+            if (columnCount == 1) {
+                $('#totalRows').text(0);
+            } else {
+                $('#totalRows').text(rowCount);
+            }
+        }
+
+        function FillMRNNO(){
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": $('#FromDate').val(), "toDate": $('#ToDate').val(), "mrnNo": $('#MrnNo').val(), "gateNo": $('#GateNo').val() },
+                url: "@Url.Action("FillMRNNO")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                         
+                        var obj = $.parseJSON(result);
+                        $("#MrnNo").empty();
+                        $("#MrnNo").append('<option>-Select-</option>');
+                        $.each(obj.Result, function (index, val) {
+                            $('#MrnNo').append("<option value=" + val.MRNNo + ">" + val.MRNNo + "</option>");
+                        });
+                    }
+                }
+            });
+        }
+        function FillPartyName(){
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": $('#FromDate').val(), "toDate": $('#ToDate').val() },
+                url: "@Url.Action("FillPartyName")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                         
+                        var obj = $.parseJSON(result);
+                        $("#CustomerName").empty();
+                        $("#CustomerName").append('<option>-Select-</option>');
+                        $.each(obj.Result, function (index, val) {
+                            $('#CustomerName').append("<option value=" + val.CustomerName + ">" + val.CustomerName + "</option>");
+                        });
+                    }
+                }
+            });
+        }
+        function FillGateNO() {
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": $('#FromDate').val(), "toDate": $('#ToDate').val(), "mrnNo": $('#MrnNo').val(), "gateNo": $('#GateNo').val() },
+                url: "@Url.Action("FillGateNO")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                         
+                        var obj = $.parseJSON(result);
+                        $("#GateNo").empty();
+                        $("#GateNo").append('<option>-Select-</option>');
+                        $.each(obj.Result, function (index, val) {
+                            $('#GateNo').append("<option value=" + val.GateNo + ">" + val.GateNo + "</option>");
+                        });
+                    }
+                }
+            });
+        }
+
+        function FillCustomerInvNO() {
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": $('#FromDate').val(), "toDate": $('#ToDate').val(), "mrnNo": $('#MrnNo').val(), "gateNo": $('#GateNo').val() },
+                url: "@Url.Action("FillCustomerInvNO")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                          
+                        var obj = $.parseJSON(result);
+                        $("#CustInvoiceNo").empty();
+                        $("#CustInvoiceNo").append('<option>-Select-</option>');
+                        $.each(obj.Result, function (index, val) {
+                            $('#CustInvoiceNo').append("<option value=" + val.InvNo + ">" + val.InvNo + "</option>");
+                        });
+                    }
+                }
+            });
+        }
+
+        function PendingMRNForSaleRejection() {
+             
+            var YearCode = $('#YearCode').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": $('#FromDate').val(), "toDate": $('#ToDate').val(), "mrnNo": $('#MrnNo').val(), "gateNo": $('#GateNo').val(), "customerName": $('#CustomerName').val() },
+                url: "@Url.Action("PendingMRNForSaleRejection")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        var html = "";
+                        $('#divSaleRejectionGrid').empty();
+                        var i = 1;
+                        $.each(obj.Result, function (index, val) {
+                            html += '<tr id="DisplayBomRow">' +
+                                '<td id="srNo">'+i+'</td>' +
+                                // '<td><a href="SaleBillRejection' + val.MRNNo + '">' + val.MRNNo + '</a></td>' +
+                                '<td><a href="/SaleRejection/Index?mrnNo=' + val.MRNNo + '&mrnEntryId=' + val.MRNEntryId + '&mrnYC=' + val.MRNYearCode + '">' + val.MRNNo + '</a></td>' +
+                                '<td>' + val.Account_Name + '</td>' +
+                                '<td>' + val.MRNEntryDate.split("T")[0] + '</td>' +
+                                '<td>' + val.GateNo + '</td>' +
+                                '<td>' + val.GateDate.split("T")[0] + '</td>' +
+                                '<td>' + val.InvNo + '</td>' +
+                                '<td>' + val.InvDate.split("T")[0] + '</td>' +
+                                '<td>' + val.TotalAmt + '</td>' +
+                                '<td>' + val.NetAmt + '</td>' +
+                                '<td>' + val.CheckQc + '</td>' +
+                                '<td>' + val.QCCompleted + '</td>' +
+                                '<td>' + val.Currency + '</td>' +
+                                '<td>' + val.ActualEntryDate.split("T")[0] + '</td>' +
+                                '<td>' + val.MRNEntryId + '</td>' +
+                                '<td>' + val.MRNYearCode + '</td>' +
+                            '</tr>';
+                            i++;
+                        });
+                        $('#divSaleRejectionGrid').append(html);
+                        TotalRows();
+                    }
+                }
+            });
+        }
+
+        $("#btnGridExcel").click(function () {
+            const table = document.querySelector("#pendingMRNSaleRejection");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell) => {
+                // cell.style.backgroundColor = "#fcba03";
+                headerData.push(cell.textContent);
+            });
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                rows[i].querySelectorAll("td").forEach((cell) => {
+                    rowData.push(cell.textContent);
+                });
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+
+            XLSX.writeFile(wb, "SaleRejctionDataSheet.xlsx");
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable('pendingMRNSaleRejection', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('pendingMRNSaleRejection', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+        var currentSearchColumn = null;
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divSaleRejectionGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $('#ShowDetailBtn').change(function () {
+            PendingMRNForSaleRejection();
+        });
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+}
+
+<style>
+    .styled-cell {
+        width: fit-content !important;
+        padding: 5px; /* Optional: Add padding for spacing */
+        border: 1px solid #ccc; /* Optional: Add borders for clarity */
+    }
+
+    .styled-input {
+        border: none;
+        outline: none;
+        background-color: transparent;
+        width: fit-content !important;
+    }
+
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+
+    .styled-qty {
+        width: 50px !important;
+    }
+
+    #pendingMRNSaleRejection {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #IssueWOBomThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    /* */
+
+
+    /*.styled-cell {
+                        border: 1px solid #ccc;
+                        padding: 8px;
+                        max-width: 100%;
+                        white-space: nowrap;
+
+                    }*/
+
+
+
+</style>

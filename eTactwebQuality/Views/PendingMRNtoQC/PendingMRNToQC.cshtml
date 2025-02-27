@@ -1,0 +1,706 @@
+﻿@model eTactWeb.DOM.Models.PendingMRNToQC
+
+@{
+    ViewData["Title"] = "Pending MRN To QC";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="spinner-border" style="width: 3rem; height: 3rem;" id="loader" role="status">
+    <span class="visually-hidden">Loading...</span>
+</div>
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Pending MRN TO QC
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="ReqWithoutBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                    Add New
+                    </a>*@
+                    <a asp-action="MIRDashboard" asp-controller="MIR" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input type="hidden" value="@Model.FromDate" id="finFromDate" />
+                                        <input type="hidden" value="@Model.ToDate" id="finToDate" />
+                                        <input type="hidden" value="@Model.UserType" asp-for="UserType" />
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="MrnJW" class="form-label">MRN/JW</label>
+                                <select class="form-select" asp-for="MrnJW" asp-items="@(new SelectList(Model.MRNJWList,"Value","Text"))">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ItemCode" class="form-label">Part Code</label>
+                                <select class="form-select" asp-for="ItemCode" style="width:190px;height:190px" asp-items="@(new SelectList(Model.PartCodeList,"Value","Text"))">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ItemName" class="form-label">Item Name</label>
+                                <select class="form-select" asp-for="ItemName" style="width:190px;height:190px" asp-items="@(new SelectList(Model.ItemNameList,"Value","Text"))">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="MrnNo" class="form-label">MRN NO</label>
+                                <select class="form-select" asp-for="MrnNo" asp-items="@(new SelectList(Model.MRNNoList,"Value","Text"))">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="VendorName" class="form-label">Vendor Name</label>
+                                <select class="form-select" asp-for="VendorName" style="width:190px;height:190px" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="InvoiceNo" class="form-label">Invoice No</label>
+                                <select class="form-select" asp-for="InvoiceNo" asp-items="@(new SelectList(Model.InvNoList,"Value","Text"))">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="DeptName" class="form-label">Dept Name</label>
+                                <select class="form-select" asp-for="DeptName" asp-items="@(new SelectList(Model.DeptList,"Value","Text"))">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 d-flex justify-content-end mt-3">
+                                <button class="btn btn-sm btn-outline-primary" type="button" onclick="showDetail();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMRNtoQc" asp-action="PendingMRNtoQc" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="progress my-3 mb-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div> <div class="card">
+            <div class="card-body overflow-auto pb-0">
+                <div class="table-responsive" style="max-height:350px;">
+                    <table class="table table-hover table-bordered table-striped" id="PendingTable">
+                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                            <tr>
+                                <th>Action</th>
+                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
+                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN No</th>
+                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN Year</th>
+                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv No</th>
+                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv Date</th>
+                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate No</th>
+                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Date</th>
+                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QC Completed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="divPendMRNGrid">
+                            <tr class="text-center">
+                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(function () {
+            $('#loader').hide();
+            var FromDateBack = sessionStorage.getItem('FromDateBack');
+            var ToDateBack = sessionStorage.getItem('ToDateBack');
+            var ItemNameBack = sessionStorage.getItem('ItemNameBack');
+            var MRNNoBack = sessionStorage.getItem('MRNNoBack');
+            var VendorNameBack = sessionStorage.getItem('VendorNameBack');
+            var PartCodeBack = sessionStorage.getItem('PartCodeBack');
+            var InvNoBack = sessionStorage.getItem('InvNoBack');
+            var DeptNameBack = sessionStorage.getItem('DeptNameBack');
+            var MRNJWBack = sessionStorage.getItem('MRNJWBack');
+
+            $('#ItemCode').select2();
+            $('#ItemName').select2();
+            $('#VendorName').select2();
+            $('#MrnNo').select2();
+
+            var fromDate;
+            var toDate;
+
+            var today = new Date();
+            var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
+            var finFromDate = $('#finFromDate').val();
+            var finToDate = $('#finToDate').val();
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+             
+            $("#FromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+            //$('#FromDate').datepicker("option", "minDate", formattedDate1);
+            //$('#ToDate').datepicker("option", "maxDate", formattedDate2);
+            //$('#FromDate').change(function () {
+            //    fromDate = $(this).datepicker('getDate');
+            //    $('#ToDate').datepicker("option", "minDate", fromDate);
+            //});
+            //$('#ToDate').change(function () {
+            //    toDate = $(this).datepicker('getDate');
+            //    $('#FromDate').datepicker("option", "maxDate", toDate);
+            //});
+            $('#MrnJW').val("MRN");
+            FillDeptAccTOUser();
+            if (FromDateBack != null) {
+                  
+                $('#FromDate').val(FromDateBack);
+                $('#ToDate').val(ToDateBack);
+                $('#ItemName').val(ItemNameBack);
+                $('#MrnNo').val(MRNNoBack);
+                $('#VendorName').val(VendorNameBack);
+                $('#ItemCode').val(PartCodeBack);
+                $('#InvoiceNo').val(InvNoBack);
+                $('#DeptName').val(DeptNameBack);
+                $('#MrnJW').val(MRNJWBack);
+                //fillVendor();
+                //fillItemPartCode();
+            }
+         
+            showDetail();
+     
+        });
+
+        //$('#MrnJW').change(function(){
+        //    fillVendor();
+        //    fillItemPartCode();
+        //    fillMRNno();
+        //    fillInvoiceNo();
+        //});
+
+        function FillDeptAccTOUser() {
+            $.ajax({
+                url: '@Url.Action("GetDeptForUser")',
+                type: "POST",
+                success: function (data) {
+                     
+                    var obj = $.parseJSON(data);
+                    console.log("SUCCESS");
+                    $('#DeptName').val(obj.Result.Table[0].Department_Id);
+
+                    if ($('#UserType').val() != "Admin") {
+                        // Get a reference to the option you want to keep enabled
+                        var optionToKeepEnabled = $('#DeptName option[value="' + obj.Result.Table[0].Department_Id + '"]');
+
+                        // Disable all options except the one you want to keep enabled
+                        $('#DeptName option').not(optionToKeepEnabled).prop('disabled', true);
+                    }
+
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function fillVendor() {
+             
+            var data = {
+                "Flag": "VENDOR",
+                "MRNJW": $('#MrnJW').val(),
+                "YearCode": 2023,
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val(),
+                "AccountCode": $('#VendorName').val(),
+                "MrnNo": $('#MrnNo').val(),
+                "ItemCode": $('#ItemName').val(),
+                "InvoiceNo": $('#InvoiceNo').val()
+            }
+            $.ajax({
+                url: '@Url.Action("GetDataForPendingMRN")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+
+                    var obj = $.parseJSON(data);
+                    console.log("SUCCESS");
+                    $('#VendorName').empty();
+                    $('#VendorName').append("<select value='0' selected disabled>-Select-</select>");
+                    $.each(obj.Result.Table, function (index, val) {
+                        $('#VendorName').append('<option value="' + val.account_name +
+                            '">' + val.account_name + '</option>');
+                    });
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function fillItemPartCode() {
+
+            var data = {
+                "Flag": "ITEMPARTCODE",
+                "MRNJW": $('#MrnJW').val(),
+                "YearCode": 2023,
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val(),
+                "AccountCode": $('#VendorName').val(),
+                "MrnNo": $('#MrnNo').val(),
+                "ItemCode": $('#ItemName').val(),
+                "InvoiceNo": $('#InvoiceNo').val()
+            }
+            $.ajax({
+                url: '@Url.Action("GetDataForPendingMRN")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+
+                    var obj = $.parseJSON(data);
+                    console.log("SUCCESS");
+                    $('#ItemName,#ItemCode').empty();
+                    $('#ItemName,#ItemCode').append("<select value='0' selected disabled>-Select-</select>");
+                    $.each(obj.Result.Table, function (index, val) {
+                        $('#ItemName').append('<option value="' + val.Item_Code +
+                            '">' + val.ItemName + '</option>');
+                        $('#ItemCode').append('<option value="' + val.Item_Code +
+                            '">' + val.PartCode + '</option>');
+                    });
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function fillMRNno() {
+             
+            var data = {
+                "Flag": "MRNNO",
+                "MRNJW": $('#MrnJW').val(),
+                "YearCode": 2023,
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val(),
+                "AccountCode": $('#VendorName').val(),
+                "MrnNo": $('#MrnNo').val(),
+                "ItemCode": $('#ItemName').val(),
+                "InvoiceNo": $('#InvoiceNo').val()
+            }
+            $.ajax({
+                url: '@Url.Action("GetDataForPendingMRN")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+                     
+                    var obj = $.parseJSON(data);
+                    console.log("SUCCESS");
+                    $('#MrnNo').empty();
+                    $('#MrnNo').append("<select value='0' selected disabled>-Select-</select>");
+                    $.each(obj.Result.Table, function (index, val) {
+                        $('#MrnNo').append('<option value="' + val.MRNNo +
+                            '">' + val.MRNNo + '</option>');
+                    });
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function fillInvoiceNo() {
+            var data = {
+                "Flag": "INVOICENO",
+                "MRNJW": $('#MrnJW').val(),
+                "YearCode": 2023,
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val(),
+                "AccountCode": $('#VendorName').val(),
+                "MrnNo": $('#MrnNo').val(),
+                "ItemCode": $('#ItemName').val(),
+                "InvoiceNo": $('#InvoiceNo').val()
+            }
+            $.ajax({
+                url: '@Url.Action("GetDataForPendingMRN")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+
+                    var obj = $.parseJSON(data);
+                    console.log("SUCCESS");
+                    $('#InvoiceNo').empty();
+                    $('#InvoiceNo').append("<select value='0' selected disabled>-Select-</select>");
+                    $.each(obj.Result.Table, function (index, val) {
+                        $('#InvoiceNo').append('<option value="' + val.InvoiceNo +
+                            '">' + val.InvoiceNo + '</option>');
+                    });
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ValidateShow() {
+            var Err = 0;
+            if ($('#MrnJW').prop('selectedIndex') == 0) {
+                AddErrorCls('MrnJW');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('MrnJW');
+            }
+
+            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        function showDetail() {
+              
+            if (!ValidateShow()) return;
+            var data = {
+                "Flag": "MRNDATA",
+                "MRNJW": $('#MrnJW').val(),
+                "YearCode": 2023,
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val(),
+                "AccountCode": $('#VendorName').val(),
+                "MrnNo": $('#MrnNo').val(),
+                "ItemCode": $('#ItemName').val(),
+                "InvoiceNo": $('#InvoiceNo').val(),
+                "DeptId": $('#DeptName').val(),
+            }
+             
+            $.ajax({
+                url: '@Url.Action("GetDataForPendingMRN")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+                    if (data != null) {
+                          
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html1 = '';
+                            $('#divPendMRNGrid').empty();
+                            //var i = 0;
+                            for (var i = 0; i < obj.Result.Table.length; i++) {
+                                 
+                                html1 += '<tr id="' + i + '"><td><button style="background: none;border: none;padding: 0;color: blue;text-decoration: underline;cursor: pointer;" onclick="TransferToMIR(' + i + ');"><span class="fa-stack"><i style="color:blue !important;" class="fa-solid fa-pen fa-fw fa-lg" aria-hidden="true"></i></span></button></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="AccountName' + i + '" readonly value=' + JSON.stringify(obj.Result.Table[i].account_name) + ' ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " readonly id="MRNno' + i + '" value=' + obj.Result.Table[i].MRNNo + '></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="MRNYear' + i + '" readonly value=' + obj.Result.Table[i].MRNYear + '></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="EntryDate' + i + '" readonly value=' + obj.Result.Table[i].EntryDate.split("T")[0] + ' ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="InvNo' + i + '" readonly value=' + obj.Result.Table[i].InvNo + '></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="InvDate' + i + '" readonly value=' + obj.Result.Table[i].InvDate.split("T")[0] + '  ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="GateNo' + i + '" value=' + obj.Result.Table[i].GateNo + ' readonly></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="GateDate' + i + '" value=' + obj.Result.Table[i].GateDate.split("T")[0] + ' readonly ></td><td><input style="border: none;background-color: transparent;outline: none;cursor: default; " id="QCCompleted' + i + '" value=' + obj.Result.Table[i].QCCompleted + ' readonly ></td><td></tr > ';
+
+                            }
+                            $('#divPendMRNGrid').append(html1);
+                            $('#TransertoMIRBtn').prop("disabled", false);
+
+                            var count = $('#divPendMRNGrid tr').length;
+                            $('#totalRows').text(count);
+                        }else{
+                            $('#divPendMRNGrid').empty();
+                            var count = $('#divPendMRNGrid tr').length;
+                            $('#totalRows').text(count);
+                            $('#divPendMRNGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+
+        }
+
+        function TransferToMIR(i) {
+               
+            //if (!validateTransfer()) return;
+            var data = {
+                "MrnNo": $('#MRNno' + i).val(),
+                "MRNJW": $('#MrnJW').val(),
+                "MRNYear": $('#MRNYear' + i).val(),
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val()
+            }
+            //$.ajax({
+            //    url: "@Url.Action("MIRFromPend","MIR")",
+            //    type: "POST",
+            //    data: data,
+            //    success: function (data, status, xhr) {+
+            //        console.log("SUCCESS");
+            //        //var url = '@Url.Action("IssueWithoutBom", "IssueWithoutBom")';
+            //        //window.location.href = url;
+            //    },
+            //    error: function (result, status, xhr) {
+            //        $.notify(result.responseText, "error");
+            //        console.log(result.responseText);
+            //    }
+            //});
+
+            //var rowCount = $('#divPendMRNGrid tr').length;
+
+            //var ItemData = [];
+            //for (let i = 0; i < rowCount; i++) {
+
+            //    ItemData.push({
+            //        "FromDate": $('#ReqNo' + i).val(),
+            //        "ToDate": $('#ToDate').val(),
+            //        "MrnJW": $('#ReqYearCode').val(),
+            //        "MrnNo": parseInt($('#ItemCode' + i).val()),
+            //        "VednorName": $('#ItemName' + i).val(),
+            //        "InvoiceNo": $('#PartCode' + i).val(),
+            //        "ItemCode": $('#ReqQty' + i).val(),
+            //        "ItemName": $('#StoreId' + i).val(),
+            //        "PartCode": $('#StoreName' + i).val(),
+            //        "DeptName": $('#BatchNo' + i).val()
+            //    });
+            //}
+             
+            $.ajax({
+                url: "@Url.Action("AddPendingMRNToQc")",
+                type: "POST",
+                data: { model: data },
+                success: function (data, status, xhr) {
+                     
+                     $('#loader').show();
+                    console.log("SUCCESS");
+                    var url = '/MIR/Index/?';
+                    url = url + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&VendorName=" + $('#VendorName').val() + "&ItemName=" + $('#ItemName').val() + "&MRNNo=" + $('#MrnNo').val() + "&MRNJW=" + $('#MrnJW').val() + "&PartCode=" + $('#ItemCode').val() + "&DeptName=" + $('#DeptName').val() + "&INVNo=" + $('#InvoiceNo').val()
+                    window.location.href = url;
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                    console.log(result.responseText);
+                }
+            });
+        }
+
+        $('#sendToExcel').click(function () {
+            $("#PendingTable").table2excel({
+                filename: "PendingMRNData.xls"
+            });
+        });
+
+
+        $(document).on('click', '.sortCol', function (event) {
+
+            if ($(event.target).hasClass('toggle-icon')) {
+                var columnNo = $(this).data('columnno');
+                var table = $('.divSOTable');
+                var columns = table.find('td, th').filter(':nth-child(' + (columnNo + 1) + ')');
+
+                columns.toggle();
+            }
+            else {
+                var $column = $(this).parent().closest("th");
+                var colno = $(this).data('columnno');
+                var currentOrder = $(this).data('sortorder');
+
+                $('.sortCol').css('color', 'white');
+
+                if (currentOrder === 'asc') {
+                    sortTable(colno, false);
+                    $(this).data('sortorder', 'desc');
+                    $(this).css('color', 'yellow');
+                    //$(this).css('font-size', 'larger');
+                    $(this).find('i:first').removeClass('fa-arrow-up');
+                    $(this).find('i:first').addClass('fa-arrow-down');
+                } else {
+                    sortTable(colno, true);
+                    $(this).data('sortorder', 'asc');
+                    $(this).css('color', 'yellow');
+                    // $(this).css('font-size', 'larger');
+                    $(this).find('i:first').removeClass('fa-arrow-down');
+                    $(this).find('i:first').addClass('fa-arrow-up');
+                }
+            }
+        });
+
+
+        function sortTable(columnIndex, ascending) {
+             
+            var table = $('#PendingTable');
+            var rows = table.find('#divPendMRNGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).find('input').val();
+                var bValue = $(b).find('td').eq(columnIndex).find('input').val();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divPendMRNGrid').append(row);
+            });
+        }
+
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#divPendMRNGrid tr").filter(function () {
+                if (currentSearchColumn != null) {
+
+                    var rowContainsValue = false;
+                    $(this).find('td').eq(currentSearchColumn).each(function () {
+                        var columnInput = $(this).find('input, select');
+                        var columnInputValue = "";
+
+                        if (columnInput.is('input')) {
+                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+                        } else if (columnInput.is('select')) {
+                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+                        }
+
+                        if (columnInputValue.indexOf(value) > -1) {
+                            rowContainsValue = true;
+                            return false;
+                        }
+                    });
+
+                    $(this).toggle(rowContainsValue);
+
+                } else {
+                    var rowContainsValue = false;
+
+                    $(this).find('td').each(function () {
+
+                        var columnInput = $(this).find('input, select');
+                        var columnInputValue = "";
+
+                        if (columnInput.is('input')) {
+                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+                        } else if (columnInput.is('select')) {
+                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+                        }
+
+                        if (columnInputValue.indexOf(value) > -1) {
+                            rowContainsValue = true;
+                            return false;
+                        }
+
+                    });
+
+                    $(this).toggle(rowContainsValue);
+                }
+            });
+        });
+
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+
+}
+
+<style>
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

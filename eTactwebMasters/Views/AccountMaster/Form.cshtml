@@ -1,0 +1,1069 @@
+﻿@model eTactWeb.DOM.Models.AccountMasterModel
+
+@{
+    ViewData["Title"] = "Index";
+     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+@*<div class="d-flex align-items-center p-3 my-2 text-white rounded shadow-sm bg-gradient" style="background-color:darkcyan;">
+    <div class="lh-1">
+    <h3 class="h3 mb-0 text-white lh-1">Account Master</h3>
+    </div>
+    </div>*@
+<form asp-action="Form" asp-controller="AccountMaster" autocomplete="off" class="form-horizontal" asp-antiforgery=true>
+    <div class="card rounded shadow-lg">
+        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+            <h4>
+                Account Master - @Model.YearCode
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                    </a>
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U"  )
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                            
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h4>
+        </div>
+        <div class="card-body bg-light">
+            <div class="accordion shadow-lg" id="accordionAccountMaster">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_AccountDetail">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>ACCOUNT DETAIL</strong>
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="B_AccountDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AccountDetail">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Entry_Date" class="form-label">Entry Date</label>
+                                    <input asp-for="Entry_Date" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Account_Code" class="form-label">Account Code</label>
+                                    <input asp-for="Account_Code" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Account_Name" class="form-label">Account Name</label>
+                                    <input asp-for="Account_Name" class="form-control" onblur="CheckDuplicate('Account_Name',this.id);" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ParentAccountCode" class="form-label">Parent Group</label>
+                                    <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <select asp-for="ParentAccountCode" class="form-select" data-abcd="1"  style="width:200px;" asp-items="@(new SelectList(Model.ParentGroupList,"Value", "Text"))" onchange="OnParentGroup(this.value)">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                    </div>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SubGroup" class="form-label">Sub Group</label>
+                                    <input asp-for="SubGroup" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountType" class="form-label">Account Type</label>
+                                    <input asp-for="AccountType" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MainGroup" class="form-label">Main Group</label>
+                                    <input asp-for="MainGroup" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SubSubGroup" class="form-label">Sub Sub Group</label>
+                                    <input asp-for="SubSubGroup" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="UnderGroup" class="form-label">Under Group</label>
+                                    <input asp-for="UnderGroup" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="DebCredCode" class="form-label">Deb Cred Code</label>
+                                    <input asp-for="DebCredCode" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Party_Code" class="form-label">Party Code</label>
+                                    <input asp-for="Party_Code" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="DisplayName" class="form-label">Display Name</label>
+                                    <input asp-for="DisplayName" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="divDetail">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_AddressDetail">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AddressDetail" aria-expanded="false" aria-controls="B_AddressDetail">
+                                <strong><i class="fa fa-fw pr35 fa-map-marker fa-lg" aria-hidden="true"></i>ADDRESS DETAIL</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_AddressDetail" class="accordion-collapse pnl4 bg-gradient collapse" aria-labelledby="H_AddressDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ComAddress" class="form-label">Comp Address</label>
+                                        <input asp-for="ComAddress" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ComAddress1" class="form-label">Comp Address1</label>
+                                        <input asp-for="ComAddress1" class="form-control" data-val="false" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Country" class="form-label"></label>
+                                        <input asp-for="Country" class="form-control" onkeypress="AutoComplete(this.id);" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="State" class="form-label"></label>
+                                        <select asp-for="State" class="form-select" asp-items="@(new SelectList(Model.StateList,"Value", "Text"))">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="City" class="form-label"></label>
+                                        <input asp-for="City" class="form-control" onkeypress="AutoComplete(this.id);" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PinCode" class="form-label"></label>
+                                        <input asp-for="PinCode" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PhoneNo" class="form-label">Phone No</label>
+                                        <input asp-for="PhoneNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MobileNo" class="form-label">Mobile No</label>
+                                        <input asp-for="MobileNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ContactPerson" class="form-label">Contact Person</label>
+                                        <input asp-for="ContactPerson" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_TaxDetail">
+                            <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="false" aria-controls="B_TaxDetail">
+                                <strong><i class="fa-solid fa-badge-percent fa-fw pr35 fa-lg" aria-hidden="true"></i>TAX DETAIL</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_TaxDetail" class="accordion-collapse pnl1 bg-gradient collapse" aria-labelledby="H_TaxDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PartyType" class="form-label">Party Type</label>
+                                        <select asp-for="PartyType" class="form-select" data-val="false" asp-items="Model.PartyTypeList">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="GSTRegistered" class="form-label">GST Registered</label>
+                                        <select asp-for="GSTRegistered" class="form-select" asp-items="Model.YesNo" data-val="false">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="GSTNO" class="form-label">GST No<small>( 15 Chrs.)</small></label>
+                                        <input asp-for="GSTNO" class="form-control" maxlength="15" onkeyup="PanNo();" data-val="false" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="GSTPartyTypes" class="form-label">GST Party Type</label>
+                                        <select asp-for="GSTPartyTypes" class="form-select" asp-items="Model.GstPartList">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="GSTTAXTYPE" class="form-label">GST TAX Type</label>
+                                        <select asp-for="GSTTAXTYPE" class="form-select" asp-items="Model.GstTypeList">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Segment" class="form-label"></label>
+                                        <input asp-for="Segment" class="form-control" data-val="false" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="TDS" class="form-label"></label>
+                                        <select asp-for="TDS" class="form-select" asp-items="Model.YesNo">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="TDSPartyCategery" class="form-label">TDS Party Category</label>
+                                        <select asp-for="TDSPartyCategery" class="form-select">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="TDSRate" class="form-label">TDS Rate</label>
+                                        <input asp-for="TDSRate" class="form-control" data-val="false" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PANNO" class="form-label">PAN No</label>
+                                        <input asp-for="PANNO" class="form-control" style="text-transform:uppercase" maxlength="10" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_SalePersonDetail">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SalePersonDetail" aria-expanded="false" aria-controls="B_SalePersonDetail">
+                                <strong><i class="fa-solid fa-user-helmet-safety fa-fw pr35 fa-lg"></i>SALE PERSON DETAIL</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_SalePersonDetail" class="accordion-collapse pnl4 bg-gradient collapse" aria-labelledby="H_SalePersonDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ResponsibleEmployee" class="form-label">Res. Emp</label>
+                                        <input asp-for="ResponsibleEmployee" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ResponsibleEmpContactNo" class="form-label">Res. Emp No</label>
+                                        <input asp-for="ResponsibleEmpContactNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="salesperson_name" class="form-label">Contact Person Name</label>
+                                        <input asp-for="salesperson_name" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ContactDetail">
+                            <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ContactDetail" aria-expanded="false" aria-controls="B_ContactDetail">
+                                <strong><i class="fa-solid fa-address-card pr35 fa-fw fa-lg" aria-hidden="true"></i>CONTACT DETAIL</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_ContactDetail" class="accordion-collapse pnl1 bg-gradient collapse" aria-labelledby="H_ContactDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="SalesPersonName" class="form-label">Sale Person Name</label>
+                                        <input asp-for="SalesPersonName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="SalesPersonEmailId" class="form-label">Email Id</label>
+                                        <input asp-for="SalesPersonEmailId" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="SalesPersonMobile" class="form-label">Mobile No</label>
+                                        <input asp-for="SalesPersonMobile" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PurchPersonName" class="form-label">Pur. Name</label>
+                                        <input asp-for="PurchPersonName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PurchasePersonEmailId" class="form-label">Pur. Email Id</label>
+                                        <input asp-for="PurchasePersonEmailId" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PurchMobileNo" class="form-label">Pur. Mobile No</label>
+                                        <input asp-for="PurchMobileNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="QCPersonEmailId" class="form-label">QC Email Id</label>
+                                        <input asp-for="QCPersonEmailId" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="salesemailid" class="form-label">Sale Mail Id</label>
+                                        <input asp-for="salesemailid" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="salesmobileno" class="form-label">Sale Mobile No</label>
+                                        <input asp-for="salesmobileno" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_BankWebDetail">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BankWebDetail" aria-expanded="false" aria-controls="B_BankWebDetail">
+                                <strong><i class="fa fa-fw pr35 fa-university fa-lg" aria-hidden="true"></i>BANK & WEB DETAIL</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_BankWebDetail" class="accordion-collapse pnl4 bg-gradient collapse" aria-labelledby="H_BankWebDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="WebSite_Add" class="form-label">WebSite Add.</label>
+                                        <input asp-for="WebSite_Add" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EMail" class="form-label"></label>
+                                        <input asp-for="EMail" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="RANGE" class="form-label">Range</label>
+                                        <input asp-for="RANGE" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Division" class="form-label"></label>
+                                        <input asp-for="Division" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Commodity" class="form-label"></label>
+                                        <input asp-for="Commodity" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="SSLNo" class="form-label"></label>
+                                        <input asp-for="SSLNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="WorkingAdd1" class="form-label">Working Add1</label>
+                                        <input asp-for="WorkingAdd1" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="WorkingAdd2" class="form-label">Working Add2</label>
+                                        <input asp-for="WorkingAdd2" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="RateOfInt" class="form-label">Rate Of Int</label>
+                                        <input asp-for="RateOfInt" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreditLimit" class="form-label">Credit Limit</label>
+                                        <input asp-for="CreditLimit" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreditDays" class="form-label">Credit Days</label>
+                                        <input asp-for="CreditDays" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="SSL" class="form-label"></label>
+                                        <input asp-for="SSL" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BankAccount_No" class="form-label">Bank Acc No</label>
+                                        <input asp-for="BankAccount_No" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BankAddress" class="form-label">Bank Address</label>
+                                        <input asp-for="BankAddress" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BankIFSCCode" class="form-label">Bank IFSC Code</label>
+                                        <input asp-for="BankIFSCCode" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BankSwiftCode" class="form-label">Bank Swift Code</label>
+                                        <input asp-for="BankSwiftCode" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="InterbranchSaleBILL" class="form-label">Interbranch Sale BILL</label>
+                                        <input asp-for="InterbranchSaleBILL" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ApprovalDetail">
+                            <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ApprovalDetail" aria-expanded="false" aria-controls="B_ApprovalDetail">
+                                <strong><i class="fa-solid fa-user-check fa-fw pr35 fa-lg" aria-hidden="true"></i>APPROVAL DETAIL</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_ApprovalDetail" class="accordion-collapse pnl1 bg-gradient collapse" aria-labelledby="H_ApprovalDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Approved_By" class="form-label">Approved By</label>
+                                        <input asp-for="Approved_By" class="form-control" value="" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Approved" class="form-label"></label>
+                                        <input asp-for="Approved" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ApprovalDate" class="form-label">Approval Date</label>
+                                        <input asp-for="ApprovalDate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BlackListed" class="form-label"></label>
+                                        <input asp-for="BlackListed" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BlackListed_By" class="form-label">BlackListed By</label>
+                                        <input asp-for="BlackListed_By" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="YearCode" class="form-label">Year Code</label>
+                                        <input asp-for="YearCode" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Uid" class="form-label"></label>
+                                        <input asp-for="Uid" class="form-control" value="" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CC" class="form-label"></label>
+                                        <input asp-for="CC" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_Measurements">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Measurements" aria-expanded="true" aria-controls="B_Measurements">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Other Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="B_Measurements" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_Measurements">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedBy" class="form-label">Created By</label>
+                                        <input asp-for="CreatedBy" type="hidden" class="form-control" />
+                                        <input asp-for="CreatedByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedOn" class="form-label">Created On</label>
+                                        <input asp-for="CreatedOn" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+                                        <input asp-for="UpdatedBy" type="hidden" class="form-control" />
+                                        <input asp-for="UpdatedByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer p-3">
+            <div class="row justify-content-between g-2">
+                @*<div class="col-auto">
+                <a class="btn btn-sm btn-secondary" href="#" onclick="back();">
+                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                BACK
+                </a>
+                </div>*@
+                <div class="card border-light bg-gradient rounded shadow-lg">
+                    <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                        <h4>
+                            @ViewData["Title"] - @Model.YearCode
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+                                <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                    Dashboard
+                                </a>
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                    {
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode == "U"  )
+                                        {
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+                                       
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                                    <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            
+            GetFormRights();
+            RemoveOptionsfromPAC();
+            $("#Entry_Date").datepicker({ minDate: 0 });
+            $('#Account_Name').keyup(function () { $("#DisplayName").val(this.value).change(); });
+            $('#TDS').change();
+        });
+
+        function RemoveOptionsfromPAC() {
+             
+            var selectElement = document.getElementById("ParentAccountCode");
+            var optionToRemove = "6"; // value of the option to be removed
+            var optionToRemove2 = "13"; // value of the option to be removed
+
+            for (var i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === optionToRemove) {
+                    selectElement.remove(i);
+                    break; // Break out of the loop after removing the option
+                }
+            }
+            for (var i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === optionToRemove2) {
+                    selectElement.remove(i);
+                    break; // Break out of the loop after removing the option
+                }
+            }
+        }
+
+        var IsSDSC = 0;
+        var IsErr = 0;
+        var HideShow = 0;
+
+        $(function () {
+            $("#Account_Name").autocomplete({
+                source: function (request, response) {
+                
+                    $.ajax({
+                        url: '@Url.Action("AutoComplete","AccountMaster")',
+                        type: "POST",
+                        data: { "ColumnName": "Account_Name", "prefix": request.term },
+                        success: function (data) {
+                            response($.map(data,
+                                function (key, value) {
+                                    return key.text;
+                                }));
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#DisplayName").val(i.item.value);
+                },
+                change: function (e, i) {
+                    
+                    $("#DisplayName").val($("#Account_Name").val());
+                },
+                minLength: 1
+            });
+        });
+
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights","AccountMaster")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                         
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit']").prop("disabled", true);
+
+                        } else {
+                            console.log(obj);
+                            if (obj.Result.Table[0] != undefined) {
+                                var optAll = obj.Result.Table[0].OptAll;
+                                var optSave = obj.Result.Table[0].OptSave;
+                                var optUpdate = obj.Result.Table[0].OptUpdate;
+                                var optDelete = obj.Result.Table[0].OptDelete;
+                                var optView = obj.Result.Table[0].OptView;
+                                if (!optAll) {
+                                    if (!optSave) {
+                                        $("button[type='submit']").prop("disabled", true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        function AutoComplete(ID) {      
+            debugger
+            $("#" + ID).autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("AutoComplete","AccountMaster")',
+                        type: "POST",
+                        data: { "ColumnName": ID, "prefix": request.term },
+                        success: function (data) {
+                            response($.map(data,
+                                function (key, value) {
+                                    return key.text;
+                                }));
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                }
+            });
+        }
+
+
+        function OnParentGroup(ID) {
+            if (!ID) return false;
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetParentGroupDetail","AccountMaster")",
+                    data: { ID: ID },
+                    datatype: JSON,
+                    success: function (response, status, error) {
+                         debugger
+                        var obj = $.parseJSON(response);
+                        if (obj.StatusCode === 200 || obj.StatusText === "Success") {
+                            $('#SubGroup').val(obj.Result.Table[0].SubGroup), $('#AccountType').val(obj.Result.Table[0].AccountType),
+                                $('#MainGroup').val(obj.Result.Table[0].MainGroup), $('#SubSubGroup').val(obj.Result.Table[0].SubSubGroup),
+                                $('#UnderGroup').val(obj.Result.Table[0].UnderGroup);
+                            HideShow = obj.Result.Table[0].ShowHide, obj.Result.Table[0].ShowHide == 1 ? $('#divDetail').show(500) : $('#divDetail').hide(500);
+                            $('#SubGroup').val() == "Sundry Debtors" || $('#SubGroup').val() == "Sundry Creditors" ? IsSDSC = 1 : IsSDSC = 0;
+
+                            $(".is-invalid").each(function () {
+                                $(this).removeClass('is-invalid');
+                            });
+
+                            $('.accordion-header button').css('background-color', '#127387');
+                            $('.accordion-header small').html('');
+
+                            console.log(IsSDSC, IsErr, HideShow);
+                        }
+                        else {
+                            console.log(response);
+                            $.notify('Something Went Wrong, Please Try Again.', "error");
+                        }
+                    },
+                    error: function (req, status, error) {
+                        console.log(req);
+                    }
+                });
+            }
+        }
+
+
+        async function CheckDuplicate(n, v) {
+            $.ajax({
+                url: "@Url.Action("isDuplicate","AccountMaster")",
+                type: "POST",
+                data: { "Colval": $('#' + v).val(), "ColName": n },
+                success: await function (data) {
+                    if (data.result !== "0" && data.statusText === "Error") {
+                        var message = 'Duplicate Entry : ' + $('#' + v).val() + ' Found For Column : ' + n;
+                        $('#' + v).val('');
+                        $.notify(message, { position: "top center", className: "error" });
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
+        function PanNo() {
+            if ($('#GSTNO').val().length == 15) {
+                $('#PANNO').val($('#GSTNO').val().substring(5, 15)).focus();
+            }
+            else {
+                $('#PANNO').val('');
+            }
+        }
+
+
+        $('#GSTRegistered').change(function () {
+            if ($(this).val() == "Y") {
+                $('#GSTPartyTypes').val('CGST');
+            }
+            else if ($(this).val() == "N") {
+                $('#GSTPartyTypes').val('IGST');
+                RemoveErrorCls('GSTNO');
+                RemoveErrorCls('GSTTAXTYPE');
+            }
+            else {
+                $('#GSTPartyTypes').prop('selectedIndex', 0);
+                RemoveErrorCls('GSTPartyTypes');
+                RemoveErrorCls('GSTNO');
+                RemoveErrorCls('GSTTAXTYPE');
+            }
+        });
+
+        $('#TDS').change(function () {
+            if ($(this).val() == "Y") {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetTDSPartyList","AccountMaster")',
+                    dataType: "json",
+                    success: function (data, status, error) {
+                        if (data) {
+                            var objResult = $.parseJSON(data);
+
+                            if (objResult.StatusCode == 200 && objResult.StatusText == 'Success') {
+                                $('#TDSPartyCategery').empty();
+                                $('#TDSPartyCategery').append('<option>-Select-</option>');
+                                $.each(objResult.Result, function (key, val) {
+                                    $('#TDSPartyCategery').append('<option value="' + val.TDSHead + '">' + val.TDSHead + '</option>');
+                                });
+                            }
+                            if (objResult.StatusCode == 404 && objResult.StatusText == 'Error') {
+                                $('#TDSPartyCategery').empty();
+                                $('#TDSPartyCategery').append('<option>-Select-</option>');
+                            }
+                        }
+                    }
+                }).done(function () {
+                    if ("@Model.Mode=='U'") {
+                        $('#TDSPartyCategery').val('@Model.TDSPartyCategery');
+                    }
+                });
+            }
+            else {
+                $('#TDSPartyCategery').empty();
+                $('#TDSPartyCategery').append('<option>-Select-</option>');
+            }
+        });
+
+
+        $("button[type='submit']").click(function () {
+            $(".valid").each(function () {
+                $(this).removeClass('is-invalid');
+                IsErr = 0;
+            });
+
+            //H_AccountDetail
+
+            if (!$('#Entry_Date').val()) {
+                AddErrorCls('Entry_Date');
+                IsErr = 1;
+            }
+
+            if (!$('#ParentAccountCode').val()) {
+                AddErrorCls('ParentAccountCode');
+                IsErr = 1;
+            }
+
+            if (!$('#DisplayName').val()) {
+                AddErrorCls('DisplayName');
+                IsErr = 1;
+            }
+            else {
+                IsErr = 0;
+                $('#DisplayName').removeClass('is-invalid');
+            }
+
+            if (!$('#Account_Name').val()) {
+                AddErrorCls('Account_Name');
+                IsErr = 1;
+            }
+
+            if (!$('#SubGroup').val()) {
+                AddErrorCls('SubGroup');
+                IsErr = 1;
+            }
+
+            if (!$('#AccountType').val()) {
+                AddErrorCls('AccountType');
+                IsErr = 1;
+            }
+
+            if (!$('#MainGroup').val()) {
+                AddErrorCls('MainGroup');
+                IsErr = 1;
+            }
+
+            if (!$('#SubSubGroup').val()) {
+                AddErrorCls('SubSubGroup');
+                IsErr = 1;
+            }
+
+            if (!$('#UnderGroup').val()) {
+                AddErrorCls('UnderGroup');
+                IsErr = 1;
+            }
+
+            //if(!$('#DebCredCode').val())
+            //{
+            //    AddErrorCls('DebCredCode');
+            //    IsErr=1;
+            //}
+
+            //if(!$('#Party_Code').val())
+            //{
+            //    AddErrorCls('Party_Code');
+            //    IsErr=1;
+            //}
+
+            IsErr == 1 ? ShowErrorFld('H_AccountDetail') : HideErrorFld('H_AccountDetail');
+
+            if (HideShow == 1) {
+                if (IsSDSC == 1)//in case of SUBGROUP = Sundry Debtors OR Sundry Creditors
+                {
+                    //H_AddressDetail
+
+                    if (!$('#ComAddress').val()) {
+                        AddErrorCls('ComAddress');
+                        IsErr = 1;
+                    }
+
+                    //if(!$('#ComAddress1').val())
+                    //{
+                    //    AddErrorCls('ComAddress1');
+                    //    IsErr=1;
+                    //}
+
+                    if (!$('#Country').val()) {
+                        AddErrorCls('Country');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#State').val()) {
+                        AddErrorCls('State');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#City').val()) {
+                        AddErrorCls('City');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#PinCode').val()) {
+                        AddErrorCls('PinCode');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#PhoneNo').val()) {
+                        AddErrorCls('PhoneNo');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#MobileNo').val()) {
+                        AddErrorCls('MobileNo');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#ContactPerson').val()) {
+                        AddErrorCls('ContactPerson');
+                        IsErr = 1;
+                    }
+
+                    IsErr == 1 ? ShowErrorFld('H_AddressDetail') : HideErrorFld('H_AddressDetail');
+
+                    //H_TaxDetail
+
+
+                    if (!$('#PartyType').val()) {
+                        AddErrorCls('PartyType');
+                        IsErr = 1;
+                    }
+
+                    if (!$('#GSTRegistered').val()) {
+                        AddErrorCls('GSTRegistered');
+                        IsErr = 1;
+                    }
+                    else {
+                        if ($('#GSTRegistered').val() === "Y") {
+                            if (!$('#GSTNO').val()) {
+                                AddErrorCls('GSTNO');
+                                IsErr = 1;
+                            }
+                            else {
+                                if ($('#GSTRegistered').val() === 'Y') {
+                                    if ($('#GSTNO').val().length !== 15) {
+                                        IsErr = 1;
+                                        AddErrorCls('GSTNO');
+                                    }
+                                }
+                            }
+
+                            if (!$('#GSTPartyTypes').val()) {
+                                AddErrorCls('GSTPartyTypes');
+                                IsErr = 1;
+                            }
+
+                            if (!$('#GSTTAXTYPE').val()) {
+                                AddErrorCls('GSTTAXTYPE');
+                                IsErr = 1;
+                            }
+                        }
+                        if ($('#GSTRegistered').val() === "N") {
+                            $('#GSTNO').val('');
+                            RemoveErrorCls('GSTNO');
+                            $('#GSTPartyTypes').prop('selectedIndex', 0);
+                            RemoveErrorCls('GSTPartyTypes');
+                            $('#GSTTAXTYPE').prop('selectedIndex', 0);
+                            RemoveErrorCls('GSTTAXTYPE');
+                        }
+                    }
+
+
+                    if (!$('#TDS').val()) {
+                        AddErrorCls('TDS');
+                        IsErr = 1;
+                    }
+                    else {
+                        if ($('#TDS').val() == "Y") {
+                            if (!$('#TDSRate').val()) {
+                                AddErrorCls('TDSRate');
+                                IsErr = 1;
+                            }
+
+                            if (!$('#TDSPartyCategery').val()) {
+                                AddErrorCls('TDSPartyCategery');
+                                IsErr = 1;
+                            }
+                        }
+                        if ($('#TDS').val() == "N") {
+                            IsErr = 0;
+                            $('#TDSRate').removeClass('is-invalid');
+                            $('#TDSPartyCategery').removeClass('is-invalid');
+                        }
+
+                        if (!$('#PANNO').val()) {
+                            AddErrorCls('PANNO');
+                            IsErr = 1;
+                        }
+                    }
+
+                    IsErr == 1 ? ShowErrorFld('H_TaxDetail') : HideErrorFld('H_TaxDetail');
+
+                }
+                else {
+                    if ($('#GSTRegistered').val() == 'Y' || $('#TDS').val() == "Y") {
+                        ShowErrorFld('H_TaxDetail');
+
+                        if ($('#GSTRegistered').val() == 'Y') {
+                            if (!$('#GSTNO').val()) {
+                                AddErrorCls('GSTNO');
+                                IsErr = 1;
+                            }
+                            else {
+                                if ($('#GSTNO').val().length != 15) {
+                                    IsErr = 1;
+                                    AddErrorCls('GSTNO');
+                                }
+                            }
+                        }
+
+                        if ($('#TDS').val() == "Y") {
+                            if (!$('#TDSRate').val()) {
+                                AddErrorCls('TDSRate');
+                                IsErr = 1;
+                            }
+
+                            if (!$('#TDSPartyCategery').val()) {
+                                AddErrorCls('TDSPartyCategery');
+                                IsErr = 1;
+                            }
+                        }
+                    }
+                    else {
+                        HideErrorFld('H_TaxDetail');
+                    }
+                }
+            }
+
+            console.log('IsErr : ' + IsErr);
+
+            if (IsErr == 1) return false;
+            if (IsErr == 0) return true;
+
+            //$("input[required],select[required]").each(function ()
+            //{
+            //    $(this).addClass('is-invalid');
+            //});
+            //$(".valid").each(function ()
+            //{
+            //    $(this).removeClass('is-invalid');
+            //});
+        });
+
+        $('#ParentAccountCode').select2();
+
+    </script>
+}

@@ -1,0 +1,112 @@
+﻿@model eTactWeb.DOM.Models.ProcessMasterModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<form asp-action="Form" autocomplete="on" class="form-horizontal" asp-antiforgery=true>
+    <div class="card rounded shadow-lg">
+        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+            <h5>
+                <strong>Process Master</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light">
+            <div class="accordion shadow-lg" id="accordionProcessMaster">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_ProcessMasterDetail">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ProcessMasterDetail"
+                                aria-expanded="true" aria-controls="B_ProcessMasterDetail">
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Process Detail</strong>
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="B_ProcessMasterDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ProcessMasterDetail">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Process_Id" class="form-label">Process Id</label>
+                                    <input asp-for="Process_Id" class="form-control" readonly />
+                                    <input asp-for="Mode" class="form-control" type="hidden" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="StageCode" class="form-label">Process Code</label>
+                                    <input asp-for="StageCode" class="form-control" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="StageDescription" class="form-label"> Process Description</label>
+                                    <input asp-for="StageDescription" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="StageShortName" class="form-label"> Process ShortName</label>
+                                    <input asp-for="StageShortName" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MaterialReqForRework" class="form-label">Material Required For Rework</label>
+                                    <select asp-for="MaterialReqForRework" class="form-control">
+                                        <option value="">-- Select --</option>
+                                        <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="QCRequired" class="form-label">QC Required</label>
+                                    <select asp-for="QCRequired" class="form-control">
+                                        <option value="">-- Select --</option>
+                                        <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MaxPendQtyReq" class="form-label"> Max Pending Qty Required</label>
+                                    <input type="number" asp-for="MaxPendQtyReq" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="divDetail">
+                </div>
+            </div>
+        </div>
+        <div class="card-footer p-3">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                    <a class="btn btn-sm btn-secondary" href="#" onclick="back();"><i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK</a>
+                </div>
+                @if (@Model.Mode != "V")
+                {
+                    <div class="col-auto">
+                        <button type="reset" class="btn btn-outline-danger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
+                                <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"></path>
+                            </svg>
+                            RESET
+                        </button>
+                    </div>
+                    if (@Model.Mode == "U")
+                    {
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-outline-success"><i class="fa-solid fa-floppy-disks fa-fw fa-lg"></i> UPDATE</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa-solid fa-floppy-disks fa-fw fa-lg"></i> SUBMIT</button>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</form>

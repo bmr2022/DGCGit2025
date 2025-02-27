@@ -1,0 +1,92 @@
+﻿@model eTactWeb.DOM.Models.DPBDashBoard
+
+<div class="row">
+    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TypeITEMSERVASSETS" class="form-label">Item Type</label>
+        <select class="form-select" asp-for="TypeITEMSERVASSETS">
+            <option value="">-Select-</option>
+            <option value="Service">Service</option>
+            <option value="Item">Item</option>
+            <option value="Assets">Assests</option>
+        </select>
+    </div>
+    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="DocumentType" class="form-label">Document</label>
+        <input asp-for="DocumentType" class="form-control" />
+    </div>
+    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="PurchVouchNo" class="form-label">Voucher No</label>
+        <input asp-for="PurchVouchNo" class="form-control" />
+    </div>
+    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="InvoiceNo" class="form-label">Invoice No</label>
+        <input asp-for="InvoiceNo" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+        <label asp-for="VendorName" class="form-label">Vendor Name</label>
+        <input asp-for="VendorName" class="form-control" />
+    </div>
+    <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
+        <label asp-for="PartCode" class="form-label">Part Code</label>
+        <input asp-for="PartCode" class="form-control" />
+    </div>
+    <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
+        <label asp-for="ItemName" class="form-label">Item Name</label>
+        <input asp-for="ItemName" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+        <label asp-for="HSNNo" class="form-label">HSN NO</label>
+        <input asp-for="HSNNo" autocomplete="on" value="" class="form-control" />
+    </div>
+    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col">
+                <label class="form-label">VO Date</label>
+                <input asp-for="FromDate" maxlength="10" class="form-control" />
+            </div>
+            <div class="col">
+                <label class="form-label">VO To Date</label>
+                <input asp-for="ToDate" maxlength="10" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
+        <select class="form-select" asp-for="DashboardType">
+            <option value="" disabled>-Select-</option>
+            <option value="Summary" selected>Summary</option>
+            <option value="Detail">Detail</option>
+            <option value="TAXDetail">TAX Detail</option>
+        </select>
+    </div>
+    <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+        <label class="form-label">Global search</label>
+        <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+    </div>
+    <div class=" d-flex justify-content-center mt-3" width="inherit">
+        <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetSearchData();">
+            <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+        </button>
+        <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+            <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+        </button>
+        <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="DirectPurchaseBill" asp-action="DashBoard">
+            <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+        </a>
+        <div class="d-flex" style="margin-left:50px;margin-top:10px;">
+            <label class="color-box" style="background-color: #FF0000;"></label><label style="margin-left:5px;margin-top:-5px;">UNAPPROVED</label>
+            <label class="color-box" style="background-color: green;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">APPROVED</label>
+            <label class="color-box" style="background-color: #0dcaf0;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">PAYMENT DONE</label>
+            @* <label class="color-box" style="background-color: purple;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">1st Level Approved</label>
+            <label class="color-box" style="background-color: blue;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Amendment PENDING</label> *@
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>

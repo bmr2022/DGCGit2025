@@ -1,0 +1,128 @@
+﻿@model eTactWeb.DOM.Models.IssueWOBomMainDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+
+<div class="table-responsive" style="max-height:150px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="IssueWOBomTable">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="IssueWOBomThead">
+            <tr>
+
+                <th>Sr#</th>
+                <th>Action</th>
+
+                @*<th data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Req No</th>
+                <th data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Req Date</th>
+                <th data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Req Year Code</th>
+                <th data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Item name</th>
+                <th data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Part Code</th>
+                <th data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Entry Id</th>
+                <th data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Year Code</th>
+                <th data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Work Center Description</th>*@
+
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req No</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Date</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Year Code</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue SlipNo</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Date</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Id</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center Description</th>
+
+            </tr>
+        </thead>
+        <tbody id="IssueWOBomTbody">
+            @{
+                var @Cntr = 0;
+                if (Model.IssueWOBOMDashboard == null || Model.IssueWOBOMDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.IssueWOBOMDashboard)
+                    {
+
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="IssueWithoutBom" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event)">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    @if (item.YearCode == yearCode)
+                                    {
+                                        <div id="editCursorDiv-@Cntr">
+                                            <a class="table-link link-primary" asp-action="IssueWithoutBom" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="deleteCursorDiv-@Cntr">
+                                            <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <a class="table-link link-primary noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a class="table-link link-danger noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                            <td>@item.ReqNo</td>
+                            @if (item.ReqDate == null)
+                            {
+                                <td>@item.ReqDate</td>
+                            }
+                            else
+                            {
+                                <td>@item.ReqDate.Split(" ")[0]</td>
+                            }
+                            <td>@item.ReqYearCode </td>
+                            <td>@item.IssueSlipNo</td>
+                            <td>@item.IssueDate.Split(" ")[0]</td>
+                            <td>@item.EntryId</td>
+                            <td>@item.YearCode</td>
+                            <td>@item.Item_Name</td>
+                            <td>@item.PartCode</td>
+                            <td>@item.WorkCenterDescription</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

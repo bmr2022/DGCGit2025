@@ -1,0 +1,33 @@
+﻿@model eTactWeb.DOM.Models.JobWorkIssueModel
+
+<div class="modal fade" id="BOMStatusConfirmationBox" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <h3>Are you sure you want to change BOM status, it will reset the grids ?</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" id="confirmChange" data-bs-dismiss="modal">YES</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" id="cancelChange">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

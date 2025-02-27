@@ -1,0 +1,77 @@
+﻿@model eTactWeb.DOM.Models.JobWorkIssueModel
+
+<input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+@{
+    @if (Model.JobDetailGrid == null)
+    {
+        <tr class="text-center">
+            <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+        </tr>
+    }
+    else
+    {
+
+        var @Cntr = 0;
+        foreach (var item in Model.JobDetailGrid)
+        {
+            Cntr = Cntr + 1;
+            <tr id="JobDetailGrid-@Cntr" class="small" style="white-space:nowrap">
+                <td style="white-space:nowrap;">
+
+                    <a class="table-link link-primary" style="border:none;" id="editButton-@Cntr" onclick="EditItemRow(@item.SeqForBatch,@item.ItemCode,'@item.BatchNo',@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqForBatch,@item.ItemCode,'@item.BatchNo',@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </td>
+                <td id="SeqForBatchOnEdit-@Cntr">@item.SeqForBatch</td>
+                <td id="CheckPartCode-@Cntr" data-JWPC="@item.PartCode" class="drag-handle divJWIItemListPartCode">@item.PartCode</td>
+                <td>@item.ItemName<input type="hidden" id="GridItemCode-@Cntr" value="@item.ItemCode"><input id="GridIC-@item.SeqNo" type="hidden" value="@item.ItemCode"></td>
+                <td>@item.HSNNo</td>
+                <td id="IssQty-@Cntr">@item.IssQty</td>
+                <td>@item.Unit</td>
+                <td id="Rate-@Cntr" value="@item.Rate">@item.Rate</td>
+                <td id="GridAmount-@Cntr">@item.Amount</td>
+                <td id="PurchasePrice-@Cntr">@item.PurchasePrice</td>
+                <td>@item.ProcessName</td>
+                <td>@item.StoreName</td>
+                <td id="GridBatchNo-@item.SeqNo"><input type="hidden" id="GridBatchNumber-@Cntr" value="@item.BatchNo">@item.BatchNo</td>
+                <td>@item.UniqueBatchNo</td>
+                <td>@item.StockQty</td>
+                <td>@item.BatchStockQty</td>
+                <td>@item.RecScrapPartCode</td>
+                <td>@item.RecScrapItemName</td>
+                <td>@item.RecScrapQty</td>
+                <td>@item.AltQTy</td>
+                <td>@item.AltUnit</td>
+                <td>@item.RecPartCode</td>
+                <td>@item.RecItemName</td>
+                <td>@item.RecQty</td>
+                <td>@item.ToLimit</td>
+                <td>@item.OtherInstruction</td>
+                <td>@item.RemarkDetail</td>
+                <td>@item.PONO</td>
+                <td>@item.POYear</td>
+                <td>@item.PODate</td>
+                <td>@item.SchNo</td>
+                <td>@item.SchYear</td>
+                <td>@item.SchDate</td>
+                <td>@item.POAAmmendNo</td>
+                <td>@item.AgainstAdaviceNo</td>
+                <td>@item.AgainstAdaviceYear</td>
+                <td>@item.AgainstAdaviceDate</td>
+                <td>@item.ItemColor</td>
+                <td>@item.ItemSize<input type="hidden" id="SeqForBatch-@Cntr" value="@item.SeqForBatch" /></td>
+                <td style="display:none;">@item.ItemCode</td>
+            </tr>
+        }
+    }
+}

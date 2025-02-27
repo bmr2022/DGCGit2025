@@ -1,0 +1,79 @@
+﻿@model eTactWeb.DOM.Models.ItemMasterModel
+
+@{
+    var Cntr = 0;
+    var ErrorCntr = 0;
+}
+
+@if (Model.ExcelDataList == null)
+{
+    <tr class="text-center">
+        <td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ExcelDataList)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small @Cntr" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+
+                <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+            @if (item.PartCodeExists != "N")
+            {
+                ErrorCntr = ErrorCntr + 1;
+                <td style="color:red;font-weight:bolder" id="PartCode-@Cntr">@item.PartCode</td>
+            }
+            else
+            {
+                <td id="PartCode-@Cntr">@item.PartCode</td>
+            }
+            @if (item.ItemNameExists != "N")
+            {
+                ErrorCntr = ErrorCntr + 1;
+                <td style="color:red;font-weight:bolder" id="ItemName-@Cntr">@item.ItemName</td>
+            }
+            else
+            {
+                <td id="ItemName-@Cntr">@item.ItemName</td>
+            }
+            <td id="Unit-@Cntr">@item.Unit</td>
+            <td id="HsnNo-@Cntr">@item.HSNNo</td>
+            <td id="ItemGroup-@Cntr">@item.ItemGroup</td>
+            @if (item.ItemGroupCode == 0)
+            {
+                ErrorCntr = ErrorCntr + 1;
+                <td style="color:red;font-weight:bolder" id="ItemgroupCode-@Cntr">@item.ItemGroupCode</td>
+            }
+            else
+            {
+                <td id="ItemgroupCode-@Cntr">@item.ItemGroupCode</td>
+            }
+            <td id="ItemCategory-@Cntr">@item.ItemCategory</td>
+            @if (item.ItemCategoryCode == 0)
+            {
+                ErrorCntr = ErrorCntr + 1;
+                <td style="color:red;font-weight:bolder" id="ItemCatCode-@Cntr">@item.ItemCategoryCode</td>
+            }
+            else
+            {
+                <td id="ItemCatCode-@Cntr">@item.ItemCategoryCode</td>
+            }
+            <td id="MinLevel-@Cntr">@item.MinLevel</td>
+            <td id="MaxLevel-@Cntr">@item.MaxLevel</td>
+            <td id="Stockable-@Cntr">@item.Stockable</td>
+            <td id="WIPStock-@Cntr">@item.WIPStockable</td>
+            <td id="NeedPo-@Cntr">@item.NeedPO</td>
+            <td id="QCReq-@Cntr">@item.QcReq</td>
+            <td id="StdPkg-@Cntr">@item.StdPkg<input type="hidden" id="ErrorCntr-@Cntr" value="@ErrorCntr" /></td>
+            <td id="ItemServAssets-@Cntr">@item.ItemServAssets</td>
+        </tr>
+    }
+}

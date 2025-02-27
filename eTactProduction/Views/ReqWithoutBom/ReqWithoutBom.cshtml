@@ -1,0 +1,1677 @@
+﻿@model eTactWeb.DOM.Models.RequisitionWithoutBOMModel
+
+@{
+    ViewData["Title"] = "Requisition Without BOM";
+
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="ReqWithoutBom" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Requisition Without BOM</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <div class="col-auto">
+                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                        @*<button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT
+                        </button>*@
+                        @* <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="printreport" asp-controller="purchaseorder" asp-route-entryid="@model.entryid" asp-route-yearcode="@model.yearcode" asp-route-pono="@model.pono">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        print
+                        </a>*@
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" 
+                        asp-controller="ReqWithoutBom" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            PRINT
+                        </a>
+                    </div>
+                    <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    @*<partial name="_FormsButton" />*@
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="REQNoBack" type="hidden" value="@Model.REQNoBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="WorkCenterBack" type="hidden" value="@Model.WorkCenterBack" />
+                            <input asp-for="WorkOrderNoback" type="hidden" value="@Model.WorkOrderNoback" />
+                            <input asp-for="DeptNameBack" type="hidden" value="@Model.DeptNameBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V"  )
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U"  )
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                           
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-lg">
+                                    <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+                                    <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                    <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
+                                    <input type="hidden" id="FromDeptUpd" value="@Model.FromDepartmentId" />
+                                    <label asp-for="EntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="EntryId " class="form-control" readonly />
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="YearCode" class="form-label">Year Code</label>
+                                    @* <input asp-for="YearCode" class="form-control" readonly /> *@
+                                    <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                    <input asp-for="EntryDate " class="form-control" readonly />
+                                    @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                    {
+                                        <input id="hiddenEntryDate" type="hidden" class="form-control" value="@Model.EntryDate" />
+                                    }
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="REQNo" class="form-label" style="color: red;">Req No*</label>
+                                    @if (Model.Mode != "U" && Model.Mode != "V")
+                                    {
+                                        <input asp-for="REQNo" class="form-control form-control-sm" style="width:56px;" readonly  />
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="REQNo" class="form-control form-control-sm" value="@Model.REQNo" style="width:56px;" readonly />
+                                    }
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="ReqDate" class="form-label" style="color: red;">Req Date*</label>
+                                    <input asp-for="ReqDate " class="form-control"  readonly/>
+                                    @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                    {
+                                        <input id="hiddenReqDate" type="hidden" class="form-control" value="@Model.ReqDate" readonly/>
+                                    }
+                                </div>
+
+                                <div class="col-lg">
+                                    <label asp-for="FromDepartmentId" class="form-label" style="color: red;">From Dept*</label>
+                                    <select class="form-select" asp-for="FromDepartmentId" asp-items="@(new SelectList(Model.DepartmentList,"Value","Text"))">
+                                        @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                        {
+                                            <option value="@Model.FromDepartmentId" selected>@Model.FromDepartmentId</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="WONo" class="form-label">Plan No</label>
+                                    <select class="form-select" asp-for="WONo">
+                                        @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                        {
+                                            <input type="hidden" id="hiddenWONO" value="@Model.WONo" />
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="WoYearCode" class="form-label">Plan YC</label>
+                                    <select class="form-select" asp-for="WoYearCode">
+                                        @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                        {
+                                            <option value="@Model.WoYearCode" selected>@Model.WoYearCode</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="MachineId" class="form-label">Machine</label>
+                                    <select class="form-select" asp-for="MachineId" asp-items="@(new SelectList(Model.MachineList,"Value","Text"))">
+                                        @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                        {
+                                            <option value="@Model.MachineId" selected>@Model.MachineId</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="WorkCenterId" class="form-label">Work Center</label>
+                                    <select class="form-select" asp-for="WorkCenterId" disabled>
+                                        @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                        {
+                                            <input type="hidden" id="hiddenWorkCenter" value="@Model.WorkCenterId" />
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-lg">
+                                    <label asp-for="WODate" class="form-label">WO Date</label>
+                                    <input asp-for="WODate" class="form-control" readonly/>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Req Item Grid</strong>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                </div>
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped" id="table-containerScroll">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th style="min-width: 150px;" id="PartCodeFocus">Part Code</th>
+                                                    <th style="min-width: 300px; text-align: left;">
+                                                        <div style="display: flex; justify-content: space-between; align-items: center; color:red">
+                                                            <span>Item Name</span>
+                                                            <input asp-for="IC1" class="form-check-input" type="checkbox" role="switch" style="margin-right:-150px;margin-top:-2px" />
+                                                            <span>Show All</span>
+                                                        </div>
+                                                    </th>
+                                                    <th style="min-width: 80px; color:red">Unit</th>
+                                                    <th style="min-width: 80px; color:red">Req Qty</th>
+                                                    <th style="min-width: 150px;">Expected date</th>
+                                                    <th style="min-width: 80px;">Pend Qty</th>
+                                                    <th style="min-width: 150px;">Store</th>
+                                                    <th style="min-width: 80px;">Total Stock</th>
+                                                    <th style="min-width: 80px;">Alt Unit</th>
+                                                    <th style="min-width: 80px;">Alt Qty</th>
+                                                    <th style="min-width: 150px;">Location</th>
+                                                    <th style="min-width: 150px;">Bin No</th>
+                                                    <th style="min-width: 150px;">Proj. No</th>
+                                                    <th style="min-width: 80px;">Year code</th>
+                                                    <th style="min-width: 150px;">Cost Center</th>
+                                                    <th style="min-width: 150px;">Item Model</th>
+                                                    <th style="min-width: 150px;">Item Size</th>
+                                                    <th style="min-width: 80px;">Pend Alt Qty</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="">
+                                                <tr>
+                                                    <td style="width:80% !important;">
+                                                        <select class="form-select" style="width:100% !important;" asp-for="PartCode">
+                                                            <option value="0">-Select-</option>
+                                                        </select>
+                                                    </td>
+                                                    <td style="width:100% !important;">
+                                                        @* <input asp-for="IC1" class="form-check-input" type="checkbox" role="switch" />Show All*@
+                                                        <select class="form-select" asp-for="ItemCode" style="width:100% !important;">
+                                                            <option value="0">-Select-</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="Unit" class="form-control" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="Qty" class="form-control" onchange="AltUnitConversion('QtyChange');" />
+                                                    </td>
+                                                    <td>
+                                                        @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                                        {
+                                                            <input id="hiddenExpectedDate" type="hidden" class="form-control" value="@Model.ExpectedDate" />
+                                                        }
+                                                        <input asp-for="ExpectedDate" class="form-control" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="PendQty" class="form-control" readonly />
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select" asp-for="StoreId" asp-items="@(new SelectList(Model.StoreList,"Value","Text"))">
+                                                            <option value="" disabled selected>-Select-</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="TotalStock" class="form-control" readonly />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="AltUnit" class="form-control" readonly />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="AltQty" class="form-control" onchange="AltUnitConversion('AltQtyChange')" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="ItemLocation" class="form-control" readonly />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="ItemBinRackNo" class="form-control" readonly />
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select" asp-for="ProjectNo" style="width:100% !important;">
+                                                            <option value="" disabled selected>-Select-</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="ProjectYearCode" class="form-control" readonly />
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-select" asp-for="CostCenterId" asp-items="@(new SelectList(Model.CostCenterList,"Value","Text"))" style="width:100% !important;">
+                                                            <option value="" disabled selected>-Select-</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="ItemModel" class="form-control" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="ItemSize" class="form-control" />
+                                                    </td>
+                                                    <td>
+                                                        <input asp-for="PendAltQty" class="form-control" readonly />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class=" col-4 col-auto">
+                                <div class="row justify-content-around">
+                                    <div class="col-auto">
+                                        <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Item Name</th>
+                                                <th>Part Code</th>
+                                                <th>Req Qty</th>
+                                                <th>Expected Date</th>
+                                                <th>Pend Qty</th>
+                                                <th>Store</th>
+                                                <th>Total Stock</th>
+                                                <th>Project No</th>
+                                                <th>Project year code</th>
+                                                <th>Cost Center</th>
+                                                <th>Alt Unit</th>
+                                                <th>Alt Qty</th>
+                                                <th>Item Model</th>
+                                                <th>Item Size</th>
+                                                <th>Pend Alt Qty</th>
+                                                <th>Item Location</th>
+                                                <th>Item Bin Rack No</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divReqWithoutBomAdded">
+                                            <partial name="_ReqWithoutBomGrid" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="OtherGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                            <div class="accordion-body">
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ReqReason" class="form-label">Req Reason</label>
+                                        <input asp-for="ReqReason " class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="RequByEmpId" class="form-label">Req by Emp</label>
+                                        <select class="form-select" asp-for="RequByEmpId" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))">
+                                            @if (@Model.Mode == "U" || @Model.Mode == "V")
+                                            {
+                                                <option value="@Model.RequByEmpId" selected>@Model.RequByEmpId</option>
+                                            }
+                                        </select>
+                                    </div><div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Prefix" class="form-label">Prefix</label>
+                                        <input asp-for="Prefix" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Remarks" class="form-label">Remarks</label>
+                                        <input asp-for="Remarks" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Completed" class="form-label">Completed</label>
+                                        <input asp-for="Completed" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Cancel" class="form-label">Cancel</label>
+                                        <input asp-for="Cancel" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CancelReason" class="form-label">Cancel Reason</label>
+                                        <input asp-for="CancelReason" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="NeedApproval" class="form-label">NeedApproval</label>
+                                        <input asp-for="NeedApproval" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Approved" class="form-label">Approved</label>
+                                        <input asp-for="Approved" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ApproveDate" class="form-label">Approve Date</label>
+                                        <input asp-for="ApproveDate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ApproveBy" class="form-label">Approve By</label>
+                                        <input asp-for="ApproveBy" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="LineRejEntryId" class="form-label">Line Rej Entry Id</label>
+                                        <input asp-for="LineRejEntryId" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="LineRejYearCode" class="form-label">Line Rej YC</label>
+                                        <input asp-for="LineRejYearCode" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryByMachineName" class="form-label">Entry By Machine</label>
+                                        <input asp-for="EntryByMachineName" value="@Environment.MachineName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedBy" class="form-label">Actual Entered By</label>
+                                        <input type="hidden" asp-for="CreatedBy" class="form-control" readonly />
+                                        <input asp-for="CreatedByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedOn" class="form-label">ActualEntryDate</label>
+                                        <input asp-for="CreatedOn" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+                                        <input type="hidden" asp-for="UpdatedBy" class="form-control" readonly />
+                                        <input asp-for="UpdatedByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">Updated Date</label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-header card-headerBG text-light bg-gradient">
+                <h5>
+                    <strong>Requisition Without BOM</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <div class="col-auto">
+                            @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                            <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                PRINT
+                            </button>
+                        </div>
+                        <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                            Dashboard
+                        </a>
+                        <partial name="_FormsButton" />
+                    </span>
+                </h5>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts{
+    <script>
+        $('#submitBTN').click(function (e) {
+            
+            e.preventDefault();
+            if($('#divReqWithoutBomAdded tr td').length <= 1) {
+                $.notify('Grid Should Have Atleast 1 Item...!', "error");
+            }
+            else 
+            {
+                if($('#FromDepartmentId').find(":selected").data('depttype') == "production" ||   $('#FromDepartmentId').find(":selected").data('depttype') == "R&D")
+                {   
+                    if($('#WorkCenterId').val() == null){
+                        //$.notify("Please fill Work Center");
+                        AddErrorCls('WorkCenterId');   
+                    }
+                    else
+                    {
+                        RemoveErrorCls('WorkCenterId');
+                        $("form").submit();
+                    }
+                }
+                else {
+                    RemoveErrorCls('WorkCenterId');
+                    $("form").submit();
+                }
+               
+                    
+                
+            }
+        });
+
+        $('#UpdateButton').click(function (e) {
+            e.preventDefault();
+            if (!validateUpdate()) return;
+
+            else 
+            {
+                if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
+                    if ($('#WorkCenterId').val() == null) {
+                        //$.notify("Please fill Work Center");
+                        AddErrorCls('WorkCenterId');
+                    }
+                    else {
+                        RemoveErrorCls('WorkCenterId');
+                        $("form").submit();
+                    }
+                }
+                else {
+                    RemoveErrorCls('WorkCenterId');
+                    $("form").submit();
+                }
+            }
+
+        });
+
+        function validateUpdate() {
+
+            var Err = 0;
+            if (parseInt($('#FromDepartmentId').val()) == 4) {
+                if ($('#WorkCenterId').prop('selectedIndex') == 0) {
+                    AddErrorCls('WorkCenterId');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('WorkCenterId');
+                }
+            }
+            else {
+                RemoveErrorCls('WorkCenterId');
+            }
+            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+
+        $('#IC1').change(function () {
+            fillItems();
+        });
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        console.log(obj);
+                        var optAll = obj.Result.Table[0].OptAll;
+                        var optSave = obj.Result.Table[0].OptSave;
+                        var optUpdate = obj.Result.Table[0].OptUpdate;
+                        var optDelete = obj.Result.Table[0].OptDelete;
+                        var optView = obj.Result.Table[0].OptView;
+                        if (!optAll) {
+                            if (!optSave) {
+                                $("#submitBTN").prop("disabled", true);
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        function GetNewEntry() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetNewEntry")",
+                async:false,
+                dataType: "json",
+                data: { "YearCode": $('#YearCode').val() },
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        console.log(obj);
+                        $('#EntryId').val(obj.Result[0].EntryID);
+                        $('#REQNo').val(obj.Result[0].REQNo);
+                    }
+                }
+            });
+        }
+
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
+
+        $(document).ready(function () {
+          
+            fillDepartMent();
+            fillProjectNoandYC();
+         
+            //$('#Qty').rules("remove", "required");
+            //$('#PendQty').rules("remove", "required");
+            //$('#StoreId').rules("remove", "required");
+            //$('#TotalStock').rules("remove", "required");
+            //$('#AltQty').rules("remove", "required");
+            // $('#Qty,#PendQty,#StoreId,#TotalStock,#AltQty').removeAttr("required");
+            $('#Unit').rules("remove", "required");
+            $('#Qty').rules("remove", "required");
+            $('#PendQty').rules("remove", "required");
+            $('#StoreId').rules("remove", "required");
+            $('#TotalStock').rules("remove", "required");
+            $('#AltQty').rules("remove", "required");
+            $('#PendAltQty').rules("remove", "required");
+            $('#PartCode').rules("remove", "required");
+            $('#ItemCode').rules("remove", "required");
+            $('#MachineId').rules("remove", "required");
+            $('#REQNo').css("width", "108px");
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+
+                $('#FromDepartmentId').val(4);
+                $('#WODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#WODate').css("pointer-events", "none");
+                GetNewEntry();
+            } 
+            else 
+            {
+                if ($("#FromDepartmentId").val() != '6') {
+                    $('#WorkCenterId').prop("disabled", true);
+                } else {
+                    $('#WorkCenterId').prop("disabled", false);
+                }
+            }
+
+            //if ($('#FromDepartmentId').val() == 4) {
+            //    $('#WorkCenterId').prop("disabled", false);
+            //}
+
+
+            $('#PartCode').select2();
+            $('#ItemCode').select2();
+            $('#ProjectNo').select2();
+            $('#CostCenterId').select2();
+            GetFormRights();
+            
+            //$('#UpdateButton').prop("disabled",true);
+            if ($('#Mode').val() != '') 
+            {
+                $('#PartCode').rules("remove", "required");
+                $('#ItemCode').rules("remove", "required");
+                $('#Unit').rules("remove", "required");
+                $('#BomRevNo').rules("remove", "required");
+                $('#BOMEffDate').rules("remove", "required");
+                $('#StoreId').rules("remove", "required");
+                $('#CostCenterId').rules("remove", "required");
+            }
+            $('#StoreId').rules("remove", "required");
+
+            $('#ItemModel').rules("remove", "required");
+            $('#ItemSize').rules("remove", "required");
+            $('#ExpectedDate').rules("remove", "required");
+            $('#ItemLocation').rules("remove", "required");
+            $('#ItemBinRackNo').rules("remove", "required");
+            $('#Remark').rules("remove", "required");
+            $('#Prefix').rules("remove", "required");
+            $('#Remarks').rules("remove", "required");
+            $('#Completed').rules("remove", "required");
+            $('#Cancel').rules("remove", "required");
+            $('#CancelReason').rules("remove", "required");
+            $('#NeedApproval').rules("remove", "required");
+            $('#Approved').rules("remove", "required");
+            $('#ApproveDate').rules("remove", "required");
+            $('#ItemModel').rules("remove", "required");
+            $('#ItemSize').rules("remove", "required");
+            $('#ExpectedDate').rules("remove", "required");
+            $('#ItemLocation').rules("remove", "required");
+            $('#ItemBinRackNo').rules("remove", "required");
+            $('#WONo').rules("remove", "required");
+            $('#WoYearCode').rules("remove", "required");
+            $('#WorkCenterId').rules("remove", "required");
+            $('#ProjectNo').rules("remove", "required");
+            $('#ProjectYearCode').rules("remove", "required");
+            $('#AltUnit').rules("remove", "required");
+            $('#ReqReason').rules("remove", "required");
+            $('#REQNo').rules("remove", "required");
+
+
+             // $('#YearCode').val(new Date().getFullYear());
+            $('#AltQty').prop("readonly", true);
+            // Outputs: 05/05/2023
+           
+            if ($('#Mode').val() == "U") 
+            {
+              
+                
+               // var formattedDate1 = getFormattedDate($('#hiddenEntryDate').val());
+                var formattedDate2 = getFormattedDate($('#hiddenReqDate').val());
+                var formattedDate3 = getFormattedDate($('#hiddenExpectedDate').val());
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+
+               // $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+                $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+                $('#ExpectedDate').datepicker("option", "mindate", 'now');
+
+
+
+                var finFromDate = $('#FinFromDate').val();
+                var finToDate = $('#FinToDate').val();
+
+                var dateParts1 = finFromDate.split("/");
+                var monthNames = {
+                    "Jan": "01",
+                    "Feb": "02",
+                    "Mar": "03",
+                    "Apr": "04",
+                    "May": "05",
+                    "Jun": "06",
+                    "Jul": "07",
+                    "Aug": "08",
+                    "Sep": "09",
+                    "Oct": "10",
+                    "Nov": "11",
+                    "Dec": "12"
+                };
+
+                var formattedFromDate = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                var dateParts2 = finToDate.split("/");
+
+                var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+                console.log(formattedDate1);
+                console.log(formattedDate2);
+
+                $('#EntryDate').datepicker("option", "minDate", formattedFromDate);
+                $('#EntryDate').datepicker("option", "maxDate", formattedToDate);
+                $('#ReqDate').datepicker("option", "minDate", formattedFromDate);
+                $('#ReqDate').datepicker("option", "maxDate", formattedToDate);
+
+            }
+            else 
+            {
+                GetServerDate();
+              
+                var finFromDate = $('#FinFromDate').val();
+                var finToDate = $('#FinToDate').val();
+
+                var dateParts1 = finFromDate.split("/");
+                var monthNames = {
+                    "Jan": "01",
+                    "Feb": "02",
+                    "Mar": "03",
+                    "Apr": "04",
+                    "May": "05",
+                    "Jun": "06",
+                    "Jul": "07",
+                    "Aug": "08",
+                    "Sep": "09",
+                    "Oct": "10",
+                    "Nov": "11",
+                    "Dec": "12"
+                };
+             
+                 var formattedFromDate = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                 var dateParts2 = finToDate.split("/");
+                 var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+                var today = new Date(); 
+
+                var minDate = new Date();
+                minDate.setDate(minDate.getDate() - 30);
+
+                $("#EntryDate").datepicker({
+                    dateFormat: "yy-mm-dd",
+                    minDate: minDate, 
+                    maxDate: today 
+                });
+
+                var formattedDate = today.toISOString().split('T')[0];
+                $("#EntryDate").val(formattedDate);
+
+                var formattedDate = today.toISOString().split('T')[0];
+                $("#EntryDate").val(formattedDate);
+
+            }
+           
+            fillItems();
+            fillWO();
+            fillWC();
+            functionFeatureOption();
+        });
+        $("#EntryDate").on("change", function () {
+            var today = new Date();
+            var day = today.getDate().toString().padStart(2, '0'); // Ensure two digits
+            var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+            var year = today.getFullYear();
+            var formattedCurrentDate = `${day}/${month}/${year}`;
+            var formattedCurrentDateObject = new Date(`${month}/${day}/${year}`);
+            var entryDateValue = $("#EntryDate").val();
+            var parts = entryDateValue.split('/');
+            var entryDateValueObject = new Date(parts[2], parts[1] - 1, parts[0]);
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth() + 1; // Months are 0-based in JS, so adding 1
+            var financialYearStart, financialYearEnd;
+            if (month < 4) {
+                financialYearStart = (year - 1);
+                financialYearEnd = year;
+            } else {
+                financialYearStart = year;
+                financialYearEnd = (year + 1);
+            }
+            var finYearFirstDateValueObject = new Date(financialYearStart, 3, 1);
+            if (entryDateValueObject > formattedCurrentDateObject) {
+                alert("Future dates are not allowed!");
+                $(this).val(formattedCurrentDate); // Reset to today's date
+            } else if (entryDateValueObject < finYearFirstDateValueObject) {
+                alert("The selected date cannot be before the start of the financial year (April 1st).");
+                $(this).val(formattedCurrentDate); // Reset to today's date
+            }
+        });
+        $("#ReqDate").on("change", function () {
+            var today = new Date();
+            var day = today.getDate().toString().padStart(2, '0'); // Ensure two digits
+            var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+            var year = today.getFullYear();
+            var formattedCurrentDate = `${day}/${month}/${year}`;
+            var formattedCurrentDateObject = new Date(`${month}/${day}/${year}`);
+            var entryDateValue = $("#ReqDate").val();
+            var parts = entryDateValue.split('/');
+            var entryDateValueObject = new Date(parts[2], parts[1] - 1, parts[0]);
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth() + 1; // Months are 0-based in JS, so adding 1
+            var financialYearStart, financialYearEnd;
+            if (month < 4) {
+                financialYearStart = (year - 1);
+                financialYearEnd = year;
+            } else {
+                financialYearStart = year;
+                financialYearEnd = (year + 1);
+            }
+            var finYearFirstDateValueObject = new Date(financialYearStart, 3, 1);
+            if (entryDateValueObject > formattedCurrentDateObject) {
+                alert("Future dates are not allowed!");
+                $(this).val(formattedCurrentDate); // Reset to today's date
+            } else if (entryDateValueObject < finYearFirstDateValueObject) {
+                alert("The selected date cannot be before the start of the financial year (April 1st).");
+                $(this).val(formattedCurrentDate); // Reset to today's date
+            }
+        });
+        $('#Qty').on('input', function () {
+            this.value = this.value.replace(/(\.[\d]{5})./g, '$1');
+        });
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate","Routing")",
+                async: false,
+                success: function (result, status, error) {
+                     
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ExpectedDate').datepicker("option", "minDate", $('#ReqDate').val());
+                    $('#ReqDate').datepicker("option", "mindate", result);
+                }
+            });
+        }
+
+        function AltUnitConversion(flag) {
+            var AltQty, IssueQty = 0;
+            if (flag == "QtyChange") {
+                AltQty = 0;
+                IssueQty = $('#Qty').val();
+            } else {
+                IssueQty = 0;
+                AltQty = $('#AltQty').val();
+            }
+
+            $.ajax({
+                url: "@Url.Action("AltUnitConversion")",
+                type: "POST",
+                data: { "ItemCode": $('#ItemCode').val(), "AltQty": AltQty, "UnitQty": IssueQty },
+                async: false,
+                success: function (data) {
+                    ;
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            if (flag == "QtyChange") {
+                                //$('#AltQty').val(obj.Result.Table[0].AltUnitValue).toFixed(5);
+                                var altUnitValue = parseFloat(obj.Result.Table[0].AltUnitValue); 
+                                $('#AltQty').val(altUnitValue.toFixed(5)); 
+
+                            }
+                            else {
+                               // $('#Qty').val(obj.Result.Table[0].ActualUnitValue).toFixed(5);
+                               var actualUnitValue = parseFloat(obj.Result.Table[0].ActualUnitValue); 
+                               $('#Qty').val(actualUnitValue.toFixed(5)); 
+
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
+        $('form').on('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+            }
+        });
+
+        function getFormattedDate(inputDate) {
+             ;
+            var dateParts = inputDate.split("/");
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            // Extract the date components
+            var day = parseInt(dateParts[0], 10);
+            var monthIndex = monthNames.indexOf(dateParts[1]);
+            var year = parseInt(dateParts[2], 10);
+
+            // Create a new Date object using the extracted components
+            var date = new Date(year, monthIndex, day);
+
+            // Format the date as "dd/MM/yyyy"
+            var formattedDate = ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear();
+
+            return formattedDate;
+            console.log(formattedDate);
+        }
+        $('#AltQty').keyup(function () {
+            var qty = parseFloat($(this).val());
+
+            if (qty < 0) {
+                $.notify("Alt Qty cannot be less than 0", "error");
+                $('#AltQty').val(0);
+            }
+        });
+
+        $('#Qty').keyup(function () {
+            var qty = parseFloat($(this).val());
+
+            if (qty < 0) {
+                $.notify("Qty cannot be less than 0", "error");
+                $('#Qty').val(0);
+            }
+            $('#PendQty').val(parseFloat(qty));
+        });
+
+        function functionFeatureOption() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CheckFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        var allowOption = obj.Result.Table[0].AllowBackdateReqWOBOM;
+                        if (allowOption == 'Y') {
+                            $('#EntryDate').css("pointer-events", "auto");
+                            $('#ReqDate').css("pointer-events", "auto");
+                            $('#EntryDate').css('color', 'rgb(248,255,178)');
+                            $('#ReqDate').css('color', 'rgb(248,255,178)');
+                        }
+                        else {
+                            $('#EntryDate').css("pointer-events", "none");
+                            $('#ReqDate').css("pointer-events", "none");
+                            $('#EntryDate').css('color', 'rgb(248,255,178)');
+                            $('#ReqDate').css('color', 'rgb(248,255,178)');
+                            //$('#EntryDate').prop("disabled", true);
+                            //$('#ReqDate').prop("disabled", true);
+                        }
+                    }
+                }
+            });
+        }
+
+        function fillDepartMent() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillDept")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#FromDepartmentId').empty();
+                            $('#FromDepartmentId').val('');
+                            $('#FromDepartmentId').append('<option disabled value="" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#FromDepartmentId').append('<option value="' + val.EntryId +
+                                    '" data-depttype="' + val.DeptType + '">' + val.DeptName + '</option>');
+                            });
+                            if ($('#Mode').val() == "U") {
+                                $('#FromDepartmentId').val($('#FromDeptUpd').val());
+                            }
+
+                        }
+                    }
+                }
+            });
+        }
+
+        $("#Qty").on("input", function (e) {
+            var inputValue = $(this).val();
+
+            inputValue = inputValue.replace(/[^0-9.]/g, '');
+
+            var dotCount = inputValue.split('.').length - 1;
+            if (dotCount > 1) {
+                inputValue = inputValue.slice(0, -1);
+            }
+            $(this).val(inputValue);
+        });
+
+        function fillProjectNoandYC() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetProjectNo")",
+                async: false,
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProjectNo').empty();
+                            $('#ProjectYearCode').val('');
+                            $('#ProjectNo').append('<option disabled value="" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+
+                                $('#ProjectNo').append('<option value="' + val.projectname +
+                                    '" data-yearcode="' + val.yearcode + '">' + val.projectname + '</option>');
+                            });
+
+                        }
+                    }
+                }
+
+            });
+        }
+
+        $('#ProjectNo').change(function () {
+            $('#ProjectYearCode').val($('#ProjectNo').find(':selected').data('yearcode'));
+        });
+        function fillItems() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillItems")",
+                data: { TF: $('#IC1').is(':checked') ? 'T' : 'F' },
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            //$('#ItemName').prop('checked', false);
+                            $('#ItemCode').empty();
+                            $('#ItemCode').append('<option disabled selected>-Select-</option>');
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                $('#ItemCode').append('<option value="' + val.Item_Code +
+                                    '" data-unit="' + val.Unit +
+                                    '" data-altunit="' + val.AlternateUnit +
+                                    '" data-bin="' + val.BinNo +
+                                    '" data-location="' + val.Location +
+                                    '">' + val.ItemName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillPartCode")",
+                data: { TF: $('#IC1').is(':checked') ? 'T' : 'F' },
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            //$('#ItemName').prop('checked', false);
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option disabled selected>-Select-</option>');
+                            $.each(obj.Result.Table, function (index, val) {
+                                $('#PartCode').append('<option value="' + val.Item_Code +
+                                    '" data-unit="' + val.Unit +
+                                    '" data-altunit="' + val.AlternateUnit +
+                                    '" data-bin="' + val.BinNo +
+                                    '" data-location="' + val.Location +
+                                    '">' + val.PartCode + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#ReqDate').change(function () {
+             
+            var reqDate = $(this).datepicker('getDate');
+            $('#ExpectedDate').datepicker('option', 'minDate', reqDate);
+            $('#ExpectedDate').val($('#ReqDate').val());
+           // $('#ExpectedDate').datepicker("option", "mindate", $('#ReqDate').val());
+        });
+
+       
+
+
+        function fillWO() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillWorkOrder")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#WONo,#WoYearCode').empty();
+                            $('#WONo,#WoYearCode').append('<option disabled selected>-Select-</option>');
+                            $.each(obj.Result.Table, function (index, val) {
+                                if ($('#hiddenWONO').val() == val.WONO) {
+                                    $('#WONo').append('<option value="' + val.WONO +
+                                        '" data-woyearcode="' + val.WOYearCOde +
+                                        '" data-wodate="' + val.WODate +
+                                        '" selected>' + val.WONO + '</option>');
+                                    $('#WoYearCode').append('<option value="' + val.WOYearCOde +
+                                        '" selected>' + val.WOYearCOde + '</option>');
+                                }
+                                else {
+                                    $('#WONo').append('<option value="' + val.WONO +
+                                        '" data-woyearcode="' + val.WOYearCOde +
+                                        '" data-wodate="' + val.WODate +
+                                        '">' + val.WONO + '</option>');
+                                }
+
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#WONo').change(function () {
+            $('#WoYearCode').empty();
+            $('#WoYearCode').append('<option selected disabled>-Select-</option>');
+            var yearcode = $(this).find(':selected').data('woyearcode');
+            $('#WoYearCode').append('<option value="' + yearcode +
+                '">' + yearcode + '</option>');
+
+        });
+
+
+        $('#WoYearCode').change(function () {
+            $("#WODate").val($('#WONo').find(':selected').data('wodate').split("T")[0]);
+        })
+
+        function fillWC() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillWorkCenter")",
+                dataType: "json",
+                success: function (result, status, error) 
+                {
+                     
+                    if (result != null) 
+                    {
+                        
+                        var obj = $.parseJSON(result);
+
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') 
+                        {
+                            $('#WorkCenterId').empty();
+                            // $('#WorkCenterId').append('<option disabled selected>-Select-</option>');
+                            $.each(obj.Result.Table, function (index, val) 
+                            {
+                                if ($('#hiddenWorkCenter').val() == val.EntryID) {
+                                    $('#WorkCenterId').append('<option value="' + val.EntryID +
+                                        '" selected>' + val.WorkCenterDescription + '</option>');
+                                } else {
+                                    $('#WorkCenterId').append('<option value="' + val.EntryID +
+                                        '">' + val.WorkCenterDescription + '</option>');
+                                }
+
+                            });
+                        }
+                    }
+                },
+                error: function (xhr, status, error)
+                {
+                    alert("Error: " + error);
+                }
+            });
+        }
+
+        $('#FromDepartmentId').change(function () {
+            if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" ||
+                $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
+
+                $('#WorkCenterId').prop('disabled', false);
+            }
+            else {
+                $('#WorkCenterId').prop('selectedIndex', 0);
+                $('#WorkCenterId').prop('disabled', true);
+            }
+        });
+
+        function ValidateReq_Grid() {
+            var Err = 0;
+            var expDate = $('#ExpectedDate').val();
+            var reqDate = $('#ReqDate').val();
+
+            var parts1 = reqDate.split("/");
+            var convertedReqDate = parts1[2] + "-" + parts1[1] + "-" + parts1[0];
+
+            var parts = expDate.split("/");
+            var convertedExpDate = parts[2] + "-" + parts[1] + "-" + parts[0];
+
+            //if(!isNaN($('#Qty').val())){
+            //     if (parseInt($('#Qty').val()) <= 0 || $('#Qty').val() == '') {
+            //    AddErrorCls('Qty');
+            //    Err = 1;
+            //}
+            //else {
+            //    RemoveErrorCls('Qty');
+            //}
+            //}
+            //else{
+            //    AddErrorCls('Qty');
+            //    Err = 1;
+            //}
+            if (!isNaN($('#AltQty').val())) {
+                RemoveErrorCls('AltQty');
+            }
+            else {
+
+                AddErrorCls('AltQty');
+                Err = 1;
+            }
+            if ($('#Unit').val() == '') {
+                AddErrorCls('Unit');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Unit');
+            }
+            if ($('#Qty').val() == '' || $('#Qty').val() == 0) {
+                AddErrorCls('Qty');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Qty');
+            }
+            if ($('#PartCode').prop('selectedIndex') == 0 || $('#ItemCode').prop('selectedIndex') == 0) {
+                AddErrorCls('PartCode'), AddErrorCls('ItemCode');
+                $.notify("ItemCode and PartCode is required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('PartCode'), RemoveErrorCls('ItemCode');
+            }
+            if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
+                if ($('#WorkCenterId').prop('selectedIndex') == 0) {
+                    AddErrorCls('WorkCenterId');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('WorkCenterId');
+                }
+            }
+            else {
+                RemoveErrorCls('WorkCenterId');
+            }
+
+            if (convertedExpDate < convertedReqDate) {
+                $.notify("Expected date cannot be less than Requisition date");
+                AddErrorCls('ExpectedDate');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ExpectedDate');
+            }
+
+            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        $('.GridButton').click(function (e) {
+            e.preventDefault();
+
+            if (!ValidateReq_Grid()) return;
+
+            var ItemData = {
+                "ItemCode": parseInt($('#ItemCode').val()),
+                "PartCode": $('#PartCode').find(':selected').text(),
+                "ItemName": $('#ItemCode').find(':selected').text(),
+                "Unit": $('#Unit').val(),
+                "Qty": $('#Qty').val(),
+                "PendQty": parseFloat($('#PendQty').val()),
+                "StoreId": $('#StoreId').val(),
+                "StoreName": $('#StoreId').find(':selected').text(),
+                "TotalStock": $('#TotalStock').val(),
+                "ProjectNo": $('#ProjectNo').val(),
+                "ProjectYearCode": $('#ProjectYearCode').val(),
+                "CostCenterId": $('#CostCenterId').val(),
+                "CostCenterName": $('#CostCenterId').find(":selected").text(),
+                "ItemModel": $('#ItemModel').val(),
+                "ItemSize": $('#ItemSize').val(),
+                "ExpectedDate": $('#ExpectedDate').val(),
+                "Remark": $('#Remark').val(),
+                "ItemLocation": $('#ItemLocation').val(),
+                "ItemBinRackNo": $('#ItemBinRackNo').val()
+            }
+            $.ajax({
+                url: "@Url.Action("AddReqWithoutBomDetail")",
+                type: "POST",
+                data: ItemData,
+                beforeSend: function (xhr) {
+                    console.log(1);
+                },
+                success: function (data, status, xhr) {
+                    console.log(2);
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+
+                    }
+                    else {
+
+                        $('#divReqWithoutBomAdded').html(data);
+                        $.notify('Item Added To Grid', "success");
+                        ClearReqWOBomGrid();
+
+                        $('#PartCode').focus();
+                        //$('#PartCode').select2('open').select2('focus');
+                        editingNow = false;
+                    }
+
+                    var rowCount = $('#divReqWithoutBomAdded tr').length;
+                    for (var i = 1; i <= rowCount + 1; i++) {
+                        $('#editButton-' + i).css("pointer-events", "auto");
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+                    console.log(5);
+                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                }
+            }).done(function () {
+                console.log(3);
+            }).fail(function () {
+                alert("error");
+            }).always(function () {
+                console.log(4);
+            });
+        });
+
+        function formatUniversalDatee(inputDate) {
+            //const inputDate = "10/05/2023";
+            const dateParts = inputDate.split('/');
+            const day = dateParts[0];
+            const month = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]).toLocaleString('default', { month: 'short' });
+            const year = dateParts[2];
+            const formattedDate = day + '/' + month + '/' + year;
+            console.log(formattedDate);
+
+        }
+
+        function ClearReqWOBomGrid() {
+            $('#PartCode,#ItemCode,#ProjectNo,#CostCenterId').prop('selectedIndex', 0).trigger('change')
+            $('#PendQty,#Qty,#Unit,#TotalStock,#AltUnit,#AltQty,#ItemLocation,#ItemBinRackNo,#ProjectYearCode,#ItemModel,#ItemSize,#PendAltQty').val("");
+            $('#StoreId').prop('selectedIndex', 0)
+
+        }
+
+        $('#StoreId').change(function () {
+            fillStock();
+        });
+
+        function fillStock() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillTotalStock")",
+                data: { ItemCode: parseInt($('#ItemCode').val()), Store: parseInt($('#StoreId').val()) },
+                dataType: "json",
+                success: function (result, status, error) {
+                    $('#TotalStock').val(0);
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#TotalStock').val(obj.Result.Table[0].STOCK);
+                        }
+                    }
+                }
+            });
+        }
+
+        $(document).on('select2:select', '#ItemCode,#PartCode', function (e) {
+            var cntId = e.target.id;
+            console.log(cntId);
+            if (cntId == 'ItemCode') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+            AltUnitConversion('QtyChange');
+
+        });
+
+        async function GetItemPartCode(ID) {
+            $.getJSON({
+                url: '@Url.Action("GetItemPartCode", "SaleOrder")',
+                data: { Code: $('#' + ID).val() },
+                success: function (result, status, xhr) {
+                    if (result) {
+                        var obj = JSON.parse(result);
+                        if (!obj) {
+                            $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+                        }
+                        else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                            $('#Unit').val(obj.Result[0].Unit);
+                            $('#HSNNo').val(obj.Result[0].HSNNo);
+                            $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
+                            !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+
+        function copyToClipboardForDropdown(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            ;
+            $temp.val($(element).find(":selected").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        function PartCodeChange(ID) {
+            copyToClipboardForDropdown('#PartCode');
+            $('#Unit').val($('#PartCode').find(':selected').data('unit'));
+            $('#AltUnit').val($('#PartCode').find(':selected').data('altunit'));
+            $('#ItemBinRackNo').val($('#PartCode').find(':selected').data('bin'));
+            $('#ItemLocation').val($('#PartCode').find(':selected').data('location'));
+            if ($('#AltUnit').val() != '') {
+                $('#AltQty').prop("readonly", false);
+            }
+            $.when(SetPartCodeItemName(ID)).done(function () { GetItemPartCode(ID) });
+            fillStock();
+
+            $('#ItemCode').select2('open').select2('focus');
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                console.log(v);
+                if (ID == "PartCode") {
+                    $("#ItemCode").val(v).trigger("change");
+                }
+
+                if (ID == "ItemCode") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+        function ItemNameChange(ID) {
+            copyToClipboardForDropdown('#ItemCode');
+            fillStock();
+            $('#Unit').val($('#ItemCode').find(':selected').data('unit'));
+            $('#AltUnit').val($('#ItemCode').find(':selected').data('altunit'));
+            $('#ItemBinRackNo').val($('#ItemCode').find(':selected').data('bin'));
+            $('#ItemLocation').val($('#ItemCode').find(':selected').data('location'));
+            if ($('#AltUnit').val() != '') {
+                $('#AltQty').prop("readonly", false);
+            }
+            SetPartCodeItemName(ID);
+            GetItemPartCode(ID);
+        }
+
+        function DeleteItemRow(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                async: false,
+                success: function (data, status, xhr) {
+                    $('#divReqWithoutBomAdded').html(data);
+                    $.notify("Item Deleted from Grid", "info");
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item !!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        var editingNow = false;
+        function EditItemRow(SeqNo) {
+            //var PartCode = $('#PartCode').val();
+
+            if (editingNow == false) {
+                $.ajax({
+                    url: '@Url.Action("EditItemRow")',
+                    type: "POST",
+                    data: { SeqNo: SeqNo },
+                    success: function (data, status, xhr) {
+
+                        if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                            $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
+                        }
+                        else {
+
+                            var obj = $.parseJSON(data);
+                            DeleteItemRow(SeqNo);
+                            var Excpecteddate = "";
+                            if (obj != null && obj.length == 1) {
+                                Excpecteddate = obj[0].ExpectedDate;
+                                $('#PartCode').val(obj[0].ItemCode).change();
+                                $('#ItemCode').val(obj[0].ItemCode).change();
+                                $('#Unit').val(obj[0].Unit);
+                                $('#Qty').val(obj[0].Qty);
+                                $('#AltUnit').val(obj[0].AltUnit);
+                                $('#AltQty').val(obj[0].AltQty);
+                                $('#ItemModel').val(obj[0].ItemModel);
+                                $('#ItemSize').val(obj[0].ItemSize);
+                                $('#ExpectedDate').val(obj[0].ExpectedDate);
+                                //$('#Unit').val(obj[0].Remark);
+                                $('#PendQty').val(obj[0].PendQty);
+                                $('#PendAltQty').val(obj[0].PendAltQty);
+                                $('#StoreId').val(obj[0].StoreId);
+                                $('#TotalStock').val(obj[0].TotalStock);
+                                //$('#Unit').val(obj[0].Cancle);
+                                $('#ProjectNo').val(obj[0].ProjectNo);
+                                $('#ProjectYearCode').val(obj[0].ProjectYearCode);
+                                $('#CostCenterId').val(obj[0].CostCenterId);
+                                $('#ItemLocation').val(obj[0].ItemLocation);
+                                $('#ItemBinRackNo').val(obj[0].ItemBinRackNo);
+                            }
+                        }
+
+
+
+                        var rowCount = $('#divReqWithoutBomAdded tr').length;
+                        //for (var i = 1; i <= rowCount + 1; i++) {
+                        //    $('#editButton-' + i).css("pointer-events", "none");
+                        //    $('#editButton-' + i).css("cursor", "not-allowed");
+                        //}
+
+                        var dateString = Excpecteddate.split(" ")[0];
+
+                        var regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/;
+                        if (dateString.match(/^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/)) {
+                            var dateParts = dateString.split('-');
+                            var monthName = parseInt(dateParts[1]);
+                            var day = dateParts[0];
+                            var year = dateParts[2];
+
+                            var months = {
+                                Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+                                Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+                            };
+
+                            var month = monthName;
+
+                            var date = new Date(year, month - 1, day);
+                            //var formattedDate = ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2) + '/' + date.getFullYear();
+                            var formattedDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+                            $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
+                        } else {
+                            $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", dateString);
+
+                        }
+                        editingNow = true;
+                        //$('#ExpectedDate').datepicker("option", "mindate", 'now');
+                    },
+                    error: function (response) {
+                        $.notify(response.responseText, "error");
+                    },
+                    failure: function (response) {
+                        $.notify(response.responseText, "error");
+                    }
+                });
+            }
+            else {
+
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+        function PressBack() {
+
+            sessionStorage.setItem('REQNoBack', $('#REQNoBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('WorkCenterBack', $('#WorkCenterBack').val());
+            sessionStorage.setItem('WONoBack', $('#WONoBack').val());
+            sessionStorage.setItem('DeptNameBack', $('#DeptNameBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+    </script>
+}
+
+
+
+<style>
+    #table-containerScroll {
+        width: 300px;
+        overflow-x: scroll;
+    }
+</style>

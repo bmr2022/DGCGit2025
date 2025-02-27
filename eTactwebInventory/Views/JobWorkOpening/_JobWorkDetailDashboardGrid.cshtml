@@ -1,0 +1,141 @@
+﻿@model eTactWeb.DOM.Models.JobWorkOpeningDashboard
+@using Microsoft.AspNetCore.Http
+
+<style>
+    .SAGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .SSThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        height: 40px;
+        z-index: 1;
+    }
+</style>
+<div class="table-responsive" style="max-height:300px;">
+    <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="JobWorkOpeningGrid">
+        <thead class="bg-gradient card-headerBG text-light SSThead">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VendoreName</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssJWChallanNo</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssChallanYearcode</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Isschallandate</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OpnIssQty</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>unit</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecQty</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>pendqty</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecPartCode</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecItemName</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ScrapPartCode</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ScrapItemName</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ScrapQty</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendScrapToRec</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BomStatus</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProcessName</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ChallanQty</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UniqueBatchNo</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Emp_id</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Empname</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssChalanEntryId</th>
+                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VJOBOPENEntryID</th>
+                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VJOBOPENYearCode</th>
+                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEntryByEmp</th>
+                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LastUpdatedByEmp</th>
+                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EnteredByMachine</th>
+            </tr>
+        </thead>
+        <tbody id="divSAGrid">
+            @{
+                var @Cntr = 0;
+                if (Model.DetailDashboardGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.DetailDashboardGrid)
+                    {
+                        Cntr = Cntr + 1;
+
+                        <tr id="SAGridRow-@Cntr">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container" style="display:flex">
+                                    <a class="table-link link-success" asp-action="JobWorkOpening" asp-route-Mode="V" asp-route-ID="@item.VJOBOPENEntryID" asp-route-YC="@item.IssChallanYearcode" asp-route-OpeningType="@item.OpeningType">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                    <a class="table-link link-primary" asp-action="JobWorkOpening" asp-route-Mode="U" asp-route-ID="@item.VJOBOPENEntryID" asp-route-YC="@item.IssChallanYearcode" asp-route-OpeningType="@item.OpeningType">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+
+                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.VJOBOPENEntryID" asp-route-YC="@item.IssChallanYearcode" asp-route-repotype="@item.repotype" asp-route-OpeningType="@item.OpeningType" asp-route-ItemCode="@item.ItemCode" asp-route-Challanno="@item.IssJWChallanNo"
+                                       asp-route-ActualEntryById="@item.ActualEntryByEmp" asp-route-MachineName="@item.EnteredByMachine" asp-route-AccountCode="@item.Accountcode"
+                                       asp-route-Partcode="@item.PartCode" asp-route-ItemName="@item.ItemName">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+
+                                </div>
+                            </td>
+                            <td>@item.VendoreName</td>
+                            <td>@item.IssJWChallanNo</td>
+                            <td>@item.IssChallanYearcode</td>
+                            <td>@item.Isschallandate.Split(" ")[0]</td>
+                            <td>@item.EntryDate.Split(" ")[0]</td>
+                            <td>@item.PartCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.OpnIssQty</td>
+                            <td>@item.Rate</td>
+                            <td>@item.unit</td>
+                            <td>@item.Amount</td>
+                            <td>@item.RecQty</td>
+                            <td>@item.pendqty</td>
+                            <td>@item.RecPartCode</td>
+                            <td>@item.RecItemName</td>
+                            <td>@item.ScrapPartCode</td>
+                            <td>@item.ScrapItemName</td>
+                            <td>@item.ScrapQty</td>
+                            <td>@item.PendScrapToRec</td>
+                            <td>@item.BomStatus</td>
+                            <td>@item.ProcessName</td>
+                            <td>@item.ChallanQty</td>
+                            <td>@item.BatchNo</td>
+                            <td>@item.UniqueBatchNo</td>
+                            <td>@item.Branch</td>
+                            <td>@item.Emp_id</td>
+                            <td>@item.Empname</td>
+                            <td>@item.Closed</td>
+                            <td>@item.IssChalanEntryId</td>
+                            <td>@item.VJOBOPENEntryID</td>
+                            <td>@item.VJOBOPENYearCode</td>
+                            <td>@item.ActualEntryByEmp</td>
+                            <td>@item.LastUpdatedByEmp</td>
+                            <td>@item.EnteredByMachine</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

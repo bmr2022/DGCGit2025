@@ -1,0 +1,695 @@
+﻿@model eTactWeb.DOM.Models.UserRightModel
+
+@{
+    ViewData["Title"] = "CreateMenu";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="shadow-lg">
+    <form asp-action="UserRights" autocomplete="off" class="form-horizontal">
+
+        <input type="hidden" asp-for="EmpName" />
+        <input type="hidden" asp-for="ModelMode" />
+        <input type="hidden" asp-for="SubMenu2" />
+        <input type="hidden" id="EmployeeId" value="@Model.EmpID" />
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>User Right</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="UserRightDashboard" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                </span>
+            </h5>
+        </div>
+
+        @Html.AntiForgeryToken()
+
+        <div class="card-body">
+
+            <div class=card>
+                <div class="card-body">
+                    <div class="row g-3" style="justify-content:center">
+                        <div class="col col-md-2 col-sm-6 col-xs-6">
+                            <label class="form-label">Select User</label>
+                            <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                <input id="AC1" class="form-check-input" type="checkbox" role="switch" />Show All
+                            </div>
+                            <select class="form-select" asp-for="EmpID" asp-items="@(new SelectList(Model.UserList,"Value","Text"))" onchange="GetSearchData()">
+                                <option value=0>-Select-</option>
+                            </select>
+                        </div>
+                        <div class="col col-md-2 col-sm-6 col-xs-6">
+                            <label class="form-label">Select Module</label>
+                            <select class="form-select fs" asp-for="Module" asp-items="@(new SelectList(Model.ModuleList,"Value","Text"))" onchange="GetMenuList(this.id);">
+                                <option value=0>-Select-</option>
+                            </select>
+                        </div>
+                        <div class="col col-md-2 col-sm-6 col-xs-6">
+                            <label class="form-label">Select Menu</label>
+                            <select class="form-select fs" asp-for="MainMenu" asp-items="@(new SelectList(Model.MainMenuList,"Value","Text"))">
+                                <option value=0>-Select-</option>
+                            </select>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="All">
+                                <label class="form-check-label">All</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="Save">
+                                <label class="form-check-label">Save</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="Update">
+                                <label class="form-check-label">Update</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="Delete">
+                                <label class="form-check-label">Delete</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="View">
+                                <label class="form-check-label">View</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="progress my-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <div class="card-footer justify-content-around">
+            <div class="row" style="text-align-last: start;">
+                <div class="col-auto m-2">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="back();"><i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK</button>
+                </div>
+                <div class="col-auto mb-2">
+                    <label class="form-label">Global search</label>
+                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                </div>
+                <div class="d-flex col justify-content-center buttonGrid">
+                    @if (@Model.Mode != "V")
+                    {
+                        <div class="col-auto m-2">
+                            <button type="button" data-abcd="24" class="ItemBtn btn btn-sm btn-outline-danger">
+                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                            </button>
+                        </div>
+                        @if (@Model.Mode == "U")
+                        {
+                            <div class="col-auto m-2">
+                                <button type="submit" class="UpdateBtn btn btn-primary btn-sm bg-graident">
+                                    <i class="fa fa-pencil fa-lg fa-fw" aria-hidden="true"></i>UPDATE
+                                </button>
+                            </div>
+                            <div class="col-auto m-2">
+                                <a class="Copy btn btn-sm btn-outline-primary bg-gradient" asp-action="UserRights" asp-route-Mode="C" asp-route-ID="@Model.EmpID" asp-route-userName="@Model.UserName" style="color:blue!important;margin-right:5px;">
+                                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: blue; --fa-secondary-opacity: 1.0;--fa-animation-duration: 2s;"></i>
+                                    COPY
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-auto m-2">
+                                        <button type="reset" class="btn btn-sm btn-danger bg-graident" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>RESET
+                                </button>
+                            </div>
+
+                            <div class="col-auto m-2">
+                                <button type="submit" class="SubmitBtn btn btn-sm btn-success bg-graident">
+                                    <i class="fa fa-hdd-o fa-lg fa-fw" aria-hidden="true"></i>SUBMIT
+                                </button>
+                            </div>
+                        }
+                    }
+                </div>
+
+            </div>
+            <div class="card-body overflow-auto pb-0 table-responsive" style="max-height:350px;">
+                <table class="table table-hover table-bordered table-striped" id="UserRightsTable">
+                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static;" id="UserRighthead">
+                        <tr>
+                            <th style="display:none">@Html.DisplayNameFor(model => model.EmpID)</th>
+                            <th>Action</th>
+                            @*<th>Sr#</th>*@
+                            <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>@Html.DisplayNameFor(model => model.EmpName)</th>
+                            <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>@Html.DisplayNameFor(model => model.Module)</th>
+                            <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>@Html.DisplayNameFor(model => model.MainMenu)</th>
+                            <th>@Html.DisplayNameFor(model => model.All)</th>
+                            <th>@Html.DisplayNameFor(model => model.Update)</th>
+                            <th>@Html.DisplayNameFor(model => model.Save)</th>
+                            <th>@Html.DisplayNameFor(model => model.Delete)</th>
+                            <th>@Html.DisplayNameFor(model => model.View)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="UserRightsGrid">
+                        <partial name="_UserRightGrid" />
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </form>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            //$('#Module').append("<option value='All'>ALL</option>");
+            //$('#MainMenu').append("<option value='All'>ALL</option>");
+            //$('#EmpID').append("<option value='All'>ALL</option>");
+             
+            if ('@Model.Mode' == "U") {
+                 
+                $('#AC1').prop("checked", true);
+                $('#AC1').trigger("change");
+                $('#EmpID').val($('#EmployeeId').val());
+                $('.UpdateBtn').remove();
+                $('.buttonGrid').append('<div class="col-auto m-2">' +
+                    '<button type="submit" class="UpdateBtn btn btn-primary btn-sm bg-graident">' +
+                    '<i class="fa fa-pencil fa-lg fa-fw" aria-hidden="true"></i>' +
+                    ' UPDATE' +
+                    '</button>' +
+                    '</div>');
+                $('#EmpID').css("pointer-events", "none");
+                //$('AC1').css("pointer-events","none");
+                $('#AC1').prop("disabled", true);
+            }
+            if ('@Model.Mode' == "V") {
+                $('button[type="submit"]').prop('disabled', true);
+            }
+            if ('@Model.Mode' == "V" || '@Model.Mode' == "U") {
+
+                $('.fs').attr('disabled', false);
+                $('#Module').change();
+                setTimeout(function () {
+                    $('#MainMenu').val('@Model.MainMenu');
+                    $('#MainMenu').change();
+                    //$('#SubMenu').val('@Model.SubMenu');
+                    setTimeout(function () {
+                        //$('#SubMenu').val('@Model.SubMenu');
+                    }, 1000);
+                }, 1000);
+                $('#AC1').prop("checked", true);
+                $('#AC1').trigger("change");
+                $('#EmpID').val($('#EmployeeId').val());
+
+                $('#EmpID').css("pointer-events", "none");
+
+                $('#AC1').prop("disabled", true);
+
+            }
+            else {
+                $('.fs').prop('selectedIndex', 0).attr('disabled', true);
+            }
+
+            $('#EmpID').change(function () {
+                //GetSearchDataByUser();
+                //$('#Module').val('All');
+                //$("#MainMenu").val('All');
+                if ($('#EmpID').val() == 0) {
+                    $('.fs').empty().append('<option value="0">-Select-</option>').prop('selectedIndex', 0).attr('disabled', true);
+                }
+                else {
+                    $('.fs').prop('disabled', false);
+                    $('#EmpName').val($('#EmpID option:selected').text());
+                }
+            });
+            if ($('#Mode').val() == "C") {
+                $('#AC1').prop("disabled", true);
+            } else {
+
+                GetSearchData();
+            }
+
+        });
+
+        $('#AC1').change(function () {
+            var showAll = '';
+            if ($('#AC1').is(":checked")) {
+                showAll = "TRUE";
+            } else {
+                showAll = "FALSE";
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetUserList")',
+                type: "POST",
+                async: false,
+                data: { "ShowAll": showAll },
+                success: function (data) {
+                    $('#EmpID').empty();
+                    $('#EmpID').append('<option value="">-Select-</option>');
+                    $.each(data,
+                        function (key, val) {
+                            $('#EmpID').append('<option value="' + val.value + '">' + val.text + '</option>');
+                        });
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+        function GetSearchDataByUser() {
+            $.ajax({
+                url: '@Url.Action("GetSearchDataByUser")',
+                type: "POST",
+                data: { "EmpName": $('#EmpID').find(':selected').text() },
+                success: function (data) {
+                     
+                    $('#UserData').empty().append(data);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        $('.ItemBtn').click(function (e) {
+              
+            e.preventDefault();
+            var ItemData = {
+                "EmpName": $('#EmpID').val(),
+                "Module": $('#Module').find(":selected").text(),
+                "Menu": $('#MainMenu').find(":selected").text(),
+            }
+            var all = $('#All').is(":checked") ? "true" : "false";
+            var save = $('#Save').is(":checked") ? "true" : "false";
+            var update = $('#Update').is(":checked") ? "true" : "false";
+            var delete1 = $('#Delete').is(":checked") ? "true" : "false";
+            var view = $('#View').is(":checked") ? "true" : "false";
+
+            if (all == "false" && save == "false" && update == "false" && delete1 == "false" && view == "false") {
+                $.notify("Please allow at least one permission", "error");
+                return false;
+            }
+
+            $.ajax({
+                url: "@Url.Action("AddUserRightDetail")",
+                type: 'POST',
+                async: false,
+                data: { "EmpID": $('#EmpID').val(), "EmpName": $('#EmpID').find(":selected").text(), "Module": $('#Module').val(), "MainMenu": $('#MainMenu').val(), "All": all, "Save": save, "Update": update, "Delete": delete1, "View": view },
+                success: function (data) {
+                     
+                    if (data == "Duplicate") {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else if (data == "AlreadyExists") {
+                        $.notify("Please delete existing permissions if you want to add all permits", "error");
+                    }
+                    else {
+                        $('#UserRightsGrid').empty().html(data);
+                        $.notify('Item Added To Grid.', "success");
+                    }
+                }
+            });
+        });
+
+
+        function GetSearchData() {
+             
+            if ('@Model.Mode' != "C") {
+                var EmpName = $('#EmpID').find(":selected").text() == "-Select-" ? "fd" : $('#EmpID').find(":selected").text();
+                $.ajax({
+                    url: '@Url.Action("GetSearchDataByEmpName")',
+                    type: "POST",
+                    async: false,
+                    data: { "EmpID": $('#EmpID').val(), "Module": '', "MainMenu": '' },
+                    success: function (data) {
+                        $('#UserRightsGrid').empty().append(data);
+                         
+                        if ($('#Mode').val() == "U") {
+                            $('.UpdateBtn').remove();
+                            $('.buttonGrid').append('<div class="col-auto m-2">' +
+                                '<button type="submit" class="UpdateBtn btn btn-primary btn-sm bg-graident">' +
+                                '<i class="fa fa-pencil fa-lg fa-fw" aria-hidden="true"></i>' +
+                                ' UPDATE' +
+                                '</button>' +
+                                '</div>');
+                            $('.SubmitBtn').hide();
+                            $('.Copy').show();
+                            $('#ModelMode').val("U");
+                        }
+                        else {
+                            $('.SubmitBtn').remove();
+                            $('.buttonGrid').append('<div class="col-auto m-2">' +
+                                '<button type="submit" class="SubmitBtn btn btn-danger btn-sm bg-graident">' +
+                                '<i class="fa fa-lg fa-fw" aria-hidden="true"></i>' +
+                                ' SUBMIT' +
+                                '</button>' +
+                                '</div>');
+                            $('.UpdateBtn').hide();
+                            $('.Copy').hide();
+                            $('#ModelMode').val("I");
+
+                        }
+                        if ('@Model.Mode' == "C") {
+                             
+                            $('#EmpID').val("");
+                            $('#Module').val("");
+                            $('#MainMenu').val("");
+                        }
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+            else { // when Mode is COPY
+                $.ajax({
+                    url: "@Url.Action("CopyUserRightDetail")",
+                    type: 'POST',
+                    data: { "EmpID": $('#EmpID').val(), "EmpName": $('#EmpID').find(":selected").text() },
+                    success: function (data) {
+                         
+                        $('#UserRightsGrid').empty().append(data);
+                        //if (data == "Duplicate") {
+                        //    $.notify('Duplicate Item Not Allowed.', "info");
+                        //    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                        //}
+                        //else if (data == "AlreadyExists") {
+                        //    $.notify("Please delete existing permissions if you want to add all permits", "error");
+                        //}
+                        //else {
+                        //    $('#UserRightsGrid').empty().html(data);
+                        //    $.notify('Item Added To Grid.', "success");
+                        //}
+                    }
+                });
+            }
+
+            if ('@Model.Mode' == "V") {
+                $('button[type="submit"]').prop('disabled', true);
+                $('#ModelMode').val("V")
+            }
+        }
+
+        function GetMenuList(ID) {
+               
+            $.ajax({
+                url: "@Url.Action("GetList")",
+                type: 'GET',
+                async: false,
+                data: { Flag: ID, Module: $('#' + ID).val(), MainMenu: '' },
+                success: function (data) {
+                     
+                    $('#MainMenu').empty();
+                    $('#MainMenu').append('<option value="0">-Select-</option>');
+                    $.each(data,
+                        function (key, val) {
+                            $('#MainMenu').append('<option value="' + val.value + '">' + val.text + '</option>');
+                        });
+                }
+            });
+        }
+
+        $('#All').change(function () {
+             
+            if ($('#All').is(':checked') == true) {
+                $('.FCI1').prop('checked', true);
+            } else {
+                $('.FCI1').prop('checked', false);
+            }
+        });
+
+        $('#Save').change(function () {
+            $('#All').prop('checked', false);
+            if ($('#Save').is(':checked') == true && $('#Update').is(':checked') == true && $('#Delete').is(':checked') == true) {
+                 
+                $('#All').prop('checked', true);
+            }
+        })
+        $('#Update').change(function () {
+             
+            $('#All').prop('checked', false);
+            if ($('#Update').is(':checked') == true){
+            $('#View').prop('checked', true);
+            }
+            if ($('#Save').is(':checked') == true && $('#Update').is(':checked') == true && $('#Delete').is(':checked') == true && $('#View').is(':checked') == true) {
+                 
+                $('#All').prop('checked', true);
+            }
+        })
+        $('#Delete').change(function () {
+            $('#All').prop('checked', false);
+            if ($('#Delete').is(':checked') == true) {
+                $('#View').prop('checked', true);
+            }
+            if ($('#Save').is(':checked') == true && $('#Update').is(':checked') == true && $('#Delete').is(':checked') == true && $('#View').is(':checked') == true) {
+                 
+                $('#All').prop('checked', true);
+            }
+        })
+        $('#View').change(function () {
+            $('#All').prop('checked', false);
+            if ($('#View').is(':checked') == false) {
+                $('#Update').prop('checked', false);
+            }
+            if ($('#View').is(':checked') == false) {
+                $('#Delete').prop('checked', false);
+            }
+            if ($('#Save').is(':checked') == true && $('#Update').is(':checked') == true && $('#Delete').is(':checked') == true && $('#View').is(':checked') == true) {
+                 
+                $('#All').prop('checked', true);
+            }
+        })
+
+        function AddToGrid() {
+            var all = $('#All').is(":checked") ? "true" : "false";
+            var save = $('#Save').is(":checked") ? "true" : "false";
+            var update = $('#Update').is(":checked") ? "true" : "false";
+            var delete1 = $('#Delete').is(":checked") ? "true" : "false";
+            var view = $('#View').is(":checked") ? "true" : "false";
+            if (all == "false" && save == "false" && update == "false" && delete1 == "false" && view == "false") {
+                $.notify("Please allow at least one permission", "error");
+                return false;
+            }
+
+             
+            $.ajax({
+                url: '@Url.Action("AddToGrid")',
+                type: "POST",
+                async: false,
+                data: { "EmpID": $('#EmpID').val(), "Module": $('#Module').val(), "MainMenu": $('#MainMenu').val(), "All": all, "Save": save, "Update": update, "Delete": delete1, "View": view },
+                success: function (data, status, xhr) {
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                    } else {
+                        $('#divSaleItemGrid').html(data);
+                    }
+
+                },
+                error: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        function DeleteItemRow(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                async: false,
+                data: { "SeqNo": SeqNo },
+                success: function (data, status, xhr) {
+                    $('#UserRightsGrid').empty().html(data);
+                    $.notify("User Right deleted successfully", "info");
+                },
+                error: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        function EditItemRow(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("EditItemRow")',
+                type: "POST",
+                async: false,
+                data: { SeqNo: SeqNo },
+                success: function (data, status, xhr) {
+                     
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
+                    }
+                    else {
+                         ;
+                        var obj = $.parseJSON(data);
+                        DeleteItemRow(SeqNo);
+                        //if (isEditAllowed == "false") {
+                        //    return false;
+                        //}
+                        //else {
+                         
+                        if (obj != null && obj.length == 1) {
+                            //$('#EmpID').val(obj[0].EmpID);
+                            $('#Module').val(obj[0].Module).trigger('change');
+                            $('#MainMenu').val(obj[0].MainMenu);
+                             
+                            if (obj[0].All == 'true') {
+                                $('#All').prop('checked', true);
+                                //$('.FCI1').prop('checked', true);
+                            } else {
+                                $('#All').prop('checked', false);
+                            }
+                            if (obj[0].Delete == 'true') {
+                                $('#Delete').prop('checked', true);
+                            } else {
+                                $('#Delete').prop('checked', false);
+                            }
+                            if (obj[0].Save == 'true') {
+                                $('#Save').prop('checked', true);
+                            } else {
+                                $('#Save').prop('checked', false);
+                            }
+                            if (obj[0].Update == 'true') {
+                                $('#Update').prop('checked', true);
+                            } else {
+                                $('#Update').prop('checked', false);
+                            }
+                            if (obj[0].View == 'true') {
+                                $('#View').prop('checked', true);
+                            } else {
+                                $('#View').prop('checked', false);
+                            }
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response) {
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        var currentSearchColumn = null;
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#UserRightsGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+
+        $(document).on("click", ".sortCol", function () {
+             ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+        function sortTable(columnIndex, ascending) {
+             
+            var table = $('#UserRightsTable');
+            var rows = table.find('#UserRightsGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#UserRightsGrid').append(row);
+            });
+        }
+
+    </script>
+}
+
+<style>
+    #UserRighthead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .KC1 {
+        margin-top: 20px !important;
+        margin-left: 10px !important;
+    }
+</style>

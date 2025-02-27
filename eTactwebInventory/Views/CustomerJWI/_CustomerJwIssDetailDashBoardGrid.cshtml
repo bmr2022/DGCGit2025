@@ -1,0 +1,246 @@
+﻿@model eTactWeb.DOM.Models.CustJWIssQDashboard;
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ChallanNO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ChallanDate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustomerName</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustomerAddress</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustState</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustStateCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GstType</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>JobWorkType</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BOMInd</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProduceUnproduce</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BOMNO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="13"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="15"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSNNO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="18"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="19"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="20"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="21"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="22"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustOrderNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="23"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SODate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="24"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="25"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchDate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="26"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchYearCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="27"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="28"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UniqueBatchNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="29"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchStock</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="30"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalStock</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="31"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalAmount</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="32"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>NetAmount</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="33"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>NoOfCase</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="36"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryMachineName</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="34"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EWayBillNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="38"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransPorter</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="39"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VehicleNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="40"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TimeOfRemovel</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="41"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchThrough</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="42"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchTo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="43"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByEmp</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="44"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEntryDate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="45"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedByEmp</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="46"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedOn</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="47"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="48"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="49"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="50"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="51"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillYearCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="52"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustJwIssEntryId</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="53"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustJwIssYearCode</th>
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.CustJWIssQDashboardGrid == null || Model.CustJWIssQDashboardGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.CustJWIssQDashboardGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="CustomerJWI" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary"
+                                           asp-route-ID="@Cntr"
+                                           asp-action="CustomerJWI"
+                                           asp-controller="CustomerJWI"
+                                           asp-route-Mode="U"
+                                           asp-route-CustomerName="@item.CustomerName"
+                                           asp-route-Account_Code="@item.Account_Code"
+                                           asp-route-CustomerAddress="@item.CustomerAddress"
+                                           asp-route-GSTNO="@item.GSTNO"
+                                           asp-route-State="@item.State"
+                                           asp-route-StateCode="@item.StateCode"
+                                           asp-route-JWType="@item.JWType"
+                                           asp-route-DistKm="@item.DistKm"
+                                           asp-route-VehicleNo="@item.VehicleNo"
+                                           asp-route-TransporterName="@item.TransporterName"
+                                           asp-route-DispatchThrough="@item.DispatchThrough"
+                                           asp-route-DispatchTo="@item.DispatchTo"
+                                           asp-route-Types="@item.Types"
+                                           asp-route-YearCode="@item.CustJwIssYearCode"
+                                           asp-route-ChallanNo="@item.ChallanNo"
+                                           asp-route-ChallanDate="@item.ChallanDate"
+                                           asp-route-CustJwIssEntryId="@item.CustJwIssEntryId"
+                                           asp-route-GSTType="@item.GSTType"
+                                           asp-route-EntryDate="@item.ActualEntryDate"
+                                           asp-route-Remark="@item.Remark"
+                                           asp-route-TimeOfRemovel="@item.TimeOfRemovel"
+                                           onclick="confirmEdit(event)">
+
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID"
+                                           asp-route-CustJwIssEntryId="@item.CustJwIssEntryId"
+                                           asp-route-CustJwIssYearCode="@item.CustJwIssYearCode"
+                                           asp-route-EntryMachineName="@item.EntryMachineName"
+                                           asp-route-ActualEntryDate="@item.ActualEntryDate"
+                                           asp-route-EntryById="@Cntr"
+                                           asp-route-Account_Code="@item.Account_Code">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>@item.EntryDate</td>
+                            <td>@item.ChallanNo</td>
+                            <td>@item.ChallanDate</td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.CustomerAddress</td>
+                            <td>@item.State</td>
+                            <td>@item.StateCode</td>
+                            <td>@item.GSTType</td>
+                            <td>@item.JWType</td>
+                            <td>@item.BOMInd</td>
+                            <td>@item.ProduceUnproduce</td>
+                            <td>@item.BOMNO</td>
+                            <td>@item.PartCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.HSNNo</td>
+                            <td>@item.Qty</td>
+                            <td>@item.Unit</td>
+                            <td>@item.Rate</td>
+                            <td>@item.NetAmount</td>
+
+                            <td>@item.Types</td>
+
+                            <td>@item.SONO</td>
+                            <td>@item.CustOrderNo</td>
+                            <td>@item.SoDate</td>
+                            <td>@item.SchNo</td>
+                            <td>@item.SchDate</td>
+                            <td>@item.SchYearcode</td>
+                            <td>@item.BatchNo</td>
+                            <td>@item.UNiqueBatchNo</td>
+                            <td>@item.BatchStock</td>
+                            <td>@item.TotalStock</td>
+                            <td>@item.TotalAmount</td>
+                            <td>@item.NetAmount</td>
+                            <td>@item.EWayBill</td>
+                            <td>@item.EntryMachineName</td>
+                            <td>@item.IssuedByEmpName</td>
+                            <td>@item.TransporterName</td>
+                            <td>@item.VehicleNo</td>
+                            <td>@item.TimeOfRemovel</td>
+                            <td>@item.DispatchThrough</td>
+                            <td>@item.DispatchTo</td>
+                            <td>@item.EntryByEmp</td>
+                            <td>@item.ActualEntryDate</td>
+                            <td>@item.UpdatedByEmp</td>
+                            <td>@item.UpdatedOn</td>
+                            <td>@item.Remark</td>
+                            <td>@item.CC</td>
+                            <td>@item.UID</td>
+                            <td>@item.BillNo</td>
+                            <td>@item.BillYearCode</td>
+                            <td>@item.CustJwIssEntryId</td>
+                            <td>@item.CustJwIssYearCode</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+</style>

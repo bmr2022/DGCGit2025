@@ -1,0 +1,118 @@
+﻿@model eTactWeb.DOM.Models.StockAdjustDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<style>
+
+
+    .SAGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .SSThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        height: 40px;
+        z-index: 1;
+    }
+
+</style>
+@if (Model.SummaryDetail == "Detail")
+{
+    <partial name="_SADetailDashboardGrid" />
+}
+else
+{
+    <div class="table-responsive" style="max-height:300px;">
+        <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="SAGrid">
+            <thead class="bg-gradient card-headerBG text-light SSThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th>Action</th>
+                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Slip No</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Stock Adjustment Date</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store/WorkCenter</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated On</th>
+                </tr>
+            </thead>
+            <tbody id="divSAGrid">
+                @{
+                    var @Cntr = 0;
+                    if (Model.SADashboard.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.SADashboard)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr id="SAGridRow-@Cntr" onclick="selection(this)">
+                                <th>@Cntr</th>
+                                <td style="text-align:center;white-space: nowrap;">
+                                    <a class="table-link link-success" asp-action="StockAdjustment" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                    @if (item.YearCode == yearCode)
+                                    {
+                                        <a class="table-link link-primary" asp-action="StockAdjustment" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="back(event)">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+
+                                        <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" onclick="confirmdelete(event)" asp-route-YC="@item.YearCode" asp-route-EntryByEmp="@item.entryByEmp" asp-route-EntryByMachineName="@item.EntryByMachineName">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a class="table-link link-primary noCursor">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                        <a class="table-link link-danger noCursor">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                </td>
+                                <td>@item.SlipNo</td>
+                                <td>@item.StockAdjustmentDate.ToString().Split(" ")[0]</td>
+                                <td>@item.YearCode</td>
+                                <td>@item.StoreWorkcenter</td>
+                                <td>@item.EntryId</td>
+                                <td>@item.EntryDate.ToString().Split(" ")[0]</td>
+                                <td>@item.enterByEmpName<input type="hidden" value="@item.entryByEmp" /><input type="hidden" value="@Environment.MachineName" /></td>
+                                <td>@item.UpdatedByEmpName</td>
+                                <td>@item.UpdatedOn.ToString().Split(" ")[0]</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}

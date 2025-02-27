@@ -1,0 +1,183 @@
+﻿@model eTactWeb.DOM.Models.CustomerJWRQDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+@if (Model.DashboardType == "Detail")
+{
+    <partial name="_CustomerJWRDetailGrid" />
+}
+else
+{
+    <div class="table-responsive" style="max-height:350px;">
+        <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="MRNTable">
+            <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashMRNThead">
+                <tr>
+
+                    <th>Sr#</th>
+                    <th>Action</th>
+                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MrnNo</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MrnDate</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Nos</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Date</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan No</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Date</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryId</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Received By Emp</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated By</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Jobwork Type</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate YearCode</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN QCCompleted</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Complete</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryDate</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated ON</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryBy Machine Name</th>
+                </tr>
+            </thead>
+            <tbody id="mrnTbody">
+                @{
+                    var @Cntr = 0;
+                    if (Model.CustomerJWRQDashboard == null || Model.CustomerJWRQDashboard.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.CustomerJWRQDashboard)
+                        {
+
+                            Cntr = Cntr + 1;
+                            <tr onclick="selection(this)">
+                                <th>@Cntr</th>
+                                <td style="text-align:center;white-space: nowrap;">
+                                    <div id="container">
+                                        <div id="viewCursorDiv-@Cntr">
+                                            <a class="table-link link-success" asp-action="CustomerJWR" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event)">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        @if (item.YearCode == yearCode)
+                                        {
+                                            <div id="editCursorDiv-@Cntr">
+                                                <a class="table-link link-primary" onclick="confirmEdit(event,'@item.MrnNo','@item.YearCode')" asp-action="CustomerJWR" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div id="deleteCursorDiv-@Cntr">
+                                                <a class="table-link link-danger" onclick="confirmDelete(event,'@item.MrnNo','@item.YearCode','@item.EntryByMachineName')" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-EntryByMachineName="@item.EntryByMachineName">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                <a class="table-link link-primary noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a class="table-link link-danger noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td>@item.VendorName</td>
+                                <td>@item.MrnNo</td>
+                                <td>@item.MrnDate.Split(" ")[0]</td>
+                                <td>@item.GateNo</td>
+                                <td>@item.GateDate.Split(" ")[0]</td>
+                                <td>@item.ChallanNo</td>
+                                <td>@item.ChallanDate.Split(" ")[0]</td>
+                                <td>@item.EntryId</td>
+                                <td>@item.YearCode</td>
+                                <td>@item.EntryBy</td>
+                                <td>@item.ReceByEmp</td>
+                                <td>@item.LastUpdatedByEmp</td>
+                                <td>@item.JobworkType</td>
+                                <td>@item.CC</td>
+                                <td>@item.UID</td>
+                                <td>@item.GateYearCode</td>
+                                <td>@item.Remark</td>
+                                <td>@item.MRNQCCompleted</td>
+                                <td>@item.Complete</td>
+                                <td>@item.Closed</td>
+                                <td>@item.ActualEntryDate.Split(" ")[0]</td>
+                                <td>@item.UpdatedOn</td>
+                                <td>@item.EntryByMachineName</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #MRNTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashMRNThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

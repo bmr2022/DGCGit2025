@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/05/2022 12:26:28" ReportInfo.Modified="05/05/2022 14:46:51" ReportInfo.CreatorVersion="2021.3.0.0">
+  <Styles Name="Standard">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold" />
+    <Style Name="Header" Font="Arial, 10pt, style=Bold" />
+    <Style Name="Group" Font="Arial, 10pt, style=Bold" />
+    <Style Name="Data" Font="Arial, 10pt" />
+    <Style Name="Footer" Font="Arial, 10pt" />
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt" />
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8SqjYj/hASnJp1wV/Dr2Xv04dclwv7JzMa+DTrr+QcMiITqolRBvL/JRMuDiZft7U2OdpMZoMY5N0ZUfXiV6iho3d2KAnn1KGSfe/WkcJBYWIzV7jrxWVHoaZ9v5r9OWK2myfxzaORVge1zMYfyozvcr39me2WCAoCoJUhGiWa7NIurNlwM/hVEEAznWpP6PrQ==">
+      <TableDataSource Name="VItemMaster" DataType="System.Int32" Enabled="true" TableName="VItemMaster">
+        <Column Name="Item_Code" DataType="System.Int64" />
+        <Column Name="Item_Name" DataType="System.String" />
+        <Column Name="PartCode" DataType="System.String" />
+        <Column Name="ParentCode" DataType="System.Int64" />
+        <Column Name="EntryDate" DataType="System.String" />
+        <Column Name="LastUpdatedDate" DataType="System.String" />
+        <Column Name="LeadTime" DataType="System.Int32" />
+        <Column Name="Unit" DataType="System.String" />
+        <Column Name="SalePrice" DataType="System.Double" />
+        <Column Name="PurchasePrice" DataType="System.Double" />
+        <Column Name="CostPrice" DataType="System.Double" />
+        <Column Name="WastagePercent" DataType="System.Decimal" />
+        <Column Name="WtSingleItem" DataType="System.Decimal" />
+        <Column Name="NoOfPcs" DataType="System.Decimal" />
+        <Column Name="QcReq" DataType="System.String" />
+        <Column Name="ItemType" DataType="System.Int64" />
+        <Column Name="UploadImage" DataType="System.String" />
+        <Column Name="DrawingNo" DataType="System.String" />
+        <Column Name="MinimumLevel" DataType="System.Double" />
+        <Column Name="MaximumLevel" DataType="System.Double" />
+        <Column Name="ReorderLevel" DataType="System.Double" />
+        <Column Name="AlternateUnit" DataType="System.String" />
+        <Column Name="RackID" DataType="System.String" />
+        <Column Name="BinNo" DataType="System.String" />
+        <Column Name="ItemSize" DataType="System.Decimal" />
+        <Column Name="Colour" DataType="System.String" />
+        <Column Name="NeedPO" DataType="System.String" />
+        <Column Name="StdPacking" DataType="System.Double" />
+        <Column Name="PackingType" DataType="System.String" />
+        <Column Name="ModelNo" DataType="System.String" />
+        <Column Name="YearlyConsumedQty" DataType="System.Double" />
+        <Column Name="DispItemName" DataType="System.String" />
+        <Column Name="PurchaseAccountcode" DataType="System.Int64" />
+        <Column Name="SaleAccountcode" DataType="System.Int64" />
+        <Column Name="MinLevelDays" DataType="System.Int64" />
+        <Column Name="MaxLevelDays" DataType="System.Int64" />
+        <Column Name="EmpName" DataType="System.String" />
+        <Column Name="DailyRequirment" DataType="System.Decimal" />
+        <Column Name="Stockable" DataType="System.String" />
+        <Column Name="WipStockable" DataType="System.String" />
+        <Column Name="Store" DataType="System.String" />
+        <Column Name="ProductLifeInus" DataType="System.Double" />
+        <Column Name="ItemDesc" DataType="System.String" />
+        <Column Name="MaxWipStock" DataType="System.Double" />
+        <Column Name="NeedSo" DataType="System.String" />
+        <Column Name="BomRequired" DataType="System.String" />
+        <Column Name="JobWorkItem" DataType="System.String" />
+        <Column Name="HsnNo" DataType="System.String" />
+        <Column Name="Main_Category_Type" DataType="System.String" />
+        <Column Name="MainCategory" DataType="System.String" />
+        <Column Name="CatEntryId" DataType="System.Int64" />
+        <Column Name="Group_Code" DataType="System.Int64" />
+        <Column Name="Group_name" DataType="System.String" />
+        <Column Name="GroupType" DataType="System.Int64" />
+        <Column Name="CreatedBy" DataType="System.Int64" />
+        <Column Name="CreatedOn" DataType="System.DateTime" />
+        <Column Name="UpdatedBy" DataType="System.Int64" />
+        <Column Name="UpdatedOn" DataType="System.DateTime" />
+        <Column Name="Active" DataType="System.String" />
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="28.35">
+      <TextObject Name="Text1" Width="1047.06" Height="28.35" Dock="Fill" Text="VItemMaster" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt, style=Bold" Style="Title" />
+      <TextObject Name="Text15" Dock="Fill" Text="VItemMaster" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt, style=Bold" />
+      <ChildBand Name="Child1" Top="32.35" Width="1047.06" Height="37.8" />
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="74.15" Width="1047.06" Height="37.8" CanGrow="true">
+      <TextObject Name="Text3" Width="141.75" Height="18.9" Text="Item_Name" Font="Arial, 10pt, style=Bold" Style="Header" />
+      <TextObject Name="Text5" Left="179.55" Width="141.75" Height="18.9" Text="EntryDate" Font="Arial, 10pt, style=Bold" Style="Header" />
+      <TextObject Name="Text7" Left="406.35" Width="113.4" Height="18.9" Text="CreatedBy" Font="Arial, 10pt, style=Bold" Style="Header" />
+      <TextObject Name="Text9" Left="538.65" Width="141.75" Height="18.9" Text="CreatedOn" Font="Arial, 10pt, style=Bold" Style="Header" />
+      <TextObject Name="Text11" Left="727.65" Width="141.75" Height="18.9" Text="Unit" Font="Arial, 10pt, style=Bold" Style="Header" />
+      <TextObject Name="Text14" Left="888.3" Width="122.85" Height="18.9" Text="Group" Font="Arial, 10pt, style=Bold" />
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="115.95" Width="1047.06" Height="37.8" EvenStyle="EvenRows" DataSource="VItemMaster">
+      <TextObject Name="Text2" Width="170.1" Height="18.9" CanGrow="true" CanShrink="true" Text="[VItemMaster.Item_Name]" Font="Arial, 10pt" Style="Data" />
+      <TextObject Name="Text4" Left="179.55" Width="170.1" Height="18.9" Text="[VItemMaster.EntryDate]" AutoWidth="true" Font="Arial, 10pt" Style="Data" />
+      <TextObject Name="Text6" Left="406.35" Width="113.4" Height="18.9" Text="[VItemMaster.CreatedBy]" AutoWidth="true" Font="Arial, 10pt" Style="Data" />
+      <TextObject Name="Text8" Left="538.65" Width="141.75" Height="18.9" Text="[VItemMaster.CreatedOn]" AutoWidth="true" Font="Arial, 10pt" Style="Data" />
+      <TextObject Name="Text10" Left="727.65" Width="141.75" Height="18.9" Text="[VItemMaster.Unit]" AutoWidth="true" Font="Arial, 10pt" Style="Data" />
+      <TextObject Name="Text13" Left="888.3" Width="122.85" Height="18.9" CanGrow="true" CanShrink="true" Text="[VItemMaster.Group_name]" Font="Arial, 10pt" />
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="157.75" Width="1047.06" Height="18.9">
+      <TextObject Name="Text12" Width="1047.06" Height="18.9" Dock="Fill" Text="[PageN]" HorzAlign="Right" Font="Arial, 10pt" Style="Footer" />
+    </PageFooterBand>
+  </ReportPage>
+</Report>

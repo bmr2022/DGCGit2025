@@ -1,0 +1,132 @@
+﻿@model eTactWeb.DOM.Models.Common.AdjustmentModel
+<h2 class="accordion-header" id="HPanel6">
+    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel6" aria-expanded="true" aria-controls="BPanel6">
+        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Adjustment Details</strong>
+        <small class="p-3"></small>
+    </button>
+</h2>
+<div id="BPanel6" class="accordion-body collapse pnl4 bg-gradient" aria-labelledby="HPanel6">
+    <div class="row g-2 gx-3">
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="ModeOfAdjustmentDiv">
+            <label asp-for="AdjModeOfAdjstment" class="form-label" style="color: red;">Mode Of Adjustment*</label>
+            <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <select asp-for="AdjModeOfAdjstment" asp-items="Model.AdjModeOfAdjustmentList" class="form-select" style="width:220px;">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-success Adjarbtn" onclick="Openagnstrefpopup()" style="margin-top: 10px;width: 110px; display: none">
+            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>
+            Add More <br /> Agnainst Ref
+        </button>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AdjDescription" class="form-label">Description</label>
+            <input asp-for="AdjDescription" class="form-control" disabled readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label class="form-label">Due Date</label>
+            <input asp-for="AdjDueDate" class="form-control" type="text" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AdjNewRefNo" class="form-label" style="color: red;">New Ref No*</label>
+            <input asp-for="AdjNewRefNo" class="form-control" type="text" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AdjPendAmt" class="form-label" style="color: red;">Adj Amount*</label>
+            <input asp-for="AdjPendAmt" class="form-control" type="number" min="0" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AdjDrCr" class="form-label" style="color: red;">Dr/Cr*</label>
+            <select asp-for="AdjDrCr" asp-items="Model.AdjDrCrList" class="form-select" readonly disabled></select>
+        </div>
+        @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Adjar" style="display:none;">
+        <label asp-for="AdjOpenEntryID" class="form-label">Open Entry ID</label>
+        <input asp-for="AdjOpenEntryID" class="form-control" type="number" min="0" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 Adjar" style="display:none;">
+        <label asp-for="AdjOpeningYearCode" class="form-label">Opening YearCode</label>
+        <input asp-for="AdjOpeningYearCode" class="form-control" type="number" min="0" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
+        </div> *@
+        <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6 col-xs-12 Adjadv" style="display:none;">
+            <label asp-for="AdjPurchOrderNo" class="form-label">Purchase Order No</label>
+            <select class="form-select" asp-for="AdjPurchOrderNo">
+                <option>-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Adjadv" style="display:none;">
+            <label asp-for="AdjPOYear" class="form-label">PO Year</label>
+            <input asp-for="AdjPOYear" class="form-control" type="number" min="0" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Adjadv" style="display:none;">
+            <label class="form-label">PO Date</label>
+            <input asp-for="AdjPODate" class="form-control" disabled readonly type="text" />
+        </div>
+        <div class="col-xl-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <button type="button" class="btn btn-sm btn-outline-success btnAddAdjustment2Grid" onclick="AddAdjstmntDetail1()" style="margin-top:10px;margin-left:10px;">
+                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>
+                ADD TO GRID
+            </button>
+        </div>
+        <div class="col-xl-1 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <button type="button" class="btn btn-sm btn-outline-danger btnClearAdj" style="margin-top:10px;">
+                <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
+                CLEAR Adjustment
+            </button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="progress my-3" style="height: 4px;">
+        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <div class="card">
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding-top:10px;margin-left:1100px">
+            <input type="text" class="form-control" id="Adjsearch-box" style="background-color:#FFFACD" placeholder="Search...">
+        </div>
+        <div class="card-body overflow-auto pb-0">
+            <div class="table-responsive" style="max-height:150px;">
+                <table class="table table-hover table-bordered table-striped" id="AdjTable">
+                    <thead class="bg-gradient card-headerBG text-light small" id="AdjThead" style="white-space:nowrap">
+                        <tr id="headerRow">
+                            <th>Action</th>
+                            <th>Sr#</th>
+                            <th>Mode Of Adjustment</th>
+                            <th>Description</th>
+                            <th>Due Date</th>
+                            <th>New Ref No</th>
+                            <th>Adjusted Amount</th>
+                            <th>Dr/Cr</th>
+                            <th>Purch Order No</th>
+                            <th>PO Year</th>
+                            <th>PO Date</th>
+                            <th>Voucher No</th>
+                            <th>Voucher Type</th>
+                            <th>OpenEntryID</th>
+                            <th>Opening YearCode</th>
+                            <th>Acc Entry ID</th>
+                            <th>Acc YearCode</th>
+                        </tr>
+                    </thead>
+                    <tbody id="divAdjItemList">
+                        <partial name="_AdjGrid" />
+                    </tbody>
+                    @* <tfoot>
+                    <tr>
+                    <td colspan="5" style="text-align: center;"><b>Total Amount: </b><span style="background: none;border: none;color: black;" id="AdjTotalAmt1"></span></td>
+                    <td colspan="4" style="text-align: center;"><b>Adjusted Amount: </b><span style="background: none;border: none;color: black;" id="AdjAdjstedAmt1"></span></td>
+                    <td colspan="4" style="text-align: center;"><b>Pending Amount: </b><span style="background: none;border: none;color: black;" id="AdjRemainingAmt1"></span></td>
+                    </tr>
+                    </tfoot> *@
+                </table>
+            </div>
+            <div>
+                <center>
+                    <span colspan="5" style="text-align: center;"><b>Total Amount: </b><span style="background: none;border: none;color: black;" id="AdjTotalAmt1"></span></span>
+                    <span colspan="4" style="text-align: center; padding-left: 30px;">
+                        <b>Adjusted Amount: </b><span style="background: none;border: none;color: black;" id="AdjAdjstedAmt1"></span></td>
+                        <span colspan="4" style="text-align: center;padding-left: 30px;"><b>Pending Amount: </b><span style="background: none;border: none;color: black;" id="AdjRemainingAmt1"></span></span>
+                </center>
+            </div>
+        </div>
+    </div>
+    <partial name="_AdjAgnstPopup" />
+</div>

@@ -1,0 +1,33 @@
+﻿@model eTactWeb.DOM.Models.JobWorkReceiveModel
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        <tr id="itemGrid" class="small" style="white-space:nowrap">
+            <td>@item.EntryIdIssJw</td>
+            <td>@item.IssChallanNo</td>
+            <td>@item.YearCodeRecJw</td>
+            <td>@item.IssChallanDate</td>
+            <td>@item.IssPartCode</td>
+            <td>@item.IssItemName</td>
+            <td>@item.BOMrevno</td>
+            <td>@item.BOMInd</td>
+            <td>@item.PendQty</td>
+            <td>@item.FinishPartCode</td>
+            <td>@item.FinishItemName</td>
+            <td>@item.BOMQty</td>
+            <td>Through</td>
+            <td>@item.RecQty</td>
+            <td>@item.AdjQty</td>
+            <td>@item.IssuedBatchNO</td>
+            <td>@item.IssuedUniqueBatchNo</td>
+        </tr>
+    }
+}

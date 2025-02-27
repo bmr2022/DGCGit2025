@@ -1,0 +1,78 @@
+﻿@model eTactWeb.DOM.Models.ProductionEntryModel
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid" class="small" style="white-space:nowrap">
+                <td style="white-space:nowrap;" class="showdeletebtn">
+                @if(Model.ProdType == "ReWork" || Model.ProdEntryAllowToAddRMItem == "Y")
+                {
+                    <a class="table-link link-primary" style="border:none;" id="editButton" onclick="EditItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+
+                    <a class="table-link link-danger" style="border:none;" onclick="DeleteItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+
+                </td>
+            <td><input type="hidden" value="@item.SeqNo" />@Cntr</td>
+            <td id="PartCode-@Cntr"><input type="hidden"/>@item.PartCode</td>
+            <td id="ItemName"><input type="hidden" value="@item.ConsumedRMItemCode" id="RmItemCode' + @Cntr + '" />@item.ItemName</td>
+            <td>@item.ReqQty</td>
+            <td>@item.IssueQty</td>
+            <td>@item.Unit</td>
+            <td>@item.ProdQty</td>
+            <td>@item.TotalStock</td>
+            <td>@item.BatchStock</td>
+            <td id="RmBatchNo-@Cntr">@item.BatchNo</td>
+            <td>@item.UniqueBatchNo</td>
+            <td>@item.BatchDate</td>
+            <td>@item.PendQty</td>
+            <td>@item.RemainingStock</td>
+            <td>@item.AltQty</td>
+            <td>@item.AltUnit</td>
+            <td>@item.NetWt</td>
+            <td>@item.GrossWt</td>
+            <td>@item.BatchWise</td>
+            <td>@item.StdPacking</td>
+            <td>@item.PendAfterIssue</td>
+            <td>@item.StoreName</td>
+            <td>@item.Rate</td>
+            <td>@item.DetailRemark</td>
+            <td>@item.IssuedQty</td>
+        </tr>
+    }
+}

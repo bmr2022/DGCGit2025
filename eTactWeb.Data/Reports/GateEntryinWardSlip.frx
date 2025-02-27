@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/20/2023 18:35:35" ReportInfo.Modified="09/21/2023 15:05:43" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqMk/w02qjXPygo+IjoIMi6HcohizOnuLyZUWPOYN/+7sYmWi4iSNn/DATjQn0LypInrq+uUM8YQRkJ/BP4g0BE6PXoAzm1ELaxyLCn+w4DJ/7xn4k881Vt9uFmy5zcZhkZX9PuDOtG3R31hSrVnYdwOoZYwEFGqVW6X4TsY/Iq6228zofmVfCvNBrg54dKZUPn3RmM4HtryO3bVIXhOSwnQ==">
+      <TableDataSource Name="Table" Alias="View" DataType="System.Int32" Enabled="true" SelectCommand="SELECT V.EntryId, V.YearCode, V.GateNo, V.CompGateNo, V.GDate, V.EntryDate, V.AccountCode, V.InvoiceDate, V.Invoiceno, V.Transporter, V.Truck, V.docTypeId, V.DriverName, V.BiltyNo, V.BiltyDate, V.PaymentMode, V.RefNo, V.Remark, V.Uid, V.POTypeServItem, V.TareWeight, V.GrossWeight, V.NetWeight, V.address, V.ShowPOTillDate, V.ModeOfTransport, V.CC, V.ActualEntryDate, V.ActualEnteredBy, V.SeqNo, V.PONo, V.POYearCode, V.SchNo, V.SchYearCode, V.Unit, V.Qty, V.Rate, V.altqty, V.altunit, V.PendPOQty, V.AltPendQty, V.SaleBillNo, V.SaleBillYearCode, V.SaleBillQty, V.Remarks, V.AgainstChallanNo, V.ChallanQty, V.processid, V.Size, V.Color, V.SupplierBatchNo, V.ShelfLife, V.Account_Name, V.DisplayName, V.ItemCode, V.PartCode, V.ItemNamePartCode, V.Item_Name, V.DocName, V.DocType, V.POTYpe, V.PreparedByEmpId, V.EntryTime, V.ScheduleDate, V.PreparedBY, V.ActualEntryBY, V.LastUpdatedBy, V.UpdatedBy, V.UpdatedOn&#13;&#10;FROM &quot;VGateMainDetail&quot; V where V.GateNo='GASP202324/00003' and V.YearCode=2023&#13;&#10;">
+        <Column Name="EntryId" DataType="System.Int64"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="GateNo" DataType="System.String"/>
+        <Column Name="CompGateNo" DataType="System.String"/>
+        <Column Name="GDate" DataType="System.DateTime"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="InvoiceDate" DataType="System.DateTime"/>
+        <Column Name="Invoiceno" DataType="System.String"/>
+        <Column Name="Transporter" DataType="System.String"/>
+        <Column Name="Truck" DataType="System.String"/>
+        <Column Name="docTypeId" DataType="System.Int64"/>
+        <Column Name="DriverName" DataType="System.String"/>
+        <Column Name="BiltyNo" DataType="System.String"/>
+        <Column Name="BiltyDate" DataType="System.DateTime"/>
+        <Column Name="PaymentMode" DataType="System.String"/>
+        <Column Name="RefNo" DataType="System.String"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="Uid" DataType="System.Int64"/>
+        <Column Name="POTypeServItem" DataType="System.String"/>
+        <Column Name="TareWeight" DataType="System.Decimal"/>
+        <Column Name="GrossWeight" DataType="System.Decimal"/>
+        <Column Name="NetWeight" DataType="System.Decimal"/>
+        <Column Name="address" DataType="System.String"/>
+        <Column Name="ShowPOTillDate" DataType="System.DateTime"/>
+        <Column Name="ModeOfTransport" DataType="System.String"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="ActualEntryDate" DataType="System.DateTime"/>
+        <Column Name="ActualEnteredBy" DataType="System.Int64"/>
+        <Column Name="SeqNo" DataType="System.Int32"/>
+        <Column Name="PONo" DataType="System.String"/>
+        <Column Name="POYearCode" DataType="System.Int64"/>
+        <Column Name="SchNo" DataType="System.String"/>
+        <Column Name="SchYearCode" DataType="System.Int64"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="Qty" DataType="System.Decimal"/>
+        <Column Name="Rate" DataType="System.Decimal"/>
+        <Column Name="altqty" DataType="System.Decimal"/>
+        <Column Name="altunit" DataType="System.String"/>
+        <Column Name="PendPOQty" DataType="System.Decimal"/>
+        <Column Name="AltPendQty" DataType="System.Decimal"/>
+        <Column Name="SaleBillNo" DataType="System.String"/>
+        <Column Name="SaleBillYearCode" DataType="System.Int64"/>
+        <Column Name="SaleBillQty" DataType="System.Decimal"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="AgainstChallanNo" DataType="System.String"/>
+        <Column Name="ChallanQty" DataType="System.Decimal"/>
+        <Column Name="processid" DataType="System.Int64"/>
+        <Column Name="Size" DataType="System.String"/>
+        <Column Name="Color" DataType="System.String"/>
+        <Column Name="SupplierBatchNo" DataType="System.String"/>
+        <Column Name="ShelfLife" DataType="System.Decimal"/>
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="DisplayName" DataType="System.String"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="ItemNamePartCode" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="DocName" DataType="System.String"/>
+        <Column Name="DocType" DataType="System.String"/>
+        <Column Name="POTYpe" DataType="System.String"/>
+        <Column Name="PreparedByEmpId" DataType="System.Int64"/>
+        <Column Name="EntryTime" DataType="System.DateTime"/>
+        <Column Name="ScheduleDate" DataType="System.DateTime"/>
+        <Column Name="PreparedBY" DataType="System.String"/>
+        <Column Name="ActualEntryBY" DataType="System.String"/>
+        <Column Name="LastUpdatedBy" DataType="System.Int64"/>
+        <Column Name="UpdatedBy" DataType="System.String"/>
+        <Column Name="UpdatedOn" DataType="System.DateTime"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Total Name="Total Qty" Expression="[View.Qty]" Evaluator="Data1"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="75.6">
+      <ShapeObject Name="Shape1" Width="1048.95" Height="75.6"/>
+      <TextObject Name="Text1" Left="359.1" Top="28.35" Width="292.95" Height="37.8" Text="Gate Entry Slip" Font="Arial, 18pt, style=Bold"/>
+      <TextObject Name="Text18" Left="822.15" Top="47.25" Width="94.5" Height="18.9" Text="PRINT DATE" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text19" Left="926.1" Top="47.25" Width="94.5" Height="18.9" Text="[Date]" Format="Date" Format.Format="d" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text161" Left="907.2" Top="47.25" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="79.6" Width="1047.06" Height="103.95" Guides="9.45">
+      <ShapeObject Name="Shape2" Width="1048.95" Height="75.6"/>
+      <TextObject Name="Text2" Left="18.9" Top="9.45" Width="94.5" Height="18.9" Text="PARTY NAME" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text3" Left="18.9" Top="28.35" Width="94.5" Height="18.9" Text="GATE NO  " Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text4" Left="18.9" Top="47.25" Width="94.5" Height="18.9" Text="DOC TYPE" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text5" Left="463.05" Top="9.45" Width="151.2" Height="18.9" Text="INVOICE/CHALLAN NO  " Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text6" Left="463.05" Top="37.8" Width="94.5" Height="18.9" Text="ENTRY DATE" Font="Arial, 9pt, style=Bold"/>
+      <ShapeObject Name="Shape3" Top="75.6" Width="1048.95" Height="28.35"/>
+      <TextObject Name="Text7" Left="18.9" Top="75.6" Width="94.5" Height="18.9" Text="SR. NO." Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text8" Left="151.2" Top="75.6" Width="94.5" Height="18.9" Text="ITEM NAME" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text9" Left="406.35" Top="75.6" Width="94.5" Height="18.9" Text="PART CODE" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text10" Left="642.6" Top="75.6" Width="94.5" Height="18.9" Text=" QTY" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text11" Left="765.45" Top="75.6" Width="94.5" Height="18.9" Text="REMARK" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text17" Left="122.85" Top="9.45" Width="311.85" Height="18.9" Text="[View.Account_Name]" Font="Arial, 9pt"/>
+      <TextObject Name="Text156" Left="103.95" Top="9.45" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text157" Left="103.95" Top="47.25" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text158" Left="103.95" Top="28.35" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text159" Left="604.8" Top="9.45" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text160" Left="548.1" Top="37.8" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text162" Left="122.85" Top="28.35" Width="274.05" Height="18.9" Text="[View.GateNo]" Font="Arial, 9pt"/>
+      <TextObject Name="Text163" Left="122.85" Top="47.25" Width="189" Height="18.9" Text="[View.DocType]" Font="Arial, 9pt"/>
+      <TextObject Name="Text164" Left="623.7" Top="9.45" Width="94.5" Height="18.9" Text="[View.Invoiceno]" Font="Arial, 9pt"/>
+      <TextObject Name="Text165" Left="727.65" Top="9.45" Width="113.4" Height="18.9" Text="[View.InvoiceDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+      <TextObject Name="Text166" Left="567" Top="37.8" Width="122.85" Height="18.9" Text="[View.EntryDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="187.55" Width="1047.06" Height="28.35" DataSource="Table">
+      <ShapeObject Name="Shape6" Width="1048.95" Height="28.35"/>
+      <TextObject Name="Text168" Left="122.85" Width="274.05" Height="18.9" Text="[View.Item_Name]" Font="Arial, 9pt"/>
+      <TextObject Name="Text169" Left="18.9" Width="94.5" Height="18.9" Text="[View.SeqNo]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="0" Font="Arial, 9pt"/>
+      <TextObject Name="Text170" Left="396.9" Width="179.55" Height="18.9" Text="[View.PartCode]" Font="Arial, 9pt"/>
+      <TextObject Name="Text171" Left="585.9" Width="94.5" Height="18.9" Text="[View.Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text173" Left="765.45" Width="245.7" Height="18.9" Text="[View.Remark]" Font="Arial, 9pt"/>
+    </DataBand>
+    <ColumnFooterBand Name="ColumnFooter1" Top="219.9" Width="1047.06" Height="75.6">
+      <ShapeObject Name="Shape4" Width="1048.95" Height="75.6"/>
+      <TextObject Name="Text12" Left="9.45" Top="9.45" Width="94.5" Height="18.9" Text="REMARK " Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text13" Left="9.45" Top="47.25" Width="94.5" Height="18.9" Text="Prepared By" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text14" Left="519.75" Top="9.45" Width="94.5" Height="18.9" Text="TOTAL QTY" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text15" Left="926.1" Top="47.25" Width="94.5" Height="18.9" Text="Authorised Signatory" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text172" Left="642.6" Top="9.45" Width="94.5" Height="18.9" Text="[Total Qty]" Font="Arial, 9pt"/>
+      <TextObject Name="Text174" Left="103.95" Top="9.45" Width="236.25" Height="18.9" Text="[View.Remarks]" Font="Arial, 9pt"/>
+    </ColumnFooterBand>
+    <PageFooterBand Name="PageFooter1" Top="299.5" Width="1047.06" Height="18.9">
+      <ShapeObject Name="Shape5" Width="1048.95" Height="18.9"/>
+      <TextObject Name="Text16" Left="444.15" Width="94.5" Height="18.9" Text="[Page]" Font="Arial, 9pt, style=Bold"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

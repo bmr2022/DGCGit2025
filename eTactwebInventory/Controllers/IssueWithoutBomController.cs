@@ -1,0 +1,883 @@
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
+//using static Grpc.Core.Metadata;
+using eTactWeb.DOM.Models;
+using System.Net;
+using System.Data;
+using System.Globalization;
+
+namespace eTactWeb.Controllers
+{
+    public class IssueWithoutBomController : Controller
+    {
+        private readonly IDataLogic _IDataLogic;
+        private readonly IIssueWithoutBom _IIssueWOBOM;
+        private readonly ILogger<IssueWithoutBomController> _logger;
+        private readonly IMemoryCache _MemoryCache;
+        private readonly IWebHostEnvironment _IWebHostEnvironment;
+        public IssueWithoutBomController(ILogger<IssueWithoutBomController> logger, IDataLogic iDataLogic, IIssueWithoutBom IIssueWOBOM, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        {
+            _logger = logger;
+            _IDataLogic = iDataLogic;
+            _IIssueWOBOM = IIssueWOBOM;
+            _MemoryCache = iMemoryCache;
+            _IWebHostEnvironment = iWebHostEnvironment;
+        }
+
+        [Route("{controller}/Index")]
+        public async Task<IActionResult> IssueWithoutBom()
+        {
+            ViewData["Title"] = "Issue Without BOM Details";
+            TempData.Clear();
+            _MemoryCache.Remove("KeyIssWOBomGrid");
+            var MainModel = new IssueWithoutBom();
+            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            //MainModel = await BindModel(MainModel);
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            _MemoryCache.Set("KeyIssWOBomGrid", MainModel, cacheEntryOptions);
+            //MainModel.DateIntact = "N";
+            return View(MainModel);
+        }
+
+        [Route("{controller}/Index")]
+        [HttpGet]
+        public async Task<ActionResult> IssueWithoutBom(int ID, string Mode, int YC, string REQNo = "", string ItemName = "", string PartCode = "", string WorkCenter = "", string DeptName = "", string DashboardType = "", string FromDate = "", string ToDate = "", string GlobalSearch = "",int FromStoreBack=0)//, ILogger logger)
+        {
+            //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
+            TempData.Clear();
+            var MainModel = new IssueWithoutBom();
+            MainModel = await BindModel(MainModel);
+            MainModel.CC = HttpContext.Session.GetString("Branch");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            _MemoryCache.Remove("KeyIssWOBomGrid");
+            _MemoryCache.Remove("KeyIssWOBomScannedGrid");
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                MainModel = await _IIssueWOBOM.GetViewByID(ID, YC).ConfigureAwait(false);
+                MainModel.Mode = Mode;
+                MainModel.ID = ID;
+                MainModel = await BindModel(MainModel).ConfigureAwait(false);
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+                _MemoryCache.Set("KeyIssWOBomGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+            }
+            else
+            {
+                // MainModel = await BindModel(MainModel);
+            }
+
+            if (Mode != "U")
+            {
+                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                MainModel.ActualEntrydate = DateTime.Now;
+                MainModel.IssuedByEmpCode = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.IssuedByEmpName = HttpContext.Session.GetString("EmpName");
+                MainModel.RecByEmpCode = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.RecDepCode = Convert.ToInt32(HttpContext.Session.GetString("DeptId"));
+                MainModel.RecDept = HttpContext.Session.GetString("DeptName");
+            }
+            else
+            {
+                //MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                // MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                // MainModel.UpdatedOn = DateTime.Now;
+            }
+
+            MainModel.FromDateBack = FromDate;
+            MainModel.ToDateBack = ToDate;
+            MainModel.REQNoBack = REQNo;
+            MainModel.PartCodeBack = PartCode;
+            MainModel.ItemNameBack = ItemName;
+            MainModel.WorkCenterBack = WorkCenter;
+            MainModel.DeptNameBack = DeptName;
+            MainModel.DashboardTypeBack = DashboardType;
+            MainModel.GlobalSearchBack = GlobalSearch;
+            MainModel.FromStoreBack = FromStoreBack;
+            return View(MainModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("{controller}/Index")]
+        public async Task<IActionResult> IssueWithoutBom(IssueWithoutBom model)
+        {
+            try
+            {
+                var MRGrid = new DataTable();
+                _MemoryCache.TryGetValue("KeyIssWOBomGrid", out List<IssueWithoutBomDetail> IssueGrid);
+                
+                if (IssueGrid == null)
+                {
+                    ModelState.Clear();
+                    ModelState.TryAddModelError("Issue Without BOM", "Issue Without BOM Grid Should Have At least 1 Item...!");
+                    
+                    return View("IssueWithoutBom", model);
+                }
+                else
+                {
+                    var userID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+                    model.CreatedBy = userID;
+                    if (model.Mode == "U")
+                        model.LastupdatedBy = userID;
+
+                    MRGrid = GetDetailTable(IssueGrid);
+
+                    var Result = await _IIssueWOBOM.SaveIssueWithoutBom(model, MRGrid);
+
+                    if (Result != null)
+                    {
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                            _MemoryCache.Remove("KeyIssWOBomGrid");
+                        }
+                        if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["202"] = "202";
+                            _MemoryCache.Remove("KeyIssWOBomGrid");
+                        }
+                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            ViewBag.isSuccess = false;
+                            TempData["500"] = "500";
+                            _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                            return View("Error", Result);
+                        }
+                    }
+                    return RedirectToAction("PendingRequisitionToIssue", "PendingRequisitionToIssue");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException<IssueWithoutBomController>.WriteException(_logger, ex);
+
+                var ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+
+                return View("Error", ResponseResult);
+            }
+        }
+        public IActionResult FillGridFromMemoryCache()
+        {
+            try
+            {
+                _MemoryCache.TryGetValue("KeyIssWOBom", out IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid);
+                var MainModel = new IssueWithoutBom();
+                var IssueGrid = new List<IssueWithoutBomDetail>();
+                var SSGrid = new List<IssueWithoutBomDetail>();
+                MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+                MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+                //MainModel.IssueDate = HttpContext.Session.GetString("IssueDate");
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+                var seqNo = 1;
+                if (IssueWithoutBomDetailGrid != null)
+                {
+                    for (int i = 0; i < IssueWithoutBomDetailGrid.Count; i++)
+                    {
+                        
+
+                        if (IssueWithoutBomDetailGrid[i] != null)
+                        {
+                            IssueWithoutBomDetailGrid[i].seqno = seqNo++;
+                            SSGrid.AddRange(IssueGrid);
+                            IssueGrid.Add(IssueWithoutBomDetailGrid[i]);
+
+                            MainModel.ItemDetailGrid = IssueGrid;
+
+                            _MemoryCache.Set("KeyIssWOBom", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        }
+                    }
+                }
+
+                return PartialView("_IssueWOMainBomGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private async Task<IssueWithoutBom> BindModel(IssueWithoutBom model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _IIssueWOBOM.FillEmployee("BINDRecByEmployee");
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["Emp_Id"].ToString(),
+                        Text = row["EmpNameCode"].ToString()
+
+                    });
+                }
+                model.EmployeeList = _List;
+                _List = new List<TextValue>();
+            }
+            return model;
+        }
+        public async Task<JsonResult> FillBranch()
+        {
+            var JSON = await _IIssueWOBOM.FillBranch();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public IActionResult AddtoIssueWOBomGrid(List<IssueWithoutBomDetail> model)
+        {
+            try
+            {
+                var MainModel = new IssueWithoutBom();
+                var IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
+                var IssueGrid = new List<IssueWithoutBomDetail>();
+                var SSGrid = new List<IssueWithoutBomDetail>();
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+                var seqNo = 1;
+                if (model != null)
+                {
+                    foreach (var item in model)
+                    {
+
+                        var isStockable = _IIssueWOBOM.GetIsStockable(item.ItemCode);
+                        var stockable = isStockable.Result.Result.Rows[0].ItemArray[0];
+                        _MemoryCache.TryGetValue("KeyIssWOBomGrid", out IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid);
+                        if (item != null)
+                        {
+                            //if(item.LotStock < item.ReqQty)
+                            //{
+                            //    return StatusCode(203, "Stock can't be zero");
+                            //}
+                            if (IssueWithoutBomDetailGrid == null)
+                            {
+                                if (stockable == "Y")
+                                {
+                                    if (item.LotStock <= 0 || item.TotalStock <= 0)
+                                    {
+                                        return StatusCode(203, "Stock can't be zero");
+                                    }
+                                }
+                                item.seqno += seqNo;
+                                IssueGrid.Add(item);
+                                seqNo++;
+                            }
+                            else
+                            {
+                                if (stockable == "Y")
+                                {
+                                    if (item.LotStock <= 0 || item.TotalStock <= 0)
+                                    {
+                                        return StatusCode(203, "Stock can't be zero");
+                                    }
+                                }
+                                if (IssueWithoutBomDetailGrid.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo).Any())
+                                {
+                                    return StatusCode(207, "Duplicate");
+                                }
+                                else
+                                {
+                                    item.seqno = IssueWithoutBomDetailGrid.Count + 1;
+                                    IssueGrid = IssueWithoutBomDetailGrid.Where(x => x != null).ToList();
+                                    SSGrid.AddRange(IssueGrid);
+                                    IssueGrid.Add(item);
+                                }
+                            }
+                            MainModel.ItemDetailGrid = IssueGrid;
+
+                            _MemoryCache.Set("KeyIssWOBomGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        }
+                    }
+                }
+                _MemoryCache.Remove("KeyIssWOBom");
+                return PartialView("_IssueWithoutBomGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IActionResult DeleteItemRow(int SeqNo)
+        {
+            var MainModel = new IssueWithoutBom();
+            _MemoryCache.TryGetValue("KeyIssWOBomGrid", out List<IssueWithoutBomDetail> IssueWithoutBomGrid);
+            int Indx = Convert.ToInt32(SeqNo) - 1;
+
+            if (IssueWithoutBomGrid != null && IssueWithoutBomGrid.Count > 0)
+            {
+                IssueWithoutBomGrid.RemoveAt(Convert.ToInt32(Indx));
+
+                Indx = 0;
+
+                foreach (var item in IssueWithoutBomGrid)
+                {
+                    Indx++;
+                    item.seqno = Indx;
+                }
+                MainModel.ItemDetailGrid = IssueWithoutBomGrid;
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+
+                if (IssueWithoutBomGrid.Count == 0)
+                {
+                    _MemoryCache.Remove("KeyIssWOBomGrid");
+                }
+                _MemoryCache.Set("KeyIssWOBomGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+            }
+            return PartialView("_IssueWithoutBomGrid", MainModel);
+        }
+        public IActionResult DeleteFromMemoryGrid(int SeqNo)
+        {
+            var MainModel = new IssueWithoutBom();
+            _MemoryCache.TryGetValue("KeyIssWOBom", out List<IssueWithoutBomDetail> IssueWithoutBomGrid);
+            int Indx = Convert.ToInt32(SeqNo) - 1;
+
+            if (IssueWithoutBomGrid != null && IssueWithoutBomGrid.Count > 0)
+            {
+                IssueWithoutBomGrid.RemoveAt(Convert.ToInt32(Indx));
+
+                Indx = 0;
+
+                foreach (var item in IssueWithoutBomGrid)
+                {
+                    Indx++;
+                    item.seqno = Indx;
+                }
+                MainModel.ItemDetailGrid = IssueWithoutBomGrid;
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+
+                if (IssueWithoutBomGrid.Count == 0)
+                {
+                    _MemoryCache.Remove("KeyIssWOBom");
+                }
+                _MemoryCache.Set("KeyIssWOBom", MainModel.ItemDetailGrid, cacheEntryOptions);
+            }
+            return PartialView("_IssueWOMainBomGrid", MainModel);
+        }
+        public IActionResult DeleteScannedItemRow(int SeqNo)
+        {
+            var MainModel = new IssueWithoutBom();
+            _MemoryCache.TryGetValue("KeyIssWOBomScannedGrid", out List<IssueWithoutBomDetail> IssueWithoutBomGrid);
+            int Indx = Convert.ToInt32(SeqNo) - 1;
+
+            if (IssueWithoutBomGrid != null && IssueWithoutBomGrid.Count > 0)
+            {
+                IssueWithoutBomGrid.RemoveAt(Convert.ToInt32(Indx));
+
+                Indx = 0;
+
+                foreach (var item in IssueWithoutBomGrid)
+                {
+                    Indx++;
+                    item.seqno = Indx;
+                }
+                MainModel.ItemDetailGrid = IssueWithoutBomGrid;
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+
+                if (IssueWithoutBomGrid.Count == 0)
+                {
+                    _MemoryCache.Remove("KeyIssWOBomScannedGrid");
+                }
+                _MemoryCache.Set("KeyIssWOBomScannedGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+            }
+            return PartialView("_IssueByScanningGrid", MainModel);
+        }
+        public static DateTime ParseDate(string dateString)
+        {
+            if (string.IsNullOrEmpty(dateString))
+            {
+                return default;
+            }
+
+            if (DateTime.TryParseExact(dateString, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+            {
+                return parsedDate;
+            }
+            else
+            {
+                return DateTime.Parse(dateString);
+            }
+
+            //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
+
+        }
+        private static DataTable GetDetailTable(IList<IssueWithoutBomDetail> DetailList)
+        {
+            try
+            {
+                var MRGrid = new DataTable();
+
+                MRGrid.Columns.Add("EntryId", typeof(int));
+                MRGrid.Columns.Add("YearCode", typeof(int));
+                MRGrid.Columns.Add("seqno", typeof(int));
+                MRGrid.Columns.Add("ItemCode", typeof(int));
+                MRGrid.Columns.Add("ReqQty", typeof(decimal));
+                MRGrid.Columns.Add("AltReqQty", typeof(decimal));
+                MRGrid.Columns.Add("StoreId", typeof(int));
+                MRGrid.Columns.Add("BatchNo", typeof(string));
+                MRGrid.Columns.Add("uniqueBatchNo", typeof(string));
+                MRGrid.Columns.Add("IssueQty", typeof(decimal));
+                MRGrid.Columns.Add("AltIssueQty", typeof(decimal));
+                MRGrid.Columns.Add("Unit", typeof(string));
+                MRGrid.Columns.Add("AltUnit", typeof(string));
+                MRGrid.Columns.Add("LotStock", typeof(decimal));
+                MRGrid.Columns.Add("TotalStock", typeof(decimal));
+                MRGrid.Columns.Add("AltQty", typeof(decimal));
+                MRGrid.Columns.Add("Rate", typeof(decimal));
+                MRGrid.Columns.Add("WCId", typeof(int));
+                MRGrid.Columns.Add("IssuedAlternateItem", typeof(string));
+                MRGrid.Columns.Add("OriginalitemCode", typeof(int));
+                MRGrid.Columns.Add("AltItemCode", typeof(int));
+                MRGrid.Columns.Add("Remark", typeof(string));
+                MRGrid.Columns.Add("CostCenterId", typeof(int));
+                MRGrid.Columns.Add("ItemSize", typeof(string));
+                MRGrid.Columns.Add("ItemColor", typeof(string));
+                MRGrid.Columns.Add("ProjectNo", typeof(string));
+                MRGrid.Columns.Add("ProjectYearcode", typeof(int));
+                MRGrid.Columns.Add("StdPacking", typeof(float));
+                MRGrid.Columns.Add("ReqNo", typeof(string));
+                MRGrid.Columns.Add("ReqYearCode", typeof(string));
+                MRGrid.Columns.Add("ReqDate", typeof(string));
+                MRGrid.Columns.Add("ReqEntryId", typeof(int));
+
+                foreach (var Item in DetailList)
+                {
+                    //DateTime ReqDate = new DateTime();
+                    //ReqDate = ParseDate(Item.ReqDate);
+                    if (Item.AltUnit == "null")
+                        Item.AltUnit = "";
+                    if (Item.uniqueBatchNo == "null")
+                        Item.uniqueBatchNo = "";
+                    if (Item.BatchNo == "null")
+                        Item.BatchNo = "";
+                    MRGrid.Rows.Add(
+                        new object[]
+                        {
+                    Item.EntryId == 0 ? 0:Item.EntryId,
+                    Item.YearCode == 0 ? 0:Item.YearCode,
+                    Item.seqno == 0 ? 0 : Item.seqno,
+                    Item.ItemCode==0?0:Item.ItemCode,
+                    Item.ReqQty == 0 ? 0 : Item.ReqQty,
+                    Item.ReqQty == 0 ? 0 : Item.ReqQty, // altrecqty
+                    Item.StoreId == 0?0:Item.StoreId,
+                    Item.BatchNo == null ? "" : Item.BatchNo,
+                    Item.uniqueBatchNo == null ? "" : Item.uniqueBatchNo,
+                    Item.IssueQty == 0 ? 0 : Item.IssueQty,
+                    Item.IssueQty == 0 ? 0 : Item.IssueQty, // altissueqty
+                    Item.Unit == null? "":Item.Unit,
+                    Item.AltUnit == null ? "" : Item.AltUnit,
+                    Item.LotStock == 0 ? 0 : Item.LotStock,
+                    Item.TotalStock == 0? 0:Item.TotalStock,
+                    Item.AltQty == 0 ? 0 : Item.AltQty,
+                    Item.Rate == 0? 0:Item.Rate,
+                    Item.WCId == 0 ? 0 : Item.WCId,
+                    Item.IssuedAlternateItem == null? "":Item.IssuedAlternateItem,//issuedalternateitem
+                    Item.OriginalItemCode == 0 ? 0 : Item.OriginalItemCode,//originalitemcode
+                    Item.AltItemCode == 0? 0 : Item.AltItemCode,
+                    Item.Remark == null ? "" : Item.Remark,
+                    Item.CostCenterId == 0 ? 0 : Item.CostCenterId,
+                    Item.ItemSize == null ? "" : Item.ItemSize,
+                    Item.ItemColor == null?"":Item.ItemColor,
+                    Item.ProjectNo == null ? "" : Item.ProjectNo,
+                    Item.ProjectYearCode == 0 ? 0 : Item.ProjectYearCode,
+                    Item.StdPacking == 0 ? 0:Item.StdPacking,
+                    Item.ReqNo1 == null ? "" : Item.ReqNo1,
+                    Item.ReqyearCode1== null?"":Item.ReqyearCode1,
+                    Item.ReqDate1 == null ? "" : Item.ReqDate1,
+                    Item.ReqEntryId == 0?0:Item.ReqEntryId
+                        });
+                }
+
+                MRGrid.Dispose();
+                return MRGrid;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+        public async Task<IActionResult> Dashboard(string FromDate, string Todate, string Flag, string REQNo = "", string WCName = "", string WONo = "", string DepName = "", string PartCode = "", string ItemName = "")
+        {
+            try
+            {
+                _MemoryCache.Remove("KeyIssWOBomGrid");
+                var model = new IssueWithoutBomDashboard();
+                var Result = await _IIssueWOBOM.GetDashboardData(FromDate, Todate, Flag).ConfigureAwait(true);
+
+                if (Result != null)
+                {
+                    var _List = new List<TextValue>();
+                    DataSet DS = Result.Result;
+                    if (DS != null)
+                    {
+                        var DT = DS.Tables[0].DefaultView.ToTable(false, "ReqNo", "ReqDate", "IssueSlipNo", "IssueDate", "Fromdepartment", "RecDepartment","ReqYearCode", "Item_Name", "PartCode", "EntryId", "YearCode", "WorkCenterDescription");
+                        model.IssueWOBOMDashboard = CommonFunc.DataTableToList<IssueWOBomMainDashboard>(DT, "IssueWODashboard");
+                    }
+                }
+
+                if (Flag != "True")
+                {
+                    model.FromDate1 = FromDate;
+                    model.ToDate1 = Todate;
+                    model.ReqNo = REQNo;
+                    model.WorkCenterDescription = WCName;
+                    model.PartCode = PartCode;
+                    model.Item_Name = ItemName;
+                }
+                    return View(model);
+
+                //return PartialView("_IssueWithoutBomDashboardGrid", model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate)
+        {
+            //model.Mode = "Search";
+            var model = new IssueWOBomMainDashboard();
+            model = await _IIssueWOBOM.GetSearchData(REQNo, ReqDate, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate);
+            return PartialView("_IssueWithoutBomDashboardGrid", model);
+        }
+
+        public async Task<IActionResult> GetDetailData(string REQNo, string ReqDate, string PartCode, string Item_Name, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate)
+        {
+            //model.Mode = "Search";
+            var model = new IssueWOBomMainDashboard();
+            model = await _IIssueWOBOM.GetDetailData(REQNo, ReqDate, PartCode, Item_Name, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate);
+            model.DashboardType = "Detail";
+            return PartialView("_IssueWithoutBomDashboardGrid", model);
+        }
+        public async Task<IActionResult> FillBatchUnique(int ItemCode, int YearCode, string StoreName, string BatchNo,string IssuedDate)
+        {
+            IssuedDate = ParseFormattedDate(IssuedDate);
+            var FinStartDate = ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+             var JSON = await _IIssueWOBOM.FillBatchUnique(ItemCode,YearCode,StoreName,BatchNo, IssuedDate,FinStartDate);
+             string JsonString = JsonConvert.SerializeObject(JSON);
+             return Json(JsonString);
+        }
+        public async Task<IActionResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
+        {
+             var JSON = await _IIssueWOBOM.FillLotandTotalStock(ItemCode,StoreId,TillDate,BatchNo,UniqBatchNo);
+             string JsonString = JsonConvert.SerializeObject(JSON);
+             return Json(JsonString);
+        }
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate, string ToDate, string REQNo, string WCName, string PartCode, string ItemName)
+        {
+            var getData = _IIssueWOBOM.GetDataForDelete(ID,YC);
+
+            long[] ICArray = new long[getData.Result.Result.Rows.Count];
+            string[] batchNoArray = new string[getData.Result.Result.Rows.Count];
+            string[] uniqBatchArray = new string[getData.Result.Result.Rows.Count];
+
+            if (getData.Result.Result != null)
+            {
+                for(int i=0;i<getData.Result.Result.Rows.Count;i++)
+                {
+                    ICArray[i]=getData.Result.Result.Rows[i].ItemArray[0];
+                    batchNoArray[i]=getData.Result.Result.Rows[i].ItemArray[1];
+                    uniqBatchArray[i]=getData.Result.Result.Rows[i].ItemArray[2];
+                    var checkLasTransDate = _IIssueWOBOM.CheckLastTransDate(ICArray[i], batchNoArray[i], uniqBatchArray[i]);
+                    if(checkLasTransDate.Result.Result.Rows[0].ItemArray[0]!= "Successful")
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["423"] = "423";
+                        return RedirectToAction("Dashboard", new { FromDate = DateTime.Now.AddDays(-(DateTime.Now.Day - 1)), Todate = DateTime.Now, Flag = "True" });
+                    }
+                }
+            }
+
+            var Result = await _IIssueWOBOM.DeleteByID(ID, YC);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+            DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
+            string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
+            DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
+            string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");            
+            
+            return RedirectToAction("Dashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, Flag = "False", REQNo = REQNo, WCName = WCName, PartCode = PartCode, ItemName = ItemName});
+
+        }
+        public async Task<JsonResult> GetNewEntry()
+        {
+            int YC = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            var JSON = await _IIssueWOBOM.GetNewEntry(YC);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetAllowBatch()
+        {
+            var JSON = await _IIssueWOBOM.GetAllowBatch();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetIssueScanFeature()
+        {
+            var JSON = await _IIssueWOBOM.GetIssueScanFeature();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> CheckStockBeforeSaving(int ItemCode,int StoreId,string TillDate, string BatchNo,string UniqBatchNo)
+        {
+            var JSON = await _IIssueWOBOM.CheckStockBeforeSaving(ItemCode,StoreId,TillDate,BatchNo,UniqBatchNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> CheckRequisitionBeforeSaving(string ReqNo, string ReqDate,int ItemCode)
+        {
+            var JSON = await _IIssueWOBOM.CheckRequisitionBeforeSaving(ReqNo,ReqDate,ItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<IActionResult> GetItemDetailFromUniqBatch(string UniqBatchNo, int YearCode, string TransDate, string ReqNo, int ReqYearCode, string ReqDate)
+        {
+                var MainModel = new IssueWithoutBom();
+            try
+            {
+                ResponseResult StockData = new ResponseResult();
+                var ItemDetailData = await _IIssueWOBOM.GetItemDetailFromUniqBatch(UniqBatchNo, YearCode, TransDate);
+                if (ItemDetailData.Result != null)
+                {
+                    if (ItemDetailData.Result.Rows.Count != 0)
+                    {
+                        StockData = await _IIssueWOBOM.FillLotandTotalStock(Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]), 1, TransDate, ItemDetailData.Result.Rows[0].ItemArray[2], UniqBatchNo);
+                    }
+                    else
+                    {
+                        return StatusCode(203, "Invalid barcode, item do not exist in this requisition");
+
+                    }
+                }
+                else
+                {
+                    return StatusCode(203, "Invalid barcode, item do not exist in this requisition");
+
+                }
+                ResponseResult ReqQty = await _IIssueWOBOM.GetReqQtyForScan(ReqNo,ReqYearCode,ReqDate, Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]));
+
+                decimal ReqQuantity = 0;
+
+                if (ReqQty.Result.Rows.Count != 0)
+                {
+                    ReqQuantity = Convert.ToDecimal(ReqQty.Result.Rows[0].ItemArray[0]);
+                }
+                else
+                {
+                    return StatusCode(203, "Invalid barcode this item " + ItemDetailData.Result.Rows[0].ItemArray[0] + " do not exist in this requisition");
+                }
+                //var t = StockData.
+                //string JsonString = JsonConvert.SerializeObject(JSON);
+
+                var ItemList = new List<IssueWithoutBomDetail>();
+
+                var lotStock = Convert.ToDecimal(StockData.Result.Rows[0].ItemArray[0]);
+                var totStock = Convert.ToDecimal(StockData.Result.Rows[0].ItemArray[1]);
+
+                var stock = lotStock <= totStock ? lotStock : totStock;
+
+                var issueQty = stock <= ReqQuantity ? stock : ReqQuantity;
+
+                ItemList.Add(new IssueWithoutBomDetail
+                {
+                    ItemName = ItemDetailData.Result.Rows[0].ItemArray[0],
+                    PartCode = ItemDetailData.Result.Rows[0].ItemArray[1],
+                    ItemCode = Convert.ToInt32(ItemDetailData.Result.Rows[0].ItemArray[4]),
+                    BatchNo = ItemDetailData.Result.Rows[0].ItemArray[2],
+                    uniqueBatchNo = UniqBatchNo,
+                    Unit = ItemDetailData.Result.Rows[0].ItemArray[3],
+                    LotStock = lotStock,
+                    TotalStock = totStock,
+                    IssueQty = issueQty,
+                    ReqQty = ReqQuantity
+                });
+
+                var model = ItemList;
+
+                var IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
+                var IssueGrid = new List<IssueWithoutBomDetail>();
+                var SSGrid = new List<IssueWithoutBomDetail>();
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+                var seqNo = 1;
+                if (model != null)
+                {
+                    foreach (var item in model)
+                    {
+                        _MemoryCache.TryGetValue("KeyIssWOBomScannedGrid", out IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid);
+                        if (item != null)
+                        {
+                            //if(item.LotStock < item.ReqQty)
+                            //{
+                            //    return StatusCode(203, "Stock can't be zero");
+                            //}
+                            if (IssueWithoutBomDetailGrid == null)
+                            {
+                                if (item.LotStock <= 0 || item.TotalStock <= 0)
+                                {
+                                    return StatusCode(203, "Stock can't be zero");
+                                }
+                                item.seqno += seqNo;
+                                IssueGrid.Add(item);
+                                seqNo++;
+                            }
+                            else
+                            {
+                                if (IssueWithoutBomDetailGrid.Where(x => x.uniqueBatchNo == item.uniqueBatchNo).Any())
+                                {
+                                    return StatusCode(207, "Duplicate");
+                                }
+                                if (item.LotStock <= 0 || item.TotalStock <= 0)
+                                {
+                                    return StatusCode(203, "Stock can't be zero");
+                                }
+                                else
+                                {
+                                    item.seqno = IssueWithoutBomDetailGrid.Count + 1;
+                                    IssueGrid = IssueWithoutBomDetailGrid.Where(x => x != null).ToList();
+                                    SSGrid.AddRange(IssueGrid);
+                                    IssueGrid.Add(item);
+                                }
+                            }
+                            MainModel.ItemDetailGrid = IssueGrid;
+
+                            _MemoryCache.Set("KeyIssWOBomScannedGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return PartialView("_IssueByScanningGrid",MainModel);
+        }
+
+        public IActionResult EditItemRow(int SeqNo)
+        {
+            _MemoryCache.TryGetValue("KeyIssWOBomGrid", out List<IssueWithoutBomDetail> IssueGrid);
+
+            var SSGrid = IssueGrid.Where(x => x.seqno == SeqNo);
+            string JsonString = JsonConvert.SerializeObject(SSGrid);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty)
+        {            
+            var JSON = await _IIssueWOBOM.AltUnitConversion(ItemCode,AltQty,UnitQty);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        } 
+        public async Task<JsonResult> FillProjectNo()
+        {            
+            var JSON = await _IIssueWOBOM.FillProjectNo();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> FillStoreName()
+        {
+            var JSON = await _IIssueWOBOM.FillStoreName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> FillDept()
+        {
+            var JSON = await _IIssueWOBOM.FillDept();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        //public async Task<JsonResult> FillEmployee()
+        //{
+        //    var JSON = await _IIssueWOBOM.FillEmployee();
+        //    string JsonString = JsonConvert.SerializeObject(JSON);
+        //    return Json(JsonString);
+        //}
+        public async Task<JsonResult> GetIsStockable(int ItemCode)
+        {            
+            var JSON = await _IIssueWOBOM.GetIsStockable(ItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+    }
+}
+
+

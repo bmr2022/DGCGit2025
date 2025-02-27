@@ -1,0 +1,203 @@
+﻿@model eTactWeb.DOM.Models.HRSalaryHeadMasterModel;
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalHeadEffectiveDate</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalaryHead</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalaryCode</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShortForm</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TypeOfSalary</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartOfGrossBasic</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MinAmount</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxAmount</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PaymentMode</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CalculationType</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PercentageOfSalaryHeadID</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AmountOrPercentage</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CalculationPercentage</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CalculationFormula</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RoundOffMethod</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FrequencyOfPayment</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CarryForward</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxAmountofCarryForward</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EmployerContribution</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ContributionSalaryHead</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ContributionPercentage</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ContributionAmount</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PFApplicable</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ESIApplicable</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IncomeTaxApplicable</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxpercentage</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TaxAmount</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DeductionMorY</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApplicableOnCategory</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApplicableOnDeparyment</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActiveStatus</th>
+                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DisplayOrder</th>
+                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEntryby</th>
+                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LastUpdatedOn</th>
+                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartOfPayslip</th>
+                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByMachine</th>
+                <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LastUpdatedBy</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
+                <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalHeadEntryId</th>
+                <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ContributionPerOfSalaryHeadId</th>
+                <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalHeadEntryDate</th>
+                <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CurrencyId</th>
+                
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.HRSalaryDashboard == null || Model.HRSalaryDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.HRSalaryDashboard)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="HRSalaryHeadMaster" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+
+                                        <a class="table-link link-primary" asp-action="HRSalaryHeadMaster" asp-route-Mode="U" asp-route-ID="@item.SalHeadEntryId">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.SalHeadEntryId">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>@item.SalHeadEffectiveDate</td>
+                            <td>@item.SalaryHead</td>
+                            <td>@item.SalaryCode</td>
+                            <td>@item.ShortForm</td>
+                            <td>@item.TypeOfSalary</td>
+                            <td>@item.PartOfGrossBasic</td>
+                            <td>@item.MinAmount</td>
+                            <td>@item.MaxAmount</td>
+                            <td>@item.SalaryPaymentMode</td>
+
+                            <td>@item.CalculationType</td>
+                            <td>@item.PercentageOfSalaryHeadID</td>
+                            <td>@item.AmountOrPercentage</td>
+                            <td>@item.CalculationPercentage</td>
+                            <td>@item.CalculationFormula</td>
+                            <td>@item.RoundOffMethod</td>
+                            <td>@item.FrequencyOfPayment</td>
+
+                            <td>@item.CarryForward</td>
+                            <td>@item.MaxAmountofCarryForward</td>
+                            <td>@item.EmployerContribution</td>
+                            <td>@item.ContributionSalaryHead</td>
+                            <td>@item.ContributionPercentage</td>
+                            <td>@item.ContributionAmount</td>
+                            <td>@item.PFApplicable</td>
+                            <td>@item.ESIApplicable</td>
+                            <td>@item.IncomeTaxApplicable</td>
+                            <td>@item.Taxpercentage</td>
+                            <td>@item.TaxAmount</td>
+                            <td>@item.DeductionMorY</td>
+                            <td>@item.ApplicableOnCategory</td>
+                            <td>@item.ApplicableOnDeparyment<input type="hidden" asp-for="@item.DeptId" /></td>
+                            <td>@item.Currency</td>
+                            <td>@item.ActiveStatus</td>
+                            <td>@item.DisplayOrder</td>
+
+                            <td>@item.ActualEntryby</td>
+                            <td>@item.LastUpdatedOn</td>
+                            <td>@item.PartOfPayslip</td>
+
+                            <td>@item.EntryByMachine</td>
+                            <td>@item.LastUpdatedBy</td>
+                            <td>@item.Remarks</td>
+                            <td>@item.SalHeadEntryId</td>
+                            <td>@item.ContributionPerOfSalaryHeadId</td>
+                            <td>@item.SalHeadEntryDate</td>
+                            <td>@item.CurrencyId</td>
+
+                           
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+</style>

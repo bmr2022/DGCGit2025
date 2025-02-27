@@ -1,0 +1,1207 @@
+﻿@model eTactWeb.DOM.Models.RoutingModel
+
+@{
+    ViewData["Title"] = "Routing";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="Routing" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Routing</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                    <a asp-action="RoutingDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm me-2">
+                        <i class="fa-solid fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    @if (Model.Mode == "U")
+                    {
+                        <div class="col-auto">
+                            <a class="Copy btn btn-sm btn-outline-light bg-gradient" asp-action="Routing" asp-route-Mode="C" asp-route-ID="@Model.EntryId" style="color:white!important;margin-right:5px;">
+                                <i class="fa-solid fa-floppy-disk" style="--fa-secondary-color: white; --fa-secondary-opacity: 1.0;--fa-animation-duration: 2s;"></i>
+                                COPY
+                            </a>
+                        </div>
+                    }
+                    <partial name="_FormsButton" />
+                </span>
+            </h5>
+        </div>
+        <div>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3 align-items-center">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <input type="hidden" value="@Model.Mode" id="hiddenMode" />
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <label asp-for="EntryId" class="form-label" style="color:blue;">Entry ID</label>
+                                    <input asp-for="EntryId" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryDate" class="form-label" style="color:blue;">Entry Date</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    @if (Model.Mode == "V" || Model.Mode == "U" || Model.Mode == "C")
+                                    {
+                                        <input type="hidden" value="@Model.ItemCode" id="hiddenItemCode" />
+                                    }
+                                    <label asp-for="ItemCode" class="form-label" style="color:red">PartCode*</label>
+                                    <select class="form-select" asp-for="ItemCode" onchange="GetAllDataItemWise();">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label me-2" style="color:red">ItemName*</label>
+                                    <input id="SHA" class="form-check-input me-2 showAll" type="checkbox" role="switch" /> <label class="form-label">Show All</label>
+                                    <select class="form-select" asp-for="ItemName">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="RouteNo" class="form-label" style="color:blue">RouteNo</label>
+                                    <input asp-for="RouteNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="RevNo" class="form-label" style="color:blue">RevNo</label>
+                                    <input asp-for="RevNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="RevDate" class="form-label" style="color:blue">RevDate</label>
+                                    <input asp-for="RevDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label" style="color:blue">Branch</label>
+                                    <input asp-for="CC" value="@Model.CC" class="form-control" readonly />
+
+                                    @* <select class="form-select" asp-for="CC" asp-items="@(new SelectList(Model.BranchList,"Value","Text"))">
+                                    <option value="">-Select-</option>
+                                    </select>*@
+                                </div>
+                                <div class="col-xl-5 col-lg-3 col-md-3 col-sm-6 col-xs-12 D-FLEX">
+
+                                    <div class="form-check form-switch d-flex align-items-center mt-2">
+                                        <input id="SH" class="form-check-input me-2" type="checkbox" role="switch" />
+                                        <label class="form-label d-flex justify-content-center" style="margin-bottom:0 !important;">Show/Hide Additional Fields</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="StageID" class="form-label" style="color:red">Process*</label>
+                                    <input type="hidden" asp-for="SequenceNo" />
+                                    <input type="hidden" value="@Model.StageID" id="hiddenStage" />
+                                    <select class="form-select" asp-for="StageID" asp-items="@(new SelectList(Model.StageList,"Value","Text"))" id="StageID">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MachineGroupID" class="form-label" style="color:red">Machine Group*</label>
+                                    <select class="form-select" asp-for="MachineGroupID" asp-items="@(new SelectList(Model.MachineList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="WorkCenterID" class="form-label" style="color:red">Work Center*</label>
+                                    <select class="form-select" asp-for="WorkCenterID" data-val="false" asp-items="@(new SelectList(Model.WorkCenterList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TransferToWCID" class="form-label" style="color:red">Transfer To WC*</label>
+                                    <select class="form-select" asp-for="TransferToWCID" data-val="false" asp-items="@(new SelectList(Model.TransfertoWCList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="StoreName" class="form-label" style="color:red;">Transfer To Store*</label>
+                                    <input type="hidden" asp-for="@Model.StoreID" />
+                                    <select class="form-control" asp-for="StoreName" data-val="false">
+                                        <option value="@Model.StoreName">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.StoreName" selected>@Model.StoreName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="QCRequired" class="control-label" style="color:red">QC Required*</label>
+                                    <select class="form-select" asp-for="QCRequired">
+                                        <option selected>-Select-</option>
+                                        <option value="Y">Yes</option>
+                                        <option value="N">No</option>
+
+                                    </select>
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="IntialSetupTime" class="control-label">IntialSetup Time(Min)</label>
+                                    <input asp-for="IntialSetupTime" id="IntialSetupTime" class="form-control" value="0" />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="LeadTime" class="control-label">Lead  Time</label>
+                                    <input asp-for="LeadTime" id="LeadTime" class="form-control" />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="LeadTimeType" class="control-label" style="color:red">Lead Time Type</label>
+                                    <select class="form-select" asp-for="LeadTimeType">
+                                        <option value="0">-Select-</option>
+                                        <option value="H" selected>Hours</option>
+                                        <option value="M">Minutes</option>
+                                        <option value="S">Seconds</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="LeadTimeInMin" class="control-label">Lead Time In Min</label>
+                                    <input asp-for="LeadTimeInMin" id="LeadTimeInMin" class="form-control" type="text" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="SubPartCode" class="form-label">SubPartCode</label>
+                                    @if (Model.Mode == "V" || Model.Mode == "U")
+                                    {
+                                        <input type="hidden" value="@Model.SubItemCode" id="hiddenSubItemCode" />
+                                    }
+                                    <select class="form-select" asp-for="SubPartCode" style="heigt:190px;width:190px;">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="SubItemName" class="form-label">SubItemName</label>
+                                    <select class="form-select" asp-for="SubItemName" style="heigt:190px;width:190px;">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="Remark" class="form-label">Remark</label>
+                                    <input asp-for="Remark " class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="MandatoryOptionalProcess" class="control-label">Mandatory/Optional Process</label>
+                                    <select class="form-select" asp-for="MandatoryOptionalProcess">
+                                        <option value="0" disabled>-Select-</option>
+                                        <option value="M" selected>Mandatory</option>
+                                        <option value="O">Optional</option>
+                                    </select>
+                                </div>
+                                <div class="AF col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="NoOfWorkers" class="form-label">No Of Workers</label>
+                                    <input asp-for="NoOfWorkers " class="form-control" type="number" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="LaboursCost" class="form-label">Labours Cost</label>
+                                    <input asp-for="LaboursCost" class="form-control" type="number" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ProdCost" class="form-label">Prod Cost</label>
+                                    <input asp-for="ProdCost" class="form-control" type="number" />
+                                </div>
+
+
+
+                                <div class=" col-4 col-auto">
+                                    <div class="row justify-content-around">
+                                        <div class="col-auto">
+                                            <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>Seq No</th>
+                                                    <th>Action</th>
+                                                    <th>Stage</th>
+                                                    <th>Machine Group</th>
+                                                    <th>Work Center</th>
+                                                    <th>Transfer To WC</th>
+                                                    <th>Transfer To StoreName</th>
+                                                    <th>IntialSetUp Time</th>
+                                                    <th>Lead Time</th>
+                                                    <th>Lead Time Type</th>
+                                                    <th>Lead Time In Min</th>
+                                                    <th>SubPartCode</th>
+                                                    <th>SubItemName</th>
+                                                    <th>Remark</th>
+                                                    <th>Mandatory/Optional Process</th>
+                                                    <th>No Of Workers</th>
+                                                    <th>Labours Cost</th>
+                                                    <th>Prod Cost</th>
+                                                    <th>QC Required</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divRoutingGrid">
+                                                <partial name="_RoutingGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="progress my-3 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="UID" class="form-label">UID</label>
+                                    <input asp-for="UID" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date </label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryByEmpName" class="form-label">Actual Entry By </label>
+                                    <input asp-for="ActualEntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdateDate" class="form-label">Last Update Date </label>
+                                    <input asp-for="LastUpdateDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdateByEmpName" class="form-label">Last Update By</label>
+                                    <input asp-for="LastUpdateByEmpName" class="form-control" readonly />
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer card-headerBG text-light bg-gradient">
+                <div class="row justify-content-between g-2">
+                    <h5>
+                        <strong>Routing</strong>
+                        <span class="d-flex float-end" style="margin-top:-2px;">
+                            <a asp-action="RoutingDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                                <i class="fa-duotone fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                Dashboard
+                            </a>
+                            @if (Model.Mode == "U")
+                            {
+                                <div class="col-auto">
+                                    <a class="Copy btn btn-sm btn-outline-light bg-gradient" asp-action="Routing" asp-route-Mode="C" asp-route-ID="@Model.EntryId" style="color:white!important;margin-right:5px;">
+                                        @*<i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: white; --fa-secondary-opacity: 1.0;--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa-solid fa-floppy-disk"></i>
+                                        COPY
+                                    </a>
+                                </div>
+                            }
+                            <partial name="_FormsButton" />
+                        </span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<style>
+    .SubSelect .select2-container--default .select2-selection--single .select2-selection__rendered {
+        font-size: 12px !important;
+        padding: 0 135px 0 10px !important;
+    }
+</style>
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            debugger
+            AlreadyExistItems();
+            fillSubItems();
+            GetFormRights();
+            GetServerDate();
+            FillStoreName();
+            var hiddenMode = $('#hiddenMode').val();
+            var hiddenBranch = $('#hiddenBranch').val();
+            $('#ItemCode').select2();
+            $('#ItemName').select2();
+            $('#SubPartCode').select2();
+            $('#SubItemName').select2();
+            // $('#CC').val(hiddenBranch);
+
+            if ($('#hiddenMode').val() == "U" || $('#hiddenMode').val() == "V") {
+                $('#SHA').prop("checked", true);
+            }
+
+            if ($('#SHA').is(':checked') == true) {
+                fillItems();
+            } else {
+                AlreadyExistItems();
+            }
+            //$('#EntryDate, #RevDate,#RouteNo,#MandatoryOptionalProcess,#MachineGroupID').rules("remove", "required");
+            $('#EntryDate').rules('remove', 'required');
+            $('#RevDate').rules('remove', 'required');
+            $('#RouteNo').rules('remove', 'required');
+            $('#MandatoryOptionalProcess').rules('remove', 'required');
+            $('#MachineGroupID').rules('remove', 'required');
+            $('#TransferToWCID').rules('remove', 'required');
+            $('#LeadTimeType').rules('remove', 'required');
+            $('#Remark').rules('remove', 'required');
+            $('#SubPartCode').rules('remove', 'required');
+            $('#SubItemName').rules('remove', 'required');
+            $('#ActualEntryByEmpName').rules('remove', 'required');
+            $('#LastUpdateByEmpName').rules('remove', 'required');
+            $('#LastUpdateDate').rules('remove', 'required');
+            $('#QCRequired').rules('remove', 'required');
+            convertLeadTimeToMinutes();
+            //$('#LeadTime').on('input', function () {
+            //    convertLeadTimeToMinutes();
+            //});
+             // $('#LedgerName').change(function () {
+             //    $('#AccountCode').val($('#LedgerName').val());
+             // });
+            $('#LeadTimeType').on('change', function () {
+                convertLeadTimeToMinutes();
+            });
+
+            if ($('#hiddenMode').val() == "C") {
+                $('.showAll').prop("disabled", true);
+            }
+
+            $('.AF').fadeOut();
+            if (hiddenMode != "V" && hiddenMode != "U") {
+                GetNewEntryId();
+            }
+
+            $("#TransferToWCID, #StoreName").on("change", function () {
+                validateSelection();
+            });
+           
+        });
+        function validateSelection() {
+             
+            const transferToWCValue = $("#TransferToWCID").val();
+            const storeNameValue = $("#StoreName").val();
+
+             
+            if (transferToWCValue !== "0" && transferToWCValue !== null &&transferToWCValue !== "" &&
+                storeNameValue !== "" && storeNameValue !== "0" && storeNameValue !== null) {
+                // Show error message
+                $.notify("You can select either 'Transfer To Store' or 'Transfer To WC', not both.", "error");
+
+                // Reset one of the fields to prevent both being selected
+                $("#StoreName").val("0"); // Reset StoreName to default
+                $("#TransferToWCID").val("0"); // Reset TransferToWCID to default
+            }
+        }
+        
+        
+        $('#LeadTime').change(function () {
+            convertLeadTimeToMinutes();
+        });
+
+        $("#IntialSetupTime").on("input", function (e) {
+            var inputValue = $(this).val();
+
+            inputValue = inputValue.replace(/[^0-9.]/g, '');
+
+            var dotCount = inputValue.split('.').length - 1;
+            if (dotCount > 1) {
+                inputValue = inputValue.slice(0, -1);
+            }
+            $(this).val(inputValue);
+        });
+
+        $("#LeadTime").on("input", function (e) {
+            var inputValue = $(this).val();
+
+            inputValue = inputValue.replace(/[^0-9.]/g, '');
+
+            var dotCount = inputValue.split('.').length - 1;
+            if (dotCount > 1) {
+                inputValue = inputValue.slice(0, -1);
+            }
+            $(this).val(inputValue);
+        });
+
+        function GetNewEntryId() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetNewEntryId")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                        $('#EntryId').val("");
+                        $('#EntryId').val(obj.Result[0].EntryId);
+                        $('#RouteNo').val("");
+                        $('#RouteNo').val(obj.Result[0].RouteNo);
+                    }
+                }
+            });
+        }
+        function FillStoreName() {
+            $.ajax({
+                url: '@Url.Action("FillStoreName", "Routing")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var StoreTypeDropdown = $('#StoreName');
+                    var obj = $.parseJSON(response);
+                    StoreTypeDropdown.empty();
+                    StoreTypeDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, StoreName) {
+                        StoreTypeDropdown.append('<option value="' + StoreName.StoreId + '">' + StoreName.Store_Name + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var StoreName = '@Model.StoreID';
+                        $('#StoreName').val(StoreName).trigger("change");
+                        $('#StoreName').val(StoreName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        function removeAllAfterFirstIndex(url) {
+
+            var updatedURL = url.replace(/\/Index(\/.*|$)/, '/Index');
+
+            return updatedURL;
+        }
+
+        function GetAllDataItemWise() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetAllDataItemWise")",
+                data: { "ItemCode": parseInt($('#ItemCode').val()) },
+                dataType: "json",
+                success: function (result, status, error) {
+                     
+                    if (result > 0) {
+                        var EntryId = result;
+                        var currentLocation = window.location.href;
+                        var currentLocation = "https://localhost:44399/Routing/Index";
+                        currentLocation = currentLocation.replace('/Index', '');
+                        //currentLocation = currentLocation.match(/(.*?\/Index)/);
+                        currentLocation = currentLocation + "/Index" + "?Mode=" + "U" + "&ID=" + EntryId;
+                        window.location.href = currentLocation;
+                    } else {
+                        window.location.href;
+                    }
+                }
+            });
+        }
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#RevDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                }
+            });
+        }
+
+        $('#SHA').change(function () {
+            if ($('#SHA').is(':checked') == true) {
+                fillItems();
+            } else {
+                AlreadyExistItems();
+            }
+        });
+
+        function convertLeadTimeToMinutes() {
+
+            var LeadTime = parseFloat($('#LeadTime').val());
+            var LeadTimeType = $('#LeadTimeType').val();
+
+            var convertedValue = 0;
+            if (LeadTimeType === "H") {
+                convertedValue = LeadTime * 60;
+            } else if (LeadTimeType === "M") {
+                convertedValue = LeadTime;
+            } else if (LeadTimeType === "S") {
+                convertedValue = LeadTime / 60;
+            }
+            $('#LeadTimeInMin').val(convertedValue.toFixed(2));
+
+        }
+
+        $('#SH').change(function () {
+            if ($('#SH').is(':checked') == true) {
+                $('.AF').fadeIn();
+            }
+            else {
+                $('.AF :input').val('');
+                $('.AF').fadeOut();
+            }
+        });
+
+        $('#submitBTN').click(function (e) {
+             
+            e.preventDefault();
+            if ($('#divRoutingGrid tr td').length <= 1) {
+                $.notify('Routing Grid Should Have Atleast 1 Item...!', "error");
+            }
+            else if ($('#ItemCode').val() == 0 || $('#ItemName').prop('selectedIndex') == 0) {
+                $.notify("Please fill Item name and partcode", "error");
+                $('#ItemCode').next('.select2-container').find('.select2-selection').css('border', '1px solid red');
+                $('#ItemName').next('.select2-container').find('.select2-selection').css('border', '1px solid red');
+            }
+            else {
+                $("form").submit();
+            }
+        });
+
+        ItemNameSort = [];
+        function fillItems() {
+            $.ajax({
+                url: "@Url.Action("FillItems")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ItemName,#ItemCode').empty();
+                            $('#ItemCode').append('<option value="0" selected>-Select-</option>');
+                            $('#ItemName').append('<option value="0" selected>-Select-</option>');
+                            var hiddenMode = $('#hiddenMode').val();
+                            ItemNameSort = [];
+                            $.each(obj.Result, function (index, val) {
+
+                                //if (val.Item_Code == $('#hiddenItemCode').val()) {
+                                //    $('#ItemCode').append('<option value="' + val.Item_Code + '" selected>' + val.PartCode + '</option>');
+                                //    $('#ItemName').append('<option value="' + val.Item_Code +
+                                //        '" selected>' + val.Item_Name + '</option>');
+                                //}
+
+                                $('#ItemCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
+                                //$('#ItemName').append('<option value="' + val.Item_Code +
+                                //    '">' + val.Item_Name + '</option>');
+                                ItemNameSort.push({
+                                    ItemCode: val.Item_Code,
+                                    ItemName: val.Item_Name
+                                });
+
+                            });
+
+                            if (hiddenMode == "U" || hiddenMode == "V") {
+                                $('#ItemCode').val($('#hiddenItemCode').val());
+                                $('#ItemName').val($('#hiddenItemCode').val());
+                            }
+                        }
+                        else {
+                            $('#ItemName,#ItemCode').empty();
+                        }
+                        FillAllItemName();
+                    }
+
+                },
+                error: function (req, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        var ExistsItems = [];
+
+        function AlreadyExistItems() {
+            $.ajax({
+                url: "@Url.Action("AlreadyExistItems")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var ItemsLength = obj.Result.length;
+                            $('#ItemName,#ItemCode').empty();
+                            $('#ItemCode').append('<option value="0" selected>-Select-</option>');
+                            $('#ItemName').append('<option value="0" selected>-Select-</option>');
+                            ItemNameSort = [];
+                            $.each(obj.Result, function (index, val) {
+                                //if (val.Item_Code == $('#hiddenItemCode').val()) {
+                                //    $('#ItemCode').append('<option value="' + val.Item_Code + '" selected>' + val.PartCode + '</option>');
+                                //    $('#ItemName').append('<option value="' + val.Item_Code +
+                                //        '" selected>' + val.Item_Name + '</option>');
+                                //}
+                                $('#ItemCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
+                                //$('#ItemName').append('<option value="' + val.Item_Code +
+                                //    '">' + val.Item_Name + '</option>');
+
+                                ItemNameSort.push({
+                                    ItemCode: val.Item_Code,
+                                    ItemName: val.Item_Name
+                                });
+
+                            });
+                            if (hiddenMode == "U" || hiddenMode == "V") {
+                                $('#ItemCode').val($('#hiddenItemCode').val());
+                                $('#ItemName').val($('#hiddenItemCode').val());
+                            }
+                        }
+                        else {
+                            $('#ItemName,#ItemCode').empty();
+                        }
+                        FillAllItemName();
+                    }
+
+                },
+                error: function (req, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function fillSubItems() {
+            $.ajax({
+                url: "@Url.Action("FillSubItems")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#SubItemName,#SubPartCode').empty();
+                            $('#SubPartCode').append('<option disabled selected>-Select-</option>');
+                            $('#SubItemName').append('<option selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                if (val.Item_Code == $('#hiddenSubItemCode').val()) {
+                                    $('#SubPartCode').append('<option value="' + val.Item_Code + '" selected>' + val.PartCode + '</option>');
+                                    $('#SubItemName').append('<option value="' + val.Item_Code +
+                                        '" selected>' + val.Item_Name + '</option>');
+                                }
+                                $('#SubPartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
+                                $('#SubItemName').append('<option value="' + val.Item_Code +
+                                    '">' + val.Item_Name + '</option>');
+                            });
+                        }
+                        else {
+                            $('#SubItemName,#SubPartCode').empty();
+                        }
+                    }
+
+                },
+                error: function (req, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        $(document).on('select2:select', '#ItemName,#ItemCode,#SubItemName,#SubPartCode', function (e) {
+            var cntId = e.target.id;
+
+            if (cntId == 'ItemName' || cntId == 'SubItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+            //GetAllDataItemWise();
+        });
+
+        function PartCodeChange(ID) {
+            $.when(SetPartCodeItemName(ID)).done(function () {
+                GetItemPartCode(ID)
+            });
+            if (ID == 'ItemCode') {
+                copyToClipboardForDropdown('#ItemCode');
+            } else {
+                copyToClipboardForDropdown('#SubPartCode');
+            }
+            $('#ItemCode').next('.select2-container').find('.select2-selection').css('border', '1px solid black');
+            $('#ItemName').next('.select2-container').find('.select2-selection').css('border', '1px solid black');
+
+            // EmptyGridFields();
+        }
+
+        function FillAllItemName() {
+            ItemNameSort.sort(function (a, b) {
+                var nameA = a.ItemName.toUpperCase();
+                var nameB = b.ItemName.toUpperCase();
+
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            $('#ItemName').empty();
+
+            $('#ItemName').append($('<option>', {
+                value: '0',
+                text: '-Select-'
+            }));
+
+            $.each(ItemNameSort, function (index, item) {
+                $('#ItemName').append($('<option>', {
+                    value: item.ItemCode,
+                    text: item.ItemName
+                }));
+            });
+             
+            if ($('#hiddenMode').val() == "U" || $('#hiddenMode') == "V") {
+                $('#ItemName').val($('#hiddenItemCode').val()).trigger("change");
+            }
+        }
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit']").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("button[type='submit']").prop("disabled", true);
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+        var ChangeItems = false;
+
+        function ItemNameChange(ID) {
+
+            SetPartCodeItemName(ID);
+            GetItemPartCode(ID);
+            if (ID == 'ItemName') {
+                copyToClipboardForDropdown('#ItemName');
+                ChangeItems = true;
+                if ($('#hiddenMode') == "U" && $('#hiddenMode').val() == "V" && ChangeItems == false) {
+                    GetAllDataItemWise();
+                }
+            } else {
+                copyToClipboardForDropdown('#SubItemName');
+            }
+            $('#ItemName').next('.select2-container').find('.select2-selection').css('border', '1px solid black');
+
+            //EmptyGridFields();
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                ;
+                if (ID == "ItemCode") {
+                    $("#ItemName").val(v).trigger("change");
+                } else if (ID == "SubPartCode") {
+                    $("#SubItemName").val(v).trigger("change");
+                } else if (ID == "ItemName") {
+                    $("#ItemCode").val(v).trigger("change");
+                } else {
+                    $("#SubPartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+        async function GetItemPartCode(ID) {
+            $.getJSON({
+                url: '@Url.Action("GetItemPartCode", "SaleOrder")',
+                data: { Code: $('#' + ID).val() },
+                success: function (result, status, xhr) {
+                    if (result) {
+                        var obj = JSON.parse(result);
+                        if (!obj) {
+                            $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+                        }
+                        else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                            $('#Unit').val(obj.Result[0].Unit);
+                            $('#HSNNo').val(obj.Result[0].HSNNo);
+                            $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
+                            !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+
+        function copyToClipboardForDropdown(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            ;
+            $temp.val($(element).find(":selected").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        function ValidateRouting_Grid() {
+             
+            var Err = 0;
+            if (parseInt($('#StageID').val()) == 0 || $('#StageID').val() == '') {
+                $.notify('Process Is Required', "error");
+                AddErrorCls('StageID');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('StageID');
+            }
+            if (parseInt($('#MachineGroupID').val()) == 0 || $('#MachineGroupID').val() == '') {
+                $.notify('MachineGroup Is Required', "error");
+                AddErrorCls('MachineGroupID');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('MachineGroupID');
+            }
+            // if (parseInt($('#TransferToWCID').val()) == 0 || $('#TransferToWCID').val() == '') {
+            //     $.notify('TransferToWC Is Required', "error");
+            //     AddErrorCls('TransferToWCID');
+            //     Err = 1;
+            // }
+            // else {
+            //     RemoveErrorCls('TransferToWCID');
+            // }
+           
+            if ($('#QCRequired').prop('selectedIndex') == 0 || $('#QCRequired').val() == '') {
+                $.notify('QCRequired Is Required', "error");
+                AddErrorCls('QCRequired');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('QCRequired');
+            }
+            LeadTimeType
+            if ($('#LeadTimeType').prop('selectedIndex') == 0 || $('#LeadTimeType').val() == '') {
+                $.notify('LeadTimeType Is Required', "error");
+                AddErrorCls('LeadTimeType');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('LeadTimeType');
+            }
+
+
+            if (parseInt($('#WorkCenterID').val()) == 0 || $('#WorkCenterID').val() == '') {
+                $.notify('WorkCenter Is Required', "error");
+                AddErrorCls('WorkCenterID');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('WorkCenterID');
+            }
+
+            if ($('#LeadTime').val() != '0') {
+
+                if ($('#LeadTimeType').val() == '0' || $('#LeadTimeType').val() == '') {
+                    $.notify('LeadTimeType Is Required', "error");
+                    AddErrorCls('LeadTimeType');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('LeadTimeType');
+                }
+            }
+
+            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        $("#LaboursCost").on("input", function (e) {
+            var inputValue = $(this).val();
+
+            inputValue = inputValue.replace(/[^0-9.]/g, '');
+
+            var dotCount = inputValue.split('.').length - 1;
+            if (dotCount > 1) {
+                inputValue = inputValue.slice(0, -1);
+            }
+            $(this).val(inputValue);
+        });
+
+        $("#ProdCost").on("input", function (e) {
+            var inputValue = $(this).val();
+
+            inputValue = inputValue.replace(/[^0-9.]/g, '');
+
+            var dotCount = inputValue.split('.').length - 1;
+            if (dotCount > 1) {
+                inputValue = inputValue.slice(0, -1);
+            }
+            $(this).val(inputValue);
+        });
+
+        $("#NoOfWorkers").on("input", function (e) {
+            var inputValue = $(this).val();
+
+            inputValue = inputValue.replace(/[^0-9.]/g, '');
+
+            var dotCount = inputValue.split('.').length - 1;
+            if (dotCount > 1) {
+                inputValue = inputValue.slice(0, -1);
+            }
+            $(this).val(inputValue);
+        });
+
+        var EditEachItem = false;
+
+        function EditItemRows(SeqNo) {
+             
+            var RowCount = $('#divRoutingGrid tr').length;
+            if (EditEachItem) {
+                $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+            else {
+                $.ajax({
+                    url: '/Routing/EditItemRows',
+                    type: "POST",
+                    data: { SeqNo: SeqNo },
+                    success: function (data) {
+                          
+                        var obj = $.parseJSON(data);
+                        if (obj != null) {
+                            EditEachItem = true;
+                            $('#StageID').val(obj[0].StageID);
+                            $('#SequenceNo').val(obj[0].SequenceNo);
+                            $('#MachineGroupID').val(obj[0].MachineGroupID);
+                            //$('#ItemCode').text(obj[0].ItemName);
+                            $('#WorkCenterID').val(obj[0].WorkCenterID);
+                            $('#TransferToWCID').val(obj[0].TransferToWCID);
+                            $('#LeadTime').val(obj[0].LeadTime);
+                            $('#LeadTimeType').val(obj[0].LeadTimeType.trim());
+                            $('#LeadTimeInMin').val(obj[0].LeadTimeInMin);
+                            $('#SubPartCode').val(obj[0].SubItemCode).trigger("change");
+                            $('#SubItemName').val(obj[0].SubItemCode).trigger("change");
+                            $('#Remark').val(obj[0].Remark);
+                            $('#QCRequired').val(obj[0].QCRequired.trim());
+                            $('#IntialSetupTime').val(obj[0].IntialSetupTime);
+                            $('#MandatoryOptionalProcess').val(obj[0].MandatoryOptionalProcess);
+                            $('#NoOfWorkers').val(obj[0].NoOfWorkers);
+                            $('#LaboursCost').val(obj[0].LaboursCost);
+                            $('#ProdCost').val(obj[0].ProdCost);
+                            //   $('#divRoutingGrid tr#' + SeqNo).remove();
+
+                            var rowCount = $('#divRoutingGrid tr').length;
+                            for (var i = 1; i <= rowCount + 1; i++) {
+                                $('#editItemGrid-' + i).css("pointer-events", "none");
+                                $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                            }
+
+                            DeleteItemRow(SeqNo);
+                        }
+                    },
+                    error: function (response) {
+                        $.notify(response.responseText, "error");
+                    },
+                    failure: function (response) {
+                        $.notify(response.responseText, "error");
+                    }
+                });
+            }
+        }
+
+        $('.GridButton').click(function (e) {
+            e.preventDefault();
+            EditEachItem = false;
+            var seqnoarray = [];
+            var rowsCounting = parseInt($('#divRoutingGrid tr').length);
+            $('#divRoutingGrid tr').each(function (index, element) {
+
+                var currentRow = $(element);
+                var seqnoText = currentRow.find('td[id^=SeqNo]').text();
+
+                seqnoarray.push(parseInt(seqnoText));
+
+            });
+            var highestValue = 0;
+            if (seqnoarray.length == 0) {
+                highestValue = 0;
+            }
+            else {
+
+                highestValue = Math.max(...seqnoarray);
+            }
+            //var rowsCountingtd  = $('#divRoutingGrid tr td').length;
+
+            //if(rowsCountingtd >= 1){
+            //    rowsCounting = rowsCounting;
+            //}
+            //else{
+            //    rowsCounting = rowsCounting -1;
+            //}
+             
+            //if (!ValidateRouting_Grid()) return;
+             
+            var ItemData = {
+                "StageID": $('#StageID').val(),
+                "Stage": $('#StageID').find(':selected').text(),
+                "MachineGroupID": $('#MachineGroupID').val(),
+                "MachineGroup": $('#MachineGroupID').find(':selected').text() == "-Select-" ? "" : $('#MachineGroupID').find(':selected').text(),
+                "WorkCenterID": $('#WorkCenterID').val(),
+                "WorkCenter": $('#WorkCenterID').find(':selected').text(),
+                "TransferToWCID": $('#TransferToWCID').val(),
+                "TransferToWC": $('#TransferToWCID').find(':selected').text() == "-Select-" ? "" : $('#TransferToWCID').find(':selected').text(),
+                "IntialSetupTime": $('#IntialSetupTime').val(),
+                "LeadTime": $('#LeadTime').val(),
+                "LeadTimeType": $('#LeadTimeType').val(),
+                "LeadTimeInMin": $('#LeadTimeInMin').val(),
+                "SubItemCode": $('#SubPartCode').val(),
+                "SubPartCode": $('#SubPartCode').find(':selected').text() == "-Select-" ? "" : $('#SubPartCode').find(':selected').text(),
+                "SubItemName": $('#SubItemName').find(':selected').text() == "-Select-" ? "" : $('#SubItemName').find(':selected').text(),
+                "Remark": $('#Remark').val(),
+                "MandatoryOptionalProcess": $('#MandatoryOptionalProcess').val(),
+                "NoOfWorkers": $('#NoOfWorkers').val(),
+                "LaboursCost": $('#LaboursCost').val(),
+                "ProdCost": $('#ProdCost').val(),
+                "QCRequired": $('#QCRequired').val(),
+                "StoreID": $('#StoreName').val(), 
+                "StoreName": $('#StoreName').find(':selected').text() == "-Select-" ? "" : $('#StoreName').find(':selected').text(),
+                "SequenceNo": parseInt($('#SequenceNo').val()) == 0 ? (highestValue + 1) : parseInt($('#SequenceNo').val())
+            }
+            console.log(ItemData);
+            $.ajax({
+                url: "@Url.Action("AddRoutingDetail")",
+                type: "POST",
+                data: ItemData,
+                beforeSend: function (xhr) {
+                    console.log(1);
+                },
+                success: function (data, status, xhr) {
+                    console.log(2);
+                    $('#RoundOff').prop('selectedIndex', 0);
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Process Not Allowed.', "info");
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else {
+                        $('#divRoutingGrid').html(data);
+                        $.notify('Process Added To Grid', "success");
+                        //ClearItem();
+                    }
+                    ClearItems();
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+                    console.log(5);
+
+                }
+            }).done(function () {
+                console.log(3);
+
+            }).fail(function () {
+                alert("error");
+            }).always(function () {
+                console.log(4);
+            });
+        });
+
+        function ClearItems(){
+            $('#StageID,#MachineGroupID,#WorkCenterID,#TransferToWCID,#StoreName,#LeadTime,#LeadTimeInMin,#NoOfWorkers,#LaboursCost,#ProdCost,#QCRequired,#LeadTimeType').val(0);
+            $('#LeadTimeType,#MandatoryOptionalProcess').val('M');
+            $('#SubPartCode,#SubItemName').val('').trigger("change");
+            $('#Remark').val('');
+        }
+
+        async function DeleteItemRow(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                success: await function (data, status, xhr) {
+                    $('#divRoutingGrid').html(data);
+                    $.notify("Process deleted from Grid", "info");
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+        function BackButtonData() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+            sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
+            sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+            sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+    </script>
+
+}

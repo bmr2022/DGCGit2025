@@ -1,0 +1,100 @@
+﻿@model eTactWeb.DOM.Models.DirectPurchaseBillModel
+
+<div class="accordion-body">
+    <div class="row g-2 gx-3">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PreparedBy" class="form-label">Prepared By</label>
+            <input type="hidden" asp-for="PreparedBy" class="form-control" value="@Model.PreparedBy" readonly />
+            <input asp-for="PreparedByName" class="form-control" value="@Model.PreparedByName" readonly />
+        </div>
+        @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="Discount" class="form-label">Discount</label>
+        <input asp-for="Discount" class="form-control" />
+        </div> *@
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GSTIncludedONRate" class="form-label">GST Included ON Rate</label>
+            <select class="form-select" asp-for="GSTIncludedONRate" asp-items="Model.YesNoList"></select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PaymentTerms" class="form-label">Payment Terms</label>
+            <input asp-for="PaymentTerms" class="form-control" />
+        </div>
+
+        @* <div class="DH col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="ResposibleEmplforQC" class="form-label">Resp Emp for QC</label>
+        <select asp-for="ResposibleEmplforQC" class="form-select" asp-items="@(new SelectList(Model.PreparedByList,"Value","Text"))">
+        <option value="0">-Select-</option>
+        </select>
+        </div> *@
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="OrderNo" class="form-label">Order No</label>
+            <input asp-for="OrderNo" class="form-control" readonly disabled />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label asp-for="PathOfFile1" class="form-label">PathOfFile1</label>
+            <div class="input-group">
+                <input class="form-control form-control" asp-for="PathOfFile1" type="file" data-val="false">
+                @if (Model.PathOfFile1URL != null && Model.PathOfFile1URL != "")
+                {
+                    <a href="@Model.PathOfFile1URL" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label asp-for="PathOfFile2" class="form-label">PathOfFile2</label>
+            <div class="input-group">
+                <input class="form-control form-control" asp-for="PathOfFile2" type="file" data-val="false">
+                @if (Model.PathOfFile2URL != null && Model.PathOfFile2URL != "")
+                {
+                    <a href="@Model.PathOfFile2URL" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label asp-for="PathOfFile3" class="form-label">PathOfFile3</label>
+            <div class="input-group">
+                <input class="form-control form-control" asp-for="PathOfFile3" type="file" data-val="false">
+                @if (Model.PathOfFile3URL != null && Model.PathOfFile2URL != "")
+                {
+                    <a href="@Model.PathOfFile3URL" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label class="form-label">Remarks</label>
+            <input asp-for="Remark" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="CreatedBy" class="form-label">Created By</label>
+            <input type="hidden" asp-for="CreatedBy" class="form-control" value="@Model.CreatedBy" readonly />
+            <input asp-for="CretaedByName" class="form-control" value="@Model.CretaedByName" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="CreatedOn" class="form-label">Created On</label>
+            <input asp-for="CreatedOn" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+            <input type="hidden" asp-for="UpdatedBy" class="form-control" value="@Model.UpdatedBy" readonly />
+            <input asp-for="UpdatedByName" class="form-control" value="@Model.UpdatedByName" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+            <input asp-for="UpdatedOn" class="form-control" readonly />
+        </div>
+    </div>
+    <style>
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+            .input-group input[type="file"] {
+                margin-right: 10px; /* Add some space between the input and icon */
+            }
+
+            .input-group a {
+                text-decoration: none;
+                color: inherit;
+            }
+    </style>

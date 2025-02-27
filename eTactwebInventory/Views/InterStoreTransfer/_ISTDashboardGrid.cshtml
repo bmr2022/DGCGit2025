@@ -1,0 +1,296 @@
+﻿@model eTactWeb.DOM.Models.ISTDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+@if (Model.SummaryDetail == "Detail")
+{
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+        <thead class="bg-gradient card-headerBG text-light">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Slip No</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Slip Date</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssuetoStoreWc</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From StoreName</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Lot Stock</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batchno</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique BatchNo</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>To StoreName</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>To WcName</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Reason of Transfer</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecStoreStock</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryId</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntrDate</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryBy</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryDate</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last UpdatedBy</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last UpdatedDate</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
+            </tr>
+        </thead>
+        <tbody id="ISTDashboardGrid">
+            @{
+                var @Cntr = 0;
+                if (Model.ISTDashboardGrid == null || Model.ISTDashboardGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.ISTDashboardGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="printData-@Cntr">
+                                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="InterStoreTransfer" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    @if (item.YearCode == yearCode)
+                                    {
+                                        <div id="editCursorDiv-@Cntr">
+
+                                            <a class="table-link link-primary" asp-action="InterStoreTransfer" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="deleteCursorDiv-@Cntr">
+                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode"
+                           data-itemcode="@item.ItemCode" data-yearcode="@item.YearCode" data-entryid="@item.EntryId"
+                           data-slipdate="@item.SlipDate" data-slipno="@item.SlipNo" data-tostoreid="@item.ToStoreId"
+                           data-towcid="@item.ToWCID" data-batchno="@item.Batchno" data-uniquebatchno="@item.UniqueBatchNo"
+                           onclick="CheckIssuedTransStock(this,event)">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+
+                                        <div>
+                                            <a class="table-link link-primary noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a class="table-link link-danger noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+
+                            <td>@item.SlipNo</td>
+                            <td>@(item.SlipDate == null ? string.Empty : item.SlipDate.Split(" ")[0]) </td>
+                            <td>@item.IssueToStoreWC</td>
+                            <td>@item.FromStoreName</td>
+                            <td>@item.Remark</td>
+                            <td>@item.TotalStockQty</td>
+                            <td>@item.LotStockQty</td>
+                            <td>@item.Qty</td>
+                            <td>@item.Unit</td>
+                            <td>@item.AltQty</td>
+                            <td>@item.AltUnit</td>
+                            <td>@item.Rate</td>
+                            <td>@item.Batchno</td>
+                            <td>@item.UniqueBatchNo</td>
+                            <td>@item.PartCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.ToStorename</td>
+                            <td>@item.ToWCName</td>
+                            <td>@item.ReasonOfTransfer</td>
+                            <td>@item.RecStoreStock</td>
+                            <td>@item.EntryId</td>
+                            <td>@item.YearCode</td>
+                            <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td>
+                            <td>@item.ActualEntryByName</td>
+                            <td>@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])</td>
+                            <td>@item.LastUpdatedByName</td>
+                            <td>@(item.LastUpdatetionDate == null ? string.Empty : item.LastUpdatetionDate.Split(" ")[0])</td>
+                            <td>@item.CC</td>
+                            <td>@item.MachineName</td>
+
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+        <thead class="bg-gradient card-headerBG text-light">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Slip No</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Slip Date</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssuetoStoreWc</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From StoreName</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>To StoreName</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>To WCName</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryId</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntrDate</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryBy</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryDate</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last UpdatedBy</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last UpdatedDate</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
+            </tr>
+        </thead>
+        <tbody id="ISTDashboardGrid">
+            @{
+                var @Cntr = 0;
+                if (Model.ISTDashboardGrid == null || Model.ISTDashboardGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.ISTDashboardGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="InterStoreTransfer" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    @if (item.YearCode == yearCode)
+                                    {
+                                        <div id="editCursorDiv-@Cntr">
+
+                                            <a class="table-link link-primary" asp-action="InterStoreTransfer" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="deleteCursorDiv-@Cntr">
+                                            @*<a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="confirmdelete(event)">
+                        <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                        </a>*@
+                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode"
+                           data-itemcode="@item.ItemCode" data-yearcode="@item.YearCode" data-entryid="@item.EntryId"
+                           data-slipdate="@item.SlipDate" data-slipno="@item.SlipNo" data-tostoreid="@item.ToStoreId"
+                           data-towcid="@item.ToWCID" data-batchno="@item.Batchno" data-uniquebatchno="@item.UniqueBatchNo"
+                           onclick="confirmdelete(event,this)">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <a class="table-link link-primary noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a class="table-link link-danger noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+
+                            <td>@item.SlipNo</td>
+                            <td>@(item.SlipDate == null ? string.Empty : item.SlipDate.Split(" ")[0]) </td>
+                            <td>@item.IssueToStoreWC</td>
+                            <td>@item.FromStoreName</td>
+                            <td>@item.ToStorename</td>
+                            <td>@item.ToWCName</td>
+                            <td>@item.Remark</td>
+                            <td>@item.EntryId</td>
+                            <td>@item.YearCode</td>
+                            <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td>
+                            <td>@item.ActualEntryByName</td>
+                            <td>@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])</td>
+                            <td>@item.LastUpdatedByName</td>
+                            <td>@(item.LastUpdatetionDate == null ? string.Empty : item.LastUpdatetionDate.Split(" ")[0])</td>
+                            <td>@item.CC</td>
+                            <td>@item.MachineName</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+}
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+</style>

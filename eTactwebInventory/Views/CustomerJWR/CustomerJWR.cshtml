@@ -1,0 +1,1085 @@
+﻿@model eTactWeb.DOM.Models.CustomerJobWorkReceiveModel
+
+@{
+    ViewData["Title"] = "Customer Job Work Receive";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <form asp-action="CustomerJWR" method="post" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Customer JWR</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                    <div class="col-auto">
+                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="MaterialReceipt" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" asp-route-MrnNo="@Model.MRNNo">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            PRINT
+                        </a>
+                    </div>
+                    <a asp-action="CustomerJWRDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    @* <partial name="_FormsButton" />*@
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                            <input asp-for="MRNNoBack" type="hidden" value="@Model.MRNNoBack" />
+                            <input asp-for="ChallanNoBack" type="hidden" value="@Model.ChallanNoBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U"  )
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                            
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+                                    <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                    <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
+                                    <label asp-for="EntryId" class="form-label" style="color: blue;">Entry ID</label>
+                                    <input asp-for="EntryId" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="YearCode" class="form-label" style="color: blue;">Year</label>
+                                    <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryDate" class="form-label" style="color: blue;">Entry Date</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label" style="color: blue;">From Date</label>
+                                    <input asp-for="FromDate" type="text" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label" style="color: blue;">To Date</label>
+                                    <input asp-for="ToDate" type="text" class="form-control" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <label asp-for="GateNo" class="form-label" style="color: red;">Gate No*</label>
+
+                                        <input asp-for="GateNo" value="@Model.GateNo" class="form-control" readonly />
+
+                                        <input type="hidden" id="GateEntry" />
+                                    }
+                                    else
+                                    {
+                                        <label asp-for="GateNo" class="form-label" style="color: red;">Gate No*</label>
+                                        <select class="form-select" asp-for="GateNo">
+                                            <option value="" disabled selected>-Select-</option>
+                                        </select>
+                                        <input type="hidden" id="GateEntry" />
+                                    }
+
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <label asp-for="GateYearCode" class="form-label" style="color: red;">Gate YC*</label>
+                                        <input asp-for="GateYearCode" value="@Model.GateYearCode" class="form-control" readonly />
+
+                                    }
+                                    else
+                                    {
+                                        <label asp-for="GateYearCode" class="form-label">Gate Year</label>
+                                        <select class="form-select" asp-for="GateYearCode">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    }
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ChallanNo" class="form-label" style="color: red;">ChallanNo*</label>
+                                    <input asp-for="ChallanNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ChallanDate" class="form-label" style="color: red;">ChallanDate*</label>
+                                    <input asp-for="ChallanDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MRNNo" class="form-label" style="color: red;">MRNNo*</label>
+                                    <input asp-for="MRNNo" class="form-control" readonly />
+                                </div>
+                       
+                                @*<div class=" col-4 col-auto">*@
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="GateDate" class="form-label" style="color: blue;">Gate Date</label>
+                                    <input asp-for="GateDate " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label" style="color: blue;">Branch</label>
+                                    <input asp-for="CC" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountCode" class="form-label" style="color: red;">Vendor name*</label>
+                                    <input asp-for="AccountCode" class="form-control" readonly />
+                                    <input asp-for="AccountID" type="hidden" />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="JobWorkType" class="form-label" style="color: red;">JobWorkType*</label>
+                                    <select class="form-select" asp-for="JobWorkType">
+                                        <option value="NewJobWork" selected>New JobWork</option>
+                                        <option value="ReWork">Re Work</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="RecStoreId" class="form-label" style="color: red;">Rec Store*</label>
+                                    <input asp-for="RecStoreId" class="form-control" type="hidden" />
+                                    <input asp-for="RecStoreName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label" style="color: red;">IND/BOM*</label>
+                                    <select class="form-select" id="INDBOMMain">
+                                        <option disabled>-Select-</option>
+                                        <option value="I">Individual</option>
+                                        <option value="B" selected>BOM</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-4 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="row align-items-center g-2 gx-2">
+                                        <div class="col-auto">
+                                            <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                            </button>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="button" class="ClearGrid btn btn-sm btn-outline-primary mt-3">
+                                                Clear
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-4 col-md-3 col-sm-6 col-xs-12 mt-4">
+                                    <label class="color-box" style="background-color: #f1fab9;margin-left:50px;border:1px solid black;"></label><label style="margin-left:5px;margin-top:-5px;">BOM</label>
+                                    <label class="color-box" style="background-color: #fab9e1;margin-left:25px;border:1px solid black;"></label><label style="margin-left:5px;margin-top:-5px;">INDIVIDUAL</label>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                            </div>
+
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Rec ItemName</th>
+                                                <th>Rec PartCode</th>
+                                                <th>SONO</th>
+                                                <th>So Year Code</th>
+                                                <th>Bill Qty</th>
+                                                <th>Rec Qty</th>
+                                                <th>Unit</th>
+                                                <th>Rec Alt Qty</th>
+                                                <th>CustBatchNO</th>
+                                                <th>Alt Unit</th>
+                                                <th>Rate</th>
+                                                <th>Amount</th>
+                                                <th>Short Excess Qty</th>
+                                                <th>SO Date</th>
+                                                <th>So Sch No</th>
+                                                <th>So Sch YC</th>
+                                                <th>Sch date</th>
+                                                <th>Allowed Rej Per</th>
+                                                <th>Batch No</th>
+                                                <th>Unique Batch No</th>
+                                                <th>Remark</th>
+                                                <th>Finished ItemName</th>
+                                                <th>Finished PartCode</th>
+                                                <th>Color</th>
+                                                <th>Qc Completed</th>
+                                                <th>Pend Qty</th>
+                                                <th>Purpose</th>
+                                                <th>Finished Qty</th>
+                                                <th>Rec Scrap</th>
+                                                <th>Process</th>
+                                                <th>Cust Order NO</th>
+                                                <th>Bom NO</th>
+                                                <th>Bom Name</th>
+                                                <th>Bom Date</th>
+                                                <th>IND/BOM</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divCustJWRGrid">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            @*<div class=" col-4 col-auto">
+                            <div class="row justify-content-around">
+                            <div class="col-auto">
+                            <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                            </button>
+                            </div>
+                            </div>
+                            </div>*@
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Rec ItemName</th>
+                                                <th>Rec PartCode</th>
+                                                <th>SONO</th>
+                                                <th>So Year Code</th>
+                                                <th>Bill Qty</th>
+                                                <th>Rec Qty</th>
+                                                <th>Unit</th>
+                                                <th>Rec Alt Qty</th>
+                                                <th>Alt Unit</th>
+                                                <th>Rate</th>
+                                                <th>Amount</th>
+                                                <th>Short Excess Qty</th>
+                                                <th>SO Date</th>
+                                                <th>So Sch No</th>
+                                                <th>So Sch YC</th>
+                                                <th>Sch date</th>
+                                                <th>Batch No</th>
+                                                <th>Unique Batch No</th>
+                                                <th>Remark</th>
+                                                <th>Finished ItemName</th>
+                                                <th>Finished PartCode</th>
+                                                <th>Color</th>
+                                                <th>Qc Completed</th>
+                                                <th>Pend Qty</th>
+                                                <th>Purpose</th>
+                                                <th>Finished Qty</th>
+                                                <th>Rec Scrap</th>
+                                                <th>Allowed Rej Per</th>
+                                                <th>Process</th>
+                                                <th>CustBatchNO</th>
+                                                <th>Cust Order NO</th>
+                                                <th>Bom NO</th>
+                                                <th>Bom Name</th>
+                                                <th>Bom Date</th>
+                                                <th>IND/BOM</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divCustJWRGridAdd">
+                                            <partial name="_CustomerJWRGrid" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ReceivedBy" class="form-label">ReceivedBy</label>
+                                    <select asp-for="ReceivedBy" class="form-select" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))">
+                                    </select>
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="Remark" class="form-label">Remark </label>
+                                    <input asp-for="Remark " class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="Complete" class="form-label">Complete</label>
+                                    <input asp-for="Complete " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="Closed" class="form-label">Closed</label>
+                                    <input asp-for="Closed " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="QcCheck" class="form-label">QcCheck</label>
+                                    <input asp-for="QcCheck " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="QcCompleted" class="form-label">QcCompleted</label>
+                                    <input asp-for="QcCompleted" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedBy" class="form-label">CreatedBy</label>
+                                    <input type="hidden" asp-for="CreatedBy" class="form-control" readonly />
+                                    <input asp-for="CreatedByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedOn" class="form-label">CreatedOn</label>
+                                    <input asp-for="CreatedOn" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+                                    <input type="hidden" asp-for="UpdatedBy" class="form-control" readonly />
+                                    <input asp-for="UpdatedByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedOn" class="form-label">UpdatedOn</label>
+                                    <input asp-for="UpdatedOn" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryByMachineName" class="form-label">EntryByMachineName</label>
+                                    <input type="" asp-for="EntryByMachineName" class="form-control" value="@Environment.MachineName" readonly />
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Material Receipt</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                    <div class="col-auto">
+                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            PRINT
+                        </button>
+                    </div>
+                    <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                     <partial name="_FormsButton" />
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U"  )
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                            
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+    </form>
+
+
+</div>
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+             
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                GetNewEntry();
+            }
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var ChallanDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
+                var GateDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ChallanDt);
+                $('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", GateDt);
+            }
+            else{
+                GetServerDate();
+            }
+            var finFromDate = $('#FinFromDate').val();
+            var finToDate = $('#FinToDate').val();
+
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+            console.log(formattedDate1);
+            console.log(formattedDate2);
+
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+            $('#FromDate').datepicker("option", "minDate", formattedDate1);
+            $('#ToDate').datepicker("option", "maxDate", formattedDate2);
+
+            FillGateNo();
+        });
+
+        function ValidateGI_Grid() {
+             
+            var Err = 0;
+            if ($('#AccountID').val() == 0) {
+                AddErrorCls('AccountCode');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('AccountCode');
+            }
+            if ($('#ChallanNo').val() == 0) {
+                AddErrorCls('ChallanNo');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ChallanNo');
+            }
+            if ($('#EntryId').val() == 0) {
+                AddErrorCls('EntryId');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('EntryId');
+            }
+            if ($('#YearCode').val() == 0) {
+                AddErrorCls('YearCode');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('YearCode');
+            }
+            if ($('#GateNo').prop('selectedIndex') == 0) {
+                AddErrorCls('GateNo');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('GateNo');
+            }
+            if ($('#GateYearCode').prop('selectedIndex') == 0) {
+                AddErrorCls('GateYearCode');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('GateYearCode');
+            }
+        }
+
+        $('#submitBTN').click(function (e) {
+             
+            e.preventDefault();
+            ValidateGI_Grid();
+            if ($('#divCustJWRGridAdd tr td').length <= 1) {
+                $.notify('Grid Should Have Atleast 1 Item...!', "error");
+            }
+            else {
+                $('form').submit();
+            }
+        });
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate","MaterialReceipt")",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    }
+                }
+            });
+        }
+
+        function GetNewEntry() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetNewEntry")",
+                data: { "YearCode": $('#YearCode').val() },
+                async: false,
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#EntryId').val(obj.Result[0].EntryId);
+                        $('#MRNNo').val(obj.Result[0].MRNNO);
+                    }
+                }
+            });
+        }
+
+        function FillGateNo() {
+            var dataParams = {
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val()
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateNo")",//PENDINGGATEFORMRN
+                data: dataParams,
+                async: false,
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#GateNo,#GateYearCode').empty();
+                            $('#GateNo').append('<option disabled selected>-Select-</option>');
+                            $('#GateYearCode').append('<option selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#GateNo').append('<option value="' + val.GateNo +
+                                    '" data-year-code="' + val.YEARCODE +
+                                    '" data-gate-entry="' + val.EntryId +
+                                    '" data-branch="' + val.CC +
+                                    '">' + val.GateNo + '</option>');
+                                $('#GateYearCode').append('<option style="display:none" value="' + val.YEARCODE +
+                                    '" data-gate-no="' + val.GateNo +
+                                    '" data-branch="' + val.CC +
+                                    '">' + val.YEARCODE + '</option>');
+
+                            });
+                        }
+                        else {
+                            $('#GateNo,#GateYearCode').empty();
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#GateNo').change(function () {
+            $('#GateEntry').val($(this).find(":selected").data('gate-entry'));
+            $("#GateYearCode").find("option").css('display', 'none');
+            $("#GateYearCode").find("option").prop("selected", false);
+            $("#GateYearCode").find('option:first').css('display', 'block');
+            $("#GateYearCode").find('option:first').attr('selected', 'selected');
+            $("#GateYearCode").find("[data-gate-no='" + $(this).val() + "']").css('display', 'block');
+
+        });
+
+        $('#GateYearCode').change(function () {
+            var dataParams = {
+                "GateNo": $('#GateNo').val(),
+                "GateYearCode": $('#GateYearCode').val(),
+                "GateEntryId": parseInt($('#GateEntry').val())
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateMainData")",
+                data: dataParams,
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        var dateString = "2024-04-30";
+                        let dateParts = dateString.split("-");
+                        let formattedDate = dateParts[2] + "/" + dateParts[1] + "/" + dateParts[0];
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                $('#AccountCode').val(val.account_name);
+                                $('#AccountID').val(val.AccountCode);
+                                $('#GateDate').val(val.GDate.split("T")[0]);
+                                $('#QcCheck').val(val.checkQC);
+                                $('#RecStoreId').val(val.StoreId);
+                                $('#RecStoreName').val(val.RecInStore);
+                                $('#ChallanNo').val(val.Invoiceno);
+                                $('#ChallanDate').val(val.InvoiceDate.split("T")[0]);
+                            });
+                        }
+                    }
+                }
+            });
+            GetgateItemdata();
+        });
+
+        function GetgateItemdata() {
+            var dataParams = {
+                "GateNo": $('#GateNo').val(),
+                "GateYearCode": $('#GateYearCode').val(),
+                "GateEntryId": parseInt($('#GateEntry').val())
+            }
+            $.ajax({
+                url: "@Url.Action("GetGateItemData")",
+                async: false,
+                data: dataParams,
+                success: function (result, status, xhr) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divCustJWRGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result, function (index, val) {
+
+                                var DeptId = "";
+                                var empId = "";
+
+                                if (val.ItemsForDepartmentID == '' || val.ItemsForDepartmentID == 0) {
+                                    //do nothing
+                                }
+                                else {
+                                    $('#DepartId').val(val.ItemsForDepartmentID);
+                                }
+                                if (val.ResposibleEmplforQC == '' || val.ResposibleEmplforQC == 0) {
+                                    //do nothing
+                                }
+                                else {
+                                    $('#RespEmdId').val(val.ResposibleEmplforQC);
+                                }
+
+                                if (val.SchNo == "") {
+                                    val.SchNo = "NA";
+                                }
+                                if (val.altunit == "" || val.altunit == "null" || val.altunit == null) {
+                                    val.altunit = "NA";
+                                }
+
+                                html += '<tr id="divUnMain' + i + '" style="background-color:#f1fab9;"><td><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly ><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td> ' +
+                                    ' <td><input style="width:100px !important;" id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td>' +
+                                    ' <td><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td>' +
+                                    ' <td><input style="width:50px" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td>' +
+                                    ' <td><input style="width:50px" readonly id="BillQty' + i + '" onchange="BillQtyChange(' + i + ');" value=' + val.BillQty + ' ></td>' +
+                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + val.RecQty + ' ></td>' +
+                                    ' <td><input style="width:50px" id="unit' + i + '" value=' + val.unit + ' readonly ></td>' +
+                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" id="AltRecQty' + i + '" value=' + val.AltRecQty + ' ></td>' +
+                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" id="CustBatchNo' + i + '" value="" ></td>' +
+                                    ' <td><input style="width:50px" id="altunit' + i + '" value=' + val.altunit + ' readonly ></td>' +
+                                    ' <td><input style="width:50px;"  id="Rate' + i + '" value=' + val.Rate + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="ShortExcessQty' + i + '" readonly value=' + val.ShortExcessQty + ' ></td>' +
+                                    ' <td><input style="width:80px" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td>' +
+                                    ' <td><input style="width:80px" id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td>' +
+                                    ' <td><input style="width:50px" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td>' +
+                                    ' <td><input style="width:50px" id="SchDate' + i + '" value=' + val.PODate + ' readonly ></td>' +
+                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" id="AllowRejPer' + i + '" value="" readonly ></td>' +
+                                    ' <td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td>' +
+                                    ' <td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td>' +
+                                    ' <td><input style="width:70px" id="Remark' + i + '"  value=""  ></td>' +
+                                    ' <td><input style="width:70px" id="FinishedItemName' + i + '"  value=' + JSON.stringify(val.Item_Name) + '  ></td>' +
+                                    ' <td><input style="width:70px" id="FinishedPartCode' + i + '"  value=' + val.PartCode + '  ></td>' +
+                                    ' <td><input id="ItemColor' + i + '" readonly value=' + JSON.stringify(val.ItemColor) + ' ></td>' +
+                                    ' <td> <input style="width:50px;" id="QCCompleted' + i + '" readonly value=' + val.QCCompleted + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="PendQty' + i + '" readonly value=' + val.PendPOQty + ' > </td>' +
+                                    ' <td><input style="width:50px" id="Purpose' + i + '" value="" readonly ></td>' +
+                                    ' <td><input style="width:70px" id="FinishedQty' + i + '" value="" readonly ></td>' +
+                                    ' <td><input style="width:50px" id="RecScrap' + i + '" readonly value="" ></td>' +
+                                    ' <td><input style="width:50px;" id="Process' + i + '" readonly value="" ></td>' +
+                                    ' <td><input style="width:50px;" id="CustOrderNo' + i + '" readonly value="" ></td>' +
+                                    ' <td><input style="width:50px;" id="BomNO' + i + '" readonly value="" ></td>' +
+                                    ' <td><input style="width:50px;" id="Bomname' + i + '" readonly value="" ></td>' +
+                                    ' <td><input style="width:50px;" id="BomDate' + i + '" readonly value="" ></td>' +
+                                    ' <td><select id="INDBOM' + i + '" onchange="ChangeGridIndBom(' + i + ')"><option disabled>-Select-</option><option value="I">Individual</option><option selected value="B">BOM</option></select> </td>' +
+                                    ' </tr > ';
+                                i++;
+                            });
+                            $('#divCustJWRGrid').append(html);
+
+
+                        }
+                        var lengthCount = $('#divCustJWRGrid tr').length;
+                        for (var i = 1; i <= lengthCount; i++) {
+                            if ($('#INDBOM' + i).val() == "I") {
+                                $('#divUnMain' + i).css("background-color", "#fab9e1");
+                            } else {
+                                $('#divUnMain' + i).css("background-color", "#f1fab9");
+
+                            }
+                        }
+                    }
+                    if ($('#PONO').val() == '') {
+                        $('#Rate').prop("readonly", false);
+                    }
+                },
+            });
+        }
+
+        function ChangeGridIndBom(i) {
+            var valIB = $('#INDBOM' + i).val();
+            if (valIB == "I") {
+                $('#divUnMain' + i).css("background-color", "#fab9e1");
+
+            } else {
+                $('#divUnMain' + i).css("background-color", "#f1fab9");
+            }
+        }
+
+        $('.GridButton').click(function () {
+            var rowCount = $('#divCustJWRGrid tr').length;
+
+            var ItemData = [];
+            for (let i = 1; i <= rowCount; i++) {
+                var pono = '#PONo' + i;
+
+                ItemData.push({
+                    "SoNo": $('#PONo' + i).val(),
+                    "SoYearCode": $('#POYearCode' + i).val(),
+                    "SOSchNo": $('#SchNo' + i).val(),
+                    "SOSchYearCode": $('#SchYearCode' + i).val(),
+                    "SoDate": $('#PODate' + i).val(),
+                    "RecItemName": $('#Item_Name' + i).val(),
+                    "RecPartCode": $('#PartCode' + i).val(),
+                    "RecItemCode": $('#ItemCode' + i).val(),
+                    "Unit": $('#unit' + i).val(),
+                    "AltUnit": $('#altunit' + i).val(),
+                    "BillQty": $('#BillQty' + i).val(),
+                    "RecQty": $('#RecQty' + i).val(),
+                    "RecAltQty": $('#AltRecQty' + i).val(),
+                    "ShortExcessQty": $('#ShortExcessQty' + i).val(),
+                    "Rate": $('#Rate' + i).val(),
+                    "Amount": $('#Amount' + i).val(),
+                    "PendQty": $('#PendQty' + i).val(),
+                    "QcCompleted": $('#QCCompleted' + i).val(),
+                    "BatchNo": $('#BatchNo' + i).val(),
+                    "UniqueBatchNo": $('#Uniquebatchno' + i).val(),
+                    "Schdate": $('#SchDate' + i).val(),
+                    "BomName": $('#Bomname' + i).val(),
+                    "INDBOM": $('#INDBOM' + i).val(),
+                    "BomDate": $('#BomDate' + i).val(),
+                    "BomNo": $('#BomNO' + i).val(),
+                    "Color": $('#ItemColor' + i).val(),
+                    "ProcessId": 0,
+                    "ProcessName": $('#Process' + i).val(),
+                    "AllowedRejPer": $('#AllowRejPer' + i).val(),
+                    "RecScrap": $('#RecScrap' + i).val(),
+                    "FinishedQty": $('#FinishedQty' + i).val(),
+                    "FinishedItemCode": $('#ItemCode' + i).val(),
+                    "FinishItemName": $('#Item_Name' + i).val(),
+                    "FinishPartCode": $('#PartCode' + i).val(),
+                    "Purpose": $('#Purpose' + i).val(),
+                    "Remark": $('#Remark' + i).val(),
+
+
+                });
+            }
+            //}
+
+            $.ajax({
+                url: "@Url.Action("AddCustomerJWRDetail")",
+                type: "POST",
+                data: { model: ItemData },
+                beforeSend: function (xhr) {
+
+                },
+                success: function (data, status, xhr) {
+
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                    }
+                    else {
+
+                        $('#divCustJWRGridAdd').html(data);
+                        $('#divCustJWRGrid').empty();
+                        var RowCount = $('#divCustJWRGridAdd tr').length;
+                        var errorCount = 0;
+                        for (let i = 1; i <= RowCount; i++) {
+                            if ($('#VendorBatchMand-' + i).val() == "Y") {
+                                $('.' + i).css("color", "red");
+                            }
+                        }
+                        $.notify('Item Added To Grid.', "success");
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+
+                    $('.Schedule').fadeIn();
+                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                }
+            }).done(function () {
+
+            }).fail(function () {
+                alert("error");;
+            }).always(function () {
+
+            });
+
+        });
+
+        function EditItemRow(SeqNo) {
+            //var PartCode = $('#PartCode').val();
+            var upperRowCount = $('#divCustJWRGrid tr').length;
+            if (upperRowCount == 0) {
+                $.ajax({
+                    url: '@Url.Action("EditItemRow")',
+                    type: "POST",
+                    data: { SeqNo: SeqNo },
+                    async: false,
+                    success: function (data, status, xhr) {
+                        if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                            $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
+                        }
+                        else {
+                            ;
+                            var obj = $.parseJSON(data);
+                            DeleteItemRow(SeqNo);
+                            $('#divCustJWRGrid').empty();
+                            var i = 1;
+                            var html = '';
+                            if (obj != null && obj.length == 1) {
+                                html += '<tr id="divUnMain' + i + '"><td><input id="Item_Name' + i + '" value=' + JSON.stringify(obj[0].RecItemName) + ' readonly ><input id="ItemCode' + i + '" type="hidden" value=' + obj[0].RecitemCode + ' ></td> ' +
+                                    ' <td><input style="width:100px !important;" id="PartCode' + i + '" value=' + obj[0].RecPartCode + ' readonly ></td>' +
+                                    ' <td><input readonly id="PONo' + i + '" value=' + obj[0].SoNo + '  ></td>' +
+                                    ' <td><input style="width:50px" id="POYearCode' + i + '" value=' + obj[0].SoYearCode + ' readonly ></td>' +
+                                    ' <td><input style="width:50px" readonly id="BillQty' + i + '" onchange="BillQtyChange(' + i + ');" value=' + obj[0].BillQty + ' ></td>' +
+                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + obj[0].RecQty + ' ></td>' +
+                                    ' <td><input style="width:50px" id="unit' + i + '" value=' + obj[0].Unit + ' readonly ></td>' +
+                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" id="AltRecQty' + i + '" value=' + obj[0].RecAltQty + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="CustBatchNo' + i + '" readonly value=' + obj[0].CustbatchNo + ' ></td>' +
+                                    ' <td><input style="width:50px" id="altunit' + i + '" value=' + obj[0].AltUnit + ' readonly ></td>' +
+                                    ' <td><input style="width:50px;"  id="Rate' + i + '" value=' + obj[0].Rate + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="Amount' + i + '" readonly value=' + obj[0].Amount + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="ShortExcessQty' + i + '" readonly value=' + obj[0].ShortExcessQty + ' ></td>' +
+                                    ' <td><input style="width:80px" id="PODate' + i + '" value=' + obj[0].SoDate + ' readonly ></td>' +
+                                    ' <td><input style="width:80px" id="SchNo' + i + '" value=' + obj[0].SOSchNo + ' readonly ></td>' +
+                                    ' <td><input style="width:50px" id="SchYearCode' + i + '" value=' + obj[0].SOSchYearCode + ' readonly ></td>' +
+                                    ' <td><input style="width:50px" id="SchDate' + i + '" value=' + obj[0].Schdate + ' readonly ></td>' +
+                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" id="AllowRejPer' + i + '" value=' + obj[0].AllowedRejPer + ' readonly ></td>' +
+                                    ' <td><input id="BatchNo' + i + '" readonly value=' + obj[0].BatchNo + ' ></td>' +
+                                    ' <td><input id="Uniquebatchno' + i + '" readonly value=' + obj[0].UniqueBatchNo + ' ></td>' +
+                                    ' <td><input style="width:70px" id="Remark' + i + '"  value=""  ></td>' +
+                                    ' <td><input style="width:70px" id="FinishedItemName' + i + '"  value=' + JSON.stringify(obj[0].FinishItemName) + '  ></td>' +
+                                    ' <td><input style="width:70px" id="FinishedPartCode' + i + '"  value=' + obj[0].FinishPartCode + '  ></td>' +
+                                    ' <td><input id="ItemColor' + i + '" readonly value=' + JSON.stringify(obj[0].Color) + ' ></td>' +
+                                    ' <td> <input style="width:50px;" id="QCCompleted' + i + '" readonly value=' + obj[0].QcCompleted + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="PendQty' + i + '" readonly value=' + obj[0].PendQty + ' > </td>' +
+                                    ' <td><input style="width:50px" id="Purpose' + i + '" readonly value=' + obj[0].Purpose + '  ></td>' +
+                                    ' <td><input style="width:70px" id="FinishedQty' + i + '" readonly value=' + obj[0].FinsihedQty + '  ></td>' +
+                                    ' <td><input style="width:50px" id="RecScrap' + i + '" readonly value=' + obj[0].RecScrap + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="Process' + i + '" readonly value=' + obj[0].ProcessId + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="CustOrderNo' + i + '" readonly value=' + obj[0].CustOrderno + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="BomNO' + i + '" readonly value=' + obj[0].BomNo + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="Bomname' + i + '" readonly value=' + obj[0].BomName + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="BomDate' + i + '" readonly value=' + obj[0].BomDate + ' ></td>' +
+                                    ' <td><select id="INDBOM' + i + '" onchange="ChangeGridIndBom(' + i + ')"><option disabled>-Select-</option><option value="I">Individual</option><option selected value="B">BOM</option></select>  </td>' +
+                                    ' </tr > ';
+                            }
+                            $('#divCustJWRGrid').append(html);
+                        }
+                        if ($('#INDBOM1').val() == "I") {
+                            $('#divUnMain' + 1).css("background-color", "#fab9e1");
+                        }
+                        else {
+                            $('#divUnMain' + 1).css("background-color", "#f1fab9");
+                        }
+
+                    },
+                    error: function (response) {
+                        $.notify(response.responseText, "error");
+                    },
+                    failure: function (response) {
+                        $.notify(response.responseText, "error");
+                    }
+                });
+            }
+            else {
+                $.notify("Please Add all items to below grid first!!", "error");
+            }
+        }
+
+        function DeleteItemRow(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                async: false,
+                success: function (data, status, xhr) {
+                    $('#divCustJWRGridAdd').html(data);
+                },
+                error: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        $('#INDBOMMain').change(function () {
+            if ($(this).val() == "I") {
+                var lengthCount = $('#divCustJWRGrid tr').length;
+                for (var i = 1; i <= lengthCount; i++) {
+                    $('#INDBOM' + i).val("I");
+                    if ($('#INDBOM' + i).val() == "I") {
+                        $('#divUnMain' + i).css("background-color", "#fab9e1");
+                    } else {
+                        $('#divUnMain' + i).css("background-color", "#f1fab9");
+                    }
+                }
+            } else {
+                var lengthCount = $('#divCustJWRGrid tr').length;
+                for (var i = 1; i <= lengthCount; i++) {
+                    $('#INDBOM' + i).val("B");
+
+                    if ($('#INDBOM' + i).val() == "I") {
+                        $('#divUnMain' + i).css("background-color", "#fab9e1");
+                    } else {
+                        $('#divUnMain' + i).css("background-color", "#f1fab9");
+
+                    }
+                }
+            }
+            $('#divCustJWRGridAdd').empty();
+        });
+
+        function PressBack() {
+             
+            sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('ChallanNoBack', $('#ChallanNoBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('MRNNoBack', $('#MRNNoBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+
+            window.history.back();
+        }
+
+    </script>
+}
+
+<style>
+    .color-box {
+        width: 15px;
+        height: 15px;
+    }
+</style>

@@ -1,0 +1,156 @@
+﻿@model eTactWeb.DOM.Models.CloseProductionPlanModel;
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WONO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WO Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WO Status</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="4"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Effective From</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Effective Till</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>For Month</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark Product Supply Stage</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark For Production</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Close WO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="13"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Close Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="14"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Deactivate WO</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="15"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Deactivate Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="16"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="17"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark For Routing</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="18"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark For Packing</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="19"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Instruction</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="20"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Billing Status</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="21"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend For Route Sheet</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="22"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="23"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry By</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="24"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated By</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="25"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="26"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="27"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="28"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="29"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.CloseProductionPlanGrid == null || Model.CloseProductionPlanGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.CloseProductionPlanGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr >
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+
+                                    <div class="col-auto">
+                                        <input type="checkbox" id="submitCheckbox-@Cntr" />
+                                    </div>
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a onclick="confirmEdit(event)">
+
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-eye fa-stack-1x fa-inverse" style="color:white;background-color:transparent!important"></i> <!-- Eye Icon -->
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    
+                                </div>
+                            </td>
+                            <td>@item.WONO</td>
+                            <td>@item.WODate</td>
+                            <td>@item.WOStatus</td>
+                            <td>@item.EntryDate</td>
+                            <td>@item.EffectiveFrom</td>
+                            <td>@item.EffectiveTill</td>
+                            <td>@item.ForMonth</td>
+                            <td>@item.RemarkProductSupplyStage</td>
+                            <td>@item.RemarkForProduction</td>
+                            <td>@item.Approved</td>
+                            <td>@item.ApprovedDate</td>
+                            <td>@item.CloseWO</td>
+                            <td>@item.CloseDate</td>
+                            <td>@item.DeactivateWO</td>
+                            <td>@item.DeactivateDate</td>
+                            <td>@item.MachineName</td>
+                            <td>@item.RemarkForRouting</td>
+                            <td>@item.RemarkForPacking</td>
+                            <td>@item.OtherInstruction</td>
+                            <td>@item.BillingStatus</td>
+                            <td>@item.PendForRouteSheet</td>
+                            <td>@item.ActualEntryDate</td>
+                            <td>@item.ActualEntryByEmpName</td>
+                            <td>@item.LastUpdatedByEmpName</td>
+                            <td>@item.LastUpdatedDate</td>
+                            <td>@item.CC</td>
+                            <td>@item.UID</td>
+                            <td>@item.EntryId</td>
+                            <td>@item.YearCode</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<style>
+
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+</style>

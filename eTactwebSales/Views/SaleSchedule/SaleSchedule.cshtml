@@ -1,0 +1,3575 @@
+﻿@model eTactWeb.DOM.Models.SaleSubScheduleModel
+
+@{
+    @if (Model.Mode == "SSA")
+    {
+        ViewData["Title"] = "Sale Schedule Amendment";
+    }
+    else
+    {
+        ViewData["Title"] = "Sale Schedule";
+    }
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    var datas = Model?.SaleScheduleList.Select(x => x.ItemCode).Distinct().ToList();
+    var selectedPartCodeIds = String.Join(",", datas);
+
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="SaleSchedule" autocomplete="off" class="form-horizontal">
+        <input type="hidden" asp-for="Mode" />
+        @*<input type="hidden" asp-for="EnterByMachineName">*@
+
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                @if (Model.Mode != "SSA" && Model.Mode != "SSC")
+                {
+                    <strong>@ViewData["Title"] - @Model.YearCode</strong>
+                }
+                else
+                {
+                    <strong>@ViewData["Title"] - @Model.YearCode</strong>
+                }
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @if (Model.Mode == "SSA")
+                    {
+                        <a asp-action="SSAmendmentList" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                            Dashboard
+                        </a>
+                        <a asp-action="SSAmendmentList" asp-controller="SaleSchedule" asp-route-ID="0" class="btn btn-sm btn-info bg-gradient me-2">
+                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                            Pending Amendment
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                            Dashboard
+                        </a>
+                    }
+
+                    <div class="col-auto me-2">
+                        @if (@Model.Mode != "V" && @Model.Mode != "SSC" && @Model.Mode != "SSA")
+                        {
+                            <button type="button" class="SSPartialSave btn btn-secondary btn-sm mr-2" style="color:white!important">
+                                <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                PARTIAL SAVE
+                            </button>
+                        }
+
+                    </div>
+                    <partial name="_FormsButton" />
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_Panel1">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Panel1" aria-expanded="true" aria-controls="B_Panel1">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>Required Parameter
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <input type="hidden" asp-for="SchApproved">
+                    <input type="hidden" asp-for="SchAppBy">
+                    <input type="hidden" asp-for="SchApprovalDate">
+                    <input type="hidden" asp-for="SchAmendApproved">
+                    <input type="hidden" asp-for="SchAmendAppBy">
+                    <input type="hidden" asp-for="SchAmendApprovalDate">
+
+                    @if (Model.Mode == "SSA" || Model.Mode == "SSC")
+                    {
+                        <div id="B_Panel1" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_Panel1">
+                            <div class="accordion-body ">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <input type="hidden" asp-for="TypeOfSave" value="" />
+                                        <label asp-for="AmmEntryId" class="form-label">Entry ID</label>
+                                        <input asp-for="AmmEntryId" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="AmmYearCode" class="form-label">Year</label>
+                                        <input asp-for="AmmYearCode" class="form-control" value="@Model.YearCode" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                        <input asp-for="EntryDate" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CC" class="control-label">Branch</label>
+                                        <input asp-for="CC" class="form-control" value="@Model.CC" tabindex="4" readonly />
+                                    </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="AccountCode" class="control-label">Customer Name</label>
+                                        <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" style="height:50px;width:260px;" readonly disabled>
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CustomerOrderNo" class="control-label">Customer Order#</label>
+                                        <select class="form-select" asp-for="CustomerOrderNo" asp-items="@(new SelectList(Model.CustomerOrderList,"Value","Text"))" readonly disabled>
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SONO" class="control-label">SO NO</label>
+                                        <select class="form-select" asp-for="SONO" readonly disabled>
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SOYearCode" class="control-label">SO Year</label>
+                                        <select class="form-select" asp-for="SOYearCode" readonly disabled>
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ScheduleNo" class="control-label">Sch No</label>
+                                        <input asp-for="ScheduleNo" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SchAmendmentNo" class="control-label">Sch Amd No</label>
+                                        <input asp-for="SchAmendmentNo" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="TentetiveConfirm" class="control-label">Tentetive / Confirm</label>
+                                        <select class="form-select" asp-for="TentetiveConfirm" asp-items="@Model.TentetiveConfirmList" readonly disabled>
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="OrderPriority" class="control-label">Order Priority</label>
+                                        <select class="form-select" asp-for="OrderPriority" asp-items="@Model.OrderPriorityList" readonly disabled>
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SchAmendmentDate" class="control-label">Sch Amd Date</label>
+                                        <input asp-for="SchAmendmentDate" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ModeOfTransport" class="control-label">Mode Of Transport</label>
+                                        <input asp-for="ModeOfTransport" class="form-control" readonly disabled />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SODate" class="control-label">SO Date</label>
+                                        <input asp-for="SODate" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        {
+                                            <input type="hidden" value="@Model.ScheduleDate" id="hiddenSchDate" />
+                                        }
+                                        <label asp-for="ScheduleDate" class="control-label">Sch Date</label>
+                                        <input asp-for="ScheduleDate" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SOCloseDate" class="control-label">SO Close Date</label>
+                                        <input asp-for="SOCloseDate" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SchEffFromDate" class="control-label">Sch Eff From Date</label>
+                                        <input asp-for="SchEffFromDate" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        {
+                                            <input type="hidden" value="@Model.SchEffTillDate" id="hiddenSchEffTillDate" />
+                                        }
+                                        <label asp-for="SchEffTillDate" class="control-label">Sch Eff Till Date</label>
+                                        <input asp-for="SchEffTillDate" class="form-control" />
+                                    </div>
+
+                                    <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <label asp-for="DeliveryAddress" class="control-label">Delivery Address</label>
+                                        <input asp-for="DeliveryAddress" class="form-control" readonly disabled />
+                                    </div>
+
+                                </div>
+                                <div class="d-flex mt-3 justify-content-end">
+                                    <input type="hidden" asp-for="ManualMonthSplit" value="@Model.ManualMonthSplit" />
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-end">
+                                        <input type="radio" id="ManEntryImport" name="SaleSchGrid" value="Manual" checked class="me-1" />
+                                        <label class="control-label">Manual Entry + Import</label>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-end">
+                                        <input type="radio" id="SplitSchedule" name="SaleSchGrid" value="Split" class="me-1" />
+                                        <label class="control-label">Split Schedule</label>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-end">
+                                        <input type="radio" id="MonthlyEntry" name="SaleSchGrid" value="Month" class="me-1" />
+                                        <label class="control-label">Monthly Entry</label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="B_Panel1" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_Panel1">
+                            <div class="accordion-body ">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <input type="hidden" asp-for="TypeOfSave" value="" />
+                                        <label asp-for="EntryID" class="form-label">Entry ID</label>
+                                        <input asp-for="EntryID" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="YearCode" class="form-label">Year</label>
+                                        <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                        <input asp-for="EntryDate" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CC" class="control-label">Branch</label>
+                                        <input asp-for="CC" class="form-control" value="@Model.CC" tabindex="4" readonly />
+                                    </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="AccountCode" class="control-label">Customer Name</label>
+                                        <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" style="height:50px;width:260px;">
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CustomerOrderNo" class="control-label">Customer Order#</label>
+                                        <select class="form-select" asp-for="CustomerOrderNo" asp-items="@(new SelectList(Model.CustomerOrderList,"Value","Text"))">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SONO" class="control-label">SO NO</label>
+                                        <select class="form-select" asp-for="SONO">
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SOYearCode" class="control-label">SO Year</label>
+                                        <select class="form-select" asp-for="SOYearCode">
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ScheduleNo" class="control-label">Sch No</label>
+                                        <input asp-for="ScheduleNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SchAmendmentNo" class="control-label">Sch Amd No</label>
+                                        <input asp-for="SchAmendmentNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="TentetiveConfirm" class="control-label">Tentetive / Confirm</label>
+                                        <select class="form-select" asp-for="TentetiveConfirm" asp-items="@Model.TentetiveConfirmList">
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="OrderPriority" class="control-label">Order Priority</label>
+                                        <select class="form-select" asp-for="OrderPriority" asp-items="@Model.OrderPriorityList">
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SchAmendmentDate" class="control-label">Sch Amd Date</label>
+                                        <input asp-for="SchAmendmentDate" class="form-control" readonly/>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ModeOfTransport" class="control-label">Mode Of Transport</label>
+                                        <input asp-for="ModeOfTransport" class="form-control" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SODate" class="control-label">SO Date</label>
+                                        <input asp-for="SODate" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SOCloseDate" class="control-label">SO Close Date</label>
+                                        <input asp-for="SOCloseDate" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        {
+                                            <input type="hidden" value="@Model.ScheduleDate" id="hiddenSchDate" />
+                                        }
+                                        <label asp-for="ScheduleDate" class="control-label">Sch Date</label>
+                                        <input asp-for="ScheduleDate" class="form-control" readonly/>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SchEffFromDate" class="control-label">Sch Eff From Date</label>
+                                        <input asp-for="SchEffFromDate" class="form-control" readonly/>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        {
+                                            <input type="hidden" value="@Model.SchEffTillDate" id="hiddenSchEffTillDate" />
+                                        }
+                                        <label asp-for="SchEffTillDate" class="control-label">Sch Eff Till Date</label>
+                                        <input asp-for="SchEffTillDate" class="form-control" readonly/>
+                                    </div>
+
+                                    <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <label asp-for="DeliveryAddress" class="control-label">Delivery Address</label>
+                                        <input asp-for="DeliveryAddress" class="form-control" />
+                                    </div>
+
+                                </div>
+                                <div class="d-flex mt-3 justify-content-end">
+                                    <input type="hidden" asp-for="ManualMonthSplit" value="@Model.ManualMonthSplit" />
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-end">
+                                        <input type="radio" id="ManEntryImport" name="SaleSchGrid" value="Manual" checked class="me-1" />
+                                        <label class="control-label">Manual Entry + Import</label>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-end">
+                                        <input type="radio" id="SplitSchedule" name="SaleSchGrid" value="Split" class="me-1" />
+                                        <label class="control-label">Split Schedule</label>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-end">
+                                        <input type="radio" id="MonthlyEntry" name="SaleSchGrid" value="Month" class="me-1" />
+                                        <label class="control-label">Monthly Entry</label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_Panel2">
+                        <button class="accordion-button text-light pnl4BG bg-gradient collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#B_Panel2" aria-expanded="false" aria-controls="B_Panel2">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-hourglass-clock fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Sale Sechdule Grid</strong>
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="B_Panel2" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_Panel2">
+                        <div class="accordion-body ManualEntryImportbody">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">Part Code</label>
+                                    <select class="form-select PartCode" asp-for="PartCode" style="width:100%;height:30%;">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemCode" class="form-label">Item Name</label>
+                                    <select class="form-select ItemCode" asp-for="ItemCode" style="width:100%;height:30%;">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Unit" class="form-label">Unit</label>
+                                    <input asp-for="Unit" class="form-control Unit" readonly disabled />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="SchQty" class="form-label">Sch Qty</label>
+                                    <input asp-for="SchQty" class="form-control SchQty" type="number" step="any" min=0 onchange="ChangAltQty();" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PendQty" class="form-label">Pend Qty</label>
+                                    <input asp-for="PendQty" class="form-control PendQty" readonly disabled />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="AltUnit" class="form-label">Alt Unit</label>
+                                    <input asp-for="AltUnit" class="form-control AltUnit" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="AltSchQty" class="form-label">Alt Sch Qty</label>
+                                    <input asp-for="AltSchQty" class="form-control AltSchQty" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="AltPendQty" class="form-label">Alt Pend Qty</label>
+                                    <input asp-for="AltPendQty" class="form-control AltPendQty" readonly disabled />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemSize" class="form-label">Item Size</label>
+                                    <select class="form-select ItemSize" asp-for="ItemSize">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemColor" class="form-label">Item Color</label>
+                                    <select class="form-select ItemColor" asp-for="ItemColor">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Rate" class="form-label">Rate</label>
+                                    <input asp-for="Rate" class="form-control Rate" readonly disabled />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="RateInOthCurr" class="form-label">Rate In Oth Curr.</label>
+                                    <input asp-for="RateInOthCurr" class="form-control RateInOthCurr" readonly disabled />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="DeliveryDate" class="form-label">Del Date</label>
+                                    <input asp-for="DeliveryDate" class="form-control DeliveryDate" />
+                                </div>
+                                @if (Model.Mode == "SSA")
+                                {
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="OtherDetail" class="form-label">Amendment Reason</label>
+                                        <input asp-for="OtherDetail" class="form-control OtherDetail" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="OtherDetail" class="form-label">Other Detail</label>
+                                        <input asp-for="OtherDetail" class="form-control OtherDetail" />
+                                    </div>
+                                }
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Remarks" class="form-label">Remarks</label>
+                                    <input asp-for="Remarks" class="form-control Remarks" />
+                                </div>
+                                <div class="col-lg-2 col-md-3 col-sm-3 text-center ItemBtn">
+                                    <button type="submit" class="addItemBtn btn btn-sm btn-outline-danger mt-3">
+                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
+                                </div>
+                                <div class="col-lg-2 col-md-3 col-sm-3 text-center mt-3 clearGrid">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="ClearGrid()" style="margin-top:10px;">
+                                        <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
+                                        CLEAR GRID
+                                    </button>
+                                </div>
+
+                                @if (Model.Mode == "SSA" || Model.Mode == "SSC")
+                                {
+                                    <div class="col-auto">
+                                        <button type="button" class="EXPORT btn btn-sm btn-outline-success mt-3" id="sendToExcel">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
+                                        </button>
+                                    </div>
+                                    <div class="col-auto mt-3">
+                                        <input class="form-control" type="file" id="ExcelFile" />
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                                        </button>
+                                    </div>
+                                }
+                                <div class="col-lg-3 col-md-3 col-sm-3 text-center ImportExcel">
+
+                                    <div class="input_container">
+                                        <label for="files" class="btn btn-sm btn-outline-success mt-2">Import Excel</label>
+                                        <input id="files" class="Execllbl BtnUploadExl btn btn-sm btn-outline-success" style="display:none;" type="file">
+                                    </div>
+                                </div>
+
+
+
+                                @* <div class="col-auto mt-3">
+                                <input class="form-control BtnUploadExl" type="file" id="ExcelFile" />
+                                </div>
+                                <div class="col-auto">
+                                <button type="button" class="Importbtn btn btn-sm btn-outline-success mt-3" onclick="UploadButton()">
+                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                                </button>
+                                </div>*@
+
+                            </div>
+                            <div class="progress my-2 mb-3 mt-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0 ManualEntryGrid">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <div class="col-md-2 me-3">
+                                            <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
+                                        </div>
+                                        <a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportSaleSchFormate();">
+                                            <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            IMPORT FORMAT
+                                        </a>
+                                    </div>
+                                    <div class="table-responsive" style="max-height:150px;">
+                                        <table class="table table-hover table-bordered table-striped" id="ItemTable">
+                                            <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap">
+                                                <tr id="headerRow">
+                                                    <th>Action</th>
+                                                    <th>Sr#</th>
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Code</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                                                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Qty</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Qty</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Sch Qty</th>
+                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Pent Qty</th>
+                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate In Other Curr</th>
+                                                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Date</th>
+                                                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
+                                                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
+                                                    @if (Model.Mode == "SSA")
+                                                    {
+                                                        <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amendment Reason</th>
+                                                    }
+                                                    else
+                                                    {
+                                                        <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
+                                                    }
+                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divSaleScheduleGrid">
+                                                <partial name="_SaleScheduleGrid" />
+                                            </tbody>
+                                        </table>
+                                        <div class="col-lg-2 col-md-3 col-sm-3 text-center mt-3 ms-auto">
+                                            <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnGridExcel">
+                                                <i class="fa-solid fa-upload fa-fw fa-lg "></i> EXCEL
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row g-2 gx-3">
+                                        <div class="col-12 text-center">
+                                            <strong>Total No Of Items : <span id="lblSchTotalNoOfItems"></span>,</strong>
+                                            <strong> Total No Of SchQty : <span id="lblSchTotalNoOfQty"></span></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-body SplitScheduleBody">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">Part Code</label>
+                                    <select class="form-select SPartCode" asp-for="PartCode">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemCode" class="form-label ">Item Name</label>
+                                    <select class="form-select SItemCode" asp-for="ItemCode">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Unit" class="form-label">Unit</label>
+                                    <input asp-for="Unit" class="form-control SUnit" readonly disabled />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="SchQty" class="form-label">Sch Qty</label>
+                                    <input asp-for="SchQty" class="form-control SSChQty" type="number" step="any" min=0 value="0" onchange="ChangSplitAltQty();" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="AltUnit" class="form-label">Alt Unit</label>
+                                    <input asp-for="AltUnit" class="form-control SAltUnit" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="AltSchQty" class="form-label">Alt Sch Qty</label>
+                                    <input asp-for="AltSchQty" class="form-control SAltSchQty" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Rate" class="form-label">Rate</label>
+                                    <input asp-for="Rate" class="form-control SRate" readonly disabled />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="RateInOthCurr" class="form-label">Rate In Oth Curr.</label>
+                                    <input asp-for="RateInOthCurr" class="form-control SRateInOthCurr" readonly disabled />
+                                </div>
+                                <div class="col-lg-2 col-md-3 col-sm-3 text-center mt-3 clearGrid">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="ClearGrid()" style="margin-top:10px;">
+                                        <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
+                                        CLEAR GRID
+                                    </button>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-3 text-center BtnExcel">
+                                    <input type="file" asp-for="ExcelFile" class="BtnUploadExl btn btn-sm btn-outline-success mt-2" placeholder="Import">
+                                </div>
+                                <div class="col-lg-2 col-md-3 col-sm-3 text-center">
+                                    <button type="submit" class="Generatebtn btn btn-sm btn-outline-danger mt-3">
+                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> GENERATE
+                                    </button>
+                                </div>
+                                <div class="progress my-2 mb-3 mt-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <div class="table-responsive" style="max-height:150px;">
+                                            <table class="table table-hover table-bordered table-striped" id="SplitScheduleTable">
+                                                <thead id="SplitScheduleHead" class="bg-gradient text-center card-headerBG text-light small" style="white-space:nowrap"></thead>
+                                                <tbody id="SplitScheduleData">
+                                                </tbody>
+                                            </table>
+                                            <button type="button" class="btn btn-danger me-2 mt-2 btn-sm mr-2 mb-2" style="color:white!important; float:right;">
+                                                Cancel @*<i class="fa fa-plus" aria-hidden="true"></i>*@
+                                            </button>
+                                            <button type="button" class="btn btn-primary mt-2 me-2 btn-sm mr-2 mb-2" id="AddItembtnSplitSch" style="color:white!important; float:right;">
+                                                Done @*<i class="fa fa-plus" aria-hidden="true"></i>*@
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-body MonthlyEntrybody">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+
+                                    <div class="table-responsive" style="max-height:150px;">
+                                        <table class="table table-hover table-bordered table-striped" id="MonthlyEntryTable">
+                                            <thead id="MonthlyEntrythead" class="bg-gradient text-center card-headerBG text-light small" style="white-space:nowrap"></thead>
+                                            <tbody id="MonthlyEntryData">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @*<i class="fa fa-lg fa-plus-circle" aria-hidden="true"></i>*@
+
+
+                                    <button type="button" class="btn btn-danger me-2 mt-2 btn-sm mr-2 mb-2" style="color:white!important; float:right;">
+                                        Cancel @*<i class="fa fa-plus" aria-hidden="true"></i>*@
+                                    </button>
+                                    @if (Model.Mode == "U" || Model.Mode == "SSA")
+                                    {
+                                        <button type="button" class="btn btn-primary mt-2 me-2 btn-sm mr-2 mb-2" id="AddItembtnMonthlyEntry" onclick="UpdateDone(event)" style="color:white!important; float:right;">
+                                            Done @*<i class="fa fa-plus" aria-hidden="true"></i>*@
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-primary mt-2 me-2 btn-sm mr-2 mb-2" id="AddItembtnMonthlyEntry" onclick="AddDone(event)" style="color:white!important; float:right;">
+                                            Done @*<i class="fa fa-plus" aria-hidden="true"></i>*@
+                                        </button>
+                                    }
+                                    <button type="button" class="btn btn-success mt-2 me-2 btn-sm mr-2 mb-2" onclick='newRowappend()' style="color:white!important; float:right;">
+                                        <i class="fa fa-plus" aria-hidden="true"></i> Add Row
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Other Detail Part*@
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SODetail">
+                        <button class="accordion-button text-light pnl4BG bg-gradient collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#B_SODetail" aria-expanded="false" aria-controls="B_SODetail">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-hourglass-clock fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="B_SODetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SODetail">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                @if (Model.Mode == "SSA" || Model.Mode == "SSC")
+                                {
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryID" class="form-label">Sale Sch ID</label>
+                                        <input asp-for="EntryID" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="YearCode" class="form-label">Sale Sch Year</label>
+                                        <input asp-for="YearCode" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedByName" class="form-label">Created Entry By</label>
+                                        <input asp-for="CreatedByName" class="form-control" readonly />
+                                        <input asp-for="CreatedBy" type="hidden" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                        <label asp-for="CreatedOn" class="form-label">Created Entry Date</label>
+                                        <input asp-for="CreatedOn" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                        <label asp-for="UpdatedByName" class="form-label">Updated Entry By</label>
+                                        <input asp-for="UpdatedByName" class="form-control" readonly />
+                                        <input asp-for="UpdatedBy" type="hidden" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EnterByMachineName" class="form-label">Enter By Machine</label>
+                                        <input asp-for="EnterByMachineName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                        <label asp-for="UpdatedOn" class="form-label">Updated Entry Date</label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedByName" class="form-label">Created Entry By</label>
+                                        <input asp-for="CreatedByName" class="form-control" readonly />
+                                        <input asp-for="CreatedBy" type="hidden" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedOn" class="form-label">Actual Entry Date</label>
+                                        <input asp-for="CreatedOn" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EnterByMachineName" class="form-label">Enter By Machine</label>
+                                        <input asp-for="EnterByMachineName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedByName" class="form-label">Updated Entry By</label>
+                                        <input asp-for="UpdatedByName" class="form-control" readonly />
+                                        <input asp-for="UpdatedBy" type="hidden" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">Updated Entry Date</label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card-footer p-3">
+            @*<partial name="_FormsButton" model="Model" />*@
+            <div class="card-header card-headerBG text-light bg-gradient">
+                <h5>
+                    <strong>@ViewData["Title"] - @Model.YearCode</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        @if (Model.Mode == "SSA")
+                        {
+                            <a asp-action="SSAmendmentList" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                                <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                Dashboard
+                            </a>
+                            <a asp-action="SSAmendmentList" asp-controller="SaleSchedule" asp-route-ID="0" class="btn btn-sm btn-info bg-gradient me-2">
+                                <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                Pending Amendment
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                                <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                Dashboard
+                            </a>
+                        }
+                        <div class="col-auto me-2">
+                            @if (@Model.Mode != "V" && @Model.Mode != "SSC" && Model.Mode != "SSA")
+                            {
+                                <button type="button" class="SSPartialSave btn btn-secondary btn-sm mr-2" style="color:white!important">
+                                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                    PARTIAL SAVE
+                                </button>
+                            }
+
+                        </div>
+                        <partial name="_FormsButton" />
+                    </span>
+                </h5>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<style>
+    #ItemTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #ItemThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .modal {
+        z-index: 9998 !important;
+    }
+
+    tbody td {
+        /*/ Table cell styles /*/
+    }
+
+
+    .Execllbl {
+        border: 1px solid #e5e5e5;
+        border-radius: 10px;
+        padding: 5px 10px;
+        font-family: 'Helvetica', sans-serif;
+        transition: .5s;
+    }
+
+        .Execllbl:hover {
+            background-color: #eee;
+        }
+
+</style>
+
+@section Scripts
+    {
+    <script>
+        var selectedItemCodes = [];
+        var selectedSplitItemCodes = [];
+
+        //Update case
+        var selectedIs = "@selectedPartCodeIds";
+        if (selectedIs.length > 0) {
+            selectedItemCodes = selectedIs.split(",");
+            selectedItemCodes = selectedItemCodes.filter((item, i, ar) => ar.indexOf(item) === i);
+            selectedSplitItemCodes = selectedIs.split(",");
+            selectedSplitItemCodes = selectedSplitItemCodes.filter((item, i, ar) => ar.indexOf(item) === i);
+        }
+
+        document.querySelector("#files").onchange = function () {
+            const fileName = this.files[0]?.name;
+            const label = document.querySelector("label[for=files]");
+            label.innerText = fileName ?? "Import Excel";
+        };
+
+        $(function () {
+            if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
+                $.ajax({
+                    url: "@Url.Action("GetSONO")",
+                    data: { AccountCode: @Model.AccountCode },
+                    success: function (result, status, xhr) {
+
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $('#SONO').empty();
+                                $('#SONO').append('<option>-Select-</option>');
+                                $('#CustomerOrderNo').empty();
+                                $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
+                                $.each(obj.Result, function (key, val) {
+                                    $('#SONO').append('<option value="' + val.SONo + '">' + val.SONo + '</option>');
+                                    $('#CustomerOrderNo').append('<option value="' + val.CustOrderNo + '" data-sono="' + val.SONo + '">' + val.CustOrderNo + '</option>');
+                                });
+                            }
+                        }
+                    },
+                }).done(function () {
+                    $('#SONO').val('@Model.SONO');
+                    $('#CustomerOrderNo').val('@Model.CustomerOrderNo');
+                    $.ajax({
+                        url: "@Url.Action("GetSOYear")",
+                        data: { AccountCode: parseInt($('#AccountCode').val()), SONO: $('#SONO').val() },
+                        success: function (result, status, xhr) {
+
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $('#SOYearCode').empty();
+                                    $('#SOYearCode').append('<option>-Select-</option>');
+                                    $.each(obj.Result, function (key, val) {
+                                        $('#SOYearCode').append('<option value="' + val.YearCode + '">' + val.YearCode + '</option>');
+                                    });
+                                }
+                            }
+                        },
+                    }).done(function () {
+
+                        $('#SOYearCode').val('@Model.SOYearCode');
+                        $.ajax({
+                            url: "@Url.Action("GetSODATA")",
+                            data: { AccountCode: parseInt($('#AccountCode').val()), SONO: parseInt($('#SONO').val()), Year: $('#SOYearCode').val() },
+                            success: function (result, status, xhr) {
+                                if (result != null) {
+
+                                    var obj = $.parseJSON(result);
+                                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                        GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+
+                                        // GetSplitItemName(0);
+                                    }
+                                }
+                            },
+                        });
+                    });
+                });
+            }
+        });
+
+
+        var EditRowFlag = true;
+
+        $(document).ready(function () {
+            GetServerDate();
+            GetFormRights();
+            //$('#ScheduleDate').prop('readonly', true);
+            var today = new (Date);
+
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                NewEntryId();
+            }
+            else if ($('#Mode').val() == "SSA" && $('#Mode').val() != "SSC") {
+                NewAmmEntryId();
+            }
+            else {
+
+            }
+
+            $('.input_container').fadeIn();
+
+            $('#AccountCode').select2();
+            $('#CustomerOrderNo').select2();
+            $('.PartCode').select2();
+            $('.ItemCode').select2();
+            //$('#SONO').select2();
+
+            RowCount();
+
+            $('.ManualEntryImportbody').fadeIn();
+            $('.MonthlyEntrybody').fadeOut();
+            $('.SplitScheduleBody').fadeOut();
+            TotalSchQty();
+
+            $('#EnterByMachineName').val($('#machineName').text());
+
+
+            //today = today.toLocaleString().substr(0, 10);
+            //$("#EntryDate").val(today);
+
+            //$("#ScheduleDate").datepicker({ dateFormat: 'dd/mm/yy', maxDate: today });
+            //$("#SchAmendmentDate").datepicker({ dateFormat: 'dd/mm/yy' });
+
+            //$("#ScheduleDate,#SchEffFromDate,#SchEffTillDate,#DeliveryDate,#SchAmendmentDate").datepicker({ dateFormat: 'dd/mm/yy', minDate: today });
+            //$("#ScheduleDate,#SchAmendmentDate,#SchEffFromDate,#SchEffTillDate").datepicker('setDate', today);
+
+            //var FutureDate = new (Date);
+            //var newDate = new Date(FutureDate.setMonth(FutureDate.getMonth() + 1));
+            //FutureDate = FutureDate.toLocaleString().substr(0, 10);
+            //$("#SchEffTillDate").datepicker('setDate', FutureDate);
+
+            //$("#SchEffFromDate,#SchEffTillDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            //$("#ScheduleDate,#SchAmendmentDate,#DeliveryDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            $('.hasDatepicker').datepicker("option", "showAnim", "clip");
+            var SchEffFromDate = $('#SchEffFromDate').val();
+            var SchEffTillDate = $('#SchEffTillDate').val();
+            var SoDate = $('#SODate').val();
+            var SoCloseDate = $('#SOCloseDate').val();
+            $('.PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
+            //$('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
+
+            $('.BtnExcel').fadeOut();
+
+            $('#SchAmendmentDate').datepicker("option", "minDate", parseDateToFormat($('#ScheduleDate').val()));
+
+            // $('#SchEffFromDate').datepicker("option", "minDate", $('#SODate').val());
+            $("#SchEffFromDate,#SchEffTillDate,#SOCloseDate").datepicker({ dateFormat: 'dd/mm/yy' });
+            if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V' || $('#Mode').val() == 'SSA' || $('#Mode').val() == 'SSC') {
+
+                var hiddenSchDate = $('#hiddenSchDate').val();
+                var hiddenSchEffTillDate = $('#hiddenSchEffTillDate').val();
+
+                hiddenSchDate = formateDashDateToSlashDate(hiddenSchDate.split(" ")[0]);
+                hiddenSchEffTillDate = formateDashDateToSlashDate(hiddenSchEffTillDate.split(" ")[0]);
+
+                if ($('#Mode').val() != 'SSA') {
+                    $('#ScheduleDate').datepicker("option", "minDate", new Date(SchEffFromDate));
+                    $('#ScheduleDate').datepicker("option", "maxDate", new Date(SchEffTillDate));
+                    $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", $('#SODate').val());
+                    $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", new Date(SoCloseDate));
+                }
+
+                $('#ScheduleDate').datepicker("setDate", hiddenSchDate);
+                $("#SchEffFromDate").datepicker("setDate", new Date(SchEffFromDate));
+                $("#SchEffTillDate").datepicker("setDate", hiddenSchEffTillDate);
+                $('#DeliveryDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
+                $('#DeliveryDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
+                //$("#SOCloseDate").datepicker("setDate", $('#SOCloseDate').val());
+                //   $("#SOCloseDate").datepicker("setDate", new Date($('#SOCloseDate').val()));
+                $("#SOCloseDate").datepicker("setDate", $('#SOCloseDate').val().split(" ")[0].replace(/-/g, '/'));
+                $("#SODate").datepicker("setDate", new Date($('#SODate').val($('#SODate').val().split(" ")[0])));
+                //$('#SchEffTillDate').datepicker("option", "minDate", new Date(SoDate));
+                //$('#SchEffTillDate').datepicker("option", "maxDate", new Date(SoCloseDate));
+                 
+            } else {
+                 
+                $("#SchEffFromDate").datepicker("setDate", $('#SchEffFromDate').val());
+                $("#SchEffTillDate").datepicker("setDate", $('#SchEffTillDate').val());
+                $('#ScheduleDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
+                $('#ScheduleDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
+                $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SODate').val()));
+                $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat($('#SOCloseDate').val()));
+                $('#DeliveryDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
+                $('#DeliveryDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
+            }
+
+            if ($('#Mode').val() == 'SSA' || $('#Mode').val() == 'SSC') {
+                $('.ImportExcel').hide();
+                SetSchTillDate();
+            }
+
+
+            function UploadButton() {
+                var fileInput = $('#ExcelFile');
+                var file = fileInput.prop("files")[0];
+
+                var formData = new FormData();
+                formData.append("excelFile", file);
+
+                var Err = 0;
+
+                if ($('#ExcelFile').val() == '') {
+                    AddErrorCls('ExcelFile');
+                    Err = 1;
+                    return;
+                }
+                else {
+                    RemoveErrorCls('ExcelFile');
+                }
+
+                $.ajax({
+                    url: "/SaleSchedule/UploadExcel",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        $('#divSaleScheduleGrid').html(result);
+
+                    }
+                });
+            }
+
+            function formateDashDateToSlashDate(dateString) {
+                if (!dateString) {
+                    return ''; // or handle accordingly based on your requirements
+                }
+
+                const parts = dateString.split('-');
+
+                // Ensure the input date string has three parts (day, month, year)
+                if (parts.length === 3) {
+                    // Create a new Date object using the parts
+                    const inputDate = new Date(parts[2], parts[1] - 1, parts[0]);
+
+                    // Format the date in the desired format "dd/MM/yyyy"
+                    const formattedDate = inputDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+                    return formattedDate;
+                } else {
+                    // Handle the case where the input format is incorrect
+                    return 'Invalid Date'; // or handle accordingly based on your requirements
+                }
+            }
+
+            $(document).on('click', '.removeRow', function () {
+                //var SplitItemCode = $(this).closest('tr').find('[id^="SplitSchItemCode-"]').val();
+                //var SplitPartCode = $(this).closest('tr').find('[id^="SpliSchPartCode-"]').val();
+                //var SplitItemName = $(this).closest('tr').find('[id^="SplitSchItemName-"]').val();
+                $(this).closest('tr').remove();
+
+                var $dynamicElements = $('#SplitScheduleData').find('[id^="SplitappendRow-"]');
+                var $dynamicPartCode = $('#SplitScheduleData').find('[id^="SpliSchPartCode-"]');
+                var $dynamicItemName = $('#SplitScheduleData').find('[id^="SplitSchItemName-"]');
+                var $dynamicItemCode = $('#SplitScheduleData').find('[id^="SplitSchItemCode-"]');
+                var $dynamicUnit = $('#SplitScheduleData').find('[id^="SplitschUnit-"]');
+                var $dynamicRate = $('#SplitScheduleData').find('[id^="SplitSchRate-"]');
+                var $dynamicSchQty = $('#SplitScheduleData').find('[id^="SplitSchQue-"]');
+
+                updateDynamicIDs($dynamicElements, 'SplitappendRow-');
+                updateDynamicIDs($dynamicPartCode, 'SpliSchPartCode-');
+                updateDynamicIDs($dynamicItemName, 'SplitSchItemName-');
+                updateDynamicIDs($dynamicItemCode, 'SplitSchItemCode-');
+                updateDynamicIDs($dynamicUnit, 'SplitschUnit-');
+                updateDynamicIDs($dynamicRate, 'SplitSchRate-');
+
+
+                var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+                var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]);
+                var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]);
+                var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+                var count = SchEffTillDate - SchEffFromDate;
+                var t = 0;
+                $dynamicSchQty.each(function (index) {
+                    for (var u = 0; u <= count; u++) {
+                        var newID = 'SplitSchQue-' + (t) + (u);
+                        $(this).attr('id', newID);
+                        t++;
+                    }
+                });
+                GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+                //$('.ItemCode').append('<option value="' + SplitItemCode + '">' + SplitItemName + '</option>');
+                //$('.PartCode').append('<option value="' + SplitItemCode + '">' + SplitPartCode + '</option>');
+
+            });
+
+        });
+
+        $('#sendToExcel').click(function () {
+
+            //   TableToExcel.convert($("#poTable"), {
+            //  name: "PurchaseOrderTableAmm.xlsx",
+            //  sheet: {
+            //  name: "Sheet1"
+            //  }
+            //});
+            let table = $("#ItemTable");
+            console.log(table);
+            ;
+            TableToExcel.convert(table[0], {
+                name: `SaleSchedule.xlsx`,
+                sheet: {
+                    name: 'SaleSchedule'
+                }
+            });
+            // $("#poTable").table2excel({
+            //    filename: "PurchaseOrderTableAmm.xls"
+            //});
+        });
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divSaleScheduleGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+             
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#ItemTable');
+            var rows = table.find('#divSaleScheduleGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text().trim();
+                var bValue = $(b).find('td').eq(columnIndex).text().trim();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divSaleScheduleGrid').append(row);
+            });
+        }
+
+        function UploadExcel() {
+            var fileInput = $('#ExcelFile');
+            var file = fileInput.prop("files")[0];
+
+            var formData = new FormData();
+            formData.append("excelFile", file);
+            formData.append("Flag", "SALEORDER");
+            //formData.append("PoNo",$('#PONo').val());
+            //formData.append("POYearcode",$('#YearCode').val());
+            //formData.append("AccountCode",$('#AccountCode').val());
+            //formData.append("SchNo","");
+            //formData.append("SchYearCode",0);
+            var Err = 0;
+
+            if ($('#ExcelFile').val() == '') {
+                AddErrorCls('ExcelFile');
+                Err = 1;
+                return;
+            }
+            else {
+                RemoveErrorCls('ExcelFile');
+            }
+
+            $.ajax({
+                url: "@Url.Action("UploadExcelSaleSchedule")",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result == "Duplicate") {
+
+                        $.notify("Duplicate Item Not allowed", "error");
+                    }
+                    else if (result == "Not Done") {
+                        $.notify("Pend Qty cannot be less than 0!Please Try again!", "error");
+                    }
+                    else if (result == "Partcode not available") {
+                        $.notify("Imported Partcode is not available, Please check!!!", "error");
+                    } else {
+                        $('#divSaleScheduleGrid').empty();
+                        $('#divSaleScheduleGrid').html(result);
+                    }
+
+                }
+            });
+        }
+
+        $(document).on('click', '.removeMonthlyRow', function () {
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                var SplitMPartCode = $(this).closest('tr').find('[id^="SplitPartCode-"]').val();
+                var SplitMItemName = $(this).closest('tr').find('[id^="SplitItemName-"]').val();
+                var SplitMPartCodetext = $(this).closest('tr').find('[id^="SplitPartCode-"] :selected').text();
+                var SplitMItemNametext = $(this).closest('tr').find('[id^="SplitItemName-"] :selected').text();
+            } else {
+                var SplitMPartCode = $(this).closest('tr').find('[id^="EditPartCode-"]').val();
+                var SplitMItemName = $(this).closest('tr').find('[id^="EditSplitItemName-"]').val();
+                var SplitMPartCodetext = $(this).closest('tr').find('[id^="EditPartCode-"] :selected').text();
+                var SplitMItemNametext = $(this).closest('tr').find('[id^="EditSplitItemName-"] :selected').text();
+            }
+            $(this).closest('tr').remove();
+            var $dynamicElements = $('#MonthlyEntryData').find('[id^="appendRow-"]');
+            var $dynamicPartCode = [];
+            var $dynamicItemName = [];
+            var $dynamicItemCode = [];
+            var $dynamicUnit = [];
+            var $dynamicRate = [];
+            var $dynamicSchQty = [];
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                $dynamicPartCode = $('#MonthlyEntryData').find('[id^="SplitPartCode-"]');
+                $dynamicItemName = $('#MonthlyEntryData').find('[id^="SplitItemName-"]');
+                $dynamicItemCode = $('#MonthlyEntryData').find('[id^="SplitItemName-"]');
+                $dynamicUnit = $('#MonthlyEntryData').find('[id^="SplitUnit-"]');
+                $dynamicRate = $('#MonthlyEntryData').find('[id^="SplitRate-"]');
+                $dynamicSchQty = $('#MonthlyEntryData').find('[id^="SchQue-"]');
+
+            } else {
+                $dynamicPartCode = $('#MonthlyEntryData').find('[id^="EditPartCode-"]');
+                $dynamicItemName = $('#MonthlyEntryData').find('[id^="EditSplitItemName-"]');
+                $dynamicItemCode = $('#MonthlyEntryData').find('[id^="EditSplitItemName-"]');
+                $dynamicUnit = $('#MonthlyEntryData').find('[id^="EditSplitUnit-"]');
+                $dynamicRate = $('#MonthlyEntryData').find('[id^="EditSplitRate-"]');
+                $dynamicSchQty = $('#MonthlyEntryData').find('[id^="SchQue-"]');
+            }
+
+            updateDynamicIDs($dynamicElements, 'appendRow-');
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                updateDynamicIDs($dynamicPartCode, 'SplitPartCode-');
+                updateDynamicIDs($dynamicItemName, 'SplitItemName-');
+                updateDynamicIDs($dynamicItemCode, 'SplitItemName-');
+                updateDynamicIDs($dynamicUnit, 'SplitUnit-');
+                updateDynamicIDs($dynamicRate, 'SplitRate-');
+            } else {
+                updateDynamicIDs($dynamicPartCode, 'EditPartCode-');
+                updateDynamicIDs($dynamicItemName, 'EditSplitItemName-');
+                updateDynamicIDs($dynamicItemCode, 'EditSplitItemName-');
+                updateDynamicIDs($dynamicUnit, 'EditSplitUnit-');
+                updateDynamicIDs($dynamicRate, 'EditSplitRate-');
+            }
+            var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+            var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]);
+            var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]);
+            var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+            var count = SchEffTillDate - SchEffFromDate;
+            var countDate = (SchEffFromDate - 1);
+            var Rowcount = $('#MonthlyEntryData tr').length;
+            //var t = 0;
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+
+                $dynamicSchQty.each(function (index) {
+                    var newID = 'SchQue-' + (Rowcount - 1) + '-' + (index);
+                    $(this).attr('id', newID);
+
+                });
+            } else {
+
+                $dynamicSchQty.each(function (index) {
+                    var newID = 'SchQue-' + (countDate + index) + '-' + (Rowcount - 1);
+                    $(this).attr('id', newID);
+
+                });
+            }
+            $(this).closest('tr').find('[id^="SplitPartCode-"]').append('<option value="' + SplitMPartCode + '">' + SplitMPartCodetext + '</option>');
+            $(this).closest('tr').find('[id^="SplitItemName-"]').append('<option value="' + SplitMPartCode + '">' + SplitMItemNametext + '</option>');
+        });
+
+        $(document).on('change', '.SplitPC', function () {
+            if ($(this).prop('selectedIndex') != 0) {
+                var currentval = $(this).closest('tr');
+                $.ajax({
+                    url: "@Url.Action("GetSOItem")",
+                    data: { AccountCode: parseInt($('#AccountCode').val()), SONO: parseInt($('#SONO').val()), Year: $('#SOYearCode').val(), ItemCode: $(this).val() },
+                    success: function (result, status, xhr) {
+                        if (result != null) {
+
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                                    currentval.find('.SplitUnitVal').val("");
+                                    currentval.find('.SplitUnitVal').val(obj.Result[0].Unit);
+                                    currentval.find('.SplitRateVal').val("");
+                                    currentval.find('.SplitRateVal').val(obj.Result[0].Rate);
+                                } else {
+                                    currentval.find('.EditSplitUnitVal').val("");
+                                    currentval.find('.EditSplitUnitVal').val(obj.Result[0].Unit);
+                                    currentval.find('.EditSplitRateVal').val("");
+                                    currentval.find('.EditSplitRateVal').val(obj.Result[0].Rate);
+                                }
+                            }
+                            else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+
+                            }
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify(result.responseText, "error");
+                    }
+                });
+            }
+            else {
+
+                // $('#Unit').val(''), $('#Rate').val('0.00'), $('#SchQty').val(''), $('#DeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                    currentval.find('.SplitUnitVal').val("");
+                    currentval.find('.SplitRateVal').val("");
+                } else {
+                    currentval.find('.EditSplitUnitVal').val("");
+                    currentval.find('.EditSplitRateVal').val("");
+                }
+            }
+        });
+
+        $(document).on('change', '.SplitIN', function () {
+
+            if ($(this).prop('selectedIndex') != 0) {
+                var currentval = $(this).closest('tr');
+                $.ajax({
+                    url: "@Url.Action("GetSOItem")",
+                    data: { AccountCode: parseInt($('#AccountCode').val()), SONO: parseInt($('#SONO').val()), Year: $('#SOYearCode').val(), ItemCode: $(this).val() },
+                    success: function (result, status, xhr) {
+                        if (result != null) {
+
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                                    currentval.find('.SplitUnitVal').val("");
+                                    currentval.find('.SplitUnitVal').val(obj.Result[0].Unit);
+                                    currentval.find('.SplitRateVal').val("");
+                                    currentval.find('.SplitRateVal').val(obj.Result[0].Rate);
+                                } else {
+                                    currentval.find('.EditSplitUnitVal').val("");
+                                    currentval.find('.EditSplitUnitVal').val(obj.Result[0].Unit);
+                                    currentval.find('.EditSplitRateVal').val("");
+                                    currentval.find('.EditSplitRateVal').val(obj.Result[0].Rate);
+                                }
+                            }
+                            else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+
+                            }
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify(result.responseText, "error");
+                    }
+                });
+            }
+            else {
+
+                // $('#Unit').val(''), $('#Rate').val('0.00'), $('#SchQty').val(''), $('#DeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                    currentval.find('.SplitUnitVal').val("");
+                    currentval.find('.SplitRateVal').val("");
+                } else {
+                    currentval.find('.EditSplitUnitVal').val("");
+                    currentval.find('.EditSplitRateVal').val("");
+                }
+            }
+        });
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                     
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $("#ScheduleDate,#SchAmendmentDate,#DeliveryDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                }
+            });
+        }
+        function EditBuildBody() {
+            //GetSOItemForEdit(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+            $.ajax({
+                url: "@Url.Action("GetallData")",
+                data: { ID: parseInt($('#EntryID').val()), YC: parseInt($('#YearCode').val()) },
+                success: function (result, status, xhr) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#MonthlyEntryData').empty();
+                            ;
+                            BuildMonthlyEntryBody();
+                            var MonthlyArr = [];
+                            var SeeItemCode = {};
+
+                            $.each(obj.Result.Table, function (index, val) {
+
+                                MonthlyArr.push({
+                                    Itemcodes: val.ItemCode,
+                                    PartCode: val.PartCode,
+                                    ItemName: val.ItemName,
+                                    Unit: val.Unit,
+                                    Rate: val.Rate
+                                });
+                            });
+
+                            var distinctItems = MonthlyArr.reduce(function (acc, currentItem) {
+                                if (!acc.some(item => item.Itemcodes === currentItem.Itemcodes)) {
+                                    acc.push(currentItem);
+                                }
+                                return acc;
+                            }, []);
+
+
+                            var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+                            var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]);
+                            var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]);
+                            var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+                            var count = SchEffTillDate - SchEffFromDate;
+                            var FromDate = SchEffFromDate;
+                            var date;
+
+                            var dateArr = [];
+                            var counter = 0;
+                            var countRow = $('#MonthlyEntryData tr').length;
+                            for (var j = 0; j < distinctItems.length; j++) {
+                                var i = 0;
+
+                                html += '<tr><td style="width: 15px;"> <a class="table-link link-danger removeMonthlyRow" > <span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i></span></a></td><td><select id="EditPartCode-' + j + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option><option value="' + distinctItems[j].Itemcodes + '" selected>' + distinctItems[j].PartCode + '</option></select><input type="hidden" id="EditSplitItemCode-' + j + '" value=' + distinctItems[j].Itemcodes + '></td><td><input type="hidden" id="CountEditDate" value="' + count + '"/><select id="EditSplitItemName-' + j + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option><option value="' + distinctItems[j].Itemcodes + '" selected>' + distinctItems[j].ItemName + '</option></select></td><td><input id="EditSplitUnit-' + j + '" value=' + distinctItems[j].Unit + ' style="width:80px;" readonly ></td><td><input id="EditSplitRate-' + j + '" value=' + distinctItems[j].Rate + ' style="width:80px;" readonly ></td>';
+                                for (var k = SchEffFromDate; k <= count + SchEffFromDate; k++) {
+
+                                    var ress = obj.Result.Table;
+
+                                    if (ress[counter] != undefined) {
+
+                                        dateArr.push({
+                                            deldate: parseInt(ress[counter].DeliveryDate.split('-')[2].split('T')[0]),
+                                            schQty: ress[counter].SchQty,
+                                            ItemCode: ress[counter].ItemCode
+                                        });
+
+                                    }
+                                    counter++;
+
+                                    var monthNames = [
+                                        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                                    ];
+
+                                    var formattedMonth = monthNames[SchEffFromMonth - 1];
+                                    var formattedDay = k < 10 ? "0" + k : k;
+
+                                    date = formattedDay + "/" + formattedMonth + "/" + SchEffFromYear;
+                                    // date = k + "/" + SchEffFromMonth + "/" + SchEffFromYear;
+
+                                    html += '<td><input style="width:50px;" id="SchQue-' + k + '-' + j + '" ><input type="hidden" value="' + date + '" id="DelEditDate-' + k + '"/></td>';
+
+                                    ////StartDate++;
+
+                                }
+                            }
+                            //$('#MonthlyEntryData').empty();
+                            $('#MonthlyEntryData').append(html);
+                            var Row = $('#MonthlyEntryData tr').length;
+
+                            for (var j = 0; j < distinctItems.length; j++) {
+                                // for(var u=0;u<Row;u++){
+                                for (var lcount = 0; lcount < dateArr.length; lcount++) {
+                                    if (distinctItems[j].Itemcodes == dateArr[lcount].ItemCode) {
+                                        $('#SchQue-' + dateArr[lcount].deldate + '-' + j).val(dateArr[lcount].schQty);
+                                    }
+                                }
+                            }
+
+                            //for (var l = 0; l < TotalItems.length; l++) {
+                            //    if (distinctItems.includes(TotalItems[l].Itemcode)) {
+                            //        var rowCount = $('#MonthlyEntryData tr').length;
+                            //        var Row = rowCount + 1;
+                            //        html += '<td><select id="EditPartCode-' + Row + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option></select><input type="hidden" id="EditSplitItemName-' + j + '" value=' + distinctItems[j].Itemcodes + '></td><td><input type="hidden" id="CountEditDate" value="' + count + '"/><select id="EditSplitItemName-' + j + '"  style="height:25px;width:250px;" readonly><option value="" disabled readonly>-Select-</option><option value="' + distinctItems[j].Itemcodes + '" selected>' + JSON.stringify(distinctItems[j].ItemName) + '</option></select></td><td><input id="SplitUnit-' + j + '" value=' + distinctItems[j].Unit + ' style="width:80px;" readonly ></td><td><input id="SplitRate-' + j + '" value=' + distinctItems[j].Rate + ' style="width:80px;" readonly ></td>'
+                            //    }
+                            //    $('#EditPartCode-' + Row).append('<option value="' + TotalItems[j].Itemcode + '">' + TotalItems[j].Partcode + '</option>');
+                            //}
+                            html += '</tr>';
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+
+        function NewAmmEntryId() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("NewAmmEntryId")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#AmmEntryId').val("");
+                        $('#AmmEntryId').val(obj.Result[0].AmmEntryId);
+                    }
+                }
+            });
+        }
+
+        $('#SchEffFromDate').on("change", function () {
+
+            var SchDate = $.datepicker.parseDate('dd/mm/yy', $(this).val());
+
+            $('#ScheduleDate').datepicker("option", "minDate", $(this).val());
+            $('#DeliveryDate').datepicker("option", "minDate", $(this).val());
+            var activeRadioButton = $('input[name="SaleSchGrid"]:checked').val();
+            if (activeRadioButton == "Split" || activeRadioButton == "Month") {
+                var SchEffMonth = $('#SchEffFromDate').val().split("/")[1];
+                var SchYear = $('#SchEffFromDate').val().split("/")[2];
+
+                var LastDay = new Date(SchYear, SchEffMonth, 0).getDate();
+                var lastDate = new Date(SchYear, SchEffMonth - 1, LastDay);
+                //$('#SchEffTillDate').datepicker("option", "minDate", $(this).val());
+                //$('#SchEffTillDate').datepicker("option", "maxDate", lastDate.toDateString());
+                //$("#SchEffTillDate").datepicker("setDate", lastDate.toDateString());
+                $('#SchEffTillDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
+                $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffMonth - 1, LastDay));
+                $('#SchEffTillDate').datepicker("setDate", new Date(SchYear, SchEffMonth - 1, LastDay));
+                BuildMonthlyEntryBody();
+                BuildSplitScheduleBody();
+            } else {
+                var OneMonthDate = new Date(SchDate.setMonth(SchDate.getMonth() + 1));
+                $('#SchEffTillDate').val($(this).val()).datepicker("option", "minDate", OneMonthDate);
+                $('#SchEffTillDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
+            }
+            ClearGrid();
+        });
+
+
+        $('#SchEffTillDate').on("change", function () {
+            $('#DeliveryDate').datepicker("option", { "maxDate": $(this).val() });
+            $('#ScheduleDate').datepicker("option", "maxDate", $(this).val());
+            if ($('#Mode').val() != 'SSA') {
+                ClearGrid();
+            }
+        });
+
+        $('input[type="radio"]').change(function () {
+            var SchEffDate = $('#SchEffFromDate').val().split("/")[1];
+            var SchYear = $('#SchEffFromDate').val().split("/")[2];
+            var LastDay = new Date(SchYear, SchEffDate, 0).getDate();
+            if ($(this).is(':checked')) {
+                const selectedValue = $(this).val();
+
+                if (selectedValue == "Manual") {
+                    $('#Manual').val("")
+                    $('.ManualEntryImportbody').fadeIn();
+                    $('.SplitScheduleBody').fadeOut();
+                    $('.MonthlyEntrybody').fadeOut();
+                    $('.ManualEntryGrid').fadeIn();
+                    $('.clearGrid').fadeIn();
+                    GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+                    var SchDate = $.datepicker.parseDate('dd/mm/yy', $('#SchEffFromDate').val());
+                    var OneMonthDate = new Date(SchDate.setMonth(SchDate.getMonth() + 1));
+                    $('#SchEffTillDate').val($('#SchEffFromDate').val()).datepicker("option", "minDate", OneMonthDate);
+                    $('#SchEffTillDate').datepicker("setDate", OneMonthDate);
+                    $('#SchEffTillDate').datepicker("option", "maxDate", $('#SOCloseDate').val());
+                }
+                else if (selectedValue == "Split") {
+                    $('.SplitScheduleBody').fadeIn();
+                    $('.ManualEntryImportbody').fadeOut();
+                    $('.MonthlyEntrybody').fadeOut();
+                    $('.ManualEntryGrid').fadeOut();
+                    $('.clearGrid,.ItemBtn,.BtnExcel').fadeOut();
+                    $('#SchEffTillDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
+                    $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffDate - 1, LastDay));
+                    BuildSplitScheduleBody();
+                    GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+                }
+                else {
+
+                    $('.MonthlyEntrybody').fadeIn();
+                    $('.ManualEntryImportbody').fadeOut();
+                    $('.SplitScheduleBody').fadeOut();
+                    $('#SchEffTillDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
+                    $('#SchEffTillDate').datepicker("option", "maxDate", new Date(SchYear, SchEffDate - 1, LastDay));
+
+                    if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                        BuildMonthlyEntryBody();
+                    } else {
+
+                        if ($('#ManualMonthSplit').val() == "Month") {
+                            EditBuildBody();
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+        function BuildMonthlyEntryBody() {
+
+            $('#MonthlyEntryData').empty();
+            //var SchDate = $('#ScheduleDate').val();
+            //var monthPart = $('#ScheduleDate').val().split("/")[1];
+            //var yearPart = $('#ScheduleDate').val().split("/")[2];
+            //var Day = $('#ScheduleDate').datepicker("getDate");
+            //var DayStart = new Date($('#ScheduleDate').datepicker("getDate")).getDate();
+            //var getMonth = new Date($('#ScheduleDate').datepicker("getDate")).getMonth() + 1;
+            //var firstDayOfMonth = new Date(Day.getFullYear(), getMonth, 1);
+            //var lastDayOfCurrentMonth = new Date(firstDayOfMonth.getTime() - 1);
+            //var lastDay = lastDayOfCurrentMonth.getDate();
+
+            var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+            var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]);
+            var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]);
+            var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+            var count = SchEffTillDate - SchEffFromDate;
+            // var count = lastDay - DayStart;
+
+            var Rowcount = $('#MonthlyEntryData tr').length;
+            $('#MonthlyEntrythead').empty();
+            //if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            //    $('#MonthlyEntrythead').append("<th>Action</th>");
+            //}
+            $('#MonthlyEntrythead').append("<th>Action</th><th>PartCode</th><th>ItemName</th><th>UNIT</th><th>Rate</th>");
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+
+                GetSplitItemName(Rowcount);
+            }
+            // var j = DayStart;
+            var j = SchEffFromDate;
+            var date;
+
+            for (var i = 0; i <= count; i++) {
+                date = j + "/" + SchEffFromMonth + "/" + SchEffFromYear;
+                $('#MonthlyEntrythead').append("<th id='Date-" + i + "'>" + j + "</th>");
+                j++;
+            }
+            $('#MonthlyEntryData').append("</tr>");
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V' && $('#Mode').val() != 'SSA' && $('#Mode').val() != 'SSC') {
+                newRowappend();
+            }
+        }
+
+        function newRowappend() {
+            //  var count = lastDay - DayStart;
+            var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+            var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]);
+            var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]);
+            var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+            var count = SchEffTillDate - SchEffFromDate;
+            var Rowcount = $('#MonthlyEntryData tr').length;
+
+            for (var i = 0; i < Rowcount; i++) {
+                if ($('#SplitItemName-' + i).prop('selectedIndex') === 0) {
+                    AddErrorCls('SplitItemName-' + i);
+                    $.notify('Please select Item...!', 'error');
+                    return;
+                } else {
+                    RemoveErrorCls('SplitItemName-' + i);
+                }
+            }
+            $('#MonthlyEntryData').append("<tr id='appendRow-" + Rowcount + "'>");
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='SplitPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='SplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='SplitUnit-" + Rowcount + "' class='SplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='SplitRate-" + Rowcount + "' class='SplitRateVal' type='text' style='width:80px;' readonly/></td>");
+            } else {
+                $('#appendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeMonthlyRow' > <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><select id='EditPartCode-" + Rowcount + "' class='SplitPC' onchange='ItemcodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td style='width:250px;'><input type='hidden' id='CountDate' value='" + count + "'/><select id='EditSplitItemName-" + Rowcount + "' class='SplitIN' onchange='PartCodeChange(" + Rowcount + ")' style='height:25px;width:250px;'> </select></td><td><input id='EditSplitUnit-" + Rowcount + "' class='EditSplitUnitVal' type='text' style='width:80px;' readonly/></td><td><input id='EditSplitRate-" + Rowcount + "' class='EditSplitRateVal' type='text' style='width:80px;' readonly/></td>");
+            }
+            GetSplitItemName(Rowcount);
+            var j = SchEffFromDate;
+            var date;
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                for (var i = 0; i <= count; i++) {
+                    //date = j + "/" + SchEffFromMonth + "/" + SchEffFromYear;
+                    var monthNames = [
+                        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                    ];
+
+                    var formattedMonth = monthNames[SchEffFromMonth - 1];
+                    var formattedDay = j < 10 ? "0" + j : j;
+
+                    var date = formattedDay + "/" + formattedMonth + "/" + SchEffFromYear;
+                    $('#appendRow-' + Rowcount).append("<td style='width:90px;'><input id='SchQue-" + Rowcount + "-" + i + "' style='width:50px;'/><input type='hidden' value='" + date + "' id='DelDate-" + i + "' style='width:50px;'/></td>");
+                    j++;
+                }
+            } else {
+                for (var k = SchEffFromDate; k <= count + SchEffFromDate; k++) {
+                    var monthNames = [
+                        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                    ];
+
+                    var formattedMonth = monthNames[SchEffFromMonth - 1];
+                    var formattedDay = k < 10 ? "0" + k : k;
+
+                    date = formattedDay + "/" + formattedMonth + "/" + SchEffFromYear;
+
+                    $('#appendRow-' + Rowcount).append("<td style='width:90px;'><input id='SchQue-" + k + "-" + Rowcount + "' style='width:50px;'/><input type='hidden' value='" + date + "' id='DelEditDate-" + k + "' style='width:50px;'/></td>");
+
+                }
+            }
+            $('#MonthlyEntryData').append("</tr>");
+        }
+
+        function BuildSplitScheduleBody() {
+            $('#SplitScheduleData').empty();
+
+            var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+            var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]);
+            var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]);
+            var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+            var count = SchEffTillDate - SchEffFromDate;
+            var Rowcount = $('#SplitScheduleData tr').length;
+            $('#SplitScheduleHead').empty();
+            $('#SplitScheduleHead').append("<th>Action</th><th>PartCode</th><th>ItemName</th><th>UNIT</th><th>Rate</th>");
+
+            GetSplitItemName(Rowcount);
+            var j = SchEffFromDate;
+            var date;
+
+            for (var i = 0; i <= count; i++) {
+                date = j + "/" + SchEffFromMonth + "/" + SchEffFromYear;
+                $('#SplitScheduleHead').append("<th>" + j + "</th>");
+                j++;
+            }
+            $('#SplitScheduleHead').append("<th>Total Qty</th>");
+            $('#SplitScheduleData').append("</tr>");
+            // newRowappendSplitSchedule();
+        }
+
+        function newRowappendSplitSchedule() {
+            var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+            var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]);
+            var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]);
+            var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+            var count = SchEffTillDate - SchEffFromDate;
+            var Rowcount = $('#SplitScheduleData tr').length;
+
+            //for (var i = 0; i < Rowcount; i++) {
+
+            //    if ($('#SplitItemName-' + i).prop('selectedIndex') == 0) {
+            //        AddErrorCls('SplitItemName-' + i);
+            //        $.notify('Please select Item...!', "error");
+            //        return;
+            //    }
+            //    else {
+            //        RemoveErrorCls('SplitItemName-' + i);
+            //    }
+            //}
+            GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+
+            $('#SplitScheduleData').append("<tr id='SplitappendRow-" + Rowcount + "'>");
+            $('#SplitappendRow-' + Rowcount).append("<td style='width:15px;'> <a class='table-link link-danger removeRow' id='SplitLink" + Rowcount + "'> <span class='fa-stack'><i class='fa fa-square fa-stack-2x'></i><i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i></span></a></td><td style='width:180px;'><input id='SpliSchPartCode-" + Rowcount + "' style='width:180px;' readonly/></td><td style='width:260px;'><input type='hidden' id='CountSplitDate' value='" + count + "'/><input type='hidden' id='SplitSchItemCode-" + Rowcount + "'/><input id='SplitSchItemName-" + Rowcount + "' style='width:260px;' readonly/></td><td><input id='SplitschUnit-" + Rowcount + "' type='text' style='width:80px;' readonly/></td><td><input id='SplitSchRate-" + Rowcount + "' type='text' style='width:80px;' readonly/></td>");
+
+            //GetSplitItemName(Rowcount);
+            var j = SchEffFromDate;
+            var date;
+
+            for (var i = 0; i <= count; i++) {
+                //date = j + "/" + SchEffFromMonth + "/" + SchEffFromYear
+                var monthNames = [
+                    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                ];
+
+                var formattedMonth = monthNames[SchEffFromMonth - 1];
+                var formattedDay = j < 10 ? "0" + j : j;
+
+                var date = formattedDay + "/" + formattedMonth + "/" + SchEffFromYear;
+                $('#SplitappendRow-' + Rowcount).append("<td style='width:90px;'><input id='SplitSchQue-" + Rowcount + "-" + i + "' style='width:50px;' onchange='GetTotalSplitSchQty(" + Rowcount + ")'/><input type='hidden' value='" + date + "' id='SplitDelDate-" + i + "' style='width:50px;'/></td>");
+                j++;
+            }
+            $('#SplitappendRow-' + Rowcount).append("<td><input id='TotalQty-" + Rowcount + "' style='width:60px;'/></td>");
+            $('#SplitScheduleData').append("</tr>");
+        }
+
+        function updateDynamicIDs($elements, idPrefix) {
+            $elements.each(function (index) {
+                var newID = idPrefix + index;
+                $(this).attr('id', newID);
+            });
+        }
+
+
+        //function newRowappend() {
+        //
+        //    var lastRow = $('#MonthlyEntryData tr:last');
+        //    var newRow = lastRow.clone();
+        //    newRow.find('input').val(''); // Clear the input values in the new row if needed
+        //    $('#MonthlyEntryData').append(newRow);
+        //}
+
+
+        function RowCount() {
+            var SchRowCount = $('#divSaleScheduleGrid tr').length;
+            var SchColumnCount = $('#divSaleScheduleGrid tr td').length;
+            if (SchColumnCount > 1) {
+                $('#lblSchTotalNoOfItems').text(SchRowCount);
+            } else {
+                $('#lblSchTotalNoOfItems').text(0);
+            }
+        }
+
+        function TotalSchQty() {
+
+            var SSGrid = $('#divSaleScheduleGrid tr').length;
+            var SSGridCount = $('#divSaleScheduleGrid tr td').length;
+            var sumSchQty = 0;
+            if (SSGridCount > 1) {
+                for (var i = 1; i <= SSGrid; i++) {
+                    var SchQty = parseInt($('#SchQty-' + i).text() == '' ? 0 : $('#SchQty-' + i).text());
+                    sumSchQty += SchQty;
+                }
+                $('#lblSchTotalNoOfQty').text(sumSchQty.toFixed(2));
+            } else {
+                $('#lblSchTotalNoOfQty').text('0');
+            }
+
+        }
+
+
+        function NewEntryId() {
+            var YearCode = $('#YearCode').val();
+            $.ajax({
+                type: "POST",
+                data: { "YearCode": YearCode },
+                url: "@Url.Action("NewEntryId")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#EntryID').val("");
+                        $('#EntryID').val(obj.Result[0].EntryId);
+                        $('#ScheduleNo').val("");
+                        $('#ScheduleNo').val(obj.Result[0].ScheduleNo);
+                    }
+                }
+            });
+        }
+
+        function EditItemRows(SeqNo) {
+            var itemCode = $('#ItemCode-' + SeqNo).val();
+            var partcode = $('#ItemCode-' + SeqNo).data('partcode');
+            var itemName = $('#ItemCode-' + SeqNo).data('itemname');
+            $.ajax({
+                url: '/SaleSchedule/EditItemRows',
+                type: "POST",
+                data: { SeqNo: SeqNo },
+                success: function (data) {
+
+                    $('.ItemCode').append('<option value="' + itemCode + '">' + itemName + '</option>');
+                    $('.PartCode').append('<option value="' + itemCode + '">' + partcode + '</option>');
+                    var obj = $.parseJSON(data);
+                    if (obj != null) {
+                        $('.PartCode').val(obj[0].ItemCode).trigger("change");
+                        $('.ItemCode').val(obj[0].ItemCode).trigger("change");
+                        //$('#ItemCode').text(obj[0].ItemName);
+                        $('.Unit').val(obj[0].Unit);
+                        $('.SchQty').val(obj[0].SchQty);
+                        $('.PendQty').val(obj[0].PendQty);
+                        $('.AltUnit').val(obj[0].AltUnit);
+                        $('.AltSchQty').val(obj[0].AltSchQty);
+                        $('.AltPendQty').val(obj[0].AltPendQty);
+                        $('.Rate').val(obj[0].Rate);
+                        $('.RateInOthCurr').val(obj[0].RateInOthCurr);
+                        $('.DeliveryDate').val(obj[0].DeliveryDate);
+                        $('.ItemSize').val(obj[0].ItemSize);
+                        $('.ItemColor').val(obj[0].ItemColor);
+                        $('.OtherDetail').val(obj[0].OtherDetail);
+                        $('.Remarks').val(obj[0].Remarks);
+                        $('#divSaleScheduleGrid tr#' + SeqNo).remove();
+                        var rowCount = $('#divSaleScheduleGrid tr').length;
+                        for (var i = 1; i <= rowCount + 1; i++) {
+                            $('#editItemGrid-' + i).css("pointer-events", "none");
+                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                        }
+                        EditRowFlag = false;
+
+                        DeleteItemRow(SeqNo);
+
+                        $('.PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
+                    }
+                },
+                error: function (response) {
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response) {
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        function ChangAltQty() {
+            var ItemCode = parseInt($('.ItemCode').val());
+            var AltSchQty = parseFloat($('.AltSchQty').val());
+            var UnitQty = parseFloat($('.SchQty').val());
+            $.ajax({
+                type: "POST",
+                data: { "ItemCode": ItemCode, "AltSchQty": AltSchQty, "UnitQty": UnitQty },
+                url: "@Url.Action("GetAltUnitQty")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('.AltSchQty').val("");
+                        $('.AltSchQty').val(obj.Result[0].AltUnitValue);
+                    }
+                }
+            });
+        }
+
+        function ChangSplitAltQty() {
+            var ItemCode = parseInt($('.SItemCode').val());
+            var AltSchQty = parseFloat($('.SAltSchQty').val());
+            var UnitQty = parseFloat($('.SSChQty').val());
+            $.ajax({
+                type: "POST",
+                data: { "ItemCode": ItemCode, "AltSchQty": AltSchQty, "UnitQty": UnitQty },
+                url: "@Url.Action("GetAltUnitQty")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('.SAltSchQty').val("");
+                        $('.SAltSchQty').val(obj.Result[0].AltUnitValue);
+                    }
+                }
+            });
+        }
+
+        $("#EntryDate").on('onkeydown', function (e) { e.preventDefault(); var key = event.keyCode || event.charCode; if (key == 8) { return false } else { return false; } });
+
+        $('#OrderPriority').change(function (e) {
+            if (e.key === "Tab") {
+                $('#SchAmendmentDate').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        $('#OrderPriority').on('keydown', function (e) {
+            if (e.key === "Tab") {
+                $('#SchAmendmentDate').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+
+
+        //$('#SOCloseDate').on('keydown', function (e) {
+        //    if (e.key === "Tab") {
+        //        $('#SchEffFromDate').focus();
+        //        e.preventDefault();
+        //        return false;
+        //    }
+        //});
+
+        $('#ModeOfTransport').on('keydown', function (e) {
+            if (e.key === "Tab") {
+                $('#SchEffFromDate').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        $('#SchAmendmentNo').on('keydown', function (e) {
+            if (e.key === "Tab") {
+                e.preventDefault();
+
+                $('#TentetiveConfirm').focus();
+                return false;
+            }
+        });
+        $('#SchEffFromDate').on('keydown', function (e) {
+            if (e.key === "Tab") {
+                $('#SchEffTillDate').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+        $('#SchEffTillDate').on('keydown', function (e) {
+            if (e.key === "Tab") {
+                $('#ScheduleDate').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+        $('#ScheduleDate').on('keydown', function (e) {
+            if (e.key === "Tab") {
+                $('#DeliveryAddress').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+
+
+
+        AutoComplete('SaleScheduleMain', 'ModeOfTransport', 'ModeOfTransport', null);
+        //$('#ScheduleDate,#SchEffTillDate,#SchEffFromDate,#SchAmendmentDate,#DeliveryDate').on('keydown', function (e) {
+        //    e.preventDefault();
+        //    return false;
+        //});
+        $('#TentetiveConfirm').change(function (e) {
+            $('#OrderPriority').focus();
+            e.preventDefault();
+            return false;
+        });
+
+
+        $('#SchAmendmentDate').change(function (e) {
+            if (e.key === "Tab") {
+                $('#ModeOfTransport').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        $('#SchAmendmentDate').on('keydown', function (e) {
+            if (e.key === "Tab") {
+                $('#ModeOfTransport').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        $('#ScheduleDate').on('change', function (e) {
+            //BuildMonthlyEntryBody();
+            //BuildSplitScheduleBody();
+            $('#SchEffFromDate').focus();
+            e.preventDefault();
+            return false;
+        });
+        //$('#ScheduleDate').on('keyup', function (e) {
+        //    $('#DeliveryAddress').focus();
+        //    e.preventDefault();
+        //    return false;
+        //});
+
+        //$('#SchEffFromDate').on('keyup', function (e) {
+        //    $('#SchEffTillDate').focus();
+        //    e.preventDefault();
+        //    return false;
+        //});
+
+        $('#SchEffFromDate').on('change', function (e) {
+            $('#SchEffTillDate').focus();
+            e.preventDefault();
+            return false;
+        });
+
+        //$('#SchEffTillDate').on('keyup', function (e) {
+        //    $('#ScheduleDate').focus();
+        //    e.preventDefault();
+        //    return false;
+        //});
+
+        $('#SchEffTillDate').on('change', function (e) {
+            $('#DeliveryAddress').focus();
+            e.preventDefault();
+            return false;
+        });
+
+        $('#DeliveryDate').on('keyup', function (e) {
+            $('.OtherDetail').focus();
+            e.preventDefault();
+            return false;
+        });
+
+        $('#DeliveryDate').on('change', function (e) {
+            $('.OtherDetail').focus();
+            e.preventDefault();
+            return false;
+        });
+
+        $('#RateInOthCurr').on('keyup', function (e) {
+            $('#DeliveryDate').focus();
+            e.preventDefault();
+            return false;
+        });
+
+        $('#ItemColor').on('keyup', function (e) {
+
+            $('#DeliveryDate').focus();
+            e.preventDefault();
+            return false;
+        });
+
+        $('#ItemColor').on('keydown', function (e) {
+            if (e.key === "Tab") {
+                $('#DeliveryDate').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+
+
+
+        $('.BtnUploadExl').click(function () {
+            $(this).val() != null ? $(this).val('') : null;
+        });
+
+        $('.BtnUploadExl').change(function () {
+            var fileExtension = ['xls', 'xlsx'];
+            var filename = $('.BtnUploadExl').val();
+            if (filename.length == 0) {
+                $.notify('Please select Excel File...!', "error");
+                return false;
+            }
+            else {
+                var extension = filename.replace(/^.*\./, '');
+                if ($.inArray(extension, fileExtension) == -1) {
+                    $.notify('Please select only Excel File...!', "info");
+                    return false;
+                }
+            }
+
+            var fData = new FormData();
+
+            var fileUpload = $(".BtnUploadExl").get(0);
+            var files = fileUpload.files;
+            var AC = parseInt($('#AccountCode').val());
+            var SONO = parseInt($('#SONO').val());
+            var Year = $('#SOYearCode').val();
+
+            fData.append(files[0].name, files[0]);
+            fData.append('AC', AC);
+            fData.append('SONO', SONO);
+            fData.append('Year', Year);
+            fData.append('FromDate', $('#SchEffFromDate').val());
+            fData.append('TillDate', $('#SchEffTillDate').val());
+            ;
+
+            var fromDt = $('#SchEffFromDate').val();
+            var TillDt = $('#SchEffTillDate').val();
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("UploadExcel")",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: fData,
+                contentType: false,
+                processData: false,
+                success: function (result, status, xhr) {
+                    if (xhr.status == 207) {
+                        var ErrMsg = "";
+                        $.each(result, function (key, val) {
+                            ErrMsg += val + '\n';
+                        });
+                        $.notify(ErrMsg, { position: 'top right', className: 'error', clickToHide: true, autoHide: true });
+                    }
+                    else {
+                        $('#divSaleScheduleGrid').html(result.trim());
+                    }
+                    TotalSchQty();
+                    RowCount();
+                    SetSchTillDate();
+                },
+                error: function (result, status, xhr) {
+                    $.notify('Please select only Excel File...!', "info");
+                }
+            });
+        });
+
+        function SetSchTillDate() {
+            
+            var RowCount = $('#divSaleScheduleGrid tr').length;
+            var TillDate = [];
+
+            for (var i = 1; i <= RowCount; i++) {
+
+                var dateString = $('#DelDate-' + i).text().split(" ")[0].replace(/-/g, '/');
+
+                var dateObject = new Date(dateString);
+
+
+
+                TillDate.push(dateString);
+
+            }
+
+            var dateArray = TillDate.map(function (dateString) {
+                var parts = dateString.split('/');
+
+                var dateObject = new Date(parts[2], parts[1] - 1, parts[0]);
+                // Adjust the time zone offset to match the local time zone
+                var offsetMinutes = dateObject.getTimezoneOffset();
+                dateObject.setMinutes(dateObject.getMinutes() - offsetMinutes);
+
+                var formattedDate = dateObject.toISOString().split('T')[0];
+                return new Date(formattedDate);
+            });
+
+            var maxDate = new Date(Math.max.apply(null, dateArray));
+            var year = maxDate.getFullYear();
+            var month = maxDate.getMonth() + 1;
+            var day = maxDate.getDate();
+
+            var formattedMonth = (month < 10) ? '0' + month : month;
+            var formattedDay = (day < 10) ? '0' + day : day;
+
+            var formattedDate = formattedDay + '/' + formattedMonth + '/' + year;
+            
+
+            $('#SchEffTillDate').datepicker("option", "minDate", formattedDate);
+
+        }
+
+
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        var optAll = obj.Result.Table[0].OptAll;
+                        var optSave = obj.Result.Table[0].OptSave;
+                        var optUpdate = obj.Result.Table[0].OptUpdate;
+                        var optDelete = obj.Result.Table[0].OptDelete;
+                        var optView = obj.Result.Table[0].OptView;
+                        if (!optAll) {
+                            if (!optSave) {
+                                $("button[type='submit'").prop("disabled", true);
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        $('#AccountCode').change(function () {
+            $.getJSON({
+                url: "@Url.Action("GetSONO")",
+                data: { AccountCode: $(this).val() },
+                success: function (result, status, xhr) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result.length == 0) {
+                            $('#CustomerOrderNo').empty();
+                            $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
+                            $('#SONO').empty();
+                            $('#SONO').append('<option>-Select-</option>');
+                        } else {
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $('#CustomerOrderNo').empty();
+                                $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
+                                $.each(obj.Result, function (key, val) {
+                                    $('#CustomerOrderNo').append('<option value="' + val.CustOrderNo + '" data-sono="' + val.SONo + '">' + val.CustOrderNo + '</option>');
+
+                                });
+                                $('#SONO').empty();
+                                $('#SONO').append('<option>-Select-</option>');
+                                $.each(obj.Result, function (key, val) {
+                                    $('#SONO').append('<option value="' + val.SONo + '" data-custorderno="' + val.CustOrderNo + '">' + val.SONo + '</option>');
+                                });
+
+                            }
+                            else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+                                $('#SONO').empty();
+                                $('#SONO').append('<option>-Select-</option>');
+                            }
+
+                            $('#SOYearCode').empty();
+                            $('#SOYearCode').append('<option>-Select-</option>');
+                            // $('#SOYearCode').change();
+
+                            $('#CustomerOrderNo,#SODate,#DeliveryAddress').val('');
+                            $('#SchEffFromDate,#SchEffTillDate').prop('disabled', false);
+
+                            ClearGrid();
+                        }
+                    }
+                    else {
+                        $('#CustomerOrderNo').empty();
+                        $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
+                        $('#SONO').empty();
+                        $('#SONO').append('<option>-Select-</option>');
+
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        });
+
+
+        $('#CustomerOrderNo').change(function () {
+            $('#SONO').val($(this).find(':selected').data('sono'));
+            $.getJSON({
+                url: "@Url.Action("GetSOYear")",
+                data: { AccountCode: parseInt($('#AccountCode').val()), SONO: $('#SONO').val() },
+                async: false,
+                success: function (result, status, xhr) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#SOYearCode').empty();
+                            $('#SOYearCode').append('<option>-Select-</option>');
+                            $.each(obj.Result, function (key, val) {
+                                $('#SOYearCode').append('<option value="' + val.YearCode + '">' + val.YearCode + '</option>');
+                            });
+                            // $('#SONO').change();
+                        }
+                        else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+                            $('#SOYearCode').empty();
+                            $('#SOYearCode').append('<option>-Select-</option>');
+                            //  $('#SOYearCode').change();
+                        }
+                    }
+                    ClearGrid();
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        });
+
+        $('#SONO').change(function () {
+            $.getJSON({
+                url: "@Url.Action("GetSOYear")",
+                data: { AccountCode: parseInt($('#AccountCode').val()), SONO: $(this).val() },
+                success: function (result, status, xhr) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#SOYearCode').empty();
+                            $('#SOYearCode').append('<option>-Select-</option>');
+                            $.each(obj.Result, function (key, val) {
+                                $('#SOYearCode').append('<option value="' + val.YearCode + '">' + val.YearCode + '</option>');
+                            });
+                            $('#CustomerOrderNo').val($('#SONO').find(':selected').data('custorderno'));
+                            $('#CustomerOrderNo').change();
+                        }
+                        else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+                            $('#SOYearCode').empty();
+                            $('#SOYearCode').append('<option>-Select-</option>');
+                            //  $('#SOYearCode').change();
+                        }
+                    }
+                    ClearGrid();
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        });
+
+
+        $('#SOYearCode').change(function () {
+            $.getJSON({
+                url: "@Url.Action("GetSODATA")",
+                async: false,
+                data: { AccountCode: parseInt($('#AccountCode').val()), SONO: parseInt($('#SONO').val()), Year: $(this).val() },
+                success: function (result, status, xhr) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        ClearGrid();
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var date = new Date(obj.Result[0].SODate);
+                            var formattedDate = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear();
+                            var SOClosedate = new Date(obj.Result[0].SOCloseDate);
+                            var formattedSoCloseDate = ('0' + SOClosedate.getDate()).slice(-2) + '/' + ('0' + (SOClosedate.getMonth() + 1)).slice(-2) + '/' + SOClosedate.getFullYear();
+
+                            $('#CustomerOrderNo').val(obj.Result[0].CustOrderNo), $('#SODate').val(formattedDate), $('#SOCloseDate').val(formattedSoCloseDate), $('#DeliveryAddress').val(obj.Result[0].DeliveryAddress);
+                            $('#SchEffFromDate,#SchEffTillDate').prop('disabled', false);
+                            $("#SchEffFromDate,#SchEffTillDate,#SchAmendmentDate").datepicker("option", "maxDate", parseDateToFormat(obj.Result[0].SOCloseDate));
+                            $('#ScheduleDate,#DeliveryDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
+                            GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+                            $('#MonthlyEntryData').empty();
+                            BuildMonthlyEntryBody();
+                            //GetSplitItemName(0);
+                            $('.BtnExcel').fadeIn();
+                             
+                            $('#SchEffFromDate').datepicker("option", "minDate",$('#SODate').val());
+                            $('#SchEffFromDate').datepicker("option", "maxDate",$('#SOCloseDate').val());
+                            $('#SchEffTillDate').datepicker("option", "minDate",$('#SchEffFromDate').val());
+                            $('#SchEffTillDate').datepicker("option", "maxDate",$('#SOCloseDate').val());
+                        }
+                        else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+                            $('#CustomerOrderNo,#SODate,#DeliveryAddress').val('');
+                            $('#SchEffFromDate,#SchEffTillDate').prop('disabled', false);
+                            $('.ItemCode,.PartCode').empty();
+                            $('.ItemCode,.PartCode').append('<option>-Select-</option>');
+                            $('.ItemBtn').fadeOut(), $('.BtnExcel').fadeOut(), $('.BtnUploadExl').val('');
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+                                                               
+        });
+
+        async function GetSOItem(AC, SONo, Year) {
+            $.getJSON({
+                url: "@Url.Action("GetSOItem")",
+                data: { AccountCode: AC, SONO: SONo, Year: Year },
+                success: await function (result, status, xhr) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            var totalRows = parseInt($('#SplitScheduleData tr').length);
+                            $('.PartCode').empty();
+                            $('.PartCode').append('<option value=0>-Select-</option>');
+                            $('.SPartCode').empty();
+                            $('.SPartCode').append('<option value=0>-Select-</option>');
+                            var i = 0;
+                            $('.ItemCode').empty();
+                            $('.ItemCode').append('<option value=0>-Select-</option>');
+                            $('.SItemCode').empty();
+                            $('.SItemCode').append('<option value=0>-Select-</option>');
+                            $.each(obj.Result, function (key, val) {
+                                $('.ItemCode').append('<option value="' + val.ItemCode + '">' + val.ItemName + '</option>');
+                                $('.PartCode').append('<option value="' + val.ItemCode + '">' + val.PartCode + '</option>');
+                                $('.SItemCode').append('<option value="' + val.ItemCode + '">' + val.ItemName + '</option>');
+                                $('.SPartCode').append('<option value="' + val.ItemCode + '">' + val.PartCode + '</option>');
+
+                            });
+                        }
+                        else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+                            $('.ItemCode,.ItemName').empty();
+                            $('.ItemCode,.ItemName').append('<option value=0>-Select-</option>');
+                            $('.SItemCode,.SPartCode').empty();
+                            $('.SItemCode,.SPartCode').append('<option value=0>-Select-</option>');
+                        }
+
+                        var ManualRow = $('#divSaleScheduleGrid tr').length;
+                        var removeVal = [];
+                        for (var k = 1; k < ManualRow; k++) {
+                            var itemCodeValue = parseInt($('#ItemCode-' + k).val());
+                            if (!isNaN(itemCodeValue)) {
+                                removeVal.push(itemCodeValue);
+                            }
+                        }
+
+                        var distinctSet = new Set(removeVal);
+                        var distinctArray = Array.from(distinctSet);
+
+                        for (var j = 0; j < distinctArray.length; j++) {
+                            $('.SPartCode option[value="' + distinctArray[j] + '"]').remove();
+                            $('.SItemCode option[value="' + distinctArray[j] + '"]').remove();
+                        }
+
+                        if (totalRows > 0) {
+                            for (var i = 0; i < totalRows; i++) {
+                                var SelectedVal = parseInt($('#SplitSchItemCode-' + i).val());
+                                $('.SPartCode option[value="' + SelectedVal + '"]').remove();
+                                $('.SItemCode option[value="' + SelectedVal + '"]').remove();
+                            }
+                        }
+
+                        if (selectedSplitItemCodes.length > 0) {
+                            for (var i = 0; i < selectedSplitItemCodes.length; i++) {
+                                if (selectedSplitItemCodes[i] != 0) {
+                                    $('.SPartCode option[value="' + selectedSplitItemCodes[i] + '"]').remove();
+                                    $('.SItemCode option[value="' + selectedSplitItemCodes[i] + '"]').remove();
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        };
+        var TotalItems = [];
+        async function GetSOItemForEdit(AC, SONO, YC) {
+            $.getJSON({
+                url: "@Url.Action("GetSOItem")",
+                data: { AccountCode: AC, SONO: SONO, Year: YC },
+                success: await function (result, status, xhr) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (key, val) {
+                                TotalItems.push({
+                                    Itemcode: val.ItemCode,
+                                    Partcode: val.PartCode,
+                                    Itemname: val.ItemName
+                                });
+                            });
+
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        };
+
+        async function GetSplitItemName(Rowcount) {
+
+            var AC = $('#AccountCode').val();
+            var SONO = $('#SONO').val();
+            var Year = $('#YearCode').val();
+            $.getJSON({
+                url: "@Url.Action("GetSOItem")",
+                data: { "AccountCode": AC, "SONO": SONO, "Year": Year },
+                success: await function (result, status, xhr) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            var totalRows = parseInt($('#MonthlyEntryData tr').length);
+                            var countR = totalRows - 2;
+                            var actualR = totalRows - 1;
+
+                            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                                $('#SplitPartCode-' + Rowcount).empty();
+                                $('#SplitPartCode-' + Rowcount).append('<option value=0>-Select-</option>');
+                                $.each(obj.Result, function (key, val) {
+                                    $('#SplitPartCode-' + Rowcount).append('<option value="' + val.ItemCode + '">' + val.PartCode + '</option>');
+                                });
+                                $('#SplitItemName-' + Rowcount).empty();
+                                $('#SplitItemName-' + Rowcount).append('<option value=0>-Select-</option>');
+                                $.each(obj.Result, function (key, val) {
+                                    $('#SplitItemName-' + Rowcount).append('<option value="' + val.ItemCode + '"  data-part-code="' + val.PartCode + '">' + val.ItemName + '</option>');
+                                });
+                            } else {
+                                $('#EditPartCode-' + Rowcount).empty();
+                                $('#EditPartCode-' + Rowcount).append('<option value=0>-Select-</option>');
+                                $.each(obj.Result, function (key, val) {
+                                    $('#EditPartCode-' + Rowcount).append('<option value="' + val.ItemCode + '">' + val.PartCode + '</option>');
+                                });
+                                $('#EditSplitItemName-' + Rowcount).empty();
+                                $('#EditSplitItemName-' + Rowcount).append('<option value=0>-Select-</option>');
+                                $.each(obj.Result, function (key, val) {
+                                    $('#EditSplitItemName-' + Rowcount).append('<option value="' + val.ItemCode + '"  data-part-code="' + val.PartCode + '">' + val.ItemName + '</option>');
+                                });
+                            }
+
+
+                        }
+                        else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+                            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                                $('#SplitPartCode-' + Rowcount).empty();
+                                $('#SplitPartCode-' + Rowcount).append('<option value=0>-Select-</option>');
+                                $('#SplitItemName-' + Rowcount).empty();
+                                $('#SplitItemName-' + Rowcount).append('<option value=0>-Select-</option>');
+                            } else {
+                                $('#EditPartCode-' + Rowcount).empty();
+                                $('#EditPartCode-' + Rowcount).append('<option value=0>-Select-</option>');
+                                $('#EditSplitItemName-' + Rowcount).empty();
+                                $('#EditSplitItemName-' + Rowcount).append('<option value=0>-Select-</option>');
+                            }
+                        }
+
+
+
+                        if (totalRows > 1) {
+                            var SelectedValStore = [];
+
+                            for (var i = 0; i < totalRows; i++) {
+                                if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                                    SelectedValStore.push($('#SplitPartCode-' + i).val(), $('#SplitItemName-' + i).val());
+                                } else {
+                                    SelectedValStore.push($('#EditPartCode-' + i).val(), $('#EditSplitItemName-' + i).val());
+                                }
+                            }
+                            for (var i = 0; i < SelectedValStore.length; i++) {
+                                if (SelectedValStore[i] != 0) {
+                                    if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                                        $('#SplitPartCode-' + actualR + ' option[value="' + SelectedValStore[i] + '"]').remove();
+                                        $('#SplitItemName-' + actualR + ' option[value="' + SelectedValStore[i] + '"]').remove();
+                                    } else {
+                                        $('#EditPartCode-' + actualR + ' option[value="' + SelectedValStore[i] + '"]').remove();
+                                        $('#EditSplitItemName-' + actualR + ' option[value="' + SelectedValStore[i] + '"]').remove();
+                                    }
+                                }
+                            }
+
+                            //$('#SplitItemName-' + actualR + ' option[value="' + SplitItemName + '"]').remove();
+                        }
+
+                        if (selectedItemCodes.length > 0) {
+                            for (var i = 0; i < selectedItemCodes.length; i++) {
+                                if (selectedItemCodes[i] != 0) {
+                                    $('#SplitPartCode-' + actualR + ' option[value="' + selectedItemCodes[i] + '"]').remove();
+                                    $('#SplitItemName-' + actualR + ' option[value="' + selectedItemCodes[i] + '"]').remove();
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        };
+
+
+        $(document).on('select2:select', '.PartCode,.ItemCode', function (e) {
+            if ($(this).prop('selectedIndex') != 0) {
+                $.getJSON({
+                    url: "@Url.Action("GetSOItem")",
+                    data: { AccountCode: parseInt($('#AccountCode').val()), SONO: parseInt($('#SONO').val()), Year: $('#SOYearCode').val(), ItemCode: parseInt($(this).val()) },
+                    success: function (result, status, xhr) {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $('.Unit').val(obj.Result[0].Unit), $('.Rate').val(obj.Result[0].Rate.toFixed(2));
+                                obj.Result[0].AltUnit == null ? ($('.AltUnit').prop('disabled', true), $('.AltSchQty').prop('disabled', true)) : ($('.AltUnit').val(obj.Result[0].AltUnit), $('.AltSchQty').val('0.00'));
+                            }
+                            else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+
+                            }
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify(result.responseText, "error");
+                    }
+                });
+            }
+            else {
+                $('.Unit').val(''), $('.Rate').val('0.00'), $('.SchQty').val(''), $('.DeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            }
+        });
+
+        $('.SPartCode,.SItemCode').change(function () {
+
+            if ($(this).prop('selectedIndex') != 0) {
+                $.getJSON({
+                    url: "@Url.Action("GetSOItem")",
+                    data: { AccountCode: parseInt($('#AccountCode').val()), SONO: parseInt($('#SONO').val()), Year: $('#SOYearCode').val(), ItemCode: parseInt($(this).val()) },
+                    success: function (result, status, xhr) {
+
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $('.SUnit').val(obj.Result[0].Unit), $('.SRate').val(obj.Result[0].Rate.toFixed(2));
+                                obj.Result[0].AltUnit == null ? ($('.SAltUnit').prop('disabled', true), $('.SAltSchQty').prop('disabled', true)) : ($('.SAltUnit').val(obj.Result[0].AltUnit), $('.SAltSchQty').val('0.00'));
+                            }
+                            else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+
+                            }
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify(result.responseText, "error");
+                    }
+                });
+            }
+            else {
+                $('.SUnit').val(''), $('.SRate').val('0.00'), $('.SSChQty').val('');
+            }
+        });
+
+        //function GetUnit(row) {
+        //    if ($('#SplitItemName-' + row).prop('selectedIndex') != 0) {
+        //        $.ajax({
+        //            url: "@Url.Action("GetSOItem")",
+        //            data: { AccountCode: parseInt($('#AccountCode').val()), SONO: parseInt($('#SONO').val()), Year: $('#SOYearCode').val(), ItemCode: parseInt($('#SpliItemName-' + row).val()) },
+        //            success: function (result, status, xhr) {
+        //                if (result != null) {
+
+        //                    var obj = $.parseJSON(result);
+        //                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                        $('#SplitUnit-' + row).val("");
+        //                        $('#SplitUnit-' + row).val(obj.Result[0].Unit) == '' ? $('#SplitUnit-' + row).val("") : $('#SplitUnit-' + row).val(obj.Result[0].Unit);
+        //                        $('#SplitRate-' + row).val("");
+        //                        $('#SplitRate-' + row).val(obj.Result[0].Rate);
+        //                    }
+        //                    else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+
+        //                    }
+        //                }
+        //            },
+        //            error: function (result, status, xhr) {
+        //                $.notify(result.responseText, "error");
+        //            }
+        //        });
+        //    }
+        //    else {
+
+        //        // $('#Unit').val(''), $('#Rate').val('0.00'), $('#SchQty').val(''), $('#DeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+        //        $('#SplitUnit-' + row).val("");
+        //        $('#SplitRate-' + row).val("");
+        //    }
+        //}
+
+        $('#submitBTN').click(function (e) {
+
+            $('#TypeOfSave').val("NPS");
+            e.preventDefault();
+            var ssGrid = $('#divSaleScheduleGrid tr td').length;
+
+            if (ssGrid <= 1) {
+                $.notify("SS Grid should at least have one item", "error");
+                return;
+            } else {
+                $("form").submit();
+            }
+        });
+
+        $('.SSPartialSave').click(function (e) {
+            $('#TypeOfSave').val("PS");
+            e.preventDefault();
+            var ssGrid = $('#divSaleScheduleGrid tr td').length;
+
+            if (ssGrid <= 1) {
+                $.notify("SS Grid should at least have one item", "error");
+                return;
+            } else {
+                $("form").submit();
+            }
+
+        });
+
+        $('#UpdateButton').click(function (e) {
+            $('#TypeOfSave').val("NPS");
+            e.preventDefault();
+            var ssGrid = $('#divSaleScheduleGrid tr td').length;
+            if (ssGrid <= 1) {
+                $.notify("SS Grid should at least have one item", "error");
+                return;
+            } else {
+                $("form").submit();
+            }
+        });
+
+        function ItemcodeChange(Row) {
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                SetSplitPartCodeItemName('SplitPartCode-' + Row);
+            } else {
+                SetSplitPartCodeItemName('EditPartCode-' + Row);
+            }
+        }
+
+        function PartCodeChange(Row) {
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                SetSplitPartCodeItemName('SplitItemName-' + Row);
+            } else {
+                SetSplitPartCodeItemName('EditSplitItemName-' + Row);
+            }
+        }
+
+        //$('.PartCode').change(function () {
+        //    SetPartCodeItemName('PartCode');
+        //    $('.PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
+        //});
+
+        //$('.ItemCode').change(function () {
+        //    SetPartCodeItemName('ItemCode');
+        //    $('.PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
+        //});
+
+        $(document).on('select2:select', '.PartCode,.ItemCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'PartCode') {
+                SetPartCodeItemName('PartCode');
+                copyToClipboardForDropdown(this);
+                $('.PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
+            }
+            else {
+                SetPartCodeItemName('ItemCode');
+                copyToClipboardForDropdown(this);
+                $('.PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
+            }
+
+        });
+
+        function copyToClipboardForDropdown(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            ;
+            $temp.val($(element).find(":selected").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+
+        $('.SPartCode').change(function () {
+            SetPartCodeSplitItemName('SPartCode');
+        });
+
+        $('.SItemCode').change(function () {
+            SetPartCodeSplitItemName('SItemCode');
+        });
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('.' + ID).val();
+                var t = $('.' + ID + ' option:selected').text();
+
+                if (ID == "PartCode") {
+                    v == "" ? $('.ItemCode').val("").trigger("change") : $('.ItemCode').val(v).trigger("change");
+                }
+
+                if (ID == "ItemCode") {
+                    v == "" ? $('.PartCode').val("").trigger("change") : $('.PartCode').val(v).trigger("change");
+                }
+            }
+        }
+
+        function SetPartCodeSplitItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('.' + ID).val();
+                var t = $('.' + ID + ' option:selected').text();
+
+                if (ID == "SPartCode") {
+                    v == "" ? $('.SItemCode').val("") : $('.SItemCode').val(v);
+                }
+
+                if (ID == "SItemCode") {
+                    v == "" ? $('.SPartCode').val("") : $('.SPartCode').val(v);
+                }
+            }
+        }
+
+
+        $('.SchQty').keyup(function () {
+            $(this).val().trim() == "" ? ($('.PendQty').val(0), $(this).val(0)) : $('.PendQty').val($(this).val());
+        });
+
+        $('.AltSchQty').keyup(function () {
+            $(this).val().trim() == "" ? ($('.AltPendQty').val(0), $(this).val(0)) : $('.AltPendQty').val($(this).val());
+        });
+
+        function SetSplitPartCodeItemName(ID) {
+
+            var Row = $('#MonthlyEntryData tr').length;
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                if (!ID) return;
+                else {
+                    for (var i = 0; i < Row; i++) {
+                        var v = $('#' + ID).val();
+                        if (ID == "SplitPartCode-" + i) {
+                            $("#SplitItemName-" + i).val(v);
+                        }
+
+                        if (ID == "SplitItemName-" + i) {
+                            $("#SplitPartCode-" + i).val(v);
+                        }
+                    }
+                }
+            } else {
+                if (!ID) return;
+                else {
+                    for (var i = 0; i < Row; i++) {
+                        var v = $('#' + ID).val();
+                        if (ID == "EditPartCode-" + i) {
+                            $("#EditSplitItemName-" + i).val(v);
+                        }
+
+                        if (ID == "EditSplitItemName-" + i) {
+                            $("#EditPartCode-" + i).val(v);
+                        }
+                    }
+                }
+            }
+        }
+
+        function ValidateSSGrid() {
+            var Err = 0;
+            if ($('.PartCode').prop('selectedIndex') == 0 || $('#ItemCode').prop('selectedIndex') == 0) {
+                AddErrorCls('PartCode'), AddErrorCls('ItemCode');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('PartCode'), RemoveErrorCls('ItemCode');
+            }
+
+            if (parseFloat($('#SchQty').val()) <= 0) {
+                AddErrorCls('SchQty');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('SchQty');
+            }
+
+            if ($('#DeliveryDate').val() == "" || $('#DeliveryDate').val() == null) {
+                AddErrorCls('DeliveryDate');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('DeliveryDate');
+            }
+
+            if ($('#Mode').val() == "SSA") {
+                if ($('.OtherDetail').val() == "" || $('.OtherDetail').val() == null) {
+                    AddErrorCls('OtherDetail');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('OtherDetail');
+                }
+            }
+            Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        function AddErrorClass(Class) {
+            $('.' + Class).addClass('is-invalid');
+        }
+
+
+        function RemoveErrorClass(Class) {
+            $('.' + Class).removeClass('is-invalid');
+        }
+
+        function ValidateSplitSGrid() {
+            var Err = 0;
+            if ($('.SPartCode').prop('selectedIndex') == 0 || $('.SItemCode').prop('selectedIndex') == 0) {
+                AddErrorClass('SPartCode'), AddErrorCls('SItemCode');
+                Err = 1;
+            }
+            else {
+                RemoveErrorClass('SPartCode'), RemoveErrorClass('SItemCode');
+            }
+
+            if (parseFloat($('.SSChQty').val()) <= 0) {
+                AddErrorClass('SSChQty');
+                Err = 1;
+            }
+            else {
+                RemoveErrorClass('SSChQty');
+            }
+
+
+            Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        function ClearGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearGrid")",
+                success: function (result, status, xhr) {
+                    $('#divSaleScheduleGrid').html(result.trim());
+                    if (result == "") {
+                        $('#divSaleScheduleGrid').append("<tr class='text-center'><td colspan='17' class='text-black-50'><strong class='text-danger'>NO DATA ADDED</strong></td></tr>");
+                    }
+                    TotalSchQty();
+                    RowCount();
+
+                    selectedItemCodes = [];
+                    selectedSplitItemCodes = [];
+                    //var rowCount = $('#divSaleScheduleGrid tr').length;
+                    //for (var i = 1; i < rowCount; i++) {
+                    //    selectedItemCodes.push(parseInt($('#ItemCode-' + i).val()));
+                    //}
+                    //var distinctItemCodesSet = new Set(selectedItemCodes);
+                    //selectedItemCodes = Array.from(distinctItemCodesSet);
+                    $('.SchQty').val(0);
+                    $('.AltSchQty').val(0);
+                    $('.SSChQty').val(0);
+                    $('.SAltSchQty').val(0);
+                    GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+
+        function AddDone(e) {
+            e.preventDefault();
+            var rowCount = $('#MonthlyEntryData tr').length;
+            var countDate = $('#CountDate').val();
+            $('#ManualMonthSplit').val("Month");
+            var arrMonthlyData = [];
+
+            //var j = this.id.split('-')[1];
+            var rowCount = $('#MonthlyEntryData tr').length;
+            //var Partcode = $(this).find('.PartCode').val();
+            for (var j = 0; j < rowCount; j++) {
+                for (var i = 0; i <= countDate; i++) {
+                    if ($('#SchQue-' + j + '-' + i).val() != '') {
+                        arrMonthlyData.push({
+                            "ItemCode": parseInt($('#SplitItemName-' + j).val()),
+                            "PartCode": $('#SplitPartCode-' + j).find(':selected').text(),
+                            "ItemName": $('#SplitItemName-' + j).find(':selected').text(),
+                            "Unit": $('#SplitUnit-' + j).val(),
+                            "SchQty": $('#SchQue-' + j + '-' + i).val(),
+                            "PendQty": "",
+                            "AltUnit": "",
+                            "AltSchQty": "",
+                            "AltPendQty": "",
+                            "Rate": $('#SplitRate-' + j).val(),
+                            "RateInOthCurr": $('#SplitRate-' + j).val(),
+                            "DeliveryDate": $('#DelDate-' + i).val(),
+                            "ItemSize": "",
+                            "ItemColor": "",
+                            "Remarks": "",
+                            "CC": $('#CC').val(),
+                        });
+                        selectedItemCodes.push(parseInt($('#SplitItemName-' + j).val()), parseInt($('#SplitPartCode-' + j).val()));
+                    }
+                }
+                selectedItemCodes = selectedItemCodes.filter((item, i, ar) => ar.indexOf(item) === i);
+            }
+
+            //for (var j = 0; j < rowCount; j++) {
+
+            //}
+            //console.log(arrMonthlyData);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddMonthlyEntryData")',
+                data: { "model": arrMonthlyData },
+                statusCode: {
+                    207: function () {
+                        $.notify('Duplicate Item...!', "info");
+                    }
+                },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        $.notify('Data Saved Successfully.', "success");
+                        $('#divSaleScheduleGrid').html(result);
+                        BuildMonthlyEntryBody();
+                        RowCount();
+                        TotalSchQty();
+                        ItemGridRemoveVal();
+
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        }
+
+        function UpdateDone(e) {
+            e.preventDefault();
+            var rowCount = $('#MonthlyEntryData tr').length;
+            var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+
+            var countDate = parseInt($('#CountEditDate').val());
+            $('#ManualMonthSplit').val("Month");
+            var arrMonthlyData = [];
+            ClearGrid();
+            //var j = this.id.split('-')[1];
+            var rowCount = $('#MonthlyEntryData tr').length;
+            //var Partcode = $(this).find('.PartCode').val();
+            for (var j = 0; j < rowCount; j++) {
+                for (var i = SchEffFromDate; i <= countDate + SchEffFromDate; i++) {
+                    if ($('#SchQue-' + i + '-' + j).val() != '') {
+
+                        arrMonthlyData.push({
+                            "ItemCode": parseInt($('#EditPartCode-' + j).val()),
+                            "PartCode": $('#EditPartCode-' + j).find(':selected').text(),
+                            "ItemName": $('#EditSplitItemName-' + j).find(':selected').text(),
+                            "Unit": $('#EditSplitUnit-' + j).val(),
+                            "SchQty": $('#SchQue-' + i + '-' + j).val(),
+                            "PendQty": "",
+                            "AltUnit": "",
+                            "AltSchQty": "",
+                            "AltPendQty": "",
+                            "Rate": $('#EditSplitRate-' + j).val(),
+                            "RateInOthCurr": $('#EditSplitRate-' + j).val(),
+                            "DeliveryDate": $('#DelEditDate-' + i).val(),
+                            "ItemSize": "",
+                            "ItemColor": "",
+                            "Remarks": "",
+                            "CC": $('#CC').val(),
+                        });
+                        selectedItemCodes.push(parseInt($('#SplitItemName-' + j).val()), parseInt($('#SplitPartCode-' + j).val()));
+                    }
+                }
+                selectedItemCodes = selectedItemCodes.filter((item, i, ar) => ar.indexOf(item) === i);
+            }
+
+
+
+            //for (var j = 0; j < rowCount; j++) {
+
+            //}
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddMonthlyEntryData")',
+                data: { "model": arrMonthlyData },
+                statusCode: {
+                    207: function () {
+                        $.notify('Duplicate Item...!', "info");
+                    }
+                },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        $.notify('Data Saved Successfully.', "success");
+                        $('#divSaleScheduleGrid').html(result);
+                        BuildMonthlyEntryBody();
+                        RowCount();
+                        TotalSchQty();
+                        ItemGridRemoveVal();
+
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        }
+        //var AddedItemCodes;
+
+        $('#AddItembtnSplitSch').click(function (e) {
+            e.preventDefault();
+
+            var rowCount = $('#SplitScheduleData tr').length;
+            var countDate = $('#CountSplitDate').val();
+            var arrSplitSchData = [];
+
+            if (rowCount <= 0) {
+                $.notify('Please Enter some Items...!', "error");
+            } else {
+                for (var j = 0; j < rowCount; j++) {
+                    for (var i = 0; i <= countDate; i++) {
+                        if ($('#SplitSchQue-' + j + '-' + i).val() != '') {
+
+                            arrSplitSchData.push({
+                                "ItemCode": parseInt($('#SplitSchItemCode-' + j).val()),
+                                "PartCode": $('#SpliSchPartCode-' + j).val(),
+                                "ItemName": $('#SplitSchItemName-' + j).val(),
+                                "Unit": $('#SplitschUnit-0').val(),
+                                "SchQty": $('#SplitSchQue-' + j + '-' + i).val(),
+                                "PendQty": "",
+                                "AltUnit": "",
+                                "AltSchQty": "",
+                                "AltPendQty": "",
+                                "Rate": $('#SplitSchRate-' + j).val(),
+                                "RateInOthCurr": $('#SplitSchRate-' + j).val(),
+                                "DeliveryDate": $('#SplitDelDate-' + i).val(),
+                                "ItemSize": "",
+                                "ItemColor": "",
+                                "Remarks": "",
+                                "CC": $('#CC').val(),
+                            });
+                            selectedSplitItemCodes.push(parseInt($('#SplitSchItemName-' + j).val()), parseInt($('#SpliSchPartCode-' + j).val()));
+                        }
+                    }
+                    selectedSplitItemCodes = selectedSplitItemCodes.filter((item, i, ar) => ar.indexOf(item) === i);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddMonthlyEntryData")',
+                    data: { "model": arrSplitSchData },
+                    statusCode: {
+                        207: function () {
+                            $.notify('Duplicate Item...!', "info");
+                        }
+                    },
+                    success: function (result, status, xhr) {
+                        if (xhr.status == 200 && xhr.responseText == result) {
+
+                            $.notify('Data Saved Successfully.', "success");
+                            $('#divSaleScheduleGrid').html(result);
+                            BuildSplitScheduleBody();
+                            RowCount();
+                            TotalSchQty();
+
+                            GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
+                            ItemGridRemoveVal();
+
+                            $('.SSChQty').val(0);
+                            $('.SAltSchQty').val(0);
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify('Something Went Wrong, Please Try Again.', "error");
+                    }
+                });
+            }
+        });
+
+        $('.addItemBtn').click(function (e) {
+
+            e.preventDefault();
+
+            if (!ValidateSSGrid()) return;
+            var SchData = {
+                "ItemCode": parseInt($('#ItemCode').val()),
+                "PartCode": $('.PartCode :selected').text(),
+                "ItemName": $('.ItemCode :selected').text(),
+                "Unit": $('.Unit').val(),
+                "SchQty": $('.SchQty').val(),
+                "PendQty": $('.PendQty').val(),
+                "AltUnit": $('.AltUnit').val(),
+                "AltSchQty": $('.AltSchQty').val(),
+                "AltPendQty": $('.AltPendQty').val(),
+                "Rate": $('.Rate').val(),
+                "RateInOthCurr": $('.RateInOthCurr').val(),
+                "DeliveryDate": $('.DeliveryDate').val(),
+                "ItemSize": $('.ItemSize').val(),
+                "ItemColor": $('.ItemColor').val(),
+                "OtherDetail": $('.OtherDetail').val() == "" ? "" : $('.OtherDetail').val(),
+                "Remarks": $('.Remarks').val(),
+                "CC": $('.CC').val(),
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddScheduleDetail")',
+                data: SchData,
+                statusCode: {
+                    207: function () {
+                        $.notify('Duplicate Item...!', "info");
+                    }
+                },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        $('#divSaleScheduleGrid').html(result);
+                        // var rowCount = $('#divSaleScheduleGrid tr').length;
+                        //for(var i=1;i<rowCount;i++){
+                        //     AddedItemCodes = $('#ItemCode-' + i).val();
+                        //}
+                        ItemGridRemoveVal();
+                        $('.PartCode').val(0);
+                        $('.ItemCode').val(0);
+                        $('.Unit').val('');
+                        $('.Rate').val(0);
+                        $('.SchQty').val(0);
+                        $('.AltSchQty').val(0);
+
+                        TotalSchQty();
+                        RowCount();
+                        SetSchTillDate();
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
+
+        function ItemGridRemoveVal() {
+            var totalRows = parseInt($('#MonthlyEntryData tr').length);
+            var countR = totalRows - 2;
+            var actualR = totalRows - 1;
+
+            var ManualRow = $('#divSaleScheduleGrid tr').length;
+            var removeVal = [];
+            for (var k = 1; k < ManualRow; k++) {
+                var itemCodeValue = parseInt($('#ItemCode-' + k).val());
+                if (!isNaN(itemCodeValue)) {
+                    removeVal.push(itemCodeValue);
+                }
+            }
+
+            var distinctSet = new Set(removeVal);
+            var distinctArray = Array.from(distinctSet);
+
+            for (var j = 0; j < distinctArray.length; j++) {
+                $('#SplitPartCode-' + actualR + 'option[value = "' + distinctArray[j] + '"]').remove();
+                $('#SplitPartCode-' + actualR + 'option[value="' + distinctArray[j] + '"]').remove();
+            }
+
+        }
+
+        $('#CC').on("keyup", function (e) {
+            $('#AccountCode').focus();
+            e.preventDefault();
+            return false;
+        });
+
+        $('.Generatebtn').click(function (e) {
+            e.preventDefault();
+            if (!ValidateSplitSGrid()) return;
+            newRowappendSplitSchedule();
+
+            var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+            var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]);
+            var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]);
+            var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+            var count = SchEffTillDate - SchEffFromDate;
+            var TotalSchQty = parseFloat($('.SSChQty').val());
+            var TotalQty = 0;
+            var Rowcount = $('#SplitScheduleData tr').length;
+
+            var SplitSchQty = TotalSchQty / (count + 1);
+
+            var i = (Rowcount - 1);
+            var currentRow = $('#SplitappendRow-' + i);
+            var ItemCode = parseInt($('.SItemCode').val());
+            var ItemName = $('.SItemCode').find(':selected').text();
+            var PartCode = $('.SPartCode :selected').text();
+
+            $('#SplitSchItemCode-' + i).val(ItemCode);
+            $('#SplitSchItemName-' + i).val(ItemName);
+            $('#SpliSchPartCode-' + i).val(PartCode);
+            $('#SplitschUnit-' + i).val($('.SUnit').val());
+            $('#SplitSchRate-' + i).val($('.SRate').val());
+
+            for (var j = 0; j <= count; j++) {
+                $('#SplitSchQue-' + i + '-' + j).val(SplitSchQty.toFixed(2));
+                TotalQty += parseFloat($('#SplitSchQue-' + i + '-' + j).val());
+            }
+            $('#TotalQty-' + i).val(TotalQty.toFixed(2));
+            $('.SSChQty').val(0);
+            $('.SAltSchQty').val(0);
+
+
+
+            $('.SPartCode option[value="' + parseInt($('#SplitSchItemCode-' + i).val()) + '"]').remove();
+            $('.SItemCode option[value="' + parseInt($('#SplitSchItemCode-' + i).val()) + '"]').remove();
+
+        });
+
+
+        function GetTotalSplitSchQty(Rowcount) {
+
+            var SchQty = 0;
+            var SchEffFromDate = parseInt($('#SchEffFromDate').val().split("/")[0]);
+            var SchEffFromMonth = parseInt($('#SchEffFromDate').val().split("/")[1]);
+            var SchEffFromYear = parseInt($('#SchEffFromDate').val().split("/")[2]);
+            var SchEffTillDate = parseInt($('#SchEffTillDate').val().split("/")[0]);
+            var count = SchEffTillDate - SchEffFromDate;
+            var TotalchangQty = 0;
+            for (var i = 0; i <= count; i++) {
+                SchQty = parseFloat($('#SplitSchQue-' + Rowcount + '-' + i).val());
+                TotalchangQty += SchQty;
+            }
+            $('#TotalQty').val(TotalchangQty);
+        }
+
+        var deletedItemcodes = [];
+        function DeleteItemRow(SeqNo) {
+
+            var itemCode = $('#ItemCode-' + SeqNo).val();
+            var partcode = $('#ItemCode-' + SeqNo).data('partcode');
+            var itemName = $('#ItemCode-' + SeqNo).data('itemname');
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                async: false,
+                success: function (data, status, xhr) {
+                    $('#divSaleScheduleGrid').html(data);
+                    if (data == "") {
+                        $('#divSaleScheduleGrid').append("<tr class='text-center'><td colspan='17' class='text-black-50'><strong class='text-danger'>NO DATA ADDED</strong></td></tr>");
+                    }
+                    selectedItemCodes = [];
+                    var rowCount = $('#divSaleScheduleGrid tr').length;
+                    for (var i = 1; i < rowCount; i++) {
+                        selectedItemCodes.push(parseInt($('#ItemCode-' + i).val()));
+                    }
+                    var distinctItemCodesSet = new Set(selectedItemCodes);
+                    selectedItemCodes = Array.from(distinctItemCodesSet);
+
+                    if (EditRowFlag == true) {
+                        $('.PartCode option[value="' + itemCode + '"]').remove();
+                        $('.ItemCode option[value="' + itemCode + '"]').remove();
+                    }
+                    EditRowFlag = true;
+                    $('.ItemCode').append('<option value="' + itemCode + '">' + itemName + '</option>');
+                    $('.PartCode').append('<option value="' + itemCode + '">' + partcode + '</option>');
+
+                    //var differenceSet = new Set(selectedItemCodes.filter(item => !distinctItemCodesSet.has(item)));
+                    // differenceArray = Array.from(differenceSet);
+                    //deletedItemcodes = [];
+                    //deletedItemcodes.push(parseInt(itemCode));
+
+
+                    TotalSchQty();
+                    RowCount();
+                },
+                error: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        function ValidateForm() {
+            var Err = 0;
+            if ($('#AccountCode').prop('selectedIndex') == 0) {
+                AddErrorCls('AccountCode');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('AccountCode');
+            }
+
+            if ($('#SONO').prop('selectedIndex') == 0) {
+                AddErrorCls('SONO');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('SONO');
+            }
+
+            if ($('#SOYearCode').prop('selectedIndex') == 0) {
+                AddErrorCls('SOYearCode');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('SOYearCode');
+            }
+
+            Err == 1 ? ShowErrorFld('H_Panel1') : HideErrorFld('H_Panel1');
+
+            if ($('#divSaleScheduleGrid tr')[0].innerText.trim() == 'NO DATA ADDED') {
+                ShowErrorFld('H_Panel2');
+                Err = 1;
+            }
+            else {
+                HideErrorFld('H_Panel2');
+            }
+
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        $("#btnGridExcel").click(function () {
+            ;
+            const table = document.querySelector("#ItemTable");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            // Extract and add the table header with background color
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell) => {
+                // cell.style.backgroundColor = "#fcba03";
+                headerData.push(cell.textContent);
+            });
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                rows[i].querySelectorAll("td").forEach((cell) => {
+                    rowData.push(cell.textContent);
+                });
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+
+            XLSX.writeFile(wb, "SaleSchItemGrid.xlsx");
+        });
+
+        function ExportSaleSchFormate() {
+            ;
+            $('#divSaleScheduleGrid').empty();
+            var wb = XLSX.utils.book_new();
+
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Qty", "Unit", "Delivery Date", "Alt Qty", "Item Size", "Item Color", "Remarks", "Other Detail"] });
+
+            //ws['!ref'] = 'A1:I1';
+
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "ImportSaleScheduleFormat.xlsx");
+        }
+
+
+        $('form').submit(function (event) {
+            $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+            if (!ValidateForm()) {
+                event.preventDefault(); // Prevent the form from submitting via the browser
+                $('.btn-outline-primary').prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i> SUBMIT');
+            }
+            else {
+                //event.stopPropagation(); // Prevent calling function inside this function.
+                var form = $(this);
+                var url = form.attr('action'); //get submit url [replace url here if desired]
+                $("form :input").prop("disabled", false);
+            }
+        });
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    @*<script src="~/Scripts/table2excel.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+
+    }

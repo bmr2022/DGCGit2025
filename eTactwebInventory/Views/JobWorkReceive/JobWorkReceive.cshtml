@@ -1,0 +1,2508 @@
+﻿@model eTactWeb.DOM.Models.JobWorkReceiveModel
+
+@{
+    ViewData["Title"] = "Job Work Receive";
+
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <partial name="_JobReceivePopUp" />
+    <partial name="_JobWorkReceiveDetail" />
+    <form asp-action="JobWorkReceive" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Job Work Receive</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="JWRDashboard" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="InvoiceNoBack" type="hidden" value="@Model.InvoiceNoBack" />
+                            <input asp-for="GateNoBack" type="hidden" value="@Model.GateNoBack" />
+                            <input asp-for="MRNNoBack" type="hidden" value="@Model.MRNNoBack" />
+                            <input asp-for="BranchBack" type="hidden" value="@Model.BranchBack" />
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+
+                            <input type="hidden" value="@Model.GateNo" id="hiddenGateNo" />
+                            <input type="hidden" value="@Model.GateYearCode" id="hiddenGateYearCode" />
+                            <input type="hidden" value="@Model.TypesBOMIND" id="hiddenBomInd" />
+                            @*                            <a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                    @*<partial name="_FormsButton" />*@
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            @*<div asp-validation-summary="All" class="text-danger pt-1"></div>*@
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
+                                    <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                    <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
+                                    <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+                                    <label asp-for="EntryId" class="form-label" style="color: blue;">Entry Id</label>
+                                    <input asp-for="EntryId " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                    <label asp-for="YearCode" class="form-label" style="color: blue;">Year Code</label>
+                                    <input asp-for="YearCode " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryDate" class="form-label" style="color: blue;">Entry Date</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label" style="color: blue;">Branch</label>
+                                    <input asp-for="CC" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label" style="color: blue;">From Date</label>
+                                    <input id="FromDate" type="text" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label" style="color: blue;">To Date</label>
+                                    <input id="ToDate" type="text" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="GateNo" class="form-label" style="color: red;">Gate No*</label>
+                                    <select class="form-select" asp-for="GateNo">
+                                        <option value="" disabled selected>-Select-</option>
+                                        if(@Model.Mode == "U" || @Model.Mode=="V")
+                                        {
+                                        <option value="@Model.GateNo" selected>@Model.GateNo</option>
+                                        }
+                                    </select>
+                                    <input type="hidden" id="GateEntry" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
+                                    <label asp-for="GateYearCode" class="form-label" style="color: red;">Gate Year*</label>
+                                    <select class="form-select" asp-for="GateYearCode">
+                                        <option value="" disabled selected>-Select-</option>
+                                        if(@Model.Mode == "U" || @Model.Mode=="V")
+                                        {
+                                        <option value="@Model.GateYearCode" selected>@Model.GateYearCode</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="InvNo" class="form-label" style="color: red;">Invoice No*</label>
+                                    <input asp-for="InvNo " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="InvDate" class="form-label" style="color: red;">Invoice Date*</label>
+                                    <input asp-for="InvDate " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="GateDate" class="form-label" style="color: red;">Gate Date</label>
+                                    <input asp-for="GateDate " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountCode" class="form-label" style="color: red;">Vendor name*</label>
+                                    <input asp-for="AccountName " class="form-control" readonly />
+                                    <input asp-for="AccountCode" type="hidden" value="@Model.AccountCode" />
+                                </div>
+                                @*                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="InvNo" class="form-label">Invoice No</label>
+                                <input asp-for="InvNo " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="InvDate" class="form-label">Invoice Date</label>
+                                <input asp-for="InvDate " class="form-control" readonly />
+                                </div>*@
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MRNNo" class="form-label" style="color: red;">MRN No*</label>
+                                    <input asp-for="MRNNo " class="form-control" readonly value="@Model.MRNNo" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="RecStoreid" class="form-label" style="color: red;">Rec IN Store*</label>
+                                    <input asp-for="RecStoreid" type="hidden" class="form-control" />
+                                    <input asp-for="RecInStore" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="QCCheck" class="form-label">QCCheck</label>
+                                    <input asp-for="QCCheck" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
+                                    <label asp-for="DocumentTypeBillChal" class="form-label" style="color: red;">Document Type*</label>
+                                    <select class="form-select" asp-for="DocumentTypeBillChal" asp-items="Model.DocTypeList" readonly>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
+                                    <label asp-for="JobTypeJwRW" class="form-label" style="color: red;font:bold">Job Work Type*</label>
+                                    <select class="form-select" asp-for="JobTypeJwRW" asp-items="Model.JobTypeList" readonly>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TypesBOMIND" class="form-label" style="color: red;font:bold">BOM/IND*</label>
+                                    <select class="form-select" asp-for="TypesBOMIND" asp-items="Model.TypesBOMINDList" style="color :blue">
+                                    </select>
+                                </div>
+                                <div class="col-xl-9 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex">
+                                    <label class="color-box" style="background-color: #f1fab9;margin-left:50px;border:1px solid black;"></label><label style="margin-left:5px;margin-top:-5px;">BOM</label>
+                                    <label class="color-box" style="background-color: #fab9e1;margin-left:25px;border:1px solid black;"></label><label style="margin-left:5px;margin-top:-5px;">INDIVIDUAL</label>
+                                    <button class="btn btn-sm btn-outline-primary bg-gradient" id="clicktoAdjustButton" onclick="GetAdjustedChallan(event)" style="margin-left:40px;margin-top:10px;"><i class="fa fa-plus-circle fafw fa-lg"></i>  Click To Adjust Challan</button>
+                                    <button class="btn btn-sm btn-outline-warning bg-gradient" id="displaylistbutton" onclick="GetPendingChallanList(event,@Model.SeqNo)" style="margin-left:40px;margin-top:10px;"><i class="fa fa-list-alt fafw fa-lg"></i> Pending Challan List</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Job Work Receive Grid</strong>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                </div>
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>Bom List</th>
+                                                    <th>Item Name</th>
+                                                    <th>Part Code</th>
+                                                    <th>Unit</th>
+                                                    <th>Bill Qty</th>
+                                                    <th>Rec Qty</th>
+                                                    <th>JW Rate</th>
+                                                    <th>BomRevNo</th>
+                                                    <th>Bom Rev Date</th>
+                                                    <th>Produced Unprod</th>
+                                                    <th>Bom/Ind</th>
+                                                    <th>Amount</th>
+                                                    <th>Remark</th>
+                                                    <th>Process</th>
+                                                    <th>Adjusted</th>
+                                                    <th>No Of Case</th>
+                                                    <th>QCCompleted</th>
+                                                    <th>PO No</th>
+                                                    <th>PO Year</th>
+                                                    <th>PO Date</th>
+                                                    <th>Sch No</th>
+                                                    <th>Sch Year Code</th>
+                                                    <th>PO Type</th>
+                                                    <th>Batch No</th>
+                                                    <th>Unique Batch No</th>
+                                                    <th>BatchWise</th>
+                                                    <th>JW Rate Unit</th>
+                                                    <th>Process Unit Qty</th>
+                                                    <th>Process unit</th>
+                                                    <th>PO Ammend No</th>
+                                                    <th>PartCode</th>
+                                                    <th>Total Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divJobWorkReceiveGrid">
+                                                @* <partial name="_JobWorkReceiveItemsDetail" />*@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                @*  <div class="col-xl-12 col-md-12 mt-4 col-auto">
+                                <div class="col-auto">
+                                <div class="form-check form-switch d-flex justify-content-center mt-2">
+                                <input asp-for="SH" class="form-check-input" type="checkbox" role="switch" />
+                                </div>
+                                <label class="form-label d-flex justify-content-center mt-2">Show/Hide Additional Fields</label>
+                                </div>
+                                </div>*@
+
+                            </div>
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            @*<div class=" col-4 col-auto">
+                            <div class="row justify-content-around">
+                            <div class="col-auto">
+                            <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                            </button>
+                            </div>
+                            </div>
+                            </div>*@
+
+
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="table-responsive" style="max-height:250px;">
+                                        <table class="table table-hover table-bordered table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static" id="GridLabels">
+                                                <tr>
+                                                    <th>Iss Entry Id</th>
+                                                    <th>Challan No</th>
+                                                    <th>YearCode</th>
+                                                    <th>Date</th>
+                                                    <th>Iss Part Code</th>
+                                                    <th>Iss Item Name</th>
+                                                    <th>Bom Rev No</th>
+                                                    <th>Bom/Ind</th>
+                                                    <th>PendQty</th>
+                                                    <th>Finish Part Code</th>
+                                                    <th>Finish Item Name</th>
+                                                    <th>BOM Qty</th>
+                                                    <th>Through</th>
+                                                    <th>Total Issued Qty</th>
+                                                    <th>Total Adj Qty</th>
+                                                    <th>Batch No</th>
+                                                    <th>Unique batch no</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divJobWorkReceiveGridAdd">
+                                                <partial name="_JobWorkReceiveGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="OtherGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                            <div class="accordion-body">
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Through" class="form-label">Through</label>
+                                        <input asp-for="Through" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Remark" class="form-label">Remark</label>
+                                        <input asp-for="Remark" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EmpID" class="form-label">EmpID</label>
+                                        <select class="form-select" asp-for="EmpID">
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="TotalAmt" class="form-label">TotalAmt</label>
+                                        <input asp-for="TotalAmt" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="NetAmt" class="form-label">NetAmt</label>
+                                        <input asp-for="NetAmt" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedBy" class="form-label">Created By</label>
+                                        <input asp-for="CreatedBy" type="hidden" class="form-control" readonly />
+                                        <input asp-for="CreatedByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedOn" class="form-label">Created On</label>
+                                        <input asp-for="CreatedOn" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+                                        <input asp-for="UpdatedBy" type="hidden" class="form-control" readonly />
+                                        <input asp-for="UpdatedByname" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">Updated Date</label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <partial name="_DisplayBomDetail" />
+                <div class="card-footer">
+                    <div class="card-header card-headerBG text-light bg-gradient">
+                        <h5>
+                            <strong>Job Work Receive</strong>
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+                                <a asp-action="JWRDashboard" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                    Dashboard
+                                </a>
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                    {
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode == "U")
+                                        {
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton1">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+                                        else if (Model.Mode == "SOA" || Model.Mode == "POA" || Model.Mode == "PSA" || Model.Mode == "SSA")
+                                        {
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient AmendButton">
+                                                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                                    AMEND
+                                                </button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+                                                    <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+    </form>
+</div>
+
+
+<div class="modal fade" id="JobReceiveModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <center><h5>Challan for this item is already adjusted</h5></center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+
+            $('#clicktoAdjustButton').hide();
+            $('#displaylistbutton').hide();
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                FillNewEntry();
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                //$('#UpdatedOn').val('')
+            }
+
+            var finFromDate = $('#FinFromDate').val();
+            var finToDate = $('#FinToDate').val();
+
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+            console.log(formattedDate1);
+            console.log(formattedDate2);
+
+            var fromDate;
+            var toDate;
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+            //$('#FromDate').datepicker("option", "minDate", formattedDate1);
+            $('#ToDate').datepicker("option", "maxDate", formattedDate2);
+
+            $('#EntryDate').datepicker("option", "minDate", formattedDate1);
+            $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
+
+           // GetFormRights();
+
+            $('#MRNNo').rules("remove", "required");
+            $('#MRNNo').removeClass('input-validation-error');
+            //$('#YearCode').val(new Date().getFullYear());
+            var fromDate;
+            var toDate;
+            $('#FromDate,#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#FromDate').change(function () {
+                fromDate = $(this).datepicker('getDate');
+                $('#ToDate').datepicker("option", "minDate", fromDate);
+            });
+            $('#ToDate').change(function () {
+                toDate = $(this).datepicker('getDate');
+                $('#FromDate').datepicker("option", "maxDate", toDate);
+            });
+
+            GetEmployeeList();
+            FillGateNo();
+            $('#Through').rules("remove", "required");
+            $('#Remark').rules("remove", "required");
+            $('#EmpID').rules("remove", "required");
+            $('#UpdatedBy').rules("remove", "required");
+            $('#UpdatedByname').rules("remove", "required");
+            $('#MRNNo').rules("remove", "required");
+            $('#CreatedByName').rules("remove", "required");
+
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                ViewDetailSection();
+                $('#TypesBOMIND').val($('#hiddenBomInd').val() == "I" ? "Individual" : "BOM");
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                CheckAutoOrManual();
+                $('#displaylistbutton').show();
+                var dataParams = {
+                    "GateNo": $('#GateNo').val(),
+                    "GateYearCode": $('#GateYearCode').val(),
+                    "GateEntryId": parseInt($('#GateEntry').val())
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetGateMainData")",
+                    data: dataParams,
+                    success: function (result, status, error) {
+                        if (result != null) {
+
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $.each(obj.Result, function (index, val) {
+                                    $('#GateDate').attr("value", formatUniversalDate(val.GDate));
+                                    $('#AccountCode').attr("value", val.AccountCode);
+                                    $('#Address').attr("value", val.address);
+                                    $('#DocType').attr("value", val.DocName);
+                                    $('#InvNo').attr("value", val.Invoiceno);
+                                    $('#InvDate').attr("value", formatUniversalDate(val.InvoiceDate));
+                                    //$('#DOCID').attr("value", val.docTypeId);
+                                    $('#AccountName').attr("value", val.account_name);
+                                    $('#QCCheck').attr("value", val.checkQC);
+                                    $('#RecInStore').attr("value", val.RecInStore);
+                                    $('#RecStoreid').attr("value", parseInt(val.StoreId));
+                                    $('#CurrencyID').attr("value", val.CurrencyId);
+                                    $('#CurrencyName').attr("value", val.CurrencyName);
+                                    $('#TotalAmt').attr("value", val.TotalAmt);
+                                    $('#NetAmt').attr("value", val.NetAmt);
+                                });
+                            }
+                        }
+                    }
+                });
+                // $.ajax({
+                //     type: "POST",
+                //     url: "@Url.Action("GetGateItemData")",
+                //     data: dataParams,
+                //     async: false,
+                //     success: function (result, status, error) {
+
+                //         if (result != null) {
+
+                //             var obj = $.parseJSON(result);
+                //             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                //                 var html = '';
+                //                 $('#divJobWorkReceiveGrid').empty();
+                //                 var i = 1;
+                //                 $.each(obj.Result, function (index, val) {
+
+                //                     if (val.SchNo == "") {
+                //                         val.SchNo = "NA";
+                //                     }
+                //                     // for single quote & apos;
+                //                     var recQty = val.RecQty;
+
+                //                     if (dblClick) {
+                //                         html += '<tr id="TableRow' + i + '" ondblclick="ShowPopUpFunction(' + i + ',' + recQty + ',' + i + ');"><td><i class="fa fa-eye" onclick="DisplayBomDetail(' + i + ',event)" aria-hidden="true"></i></td><td><input type="hidden" id="AdjustChallanCheck' + i + '" value="true"><td><input type="hidden" id="AdjustChallanCheck' + i + '" value="true"><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name).replace(/\\/g, '&rdquo;') + ' readonly ></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td><td><input id="unit' + i + '" style="height: 30px;width:50px !important;" value=' + val.unit + ' readonly ></td><td><input style="width:50px !important;" id="BillQty' + i + '" value=' + val.BillQty + ' readonly ></td><td><input style="width:50px !important;" id="RecQty' + i + '"  value=' + val.RecQty + ' type="number" min="0" onchange="RecQtyChange(' + i + ')" ></td><td><input style="width:50px !important;" id="JWRate' + i + '" type="number" min="0" onkeyup="JWRateChange(' + i + ')" /></td><td><select id="BomRevNo' + i + '" onchange="BomRevChange(' + i + ')"></select></td><td><input style="width:80px !important;" id="BomRevDate' + i + '" readonly /></td><td><select id="ProducedUnProd' + i + '" onchange="ChangeGridPU(' + i + ')"><option value="P" selected>Produced</option><option value="U">UnProduced</option></select></td><td><select id="BomInd' + i + '" onchange="ChangeGridBomInd(' + i + ')"><option value="B">BOM</option><option value="I">Individual</option></select></td><td><input style="width:50px !important;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input id="Remark' + i + '" /></td><td><select id="ProcessId' + i + '" value=' + val.processid + '></select></td><td><input style="width:50px !important;" id="Adjusted' + i + '" readonly/></td><td><input style="width:50px !important;" id="NoofCase' + i + '" value=' + val.NoofCase + ' readonly ></td><td><input style="width:50px !important;" id="QCCompleted' + i + '" readonly/></td><td><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px !important;" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px !important;" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px !important;" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input style="width:50px !important;" id="BatchWise' + i + '" readonly value=' + val.Batchwise + ' ></td><td><input type="number" min="0" id="JWRateUnit' + i + '"    ></td><td><input id="ProcessUnitQty' + i + '" type="number" value="' + val.BillQty + '" min="0"></td><td><input id="ProcessUnit' + i + '" value=' + val.unit + '></td><td><input id="POAmendNo' + i + '" ></td><td><input id="PartCodeA' + i + '" readonly ></td><td><input type="number" id="TotalPrice' + i + '" readonly></td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
+                //                     } else {
+                //                         html += '<tr id="TableRow' + i + '"><td><i class="fa fa-eye" onclick="DisplayBomDetail(' + i + ',event)" aria-hidden="true"></i></td><td><input type="hidden" id="AdjustChallanCheck' + i + '" value="true"><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name).replace(/\\/g, '&rdquo;') + ' readonly ></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td><td><input id="unit' + i + '" style="height: 30px;width:50px !important;" value=' + val.unit + ' readonly ></td><td><input style="width:50px !important;" id="BillQty' + i + '" value=' + val.BillQty + ' readonly ></td><td><input style="width:50px !important;" id="RecQty' + i + '"  value=' + val.RecQty + ' type="number" min="0" onchange="RecQtyChange(' + i + ')" ></td><td><input style="width:50px !important;" id="JWRate' + i + '" type="number" min="0" onkeyup="JWRateChange(' + i + ')" /></td><td><select id="BomRevNo' + i + '" onchange="BomRevChange(' + i + ')"></select></td><td><input style="width:80px !important;" id="BomRevDate' + i + '" readonly /></td><td><select id="ProducedUnProd' + i + '" onchange="ChangeGridPU(' + i + ')"><option value="P" selected>Produced</option><option value="U">UnProduced</option></select></td><td><select id="BomInd' + i + '" onchange="ChangeGridBomInd(' + i + ')"><option value="B">BOM</option><option value="I">Individual</option></select></td><td><input style="width:50px !important;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input id="Remark' + i + '" /></td><td><select id="ProcessId' + i + '" value=' + val.processid + '></select></td><td><input style="width:50px !important;" id="Adjusted' + i + '" readonly/></td><td><input style="width:50px !important;" id="NoofCase' + i + '" value=' + val.NoofCase + ' readonly ></td><td><input style="width:50px !important;" id="QCCompleted' + i + '" readonly/></td><td><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px !important;" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px !important;" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px !important;" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input style="width:50px !important;" id="BatchWise' + i + '" readonly value=' + val.Batchwise + ' ></td><td><input type="number" id="JWRateUnit' + i + '"  min="0"  ></td><td><input id="ProcessUnitQty' + i + '" type="number" value="' + val.BillQty + '" min="0"></td><td><input id="ProcessUnit' + i + '" value=' + val.unit + '></td><td><input id="POAmendNo' + i + '" ></td><td><input id="PartCodeA' + i + '" readonly ></td><td><input type="number" id="TotalPrice' + i + '" readonly></td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
+                //                     }
+
+                //                     adjustChallan++;
+                //                     i++;
+
+                //                 });
+
+                //                 $('#divJobWorkReceiveGrid').append(html);
+
+                //                 fillAllProcess();
+                //                 var rowCount = $('#divJobWorkReceiveGrid tr').length;
+                //                 if (rowCount >= 1) {
+                //                     for (var i = 1; i <= rowCount; i++) {
+                //                         $('#ProcessId' + i).val(obj.Result[0].processid);
+                //                         if ($('#BomInd' + i).val() == "B") {
+                //                             $('#TableRow' + i).css("background-color", "#f1fab9");
+                //                         } else if ($('#BomInd' + i).val() == "I") {
+                //                             $('#TableRow' + i).css("background-color", "#fab9e1");
+                //                         }
+
+                //                         $('#ProcessUnitQty' + i).on('keydown', function (event) {
+                //                             if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                //                                 event.preventDefault();
+                //                             }
+                //                         });
+                //                         $('#JWRateUnit' + i).on('keydown', function (event) {
+                //                             if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                //                                 event.preventDefault();
+                //                             }
+                //                         });
+                //                         $('#RecQty' + i).on('keydown', function (event) {
+                //                             if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                //                                 event.preventDefault();
+                //                             }
+                //                         });
+                //                         $('#RecQty' + i).change(function () {
+
+                //                             ClearGridAjax();
+                //                         })
+                //                         $('#JWRate' + i).on('keydown', function (event) {
+                //                             if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                //                                 event.preventDefault();
+                //                             }
+                //                         });
+
+                //                         $('#TotalPrice' + i).on('keydown', function (event) {
+                //                             if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                //                                 event.preventDefault();
+                //                             }
+                //                         });
+                //                         $('input[id^="JWRateUnit"], input[id^="ProcessUnitQty"]').on('keyup', function () {
+                //                             var index = $(this).attr('id').replace('JWRateUnit', '').replace('ProcessUnitQty', '');
+                //                             var jwRateUnitValue = parseFloat($('#JWRateUnit' + index).val()) || 0;
+                //                             var processUnitQtyValue = parseFloat($('#ProcessUnitQty' + index).val()) || 0;
+                //                             var totalPrice = jwRateUnitValue * processUnitQtyValue;
+                //                             $('#TotalPrice' + index).val(totalPrice.toFixed(2));
+                //                             CountTotal(); // Call CountTotal function after calculating totalPrice
+                //                         });
+                //                     }
+                //                 }
+
+                //                 fillBomRevNo();
+                //                 fillProcessUnit();
+                //                 var rowCountGrid = $('#divJobWorkReceiveGrid tr td').length;
+                //                 var rowCount = $('#divJobWorkReceiveGrid tr').length;
+
+                //                 if (rowCount > 0 && rowCountGrid > 1) {
+                //                     for (var i = 1; i <= rowCount; i++) {
+                //                         if ($('#TypesBOMIND').val() == 'Individual') {
+                //                             $('#BomInd' + i).val('I');
+                //                         } else {
+                //                             $('#BomInd' + i).val('B');
+                //                         }
+                //                         //$('#BomInd' + i).trigger("change");
+                //                         if ($('#BomInd' + i).val() == "B") {
+                //                             $('#TableRow' + i).css("background-color", "#f1fab9");
+                //                         } else if ($('#BomInd' + i).val() == "I") {
+                //                             $('#TableRow' + i).css("background-color", "#fab9e1");
+                //                         }
+                //                     }
+                //                 }
+                //             }
+                //         }
+                //     }
+                // });
+            }
+
+        });
+
+        var adjustChallan = 0;
+        var alreadyAdjustedChallan = 0;
+
+        function FillNewEntry() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillNewEntry")",
+                data: { YearCode: $('#YearCode').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#EntryId').val(obj.Result[0].EntryId);
+                    }
+                }
+            });
+        }
+
+        function ViewDetailSection() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ViewDetailSection")",
+                data: { yearCode: $('#YearCode').val(), entryId: $('#EntryId').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                         
+
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divJobWorkReceiveGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result, function (index, val) {
+
+                                if (val.SchNo == "") {
+                                    val.SchNo = "NA";
+                                }
+                                // for single quote & apos;
+                                var recQty = val.RecQty;
+                                 
+                                if (dblClick) {
+                                    html += '<tr id="TableRow' + i + '" ondblclick="ShowPopUpFunction(' + i + ',' + recQty + ',' + i + ');"><td><i class="fa fa-eye" onclick="DisplayBomDetail(' + i + ',event)" aria-hidden="true"></i></td><td><input type="hidden" id="AdjustChallanCheck' + i + '" value="true"><td><input type="hidden" id="AdjustChallanCheck' + i + '" value="true"><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name).replace(/\\/g, '&rdquo;') + ' readonly ></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td><td><input id="unit' + i + '" style="height: 30px;width:50px !important;" value=' + val.Unit + ' readonly ></td><td><input style="width:50px !important;" id="BillQty' + i + '" value=' + val.BillQty + ' readonly ></td><td><input style="width:50px !important;" id="RecQty' + i + '"  value=' + val.RecQty + ' type="number" min="0" onchange="RecQtyChange(' + i + ')" ></td><td><input style="width:50px !important;" id="JWRate' + i + '" type="number" min="0" onkeyup="JWRateChange(' + i + ')" /></td><td><select id="BomRevNo' + i + '" onchange="BomRevChange(' + i + ')"></select></td><td><input style="width:80px !important;" id="BomRevDate' + i + '" readonly /></td><td><select id="ProducedUnProd' + i + '" onchange="ChangeGridPU(' + i + ')"><option value="P" selected>Produced</option><option value="U">UnProduced</option></select></td><td><select id="BomInd' + i + '" onchange="ChangeGridBomInd(' + i + ')"><option value="B">BOM</option><option value="I">Individual</option></select></td><td><input style="width:50px !important;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input id="Remark' + i + '" /></td><td><select id="ProcessId' + i + '" value=' + val.processid + '></select></td><td><input style="width:50px !important;" id="Adjusted' + i + '" readonly/></td><td><input style="width:50px !important;" id="NoofCase' + i + '" value=' + val.NoOfCase + ' readonly ></td><td><input style="width:50px !important;" id="QCCompleted' + i + '" readonly/></td><td><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px !important;" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px !important;" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px !important;" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input style="width:50px !important;" id="BatchWise' + i + '" readonly value=' + val.batchwise + ' ></td><td><input type="number" min="0" id="JWRateUnit' + i + '"    ></td><td><input id="ProcessUnitQty' + i + '" type="number" value="' + val.BillQty + '" min="0"></td><td><input id="ProcessUnit' + i + '" value=' + val.ProcessUnit + '></td><td><input id="POAmendNo' + i + '" ></td><td><input id="PartCodeA' + i + '" readonly ></td><td><input type="number" id="TotalPrice' + i + '" readonly></td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
+                                } else {
+                                    html += '<tr id="TableRow' + i + '"><td><i class="fa fa-eye" onclick="DisplayBomDetail(' + i + ',event)" aria-hidden="true"></i></td><td><input type="hidden" id="AdjustChallanCheck' + i + '" value="true"><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name).replace(/\\/g, '&rdquo;') + ' readonly ></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td><td><input id="unit' + i + '" style="height: 30px;width:50px !important;" value=' + val.Unit + ' readonly ></td><td><input style="width:50px !important;" id="BillQty' + i + '" value=' + val.BillQty + ' readonly ></td><td><input style="width:50px !important;" id="RecQty' + i + '"  value=' + val.RecQty + ' type="number" min="0" onchange="RecQtyChange(' + i + ')" ></td><td><input style="width:50px !important;" id="JWRate' + i + '" type="number" min="0" onkeyup="JWRateChange(' + i + ')" /></td><td><select id="BomRevNo' + i + '" onchange="BomRevChange(' + i + ')"></select></td><td><input style="width:80px !important;" id="BomRevDate' + i + '" readonly /></td><td><select id="ProducedUnProd' + i + '" onchange="ChangeGridPU(' + i + ')"><option value="P" selected>Produced</option><option value="U">UnProduced</option></select></td><td><select id="BomInd' + i + '" onchange="ChangeGridBomInd(' + i + ')"><option value="B">BOM</option><option value="I">Individual</option></select></td><td><input style="width:50px !important;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input id="Remark' + i + '" /></td><td><select id="ProcessId' + i + '" value=' + val.processid + '></select></td><td><input style="width:50px !important;" id="Adjusted' + i + '" readonly/></td><td><input style="width:50px !important;" id="NoofCase' + i + '" value=' + val.NoOfCase + ' readonly ></td><td><input style="width:50px !important;" id="QCCompleted' + i + '" readonly/></td><td><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px !important;" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px !important;" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px !important;" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input style="width:50px !important;" id="BatchWise' + i + '" readonly value=' + val.batchwise + ' ></td><td><input type="number" id="JWRateUnit' + i + '"  min="0"  ></td><td><input id="ProcessUnitQty' + i + '" type="number" value="' + val.BillQty + '" min="0"></td><td><input id="ProcessUnit' + i + '" value=' + val.ProcessUnit + '></td><td><input id="POAmendNo' + i + '" ></td><td><input id="PartCodeA' + i + '" readonly ></td><td><input type="number" id="TotalPrice' + i + '" readonly></td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
+                                }
+
+                                adjustChallan++;
+                                i++;
+
+                            });
+
+                            $('#divJobWorkReceiveGrid').append(html);
+
+                            fillAllProcess();
+                            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+                            if (rowCount >= 1) {
+                                for (var i = 1; i <= rowCount; i++) {
+                                    $('#ProcessId' + i).val(obj.Result[0].processid);
+                                    if ($('#BomInd' + i).val() == "B") {
+                                        $('#TableRow' + i).css("background-color", "#f1fab9");
+                                    } else if ($('#BomInd' + i).val() == "I") {
+                                        $('#TableRow' + i).css("background-color", "#fab9e1");
+                                    }
+
+                                    $('#ProcessUnitQty' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+                                    $('#JWRateUnit' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+                                    $('#RecQty' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+                                    $('#RecQty' + i).change(function () {
+
+                                        ClearGridAjax();
+                                    });
+                                    $('#JWRate' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+
+                                    $('#TotalPrice' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+                                    $('input[id^="JWRateUnit"], input[id^="ProcessUnitQty"]').on('keyup', function () {
+                                        var index = $(this).attr('id').replace('JWRateUnit', '').replace('ProcessUnitQty', '');
+                                        var jwRateUnitValue = parseFloat($('#JWRateUnit' + index).val()) || 0;
+                                        var processUnitQtyValue = parseFloat($('#ProcessUnitQty' + index).val()) || 0;
+                                        var totalPrice = jwRateUnitValue * processUnitQtyValue;
+                                        $('#TotalPrice' + index).val(totalPrice.toFixed(2));
+                                        CountTotal(); // Call CountTotal function after calculating totalPrice
+                                    });
+
+                                    if ($('#TypesBOMIND').val() == 'Individual') {
+                                        $('#BomRevNo' + i).val('');
+                                        $('#BomRevNo' + i).prop("disabled", true);
+                                    } else {
+                                        $('#BomRevNo' + i).prop("disabled", false);
+                                    }
+
+                                }
+                            }
+                        }
+
+                        fillBomRevNo();
+                        fillProcessUnit();
+                        var rowCountGrid = $('#divJobWorkReceiveGrid tr td').length;
+                        var rowCount = $('#divJobWorkReceiveGrid tr').length;
+
+                        if (rowCount > 0 && rowCountGrid > 1) {
+                            for (var i = 1; i <= rowCount; i++) {
+                                if ($('#TypesBOMIND').val() == 'Individual') {
+                                    $('#BomInd' + i).val('I');
+                                } else {
+                                    $('#BomInd' + i).val('B');
+                                }
+                                //$('#BomInd' + i).trigger("change");
+                                if ($('#BomInd' + i).val() == "B") {
+                                    $('#TableRow' + i).css("background-color", "#f1fab9");
+                                } else if ($('#BomInd' + i).val() == "I") {
+                                    $('#TableRow' + i).css("background-color", "#fab9e1");
+                                }
+                            }
+                        }
+                    }
+                }
+
+            });
+        }
+
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        console.log(obj);
+                        var optAll = obj.Result.Table[0].OptAll;
+                        var optSave = obj.Result.Table[0].OptSave;
+                        var optUpdate = obj.Result.Table[0].OptUpdate;
+                        var optDelete = obj.Result.Table[0].OptDelete;
+                        var optView = obj.Result.Table[0].OptView;
+                        if (!optAll) {
+                            if (!optSave) {
+                                $(".submitBTN").prop("disabled", true);
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
+
+        $('.submitBTN').click(function (e) {
+
+            e.preventDefault();
+            if (dblClick == false) {
+                var Adjustchallan = [];
+                var rowCount = $('#divJobWorkReceiveGrid tr').length;
+                for (var i = 1; i <= rowCount; i++) {
+                    var PartCode = $('#PartCode' + i).val();
+                    Adjustchallan.push(
+                        PartCode
+                    );
+                }
+
+                var challanlist = [];
+                var rowCountGrid = $('#divJobWorkReceiveGridAdd tr').length;
+                for (var i = 1; i <= rowCountGrid; i++) {
+                    var PartCode = $('#finishPartCode' + i).text();
+                    challanlist.push(PartCode);
+                }
+
+                var uniquePartCode = {};
+                var resultArray = [];
+
+                challanlist.forEach(function (PartCode) {
+                    if (!uniquePartCode[PartCode]) {
+                        resultArray.push(PartCode);
+                        uniquePartCode[PartCode] = true;
+                    }
+                });
+                if (rowCountGrid == 0) {
+                    $.notify('No Items in Challan List', "error");
+                }
+                else {
+                    var allElementsAdjusted = true;
+                    var commonElements = [];
+                    for (var i = 0; i < Adjustchallan.length; i++) {
+                        var element = Adjustchallan[i];
+                        if (resultArray.includes(element)) {
+                            commonElements.push(element);
+                        }
+                        else {
+                            allElementsAdjusted = false;
+                        }
+                    }
+                    if (allElementsAdjusted) {
+                        $("form").submit();
+                    } else {
+                        $.notify('All Items Challan have not been adjusted yet.', "error");
+                    }
+                }
+            }
+            else {
+                if (adjustChallan == 0) {
+                    $.notify('No Items in Challan List', "error");
+                }
+                else if (adjustChallan != alreadyAdjustedChallan) {
+                    $.notify('All Items Challan have not been adjusted yet.', "error");
+                }
+                else {
+                    $("form").submit();
+                }
+            }
+
+
+        });
+
+        $('#ToDate').change(function () {
+            FillGateNo();
+        });
+
+        function GetEmployeeList() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetEmployeeList")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#EmpID').empty();
+                            $('#EmpID').append('<option disabled selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#EmpID').append('<option value="' + val.Emp_Id +
+                                    '">' + val.Emp_Name + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillGateNo() {
+            var dataParams = {
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val()
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateNo")",
+                data: dataParams,
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#GateNo,#GateYearCode').empty();
+                            $('#GateNo').append('<option disabled selected>-Select-</option>');
+                            $('#GateYearCode').append('<option selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#GateNo').append('<option value="' + val.GateNo +
+                                    '" data-year-code="' + val.YEARCODE +
+                                    '" data-gate-entry="' + val.EntryId +
+                                    '" data-branch="' + val.CC +
+                                    '">' + val.GateNo + '</option>');
+                                $('#GateYearCode').append('<option style="display:none" value="' + val.YEARCODE +
+                                    '" data-gate-no="' + val.GateNo +
+                                    '" data-branch="' + val.CC +
+                                    '">' + val.YEARCODE + '</option>');
+
+                            });
+
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                $('#GateNo').append('<option value = "' + $('#hiddenGateNo').val() +
+                                    '" data-gate-no="' + $('#hiddenGateNo').val() +
+                                    ' ">' + $('#hiddenGateNo').val() + '</option>');
+                                $('#GateNo').val($('#hiddenGateNo').val());
+                                $('#GateYearCode').val($('#hiddenGateYearCode').val());
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#GateNo').change(function () {
+            $('#GateEntry').val($(this).find(":selected").data('gate-entry'));
+            $("#GateYearCode").find("option").css('display', 'none');
+            $("#GateYearCode").find("option").prop("selected", false);
+            $("#GateYearCode").find('option:first').css('display', 'block');
+            $("#GateYearCode").find('option:first').attr('selected', 'selected');
+            $("#GateYearCode").find("[data-gate-no='" + $(this).val() + "']").css('display', 'block');
+            $('#divJobWorkReceiveGridAdd').empty();
+            $('#divJobWorkReceiveGrid').empty();
+        });
+
+        var dblClick = true;
+        function CheckAutoOrManual() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#vendorJWAdjustAutoOrManual').val(obj.Result[0].vendorJWAdjustAutoOrManual);
+                        if (obj.Result[0].vendorJWAdjustAutoOrManual == 'A') {
+                            $('#clicktoAdjustButton').show();
+                            dblClick = false;
+                        } else {
+                            $('#clicktoAdjustButton').hide();
+                            dblClick = true;
+                            //   ShowPopUpFunction(k,RecQty,TableRow);
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#GateYearCode').change(function () {
+            //$('#CC').val($(this).find(":selected").data('branch'));
+            CheckAutoOrManual();
+            var dataParams = {
+                "GateNo": $('#GateNo').val(),
+                "GateYearCode": $('#GateYearCode').val(),
+                "GateEntryId": parseInt($('#GateEntry').val())
+            }
+            $('#displaylistbutton').show();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateMainData")",
+                data: dataParams,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                $('#GateDate').attr("value", formatUniversalDate(val.GDate));
+                                $('#AccountCode').attr("value", val.AccountCode);
+                                $('#Address').attr("value", val.address);
+                                $('#DocType').attr("value", val.DocName);
+                                $('#InvNo').attr("value", val.Invoiceno);
+                                $('#InvDate').attr("value", formatUniversalDate(val.InvoiceDate));
+                                //$('#DOCID').attr("value", val.docTypeId);
+                                $('#AccountName').attr("value", val.account_name);
+                                $('#QCCheck').attr("value", val.checkQC);
+                                $('#RecInStore').attr("value", val.RecInStore);
+                                $('#RecStoreid').attr("value", parseInt(val.StoreId));
+                                $('#CurrencyID').attr("value", val.CurrencyId);
+                                $('#CurrencyName').attr("value", val.CurrencyName);
+                                $('#TotalAmt').attr("value", val.TotalAmt);
+                                $('#NetAmt').attr("value", val.NetAmt);
+                            });
+                        }
+                    }
+                    var rowCount = $('#divJobWorkReceiveGrid tr').length;
+                    var rowCountGrid = $('#divJobWorkReceiveGrid tr td').length;
+                    if (rowCount > 0 && rowCountGrid > 1) {
+
+                        for (var i = 1; i <= rowCount; i++) {
+                            if ($('#TypesBOMIND').val() == 'Individual') {
+                                $('#BomRevNo' + i).val('');
+                                $('#BomRevNo' + i).prop("disabled", true);
+                            } else {
+                                $('#BomRevNo' + i).prop("disabled", false);
+                            }
+                        }
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateItemData")",
+                data: dataParams,
+                async: false,
+                success: function (result, status, error) {
+                     
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divJobWorkReceiveGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result, function (index, val) {
+
+                                if (val.SchNo == "") {
+                                    val.SchNo = "NA";
+                                }
+                                // for single quote & apos;TypesBOMIND
+                                var recQty = val.RecQty;
+                                if (dblClick) {
+                                    html += '<tr id="TableRow' + i + '" ondblclick="ShowPopUpFunction(' + i + ',' + recQty + ',' + i + ');"><td><i class="fa fa-eye" onclick="DisplayBomDetail(' + i + ',event)" aria-hidden="true"></i></td><td><input type="hidden" id="AdjustChallanCheck' + i + '" value="true"><td><input type="hidden" id="AdjustChallanCheck' + i + '" value="true"><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name).replace(/\\/g, '&rdquo;') + ' readonly ></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td><td><input id="unit' + i + '" style="height: 30px;width:50px !important;" value=' + val.unit + ' readonly ></td><td><input style="width:50px !important;" id="BillQty' + i + '" value=' + val.BillQty + ' readonly ></td><td><input style="width:50px !important;" id="RecQty' + i + '"  value=' + val.RecQty + ' type="number" min="0" onchange="RecQtyChange(' + i + ')" ></td><td><input style="width:50px !important;" id="JWRate' + i + '" type="number" min="0" onkeyup="JWRateChange(' + i + ')" /></td><td><select id="BomRevNo' + i + '" onchange="BomRevChange(' + i + ')"></select></td><td><input style="width:80px !important;" id="BomRevDate' + i + '" readonly /></td><td><select id="ProducedUnProd' + i + '" onchange="ChangeGridPU(' + i + ')"><option value="P" selected>Produced</option><option value="U">UnProduced</option></select></td><td><select id="BomInd' + i + '" onchange="ChangeGridBomInd(' + i + ')"><option value="B">BOM</option><option value="I">Individual</option></select></td><td><input style="width:50px !important;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input id="Remark' + i + '" /></td><td><select id="ProcessId' + i + '" value=' + val.processid + '></select></td><td><input style="width:50px !important;" id="Adjusted' + i + '" readonly/></td><td><input style="width:50px !important;" id="NoofCase' + i + '" value=' + val.NoofCase + ' readonly ></td><td><input style="width:50px !important;" id="QCCompleted' + i + '" readonly/></td><td><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px !important;" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px !important;" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px !important;" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input style="width:50px !important;" id="BatchWise' + i + '" readonly value=' + val.Batchwise + ' ></td><td><input type="number" min="0" id="JWRateUnit' + i + '"    ></td><td><input id="ProcessUnitQty' + i + '" type="number" value="' + val.BillQty + '" min="0"></td><td><input id="ProcessUnit' + i + '" value=' + val.unit + '></td><td><input id="POAmendNo' + i + '" ></td><td><input id="PartCodeA' + i + '" readonly ></td><td><input type="number" id="TotalPrice' + i + '" readonly></td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
+                                } else {
+                                    html += '<tr id="TableRow' + i + '"><td><i class="fa fa-eye" onclick="DisplayBomDetail(' + i + ',event)" aria-hidden="true"></i></td><td><input type="hidden" id="AdjustChallanCheck' + i + '" value="true"><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name).replace(/\\/g, '&rdquo;') + ' readonly ></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td><td><input id="unit' + i + '" style="height: 30px;width:50px !important;" value=' + val.unit + ' readonly ></td><td><input style="width:50px !important;" id="BillQty' + i + '" value=' + val.BillQty + ' readonly ></td><td><input style="width:50px !important;" id="RecQty' + i + '"  value=' + val.RecQty + ' type="number" min="0" onchange="RecQtyChange(' + i + ')" ></td><td><input style="width:50px !important;" id="JWRate' + i + '" min="0" type="number" onkeyup="JWRateChange(' + i + ')" /></td><td><select id="BomRevNo' + i + '" onchange="BomRevChange(' + i + ')"></select></td><td><input style="width:80px !important;" id="BomRevDate' + i + '" readonly /></td><td><select id="ProducedUnProd' + i + '" onchange="ChangeGridPU(' + i + ')"><option value="P" selected>Produced</option><option value="U">UnProduced</option></select></td><td><select id="BomInd' + i + '" onchange="ChangeGridBomInd(' + i + ')"><option value="B">BOM</option><option value="I">Individual</option></select></td><td><input style="width:50px !important;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input id="Remark' + i + '" /></td><td><select id="ProcessId' + i + '" value=' + val.processid + '></select></td><td><input style="width:50px !important;" id="Adjusted' + i + '" readonly/></td><td><input style="width:50px !important;" id="NoofCase' + i + '" value=' + val.NoofCase + ' readonly ></td><td><input style="width:50px !important;" id="QCCompleted' + i + '" readonly/></td><td><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px !important;" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px !important;" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px !important;" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input style="width:50px !important;" id="BatchWise' + i + '" readonly value=' + val.Batchwise + ' ></td><td><input type="number" id="JWRateUnit' + i + '" min="0"   ></td><td><input id="ProcessUnitQty' + i + '" type="number" value="' + val.BillQty + '" min="0"></td><td><input id="ProcessUnit' + i + '" value=' + val.unit + '></td><td><input id="POAmendNo' + i + '" ></td><td><input id="PartCodeA' + i + '" readonly ></td><td><input type="number" id="TotalPrice' + i + '" readonly></td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
+                                }
+
+                                adjustChallan++;
+                                i++;
+
+                            });
+
+                            $('#divJobWorkReceiveGrid').append(html);
+
+                            fillAllProcess();
+                            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+                            if (rowCount >= 1) {
+                                for (var i = 1; i <= rowCount; i++) {
+                                    $('#ProcessId' + i).val(obj.Result[0].processid);
+                                    if ($('#BomInd' + i).val() == "B") {
+                                        $('#TableRow' + i).css("background-color", "#f1fab9");
+                                    } else if ($('#BomInd' + i).val() == "I") {
+                                        $('#TableRow' + i).css("background-color", "#fab9e1");
+                                    }
+
+                                    $('#ProcessUnitQty' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+                                    $('#JWRateUnit' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+                                    $('#RecQty' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+                                    $('#RecQty' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+
+                                    $('#RecQty' + i).change(function () {
+
+                                        ClearGridAjax();
+                                    })
+                                    $('#JWRate' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+
+                                    $('#TotalPrice' + i).on('keydown', function (event) {
+                                        if (event.key === '-' || event.keyCode === 189 || event.which === 189 || event.charCode === 45) {
+                                            event.preventDefault();
+                                        }
+                                    });
+                                    $('input[id^="JWRateUnit"], input[id^="ProcessUnitQty"]').on('keyup', function () {
+                                        var index = $(this).attr('id').replace('JWRateUnit', '').replace('ProcessUnitQty', '');
+                                        var jwRateUnitValue = parseFloat($('#JWRateUnit' + index).val()) || 0;
+                                        var processUnitQtyValue = parseFloat($('#ProcessUnitQty' + index).val()) || 0;
+                                        var totalPrice = jwRateUnitValue * processUnitQtyValue;
+                                        $('#TotalPrice' + index).val(totalPrice.toFixed(2));
+                                        CountTotal(); // Call CountTotal function after calculating totalPrice
+                                    });
+                                }
+                            }
+
+                            fillBomRevNo();
+                            fillProcessUnit();
+                            var rowCountGrid = $('#divJobWorkReceiveGrid tr td').length;
+                            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+
+                            if (rowCount > 0 && rowCountGrid > 1) {
+                                for (var i = 1; i <= rowCount; i++) {
+                                    if ($('#TypesBOMIND').val() == 'Individual') {
+                                        $('#BomInd' + i).val('I');
+                                    } else {
+                                        $('#BomInd' + i).val('B');
+                                    }
+                                    $('#BomInd' + i).trigger("change");
+                                    if ($('#BomInd' + i).val() == "B") {
+                                        $('#TableRow' + i).css("background-color", "#f1fab9");
+                                    } else if ($('#BomInd' + i).val() == "I") {
+                                        $('#TableRow' + i).css("background-color", "#fab9e1");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        function JWRateChange(i) {
+            var jwRate = parseFloat($('#JWRate' + i).val());
+            var billQty = parseFloat($('#BillQty' + i).val());
+            var amount = parseFloat($('#Amount' + i).val());
+
+            if (jwRate < 0) {
+                $.notify("JWRate cannot be less than 0", "error");
+                $('#JWRate' + i).val(0);
+            }
+
+            if ($('#JWRate' + i).val() == '') {
+                jwRate = 0;
+            }
+
+            var index = i; // If you're already passing 'i', you can directly use it.
+
+            // Update JWRateUnit when JWRate changes
+            var jwRateUnitInput = $('#JWRateUnit' + index);
+            jwRateUnitInput.val($('#JWRate' + index).val());
+            CountTotal(); // Call CountTotal function after updating JWRateUnit
+
+            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+            for (var i = 1; i <= rowCount; i++) {
+                var ProcessUnitQty = parseFloat($('#ProcessUnitQty' + i).val()) || 0;
+                var JWRateUnit = parseFloat($('#JWRateUnit' + i).val()) || 0;
+                var TotalPrice = 0;
+                TotalPrice = ProcessUnitQty * JWRateUnit;
+                $('#TotalPrice' + i).val(TotalPrice);
+            }
+        }
+
+
+
+        function CountTotal() {
+
+            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+            var TotalAMT = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                TotalAMT += $('#TotalPrice' + i).val() == '' ? 0 : parseFloat($('#TotalPrice' + i).val());
+            }
+            $('#NetAmt').val(isNaN(TotalAMT) ? 0 : TotalAMT.toFixed(2));
+        }
+
+        var PopupFlag = false;
+        var notExist = false;
+        var increment = 0;
+
+        function RecQtyChange(i) {
+            if ($('#RecQty' + i).val() < 0) {
+                $.notify("Rec Qty cannnot be negative", "error");
+                $('#RecQty' + i).val(0);
+                $('#RecQty' + i).css('border', '1px solid red');
+            }
+            else {
+                $('#RecQty' + i).css('border', '1px solid black');
+            }
+        }
+
+        function ChangeGridBomInd(i) {
+
+            if ($('#BomInd' + i).val() == "B") {
+
+                //$('#ProducedUnProd' + i).val("P");
+                $('#TableRow' + i).css({ "background-color": "#f1fab9" });
+                $('#BomRevNo' + i).prop("selectedIndex", 0);
+            }
+            else {
+                //$('#ProducedUnProd' + i).val("U");
+                $('#TableRow' + i).css("background-color", "#fab9e1");
+                $('#BomRevNo' + i).val(0);
+            }
+            ClearGridAjax();
+        }
+
+        function ClearGridAjax() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearGridAjax")",
+                dataType: "json",
+                async: false,
+                success: function (data, status, error) {
+                    console.log("Grid cleared");
+                    $('#divJobWorkReceiveGridAdd').empty();
+                    //$('#divJobWorkReceiveGrid').empty();
+                    AlreadyAdjustedArray = [];
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        function countTotalPOPup() {
+            var rowCount = $('#divChallanPopUp tr').length;
+            var TotalPendQtyPOP = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                TotalPendQtyPOP += $('.TotalPendQtyPOP' + i).text() == '' ? 0 : parseFloat($('.TotalPendQtyPOP' + i).text());
+            }
+            $('#TotalPendQty').val(0);
+            $('#TotalPendQty').val(isNaN(TotalPendQtyPOP) ? 0 : TotalPendQtyPOP.toFixed(2));
+
+            var AdjQty = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                AdjQty += $('.AdjQtyPOP' + i).text() == '' ? 0 : parseFloat($('.AdjQtyPOP' + i).text());
+            }
+            $('#TotalAdjQty').val(0);
+            $('#TotalAdjQty').val(isNaN(AdjQty) ? 0 : AdjQty.toFixed(2));
+
+        }
+
+        $('#JobReceiveModal').on('shown.bs.modal', function () {
+            countTotalPOPup();
+        });
+
+        function ChangeGridPU(i) {
+            if ($('#ProducedUnProd' + i).val() == "P") {
+
+                //$('#BomInd' + i).val("BOM");
+            }
+            else
+                $('#BomInd' + i).val("I");
+
+            ClearGridAjax();
+        }
+
+        function ShowPopUpFunction(k, recQty, TableRow) {
+            if (parseInt($('#RecQty' + k).val()) < 0) {
+                $.notify("RecQty cannot be a negative value", "error");
+                AddErrorCls('RecQty' + k);
+                return;
+            }
+
+            if ($('#BomInd' + k).val() == 'B') {
+                if ($('#BomRevNo' + k).val() == 0) {
+                    $.notify("BomRevNo is a required field", "error");
+                    AddErrorCls('BomRevNo' + k);
+                    $('#BomRevNo' + k).css('border', '1px solid red');
+                    return;
+                }
+                else {
+                    RemoveErrorCls('BomRevNo' + k);
+                    $('#BomRevNo' + k).css('border', '1px solid black');
+                }
+                GetChallanPopUP(k, TableRow, recQty);
+            }
+            else {
+                GetChallanPopUP(k, TableRow, recQty);
+            }
+
+
+        }
+
+        $('#IssQty').keyup(function () {
+
+            var qty = parseFloat($(this).val());
+            var rate = parseFloat($('#Rate').val());
+            if (rate < 0) {
+                $.notify("Rate cannot be less than 0", "error");
+                $('#Rate').val(0);
+            }
+            if (qty < 0) {
+                $.notify("Qty cannot be less than 0", "error");
+                $('#IssQty').val(0);
+            }
+            if ($('#Rate').val() == '') {
+                rate = 0;
+            }
+            if ($('#IssQty').val() == '') {
+                qty = 0;
+            }
+            $('#Amount').val(parseFloat(qty * rate));
+        });
+
+
+
+        function GetChallanPopUP(k, TableRow, recQty) {
+
+            var dataParams = {
+                "AccountCode": $('#AccountCode').val(),
+                "YearCode": $('#YearCode').val(),
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val(),
+                "BomRevNo": $('#BomRevNo' + k).val(),
+                "BomRevDate": $('#BomRevDate' + k).val(),
+                "BOMIND": $('#BomInd' + k).val(),
+                "ProdUnProd": $('#ProducedUnProd' + k).val(),
+                "RecItemCode": $('#ItemCode' + k).val(),
+                "BillChallanDate": $('#EntryDate').val(),
+                "JobType": "JOBWORK"
+            }
+            var ItemCode = $('#ItemCode' + k).val();
+            var BomRevNo = $('#BomRevNo' + k).val();
+            var Bomind = $('#BomInd' + k).val();
+
+            var existChallan = true;
+            var adjustLength = AlreadyAdjustedArray.length;
+
+            if (adjustLength > 0) {
+                for (var i = 0; i < adjustLength; i++) {
+                    var existItemCode = AlreadyAdjustedArray[i].ItemCode;
+                    var existBomRevNo = AlreadyAdjustedArray[i].BomRevNo;
+                    var existBomind = AlreadyAdjustedArray[i].BomInd;
+                    if (existItemCode == ItemCode && existBomRevNo == BomRevNo && existBomind == Bomind) {
+                        existChallan = false;
+                    }
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetPopUpChallanData")",
+                data: dataParams,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            if (!existChallan) {
+                                $('#JobReceiveModal2').modal("show");
+                            }
+                            else {
+                                var html = '';
+                                var ItemCode = dataParams.RecItemCode;
+                                $('#divChallanPopUp').empty();
+                                var i = 1;
+                                $.each(obj.Result, function (index, val) {
+
+                                    html += '<tr id="TableRow' + TableRow + '" height="5px"><td><input type="hidden" id="ForGridSave' + i + '" value="' + TableRow + '" /><input type="hidden" id="RecItemCodeGrid" value="' + ItemCode + '"><input type="hidden" id="BomRevNoGrid" value="' + $('#BomRevNo' + i).val() + '"><input type="checkbox" id="CheckUncheck' + i + '" disabled /></td><td><input type="hidden" id="TableRow' + i + '" value="' + recQty + '"><input type="hidden" id="ActualRecQty' + i + '" value="' + recQty + '"><input type="hidden" id="IssEntryId' + i + '" value="' + val.IssEntryId + '" /><p id="IssYearCode' + i + '">' + val.IssYearCode + '</p></td><td><p id="IssJWChallanNo' + i + '">' + val.IssJWChallanNo + '</p></td><td><p id="ChallanDate' + i + '" style="white-space:nowrap">' + val.ChallanDate + '</p></td><td><input type="hidden" id="IssItemCode' + i + '" value ="' + val.IssItemCode + '" /><p id="IssPartCode' + i + '" style="white-space:nowrap">' + val.IssPartCode + '</p></td><td style="white-space:nowrap"><p id="IssItemName' + i + '">' + val.IssItemName + '</p></td><td><p id="PendQty' + i + '" class="TotalPendQtyPOP' + i + '">' + val.PendQty + '</p></td><td><p id="RecItemName' + i + '" style="white-space:nowrap">' + val.RecItemName + '</p></td><td><p id="QtyToBeRec' + i + '" >' + val.QtyToBeRec + '</p></td><td><p id="QtyToBeAdj' + i + '" class="QtyToBeAdjPOP' + i + '">' + ($('#RecQty' + k).val() * val.BomQty).toFixed(2) + '</p></td><td><p id="AdjQty' + i + '" class="AdjQtyPOP' + i + '"></p></td><td><p id="RemainingPendQty' + i + '"></p></td><td><p id="BomStatus' + i + '">' + val.BomStatus + '</p></td><td><p id="BomQty' + i + '">' + val.BomQty + '</p></td><td><p id="Stage_Description' + i + '">' + val.Stage_Description + '</p></td><td><p id="batchno' + i + '">' + val.batchno + '</p></td><td><p id="uniquebatchno' + i + '">' + val.uniquebatchno + '</p></td><td><p id="BomNo' + i + '">' + val.BomNo + '</p></td><td><p id="BOMDate' + i + '">' + val.BOMDate + '</p></td><td><p id="OPNChal' + i + '">' + val.OPNChal + '</p></td></tr > ';
+                                    i++;
+                                });
+                                $('#reccQty').text($('#RecQty' + TableRow).val());
+                                for (var j = 0; j < i; j++) {
+
+                                    var count = 0;
+                                    if ($('#CheckUncheck' + i).is(":checked")) {
+                                        count++;
+                                    }
+                                    if (count == i) {
+                                        $('#CheckedOrNot').text('Uncheck all Challan No');
+                                        $('#challanCheckUncheck').prop("checked", true);
+                                    }
+                                    else {
+                                        $('#CheckedOrNot').text('Check all Challan No');
+                                        $('#challanCheckUncheck').prop("checked", false);
+                                    }
+                                }
+
+                                $('#popUpHead').show();
+                                $('#divChallanPopUp').append(html);
+                                $('#AddToBelowGrid').prop("disabled", true);
+                                $('#JobReceiveModal').modal("show");
+                                //adjustChallan++;
+                            }
+                        }
+                        else {
+                            $('#divChallanPopUp').empty();
+                            $('#popUpHead').hide();
+                            notExist = true;
+                            var html = '';
+                            html += '<tr><td><h5>No challan data for this Item</h5></td></tr>';
+                            $('#divChallanPopUp').append(html);
+                            $('#JobReceiveModal').modal("show");
+                            $('#AddToBelowGrid').prop("disabled", true);
+                            return;
+                        }
+                    }
+                    //if ($('#AdjustChallanCheck' + k).val() == "true") {
+                    //    $('#JobReceiveModal').modal("show");
+                    //}
+                    //else {
+                    //    $('#JobReceiveModal2').modal("show");
+                    //}
+                }
+            });
+        }
+
+        $('#challanCheckUncheck').change(function () {
+            var rowCount = $('#divChallanPopUp tr').length;
+            if ($('#challanCheckUncheck').is(":checked")) {
+                $('#errorLabel').hide();
+                $('#CheckedOrNot').text('UnCheck all Challan No');
+                for (var i = 1; i <= rowCount; i++) {
+                    $('#CheckUncheck' + i).prop("checked", true);
+                }
+            }
+            else {
+                $('#CheckedOrNot').text('Check all Challan No');
+                for (var i = 1; i <= rowCount; i++) {
+                    $('#CheckUncheck' + i).prop("checked", false);
+                }
+            }
+        });
+
+        //function ValidateBOM() {
+        //
+        //    var rowCountGrid = $('#divChallanPopUp tr').length;
+        //    var dataParamsforBOM = {
+        //        "RecItemCode": $('#RecItemCodeGrid').val(),
+        //        "BomRevNo": $('#BomRevNoGrid').val(),
+        //        "BomRevDate": "date",
+        //        "RecQty": $('#reccQty').val()
+        //    }
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "@Url.Action("GetBomValidated")",
+        //        data: dataParamsforBOM,
+        //        async: false,
+        //        success: function (result, status, error) {
+        //
+        //            console.log(result);
+        //            if (result != null) {
+        //                var obj = $.parseJSON(result);
+
+        //                var result_count = obj.Result.length;
+        //                console.log(result_count);
+        //                if (rowCountGrid == result_count) {
+        //                    return true;
+        //                }
+        //                else {
+        //                    var issItemsList = [];
+        //                    var resultList = [];
+        //                    for (var i = 1; i <= rowCountGrid; i++) {
+        //                        issItemsList.push($('#IssItemName' + i).text());
+        //                    }
+        //                    for (var i = 0; i < result_count; i++) {
+        //                        resultList.push(obj.Result[i].Item_Name);
+        //                    }
+        //                    const elementsNotInArray2 = resultList.filter(element => !issItemsList.includes(element));
+        //                    console.log(elementsNotInArray2);
+        //                    $('#validationMsg').text("Bom Child Part item name '" + elementsNotInArray2 + "' is not in the list, You cannot adjust");
+        //                    $.notify("BOM Challan cannot be adjusted", "error");
+        //                    return false;
+
+        //                }
+        //            }
+        //        }
+        //    });
+        //}
+
+
+        $('#AdjustChallanButton').click(function () {
+
+            if ($('#challanCheckUncheck').is(':checked')) {
+                var rowCount = $('#divChallanPopUp tr').length;
+                var rowCountGrid = [];
+                for (var i = 1; i <= rowCount; i++) {
+                    var partCode = $('#IssPartCode' + i).text();
+                    rowCountGrid.push(
+                        partCode
+                    );
+                }
+                var uniquePartCodes = {};
+                var resultArray = [];
+
+                rowCountGrid.forEach(function (partCode) {
+                    if (!uniquePartCodes[partCode]) {
+                        resultArray.push(partCode);
+                        uniquePartCodes[partCode] = true;
+                    }
+                });
+
+                var count = resultArray.length;
+                var dataParamsforBOM = {
+                    "RecItemCode": $('#RecItemCodeGrid').val(),
+                    "BomRevNo": $('#BomRevNoGrid').val(),
+                    "BomRevDate": "date",
+                    "RecQty": $('#reccQty').val()
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetBomValidated")",
+                    data: dataParamsforBOM,
+                    async: false,
+                    success: function (result, status, error) {
+
+                        console.log(result);
+                        if ($.parseJSON(result).Result.length > 0) {
+                            var obj = $.parseJSON(result);
+                            var result_count = obj.Result.length;
+                            console.log(result_count);
+                            if (count == result_count) {
+                                $('#AddToBelowGrid').prop("disabled", false);
+                                return true;
+                            }
+                            else {
+                                var issItemsList = [];
+                                var resultList = [];
+                                for (var i = 1; i <= rowCountGrid; i++) {
+                                    issItemsList.push($('#IssItemName' + i).text());
+                                }
+                                for (var i = 0; i < result_count; i++) {
+                                    resultList.push(obj.Result[i].Item_Name);
+                                }
+
+                                console.log(issItemsList);
+                                console.log(resultList);
+                                console.log(obj);
+                                const elementsNotInArray2 = resultList.filter(element => !issItemsList.includes(element));
+                                console.log("=============");
+                                console.log(elementsNotInArray2);
+                                if (elementsNotInArray2.length != 0) {
+                                    $('#validationMsg').text("Bom Child Part item name '" + elementsNotInArray2 + "' is not in the list, You cannot adjust");
+                                    $('#AddToBelowGrid').prop("disabled", true);
+                                } else {
+                                    $('#AddToBelowGrid').prop("disabled", false);
+                                }
+                                return false;
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#errorLabel').text('Please check the challan for adjusting');
+                event.preventDefault();
+            }
+
+            var rowCount = $('#divChallanPopUp tr').length;
+            var checkQty = 0;
+            var ItemsArray = [];
+            if ($('#TypesBOMIND').val() == "BOM") {
+                for (var i = 1; i <= rowCount; i++) {
+                    var partCode = $('#IssPartCode' + i).text();
+                    ItemsArray.push(
+                        partCode
+                    );
+                }
+                var outputArray = [];
+
+                function removeusingSet(arr) {
+                    let outputArray = Array.from(new Set(arr));
+                    return outputArray;
+                }
+                $('#AddToBelowGrid').prop("disabled", false);
+                console.log(removeusingSet(ItemsArray));
+
+                var arrayToUse = removeusingSet(ItemsArray);
+
+                for (var j = 0; j < arrayToUse.length; j++) {
+
+                    var plusAdj = 0;
+                    var adjQty1 = 0;
+                    for (var i = 1; i <= rowCount; i++) {
+                        if (arrayToUse[j] == $('#IssPartCode' + i).text()) {
+                            console.log($('#IssPartCode' + i).text());
+                            var ForGridSave = parseFloat($('#divChallanPopUp tr td #ForGridSave1').val());
+                            var pendQty = parseFloat($('#PendQty' + i).text());
+                            var recQty = parseFloat($('#RecQty' + ForGridSave).val());
+                            var bomQty = parseFloat($('#BomQty' + i).text());
+
+                            var adjQty = recQty * bomQty;
+                            var adjQty2 = adjQty.toFixed(2) - plusAdj;
+                            if (adjQty2 > pendQty) {
+                                $('#AdjQty' + i).text(pendQty);
+                                adjQty1 = $('#AdjQty' + i).text();
+                                $('#RemainingPendQty' + i).text((pendQty - adjQty1).toFixed(2));
+                            }
+                            else {
+                                $('#AdjQty' + i).text(adjQty2.toFixed(2));
+                                adjQty1 = $('#AdjQty' + i).text();
+                                $('#RemainingPendQty' + i).text((pendQty - adjQty1).toFixed(2));
+                            }
+                            //if(adjQty > pendQty){
+
+                            //    $('#AdjQty' + i).text((pendQty-plusAdj).toFixed(2));
+                            //    adjQty1 = $('#AdjQty' + i).text();
+                            //    $('#RemainingPendQty' + i).text((adjQty1 - pendQty).toFixed(2));
+                            //}
+                            //else{
+                            //    $('#AdjQty' + i).text(((adjQty - pendQty)-plusAdj).toFixed(2));
+                            //    adjQty1 = $('#AdjQty' + i).text();
+                            //    $('#RemainingPendQty' + i).text((adjQty1 - pendQty).toFixed(2));
+                            //}
+                            plusAdj += parseFloat(adjQty1);
+
+                        }
+                    }
+
+                }
+            }
+            else {
+                for (var i = 1; i <= rowCount; i++) {
+                    var ForGridSave = parseFloat($('#divChallanPopUp tr td #ForGridSave1').val());
+                    var pendQty = parseFloat($('#PendQty' + i).text());
+                    var recQty = parseFloat($('#RecQty' + ForGridSave).val());
+                    var bomQty = parseFloat($('#BomQty' + i).text());
+                    if (checkQty != recQty) {
+                        if (pendQty < recQty) {
+                            if ($('#AdjQty' + (i - 1)).text() == '') {
+                                $('#AdjQty' + i).text(pendQty);
+                            }
+                            else {
+                                var adjQty = recQty - parseFloat($('#AdjQty' + (i - 1)).text());
+                                if (adjQty > pendQty) {
+                                    adjQty = pendQty;
+                                    if ((checkQty + adjQty) > recQty) {
+                                        adjQty = recQty - checkQty;
+                                    }
+                                }
+                                $('#AdjQty' + i).text(adjQty);
+                            }
+                            checkQty += parseFloat($('#AdjQty' + i).text());
+                        }
+                        else {
+                            var adj = 0;
+                            if ($('#AdjQty' + (i - 1)).text() == '') {
+                                adj = 0;
+                            }
+                            else {
+                                adj = parseFloat($('#AdjQty' + (i - 1)).text());
+                            }
+                            $('#AdjQty' + i).text(recQty - parseFloat(adj));
+                            checkQty += parseFloat($('#AdjQty' + i).text());
+                        }
+                        var adjQty = parseFloat($('#AdjQty' + i).text());
+                        var diffQty = pendQty - adjQty;
+                        if (diffQty < 0) {
+                            $.notify("Does not have sufficient Qty", "error");
+                        }
+                        else {
+
+                            $('#RemainingPendQty' + i).text(pendQty - adjQty);
+                        }
+                    }
+                    else {
+                        $('#AdjQty' + i).text(0);
+                        $('#RemainingPendQty' + i).text(0);
+                    }
+                }
+                $('#AddToBelowGrid').prop("disabled", false);
+            }
+            for (var i = 1; i <= rowCount; i++) {
+                if (parseFloat($('#AdjQty' + i).text()) == 0) {
+                    $('#CheckUncheck' + i).prop("checked", false);
+                }
+
+            }
+
+            countTotalPOPup();
+
+        });
+        $('#TypesBOMIND').change(function () {
+            var rowCountGrid = $('#divJobWorkReceiveGrid tr td').length;
+            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+
+            if (rowCount > 0 && rowCountGrid > 1) {
+                for (var i = 1; i <= rowCount; i++) {
+                    if ($('#TypesBOMIND').val() == 'Individual') {
+                        $('#BomInd' + i).val('I');
+                        $('#BomRevNo' + i).val('');
+                        $('#BomRevNo' + i).prop("disabled", true);
+                    } else {
+                        $('#BomInd' + i).val('B');
+                        $('#BomRevNo' + i).prop("disabled", false);
+                    }
+                    $('#BomInd' + i).trigger("change");
+                    if ($('#BomInd' + i).val() == "B") {
+                        $('#TableRow' + i).css("background-color", "#f1fab9");
+                    } else if ($('#BomInd' + i).val() == "I") {
+                        $('#TableRow' + i).css("background-color", "#fab9e1");
+                    }
+                }
+            }
+
+        });
+        var AlreadyAdjustedArray = [];
+        $('#AddToBelowGrid').click(function () {
+
+            var ForGridSave = parseInt($('#divChallanPopUp tr td #ForGridSave1').val());
+            AddToItemGrid(ForGridSave);
+            var rowCount = $('#divChallanPopUp tr').length;
+            var ItemData = [];
+
+            // var ItemCode = $('#ItemCode' + ForGridSave).val()
+            for (var i = 1; i <= rowCount; i++) {
+
+                if ($('#CheckUncheck' + i).is(":checked")) {
+                    ItemData.push({
+                        "EntryIdIssJw": parseInt($('#IssEntryId' + i).val()),
+                        "IssChallanNo": $('#IssJWChallanNo' + i).text(),
+                        "IssYearCode": parseInt($('#IssYearCode' + i).text()),
+                        "YearCodeIssJw": parseInt($('#IssYearCode' + i).text()),
+                        "IssChallanDate": formatUniversalDate($('#ChallanDate' + i).text()),
+                        "ItemCode": $('#IssItemCode' + i).val(),
+                        //"ItemCode": ItemCode,
+                        "IssItemName": $('#IssItemName' + i).text(),
+                        "IssPartCode": $('#IssPartCode' + i).text(),
+                        "PendQty": parseFloat($('#RemainingPendQty' + i).text()),
+                        "AdjQty": parseFloat($('#AdjQty' + i).text()),
+                        "CC": $('#CC').find(':selected').text(),
+                        "RecQty": $('#RecQty' + ForGridSave).val(),
+                        "BOMQty": $('#BomQty' + i).text(),
+                        "AccountCode": $('#AccountCode').val(),
+                        "FinishItemCode": $('#ItemCode' + ForGridSave).val(),
+                        "FinishItemName": $('#Item_Name' + ForGridSave).val(),
+                        "FinishPartCode": $('#PartCode' + ForGridSave).val(),
+                        "EntryIdRecJw": parseInt($('#IssEntryId' + i).val()),
+                        "YearCodeRecJw": parseInt($('#IssYearCode' + i).text()),
+                        "IssuedBatchNO": $('#batchno' + i).text(),
+                        "IssuedUniqueBatchNo": $('#uniquebatchno' + i).text(),
+                        "BOMrevno": $('#BomRevNo' + ForGridSave).val(),
+                        "BOMInd": $('#BomInd' + ForGridSave).val(),
+                    });
+                }
+
+            }
+
+            $.ajax({
+                url: "@Url.Action("AddChallanDetail2Grid")",
+                type: "POST",
+                data: { model: ItemData },
+                beforeSend: function (xhr) {
+
+                },
+                success: function (data, status, xhr) {
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                    }
+                    else {
+                        $('#divJobWorkReceiveGridAdd').html(data);
+                        $.notify('Item Added To Grid.', "success");
+
+
+                        AlreadyAdjustedArray.push({
+                            "ItemCode": $('#ItemCode' + ForGridSave).val(),
+                            "BomRevNo": $('#BomRevNo' + ForGridSave).val(),
+                            "BomInd": $('#BomInd' + ForGridSave).val()
+                        });
+                        PopupFlag = true;
+                        //$('#AdjustChallanCheck' + ForGridSave).val("false");
+                        alreadyAdjustedChallan++;
+                        $('#JobReceiveModal').modal("hide");
+                    }
+
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+
+                    $('.Schedule').fadeIn();
+                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                }
+            }).done(function () {
+
+            }).fail(function () {
+                alert("error");;
+            }).always(function () {
+
+            });
+        });
+
+        function AddToItemGrid(SeqNo) {
+
+            var ItemData = {
+                "SeqNo": SeqNo,
+                "ItemName": $("#Item_Name" + SeqNo).val(),
+                "PartCode": $("#PartCode" + SeqNo).val(),
+                "ItemCode": $('#ItemCode' + SeqNo).val(),
+                "Unit": $('#unit' + SeqNo).val(),
+                "BillQty": $('#BillQty' + SeqNo).val(),
+                "RecQty": $('#RecQty' + SeqNo).val(),
+                "JWRate": $('#JWRate' + SeqNo).val(),
+                "Amount": $('#Amount' + SeqNo).val(),
+                "Remark": $('#Remark' + SeqNo).val(),
+                "ProducedUnprod": $('#ProducedUnProd' + SeqNo).val(),
+                "ProcessId": $('#ProcessId' + SeqNo).val(),
+                "StoreId": 1,
+                "Adjusted": $('#Adjusted' + SeqNo).val(),
+                "BomRevNo": $('#BomRevNo' + SeqNo).val(),
+                "BomRevDate": $('#BomRevDate' + SeqNo).val(),
+                "NoOfCase": $('#NoofCase' + SeqNo).val(),
+                "QCCompleted": $('#QCCompleted' + SeqNo).val(),
+                "PONO": $('#PONo' + SeqNo).val(),
+                "POYearCode": $('#POYearCode' + SeqNo).val(),
+                "PODate": $('#PODate' + SeqNo).val(),
+                "SchNo": $('#SchNo').val(),
+                "SchYearCode": $('#SchYearCode' + SeqNo).val(),
+                "SchDate": $('#PODate' + SeqNo).val(),
+                "POType": $('#POType' + SeqNo).val(),
+                "BomInd": $('#BomInd' + SeqNo).val(),
+                "BatchWise": $('#QCCompleted' + SeqNo).val(),
+                "JWRateUnit": $('#QCCompleted' + SeqNo).val(),
+                "ProcessUnitQty": $('#ProcessUnitQty' + SeqNo).val(),
+                "ProcessUnit": $('#ProcessUnit' + SeqNo).val(),
+                "POAmendNo": $('#POAmendNo' + SeqNo).val()
+            }
+
+            $.ajax({
+                url: "@Url.Action("AddJobReceiveGrid")",
+                type: "POST",
+                data: ItemData,
+                beforeSend: function (xhr) {
+
+                },
+                success: function (data, status, xhr) {
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                    }
+                    else {
+                        $('#divJobWorkReceiveGridAdded').html(data);
+
+                    }
+
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+
+                    $('.Schedule').fadeIn();
+                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                }
+            }).done(function () {
+
+            }).fail(function () {
+                alert("error");;
+            }).always(function () {
+
+            });
+        }
+
+        function formatUniversalDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [day, month, year].join('/');
+        }
+
+        function fillAllProcess() {
+            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+            for (let j = 1; j <= rowCount; j++) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetProcessList")",
+                    dataType: "json",
+                    async: false,
+                    success: function (result, status, error) {
+                        if (result != null) {
+
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $('#ProcessId' + j).empty();
+                                $('#ProcessId' + j).append('<option disabled value="0" selected>-Select-</option>');
+                                $.each(obj.Result, function (index, val) {
+                                    $('#ProcessId' + j).append('<option value="' + val.ProcessId +
+                                        '">' + val.StageDescription + '</option>');
+                                });
+
+                            }
+                        }
+                    }
+                });
+            }
+
+        }
+
+        function fillProcessUnit() {
+            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+            for (let j = 1; j <= rowCount; j++) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetProcessUnit")",
+                    dataType: "json",
+                    success: function (result, status, error) {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $('#ProcessUnit' + j).empty();
+                                $('#ProcessUnit' + j).append('<option disabled value="0" selected>-Select-</option>');
+                                $.each(obj.Result, function (index, val) {
+                                    $('#ProcessUnit' + j).append('<option value="' + val.Unit_Name +
+                                        '">' + val.Unit_Name + '</option>');
+                                });
+                            }
+                        }
+                    }
+
+                });
+            }
+
+        }
+
+        function fillBomRevNo() {
+            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+            for (let j = 1; j <= rowCount; j++) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetBomRevNo")",
+                    data: { ItemCode: $('#ItemCode' + j).val() },
+                    dataType: "json",
+                    success: function (result, status, error) {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $('#BomRevNo' + j).empty();
+                                $.each(obj.Result, function (index, val) {
+                                    $('#BomRevNo' + j).append('<option value="' + val.bomno +
+                                        '" data-bom-date="' + formatUniversalDate(val.EffectiveDate) + '">' + val.bomno + '</option>');
+                                });
+                            }
+
+                            $('#BomRevDate' + j).val($('#BomRevNo' + j).find(':selected').data('bom-date'));
+                            if ($('#TypesBOMIND').val() == 'Individual') {
+                                $('#BomRevNo' + j).val("");
+                            }
+                        }
+                    }
+
+                });
+            }
+        }
+
+        function BomRevChange(i) {
+            $('#BomRevDate' + i).val($('#BomRevNo' + i).find(':selected').data('bom-date'));
+            ClearGridAjax();
+        }
+
+        function GetPendingChallanList(event, SeqNo) {
+
+            event.preventDefault();
+            SeqNo++;
+            $('.modal-header').addClass('bg-graident bg-warning');
+            $('.modal-title').text('Pending Challan List');
+            $.ajax({
+                url: "@Url.Action("GetPopUpData")",
+                type: 'GET',
+                async: false,
+                data: { AccountCode: parseInt($('#AccountCode').val()), IssYear: parseInt($('#YearCode').val()), FinYearFromDate: $('#FromDate').val(), billchallandate: $('#EntryDate').val(), ACCOUNTNAME: $('#AccountName').val() },
+                success: function (result, status, xhr) {
+
+                    $('#divDisplayGrid').empty();
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            $.each(obj.Result, function (index, val) {
+                                var i = 1;
+                                var html = '';
+
+                                html += '<tr>' +
+                                    '<td>' + i + '</td>' +
+                                    '<td>' + val.VendorName + '</td>' +
+                                    '<td id="PartCode' + i + '">' + val.IssPartcode + '</td>' +
+                                    '<td id="ItemName' + i + '">' + val.IssueItemName + '</td>' +
+                                    '<td id="BomInd' + i + '">' + val.BOMIND + '</td>' +
+                                    '<td>' + val.IssJWChallan + '</td>' +
+                                    '<td>' + val.IssueChallanYearCode + '</td>' +
+                                    '<td>' + val.IssueChallandate.split("T")[0] + '</td>' +
+                                    '<td>' + val.IssueQty + '</td>' +
+                                    '<td>' + val.RecQty + '</td>' +
+                                    '<td>' + val.ActualPendQty + '</td>' +
+                                    '<td>' + val.PendQty + '</td>' +
+                                    '</tr>';
+                                $('#divDisplayGrid').append(html);
+                            });
+                        } else {
+                            $('#divDisplayGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+                        }
+                    }
+                }
+            });
+            $('#PopupModel').modal("show");
+        }
+
+        $('#sendToExcel').click(function () {
+             
+            $("#poPopUpData").table2excel({
+                filename: "POPopupData.xls"
+            });
+        });
+
+
+        $('.Displayedit').click(function () {
+            $('.modal-header').addClass('bg-graident bg-warning');
+            $('.modal-title').text('Pending PO List');
+            $.ajax({
+                url: "@Url.Action("GetPopUpData")",
+                data: { AccountCode: parseInt($('#AccountCode').val()), PONO: $('#PONO').val() },
+                success: function (result, status, xhr) {
+
+                    $('#divDisplayGrid').empty();
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                var html = '';
+                                html += '<tr><td id="ModalItemName">' + val.ItemName + '</td><td id="ModalPartCode">' + val.PartCode + '</td><td id="ModalPOQty">' + val.POQty + '</td><td id="ModalPendQtyQty">' + val.PendQty + '</td><td id="ModalPONO">' + val.PONo + '</td><td id="ModalGateQty">' + val.GateQty + '</td><td id="ModalGateAlQty">' + val.GateAlQty + '</td><td id="ModalPendAfterGate">' + val.PendAfterGate + '</td><td id="ModalMRNAlQty">' + val.MRNAltQty + '</td><td id="ModalMIRAlQty">' + val.MIRAltQty + '</td><td id="ModalItemServType">' + val.POTypeServItem + '</td><td id="ModalApproved">' + val.popproved + '</td><td id="ModalWef">' + val.wef + '</td><td id="ModalSchNo">' + val.ScheduleNo + '</td><td id="ModalPOType">' + val.POType + '</td></tr>';
+                                $('#divDisplayGrid').append(html);
+                            });
+                        }
+                    }
+                }
+            });
+            $('#PopupModel').modal("show");
+        });
+
+        function JWRChallanList() {
+
+            var JWRList = [];
+            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+            for (let i = 1; i <= rowCount; i++) {
+                JWRList.push({
+                    "SeqNo": i,
+                    "ItemName": $("#Item_Name" + i).val(),
+                    "PartCode": $("#PartCode" + i).val(),
+                    "ItemCode": $('#ItemCode' + i).val(),
+                    "Unit": $('#unit' + i).val(),
+                    "BillQty": $('#BillQty' + i).val(),
+                    "RecQty": $('#RecQty' + i).val(),
+                    "JWRate": $('#JWRate' + i).val(),
+                    "Amount": $('#Amount' + i).val(),
+                    "Remark": $('#Remark' + i).val(),
+                    "ProducedUnprod": $('#ProducedUnProd' + i).val(),
+                    "ProcessId": $('#ProcessId' + i).val(),
+                    "StoreId": 1,
+                    "Adjusted": $('#Adjusted' + i).val(),
+                    "BomRevNo": $('#BomRevNo' + i).val(),
+                    "BomRevDate": $('#BomRevDate' + i).val(),
+                    "NoOfCase": $('#NoofCase' + i).val(),
+                    "QCCompleted": $('#QCCompleted' + i).val(),
+                    "PONO": $('#PONo' + i).val(),
+                    "POYearCode": $('#POYearCode' + i).val(),
+                    "PODate": $('#PODate' + i).val(),
+                    "SchNo": $('#SchNo').val(),
+                    "SchYearCode": $('#SchYearCode' + i).val(),
+                    "SchDate": $('#PODate' + i).val(),
+                    "POType": $('#POType' + i).val(),
+                    "BomInd": $('#BomInd' + i).val(),
+                    "BatchWise": $('#QCCompleted' + i).val(),
+                    "JWRateUnit": $('#QCCompleted' + i).val(),
+                    "ProcessUnitQty": $('#ProcessUnitQty' + i).val(),
+                    "ProcessUnit": $('#ProcessUnit' + i).val(),
+                    "POAmendNo": $('#POAmendNo' + i).val()
+                });
+            }
+
+            $.ajax({
+                url: "@Url.Action("JWRChallanList")",
+                type: "POST",
+                data: { model: JWRList },
+                success: function (data, status, xhr) {
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                    }
+                    else {
+                        $('#divJobWorkReceiveGridAdded').html(data);
+
+                    }
+
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+
+                    $('.Schedule').fadeIn();
+                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                }
+            }).done(function () {
+
+            }).fail(function () {
+                alert("error");;
+            }).always(function () {
+
+            });
+        }
+
+        function GetAdjustedChallan(event) {
+
+            event.preventDefault();
+             
+            JWRChallanList();
+            var Data = [];
+            var rowCount = $('#divJobWorkReceiveGrid tr').length;
+            for (let i = 1; i <= rowCount; i++) {
+                Data.push({
+                    "Unit": $('#unit' + i).val(),
+                    "BillQty": parseFloat($('#BillQty' + i).val()),
+                    "JWRate": $('#JWRate' + i).val() == '' ? 0 : parseFloat($('#JWRate' + i).val()),
+                    "PONO": $('#PONo' + i).val(),
+                    "POYearCode": parseInt($('#POYearCode' + i).val()),
+                    "SchNo": $('#SchNo' + i).val(),
+                    "SchYearCode": parseInt($('#SchYearCode' + i).val()),
+                    "ProdUpProd": $('#ProducedUnProd' + i).val(),
+                    "RecQty": parseFloat($('#RecQty' + i).val()),
+                    "ItemCode": $('#ItemCode' + i).val(),
+                    "ItemName": $('#Item_Name' + i).val(),
+                    "BOMrevno": $('#BomRevNo' + i).val() == null ? 0 : parseInt($('#BomRevNo' + i).val()),
+                    "BOMRevDate": $('#BomRevDate' + i).val(),
+                    "ProcessId": $('#ProcessId' + i).val() == null ? 0 : parseInt($('#ProcessId' + i).val()),
+                    "BOMInd": $('#BomInd' + i).val(),
+                });
+            }
+            console.log("AdjChallan Data:", Data)
+            $.ajax({
+                url: "@Url.Action("GetAdjustedChallan")",
+                data: { DTTItemGrid: JSON.stringify(Data), AccountCode: parseInt($('#AccountCode').val()), GateYearcode: parseInt($('#GateYearCode').val()), Gateno: $('#GateNo').val(), yearCode: $('#YearCode').val(), billchallandate: $('#EntryDate').val(), FromFinStartDate: $('#FromDate').val() },
+                success: function (result, status, xhr) {
+                    if (result != null) {
+
+                        $('#divJobWorkReceiveGridAdd').empty();
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                var html = '';
+                                var i = index + 1;
+                                html += '<tr>' +
+                                    '<td>' + val.EntryIdIssJw + '</td>' +
+                                    '<td>' + val.IssJWChallanNo + '</td>' +
+                                    '<td>' + val.IssYearCode + '</td>' +
+                                    '<td>' + val.ChallanDate.split("T")[0] + '</td>' +
+                                    '<td>' + val.IssPartCode + '</td>' +
+                                    '<td>' + val.IssItemName + '</td>' +
+                                    '<td id="BomNo' + i + '">' + val.BomNo + '</td>' +
+                                    '<td>' + val.BomStatus + '</td>' +
+                                    '<td>' + val.PendQty + '</td>' +
+                                    '<td id="finishPartCode' + i + '">' + val.FinishPartcode + '</td>' +
+                                    '<td>' + val.FinishItemName + '</td>' +
+                                    '<td>' + val.bomqty + '</td>' +
+                                    '<td>' + val.through + '</td>' +
+                                    '<td>' + val.QtyToBeRec + '</td>' +
+                                    '<td>' + val.ActualAdjQty + '</td>' +
+                                    '<td>' + val.batchno + '</td>' +
+                                    '<td>' + val.uniquebatchno + '</td>' +
+                                    '</tr>';
+
+                                $('#divJobWorkReceiveGridAdd').append(html);
+                            });
+                            $.notify('Item Added To Grid.', "success");
+                        } else {
+                            $('#divJobWorkReceiveGridAdd').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+                        }
+                    }
+                }
+
+            });
+
+        }
+
+        var currentSearchColumn = null;
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divDisplayGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#poPopUpData');
+            var rows = table.find('#divDisplayGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divDisplayGrid').append(row);
+            });
+        }
+
+        function DisplayBomDetail(i, event) {
+
+            event.preventDefault();
+            $('#DisplaybomDetailModal').modal('show');
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("DisplayBomDetail")",
+                dataType: "json",
+                data: { "ItemCode": $('#ItemCode' + i).val(), "WOQty": $('#RecQty' + i).val(), "BomRevNo": $('#BomRevNo' + i).val() },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divDisplayBomDetail').empty();
+                            var i = 1;
+                            $.each(obj.Result, function (index, val) {
+                                //html += '<tr><td><input id="Checkbox' + i + '"  type="checkbox"><input type="hidden" value="' + val.AccountCode + '" id="Accountcode' + i + '"/><input type="hidden" value="' + val.itemcode + '" id="Itemcode' + i + '"/></td><td><input id="AcName' + i + '" value=' + JSON.stringify(val.Account_Name) + ' readonly></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly style="width:90px;"></td><td><input id="ItemName' + i + '" value=' + JSON.stringify(val.ItemName) + ' readonly></td><td><select id="Store' + i + '" onchange = "StoreChange(' + i + ')"></select></td><td><input id="Stock' + i + '" style="width:70px;" readonly></td> <td><input id="WOQty' + i + '" value=' + val.OrderQty + ' style="width:60px;background-color:#ffd6dd"><td><input id="OrderQty' + i + '" value=' + val.OrderQty + ' readonly style="width:60px;"></td><td><input id="OrderType' + i + '" value=' + val.OrderType + ' readonly style="width:90px;"></td><td><input id="wef' + i + '" value=' + val.wef.split("T")[0] + ' readonly style="width:90px;"></td><td><input type="hidden" id="SOType' + i + '" value=' + val.SOType + '><input id="AmmNo' + i + '" value=' + val.AmmNo + ' readonly style="width:40px;"></td><td><input id="AmmEffDate' + i + '" value=' + val.AmmEffDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="unit' + i + '" value=' + val.unit + ' readonly style="width:40px;"></td><td><input id="AltQty' + i + '" value=' + val.AltQty + ' readonly style="width:30px;"></td><td><input id="AltUnit' + i + '" value=' + val.AltUnit + ' readonly style="width:50px;"></td><td><input id="Color' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " ></td><td><input id="Description' + i + ' " readonly  value=' + val.Description + '></td><td><input id="CustOrderNo' + i + '" value=' + JSON.stringify(val.CustOrderNo) + ' readonly style="width:80px;"></td><td class="SONo' + i + '"><input id="SONo' + i + '" value=' + val.SONo + ' readonly style="width:40px;"></td><td><input id="SODate' + i + '" value=' + val.SODate.split("T")[0] + '  readonly style="width:90px;"></td><td class="SchNo' + i + '" ><input readonly  style="width:60px;" id="SchNO' + i + '" value=' + val.SchNO + ' ></td><td><input id="Schdate' + i + '" value=' + val.Schdate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="FGStoreName' + i + '" value=' + JSON.stringify(val.FGStoreName) + ' readonly style="width:90px;"></td><td><input id="FGStock' + i + '" value=' + val.FGStock + ' readonly style="width:90px;"></td><td><input id="ItemAmendmentNo' + i + '" value=' + val.ItemAmendmentNo + ' readonly style="width:100px;"></td><td><input id="SOCloseDate' + i + '" value=' + val.SOCloseDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="SchEffTillDate' + i + '" value=' + val.ScheduleEffectiveTillDate.split("T")[0] + ' readonly style="width:90px;"></td>';
+                                html += '<tr id="DisplayBomRow-' + i + '">' +
+                                    '<td>' + i + '</td>' +
+                                    '<td>' + val.MainPartCode + '</td>' +
+                                    '<td>' + val.MainItemName + '</td>' +
+                                    '<td>' + val.SUBBOMPartCode + '</td>' +
+                                    '<td>' + val.SubBOMITEMNAME + '</td>' +
+                                    '<td>' + val.PartCode + '</td>' +
+                                    '<td>' + val.Item_Name + '</td>' +
+                                    '<td>' + val.RMQty + '</td>' +
+                                    '<td>' + val.RMTotalReq + '</td>' +
+                                    '<td>' + val.ReqQtyForWO + '</td>' +
+                                    '<td id="SubBom-' + i + '">' + val.SUBBOM + '</td>' +
+                                    '<td>' + val.levelNo + '</td>' +
+                                    '</tr>';
+                                i++;
+                            });
+                            $('#divDisplayBomDetail').append(html);
+
+                            var RowCount = $('#divDisplayBomDetail tr').length;
+                            var TdRow = $('#divDisplayBomDetail tr td').length;
+
+                            if (TdRow > 1) {
+                                $('#lblTotalNoOfItems').text(RowCount);
+                            }
+                            ColorRows();
+                        }
+
+                    }
+                }
+            });
+
+        }
+
+        $("#btnBomExcel").click(function () {
+
+            const table = document.querySelector(".BomDetailtable");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell) => {
+                // cell.style.backgroundColor = "#fcba03";
+                headerData.push(cell.textContent);
+            });
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                rows[i].querySelectorAll("td").forEach((cell) => {
+                    rowData.push(cell.textContent);
+                });
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "BomDetail.xlsx");
+        });
+        function PressBack() {
+
+            sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNoBack').val());
+            sessionStorage.setItem('GateNoBack', $('#GateNoBack').val());
+            sessionStorage.setItem('MRNNoBack', $('#MRNNoBack').val());
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+            sessionStorage.setItem('BranchBack', $('#BranchBack').val());
+
+            window.history.back();
+        }
+
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+    
+
+}
+<style>
+    .notify-container {
+        z-index: 10000;
+    }
+
+    .color-box {
+        width: 15px;
+        height: 15px;
+    }
+
+    #GridLabels th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+</style>

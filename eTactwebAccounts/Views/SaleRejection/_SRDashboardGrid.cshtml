@@ -1,0 +1,184 @@
+﻿@model eTactWeb.DOM.Models.SaleRejectionDashboard
+
+
+@if (Model.SummaryDetail == "Detail")
+{
+
+}
+else
+{
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="SRDashboardGrid">
+        <thead class="bg-gradient card-headerBG text-light">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Rej EntryID</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Rej YC</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST No</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Domestic Export NEPZ</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Invoice No</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Invoice Date</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalerejCreditNote VoucherNo</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleRej EntryDate</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate No</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Date</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Mrn No</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN Date</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv NetAmt</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sub Voucher Name</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustInvoiceTime</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PaymentTerm</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transporter</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vehicleno</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RoundOffAmt</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RoundoffType</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxableamt</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ToatlDiscountPercent</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalDiscountAmount</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InvNetAmt</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MachineName</th>
+                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalerejRemark</th>
+                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th>
+                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEnteredByName</th>
+                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEntryDate</th>
+                <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LastUpdatedByName</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LastUpdationDate</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceSheetClosed</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExchangeRate</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gateyearcode</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Mrnyearcode</th>
+            </tr>
+        </thead>
+        <tbody id="divSRDashboardGrid">
+            @{
+                var @Cntr = 0;
+                if (Model.saleRejectionDashboard == null || Model.saleRejectionDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="36" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.saleRejectionDashboard)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    @*<div id="printData-@Cntr">
+                    <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode">
+                    <span class="fa-stack">
+                    <i class="fa fa-square fa-stack-2x"></i>
+                    <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                    </span>
+                    </a>
+                    </div>*@
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="SaleRejectionEdit" asp-route-Mode="V" asp-route-ID="@item.SaleRejEntryId" asp-route-YC="@item.SaleRejYearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="editCursorDiv-@Cntr">
+
+                                        <a class="table-link link-primary" asp-action="SaleRejectionEdit" asp-route-Mode="U" asp-route-ID="@item.SaleRejEntryId" asp-route-YC="@item.SaleRejYearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        @* <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.SaleRejEntryId" asp-route-YC="@item.SaleRejYearCode" asp-route-createdBy="@item.ActualEnteredBy" asp-route-entryByMachineName="@item.MachineName" onclick="confirmdelete(event)">
+                                            <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                            </a>*@
+                                        @*   <a class="table-link link-danger" id="deleteLink" data-id="@item.SaleRejEntryId" data-YC="@item.SaleRejYearCode" data-accountCode="@item.AccountCode" data-createdBy="@item.ActualEnteredBy" data-machineName="@item.MachineName" data-cc="@item.CC" onclick="confirmDelete(event)">
+                                            <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                            </a>*@
+                                    </div>
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.SaleRejEntryId" asp-route-YC="@item.SaleRejYearCode" asp-route-createdBy="@item.ActualEnteredBy" asp-route-accountCode="@item.AccountCode" asp-route-cc="@item.CC" asp-route-machineName="@item.MachineName">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            @* <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td> *@
+                            <td>@item.SaleRejEntryId</td>
+                            <td>@item.SaleRejYearCode</td>
+                            <td>@item.Account_Name</td>
+                            <td>@item.GSTNO</td>
+                            <td>@item.DomesticExportNEPZ</td>
+                            <td>@item.CustInvoiceNo</td>
+                            <td>@item.CustInvoiceDate</td>
+                            <td>@item.SalerejCreditNoteVoucherNo</td>
+                            <td>@item.VoucherNo</td>
+                            <td>@item.SaleRejEntryDate</td>
+                            <td>@item.GateNo</td>
+                            <td>@item.MrnNo</td>
+                            <td>@item.MRNDate</td>
+                            <td>@(item.SaleRejEntryDate == null ? string.Empty : item.SaleRejEntryDate.Split(" ")[0])</td>
+                            <td>@item.BillAmt</td>
+                            <td>@item.InvNetAmt</td>
+                            <td></td>@*SaleRej Voucher Name*@
+                            <td>@item.CustInvoiceTime</td>
+                            <td>0</td> @*Currency*@
+                            <td>@item.PaymentTerm</td>
+                            <td>@item.Transporter</td>
+                            <td>@item.Vehicleno</td>
+                            <td>@item.RoundOffAmt</td>
+                            <td>@item.RoundoffType</td>
+                            <td>@item.Taxableamt</td>
+                            <td>@item.ToatlDiscountPercent</td>
+                            <td>@item.TotalDiscountAmount</td>
+                            <td>@item.InvNetAmt</td>
+                            <td>@item.MachineName</td>
+                            <td>@item.SalerejRemark</td>
+                            <td>@item.CC</td>
+                            <td>@item.Uid</td>
+                            <td>@item.ActualEnteredByName</td>
+                            <td>@item.ActualEntryDate</td> @* Received Amt *@
+                            <td>@item.LastUpdatedByName</td>  @* Pend Amt *@
+                            <td>@item.LastUpdationDate</td>
+                            <td>@item.BalanceSheetClosed</td>
+                            <td>0</td>@* Exchange Rate *@
+                            <td>@item.Gateyearcode</td>
+                            <td>@item.Mrnyearcode</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+
+}
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+</style>
+

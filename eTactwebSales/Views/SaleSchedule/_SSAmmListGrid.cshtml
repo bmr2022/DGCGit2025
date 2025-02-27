@@ -1,0 +1,102 @@
+﻿@model eTactWeb.DOM.Models.SSDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    int yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss SSAGrid text-nowrap mb-0" id="SSDashboardGrid">
+        <thead class="bg-gradient card-headerBG text-light">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer OrderNo</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO NO</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Year</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Eff From Date</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Eff Till Date</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Close Date</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch AmendmentNo</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Approved</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Closed</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Completed</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created By</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created On</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
+            </tr>
+        </thead>
+        <tbody id="ammTable" class="divSSAGrid">
+            @{
+                var @Cntr = 0;
+                if (Model.SSDashboard == null || Model.SSDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.SSDashboard)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr>
+                            <td class="FWB">@Cntr</td>
+                            @{
+                                if (Model.Mode == "Pending")
+                                {
+                                    <td style="text-align:center;">
+                                        <a onclick="location.href='@Url.Action("SaleSchedule",new{Mode="SSA",ID=item.EntryID,YC=item.SchYear})'">
+                                            <i class="fa-regular fa-floppy-disk" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;font-size:14px;"></i>
+                                        </a>
+                                    </td>
+                                }
+                                if (Model.Mode == "U")
+                                {
+                                    <td style="text-align:center;">
+                                        <a onclick="location.href='@Url.Action("SaleSchedule",new{Mode="SAU",ID=item.EntryID,YC=item.SchYear})'">
+                                            <i class="fa-regular fa-floppy-disk" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;font-size:14px;"></i>
+                                        </a>
+                                    </td>
+                                }
+                                if (Model.Mode == "Completed")
+                                {
+                                    <td style="text-align:center;">
+                                        <a onclick="location.href='@Url.Action("ViewSSCompleted",new{Mode="SSC",ID=item.EntryID,YC=item.SchYear,SONO=item.SONO})'">
+                                            <i class="fa-solid fa-eye fa-fw fa-2x" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        </a>
+                                    </td>
+                                }
+                            }
+
+                            <td>@item.SchNo</td>
+                            <td>@item.SchDate.Split(" ")[0]</td>
+                            <td>@item.SchYear</td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.CustomerOrderNo</td>
+                            <td class="FWB">@item.SONO</td>
+                            <td>@item.SODate.Split(" ")[0]</td>
+                            <td>@item.SOYearCode</td>
+                            <td>@item.SchEffFromDate.Split(" ")[0]</td>
+                            <td>@item.SchEffTillDate.Split(" ")[0]</td>
+                            <td>@item.SOCloseDate.Split(" ")[0]</td>
+                            <td>@item.SchAmendNo</td>
+                            <td>@item.SchApproved</td>
+                            <td>@item.SchClosed</td>
+                            <td>@item.SchCompleted</td>
+                            <td>@item.CreatedByName</td>
+                            <td>@item.CreatedOn.Split(" ")[0]</td>
+                            <td class="FWB">@item.EntryID</td>
+                            <td>@item.DeliveryAddress</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

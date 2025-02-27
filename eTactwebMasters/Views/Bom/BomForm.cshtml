@@ -1,0 +1,1054 @@
+﻿@model eTactWeb.DOM.Models.BomModel
+
+@{
+    ViewData["Title"] = "Form";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 rounded shadow-lg">
+    <form asp-action="BomForm" asp-controller="Bom" autocomplete="off" class="form-horizontal" asp-antiforgery=true>
+        <input type="hidden" asp-for="Mode" />
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    BOM (Bill Of Material)
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="Dashboard" asp-controller="Bom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <input asp-for="FGPartCodeBack" type="hidden" value="@Model.FGPartCodeBack" />
+                                <input asp-for="FGItemNameBack" type="hidden" value="@Model.FGItemNameBack" />
+                                <input asp-for="RMPartCodeBack" type="hidden" value="@Model.RMPartCodeBack" />
+                                <input asp-for="RMItemNameBack" type="hidden" value="@Model.RMItemNameBack" />
+                                <input asp-for="BomRevNoBack" type="hidden" value="@Model.BomRevNoBack" />
+                                <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+                                <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                        @* <partial name="_FormsButton" /> *@
+                        @if (Model.Mode != "V")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                       
+                    </span>
+                </h4>
+            </div>
+        </div>
+        <div class="card-body bg-light">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="accordion shadow-lg" id="BomMaster">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>FG Item Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-lg-6" id="DivFG1">
+                                    <partial name="_FGItem1" />                                    
+                                </div>
+                                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="BOMName" class="form-label">BOM Name</label>
+                                    <input asp-for="BOMName" class="form-control" />
+                                </div>
+                                <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+                                    <label asp-for="BomNo" class="form-label">Bom No</label>
+                                    <input asp-for="BomNo" class="form-control" />
+                                </div>
+                                <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+                                    <label asp-for="BomQty" class="form-label">Bom Qty</label>
+                                    <input asp-for="BomQty" class="form-control" type="number" value=1 step="0.01" min="0" oninput="validity.valid||(value='');" />
+                                </div>
+                                <div class="col col-lg-1 col-md-2 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col col-lg-1 col-md-2 col-sm-6 col-xs-12">
+                                    <label asp-for="EffectiveDate" class="form-label">Effective Date</label>
+                                    <input asp-for="EffectiveDate" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="DivBomForm">
+                    <partial name="_BomForm.cshtml" />
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="O_Measurements">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BOT_Measurements" aria-expanded="true" aria-controls="BOT_Measurements">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="BOT_Measurements" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="O_Measurements">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedBy" class="form-label">Created By</label>
+                                    <input asp-for="CreatedBy" type="hidden" class="form-control" />
+                                    <input asp-for="CreatedByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedOn" class="form-label">Created On</label>
+                                    <input asp-for="CreatedOn" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+                                    <input asp-for="UpdatedBy" type="hidden" class="form-control" />
+                                    <input asp-for="UpdatedByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+                                    <input asp-for="UpdatedOn" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryByMachineName" class="form-label">Entry By Machine</label>
+                                    <input asp-for="EntryByMachineName" value="@Environment.MachineName" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer p-3">
+            @* <div class="card-header card-headerBG text-light justify-content-center bg-gradient"> *@
+                <h4>
+                     
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                    <partial name="_FormsButton" />
+                    </span>
+                </h4>
+            @* </div> *@
+        </div>
+    </form>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('#FinishItemCode').select2();
+            $('#FinishedItemName').select2();
+            $('#ItemCode').select2();
+            $('#ItemName').select2();
+            $('#AltItemCode1').select2();
+            $('#AltItemName1').select2();
+            $('#AltItemCode2').select2();
+            $('#AltItemName2').select2();
+
+            GetFormRights();
+            $("#EntryDate").attr('style', 'pointer-events:none;');
+            $("#EntryDate").datepicker({ minDate: 0 });
+            $("#EffectiveDate").datepicker({ minDate: 0 });
+            if($('#Mode').val() == "U"){
+                 
+                FGItemcode = $('#hiddenFGItemCode').val();
+                Itemcode = $('#hiddenItemCode').val();
+                //AltItemCode1 = $('#hiddenAltItemCode1').val();
+                //$('#FG1').trigger('change');
+                FetchItem($('#FG1')[0]);
+                FetchItem($('#FG2')[0]);
+                FetchItem($('#FG3')[0]);
+                 
+               
+                //$('#FinishItemCode').val(FGItemcode).trigger('change');
+                //$('#FinishedItemName').val(FGItemcode).trigger('change');
+            }
+
+            $('#UpdateButton').click(function(){
+                $('#Mode').val("U");
+            });
+
+            //$('#FinishItemCode').change(function(){
+            //    //SetPartCodeItem(this.id);
+            //    //GetBomNo(this.id);
+            //    //GetBomName('FinishedItemName');
+            //    //SetPartCodeItem(this.id).then(GetBomNo(this.id)).then(GetBomName('FinishedItemName'));
+
+            //    $.when(SetPartCodeItem(this.id)).done(function(){GetBomNo('FinishItemCode')}).done(function(){GetBomName('FinishedItemName')});
+            //});
+            //$('#FinishedItemName').change(function(){
+            //    SetPartCodeItem(this.id);
+            //    GetBomNo(this.id);
+            //    GetBomName(this.id);
+            //});
+
+            //$('#ItemCode').on('change',function(){
+            //    SetPartCodeItem(this.id);
+            //    GetUnit(this.id);
+            //});
+
+            //$('#ItemName').on('change',function(){
+            //    SetPartCodeItem(this.id);
+            //    GetUnit(this.id);
+            //});
+
+            //$('#AltItemCode1').on('change',function(){
+            //    SetPartCodeItem(this.id);
+            //});
+            //$('#AltItemName1').on('change',function(){
+            //    SetPartCodeItem(this.id);
+            //});
+            //$('#AltItemCode2').on('change',function(){
+            //    SetPartCodeItem(this.id);
+            //});
+            //$('#AltItemName2').on('change',function(){
+            //    SetPartCodeItem(this.id);
+            //});
+
+            $('#BomNo').attr('readonly', 'readonly').bind('mousedown keydown keypress', function (e) {
+                e.preventDefault();
+            });
+
+            $('#AltQty1').rules("remove", "required");
+            $('#AltQty2').rules("remove", "required");
+            $('#RunnerQty').rules("remove", "required");
+            $('#RunnerItemCode').rules("remove", "required");
+            $('#GrossWt').rules("remove", "required");
+            $('#NetWt').rules("remove", "required");
+            $('#Scrap').rules("remove", "required");
+            $('#BurnQty').rules("remove", "required");
+            $('#AltItemCode1').rules("remove", "required");
+            $('#AltItemCode2').rules("remove", "required");
+            $('#FinishItemCode').rules("remove", "required");
+            $('#FinishedItemName').rules("remove", "required");
+            $('#ItemCode').rules("remove", "required");
+            $('#Qty').rules("remove", "required");
+            //$('#element').keyup(myFunction).keypress(myFunction).blur(myFunction).change(myFunction)
+        });
+
+        $(document).on('select2:select', '#FinishItemCode,#FinishedItemName', function (e) {
+             
+            var cntId = e.target.id;
+            $('#divBomGrid').empty();
+            if (cntId == 'FinishItemCode') {
+                FGNameChange(cntId);
+            }
+            else {
+                FGCodeChange(cntId);
+            }
+
+        });
+        $(document).on('select2:select', '#ItemCode,#ItemName', function (e) {
+            var cntId = e.target.id;
+
+            if (cntId == 'ItemCode') {
+                ItemNameChange(cntId);
+            }
+            else {
+                ItemCodeChange(cntId);
+            }
+            $('#Qty').val('0.00');
+        });
+        $(document).on('select2:select', '#AltItemCode1,#AltItemName1', function (e) {
+            var cntId = e.target.id;
+
+            if (cntId == 'AltItemCode1') {
+                AltItemName1Change(cntId);
+            }
+            else {
+                AltItemCode1Change(cntId);
+            }
+
+        });
+        $(document).on('select2:select', '#AltItemCode2,#AltItemName2', function (e) {
+            var cntId = e.target.id;
+
+            if (cntId == 'AltItemCode2') {
+                AltItemName2Change(cntId);
+            }
+            else {
+                AltItemCode2Change(cntId);
+            }
+
+        });
+
+        function FGCodeChange(ID) {
+            // $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') }).done(function () { GetGridData(ID) });
+            $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') });
+            GetGridData(ID);
+        }
+
+        function FGNameChange(ID) {
+            SetPartCodeItem(ID);
+            GetGridData(ID);
+            GetBomNo(ID);
+            GetBomName(ID);
+        }
+
+        function ItemCodeChange(ID) {
+            SetPartCodeItem(ID);
+            GetUnit(ID);
+        }
+
+        function ItemNameChange(ID) {
+            SetPartCodeItem(ID);
+            GetUnit(ID);
+        }
+
+        function AltItemCode1Change(ID) {
+            SetPartCodeItem(ID);
+        }
+
+        function AltItemName1Change(ID) {
+            SetPartCodeItem(ID);
+        }
+
+        function AltItemCode2Change(ID) {
+            SetPartCodeItem(ID);
+        }
+
+        function AltItemName2Change(ID) {
+            SetPartCodeItem(ID);
+        }
+
+        function SetPartCodeItem(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).val();
+                var t = $('#' + ID + ' option:selected').text();
+
+                if (ID == "FinishItemCode") {
+                    v == "" ? $('#FinishedItemName').val("") : $('#FinishedItemName').val(v).trigger("change");
+                }
+                if (ID == "FinishedItemName") {
+                    v == "" ? $('#FinishItemCode').val("") : $('#FinishItemCode').val(v).trigger("change");
+                }
+                if (ID == "ItemCode") {
+                    v == "" ? $('#ItemName').val("") : $('#ItemName').val(v).trigger("change");
+                }
+                if (ID == "ItemName") {
+                    v == "" ? $('#ItemCode').val("") : $('#ItemCode').val(v).trigger("change");
+                }
+                if (ID == "AltItemCode1") {
+                    v == "" ? $('#AltItemName1').val("") : $('#AltItemName1').val(v).trigger("change");
+                }
+                if (ID == "AltItemName1") {
+                    v == "" ? $('#AltItemCode1').val("") : $('#AltItemCode1').val(v).trigger("change");
+                }
+                if (ID == "AltItemCode2") {
+                    v == "" ? $('#AltItemName2').val("") : $('#AltItemName2').val(v).trigger("change");
+                }
+                if (ID == "AltItemName2") {
+                    v == "" ? $('#AltItemCode2').val("") : $('#AltItemCode2').val(v).trigger("change");
+                }
+            }
+        }
+
+
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights","Bom")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit']").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("button[type='submit']").prop("disabled", true);
+                                }
+                            }
+                        }
+
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        function GetUnit(ID) {
+            ID = ID == "" ? '' : $('#' + ID).val();
+            $.ajax({
+                url: '@Url.Action("GetUnit","Bom")',
+                type: "GET",
+                data: { "IC": ID },
+                success: function (data) {
+                    if (data) {
+                        $('#Unit').val(data.ic);
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        function GetGridData(ID) {
+             
+            ID = ID == "" ? '' : $('#' + ID).val();
+            $.ajax({
+                url: '@Url.Action("GetGridData","Bom")',
+                type: "GET",
+                data: { "IC": ID, "BMNo": $('#BomNo').val()-1 },
+                async:false,
+                success: function (data) {
+                    $('#divBomGrid').empty();
+                    $('#divBomGrid').append(data);
+                    //if (data) {
+                    //    $('#Unit').val(data.ic);
+                    //}
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        function GetBomNo(ID) {
+             
+            ID = ID == "" ? '' : $('#' + ID).val();
+            $.ajax({
+                url: '@Url.Action("GetBomNo","Bom")',
+                type: "GET",
+                data: { "GBN": ID },
+                async:false,
+                success: function (data) {
+
+                    if (data) {
+                        $('#BomNo').val(data.gbn).attr('readonly', 'readonly');
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetBomName(ID) {
+            if ($('#' + ID).prop('selectedIndex') != 0) {
+                $('#BOMName').val($('#' + ID + ' :selected').text().split(' --->')[0]);
+                setTimeout(function () {
+                    BindBomData();
+                }, 500);
+            }
+            else
+                $('#BOMName').val(''), BindBomData();
+        }
+
+        function FetchItem(ID) {            
+                   /*$('#BOMName').val('')*/ 
+                   //$('#BomNo').val(0),
+                   $('#BomQty').val(1);
+            $.ajax({
+                url: '@Url.Action("FetchAllItem","Bom")',
+                type: "POST",
+                data: { "TF": ID.checked, "CtrlID": ID.id },
+                success: function (response) {                                
+                    if (response != null) {
+                        if (ID.id == "FG1") {
+                            $('#DivFG1').html(response);
+                            $('#FinishedItemName').select2();
+                            $('#FinishItemCode').select2();
+                            ID.checked == true ? $('#FG1').prop('checked', true) : $('#FG1').prop('checked', false);
+                            BindBomData();
+                            //$('#FinishItemCode').change(function(){
+                            //    SetPartCodeItem(this.id);
+                            //    GetBomNo(this.id);
+                            //    GetBomName('FinishedItemName');
+                            //});
+                            //$('#FinishedItemName').change(function(){
+                            //    SetPartCodeItem(this.id);
+                            //    GetBomNo(this.id);
+                            //    GetBomName(this.id);
+                            //});
+                        }
+                        if (ID.id == "FG2") {
+                            $('#DivFG2').html(response);
+                            $('#ItemCode').select2();
+                            $('#ItemName').select2();
+                            ID.checked == true ? $('#FG2').prop('checked', true) : $('#FG2').prop('checked', false);
+
+                            //$('#ItemCode').on('change',function(){
+                            //    SetPartCodeItem(this.id);
+                            //    GetUnit(this.id);
+                            //});
+                            //$('#ItemName').on('change',function(){
+                            //    SetPartCodeItem(this.id);
+                            //    GetUnit(this.id);
+                            //});
+                        }
+                        if (ID.id == "FG3") {
+                            $('#DivFG3').html(response);
+                            $('#AltItemCode1').select2();
+                            $('#AltItemName1').select2();
+                            $('#AltItemCode2').select2();
+                            $('#AltItemName2').select2();
+                            ID.checked == true ? $('#FG3').prop('checked', true) : $('#FG3').prop('checked', false);
+                            //$('#AltItemCode1').bind('change',function(){
+                            //    SetPartCodeItem(this.id);
+                            //});
+                            //$('#AltItemName1').on('change',function(){
+                            //    SetPartCodeItem(this.id);
+                            //});
+                            //$('#AltItemCode2').on('change',function(){
+                            //    SetPartCodeItem(this.id);
+                            //});
+                            //$('#AltItemName2').on('change',function(){
+                            //    SetPartCodeItem(this.id);
+                            //});
+                        }
+                         
+                        if($('#Mode').val() == "U"){
+                            $('#FinishItemCode').val(FGItemcode).trigger('change');
+                            $('#FinishedItemName').val(FGItemcode).trigger('change');
+
+                            $('#ItemCode').val(Itemcode).trigger('change');
+                            $('#ItemName').val(Itemcode).trigger('change');                          
+                            
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function BomValidation() {
+            let IsErr = "";
+
+            $(".valid").each(function () {
+                $(this).removeClass('is-invalid');
+                IsErr = 0;
+            });
+
+            if (!$('#FinishItemCode').val()) {
+                AddErrorCls('FinishItemCode');
+                IsErr = 1;
+            }
+            else {
+                $('#FinishItemCode').removeClass('is-invalid');
+            }
+
+            if (!$('#FinishedItemName').val()) {
+                AddErrorCls('FinishedItemName');
+                IsErr = 1;
+            }
+            else {
+                $('#FinishedItemName').removeClass('is-invalid');
+            }
+
+            if ($('#ItemName').val() != "" && $('#ItemName').val() != null) {
+                if (!$('#Qty').val() || $('#Qty').val() == "0.00" || $('#Qty').val() == "0") {
+                    AddErrorCls('Qty');
+                    IsErr = 1;
+                }
+            }
+
+            if ($('#AltItemCode1').val() != "" && $('#AltItemCode1').val() != null) {
+                if (!$('#AltQty1').val() || $('#AltQty1').val() == "0.00" || $('#AltQty1').val() == "0") {
+                    AddErrorCls('AltQty1');
+                    IsErr = 1;
+                }
+            }
+
+            if ($('#AltItemCode2').val() != "" && $('#AltItemCode2').val() != null) {
+                if (!$('#AltQty2').val() || $('#AltQty2').val() == "0.00" || $('#AltQty2').val() == "0") {
+                    AddErrorCls('AltQty2');
+                    IsErr = 1;
+                }
+            }
+
+            if (!$('#BOMName').val()) {
+                AddErrorCls('BOMName');
+                IsErr = 1;
+            }
+            if (!$('#BomNo').val()) {
+                AddErrorCls('BomNo');
+                IsErr = 1;
+            }
+            if (!$('#BomQty').val()) {
+                AddErrorCls('BomQty');
+                IsErr = 1;
+            }
+            if (!$('#EntryDate').val()) {
+                AddErrorCls('EntryDate');
+                IsErr = 1;
+            }
+            if (!$('#EffectiveDate').val()) {
+                AddErrorCls('EffectiveDate');
+                IsErr = 1;
+            }
+
+            if (!$('#ItemCode').val()) {
+                AddErrorCls('ItemCode');
+                IsErr = 1;
+            }
+            else {
+                $('#ItemCode').removeClass('is-invalid');
+            }
+
+            if (!$('#ItemName').val()) {
+                AddErrorCls('ItemName');
+                IsErr = 1;
+            }
+            else {
+                $('#ItemName').removeClass('is-invalid');
+            }
+
+            if (!$('#Qty').val() || $('#Qty').val() == "0.00" || $('#Qty').val() == "0") {
+                AddErrorCls('Qty');
+                IsErr = 1;
+            }
+
+            if (!$('#Unit').val()) {
+                AddErrorCls('Unit');
+                IsErr = 1;
+            }
+            else {
+                $('#Unit').removeClass('is-invalid');
+            }
+
+            console.log('IsErr : ' + IsErr);
+
+            if (IsErr == 1) {
+                return false;
+            }
+            else if (IsErr == 0) {
+                if ($('#FinishItemCode').val()) {
+                    if ($('#FinishItemCode').val() == $('#ItemCode').val()) {
+                        AddErrorCls('FinishItemCode');
+                        AddErrorCls('ItemCode');
+                        $.notify('FG Part Code and Part Code cannot be same.', "info");
+                        IsErr = 1;
+                    }
+                    else if ($('#FinishItemCode').val() == $('#AltItemCode1').val()) {
+                        AddErrorCls('FinishItemCode');
+                        AddErrorCls('AltItemCode1');
+                        $.notify('FG Part Code and Alt Part Code1 cannot be same.', "info");
+                        IsErr = 1;
+                    }
+                    else if ($('#FinishItemCode').val() == $('#AltItemCode2').val()) {
+                        AddErrorCls('FinishItemCode');
+                        AddErrorCls('AltItemCode2');
+                        $.notify('FG Part Code and Alt Part Code2 cannot be same.', "info");
+                        IsErr = 1;
+                    }
+                    else {
+                        if ($('#ItemCode').val()) {
+                            if ($('#ItemCode').val() == $('#AltItemCode1').val()) {
+                                AddErrorCls('ItemCode');
+                                AddErrorCls('AltItemCode1');
+                                $.notify('Part Code and Alt Part Code1 cannot be same.', "info");
+                                IsErr = 1;
+                            }
+                            else {
+                                if ($('#ItemCode').val() == $('#AltItemCode2').val()) {
+                                    AddErrorCls('ItemCode');
+                                    AddErrorCls('AltItemCode2');
+                                    $.notify('Part Code and Alt Part Code2 cannot be same.', "info");
+                                    IsErr = 1;
+                                }
+                                else {
+                                    if ($('#AltItemCode1').val()) {
+                                        if ($('#AltItemCode1').val() == $('#AltItemCode2').val()) {
+                                            AddErrorCls('AltItemCode1');
+                                            AddErrorCls('AltItemCode2');
+                                            $.notify('Alt Part Code1 and Alt Part Code2 cannot be same.', "info");
+                                            IsErr = 1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (IsErr == 0) {
+                    BindBom();
+                }
+            }
+        }
+
+        function BindBom() {
+            var BomData = {
+                "ItemCode": $('#ItemCode').val(),
+                "ICName": $('#ItemCode option:selected').text(),
+                "ItemName": $('#ItemName option:selected').text(),
+                "Qty": $('#Qty').val(),
+                "Unit": $('#Unit').val(),
+                "Location": $('#Location').val(),
+                "MPNNo": $('#MPNNo').val(),
+                "AltItemCode1": $('#AltItemCode1').val(),
+                "AICName1": $('#AltItemCode1 option:selected').text(),
+                "AltItemName1": $('#AltItemName1 option:selected').text(),
+                "AltQty1": $('#AltQty1').val(),
+                "UsedStageId": $('#UsedStageId').val(),
+
+                "AltItemCode2": $('#AltItemCode2 option:selected').val(),
+                "AICName2": $('#AltItemCode2 option:selected').text(),
+                "AltItemName2": $('#AltItemName2 option:selected').text(),
+                "AltQty2": $('#AltQty2').val(),
+                "IssueToJOBwork": $('#IssueToJOBwork').val(),
+
+                "DirectProcess": $('#DirectProcess').val(),
+                "RecFrmCustJobwork": $('#RecFrmCustJobwork').val(),
+                "PkgItem": $('#PkgItem').val(),
+                "Remark": $('#Remark').val(),
+
+                "RunnerItemCode": $('#RunnerItemCode').val(),
+                "RunnerQty": $('#RunnerQty').val(),
+                "GrossWt": $('#GrossWt').val(),
+                "NetWt": $('#NetWt').val(),
+
+                "Scrap": $('#Scrap').val(),
+                "BurnQty": $('#BurnQty').val(),
+            }
+
+            $.ajax({
+                url: '@Url.Action("BomGrid","Bom")',
+                type: "POST",
+                data: { model: BomData },
+                success: function (data, status, xhr) {
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                    }
+                    else {
+                        if (!DelSeqNo && DelSeqNo != 0) {
+                            $('#divBomGrid ."' + DelSeqNo + "'").remove();
+                        }
+                        $('#divBomGrid').html(data);
+                        $.notify('Bom Detail Added To Grid.', "success");
+                        ClearData();
+                    }
+                     
+                    $('#optionalParameterBtn').removeClass('show');
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ClearData() {
+            $('#B_Measurements select').prop('selectedIndex', 0);
+            $('#B_Measurements input').val('');
+            $('#B_Measurements').toggleClass(' show');
+            $('#AltItemCode1').val('').trigger('change');
+            $('#AltItemCode2').val('').trigger('change');
+            $('#AltItemName1').val('').trigger('change');
+            $('#AltItemName2').val('').trigger('change');
+            $('#ItemCode').val('').trigger('change');
+            $('#ItemName').val('').trigger('change');
+            $('#Qty').val('');
+            $('#Unit').val('');
+        }
+
+        function DeleteBomRow(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("DeleteBomRow","Bom")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                success: function (data) {
+                    $('#divBomGrid').html(data);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        $('#Qty').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+
+        $('#AltQty1').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+        $('#AltQty2').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+        $('#GrossWt').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+        $('#NetWt').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+        $('#NetWt').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+        $('#Scrap').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+        $('#BurnQty').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+
+        $('#RunnerQty').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+
+        var DelSeqNo = 0;
+
+        function EditBomSeq(SeqNo) {
+              
+            var BomNo = $('#BomNo').val();
+            var ItemCode = $('#FinishItemCode').val();
+
+            $.ajax({
+                url: '@Url.Action("EditBomSeq","Bom")',
+                type: "POST",
+                data: { ItemCode: ItemCode, BomNo: BomNo, SeqNo: SeqNo },
+                success: function (data) {
+                       
+                    var obj = $.parseJSON(data);
+                    if (obj != null && obj.length == 1) {
+                        //$('#FinishItemCode').val(obj[0].FinishItemCode);
+                        //$('#FinishItemName').val(obj[0].FinishItemCode);
+                        //$('#BomQty').val(obj[0].BomQty);
+                        $('#ItemCode').val(obj[0].ItemCode).change();
+                        if (obj[0].AltItemCode1 != 0) {
+                            $('#AltItemCode1').val(obj[0].AltItemCode1).trigger('change');
+                            $('#AltItemName1').val(obj[0].AltItemCode1).trigger('change');
+                        }
+                        if (obj[0].AltItemCode2 != 0) {
+                            $('#AltItemCode2').val(obj[0].AltItemCode2).trigger('change');
+                            $('#AltItemName2').val(obj[0].AltItemCode2).trigger('change');
+                        }
+
+                        $('#ItemName').val(obj[0].ItemCode).trigger('change');
+                        $('#AltQty1').val(obj[0].AltQty1);
+                        $('#AltQty2').val(obj[0].AltQty2);
+                        $/*('#BOMName').val(obj[0].BOMName);*/
+                        $('#DirectProcess').val(obj[0].DirectProcess);
+                        $('#BurnQty').val(obj[0].BurnQty);
+                        //$('#EffectiveDate').val(obj[0].EffectiveDate);
+                        //$('#EntryDate').val(obj[0].EntryDate);
+                        $('#GrossWt').val(obj[0].GrossWt);
+                        $('#IssueToJOBwork').val(obj[0].IssueToJOBwork);
+                        $('#NetWt').val(obj[0].NetWt);
+                        $('#PkgItem').val(obj[0].PkgItem);
+                        $('#Qty').val(obj[0].Qty);
+                        $('#RecFrmCustJobwork').val(obj[0].RecFrmCustJobwork);
+                        $('#Remark').val(obj[0].Remark);
+                        $('#RunnerItemCode').val(obj[0].RunnerItemCode);
+                        $('#RunnerQty').val(obj[0].RunnerQty);
+                        $('#Scrap').val(obj[0].Scrap);
+                        $('#Unit').val(obj[0].Unit);
+                        $('#Location').val(obj[0].Location);
+                        $('#MPNNo').val(obj[0].MPNNo);
+                        $('#UsedStageId').val(obj[0].UsedStageId);
+                        DelSeqNo = SeqNo;
+                        $('#divBomGrid .' + DelSeqNo).remove();
+                        //if($('#divBomGrid')[0].childElementCount==0)
+                        if ($('#divBomGrid').children().length == 0) {
+                            var NoData = '<tr class="text-center"><td colspan="23" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                            $('#divBomGrid').html(NoData);
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function BindBomData() {
+            if ($('#CopyBom').is(':checked') != true) {
+                var FIC = $('#FinishItemCode :selected').text();
+                var BMNo = $('#BomNo').val();
+
+                $.ajax({
+                    url: '@Url.Action("BindBomData","Bom")',
+                    type: "POST",
+                    data: { "FIC": FIC, "BMNo": BMNo },
+                    success: function (data) {
+                        //$('#DivBomForm').empty().html(data);
+                        $('#Mode').val('');
+                        //var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
+                        //$('.col-auto')[4].innerHTML = pp;
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+            else {
+                $('#Mode').val('');
+                // var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
+                $('.col-auto')[4].innerHTML = pp;
+            }
+        }
+
+        function CopyBomFunc(ID) {
+            if (ID.checked == true) {
+                $('#FinishItemCode').removeAttr('disabled');
+                $('#FinishedItemName').removeAttr('disabled');
+                $('#FG1').removeAttr('disabled');
+                $('#Mode').val('');
+                var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
+                $('.col-auto')[4].innerHTML = pp;
+                $.datepicker.formatDate('dd/mm/yy', new Date());
+
+                $("#EntryDate").datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", new Date());
+                //$('#EntryDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
+                $('#EffectiveDate').val($.datepicker.formatDate('mm/dd/yy', new Date()));
+            }
+            else {
+                $('#FinishItemCode').prop('disabled', true);
+                $('#FinishedItemName').prop('disabled', true);
+                $('#FG1').prop('disabled', true);
+            }
+        }
+
+        $("button[type='submit']").click(function () {
+            $('#FinishItemCode').removeProp('disabled');
+            $('#FinishedItemName').removeProp('disabled');
+            $('#FG1').removeProp('disabled');
+            $("form :input").prop("disabled", false);
+        });
+
+        $(function () {
+            $("#container").delegate('a', 'click', function () {
+                console.log("clicked");
+                $(this).clone().appendTo("#container");
+            });
+        });
+
+        function PressBack() {
+            localStorage.setItem('FGPartCodeBack', $('#FGPartCodeBack').val());
+            localStorage.setItem('FGItemNameBack', $('#FGItemNameBack').val());
+            localStorage.setItem('RMPartCodeBack', $('#RMPartCodeBack').val());
+            localStorage.setItem('RMItemNameBack', $('#RMItemNameBack').val());
+            localStorage.setItem('BomRevNoBack', $('#BomRevNoBack').val());
+            localStorage.setItem('SummaryDetailBack', $('#SummaryDetailBack').val());
+            localStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+    </script>
+}

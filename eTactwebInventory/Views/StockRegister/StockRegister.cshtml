@@ -1,0 +1,563 @@
+﻿@model eTactWeb.DOM.Models.StockRegisterModel
+@{
+    ViewData["Title"] = "Stock Register";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>Stock Register</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="StoreId" class="form-label">Store Name</label>
+                                    <select asp-for="StoreId" class="form-select">
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">Part Code</label>
+                                    <input asp-for="PartCode" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label">Item Name</label>
+                                    <input asp-for="ItemName" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemGroup" class="form-label">Item group</label>
+                                    <input asp-for="ItemGroup" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemType" class="form-label">Item Type</label>
+                                    <input asp-for="ItemType" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportType" class="form-label">Report Type</label>
+                                    <select asp-for="ReportType" class="form-select">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="STOCKSUMMARY">STOCK SUMMARY                </option>
+                                        <option value="STOCKDETAIL">DETAIL STOCK REPORT          </option>
+                                        <option value="SHOWALLSTORESTOCK">ALL STORE STOCK              </option>
+                                        <option value="STOCKSUMMARY">SUMMARY WITH ZERO INVENTORY  </option>
+                                        <option value="STOCKSUMMARY">Show only balance            </option>
+                                        <option value="SHOWONLYRECDATA">Show only rec                </option>
+                                        <option value="SHOWONLYISSUEDATA">Show only issue              </option>
+                                        <option value="BATCHWISESTOCKSUMMARY">Batch Wise Summary              </option>
+                                        <option value="STOCKSUMMARY">STORE + WIP STOCK SUMMARY              </option>
+                                        <option value="SHOWALLSTORE+WIPSTOCK">STORE + WIP ALL STORE STOCK              </option>
+                                        <option value="SHOWALLSTORE+WIPSTOCK+JOBWORK">SHOW ALL STORE WITH JW STOCK+RET CHALLAN              </option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="BatchNo" class="form-label">Batch No</label>
+                                    <input asp-for="BatchNo" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="UniqueBatchNo" class="form-label">Unique Batch No</label>
+                                    <input asp-for="UniqueBatchNo" class="form-control" />
+
+                                </div>
+                                <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                    <label class="form-label">Global search</label>
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+                                @*<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="Type" class="form-label">Type</label>
+                                <select asp-for="Type" class="form-select">
+                                <option value="Summary" selected>Summary</option>
+                                <option value="Detail">Detail</option>
+                                </select>
+                                </div>*@
+                                <div class=" d-flex justify-content-center mt-3" width="inherit">
+
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetStockRegisterData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="StockRegister" asp-action="StockRegister">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                                    </button>
+                                </h2>
+
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12 divStockRegister" id="divStockMainRegister">
+                                                    <partial name="_StockRegisterGrid" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <center>
+                                            <div class="row">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
+                                                    <label class="form-label">Total Open Stock</label>
+                                                    <input id="totOpenStock" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="recDiv">
+                                                    <label class="form-label">Total Rec Stock</label>
+                                                    <input id="totRecQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="issQtyDiv">
+                                                    <label class="form-label">Total Issue Stock</label>
+                                                    <input id="totIssueQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="stockDiv">
+                                                    <label class="form-label">Total Stock</label>
+                                                    <input id="totStock" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="stockDiv">
+                                                    <label class="form-label">Total Amount</label>
+                                                    <input id="totAmount" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </center>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(function () {
+            GetServerDate();
+            $('#B_SAGrid').addClass('show');//open accordion on ready
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            $('#totalRows').text($('#divStockRegisterBody tr').length);
+            //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            //$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#StoreId').select2(); 
+            $('#ReportType').select2(); 
+            FillItemGroup(); //Filling group
+            FillItemType(); //Filling Type/Category
+            FillStore(); //Filling Stores
+            AutoCompleteRawMaterial('Raw_Material_Stock_Ledger', 'BatchNo', 'BatchNo', null, $('#FromDate').val(), $('#ToDate').val(), 0, $('#StoreId').val());
+            AutoCompleteRawMaterial('Raw_Material_Stock_Ledger', 'UniqueBatchNo', 'UniqueBatchNo', null, $('#FromDate').val(), $('#ToDate').val(), 0, $('#StoreId').val());
+            AutoComplete('VItemMaster','ItemName','Item_Name',null);
+            AutoComplete('VItemMaster','PartCode','PartCode',null);
+            GetStockRegisterData();//INITIAL - ON LOAD METHOD
+
+        });
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                       // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        //$('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                        var firstDayOfMonth = getFirstDayOfMonth(result);
+                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+
+                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                    }
+                }
+            });
+        }
+
+        function getFirstDayOfMonth(dateString){
+            const [day, month, year] = dateString.split('/');
+
+            // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
+            const currentDate = new Date(year, month - 1, day);
+
+            // Set the date to the 1st day of the month
+            currentDate.setDate(1);
+
+            // Format the result as dd/mm/YYYY
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
+        }
+
+        $('#sendToExcel').click(function () {
+            let table = $("#ReportTable");
+            console.log(table);
+            TableToExcel.convert(table[0], {
+                name: `ReportTable.xlsx`,
+                sheet: {
+                    name: 'ReportTable'
+                }
+            });
+        });
+
+        //$(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+        //    var cntId = e.target.id;
+
+        //    if (cntId == 'ItemName') {
+        //        ItemNameChange(cntId);
+        //    }
+        //    else {
+        //        PartCodeChange(cntId);
+        //    }
+        //});
+
+        //function ItemNameChange(ID) {
+
+        //    SetPartCodeItemName(ID);
+        //}
+
+        //function PartCodeChange(ID) {
+        //    $.when(SetPartCodeItemName(ID)).done(function () {
+        //        //GetItemPartCode(ID)
+        //    });
+        //}
+
+        //function SetPartCodeItemName(ID) {
+        //    if (!ID) return;
+        //    else {
+        //        var v = $('#' + ID).select2('val');
+        //        if (ID == "PartCode") {
+        //            $("#ItemName").val(v).trigger("change");
+        //        }
+
+        //        if (ID == "ItemName") {
+        //            $("#PartCode").val(v).trigger("change");
+        //        }
+        //    }
+        //}
+
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
+
+        function GetStockRegisterData() {
+             
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStockRegisterData")",
+                async: false,
+                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "PartCode": $('#PartCode').val(),"ItemName":$('#ItemName').val(), "ItemGroup": $('#ItemGroup').val(), "ItemType": $('#ItemType').val(), "StoreId": $('#StoreId').val(), "ReportType": $('#ReportType').val(),"BatchNo":$('#BatchNo').val(),"UniqueBatchNo":$('#UniqueBatchNo').val() },
+                success: function (result, status, error) {
+                     
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+                    countAllTotal();
+                }
+            });
+        }
+
+        //function FillItems() {
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "@Url.Action("GetAllItems")",
+        //        async: false,
+        //        dataType: "JSON",
+        //        success: function (result, status, error) {
+        //            if (result != null) {
+        //                var obj = $.parseJSON(result);
+        //                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                    $('#ItemName').prop('checked', false);
+        //                    $('#ItemName,#PartCode').empty();
+        //                    $('#PartCode').append('<option value="0" disabled selected>-Select-</option>');
+        //                    $('#ItemName').append('<option value="0" selected>-Select-</option>');
+        //                    $.each(obj.Result, function (index, val) {
+
+        //                        if ($("#PartCode option[value='" + val.Item_Code + "']").length == 0) {
+        //                            $('#PartCode').append('<option value="' + val.Item_Code +
+        //                                '">' + val.PartCode + '</option>');
+        //                        }
+
+        //                        $('#ItemName').append('<option value="' + val.Item_Code +
+        //                            '">' + val.Item_Name + '</option>');
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    });
+        //}
+
+        function FillItemGroup() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetAllItemGroups")",
+                dataType: "JSON",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ItemGroup').empty();
+                            $('#ItemGroup').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemGroup').append('<option value="' + val.Group_Code +
+                                    '">' + val.Group_name + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillItemType() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetAllItemTypes")",
+                dataType: "JSON",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ItemType').empty();
+                            $('#ItemType').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemType').append('<option value="' + val.Entry_id +
+                                    '">' + val.Type_Item + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillStore() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetAllStores")",
+                dataType: "JSON",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#StoreId').empty();
+                            $('#StoreId').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#StoreId').append('<option value="' + val.EntryID +
+                                    '">' + val.Store_Name + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function countAllTotal() {
+             
+            var rowCount = $('#divStockRegisterBody tr').length;
+            var OpnStk = 0;
+            var TotStk = 0;
+            var IssQty = 0;
+            var RecQty = 0;
+            var rate = 0;
+            var totAmount =0;
+            for (var i = 1; i <= rowCount; i++) {
+                OpnStk += $('#opnStk-' + i).text() =='' ? 0 : parseFloat($('#opnStk-' + i).text());
+                TotStk += $('#totStk-' + i).text() == '' ? 0 : parseFloat($('#totStk-' + i).text());
+                IssQty += $('#issQty-' + i).text() == '' ? 0 : parseFloat($('#issQty-' + i).text());
+                RecQty += $('#recQty-' + i).text() == '' ? 0 : parseFloat($('#recQty-' + i).text());
+                //rate += $('#rate-' + i).text() == '' ? 0 : parseFloat($('#rate-' + i).text());
+                totAmount += $('#amount-' + i).text() == '' ? 0 : parseFloat($('#amount-' + i).text());
+                //if(totAmount < 0){
+                //    $('#SAGridRow-' + i).css('background-color', 'red');
+                //}
+            }
+
+            $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2));
+            $('#totRecQty').val(isNaN(RecQty) ? 0 : RecQty.toFixed(2));
+            $('#totIssueQty').val(isNaN(IssQty) ? 0 : IssQty.toFixed(2));
+            $('#totStock').val(isNaN(TotStk) ? 0 : TotStk.toFixed(2));
+            $('#totAmount').val(isNaN(totAmount) ? 0 : totAmount.toFixed(2));
+        }
+
+        $(document).on("click", ".sortCol", function () {
+             ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+             
+            var table = $('#ReportTable');
+            var rows = table.find('#divStockRegisterBody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divStockRegisterBody').append(row);
+            });
+        }
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        function DeleteRow(i){
+             
+            var indexToRemove = i-1;
+            $('#SAGridRow-'+i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index+1));
+
+
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index+1));
+                });
+                
+                $(this).find('td[id^="opnStk-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'opnStk-' + (index+1));
+                }); 
+                $(this).find('td[id^="totStk-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'totStk-' + (index+1));
+                }); 
+                $(this).find('td[id^="recQty-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'recQty-' + (index+1));
+                });
+                $(this).find('td[id^="issQty-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'issQty-' + (index+1));
+                });
+                $(this).find('td[id^="rate-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'rate-' + (index+1));
+                });
+                $(this).find('td[id^="amount-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'amount-' + (index+1));
+                });
+                
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            countAllTotal();
+            $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+}
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+</style>

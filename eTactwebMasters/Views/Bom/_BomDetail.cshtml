@@ -1,0 +1,43 @@
+﻿@*@model System.Data.DataTable*@
+@model eTactWeb.DOM.Models.BomDashboard
+
+@{
+    var @Cntr=0;
+    if (Model.DTDashboard.Columns.Contains("SeqNo") && Model.DTDashboard.Rows.Count != 0)
+    {
+        for (int i = 0; i < Model.DTDashboard.Rows.Count; i++)
+        {
+            Cntr = Cntr + 1;
+            <tr class="small" style="white-space:nowrap">
+                <td>@Cntr</td>
+                <td>@Model.DTDashboard.Rows[i]["SeqNo"]</td>
+                <td>@Model.DTDashboard.Rows[i]["BomNo"]</td>
+                <td>@Model.DTDashboard.Rows[i]["BomQty"]</td>
+                <td>@Model.DTDashboard.Rows[i]["FinishItemCode"]</td>
+                <td>@Model.DTDashboard.Rows[i]["Item_Name"]</td>
+                <td>@Model.DTDashboard.Rows[i]["RM Code"]</td>
+                <td>@Model.DTDashboard.Rows[i]["RM Name"]</td>
+                <td>@Model.DTDashboard.Rows[i]["BOMName"]</td>
+                <td>@Model.DTDashboard.Rows[i]["Qty"]</td>
+                <td>@Model.DTDashboard.Rows[i]["Unit"]</td>
+                <td>@Model.DTDashboard.Rows[i]["UsedStageId"]</td>
+                <td>@Model.DTDashboard.Rows[i]["AltName1"]</td>
+                <td>@Model.DTDashboard.Rows[i]["AltQty1"]</td>
+                <td>@Model.DTDashboard.Rows[i]["AltName2"]</td>
+                <td>@Model.DTDashboard.Rows[i]["AltQty2"]</td>
+                <td>@Model.DTDashboard.Rows[i]["IssueToJoBwork"]</td>
+                <td>@Model.DTDashboard.Rows[i]["RecFrmCustJobWork"]</td>
+                <td>@Model.DTDashboard.Rows[i]["PkgItem"]</td>
+                <td>@Model.DTDashboard.Rows[i]["Remark"]</td>
+                <td>@Model.DTDashboard.Rows[i]["GrossWt"]</td>
+                <td>@Model.DTDashboard.Rows[i]["NetWt"]</td>
+                <td>@Model.DTDashboard.Rows[i]["Scrap"]</td>
+                <td>@Model.DTDashboard.Rows[i]["RunnerItemCode"]</td>
+                <td>@Model.DTDashboard.Rows[i]["RunnerQty"]</td>
+                <td>@Model.DTDashboard.Rows[i]["BurnQty"]</td>
+                <td>@Model.DTDashboard.Rows[i]["EntryDate"]</td>
+                <td>@Model.DTDashboard.Rows[i]["EffectiveDate"]</td>
+            </tr>
+        }
+    }
+}

@@ -1,0 +1,113 @@
+﻿@using System.Globalization
+@model eTactWeb.DOM.Models.DirectPurchaseBillModel
+
+<input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        <tr class="small @item.SeqNo" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.SeqNo</td>
+            <td class="divListDocType">@item.DocTypeText</td>
+            <td class="divPOItemListPartCode">
+                @if (!item.PartText.Contains("Select"))
+                {
+                    @item.PartText
+                }
+                else { }
+            </td>
+            <td>
+                @if (!item.ItemText.Contains("Select"))
+                {
+                    @item.ItemText
+                }
+                else { }
+            </td>
+            <td>
+                @if (item.PONo != null && item.PONo != "" && !item.PONo.Contains("Select"))
+                {
+                    @item.PONo
+                }
+                else { }
+            </td>
+            <td>@item.POYear</td>
+            <td>
+                @{
+                    DateTime parsedDate;
+                    string formattedDate = DateTime.TryParse(item.PODate, out parsedDate)
+                    ? parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                    : string.Empty;
+                }
+                @formattedDate
+            </td>
+            <td>
+                @if (item.ScheduleNo != null && item.ScheduleNo != "" && !item.ScheduleNo.Contains("Select"))
+                {
+                    @item.ScheduleNo
+                }
+                else { }
+            </td>
+            <td>@item.ScheduleYear</td>
+            <td>
+                @{
+                    DateTime parsedDate1;
+                    string formattedDate1 = DateTime.TryParse(item.ScheduleDate, out parsedDate1)
+                    ? parsedDate1.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                    : string.Empty;
+                }
+                @formattedDate1
+            </td>
+            <td>@item.HSNNo</td>
+            <td>@item.DPBQty</td>
+            <td>@item.Unit</td>
+            <td>@item.BillQty</td>
+            <td>@item.Rate.ToString("#.##")</td>
+            <td>@item.OtherRateCurr.ToString("#.##")</td>
+            <td>@item.DiscPer</td>
+            <td>@item.DiscRs</td>
+            <td id="GridAmount-@item.SeqNo">@item.Amount.ToString("#.##")</td>
+            <td>@item.ProcessName</td>
+            <td>@item.Description</td>
+            <td>@(item.CostCenterName ?? string.Empty)</td>
+        </tr>
+    }
+}

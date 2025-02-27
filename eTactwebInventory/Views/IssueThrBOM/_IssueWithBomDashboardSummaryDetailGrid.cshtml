@@ -1,0 +1,133 @@
+﻿@model eTactWeb.DOM.Models.IssueThrBomMainDashboard
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="IssueWOBomTable">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="IssueWOBomThead">
+            <tr>
+
+                <th>Sr#</th>
+                <th>Action</th>
+
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req No</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Date</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Year Code</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue SlipNo</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Date</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Wo NO</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Wo Date</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Id</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Job Card NO</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Job Card Date</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Enterd By EmpName</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Enterd By Emp Code</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated Emp name</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated Emp Code</th>
+            </tr>
+        </thead>
+        <tbody id="IssueWOBomTbody">
+            @{
+                var @Cntr = 0;
+                if (Model.IssueThrBOMDashboard == null || Model.IssueThrBOMDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.IssueThrBOMDashboard)
+                    {
+
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="IssueThrBom" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary" asp-action="IssueThrBom" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.ReqNo</td>
+                            @if (item.ReqDate == null)
+                            {
+                                <td>@item.ReqDate</td>
+                            }
+                            else
+                            {
+                                <td>@item.ReqDate.Split(" ")[0]</td>
+                            }
+                            <td>@item.ReqYearCode </td>
+                            <td>@item.IssueSlipno </td>
+                            @if (item.IssueDate != null)
+                            {
+                                <td>@item.IssueDate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.IssueDate</td>
+                            }
+                            <td>@item.WONO</td>
+                            @if (item.WODate != null)
+                            {
+                                <td>@item.WODate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.WODate</td>
+                            }
+                            <td>@item.EntryId</td>
+                            <td>@item.YearCode</td>
+                            <td>@item.jobCardNo</td>
+                            @if (item.JobcardDate != null)
+                            {
+                                <td>@item.JobcardDate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.JobcardDate</td>
+                            }
+                            <td>@item.Remark</td>
+                            <td>@item.ActENterdByEmpName</td>
+                            <td>@item.ActENterdByEmpCode</td>
+                            @if (item.ActualEntryDate != null)
+                            {
+                                <td>@item.ActualEntryDate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.ActualEntryDate</td>
+                            }
+                            <td>@item.UpdatedEmpName</td>
+                            <td>@item.UpdatedByEmpcode</td>
+                            @*<td>item.WorkCenterDescription</td>*@
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>

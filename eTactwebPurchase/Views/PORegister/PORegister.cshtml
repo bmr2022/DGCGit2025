@@ -1,0 +1,596 @@
+﻿@model eTactWeb.DOM.Models.PORegisterModel
+@{
+    ViewData["Title"] = "PO Register";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>PO Register</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartyName" class="form-label">PartyName</label>
+                                    <input asp-for="PartyName" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">PartCode</label>
+                                    <input asp-for="PartCode" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label">Item Name</label>
+                                    <input asp-for="ItemName" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PONO" class="form-label">PONO</label>
+                                    <input asp-for="PONO" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="SchNo" class="form-label">Sch No</label>
+                                    <input asp-for="SchNo" class="form-control" />
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="OrderType" class="form-label">OrderType</label>
+                                    <input asp-for="OrderType" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="POFor" class="form-label">POFor</label>
+                                    <input asp-for="POFor" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemGroup" class="form-label">Item Group</label>
+                                    <input asp-for="ItemGroup" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemType" class="form-label">Item Type</label>
+                                    <input asp-for="ItemType" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportMode" class="form-label">Report Type</label>
+                                    <select asp-for="ReportMode" class="form-select" onchange="GetPORegisterData()">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="LISTOFPO">LIST OF PO</option>
+                                        <option value="LISTOFSCHEDULESUMMARY">LIST OF POSUMMARY</option>
+                                        <option value="LISTOFSCHEDULE">LIST OF SCHEDULE</option>
+                                        <option value="SUMM">PURCHASE ORDER SUMMARY</option>
+                                        <option value="DETAIL">PURCHASE ORDER DETAIL</option>
+                                        <option value="SUMMRATEING">SUMMARY RATING</option>
+                                        <option value="CONSOLIDATED">CONSOLIDATED</option>
+                                        <option value="PARTYWISECONSOLIDATED">PARTY WISE CONSOLIDATED</option>
+                                        <option value="ITEMWISECONSOLIDATED">ITEM WISE CONSOLIDATED</option>
+                                        <option value="DETAIL">PO RATE ANALYSIS</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label">Global search</label>
+                                    <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
+                                </div>
+                                <div class=" d-flex justify-content-center mt-3" width="inherit">
+
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetPORegisterData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="PORegister" asp-action="PORegister">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>PO/Sch List</strong>
+                                    </button>
+                                </h2>
+
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12 divStockRegister" id="divPORegister">
+                                                    <partial name="_PORegisterGrid" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div style="display:flex">
+                                            <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total POQty</label>
+                                                <input id="ToTalQty" class="form-control" readonly style="width:97px" />
+                                            </div>
+                                            <div class="row" id="TOTALDetailData">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total BillQty</label>
+                                                    <input id="ToTalBillQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total RECQty</label>
+                                                    <input id="ToTalRECQtyDetail" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total Acc Qty</label>
+                                                    <input id="ToTalAcceptedQty" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="row" id="TOTALSUMRatingdata">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total POValue</label>
+                                                    <input id="ToTalPOValue" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total RecQty</label>
+                                                    <input id="ToTalRECQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total RecValue</label>
+                                                    <input id="ToTalRecValue" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total QCOKQty</label>
+                                                    <input id="ToTalQCOKQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total BalQty</label>
+                                                    <input id="ToTalBalQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total BalValue</label>
+                                                    <input id="ToTalBalValue" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="row" id="TotalPOSummary">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total POValue</label>
+                                                    <input id="ToTalPOValueSum" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total RecQty</label>
+                                                    <input id="ToTalRECQtySum" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total QCOKQty</label>
+                                                    <input id="ToTalQCOKQtySum" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total PendQty</label>
+                                                    <input id="ToTalPendQty" class="form-control" readonly />
+                                                </div>
+                                            </div>
+
+                                            <div class="row" id="TotalConsolidated">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total RecQty</label>
+                                                    <input id="ToTalRECQtyConsoled" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total QCOKQty</label>
+                                                    <input id="ToTalQCOKQtyConsoled" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total PendQty</label>
+                                                    <input id="ToTalPendQtyConsoled" class="form-control" readonly />
+                                                </div>
+                                            </div>
+
+                                            <div class="row" id="TotalItemConsoled">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total POValue</label>
+                                                    <input id="ToTalPOValueItemConsoled" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total RecQty</label>
+                                                    <input id="ToTalRECQtyItemConsoled" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total RecValue</label>
+                                                    <input id="ToTalRecValueItemConsoled" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total QCOKQty</label>
+                                                    <input id="ToTalQCOKQtyItemConsoled" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Total PendQty</label>
+                                                    <input id="ToTalPendQtyItemConsoled" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            GetServerDate();
+            $('#ReportMode').select2();
+            AutoComplete('Item_Master_Type', 'ItemType', 'Type_Item', null);
+            AutoComplete('Account_Head_Master', 'PartyName', 'Account_Name', null);
+            AutoComplete('purchaseScheduleMain', 'SchNo', 'ScheduleNo', null);
+            AutoComplete('VPURCHASEORDER', 'PONO', 'PONo', null);
+            AutoComplete('VItemGroupMaster', 'ItemGroup', 'Group_name', null);
+            AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
+            AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
+            AutoComplete('VPURCHASEORDER', 'OrderType', 'OrderType', null);
+            AutoComplete('VPURCHASEORDER', 'POFor', 'POFor', null);
+            GetPORegisterData();
+            $('#TOTALSUMRatingdata').hide();
+            $('#TOTALDetailData').hide();
+            $('#TotalPOSummary').hide();
+            $('#TotalConsolidated').hide();
+            $('#TotalItemConsoled').hide();
+
+            $('#ReportMode').change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue === 'SUMMRATEING') {
+                    $('#TOTALSUMRatingdata').show();
+                    $('#TOTALDetailData').hide();
+                    $('#TotalPOSummary').hide();
+                    $('#TotalItemConsoled').hide();
+                    $('#TotalConsolidated').hide();
+
+                }
+                else if (selectedValue === 'DETAIL') {
+                    $('#TOTALDetailData').show();
+                    $('#TOTALSUMRatingdata').hide();
+                    $('#TotalPOSummary').hide();
+                    $('#TotalConsolidated').hide();
+
+                    $('#TotalItemConsoled').hide();
+
+                } else if (selectedValue === 'SUMM') {
+                    $('#TotalPOSummary').show();
+                    $('#TOTALSUMRatingdata').hide();
+                    $('#TOTALDetailData').hide();
+                    $('#TotalConsolidated').hide();
+
+                    $('#TotalItemConsoled').hide();
+
+                } else if (selectedValue === 'CONSOLIDATED' || selectedValue == 'PARTYWISECONSOLIDATED') {
+                    $('#TotalConsolidated').show();
+                    $('#TOTALSUMRatingdata').hide();
+                    $('#TOTALDetailData').hide();
+                    $('#TotalItemConsoled').hide();
+
+                } else if (selectedValue === 'ITEMWISECONSOLIDATED') {
+                    $('#TotalItemConsoled').show();
+                    $('#TotalConsolidated').hide();
+                    $('#TOTALSUMRatingdata').hide();
+                    $('#TOTALDetailData').hide();
+
+                } else {
+                    $('#TOTALSUMRatingdata').hide();
+                    $('#TOTALDetailData').hide();
+                    $('#TotalPOSummary').hide();
+                    $('#TotalConsolidated').hide();
+                    $('#TotalItemConsoled').hide();
+
+                }
+            });
+        });
+
+        function selection(CurrentRow) {
+             
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+
+        function DeleteRow(i) {
+
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            countAllTotal();
+            $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
+        }
+
+        function countAllTotal() {
+
+            var rowCount = $('#divStockRegisterBody tr').length;
+            var totPOQty = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                totPOQty += $('#POQty-' + i).text() == '' ? 0 : parseFloat($('#POQty-' + i).text());
+            }
+            $('#ToTalQty').val(isNaN(totPOQty) ? 0 : totPOQty.toFixed(2));
+            var rowCount = $('#divStockRegisterBody tr').length;
+            var totPOValue = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                totPOValue += $('#POValue-' + i).text() == '' ? 0 : parseFloat($('#POValue-' + i).text());
+            }
+            $('#ToTalPOValue').val(isNaN(totPOValue) ? 0 : totPOValue.toFixed(2));
+            var ToTalRECQty = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalRECQty += $('#RECQty-' + i).text() == '' ? 0 : parseFloat($('#RECQty-' + i).text());
+            }
+            $('#ToTalRECQty').val(isNaN(ToTalRECQty) ? 0 : ToTalRECQty.toFixed(2));
+
+            var RecValue = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                RecValue += $('#RecValue-' + i).text() == '' ? 0 : parseFloat($('#RecValue-' + i).text());
+            }
+            $('#ToTalRecValue').val(isNaN(RecValue) ? 0 : RecValue.toFixed(2));
+
+            var ToTalQCOKQty = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalQCOKQty += $('#QCOKQty-' + i).text() == '' ? 0 : parseFloat($('#QCOKQty-' + i).text());
+            }
+            $('#ToTalQCOKQty').val(isNaN(ToTalQCOKQty) ? 0 : ToTalQCOKQty.toFixed(2));
+
+            var ToTalBalQty = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalBalQty += $('#BalQty-' + i).text() == '' ? 0 : parseFloat($('#BalQty-' + i).text());
+            }
+            $('#ToTalBalQty').val(isNaN(ToTalBalQty) ? 0 : ToTalBalQty.toFixed(2));
+
+            var ToTalBalValue = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalBalValue += $('#BalValue-' + i).text() == '' ? 0 : parseFloat($('#BalValue-' + i).text());
+            }
+            $('#ToTalBalValue').val(isNaN(ToTalBalValue) ? 0 : ToTalBalValue.toFixed(2));
+
+            var ToTalBillQty = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalBillQty += $('#BillQty-' + i).text() == '' ? 0 : parseFloat($('#BillQty-' + i).text());
+            }
+            $('#ToTalBillQty').val(isNaN(ToTalBillQty) ? 0 : ToTalBillQty.toFixed(2));
+
+            var ToTalRECQtyDetail = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalRECQtyDetail += $('#RECQty-' + i).text() == '' ? 0 : parseFloat($('#RECQty-' + i).text());
+            }
+            $('#ToTalRECQtyDetail').val(isNaN(ToTalRECQtyDetail) ? 0 : ToTalRECQtyDetail.toFixed(2));
+
+            var ToTalAcceptedQty = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalAcceptedQty += $('#AcceptedQty-' + i).text() == '' ? 0 : parseFloat($('#AcceptedQty-' + i).text());
+            }
+            $('#ToTalAcceptedQty').val(isNaN(ToTalAcceptedQty) ? 0 : ToTalAcceptedQty.toFixed(2));
+
+            var ToTalPendQty = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalPendQty += $('#PendQty-' + i).text() == '' ? 0 : parseFloat($('#PendQty-' + i).text());
+            }
+            $('#ToTalPendQty').val(isNaN(ToTalPendQty) ? 0 : ToTalPendQty.toFixed(2));
+
+
+            var totPOValueSUM = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                totPOValueSUM += $('#POValue-' + i).text() == '' ? 0 : parseFloat($('#POValue-' + i).text());
+            }
+            $('#ToTalPOValueSum').val(isNaN(totPOValueSUM) ? 0 : totPOValueSUM.toFixed(2));
+            var ToTalRECQtySUM = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalRECQtySUM += $('#RECQty-' + i).text() == '' ? 0 : parseFloat($('#RECQty-' + i).text());
+            }
+            $('#ToTalRECQtySum').val(isNaN(ToTalRECQtySUM) ? 0 : ToTalRECQtySUM.toFixed(2));
+
+            var ToTalQCOKQtySUM = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalQCOKQtySUM += $('#QCOKQty-' + i).text() == '' ? 0 : parseFloat($('#QCOKQty-' + i).text());
+            }
+            $('#ToTalQCOKQtySum').val(isNaN(ToTalQCOKQtySUM) ? 0 : ToTalQCOKQtySUM.toFixed(2));
+
+            var totRECQtyConsoled = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                totRECQtyConsoled += $('#RECQty-' + i).text() == '' ? 0 : parseFloat($('#RECQty-' + i).text());
+            }
+            $('#ToTalRECQtyConsoled').val(isNaN(totRECQtyConsoled) ? 0 : totRECQtyConsoled.toFixed(2));
+
+            var ToTalQCOKQtyConsoled = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalQCOKQtyConsoled += $('#QCOKQty-' + i).text() == '' ? 0 : parseFloat($('#QCOKQty-' + i).text());
+            }
+            $('#ToTalQCOKQtyConsoled').val(isNaN(ToTalQCOKQtyConsoled) ? 0 : ToTalQCOKQtyConsoled.toFixed(2));
+
+            var ToTalPendQtyConsoled = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalPendQtyConsoled += $('#PendQty-' + i).text() == '' ? 0 : parseFloat($('#PendQty-' + i).text());
+            }
+            $('#ToTalPendQtyConsoled').val(isNaN(ToTalPendQtyConsoled) ? 0 : ToTalPendQtyConsoled.toFixed(2));
+
+
+
+            var totPOValueSUM = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                totPOValueSUM += $('#POValue-' + i).text() == '' ? 0 : parseFloat($('#POValue-' + i).text());
+            }
+            $('#ToTalPOValueItemConsoled').val(isNaN(totPOValueSUM) ? 0 : totPOValueSUM.toFixed(2));
+            var ToTalRECQtySUM = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalRECQtySUM += $('#RECQty-' + i).text() == '' ? 0 : parseFloat($('#RECQty-' + i).text());
+            }
+            $('#ToTalRECQtyItemConsoled').val(isNaN(ToTalRECQtySUM) ? 0 : ToTalRECQtySUM.toFixed(2));
+
+            var ToTalQCOKQtySUM = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalQCOKQtySUM += $('#RecValue-' + i).text() == '' ? 0 : parseFloat($('#RecValue-' + i).text());
+            }
+            $('#ToTalRecValueItemConsoled').val(isNaN(ToTalQCOKQtySUM) ? 0 : ToTalQCOKQtySUM.toFixed(2));
+
+            var totRECQtyConsoled = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                totRECQtyConsoled += $('#QCOKQty-' + i).text() == '' ? 0 : parseFloat($('#QCOKQty-' + i).text());
+            }
+            $('#ToTalQCOKQtyItemConsoled').val(isNaN(totRECQtyConsoled) ? 0 : totRECQtyConsoled.toFixed(2));
+
+            var ToTalQCOKQtyConsoled = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ToTalQCOKQtyConsoled += $('#PendQty-' + i).text() == '' ? 0 : parseFloat($('#PendQty-' + i).text());
+            }
+            $('#ToTalPendQtyItemConsoled').val(isNaN(ToTalQCOKQtyConsoled) ? 0 : ToTalQCOKQtyConsoled.toFixed(2));
+
+        }
+
+
+        function GetPORegisterData() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetPORegisterData")",
+                async: false,
+                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), ReportType: $('#ReportMode').val(), Partyname: $('#PartyName').val(), partcode: $('#PartCode').val(), itemName: $('#ItemName').val(), POno: $('#PONO').val(), SchNo: $('#SchNo').val(), OrderType: $('#OrderType').val(), POFor: $('#POFor').val(), ItemType: $('#ItemType').val(), ItemGroup: $('#ItemGroup').val() },
+                success: function (result, status, error) {
+
+                    $('#divPORegister').empty();
+                    $('#divPORegister').html(result);
+                    $('#totalRows').text($('#divPORegister tr').length - 1);
+                    countAllTotal();
+                }
+            });
+        }
+
+        $('#sendToExcel').click(function () {
+            let table = $("#ReportTable");
+            console.log(table);
+            TableToExcel.convert(table[0], {
+                name: `ReportTable.xlsx`,
+                sheet: {
+                    name: 'ReportTable'
+                }
+            });
+        });
+
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+
+                        var firstDayOfMonth = getFirstDayOfMonth(result);
+                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                    }
+                }
+            });
+        }
+         function getFirstDayOfMonth(dateString) {
+            const [day, month, year] = dateString.split('/');
+
+            // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
+            const currentDate = new Date(year, month - 1, day);
+
+            // Set the date to the 1st day of the month
+            currentDate.setDate(1);
+
+            // Format the result as dd/mm/YYYY
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
+        }
+
+        // function getFirstDayOfMonth(dateString) {
+        //     const [day, month, year] = dateString.split('/');
+
+        //     // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
+        //     const currentDate = new Date(year, month - 1, day);
+
+        //     // Set the date to the 1st day of the month
+        //     currentDate.setDate(1);
+
+        //     // Format the result as dd/mm/YYYY
+        //     const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+        //     return firstDayOfMonth;
+        // }
+
+
+        var currentSearchColumn = null;
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+
+}

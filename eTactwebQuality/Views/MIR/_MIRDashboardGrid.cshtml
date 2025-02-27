@@ -1,0 +1,193 @@
+﻿@model eTactWeb.DOM.Models.MIRQDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+@if (Model.DashboardType == "Detail")
+{
+    <partial name="_MIRDetailDashboard" />
+}else{
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="MIRTable">
+        <thead class="bg-gradient card-headerBG text-light" id="MIRThead">
+            <tr>
+                <th>Sr#</th>  
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> VendorName</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> MIRNo</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> MIRDate</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> MRNNO</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> MRNDate</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> GateNo</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> INVNo</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Invdate</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> MRNJWCustJW</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PurchaseBillBooked</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> MaterialIssued</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> EntryId</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> YearCode</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entered By</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By</th>
+
+
+            </tr>
+        </thead>
+        <tbody id="MIRTbody">
+            @{
+                var @Cntr = 0;
+                if (Model.MIRQDashboard == null || Model.MIRQDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.MIRQDashboard)
+                    {
+
+                        Cntr = Cntr + 1;
+                            <tr onclick="selection(this)">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="MIR" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    @if (item.PurchaseBillBooked == "N" && item.MaterialIssued == "N" && item.YearCode == yearCode)
+                                    {
+                                            <div id="editCursorDiv-@Cntr">
+                                                <a class="table-link link-primary" onclick="confirmEdit(event,'@item.EntryId','@item.YearCode')" asp-action="MIR" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div id="deleteCursorDiv-@Cntr">
+                                                <a class="table-link link-danger" onclick="confirmDelete(event,'@item.EntryId','@item.YearCode')" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                    }
+                                    else
+                                    {
+                                            <div>
+                                                <a class="table-link link-primary noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <a class="table-link link-danger noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                    }
+
+
+                                </div>
+                            </td>
+                            <td>@item.VendorName </td>
+                            <td>@item.MIRNo</td>
+                            @if (item.MIRDate != null)
+                            {
+                                <td>@item.MIRDate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.MIRDate</td>
+                            }
+
+                            <td>@item.MRNNo</td>
+                            @if (item.MRNDate != null)
+                            {
+                                <td>@item.MRNDate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.MRNDate</td>
+                            }
+                            <td>@item.GateNo</td>
+                            <td>@item.InvNo</td>
+                            @if (item.InvDate != null)
+                            {
+                                <td>@item.InvDate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.InvDate</td>
+                            }
+                            <td>@item.MRNJWCustJW</td>
+                            <td>@item.PurchaseBillBooked</td>
+                            <td>@item.MaterialIssued</td>
+                            <td>@item.EntryId</td>
+                            <td>@item.YearCode</td>
+                            <td>@item.EnteredBy</td>
+                            <td>@item.UpdatedBy</td>
+
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+    <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+}
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #MIRTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #MIRThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

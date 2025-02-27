@@ -1,0 +1,535 @@
+﻿@model eTactWeb.DOM.Models.SaleRejectionDashboard
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Sale Rejection - <strong>Dashboard</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="PendingSaleRejection" asp-controller="PendingSaleRejection" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                        Add New
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FinFromDate" maxlength="10" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="FinToDate" maxlength="10" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
+                                <label asp-for="SummaryDetail" class="form-label">Summary/Detail</label>
+                                <select class="form-select" asp-for="SummaryDetail" onchange="GetSearchData();">
+                                    <option>-Select-</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
+                                <label asp-for="CustInvoiceNo" class="form-label">Cust Invoice No</label>
+                                <select asp-for="CustInvoiceNo" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                                <input type="hidden" value="@Model.CustInvoiceNo" id="hiddenCustInvoiceNo" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="Account_Name" class="form-label">Account Name</label>
+                                <select asp-for="Account_Name" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                                <input type="hidden" value="@Model.Account_Name" id="hiddenAccountName" />
+
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="MrnNo" class="form-label">Mrn no</label>
+                                <select asp-for="MrnNo" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                                <input type="hidden" value="@Model.MrnNo" id="hiddenMrnNo" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="GateNo" class="form-label">Gate No</label>
+                                <select asp-for="GateNo" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                                <input type="hidden" value="@Model.GateNo" id="hiddenGateNo" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="PartCode" class="form-label">PartCode</label>
+                                <select asp-for="PartCode" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                                <input type="hidden" value="@Model.PartCode" id="hiddenPartCode" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ItemName" class="form-label">Item Name</label>
+                                <select asp-for="ItemName" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                                <input type="hidden" value="@Model.ItemName" id="hiddenItemName" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="AgainstBillNo" class="form-label">Against Bill No</label>
+                                <select asp-for="AgainstBillNo" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                                <input type="hidden" value="@Model.AgainstBillNo" id="hiddenAgainstBillNo" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="Account_Name" class="form-label">Document Name</label>
+                                <select asp-for="Account_Name" id="DocumentName" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                                @* <input type="hidden" value="@Model.DocumentName" id="hiddenDocumentName" /> *@
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="VoucherNo" class="form-label">Voucher No</label>
+                                <select asp-for="VoucherNo" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                                <input type="hidden" value="@Model.VoucherNo" id="hiddenVoucherNo" />
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
+                                <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="SaleRejection" asp-action="SRDashboard">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                                <div class="ms-auto d-flex align-items-center">
+                                    <div class="col-md-4">
+                                        <label class="form-label me-2">Global search</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0 pt-0">
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body" id="divDashboardGrid">
+                    <partial name="_SRDashboardGrid" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+            $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
+            $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            $('#PartCode').rules('remove', 'required');
+            FillCustomerName();
+            FillDocument();
+            FillItemName();
+            FillPartCode();
+            FillAgainstSaleBillNo();
+            FillVoucherNo();
+            FillInvoiceNo();
+
+            GetSearchData();
+
+
+            $('#CustInvoiceNo').val($('#hiddenCustInvoiceNo').val());
+            $('#MrnNo').val($('#hiddenMrnNo').val());
+            $('#GateNo').val($('#hiddenGateNo').val());
+            $('#PartCode').val($('#hiddenPartCode').val());
+            $('#ItemName').val($('#hiddenItemName').val());
+            $('#AgainstBillNo').val($('#hiddenAgainstBillNo').val());
+            // $('#DocumentName').val($('#hiddenDocumentName').val());
+            $('#VoucherNo').val($('#hiddenVoucherNo').val());
+            $('#Account_Name').val($('#hiddenAccountName').val());
+
+        });
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divSRDashboardGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable('SRDashboardGrid', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('SRDashboardGrid', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        // function confirmDelete(event) {
+        //
+        //     event.preventDefault();
+        //     var entryId = $('#deleteLink').data('id');
+        //     var yc = $('#deleteLink').data('yc');
+        //     var createdby = $('#deleteLink').data('createdby');
+        //     var machinename = $('#deleteLink').data('machinename');
+        //     var accountCode = $('#deleteLink').data('accountcode');
+        //     var cc = $('#deleteLink').data('cc');
+        //     if (confirm("Are you sure you want to delete this entry?")) {
+        //
+        //         // var linkUrl = $(event.currentTarget).attr("href");
+        //         // window.location.href = linkUrl;
+
+        //         $.ajax({
+        //             url: '@Url.Action("DeleteByID")',
+        //             data: { "ID": entryId, "YC": yc, "accountCode": accountCode, "createdBy": createdby, "machineName": machinename, "cc": cc },
+        //             type: "POST",
+        //             async: false,
+        //             success: function (data) {
+
+        //             },
+        //             error: function (response) {
+        //                 alert(response.responseText);
+        //             },
+        //             failure: function (response) {
+        //                 alert(response.responseText);
+        //             }
+        //         });
+        //     }
+        // }
+
+        function confirmDelete(event) {
+
+            event.preventDefault();
+            if (confirm("Are you sure you want to delete this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+                linkUrl = linkUrl + "&fromDate=" + $('#FinFromDate').val() + "&toDate=" + $('#FinToDate').val() + "&custInvoiceNo=" + $('#CustInvoiceNo').val() + "&accountName=" + $('#Account_Name').val() + "&mrnNo=" + $('#MrnNo').val() + "&gateNo=" + $('#GateNo').val()
+                    + "&partCode=" + $('#PartCode').val() + "&itemName=" + $('#ItemName').val() + "&againstBillNo=" + $('#AgainstBillNo').val() + "&voucherNo=" + $('#VoucherNo').val();
+                window.location.href = linkUrl;
+            }
+        }
+
+        $("#btnGridExcel").click(function () {
+            const table = document.querySelector("#SRDashboardGrid");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell) => {
+                // cell.style.backgroundColor = "#fcba03";
+                headerData.push(cell.textContent);
+            });
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                rows[i].querySelectorAll("td").forEach((cell) => {
+                    rowData.push(cell.textContent);
+                });
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+
+            XLSX.writeFile(wb, "SRDashboardData.xlsx");
+        });
+
+        function FillCustomerName() {
+
+            var fromDate = $('#FinFromDate').val();
+            var toDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": fromDate, "toDate": toDate },
+                url: "@Url.Action("FillCustomerName")",
+                dataType: "json",
+                async:false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#Account_Name').empty();
+                            $('#Account_Name').append('<option value="">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#Account_Name').append("<option value=" + val.AccountCode + ">" + val.CustomerName + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillInvoiceNo() {
+
+            var fromDate = $('#FinFromDate').val();
+            var toDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": fromDate, "toDate": toDate },
+                url: "@Url.Action("FillInvoiceNo")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#CustInvoiceNo').empty();
+                            $('#CustInvoiceNo').append('<option value="">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#CustInvoiceNo').append("<option value=" + val.AccountCode + ">" + val.CustomerName + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillItemName() {
+
+            var fromDate = $('#FinFromDate').val();
+            var toDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": fromDate, "toDate": toDate },
+                url: "@Url.Action("FillItemName")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#ItemName').empty();
+                            $('#ItemName').append('<option value="">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#ItemName').append("<option value=" + val.ItemCode + ">" + val.ItemName + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function FillPartCode() {
+
+            var fromDate = $('#FinFromDate').val();
+            var toDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": fromDate, "toDate": toDate },
+                url: "@Url.Action("FillPartCode")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option value="">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#PartCode').append("<option value=" + val.ItemCode + ">" + val.PartCode + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function FillAgainstSaleBillNo() {
+
+            var fromDate = $('#FinFromDate').val();
+            var toDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": fromDate, "toDate": toDate },
+                url: "@Url.Action("FillAgainstSaleBillNo")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#AgainstBillNo').empty();
+                            $('#AgainstBillNo').append('<option value="">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#AgainstBillNo').append("<option value=" + val.AgainstBillNo + ">" + val.AgainstBillNo + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function FillVoucherNo() {
+            var fromDate = $('#FinFromDate').val();
+            var toDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": fromDate, "toDate": toDate },
+                url: "@Url.Action("FillVoucherNo")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#VoucherNo').empty();
+                            $('#VoucherNo').append('<option value="">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#VoucherNo').append("<option value=" + val.VoucherNo + ">" + val.VoucherNo + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function FillDocument() {
+
+            var fromDate = $('#FinFromDate').val();
+            var toDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                data: { "fromDate": fromDate, "toDate": toDate },
+                url: "@Url.Action("FillDocument")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#DocumentName').empty();
+                            $('#DocumentName').append('<option value="">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    if (val.DocumentName != null) {
+                                        $('#DocumentName').append("<option>" + val.DocumentName + "</option>");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function GetSearchData() {
+            var formData = {
+                'summaryDetail': $('#SummaryDetail').val(),
+                'custInvoiceNo': $('#CustInvoiceNo').find(':selected').text() == "-Select-" ? "" : $('#CustInvoiceNo').find(':selected').text(),
+                'account_Name': $('#Account_Name').find(':selected').text() == "-Select-" ? "" : $('#Account_Name').find(':selected').text(),
+                'mrnNo': $('#MrnNo').find(':selected').text() == "-Select-" ? "" : $('#MrnNo').find(':selected').text(),
+                'gateNo': $('#GateNo').find(':selected').text() == "-Select-" ? "" : $('#GateNo').find(':selected').text(),
+                'partCode': $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
+                'itemName': $('#ItemName').find(':selected').text() == "-Select-" ? "" : $('#ItemName').find(':selected').text(),
+                'againstBillNo': $('#AgainstBillNo').find(':selected').text() == "-Select-" ? "" : $('#AgainstBillNo').find(':selected').text(),
+                'documentName': $('#DocumentName').find(':selected').text() == "-Select-" ? "" : $('#DocumentName').find(':selected').text(),
+                'voucherNo': $('#VoucherNo').find(':selected').text() == "-Select-" ? "" : $('#VoucherNo').find(':selected').text(),
+                'fromDate': $('#FinFromDate').val(),
+                'toDate': $('#FinToDate').val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                async: false,
+                data: formData,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+}

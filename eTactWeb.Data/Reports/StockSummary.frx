@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="12/07/2023 11:12:37" ReportInfo.Modified="12/09/2023 11:58:27" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Styles Name="Standard">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gm+pxqUEPFs5ArZTHMiAZrDl/CfcXTHbciGdhcro7wnA49QD7321tdnLJXqace9y1rJfKw/AsPTy41iXr7PUEw8mWNp1x0fSjVLq3dgXqVStYuCcbawPUt5ormtXl52hVU83idnONQXw6wBh8gz5LZBFtNDoGO5a+zcOUdqTMDLvBiWYGrIQiMkbVnZ1o9iB4w==">
+      <TableDataSource Name="Table" Alias="stock" DataType="System.Int32" Enabled="true" SelectCommand="exec  SPReportSTockRegister @Flag ='STOCKSUMMARY', @FromDate = '01/apr/2023', @ToDate = '31/mar/2024'">
+        <Column Name="StoreName" DataType="System.String"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="ItemName" DataType="System.String"/>
+        <Column Name="OpnStk" DataType="System.Decimal"/>
+        <Column Name="RecQty" DataType="System.Decimal"/>
+        <Column Name="IssQty" DataType="System.Decimal"/>
+        <Column Name="TotalStock" DataType="System.Decimal"/>
+        <Column Name="unit" DataType="System.String"/>
+        <Column Name="MInLvl" DataType="System.Int64"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="AltStock" DataType="System.Double"/>
+        <Column Name="AvgRate" DataType="System.Int32"/>
+        <Column Name="Group_name" DataType="System.String"/>
+        <Column Name="StdPacking" DataType="System.Double"/>
+        <Column Name="BinNo" DataType="System.String"/>
+        <Column Name="MaximumLevel" DataType="System.Double"/>
+        <Column Name="ReorderLevel" DataType="System.Double"/>
+        <Column Name="FromDate" DataType="System.DateTime"/>
+        <Column Name="ToDate" DataType="System.DateTime"/>
+        <Column Name="CompanyName" DataType="System.String"/>
+        <Column Name="Address" DataType="System.String"/>
+        <Column Name="Address2" DataType="System.String"/>
+        <Column Name="seqnum" DataType="System.Int64"/>
+        <Column Name="wipopnstock" DataType="System.Double"/>
+        <Column Name="wipissue" DataType="System.Double"/>
+        <Column Name="wiprECsTOCK" DataType="System.Double"/>
+        <Column Name="TotalWIPStock" DataType="System.Double"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="75.6">
+      <TextObject Name="Text42" Left="9.45" Top="28.35" Width="453.6" Height="28.35" Text="SUMMARY STOCK REGISTER" Font="Arial, 16pt, style=Bold, Underline" TextFill.Color="MidnightBlue"/>
+      <TextObject Name="Text45" Left="132.3" Top="56.7" Width="75.6" Height="18.9" Text="[stock.FromDate]" Format="Date" Format.Format="d" Font="Arial, 8pt" TextFill.Color="DarkSlateBlue"/>
+      <TextObject Name="Text46" Left="226.8" Top="56.7" Width="94.5" Height="18.9" Text="[stock.ToDate]" Format="Date" Format.Format="d" Font="Arial, 8pt" TextFill.Color="DarkSlateBlue"/>
+      <TextObject Name="Text47" Left="9.45" Top="9.45" Width="689.85" Height="18.9" Text="[stock.CompanyName]" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="Text49" Left="9.45" Top="56.7" Width="122.85" Height="18.9" Text="For The Duration " Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text50" Left="207.9" Top="56.7" Width="18.9" Height="18.9" Text="-" HorzAlign="Center" Font="Arial, 8pt, style=Bold" TextFill.Color="MediumBlue"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="79.6" Width="718.2"/>
+    <GroupHeaderBand Name="GroupHeader1" Top="83.6" Width="718.2" Height="75.6" Condition="[stock.StoreName]">
+      <TextObject Name="Text2" Left="122.85" Width="179.55" Height="18.9" Text="[stock.StoreName]" Font="Arial, 10pt, style=Bold" TextFill.Color="DarkSlateBlue"/>
+      <TextObject Name="Text3" Left="9.45" Width="103.95" Height="28.35" Text="Store Name :" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text5" Left="66.15" Top="47.25" Width="85.05" Height="18.9" Text="PartCode" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text7" Left="160.65" Top="47.25" Width="94.5" Height="18.9" Text="Item Name" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text9" Left="302.4" Top="47.25" Width="66.15" Height="18.9" Text="Opn Stk" HorzAlign="Right" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text11" Left="368.55" Top="47.25" Width="66.15" Height="18.9" Text="Rec Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text13" Left="434.7" Top="47.25" Width="66.15" Height="18.9" Text="Iss Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text17" Left="604.8" Top="47.25" Width="37.8" Height="18.9" Text="Unit" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text41" Left="9.45" Top="47.25" Width="47.25" Height="18.9" Text="Sr No" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <LineObject Name="Line1" Top="37.8" Width="718.2" Border.Style="Dash"/>
+      <LineObject Name="Line2" Top="75.6" Width="718.2" Border.Style="Dash"/>
+      <TextObject Name="Text15" Left="500.85" Top="47.25" Width="85.05" Height="18.9" Text="Total Stock" HorzAlign="Right" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text44" Left="652.05" Top="47.25" Width="75.6" Height="28.35" Text="Avg Rate" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <GroupHeaderBand Name="GroupHeader2" Top="163.2" Width="718.2" Condition="[stock.PartCode]">
+        <GroupHeaderBand Name="GroupHeader3" Top="167.2" Width="718.2" Condition="[stock.ItemName]">
+          <DataBand Name="Data1" Top="171.2" Width="718.2" Height="18.9" CanGrow="true" EvenStyle="EvenRows" DataSource="Table">
+            <TextObject Name="Text4" Left="56.7" Width="103.95" Height="18.9" CanGrow="true" Text="[stock.PartCode]" Font="Arial, 8pt"/>
+            <TextObject Name="Text6" Left="160.65" Width="132.3" Height="18.9" CanGrow="true" Text="[stock.ItemName]" Font="Arial, 8pt"/>
+            <TextObject Name="Text8" Left="292.95" Width="75.6" Height="18.9" Text="[stock.OpnStk]" HorzAlign="Right" Font="Arial, 8pt"/>
+            <TextObject Name="Text10" Left="368.55" Width="66.15" Height="18.9" Text="[stock.RecQty]" HorzAlign="Right" Font="Arial, 8pt"/>
+            <TextObject Name="Text12" Left="434.7" Width="66.15" Height="18.9" Text="[stock.IssQty]" HorzAlign="Right" Font="Arial, 8pt"/>
+            <TextObject Name="Text16" Left="604.8" Width="37.8" Height="18.9" Text="[stock.unit]" Font="Arial, 8pt"/>
+            <TextObject Name="Text14" Left="500.85" Width="94.5" Height="18.9" Text="[stock.TotalStock]" HorzAlign="Right" Font="Arial, 8pt" TextFill.Color="DarkViolet">
+              <Highlight>
+                <Condition Expression="Value == 0" TextFill.Color="Blue" Font="Arial, 10pt"/>
+                <Condition Expression="Value &lt; 0" Font="Arial, 10pt"/>
+              </Highlight>
+            </TextObject>
+            <TextObject Name="Text43" Left="642.6" Width="56.7" Height="18.9" Text="[stock.AvgRate]" HorzAlign="Right" Font="Arial, 8pt"/>
+            <TextObject Name="Text48" Left="9.45" Width="37.8" Height="18.9" Text="[stock.seqnum]" Font="Arial, 7pt" TextFill.Color="DarkSlateBlue"/>
+          </DataBand>
+          <GroupFooterBand Name="GroupFooter3" Top="194.1" Width="718.2"/>
+        </GroupHeaderBand>
+        <GroupFooterBand Name="GroupFooter2" Top="198.1" Width="718.2"/>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter1" Top="202.1" Width="718.2" Height="18.9">
+        <LineObject Name="Line3" Top="9.45" Width="718.2" Border.Style="Dash"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="225" Width="718.2" Height="18.9">
+      <TextObject Name="Text39" Width="718.2" Height="18.9" Dock="Fill" Text="[PageN]" HorzAlign="Right" Font="Arial, 10pt" Style="Footer"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

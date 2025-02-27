@@ -1,0 +1,134 @@
+﻿@model eTactWeb.DOM.Models.PurchaseBillModel
+
+
+<div class="accordion-body">
+    <div class="row g-2 gx-3">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="EntryID" class="form-label">Entry ID</label>
+            <input asp-for="EntryID" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="YearCode" class="form-label">YearCode</label>
+            <input asp-for="YearCode" class="form-control" readonly />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <input type="hidden" asp-for="FinFromDate" />
+            <input type="hidden" asp-for="FinToDate" />
+            <label asp-for="MRNNo" class="form-label" style="color: red;">MRNNo*</label>
+            <input asp-for="MRNNo" class="form-control" value="@Model.MRNNo" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="MRNYearCode" class="form-label">MRNYear</label>
+            <input asp-for="MRNYearCode" class="form-control" value="@Model.MRNYearCode" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="StrMRNEntryDate" class="form-label" style="color: red;">MRN Date*</label>
+            <input asp-for="StrMRNEntryDate" class="form-control" value="@Model.StrMRNEntryDate" readonly disabled />
+        </div>
+        <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GateNo" class="form-label" style="color: red;">Gate No*</label>
+            <input asp-for="GateNo" class="form-control" value="@Model.GateNo" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GateYearCode" class="form-label">Gate Year Code</label>
+            <input asp-for="GateYearCode" class="form-control" value="@Model.GateYearCode" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="StrGateDate" class="form-label">Gate Date</label>
+            <input asp-for="StrGateDate" class="form-control" value="@Model.StrGateDate" readonly disabled />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PurchVouchNo" class="form-label">Voucher No*</label>
+            @{
+                <input asp-for="PurchVouchNo" class="form-control" readonly disabled />
+            }
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="AllowVouchDateChange()">
+            <input type="hidden" id="AllowVouchDateChange" />
+            <input type="hidden" id="AllowVouchDateChangePassWord" />
+            <label asp-for="VouchDate" class="form-label">Voucher Date*</label>
+            <input asp-for="VouchDate" tabindex="7" readonly onclick="AllowVouchDateChange()" class="form-control datePickerControl" />
+        </div>
+        <input type="hidden" id="AllowInvoiceNoChange" />
+        <input type="hidden" id="AllowInvoiceNoChangePassWord" />
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="AllowInvoiceNoChange()">
+            <label asp-for="InvNo" class="form-label" style="color: red;cursor:pointer">InvNo*</label>
+            <input asp-for="InvNo" class="form-control" onclick="AllowInvoiceNoChange()" value="@Model.InvNo" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" onclick="AllowInvoiceNoChange()">
+            <label asp-for="InvDate" class="form-label" style="color: red;cursor:pointer">InvDate*</label>
+            <input asp-for="InvDate" class="form-control" onclick="AllowInvoiceNoChange()" value="@Model.InvDate" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <input asp-for="AccountCode" class="form-control" type="hidden" value="@Model.AccountCode" />
+            <label asp-for="VendorName" class="form-label" style="color: red;">VendorName*</label>
+            <input asp-for="VendorName" class="form-control" value="@Model.VendorName" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <input asp-for="StateId" class="form-control" type="hidden" value="@Model.StateId" />
+            <label asp-for="StateName" class="form-label" style="color: red;">State Name*</label>
+            <input asp-for="StateName" class="form-control" value="@Model.StateName" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GSTNO" class="form-label">GST NO</label>
+            <input asp-for="GSTNO" class="form-control" value="@Model.GSTNO" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GSTType" class="form-label">GST TYPE</label>
+            <input asp-for="GSTType" class="form-control" value="@Model.GSTType" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GSTRegistered" class="form-label" style="color: red;">GST Registered*</label>
+            <input asp-for="GSTRegistered" class="form-control" value="@Model.GSTRegistered" readonly />
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="VendorAddress" class="form-label" style="color: red;">Vendor Address*</label>
+            <input asp-for="VendorAddress" disabled class="form-control" value="@Model.VendorAddress" readonly />
+        </div>
+        <div class="col-xl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="TypeITEMSERVASSETS" class="form-label">Item Type</label>
+            <input asp-for="TypeITEMSERVASSETS" class="form-control" value="@Model.TypeITEMSERVASSETS" readonly />
+            @* <select asp-for="TypeITEMSERVASSETS" class="form-select" tabindex="6">
+                <option value="0" selected >-Select-</option>
+            </select> *@
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <input asp-for="CurrencyId" type="hidden" class="form-control" />
+            <label asp-for="Currency" class="form-label" style="color: red;">Currency*</label>
+            <input asp-for="Currency" class="form-control" value="@Model.Currency?.ToString()" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="MRNRemark" class="form-label">MRN Remark</label>
+            <input asp-for="MRNRemark" class="form-control" value="@Model.MRNRemark" readonly />
+        </div>  
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="PurchaseBillTypeMRNJWChallan" class="form-label">PurchaseBillTypeMRNJWChallan</label>
+            <input asp-for="PurchaseBillTypeMRNJWChallan" disabled class="form-control" value="@Model.PurchaseBillTypeMRNJWChallan" readonly />
+        </div>
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="PaymentTerms" class="form-label" style="color: red;">Payment Term*</label>
+            <input asp-for="PaymentTerms" disabled class="form-control" value="@Model.PaymentTerms" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="PaymentDays" class="form-label" style="color: red;">Payment Days*</label>
+            <input asp-for="PaymentDays" disabled class="form-control" value="@Model.PaymentDays" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="ModeOfTransport" class="form-label">Mode Of Transp</label>
+            <input asp-for="ModeOfTransport" class="form-control" value="@Model.ModeOfTransport" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="ExchangeRate" class="form-label">Exchange Rate*</label>
+            @{
+                <input asp-for="ExchangeRate" class="form-control" step="any" type="number" min="0" pattern="^([0-9]{1,6}\.[0-9]{2,})$" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
+            }
+        </div>
+        <input asp-for="CC" class="form-control" type="hidden" style="color: red;" />
+        <input asp-for="UID" class="form-control" type="hidden"/>
+        <input asp-for="ActualEntryBy" class="form-control" type="hidden" style="color: red;" />
+        <input type="hidden" asp-for="Approved" class="form-control" />
+        <input type="hidden" asp-for="ApprovedDate" class="form-control" />
+        <input type="hidden" asp-for="Approvedby" class="form-control" />
+    </div>
+</div>
+

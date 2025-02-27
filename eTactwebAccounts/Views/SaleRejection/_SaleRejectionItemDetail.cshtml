@@ -1,0 +1,168 @@
+﻿@model eTactWeb.DOM.Models.SaleRejectionModel
+
+<div class="row g-2 gx-3">
+
+    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="SONODiv">
+        <label asp-for="SONO" class="form-label">SONO</label>
+        <select asp-for="SONO" class="form-control">
+            <option value="">-Select-</option>
+        </select>
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SOYearCodeDiv">
+        <label asp-for="SOyearcode" class="form-label">SO Year Code</label>
+        <select asp-for="SOyearcode" class="form-control">
+            <option value="0">-select-</option>
+        </select>
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SODateDiv">
+        <label asp-for="SODate" class="form-label">SO Date</label>
+        <input asp-for="SODate" class="form-control" readonly disabled />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="CustOrderNoDiv">
+        <label asp-for="CustOrderNo" class="form-label">Cust Order No</label>
+        <select asp-for="CustOrderNo" class="form-control">
+            <option value="0">-select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SchNoDiv">
+        <label asp-for="AgainstBillTypeJWSALE" class="form-label">Sch No</label>
+        <select asp-for="AgainstBillTypeJWSALE" class="form-control">
+            <option value="0">-select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SaleSchYearCodeDiv">
+        <label asp-for="AgainstBillNo" class="form-label">Sale Sch YC</label>
+        <select asp-for="AgainstBillNo" class="form-control">
+            <option value="0">-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SchdateDiv">
+        <label asp-for="AgainstBillYearCode" class="form-label">Schedule Date</label>
+        <input asp-for="AgainstBillYearCode" class="form-control" readonly disabled />
+    </div>
+
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="AgainstBillEntryId" class="form-label">Part Code*</label>
+        <select asp-for="AgainstBillEntryId" class="form-control" style="width:210px;">
+            <option value="0">-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="AgainstOpnOrBill" class="form-label">HSN NO*</label>
+        <input asp-for="AgainstOpnOrBill" class="form-control" />
+    </div>
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <label asp-for="DocTypeAccountCode" class="form-label" style="color: red;">DocType*</label>
+        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+            <input asp-for="DT" class="form-check-input" type="checkbox" role="switch" />Show All
+        </div>
+        <select asp-for="DocTypeAccountCode" class="form-control">
+            <option value="0">-Select-</option>
+        </select>
+        @if (Model.Mode == "U" || Model.Mode == "V")
+        {
+            <input type="hidden" asp-for="DocTypeAccountCode" id="hiddenDocType" />
+        }
+    </div>
+    <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="ItemCode" class="form-label">Item Name*</label>
+        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+            <input asp-for="ItemSA" class="form-check-input" type="checkbox" role="switch" />Show All
+        </div>
+        <select asp-for="ItemCode" class="form-control" style="width:320px;">
+            <option value="0">-Select-</option>
+        </select>
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="Unit" class="form-label">Unit*</label>
+        <input asp-for="Unit" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="RejQty" class="form-label">Bill Qty*</label>
+        <input asp-for="RejQty" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="RecQty" class="form-label">Bill Qty*</label>
+        <input asp-for="RecQty" class="form-control" />
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="Rate" class="form-label">Rate*</label>
+        <input asp-for="Rate" class="form-control" />
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="NoOfCase" class="form-label">No of Pcs</label>
+        <input asp-for="NoOfCase" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="DiscountPer" class="form-label">Discount Per</label>
+        <input asp-for="DiscountPer" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="DiscountAmt" class="form-label">Discount Amt</label>
+        <input asp-for="DiscountAmt" class="form-control" />
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="Amount" class="form-label">Item Amount*</label>
+        <input asp-for="Amount" class="form-control" readonly />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="OtherDetail" class="form-label">Other Detail</label>
+        <input asp-for="OtherDetail" class="form-control" />
+    </div>
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="SalerejRemark" class="form-label">SaleRej Remark</label>
+        <input asp-for="SalerejRemark" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6 col-xs-12 text-center">
+        <div class="form-check form-switch d-flex justify-content-center mt-2">
+            <input asp-for="SH" class="form-check-input" type="checkbox" role="switch" />
+        </div>
+        <label class="form-label">Show/Hide Fields</label>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 col-sm-auto">
+        <div class="row g-3 justify-content-around mt-2">
+            <div class="col-auto">
+                <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
+                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                </button>
+            </div>
+        </div>
+    </div>
+    @* -----------------------------------------------keep inside hidden part *@
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="Itemsize" class="AF form-label">Item Size</label>
+        <input asp-for="Itemsize" class="AF form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="RecStoreId" class="AF form-label">Item color</label>
+        <input asp-for="RecStoreId" class="AF form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="OtherDetail" class="AF form-label">Item color</label>
+        <input asp-for="OtherDetail" class="AF form-control" />
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="Amount" class="AF form-label">GST Per</label>
+        <input asp-for="Amount" class="AF form-control" readonly />
+    </div>
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+        <label asp-for="RejectionReason" class="AF form-label">GST Type</label>
+        <input asp-for="RejectionReason" class="AF form-control" readonly />
+    </div>
+
+    <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SOAmendNoDiv">
+        <label asp-for="SOAmmNo" class="AF form-label">SOAmendNo</label>
+        <input asp-for="SOAmmNo" class="AF form-control" type="text" readonly />
+    </div>
+
+    <div class="clearfix"></div>
+</div>
+

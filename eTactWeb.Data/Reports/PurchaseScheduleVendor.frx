@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="12/29/2023 18:41:58" ReportInfo.Modified="12/29/2023 19:33:56" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Styles Name="Standard">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqcu82QER5H5tMXX6JvAFjHVz0E2hBsXCNessNZK0iqjt15CGMMM/2BEvszyJYapFfsjcIDXdYZdMqSj2GA03Ss890k0G/nqyRHf76E47z5GNhVDBT0wCjTD3+qkixAMliXocOdEWyif9q0D1QPaMmyuD9qNxG52ynznBErkymh3ZUdnB/oWkejy61kgUevYPa0p4prRvPoU2f7g1YkBy7aA==">
+      <TableDataSource Name="Table" Alias="schProc" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportPurchaseSchedulePrint  @SchEntryid = 1 , @Schyearcode = 2023 ">
+        <Column Name="Accountcode" DataType="System.Int64"/>
+        <Column Name="PONO" DataType="System.String"/>
+        <Column Name="EntryID" DataType="System.Int64"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="POYearCode" DataType="System.Int64"/>
+        <Column Name="PODate" DataType="System.DateTime"/>
+        <Column Name="POAmenNo" DataType="System.Int64"/>
+        <Column Name="POAmendDate" DataType="System.DateTime"/>
+        <Column Name="POAmendYearCode" DataType="System.Int64"/>
+        <Column Name="OrderTypeJWPurch" DataType="System.String"/>
+        <Column Name="ItemService" DataType="System.String"/>
+        <Column Name="DeliveryAddress" DataType="System.String"/>
+        <Column Name="ScheduleNo" DataType="System.String"/>
+        <Column Name="ScheduleDate" DataType="System.DateTime"/>
+        <Column Name="SchAmendNo" DataType="System.Int64"/>
+        <Column Name="SchAmendDate" DataType="System.DateTime"/>
+        <Column Name="MRPNO" DataType="System.String"/>
+        <Column Name="MRPentry_Id" DataType="System.Int64"/>
+        <Column Name="MRPNoYearCode" DataType="System.Int64"/>
+        <Column Name="ModeOfTransport" DataType="System.String"/>
+        <Column Name="TentetiveConfirm" DataType="System.String"/>
+        <Column Name="OrderPriority" DataType="System.String"/>
+        <Column Name="ScheduleEffectiveFromDate" DataType="System.DateTime"/>
+        <Column Name="ScheduleEffectiveTillDate" DataType="System.DateTime"/>
+        <Column Name="SchCompleted" DataType="System.String"/>
+        <Column Name="SchAmendApproveBy" DataType="System.Int64"/>
+        <Column Name="SchAmendApproveDate" DataType="System.DateTime"/>
+        <Column Name="SchAmendApprove" DataType="System.String"/>
+        <Column Name="SchApproved" DataType="System.String"/>
+        <Column Name="SchApprovalDate" DataType="System.DateTime"/>
+        <Column Name="SchAppBy" DataType="System.Int64"/>
+        <Column Name="FirstMonthTentRatio" DataType="System.Int64"/>
+        <Column Name="SecMonthTentRatio" DataType="System.Int64"/>
+        <Column Name="Canceled" DataType="System.String"/>
+        <Column Name="CanceledBy" DataType="System.Int64"/>
+        <Column Name="CancenceledDate" DataType="System.DateTime"/>
+        <Column Name="BillingAddress" DataType="System.String"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="CreatedBy" DataType="System.Int64"/>
+        <Column Name="CreatedOn" DataType="System.DateTime"/>
+        <Column Name="UpdatedBy" DataType="System.Int64"/>
+        <Column Name="UpdatedOn" DataType="System.DateTime"/>
+        <Column Name="Active" DataType="System.String"/>
+        <Column Name="EntryByMachineName" DataType="System.String"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="SchQty" DataType="System.Decimal"/>
+        <Column Name="PendQty" DataType="System.Decimal"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="AltSchQty" DataType="System.Decimal"/>
+        <Column Name="AltPendQty" DataType="System.Decimal"/>
+        <Column Name="Rate" DataType="System.Decimal"/>
+        <Column Name="RateInOthCurr" DataType="System.Decimal"/>
+        <Column Name="DeliveryDate" DataType="System.DateTime"/>
+        <Column Name="DeliveryWeek" DataType="System.String"/>
+        <Column Name="ItemSize" DataType="System.String"/>
+        <Column Name="ItemColor" DataType="System.String"/>
+        <Column Name="OtherDetail" DataType="System.String"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="Expr4" DataType="System.DateTime"/>
+        <Column Name="SchAmendYear" DataType="System.Int64"/>
+        <Column Name="TentQtyFor1stMonth" DataType="System.Decimal"/>
+        <Column Name="TentQtyFor2stMonth" DataType="System.Decimal"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="StdPacking" DataType="System.Double"/>
+        <Column Name="PackingType" DataType="System.String"/>
+        <Column Name="ModelNo" DataType="System.String"/>
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="ComAddress" DataType="System.String"/>
+        <Column Name="ComAddress1" DataType="System.String"/>
+        <Column Name="PinCode" DataType="System.String"/>
+        <Column Name="City" DataType="System.String"/>
+        <Column Name="State" DataType="System.String"/>
+        <Column Name="Country" DataType="System.String"/>
+        <Column Name="PhoneNo" DataType="System.String"/>
+        <Column Name="MobileNo" DataType="System.String"/>
+        <Column Name="ContactPerson" DataType="System.String"/>
+        <Column Name="GSTRegistered" DataType="System.String"/>
+        <Column Name="GSTNO" DataType="System.String"/>
+        <Column Name="GSTPartyTypes" DataType="System.String"/>
+        <Column Name="PANNO" DataType="System.String"/>
+        <Column Name="Segment" DataType="System.String"/>
+        <Column Name="SSLNo" DataType="System.String"/>
+        <Column Name="EMail" DataType="System.String"/>
+        <Column Name="BankIFSCCode" DataType="System.String"/>
+        <Column Name="BankAccount_No" DataType="System.String"/>
+        <Column Name="EntryID1" DataType="System.Int64"/>
+        <Column Name="YearCode1" DataType="System.Int64"/>
+        <Column Name="CompCom_Name" DataType="System.String"/>
+        <Column Name="CompCommodity" DataType="System.String"/>
+        <Column Name="CompGSTNO" DataType="System.String"/>
+        <Column Name="CompMobile" DataType="System.String"/>
+        <Column Name="CompDivision" DataType="System.String"/>
+        <Column Name="CompOfficeAdd1" DataType="System.String"/>
+        <Column Name="CompPANNo" DataType="System.String"/>
+        <Column Name="CompRegistration_No" DataType="System.String"/>
+        <Column Name="CompOfficeAdd2" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8">
+      <TextObject Name="Text7" Left="85.05" Width="463.05" Height="18.9" Text="PURCHASE DELIVERY SCHEDULE " HorzAlign="Center" Font="Arial, 12pt, style=Bold" TextFill.Color="0, 0, 205"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="41.8" Width="718.2" Height="28.35">
+      <TextObject Name="Text1" Left="141.75" Width="94.5" Height="18.9" Text="Item_Name" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="245.7" Width="94.5" Height="18.9" Text="DeliveryDate" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="529.2" Width="94.5" Height="18.9" Text="Remarks" Font="Arial, 10pt"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="74.15" Width="718.2" Condition="[schProc.YearCode]">
+      <GroupHeaderBand Name="GroupHeader2" Top="78.15" Width="718.2" Height="189" Condition="[schProc.EntryID]">
+        <TextObject Name="Text31" Left="491.4" Width="217.35" Height="18.9" Text="[schProc.Account_Name]" Font="Arial, 10pt"/>
+        <TextObject Name="Text33" Left="28.35" Width="302.4" Height="18.9" Text="[schProc.CompCom_Name]" Font="Arial, 10pt"/>
+        <TextObject Name="Text34" Left="132.3" Top="75.6" Width="94.5" Height="18.9" Text="[schProc.CompCommodity]" Font="Arial, 10pt"/>
+        <TextObject Name="Text35" Left="113.4" Top="141.75" Width="94.5" Height="18.9" Text="[schProc.CompGSTNO]" Font="Arial, 10pt"/>
+        <TextObject Name="Text36" Left="37.8" Top="18.9" Width="292.95" Height="18.9" Text="[schProc.CompOfficeAdd1]" Font="Arial, 10pt"/>
+        <TextObject Name="Text37" Left="292.95" Top="122.85" Width="94.5" Height="18.9" Text="[schProc.CompPANNo]" Font="Arial, 10pt"/>
+        <TextObject Name="Text39" Left="37.8" Top="37.8" Width="292.95" Height="18.9" Text="[schProc.CompOfficeAdd2]" Font="Arial, 10pt"/>
+        <TextObject Name="Text40" Left="491.4" Top="28.35" Width="94.5" Height="18.9" Text="[schProc.ComAddress]" Font="Arial, 10pt"/>
+        <TextObject Name="Text41" Left="491.4" Top="47.25" Width="94.5" Height="18.9" Text="[schProc.ComAddress1]" Font="Arial, 10pt"/>
+        <TextObject Name="Text42" Left="567" Top="75.6" Width="94.5" Height="18.9" Text="[schProc.PinCode]" Font="Arial, 10pt"/>
+        <TextObject Name="Text43" Left="472.5" Top="75.6" Width="94.5" Height="18.9" Text="[schProc.City]" Font="Arial, 10pt"/>
+        <TextObject Name="Text44" Left="472.5" Top="103.95" Width="94.5" Height="18.9" Text="[schProc.State]" Font="Arial, 10pt"/>
+        <TextObject Name="Text45" Left="576.45" Top="103.95" Width="94.5" Height="18.9" Text="[schProc.Country]" Font="Arial, 10pt"/>
+        <TextObject Name="Text46" Left="472.5" Top="132.3" Width="94.5" Height="18.9" Text="[schProc.GSTNO]" Font="Arial, 10pt"/>
+        <TextObject Name="Text47" Left="472.5" Top="151.2" Width="94.5" Height="18.9" Text="[schProc.PANNO]" Font="Arial, 10pt"/>
+        <TextObject Name="Text54" Left="28.35" Top="66.15" Width="85.05" Height="18.9" Text="Phone No :" Font="Arial, 10pt" TextFill.Color="0, 0, 205"/>
+        <TextObject Name="Text55" Left="28.35" Top="85.05" Width="85.05" Height="18.9" Text="Email Id :" Font="Arial, 10pt" TextFill.Color="0, 0, 205"/>
+        <TextObject Name="Text56" Left="28.35" Top="103.95" Width="85.05" Height="18.9" Text="WebSite  :" Font="Arial, 10pt" TextFill.Color="0, 0, 205"/>
+        <TextObject Name="Text57" Left="28.35" Top="122.85" Width="85.05" Height="18.9" Text="Mobile No:" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+        <TextObject Name="Text58" Left="28.35" Top="141.75" Width="85.05" Height="18.9" Text="GST No:" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+        <TextObject Name="Text59" Left="28.35" Top="160.65" Width="113.4" Height="18.9" Text="Contact Person:" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+        <TextObject Name="Text62" Left="179.55" Top="122.85" Width="113.4" Height="18.9" Text="PAN NO  :" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+        <TextObject Name="Text63" Left="387.45" Width="103.95" Height="18.9" Text="Vendor Code :" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+        <TextObject Name="Text64" Left="387.45" Top="18.9" Width="103.95" Height="18.9" Text="Name &amp; Address:" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+        <TextObject Name="Text65" Left="387.45" Top="37.8" Width="85.05" Height="18.9" Text="GST No:" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+        <TextObject Name="Text66" Left="387.45" Top="56.7" Width="85.05" Height="18.9" Text="Phone No:" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+        <GroupHeaderBand Name="GroupHeader4" Top="271.15" Width="718.2" Height="94.5" Condition="[schProc.EntryID]">
+          <TextObject Name="Text2" Left="56.7" Width="56.7" Height="18.9" Text="[schProc.PONO]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text4" Left="141.75" Width="56.7" Height="18.9" Text="[schProc.PODate]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text6" Left="245.7" Width="56.7" Height="18.9" Text="[schProc.OrderTypeJWPurch]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text8" Left="311.85" Width="56.7" Height="18.9" Text="[schProc.ItemService]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text10" Left="56.7" Top="18.9" Width="56.7" Height="18.9" Text="[schProc.ScheduleNo]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text12" Left="141.75" Top="18.9" Width="56.7" Height="18.9" Text="[schProc.ScheduleDate]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text14" Left="245.7" Top="18.9" Width="56.7" Height="18.9" Text="[schProc.SchAmendNo]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text16" Left="311.85" Top="18.9" Width="56.7" Height="18.9" Text="[schProc.SchAmendDate]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text18" Left="56.7" Top="47.25" Width="56.7" Height="18.9" Text="[schProc.MRPNO]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text22" Left="141.75" Top="47.25" Width="56.7" Height="18.9" Text="[schProc.MRPNoYearCode]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text26" Left="56.7" Top="75.6" Width="170.1" Height="18.9" Text="[schProc.ScheduleEffectiveFromDate]" Font="Arial, 10pt" Style="Data"/>
+          <TextObject Name="Text30" Left="264.6" Top="75.6" Width="94.5" Height="18.9" Text="[schProc.Account_Name]" Font="Arial, 10pt"/>
+          <TextObject Name="Text60" Left="425.25" Width="113.4" Height="18.9" Text="PO NO :" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+          <TextObject Name="Text61" Left="425.25" Top="18.9" Width="113.4" Height="18.9" Text="SCH NO :" Font="Arial, 10pt" TextFill.Color="MediumBlue"/>
+          <GroupHeaderBand Name="GroupHeader3" Top="369.65" Width="718.2" Height="9.45" Condition="[schProc.PartCode]">
+            <DataBand Name="Data1" Top="383.1" Width="718.2" Height="18.9" EvenStyle="EvenRows" DataSource="Table">
+              <TextObject Name="Text29" Left="37.8" Width="94.5" Height="18.9" Text="[schProc.PartCode]" Font="Arial, 10pt"/>
+              <TextObject Name="Text48" Left="141.75" Width="94.5" Height="18.9" Text="[schProc.Item_Name]" Font="Arial, 10pt"/>
+              <TextObject Name="Text49" Left="245.7" Width="94.5" Height="18.9" Text="[schProc.DeliveryDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+              <TextObject Name="Text51" Left="425.25" Width="94.5" Height="18.9" Text="[schProc.DeliveryWeek]" Font="Arial, 10pt"/>
+              <TextObject Name="Text50" Left="340.2" Width="85.05" Height="18.9" Text="[schProc.SchQty]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+              <TextObject Name="Text52" Left="529.2" Width="94.5" Height="18.9" Text="[schProc.Remarks]" Font="Arial, 10pt"/>
+              <TextObject Name="Text53" Left="642.6" Width="94.5" Height="18.9" Text="[schProc.PONO]" Font="Arial, 10pt"/>
+            </DataBand>
+            <GroupFooterBand Name="GroupFooter3" Top="406" Width="718.2" Height="37.8"/>
+          </GroupHeaderBand>
+          <GroupFooterBand Name="GroupFooter4" Top="447.8" Width="718.2" Height="37.8"/>
+        </GroupHeaderBand>
+        <GroupFooterBand Name="GroupFooter2" Top="489.6" Width="718.2" Height="37.8"/>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter1" Top="531.4" Width="718.2" Height="37.8"/>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="573.2" Width="718.2" Height="18.9">
+      <TextObject Name="Text28" Width="718.2" Height="18.9" Dock="Fill" Text="[PageN]" HorzAlign="Right" Font="Arial, 10pt" Style="Footer"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

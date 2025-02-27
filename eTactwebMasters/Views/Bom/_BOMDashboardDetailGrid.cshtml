@@ -1,0 +1,161 @@
+﻿@model eTactWeb.DOM.Models.BomDashboard
+
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="bomTable">
+        <thead class="bg-gradient card-headerBG text-light" id="tableHead">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rev No</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Part Code</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Item Name</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Qty</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Part Code</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Item Name</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Qty</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Part Code1</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Item Name1</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Part Code2</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Item Name2</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty1</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty2</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Used In Stage</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue To Job Work</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Direct/Process</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Job Work</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pkg Item</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Runner Qty</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Runner Item</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gross Weight</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Weight</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Scrap</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Burn Qty</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MPNNo</th>              
+            </tr>
+        </thead>
+        <tbody id="bomTableBody">
+            @{
+                var @Cntr = 0;
+                if (Model.DTDashboard == null || Model.DTDashboard.Rows.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    for (int i = 0; i < Model.DTDashboard.Rows.Count; i++)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr>
+                            <td class="FWB">@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a href="#" class="table-link link-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="GetBomDetail('@Model.DTDashboard.Rows[i]["FGPartCode"]','@Model.DTDashboard.Rows[i]["BomNo"]')">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary" asp-action="EditBomDetail" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGPartCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]" asp-route-Mode="U">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="Bom" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGItemCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="FWB">@Model.DTDashboard.Rows[i]["BomNo"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["FGPartCode"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["FGItem"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["BomQty"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["RMPartCode"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["RMItemName"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["Qty"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["Unit"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["AltPartcode1"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["AltItem1"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["AltPartcode2"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["AltItem2"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["AltQty1"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["AltQty2"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["UsedStageId"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["IssueToJoBwork"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["DirectProcess"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["RecFrmCustJobwork"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["PkgItem"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["RunnerQty"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["Remark"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["RunnerItemCode"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["GrossWt"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["NetWt"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["scrap"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["BurnQty"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["Location"]</td>
+                            <td>@Model.DTDashboard.Rows[i]["MPNNo"]</td>                           
+                        </tr>
+
+                      
+                }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #bomTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #tableHead th {
+        background-color: #127387;
+        position: sticky;
+        top: -18px;
+        z-index: 1;
+        position:fixed;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

@@ -1,0 +1,48 @@
+﻿@model eTactWeb.DOM.Models.ProductionEntryModel
+
+@if (Model.ProductionChilDataDetail == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ProductionChilDataDetail)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid-@item.SeqNo" class="small" style="white-space:nowrap">
+            <td>
+                <a class="noCursor">
+                    <i class="fa fa-trash" aria-hidden="true" style="color: red; font-size: 18px;" onclick="deletebyitem(@item.SeqNo)" id="deleteItem-@item.SeqNo"></i>
+                </a>
+            </td>
+            <td><input readonly style="width:50px" value="@item.SeqNo" /></td>
+            <td><input id="PartCode-@item.SeqNo" value="@item.RmPartCode" readonly /></td>
+            <td><input id="ItemName-@item.SeqNo" value="@item.RmItemName" readonly><input type="hidden" id="RmItemCode-@item.SeqNo" value="@item.RmItemCode"></td>
+            <td><input id="ReqQty-@item.SeqNo" value="@(string.Format("{0:0.##}", item.TotalReqRMQty))" style="width:70px;background-color:blue;color:white" type="number" readonly></td>
+            <td><input id="IssueQty-@item.SeqNo" value="@(string.Format("{0:0.##}", item.ConsumedRMQTY))" style="width:70px;" type="number" readonly onchange="IssQtyChange(@item.SeqNo)"></td>
+            <td><input id="unit-@item.SeqNo" style="height: 30px;width:50px !important;" value="@item.RmUnit" readonly></td>
+            <td><input id="ProdQty-@item.SeqNo" value="@(string.Format("{0:0.##}", item.FGProdQty))" style="width:70px;" type="number" readonly></td>
+            <td><input id="TotalStock-@item.SeqNo" value="@(string.Format("{0:0.##}", item.TotalStock))" style="width:70px;background-color:green;color:white" type="number" readonly></td>
+            <td><input id="BatchStock-@item.SeqNo" value="@(string.Format("{0:0.##}", item.BatchStock))" style="width:70px;" type="number" readonly></td>
+            <td><input readonly id="BatchNo-@item.SeqNo" style="width:70px;" value="@item.BatchNo"></td>
+            <td><input readonly id="UniqueBatchNo-@item.SeqNo" style="width:150px;" value="@item.UniqueBatchNo"></td>
+            <td><input id="Batchdate-@item.SeqNo" value="@item.BatchDate" style="width:100px;" readonly></td>
+            <td><input id="PendQty-@item.SeqNo" value="@item.PendQty" style="width:70px;" type="number" readonly></td>
+            <td><input id="RemainingStock-@item.SeqNo" value="@item.RemainingStock" style="width:70px;" type="number" readonly></td>
+            <td><input id="AltQty-@item.SeqNo" value="@item.AltQty" style="width:70px;" type="number" readonly></td>
+            <td><input id="AltUnit-@item.SeqNo" value="@item.AltRMUnit" style="width:70px;" type="number" readonly></td>
+            <td><input id="NetWt-@item.SeqNo" value="@item.RMNetWt" style="width:70px;" type="number" readonly></td>
+            <td><input id="GrossWt-@item.SeqNo" value="@item.GrossWt" style="width:70px;" type="number" readonly></td>
+            <td><input readonly id="Batchwise-@item.SeqNo" value="@item.Batchwise" style="width:70px;"></td>
+            <td><input id="StdPacking-@item.SeqNo" value="@item.StdPacking" style="width:70px;" type="number" readonly></td>
+            <td><input id="PendAfterIssue-@item.SeqNo" value="@item.PendAfterIssue" style="width:70px;" type="number" readonly></td>
+            <td><input id="StoreName-@item.SeqNo" value="@item.StoreName" style="width:100px;" readonly></td>
+            <td><input id="Rate-@item.SeqNo" value="@item.Rate" style="width:70px;" type="number" readonly></td>
+            <td><input readonly id="DetailRemark-@item.SeqNo" style="width:100px;" value="@item.Remark"></td>
+            <td><input id="MainIssueQty-@item.SeqNo" value="@item.MainRMQTY" style="width:70px;" type="number" readonly></td>
+        </tr>
+    }
+}

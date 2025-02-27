@@ -1,0 +1,352 @@
+﻿@model eTactWeb.DOM.Models.ProductionScheduleDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+@if (Model.SummaryDetail == "Detail")
+{
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="PSDashboardGrid">
+        <thead class="bg-gradient card-headerBG text-light">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
+                @* <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WCID</th> *@
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdSchNo</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Effective From</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Effective To</th>
+                @* <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rev No</th> *@
+                @* <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rev Date</th> *@
+                @* <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>For the Month</th> *@
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Show Wo</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>No of Days</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Id</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom No</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom EffDate</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shift ID</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod In Wc </th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Original Qty</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Planned Machine1</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Planned Machine2</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Planned Machine3</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WONO</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WO YearCode</th>
+                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WO Date</th>
+                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust OrderNo</th>
+                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO YearCode</th>
+                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
+                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sub BOM</th>
+                <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Drawing No</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark Item</th>
+                <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Completed</th>
+                <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QC Manadatory</th>
+                <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
+                <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Name</th>
+                <th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                <th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By MachineName</th>
+            </tr>
+        </thead>
+        <tbody id="ProductionSchGrid">
+            @{
+                var @Cntr = 0;
+                if (Model.productionScheduleDashboards == null || Model.productionScheduleDashboards.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.productionScheduleDashboards)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="printData-@Cntr">
+                                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.EntryID" asp-route-YearCode="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="ProductionSchedule" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    @if (item.YearCode == yearCode)
+                                    {
+                                        <div id="editCursorDiv-@Cntr">
+
+                                            <a class="table-link link-primary" asp-action="ProductionSchedule" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        // <div id="deleteCursorDiv-@Cntr">
+                                        //     <a class="table-link link-danger" onclick="confirmdelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode" asp-route-createdBy="@item.ActualEntryBy" asp-route-entryByMachineName="@item.EntryByMachineName">
+                                        //         <span class="fa-stack">
+                                        //             <i class="fa fa-square fa-stack-2x"></i>
+                                        //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        //         </span>
+                                        //     </a>
+                                        // </div>
+                                        <div id="deleteCursorDiv-@Cntr">
+                                            <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode" asp-route-createdBy="@item.CreatedBy" asp-route-entryByMachineName="@item.EntryByMachineName">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <a class="table-link link-primary noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a class="table-link link-danger noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+
+                            <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td>
+                             @* <td>@item.WCID</td> *@
+                            <td>@item.ProdSchNo</td>
+                            <td>@(item.EffectiveFrom == null ? string.Empty : item.EffectiveFrom.Split(" ")[0])</td>
+                            <td>@(item.EffectiveTo == null ? string.Empty : item.EffectiveTo.Split(" ")[0])</td>
+                           @* <td>@item.RevNo</td> *@
+                          @*  <td>@item.RevDate?.Split(" ")[0]</td> *@
+                           @* <td>@item.ForTheMonth</td>*@
+                            <td>@item.Remark</td>
+                            <td>@item.ShowWOWithOrWOItem</td>
+                            <td>@item.PlanForNoOFDays</td>
+                            <td>@item.EntryID</td>
+                            <td>@item.YearCode</td>
+                            <td>@item.PartCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.BOMNO</td>
+                            <td>@item.BomEffDate?.Split(" ")[0]</td>
+                            <td>@item.SchDate?.Split(" ")[0]</td>
+                            <td>@item.ShiftID</td>
+                            <td>@item.ProdInWC</td>
+                            <td>@item.Qty</td>
+                            <td>@item.Originalqty</td>
+                            <td>@item.PlannedMachineid1</td>
+                            <td>@item.PlannedMachineid2</td>
+                            <td>@item.PlannedMachineid3</td>
+                            <td>@item.WONo</td>
+                            <td>@item.WOYearCode</td>
+                            <td>@item.WODate?.Split(" ")[0]</td>
+                            <td>@item.CustOrderNo</td>
+                            <td>@item.SOYearCode</td>
+                            <td>@item.SODate?.Split(" ")[0]</td>
+                            <td>@item.SubBOM</td>
+                            <td>@item.DrawingNo</td>
+                            <td>@item.RemarkItem</td>
+                            <td>@item.ProdCompleted</td>
+                            <td>@item.QCMandatory</td>
+                            <td>@item.AccountName</td>
+                            <td>@item.CC</td>
+                            <td>@item.ActualEntryBy</td>
+                            <td>@item.ActualEntryDate?.Split(" ")[0]</td>
+                            <td>@item.EntryByMachineName</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+    
+}
+else
+{
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="PSDashboardGrid">
+        <thead class="bg-gradient card-headerBG text-light">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryId</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
+                @* <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WCID</th> *@
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdSchNo</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdSchDate</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Effective From</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Effective To</th>
+                @* <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rev No</th> *@
+                @* <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rev Date</th> *@
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Completed</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Show WO</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated By</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated Date</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Name</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By MachineName</th>
+            </tr>
+        </thead>
+        <tbody id="ProductionSchGrid">
+            @{
+                var @Cntr = 0;
+                if (Model.productionScheduleDashboards == null || Model.productionScheduleDashboards.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.productionScheduleDashboards)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="printData-@Cntr">
+                                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.EntryID" asp-route-YearCode="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="ProductionSchedule" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    @if (item.YearCode == yearCode)
+                                    {
+                                        <div id="editCursorDiv-@Cntr">
+
+                                            <a class="table-link link-primary" asp-action="ProductionSchedule" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+
+                                        // <div id="deleteCursorDiv-@Cntr">
+                                        //     <a class="table-link link-danger" onclick="confirmdelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode" asp-route-createdBy="@item.ActualEntryBy" asp-route-entryByMachineName="@item.EntryByMachineName">
+                                        //         <span class="fa-stack">
+                                        //             <i class="fa fa-square fa-stack-2x"></i>
+                                        //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        //         </span>
+                                        //     </a>
+                                        // </div>
+
+                                        // <div id="deleteCursorDiv-@Cntr">
+                                        //     <a class="table-link link-danger" id="deleteLink" data-id="@item.EntryID" data-YC="@item.YearCode" data-createdBy="@item.CreatedBy" data-entryByMachineName="@item.EntryByMachineName" onclick="confirmdelete(event)">
+                                        //         <span class="fa-stack">
+                                        //             <i class="fa fa-square fa-stack-2x"></i>
+                                        //             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        //         </span>
+                                        //     </a>
+                                        // </div>
+                                        <div id="deleteCursorDiv-@Cntr">
+                                            <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode" asp-route-createdBy="@item.CreatedBy" asp-route-ActualEntryBy="@item.ActualEntryBy" asp-route-EntryDate="@item.EntryDate" asp-route-entryByMachineName="@item.EntryByMachineName">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <a class="table-link link-primary noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a class="table-link link-danger noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+
+                            <td>@item.EntryID</td>
+                            <td>@item.YearCode</td>
+                            <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td>
+                            @* <td>@item.WCID</td> *@
+                            <td>@item.ProdSchNo</td>
+                            <td>@(item.ProdSchDate == null ? string.Empty : item.ProdSchDate.Split(" ")[0])</td>
+                            <td>@(item.EffectiveFrom == null ? string.Empty : item.EffectiveFrom.Split(" ")[0])</td>
+                            <td>@(item.EffectiveTo == null ? string.Empty : item.EffectiveTo.Split(" ")[0])</td>
+                            @*  <td>@item.RevNo</td> *@
+                            @*  <td>@item.RevDate?.Split(" ")[0]</td>  *@
+                            <td>@item.Closed</td>
+                            <td>@item.Completed</td>
+                            <td>@item.Remark</td>
+                            <td>@item.ShowWOWithOrWOItem</td>
+                            <td>@item.LastUpdatedBy</td>
+                            <td>@item.LastUpdatedDate?.Split(" ")[0]</td>
+                            <td>@item.CC</td>
+                            <td>@item.UID</td>
+                            <td>@item.ActualEntryBy</td>
+                            <td>@item.ActualEntryDate?.Split(" ")[0]</td>
+                            <td>@item.EntryByMachineName</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+
+}
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+</style>

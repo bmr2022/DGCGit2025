@@ -1,0 +1,275 @@
+﻿@model eTactWeb.DOM.Models.SubVoucherDashBoardGridModel;
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th>PrefixEntryId</th>
+                <th>MainVoucherName</th>
+                <th>MainVoucherTableName</th>
+                <th>SubVoucherName</th>
+                <th>VoucherRotationType</th>
+                <th>StartSubVouchDiffSeries</th>
+                <th>SubVouchPrefix</th>
+                <th>FromYearPrefix</th>
+                <th>ToYearPreFix</th>
+                <th>MonthPrefix</th>
+                <th>DayPrefix</th>
+                <th>SeparatorApplicable</th>
+                <th>Separator</th>
+                <th>TotalLength</th>
+                <th>ActualEntryBy</th>
+                <th>ActualEntryDate</th>
+                <th>UpdatedBy</th>
+                <th>UpdationDate</th>
+                <th>EntryByMachine</th>
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.SubVoucherDashBoardGrid == null || Model.SubVoucherDashBoardGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="21" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.SubVoucherDashBoardGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="printData-@Cntr">
+                                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.PrefixEntryId" >
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="SubVoucher" asp-route-Mode="V" asp-route-ID="@item.PrefixEntryId"  onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary" id="editCursor-@Cntr"
+                                           asp-action="SubVoucher"
+                                           asp-controller="SubVoucher"
+                                           asp-route-Mode="U"
+                                           asp-route-PrefixEntryId="@item.PrefixEntryId"
+                                           asp-route-MainVoucherName="@item.MainVoucherName"
+                                           asp-route-MainVoucherTableName="@item.MainVoucherTableName"
+                                           asp-route-SubVoucherName="@item.SubVoucherName"
+                                           asp-route-VoucherRotationType="@item.VoucherRotationType"
+                                           asp-route-StartSubVouchDiffSeries="@item.StartSubVouchDiffSeries"
+                                           asp-route-SubVouchPrefix="@item.SubVouchPrefix"
+                                           asp-route-FromYearPrefix="@item.FromYearPrefix"
+                                           asp-route-ToYearPrefix="@item.ToYearPreFix"
+                                           asp-route-MonthPrefix="@item.MonthPrefix"
+                                           asp-route-DayPrefix="@item.DayPrefix"
+                                           asp-route-SeparatorApplicable="@item.SeparatorApplicable"
+                                           asp-route-Separator="@item.Separator"
+                                           asp-route-TotalLength="@item.TotalLength"
+                                           asp-route-ActualEntryBy="@item.ActualEntryBy"
+                                           asp-route-ActualEntryDate="@item.ActualEntryDate"
+                                           asp-route-UpdatedBy="@item.UpdatedBy"
+                                           asp-route-UpdationDate="@item.UpdationDate"
+                                           asp-route-EntryByMachine="@item.EntryByMachine"
+                                           onclick="confirmEdit(event)">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" 
+                                        onclick="confirmDelete(event)" 
+                                        asp-action="DeleteByID" 
+                                         asp-route-PrefixEntryId="@item.PrefixEntryId"
+                                           asp-route-MainVoucherName="@item.MainVoucherName"
+                                           asp-route-MainVoucherTableName="@item.MainVoucherTableName"
+                                           asp-route-SubVoucherName="@item.SubVoucherName"
+                                           asp-route-VoucherRotationType="@item.VoucherRotationType"
+                                           asp-route-StartSubVouchDiffSeries="@item.StartSubVouchDiffSeries"
+                                           asp-route-SubVouchPrefix="@item.SubVouchPrefix"
+                                           asp-route-FromYearPrefix="@item.FromYearPrefix"
+                                           asp-route-ToYearPrefix="@item.ToYearPreFix"
+                                           asp-route-MonthPrefix="@item.MonthPrefix"
+                                           asp-route-DayPrefix="@item.DayPrefix"
+                                           asp-route-SeparatorApplicable="@item.SeparatorApplicable"
+                                           asp-route-Separator="@item.Separator"
+                                           asp-route-TotalLength="@item.TotalLength"
+                                           asp-route-ActualEntryBy="@item.ActualEntryBy"
+                                           asp-route-ActualEntryDate="@item.ActualEntryDate"
+                                           asp-route-UpdatedBy="@item.UpdatedBy"
+                                           asp-route-UpdationDate="@item.UpdationDate"
+                                           asp-route-EntryByMachine="@item.EntryByMachine"
+                                        >
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.PrefixEntryId</td>
+                            <td>@item.MainVoucherName</td>
+                            <td>@item.MainVoucherTableName</td>
+                            <td>@item.SubVoucherName</td>
+                            <td>@item.VoucherRotationType</td>
+                            <td>@item.StartSubVouchDiffSeries</td>
+                            <td>@item.SubVouchPrefix</td>
+                            <td>@item.FromYearPrefix</td>
+                            <td>@item.ToYearPreFix</td>
+                            <td>@item.MonthPrefix</td>
+                            <td>@item.DayPrefix</td>
+                            <td>@item.SeparatorApplicable</td>
+                            <td>@item.Separator</td>
+                            <td>@item.TotalLength</td>
+                            <td>@item.EntryByEmpName <input type="hidden" asp-for="@item.ActualEntryBy" value="@item.ActualEntryBy" /></td>
+                            <td>@item.ActualEntryDate</td>
+                            <td>@item.UpdateByEmpName  <input type="hidden" asp-for="@item.UpdatedBy" /></td>
+                            <td>@item.UpdationDate</td>
+                            <td>@item.EntryByMachine</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+<script>
+    function confirmEdit(event) {
+        event.preventDefault();
+
+        if (confirm("Are you sure you want to Edit this entry?")) {
+            // Extract the automatically generated href
+            var linkUrl = $(event.currentTarget).attr("href");
+
+            // Extract additional parameters from your input fields
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var groupName = $('#GroupName').val();
+            var ledgerName = $('#LedgerName').val();
+            var searchBox = $('#search-box').val();
+
+            // Build the query string with additional parameters
+            linkUrl += "?FromDate=" + encodeURIComponent(fromDate)
+                + "&ToDate=" + encodeURIComponent(toDate)
+                + "&GroupName=" + encodeURIComponent(groupName)
+                + "&LedgerName=" + encodeURIComponent(ledgerName)
+                + "&Searchbox=" + encodeURIComponent(searchBox);
+                 
+            // Extract data from the `data-*` attributes
+            var selection = $(event.currentTarget);
+            var mode = selection.data("mode");
+            var prefixEntryId = selection.data("id");
+            var mainVoucherName = selection.data("main-voucher-name");
+            var mainVoucherTableName = selection.data("main-voucher-table-name");
+            var subVoucherName = selection.data("sub-voucher-name");
+            var voucherRotationType = selection.data("voucher-rotation-type");
+            var startSubVouchDiffSeries = selection.data("start-sub-vouch-diff-series");
+            var subVouchPrefix = selection.data("sub-vouch-prefix");
+            var fromYearPrefix = selection.data("from-year-prefix");
+            var toYearPrefix = selection.data("to-year-prefix");
+            var monthPrefix = selection.data("month-prefix");
+            var dayPrefix = selection.data("day-prefix");
+            var separatorApplicable = selection.data("separator-applicable");
+            var separator = selection.data("separator");
+            var totalLength = selection.data("total-length");
+            var actualEntryBy = selection.data("actual-entry-by");
+            var actualEntryDate = selection.data("actual-entry-date");
+            var updatedBy = selection.data("updated-by");
+            var updationDate = selection.data("updation-date");
+            var entryByMachine = selection.data("entry-by-machine");
+
+            // Build the full query string with data-* attributes
+            linkUrl += "&Mode=" + encodeURIComponent(mode)
+                + "&PrefixEntryId=" + encodeURIComponent(prefixEntryId)
+                + "&MainVoucherName=" + encodeURIComponent(mainVoucherName)
+                + "&MainVoucherTableName=" + encodeURIComponent(mainVoucherTableName)
+                + "&SubVoucherName=" + encodeURIComponent(subVoucherName)
+                + "&VoucherRotationType=" + encodeURIComponent(voucherRotationType)
+                + "&StartSubVouchDiffSeries=" + encodeURIComponent(startSubVouchDiffSeries)
+                + "&SubVouchPrefix=" + encodeURIComponent(subVouchPrefix)
+                + "&FromYearPrefix=" + encodeURIComponent(fromYearPrefix)
+                + "&ToYearPrefix=" + encodeURIComponent(toYearPrefix)
+                + "&MonthPrefix=" + encodeURIComponent(monthPrefix)
+                + "&DayPrefix=" + encodeURIComponent(dayPrefix)
+                + "&SeparatorApplicable=" + encodeURIComponent(separatorApplicable)
+                + "&Separator=" + encodeURIComponent(separator)
+                + "&TotalLength=" + encodeURIComponent(totalLength)
+                + "&ActualEntryBy=" + encodeURIComponent(actualEntryBy)
+                + "&ActualEntryDate=" + encodeURIComponent(actualEntryDate)
+                + "&UpdatedBy=" + encodeURIComponent(updatedBy)
+                + "&UpdationDate=" + encodeURIComponent(updationDate)
+                + "&EntryByMachine=" + encodeURIComponent(entryByMachine);
+
+            // Redirect to the new URL with GET request
+            window.location.href = linkUrl;
+        }
+    }
+
+
+</script>
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%; /* Ensure table fills the container width */
+    }
+
+    th, td {
+        white-space: nowrap; /* Prevent content from wrapping */
+    }
+</style>

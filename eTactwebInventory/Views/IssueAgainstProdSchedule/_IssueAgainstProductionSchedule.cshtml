@@ -1,0 +1,101 @@
+﻿@model eTactWeb.DOM.Models.IssueAgainstProdSchedule
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+            <td>
+                <div id="deleteCursorDiv-@Cntr">
+                    <a class="table-link link-danger" onclick="DeleteFromMemoryGrid(@Cntr)">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </div>
+            </td>
+            <td><input readonly value="@Cntr" style="width:30px" /></td>
+            <td><input readonly id="RMPartCode-@Cntr" type="text" style="width:80px" value="@item.RMPartCode" /></td>
+            <td><input onmouseover="ShowToolTip(this)" onmouseout="hideTooltip()" readonly id="RMItemName-@Cntr" type="text" style="width:125px" value="@item.RMItemName" /><input type="hidden" id="IssueItemCode-@Cntr" value="@item.IssueItemCode" />
+            </td>
+            <td><input readonly id="PendQty-@Cntr" type="number" value="@Math.Round(item.PendQty, 2)" style="width:80px" /></td>
+            <td><input id="IssueQty-@Cntr" type="number" value="@Math.Round(item.IssueQty,2)" style="width:80px;background-color:lightgoldenrodyellow" onchange="CheckIssueQty(@Cntr)" onkeydown="BlockNegative(@Cntr)" min="0" /></td>
+            <td><input readonly id="ToatlStock-@Cntr" type="number" value="@Math.Round(item.ToatlStock,2)" style="width:80px" /></td>
+            <td><input readonly id="BatchStock-@Cntr" type="number" value="@Math.Round(item.BatchStock,2)" style="width:80px" /></td>
+            <td>
+                <input type="hidden" value="@item.WCId" id="WorkCenterId-@Cntr"/>
+                <select class="form-select" id="WorkCenter-@Cntr" style="width:110px;background-color:lightgoldenrodyellow" onchange="WorkCenterChange(@Cntr)">
+                    <option>@item.WorkCenter</option>
+                </select>
+                @* <input readonly id="WorkCenter-@Cntr" type="text" value="@item.WorkCenter" style="width:80px;background-color:lightgoldenrodyellow" /><input type="hidden" id="WCId-@Cntr" value="@item.WCId" /> *@
+            </td>
+            <td><input readonly id="MaxIssueQty-@Cntr" type="number" value="@Math.Round(item.MaxIssueQty,2)" style="width:55px" /></td>
+            <td><input readonly id="Unit-@Cntr" type="text" value="@item.Unit" style="width:40px" /></td>
+            <td>
+                <input type="hidden" value="@item.StoreId" id="GridStoreId" />
+                <input type="hidden" value="@item.StoreName" id="GridStoreName" />
+                <select class="form-select" id="GridBatchNo-@Cntr" style="width:110px;background-color:lightgoldenrodyellow" onchange="FillUniqueBatchNo(@Cntr);FillLotandTotalStock(@Cntr)">
+                    @if (item.BatchNo == null || item.BatchNo == "")
+                    {
+                        <option selected disabled value="">-Select-</option>
+                    }
+                    else
+                    {
+                        <option value="@item.BatchNo">@item.BatchNo</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <select class="form-select" id="GridUniqueBatchNo-@Cntr" style="width:110px" onchange="FillLotandTotalStock(@Cntr)">
+                    @if (item.UniqueBatchNo == null || item.UniqueBatchNo == "")
+                    {
+                        <option selected disabled value="">-Select-</option>
+                    }
+                    else
+                    {
+                        <option value="@item.UniqueBatchNo">@item.UniqueBatchNo</option>
+                    }
+
+                </select>
+            </td>
+            <td><input readonly id="ProdPlanNo-@Cntr" type="text" value="@item.ProdPlanNo" style="width:105px" /></td>
+            <td><input readonly id="ProdSchNo-@Cntr" type="text" value="@item.ProdSchNo" style="width:145px" /></td>
+            <td><input readonly id="FGPartCode-@Cntr" type="text" style="width:80px" value="@item.FGPartCode" /><input type="hidden" id="ProdPlanFGItemCode-@Cntr" value="@item.ProdPlanFGItemCode" /><input type="hidden" id="MainGridStockable-@Cntr" value="@item.MainGridStockable" /><input type="hidden" id="ProdSchFGItemCode-@Cntr" value="@item.ProdSchFGItemCode" /></td>
+            <td>
+                <input readonly id="FGItemName-@Cntr" type="text" style="width:80px" value="@item.FGItemName" /> 
+                <button onclick="DisplayBomDetail(event,@Cntr)" style="background-color:#ffd6dd" class="formateBtn">
+                    B
+                </button>
+                <button onclick="DisplayRoutingDetail(event,@Cntr)" style="background-color:#ffd6dd" class="formateBtn">
+                    R
+                </button>
+            </td>
+            <td><input readonly id="ProdPlanYearcode-@Cntr" type="number" value="@item.ProdPlanYearcode" style="width:50px" /></td>
+            <td><input readonly id="ProdPlanDate-@Cntr" type="text" value="@item.ProdPlanDate" style="width:80px" /></td>
+            <td><input readonly id="AltQty-@Cntr" type="number" value="@Math.Round(item.AltQty,2)" style="width:50px" /></td>
+            <td><input readonly id="AltUnit-@Cntr" type="text" value="@item.AltUnit" style="width:40px" /></td>
+            <td><input readonly id="ProdPlanEntryId-@Cntr" type="number" value="@item.ProdPlanEntryId" style="width:40px" /></td>
+            <td><input readonly id="ProdSchEntryId-@Cntr" type="number" value="@item.ProdSchEntryId" style="width:40px" /></td>
+            <td><input readonly id="ProdSchYearcode-@Cntr" type="number" value="@item.ProdSchYearcode" style="width:50px" /></td>
+            <td><input readonly id="ProdSchDate-@Cntr" type="text" value="@item.ProdSchDate" style="width:80px" /></td>
+            <td><input readonly id="StdPacking-@Cntr" type="number" value="@item.StdPacking" style="width:60px" /></td>
+            <td><input readonly id="ProdSchQty-@Cntr" type="number" value="@Math.Round(item.ProdSchQty,2)" style="width:60px" /></td>
+            <td><input readonly id="PendAfterIssue-@Cntr" type="number" value="@item.PendAfterIssue" style="width:60px" /></td>
+            <td><input readonly id="Batchdate-@Cntr" type="text" value="@item.Batchdate" style="width:80px" /></td>
+            <td><input readonly id="Rate-@Cntr" type="number" value="@Math.Round(item.Rate,2)" style="width:60px" /></td>
+            <td><input readonly id="Remark-@Cntr" type="text" value="@item.Remark" style="width:60px" /></td>
+            <td><input readonly id="ItemSize-@Cntr" type="text" value="@item.ItemSize" style="width:60px" /></td>
+            <td><input readonly id="ItemColor-@Cntr" type="text" value="@item.ItemColor" style="width:60px" /></td>
+            <td><input readonly id="RemainingStock-@Cntr" type="number" value="@item.RemainingStock" style="width:60px" /></td>
+        </tr>
+    }
+}

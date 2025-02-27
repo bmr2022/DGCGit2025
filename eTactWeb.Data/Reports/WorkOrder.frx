@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/09/2024 13:01:49" ReportInfo.Modified="01/09/2024 15:02:51" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection1" ConnectionString="rijcmlqcu82QER5H5tMXX6JvAFjHVz0E2hBsXCNessNZK0iqjt15CGMMM/2BEvszyJYapFfsjcIDXdYZdMqSj2GA03Ss890k0G/nqyRHf76E47z5GNhVDBT0wCjTD3+qkixAMliXocOdEWyif9q0D1QPaMmyuD9qNxG52ynznBErkymh3ZUdnB/oWkejy61kgUevYPagiApX+wXD6M7DGHZVCvi5w==">
+      <TableDataSource Name="Table" DataType="System.Int32" Enabled="true" SelectCommand="select * from vworkordermaindetail">
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="Accountcode" DataType="System.Int64"/>
+        <Column Name="ActualEntryBy" DataType="System.Int64"/>
+        <Column Name="ActualEntryByEmpName" DataType="System.String"/>
+        <Column Name="ActualEntryDate" DataType="System.DateTime"/>
+        <Column Name="AltOrderQty" DataType="System.Double"/>
+        <Column Name="AltQty" DataType="System.Double"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="AmendEffDate" DataType="System.DateTime"/>
+        <Column Name="AmendNo" DataType="System.Int64"/>
+        <Column Name="Approved" DataType="System.String"/>
+        <Column Name="ApprovedBy" DataType="System.Int64"/>
+        <Column Name="ApprovedDate" DataType="System.DateTime"/>
+        <Column Name="ApproxEndDate" DataType="System.DateTime"/>
+        <Column Name="ApproxStartDate" DataType="System.DateTime"/>
+        <Column Name="BillingStatus" DataType="System.String"/>
+        <Column Name="BomEffectiveDate" DataType="System.DateTime"/>
+        <Column Name="BomName" DataType="System.String"/>
+        <Column Name="Bomno" DataType="System.Int64"/>
+        <Column Name="cc" DataType="System.String"/>
+        <Column Name="CloseBy" DataType="System.Int64"/>
+        <Column Name="closedate" DataType="System.DateTime"/>
+        <Column Name="CloseWo" DataType="System.String"/>
+        <Column Name="COLOR" DataType="System.String"/>
+        <Column Name="CustomerOrderNo" DataType="System.String"/>
+        <Column Name="DeactivateBy" DataType="System.Int64"/>
+        <Column Name="Deactivatedate" DataType="System.DateTime"/>
+        <Column Name="DeactivateWo" DataType="System.String"/>
+        <Column Name="drawingNo" DataType="System.String"/>
+        <Column Name="EffectiveFrom" DataType="System.DateTime"/>
+        <Column Name="EffectiveTill" DataType="System.DateTime"/>
+        <Column Name="Entrydate" DataType="System.DateTime"/>
+        <Column Name="Entryid" DataType="System.Int64"/>
+        <Column Name="FGStock" DataType="System.Double"/>
+        <Column Name="FGStoreId" DataType="System.Int64"/>
+        <Column Name="FGStoreName" DataType="System.String"/>
+        <Column Name="ForMonth" DataType="System.DateTime"/>
+        <Column Name="ItemActive" DataType="System.String"/>
+        <Column Name="Itemcode" DataType="System.Int64"/>
+        <Column Name="ItemDescription" DataType="System.String"/>
+        <Column Name="ItemName" DataType="System.String"/>
+        <Column Name="LastUpdatedBy" DataType="System.Int64"/>
+        <Column Name="LastUpdatedByEmpName" DataType="System.String"/>
+        <Column Name="LastUpdatedDate" DataType="System.DateTime"/>
+        <Column Name="MachGroup" DataType="System.String"/>
+        <Column Name="MachineGroupID" DataType="System.Int64"/>
+        <Column Name="MachineName" DataType="System.String"/>
+        <Column Name="MachineName1" DataType="System.String"/>
+        <Column Name="MachineName2" DataType="System.String"/>
+        <Column Name="MachineName3" DataType="System.String"/>
+        <Column Name="MainBomSubBom" DataType="System.String"/>
+        <Column Name="OrderQty" DataType="System.Double"/>
+        <Column Name="OrderType" DataType="System.String"/>
+        <Column Name="OrderWEF" DataType="System.DateTime"/>
+        <Column Name="otherInstruction" DataType="System.String"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="PendForRouteSheet" DataType="System.String"/>
+        <Column Name="PendingRouteForSheet" DataType="System.String"/>
+        <Column Name="PendProdQty" DataType="System.Double"/>
+        <Column Name="PendRoutSheetQTy" DataType="System.Double"/>
+        <Column Name="PkgInstruction" DataType="System.String"/>
+        <Column Name="PrefMachineId1" DataType="System.Int64"/>
+        <Column Name="PrefMachineId2" DataType="System.Int64"/>
+        <Column Name="PrefMachineId3" DataType="System.Int64"/>
+        <Column Name="PrevWOQty" DataType="System.Double"/>
+        <Column Name="ProdInst1" DataType="System.String"/>
+        <Column Name="ProdInst2" DataType="System.String"/>
+        <Column Name="RemarkForPacking" DataType="System.String"/>
+        <Column Name="RemarkForProduction" DataType="System.String"/>
+        <Column Name="RemarkForRouting" DataType="System.String"/>
+        <Column Name="Remarkproductsupplystage" DataType="System.String"/>
+        <Column Name="RouteSheetDate" DataType="System.DateTime"/>
+        <Column Name="RouteSheetEntryNo" DataType="System.Int64"/>
+        <Column Name="RouteSheetNo" DataType="System.String"/>
+        <Column Name="RouteSheetYearCode" DataType="System.Int64"/>
+        <Column Name="SCHDATE" DataType="System.DateTime"/>
+        <Column Name="SchEffTillDate" DataType="System.DateTime"/>
+        <Column Name="SchNo" DataType="System.String"/>
+        <Column Name="SchYearcode" DataType="System.Int64"/>
+        <Column Name="SOCloseDate" DataType="System.DateTime"/>
+        <Column Name="SODATE" DataType="System.DateTime"/>
+        <Column Name="SOInstruction" DataType="System.String"/>
+        <Column Name="SONO" DataType="System.String"/>
+        <Column Name="SOYearCode" DataType="System.Int64"/>
+        <Column Name="StoreId" DataType="System.Int64"/>
+        <Column Name="StoreName" DataType="System.String"/>
+        <Column Name="StoreStock" DataType="System.Double"/>
+        <Column Name="uid" DataType="System.Int64"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="WIPStock" DataType="System.Double"/>
+        <Column Name="WIPStoreName" DataType="System.String"/>
+        <Column Name="WODate" DataType="System.DateTime"/>
+        <Column Name="WONO" DataType="System.String"/>
+        <Column Name="WOQty" DataType="System.Double"/>
+        <Column Name="WORevDate" DataType="System.DateTime"/>
+        <Column Name="WorevNo" DataType="System.String"/>
+        <Column Name="workcenterId" DataType="System.Int64"/>
+        <Column Name="WoStataus" DataType="System.String"/>
+        <Column Name="Yearcode" DataType="System.Int64"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="37.8">
+      <TextObject Name="Text1" Left="18.9" Top="9.45" Width="236.25" Height="18.9" Text="WORK ORDER REPORT" Font="Arial, 12pt, style=Bold"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="41.8" Width="1047.06"/>
+    <GroupHeaderBand Name="GroupHeader1" Top="45.8" Width="1047.06" Condition="[Table.Yearcode]">
+      <GroupHeaderBand Name="GroupHeader2" Top="49.8" Width="1047.06" Height="75.6" CanGrow="true" Condition="[Table.WONO]">
+        <TextObject Name="Text2" Left="94.5" Top="18.9" Width="132.3" Height="18.9" Text="[Table.WONO]" Font="Arial, 10pt, style=Bold" TextFill.Color="Brown"/>
+        <TextObject Name="Text3" Left="94.5" Top="37.8" Width="103.95" Height="18.9" Text="[Table.WODate]" Format="Date" Format.Format="d" Font="Arial, 10pt, style=Bold" TextFill.Color="Brown"/>
+        <TextObject Name="Text41" Left="18.9" Top="18.9" Width="94.5" Height="18.9" Text="WO NO" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text42" Left="18.9" Top="37.8" Width="94.5" Height="18.9" Text="WO Date" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text44" Left="245.7" Top="18.9" Width="94.5" Height="18.9" Text="WO Start Date" Font="Arial, 9pt, style=Bold"/>
+        <TextObject Name="Text45" Left="349.65" Top="18.9" Width="94.5" Height="18.9" Text="[Table.EffectiveFrom]" Format="Date" Format.Format="d" Font="Arial, 10pt, style=Bold" TextFill.Color="Brown"/>
+        <TextObject Name="Text46" Left="349.65" Top="37.8" Width="94.5" Height="18.9" Text="[Table.EffectiveTill]" Format="Date" Format.Format="d" Font="Arial, 10pt, style=Bold" TextFill.Color="Brown"/>
+        <TextObject Name="Text47" Left="245.7" Top="37.8" Width="94.5" Height="18.9" Text="WO EndDate" Font="Arial, 9pt, style=Bold"/>
+        <LineObject Name="Line3" Top="9.45" Width="1048.95" Border.Style="Dash"/>
+        <GroupHeaderBand Name="GroupHeader6" Top="129.4" Width="1047.06" Condition="[table.wono]">
+          <GroupHeaderBand Name="GroupHeader3" Top="133.4" Width="1047.06" Height="66.15" Condition="[Table.wono]">
+            <TextObject Name="Text7" Left="56.7" Top="18.9" Width="94.5" Height="18.9" Text="Item Name" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text33" Left="151.2" Top="18.9" Width="94.5" Height="18.9" Text="Part Code" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text34" Left="264.6" Top="18.9" Width="28.35" Height="28.35" Text="FG Stk" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text35" Left="321.3" Top="18.9" Width="37.8" Height="37.8" Text="WIP Stk" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text36" Left="463.05" Top="18.9" Width="37.8" Height="28.35" Text="WO Qty" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text37" Left="505.65" Top="18.9" Width="37.8" Height="18.9" Text="UOM" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text38" Left="652.05" Top="18.9" Width="66.15" Height="37.8" Text="SO NO/Date" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text39" Left="756" Top="18.9" Width="66.15" Height="37.8" Text="Sch No / Date" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text40" Left="916.65" Top="18.9" Width="56.7" Height="18.9" Text="Mach1" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text43" Left="18.9" Top="18.9" Width="37.8" Height="37.8" Text="Sr No" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text48" Left="548.1" Top="18.9" Width="75.6" Height="28.35" Text="Customer Name" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text49" Left="850.5" Top="18.9" Width="66.15" Height="28.35" Text="Drawing No" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text50" Left="982.8" Top="18.9" Width="56.7" Height="28.35" Text="Prod Inst" Font="Arial, 9pt, style=Bold"/>
+            <LineObject Name="Line1" Top="9.45" Width="1048.95" Border.Style="Dash"/>
+            <TextObject Name="Text52" Left="359.1" Top="18.9" Width="56.7" Height="47.25" Text="Pend Ord. Qty" Font="Arial, 9pt, style=Bold"/>
+            <TextObject Name="Text54" Left="415.8" Top="18.9" Width="47.25" Height="47.25" Text="Prev WO Qty" Font="Arial, 9pt, style=Bold"/>
+            <LineObject Name="Line2" Left="-9.45" Top="66.15" Width="1048.95" Border.Style="Dash"/>
+            <GroupHeaderBand Name="GroupHeader4" Top="203.55" Width="1047.06" Condition="[Table.PartCode]">
+              <GroupHeaderBand Name="GroupHeader5" Top="207.55" Width="1047.06" Condition="[Table.sono]">
+                <DataBand Name="Data1" Top="211.55" Width="1047.06" Height="37.8" DataSource="Table">
+                  <TextObject Name="Text6" Left="47.25" Width="94.5" Height="18.9" Text="[Table.ItemName]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text16" Left="973.35" Width="66.15" Height="18.9" Text="[Table.ProdInst1]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text17" Left="973.35" Top="9.45" Width="66.15" Height="18.9" Text="[Table.ProdInst2]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text19" Left="236.25" Width="66.15" Height="18.9" Text="[Table.FGStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+                  <TextObject Name="Text20" Left="453.6" Width="47.25" Height="18.9" Text="[Table.WOQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt, style=Bold" TextFill.Color="MediumBlue" Trimming="EllipsisCharacter"/>
+                  <TextObject Name="Text21" Left="302.4" Width="56.7" Height="18.9" Text="[Table.WIPStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+                  <TextObject Name="Text30" Left="141.75" Width="94.5" Height="18.9" Text="[Table.PartCode]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text8" Left="505.65" Width="37.8" Height="18.9" Text="[Table.Unit]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text31" Left="642.6" Width="94.5" Height="18.9" Text="[Table.SONO]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text25" Left="746.55" Width="94.5" Height="18.9" Text="[Table.SchNo]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text26" Left="642.6" Top="18.9" Width="94.5" Height="18.9" Text="[Table.SODATE]" Format="Date" Format.Format="d" Font="Arial, 7pt"/>
+                  <TextObject Name="Text27" Left="746.55" Top="18.9" Width="94.5" Height="18.9" Text="[Table.SCHDATE]" Format="Date" Format.Format="d" Font="Arial, 7pt"/>
+                  <TextObject Name="Text22" Left="841.05" Width="66.15" Height="18.9" Text="[Table.drawingNo]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text32" Left="548.1" Width="94.5" Height="18.9" Text="[Table.Account_Name]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text51" Left="907.2" Width="66.15" Height="18.9" Text="[Table.MachineName1]" Font="Arial, 7pt"/>
+                  <TextObject Name="Text53" Left="359.1" Width="47.25" Height="18.9" Text="[Table.OrderQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" TextFill.Color="MediumBlue" Trimming="EllipsisCharacter"/>
+                </DataBand>
+                <GroupFooterBand Name="GroupFooter5" Top="253.35" Width="1047.06"/>
+              </GroupHeaderBand>
+              <GroupFooterBand Name="GroupFooter4" Top="257.35" Width="1047.06"/>
+            </GroupHeaderBand>
+            <GroupFooterBand Name="GroupFooter3" Top="261.35" Width="1047.06"/>
+          </GroupHeaderBand>
+          <GroupFooterBand Name="GroupFooter6" Top="265.35" Width="1047.06"/>
+        </GroupHeaderBand>
+        <GroupFooterBand Name="GroupFooter2" Top="269.35" Width="1047.06" Height="18.9">
+          <LineObject Name="Line4" Top="9.45" Width="1048.95" Border.Style="Dash"/>
+        </GroupFooterBand>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter1" Top="292.25" Width="1047.06"/>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="296.25" Width="1047.06"/>
+  </ReportPage>
+</Report>

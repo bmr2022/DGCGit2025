@@ -1,0 +1,377 @@
+﻿@model eTactWeb.DOM.Models.PurchaseOrderModel
+@if (@Model.Mode == "POA" || Model.Mode == "POC")
+{
+    <div class="row g-2 gx-3">
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="PartCodeDiv">
+            <label asp-for="PartCode" class="form-label" style="color: red;">Part Code</label>
+            <div class="col-xl-6  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <select class="form-select" asp-for="PartCode" style="heigt:190px;width:190px;">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6">
+            <label asp-for="ItemCode" class="form-label" style="color: red;">Item Name</label>
+            <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                <label id="IN12" class="form-label">Show All</label>
+                <input asp-for="IN1" class="form-check-input" type="checkbox" role="switch" />
+            </div>
+            <div class="col-xl-6">
+                <select class="form-select" asp-for="ItemCode" style="heigt:190px;width:300px;">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="HSNNo" class="form-label" style="color: red;">HSN No</label>
+            <input asp-for="HSNNo" class="form-control" value="0" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="POQty" class="form-label" style="color: red;">PO Qty</label>
+            <input asp-for="POQty" class="form-control" min=0 onkeyup="CalculateRate();" data-val="false" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Unit" class="form-label" style="color: red;">Unit</label>
+            <input asp-for="Unit" class="form-control" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AltPOQty" class="form-label">Alt PO Qty</label>
+            <input asp-for="AltPOQty" class="form-control" onkeyup="CalculateRate();" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AltUnit" class="form-label">Alt Unit</label>
+            <input asp-for="AltUnit" class="form-control" value="NA" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AltPendQty" class="form-label">Alt Pend Qty</label>
+            <input asp-for="AltPendQty" class="form-control" onkeyup="CalculateRate();" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PendQty" class="form-label">Pend Qty</label>
+            <input asp-for="PendQty" class="form-control" onkeyup="CalculateRate();" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PkgStd" class="form-label">Pkg Std</label>
+            <input asp-for="PkgStd" class="form-control" onkeyup="CalculateRate();" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Process" class="form-label">Process</label>
+            <select class="form-select" asp-for="Process" asp-items="@(new SelectList(Model.ProcessList,"Value","Text"))">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Rate" class="form-label" style="color: red;" `>Rate</label>
+            @* <input asp-for="Rate" step="any" type="number" min="0" pattern="^\d+(\.\d+)?$" class="form-control" onkeyup="CalculateRate();" /> *@
+            <input asp-for="Rate" min="0" class="form-control" onkeyup="CalculateRate();" />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="OtherRateCurr" class="form-label">Rate In Oth Curr.</label>
+            <input asp-for="OtherRateCurr" step="any" type="number" min="0" class="form-control" onchange="CalculateRate1();" disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="UnitRate" class="form-label">Rate/Unit</label>
+            <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="DiscPer" class="form-label">Disc %</label>
+            <input asp-for="DiscPer" class="form-control" value="0" min="0" max="100" onchange="CalculateRate();" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="DiscRs" class="form-label">Disc Rs.</label>
+            <input asp-for="DiscRs" class="form-control" onkeyup="CalculateRate();" />
+        </div>
+        <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Amount" class="form-label" style="color: red;">Amount</label>
+            <input asp-for="Amount" class="form-control" value="0.00" readonly disabled />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AmendmentReason" class="form-label">Amendment Reason</label>
+            <input asp-for="AmendmentReason" class="form-control" />
+        </div>
+        <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="UniversalPartCode" class="form-label">Universal PartCode</label>
+            <input asp-for="UniversalPartCode" class="form-control" reaonly />
+        </div>
+        <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="UniversalDescription" class="form-label">Universal Description</label>
+            <input asp-for="UniversalDescription" class="form-control" readonly />
+        </div>
+
+        <div class="col-xl-12 col-md-12 mt-4 col-auto">
+            <div class="row g-3 justify-content-around">
+                <div class="col-auto">
+                    <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+                </div>
+
+                @if (Model.Mode == "POA" || Model.Mode == "PSA")
+                {
+                    <div class="col-auto">
+                        <button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
+                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
+                        </button>
+                    </div>
+                    <div class="col-auto mt-3">
+                        <input class="form-control" type="file" id="ExcelFile" />
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
+                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                        </button>
+                    </div>
+
+                }
+                <div class="col-auto">
+                    <div class="form-check form-switch d-flex justify-content-center mt-2">
+                        <input asp-for="SH" class="form-check-input" type="checkbox" role="switch" />&nbsp;&nbsp;&nbsp;&nbsp;<label class="form-label">Show/Hide Additional Fields</label>
+                    </div>
+
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="Schedule btn btn-sm btn-outline-success">
+                        <i class="fa-duotone fa-calendar-days"></i> SCHEDULE
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        <div class="row g-2 gx-3">
+            <div class="AF col-sm-auto">
+                <label asp-for="AdditionalRate" class="form-label">Additional Rate</label>
+                <input asp-for="AdditionalRate" class="form-control" value="0" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="Color" class="form-label">Color</label>
+                <input asp-for="Color" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto col-xl-1 col-md-2 col-sm-3 col-xs-12">
+                <label asp-for="CostCenter" class="form-label">Cost Center</label>
+                <select class="form-select" asp-for="CostCenter" asp-items="@(new SelectList(Model.CostCenterList,"Value","Text"))">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="FirstMonthTentQty" class="form-label">First Month Tent Qty</label>
+                <input asp-for="FirstMonthTentQty" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="SecMonthTentQty" class="form-label">Sec Month Tent Qty</label>
+                <input asp-for="SecMonthTentQty" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="AmendmentNo" class="form-label">Amendment No</label>
+                <input asp-for="AmendmentNo" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="AmendmentDate" class="form-label">Amendment Date</label>
+                <input asp-for="AmendmentDate" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="TolLimitPercent" class="form-label">Tol Limit %</label>
+                <input asp-for="TolLimitPercent" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="TolLimitQty" class="form-label">Tol Limit Qty</label>
+                <input asp-for="TolLimitQty" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="SizeDetail" class="form-label">Size Detail</label>
+                <input asp-for="SizeDetail" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="OldRate" class="form-label">Old Rate</label>
+                <input asp-for="OldRate" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="Remark" class="form-label">Remark</label>
+                <input asp-for="Remark" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="Description" class="form-label">Description</label>
+                <input asp-for="Description" class="form-control" />
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row g-2 gx-3">
+        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="PartCodeDiv">
+            <label asp-for="PartCode" class="form-label" style="color:  red;">Part Code</label>
+            <div class="col-xl-6  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <select class="form-select" asp-for="PartCode" style="heigt:190px;width:190px;">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6">
+            <label asp-for="ItemCode" class="form-label" style="color:  Red;">Item Name</label>
+            <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                <label id="IN12" class="form-label">Show All</label>
+                <input asp-for="IN1" class="form-check-input" type="checkbox" role="switch" />
+            </div>
+            <div class="col-xl-6">
+                <select class="form-select" asp-for="ItemCode" style="heigt:190px;width:300px;">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="HSNNo" class="form-label" style="color: red;">HSN No</label>
+            <input asp-for="HSNNo" class="form-control" value="0" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="POQty" class="form-label" style="color: red;">PO Qty</label>
+            <input asp-for="POQty" class="form-control" min=0 onkeyup="CalculateRate();" data-val="false" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Unit" class="form-label" style="color: red;">Unit</label>
+            <input asp-for="Unit" class="form-control" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AltPOQty" class="form-label" style="color: red;">Alt PO Qty</label>
+            <input asp-for="AltPOQty" class="form-control" onkeyup="CalculateRate();" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AltUnit" class="form-label">Alt Unit</label>
+            <input asp-for="AltUnit" class="form-control" value="NA" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AltPendQty" class="form-label">Alt Pend Qty</label>
+            <input asp-for="AltPendQty" class="form-control" onkeyup="CalculateRate();" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PendQty" class="form-label">Pend Qty</label>
+            <input asp-for="PendQty" class="form-control" onkeyup="CalculateRate();" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PkgStd" class="form-label">Pkg Std</label>
+            <input asp-for="PkgStd" class="form-control" onkeyup="CalculateRate();" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Process" class="form-label">Process</label>
+            <select class="form-select" asp-for="Process" asp-items="@(new SelectList(Model.ProcessList,"Value","Text"))">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Rate" class="form-label" style="color: red;">Rate</label>
+            @* <input asp-for="Rate" step="any" type="number" min="0" pattern="^\d+(\.\d+)?$" class="form-control" onkeyup="CalculateRate();" /> *@
+            <input asp-for="Rate" min="0" class="form-control" onkeyup="CalculateRate();" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="OtherRateCurr" class="form-label">Rate oth Curr</label>
+            <input asp-for="OtherRateCurr" step="any" type="number" min="0" class="form-control" onchange="CalculateRate1();" disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="UnitRate" class="form-label">Rate/Unit</label>
+            <select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="DiscPer" class="form-label">Disc %</label>
+            <input asp-for="DiscPer" class="form-control" value="0" min="0" max="100" onchange="CalculateRate();" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="DiscRs" class="form-label">Disc Rs.</label>
+            <input asp-for="DiscRs" class="form-control" onkeyup="CalculateRate();" />
+        </div>
+        <div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Amount" class="form-label" style="color: red;">Amount</label>
+            <input asp-for="Amount" class="form-control" value="0.00" readonly disabled />
+        </div>
+
+        <div class="col-xl-4 col-lg-2 col-md-2 mt-4 col-auto">
+            <div class="row g-3 justify-content-around">
+                <div class="col-auto">
+                    <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+                </div>
+
+                <div class="col-auto">
+                    <div class="form-check form-switch d-flex justify-content-center mt-2">
+                        <input asp-for="SH" class="form-check-input" type="checkbox" role="switch" />&nbsp;<label class="form-label">Show/Hide Additional Fields</label>
+                    </div>
+
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="Schedule btn btn-sm btn-outline-success">
+                        <i class="fa-solid fa-calendar-days"></i> SCHEDULE
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row g-2 gx-3">
+            <div class="AF col-sm-auto">
+                <label asp-for="AdditionalRate" class="form-label">Additional Rate</label>
+                <input asp-for="AdditionalRate" class="form-control" value="0" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="Color" class="form-label">Color</label>
+                <input asp-for="Color" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto col-xl-1 col-md-2 col-sm-3 col-xs-12">
+                <label asp-for="CostCenter" class="form-label">Cost Center</label>
+                <select class="form-select" asp-for="CostCenter" asp-items="@(new SelectList(Model.CostCenterList,"Value","Text"))">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="FirstMonthTentQty" class="form-label">First Month Tent Qty</label>
+                <input asp-for="FirstMonthTentQty" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="SecMonthTentQty" class="form-label">Sec Month Tent Qty</label>
+                <input asp-for="SecMonthTentQty" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="AmendmentNo" class="form-label">Amendment No</label>
+                <input asp-for="AmendmentNo" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="AmendmentDate" class="form-label">Amendment Date</label>
+                <input asp-for="AmendmentDate" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="AmendmentReason" class="form-label">Amendment Reason</label>
+                <input asp-for="AmendmentReason" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="TolLimitPercent" class="form-label">Tol Limit %</label>
+                <input asp-for="TolLimitPercent" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="TolLimitQty" class="form-label">Tol Limit Qty</label>
+                <input asp-for="TolLimitQty" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="SizeDetail" class="form-label">Size Detail</label>
+                <input asp-for="SizeDetail" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="OldRate" class="form-label">Old Rate</label>
+                <input asp-for="OldRate" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="Remark" class="form-label">Remark</label>
+                <input asp-for="Remark" class="form-control" />
+            </div>
+            <div class="AF col-sm-auto">
+                <label asp-for="Description" class="form-label">Description</label>
+                <input asp-for="Description" class="form-control" />
+            </div>
+            <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="UniversalPartCode" class="form-label">Universal PartCode</label>
+                <input asp-for="UniversalPartCode" class="form-control" readonly />
+            </div>
+            <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="UniversalDescription" class="form-label">Universal Description</label>
+                <input asp-for="UniversalDescription" class="form-control" readonly />
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,134 @@
+﻿@model eTactWeb.DOM.Models.WorkOrderModel
+
+@{
+    var @Cntr = 0;
+    if (Model.WorkDetailGrid == null)
+    {
+        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+    }
+
+    else
+    {
+        foreach (var item in Model.WorkDetailGrid)
+        {
+            Cntr = Cntr + 1;
+            <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+                <td>
+                    <a class="table-link link-primary" style="border:none;" id="editButton-@Cntr" onclick="EditItemRows(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                        <input type="hidden" value="@Cntr" id="hiddenSeqNo-@Cntr"/>
+                   @* <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a> *@
+
+                </td>
+                @*<td id="SeqNo-@Cntr">@item.SeqNo</td>*@
+                <td id="GridAcName-@Cntr">@item.AccountName <input type="hidden" value="@item.Accountcode" id="GridAC-@Cntr"/></td>
+                <td Class="PartCode">@item.PartCode <input type="hidden" value="@item.Itemcode" id="GridItemCode-@Cntr"/></td>
+                <td class="ItemName">@item.ItemName</td>
+                <td class="FGStore">@item.FGStore</td>
+                <td class="FGStock">@item.FGStock</td>
+                <td class="WIPStore">@item.WIPStore</td>
+                <td Class="WIPStock">@item.WIPStock</td>
+                <td Class="StoreName">@item.StoreName</td> @* Store *@
+                <td Class="StoreStock">@item.StoreStock</td> @* Stock *@
+                <td Class="WOQty">@item.WOQty<input type="hidden" value="@item.Sequence" id="hiddenSeqNo-@Cntr"></td>
+                <td Class="OrderQty">@item.OrderQty</td>
+                <td Class="AltOrderQty">@item.AltOrderQty</td>
+                <td Class="PendSOQty">@item.PendSOQty</td>
+                <td Class="PendWOQty">@item.PendWOQty</td>
+                <td Class="ProdQty">@item.ProdQty</td>
+                <td Class="OrderType">@item.OrderType</td>
+                <td Class="OrderWEF">@item.OrderWEF</td>
+                <td Class="AmendNo">@item.AmendNo</td>
+                <td Class="AmendEffDate">
+                    @if (!string.IsNullOrEmpty(item.AmendEffDate))
+                    {
+                        @item.AmendEffDate.Split(' ')[0]
+                    }
+                </td>
+                <td Class="Unit">@item.Unit</td>
+                <td Class="AltQty">@item.AltQty</td> @* Alt Qty *@
+                <td Class="AltUnit">@item.AltUnit</td>
+                <td Class="drawingNo">@item.drawingNo</td>
+                <td Class="ProdInst1">@item.ProdInst1</td>
+                <td Class="ProdInst2">@item.ProdInst2</td>
+                <td Class="SOInstruction">@item.SOInstruction</td>
+                <td Class="PkgInstruction">@item.PkgInstruction</td>
+                <td Class="COLOR">@item.COLOR</td>
+                <td Class="BomNo">@item.Bomno</td>
+                <td Class="BomName">@item.BomName</td>
+                <td Class="BomEffDate">
+                    @if (!string.IsNullOrEmpty(item.BomEffectiveDate))
+                    {
+                        @item.BomEffectiveDate.Split(' ')[0]
+                    }
+                </td>
+                <td Class="MainBomSubBom">@item.MainBomSubBom</td>
+                <td Class="MachGroupName">@item.MachineGroupName</td>
+                <td Class="PrefMachName1">@item.PrefMachineName1</td>
+                <td Class="PrefMachName2">@item.PrefMachineName2</td>
+                <td Class="PrefMachName3">@item.PrefMachineName3</td>
+                <td Class="ApproxStartDate">
+                    @if (!string.IsNullOrEmpty(item.ApproxStartDate))
+                    {
+                        @item.ApproxStartDate.Split(' ')[0]
+                    }
+                </td>
+                <td class="ApproxEndDate">
+                    @if (!string.IsNullOrEmpty(item.ApproxEndDate))
+                    {
+                        @item.ApproxEndDate.Split(' ')[0]
+                    }
+                </td>
+                <td class="WorevNo">@item.WorevNo</td>
+                <td class="WoRevDate">
+                    @if (!string.IsNullOrEmpty(item.WORevDate))
+                    {
+                        @item.WORevDate.Split(' ')[0]
+                    }
+                </td>
+                <td Class="PrevWOQty">@item.PrevWOQty</td>
+                <td Class="PendProdQty">@item.PendProdQty</td>
+                <td Class="ItemDes">@item.ItemDescription</td>  
+                <td Class="CustOrderNo">@item.CustomerOrderNo</td>
+                <td id="GridSONO-@Cntr">@item.SONO</td>
+                <td class="SODate">
+                    @if (!string.IsNullOrEmpty(item.SODATE))
+                    {
+                        @item.SODATE.Split(' ')[0]
+                    }
+                </td>
+                <td id="GridSOYearCode-@Cntr">@item.SOYearCode</td>
+                <td id="GridSchNo-@Cntr">@item.SchNo</td>
+                <td class="SchDate">
+                    @if (!string.IsNullOrEmpty(item.SCHDATE))
+                    {
+                        @item.SCHDATE.Split(' ')[0]
+                    }
+                </td>
+                <td class="SchYC">@item.SchYearcode</td>
+                <td class="SOCloseDate">
+                    @if (!string.IsNullOrEmpty(item.SOCloseDate))
+                    {
+                        @item.SOCloseDate.Split(' ')[0]
+                    }
+                </td>
+                <td class="SchEffTillDate">
+                    @if (!string.IsNullOrEmpty(item.SchEffTillDate))
+                    {
+                        @item.SchEffTillDate.Split(' ')[0]
+                    }
+                </td>
+
+            </tr>
+        }
+    }
+}

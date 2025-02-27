@@ -1,0 +1,366 @@
+﻿@model eTactWeb.DOM.Models.PendingToReceiveItemModel
+
+@{
+    ViewData["Title"] = "Pending Receive Item to QC Details";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Pending Receive Item to QC
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="ReqWithoutBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                    Add New
+                    </a>*@
+                    <a asp-action="ReceiveItemInStoreDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm" asp-controller="ReceiveItem">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input type="hidden" value="@Model.FromDate" id="finFromDate" />
+                                        <input type="hidden" value="@Model.ToDate" id="finToDate" />
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="PartCode" class="form-label">Part Code</label>
+                                <select class="form-select" asp-for="PartCode" asp-items="@(new SelectList(Model.PartCodeList,"Value","Text"))">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ItemName" class="form-label">Item Name</label>
+                                <select class="form-select" asp-for="ItemName" asp-items="@(new SelectList(Model.ItemNameList,"Value","Text"))">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="FromWorkCenter" class="form-label">Work Center</label>
+                                <select class="form-select" asp-for="FromWorkCenter" asp-items="@(new SelectList(Model.FromWorkCenterList,"Value","Text"))">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ProdSlipNo" class="form-label">ProdSlip NO</label>
+                                <select class="form-select" asp-for="ProdSlipNo" asp-items="@(new SelectList(Model.ProdSlipNoList,"Value","Text"))">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ToStoreName" class="form-label">To StoreName</label>
+                                <select class="form-select" asp-for="ToStoreName" asp-items="@(new SelectList(Model.ToStoreNameList,"Value","Text"))">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ProdUnProd" class="form-label">Prod/UnProd</label>
+                                <select class="form-select" asp-for="ProdUnProd" asp-items="@(new SelectList(Model.ProdTypeList,"Value","Text"))">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 d-flex justify-content-end mt-3">
+                                <button class="btn btn-sm btn-outline-primary" type="button" onclick="showDetail();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMRNtoQc" asp-action="PendingMRNtoQc" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                            </div>
+                            <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                <button class="btn btn-sm btn-outline-primary" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" onclick="CheckDataforQc()">
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i> Check Qc
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="progress my-3 mb-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div> <div class="card">
+            <div class="card-body overflow-auto pb-0">
+                <div class="table-responsive" style="max-height:350px;">
+                    <table class="table table-hover table-bordered table-striped" id="GateDataTable">
+                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                            <tr>
+                                <th>Check/UnCheck <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransferMat SlipNo</th>
+                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransferMat SlipDate</th>
+                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/Unprod</th>
+                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From WorkCenter</th>
+                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod EntryId</th>
+                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod SlipNo</th>
+                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transfer Qty</th>
+                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Transfer Qty</th>
+                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
+                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransferMat EntryId</th>
+                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransferMat YearCode</th>
+                            </tr>
+                        </thead>
+                        <tbody id="divPendMRNGrid">
+                            <tr class="text-center">
+                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(function () {
+            var fromDate;
+            var toDate;
+
+            var today = new Date();
+            var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
+            var finFromDate = $('#finFromDate').val();
+            var finToDate = $('#finToDate').val();
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+            $("#FromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+
+            $('#ItemName').select2();
+            $('#PartCode').select2();
+            $('#FromWorkCenter').select2();
+            $('#ProdSlipNo').select2();
+            $('#ToStoreName').select2();
+            $('#ProdUnProd').select2();
+            showDetail();
+        });
+
+        function showDetail() {
+             
+            var data = {
+                "Flag": "PendingToRec",
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val()
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetDataForPendingReceiveItem")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+                    if (data != null) {
+                         
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#divPendMRNGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result.Table, function (index, val) {
+                                var transferMatSlipDate = val.TransferMatSlipDate;
+                                var [datePart, timePart] = transferMatSlipDate.split('T');
+                                var html = '';
+                                html += '<tr>' +
+                                    '<td style="text-align:center;"><input style="background-color: #b2b3f0;" id="AcceptedQtySHA' + i + '" class="form-check-input me-1 mt-2" type="checkbox" role="switch" onchange="CheckacceptedQtySHA(' + i + ');"/></td>' +
+                                    '<td>' + val.TransferMatSlipNo + '</td>' +
+                                    '<td>' + datePart + '</td>' +
+                                    '<td>' + val.PRODSTATUSProdUnProdRej + '</td>' +
+                                    '<td id="WorkCenter' + i + '"><input id="WCID' + i + '" type="hidden" value="' + val.FromWCID + '"/>' + val.FromWorkcenter + '</td>' +
+                                    '<td>' + val.prodentryid + '</td>' +
+                                    '<td>' + val.prodslipno + '</td>' +
+                                    '<td>' + val.partcode + '</td>' +
+                                    '<td> <input id="ItemCode' + i + '" type="hidden" value="' + val.itemcode + '"/>' + val.itemname + '</td>' +
+                                    '<td>' + val.TransferQty + '</td>' +
+                                    '<td>' + val.Unit + '</td>' +
+                                    '<td>' + val.AltTransferQty + '</td>' +
+                                    '<td>' + val.AltUnit + '</td>' +
+                                    '<td> <input id="RecStoreId' + i + '" type="hidden" value="' + val.TostoreId + '"/>' + val.StoreName + '</td>' +
+                                    '<td id="TransferEntry' + i + '">' + val.TransferMatEntryId + '</td>' +
+                                    '<td id="TransferMatYearCode' + i + '">' + val.TransferMatYearCode + '</td>' +
+                                    '</tr>'
+                                $('#divPendMRNGrid').append(html);
+                                $('#TransertoMIRBtn').prop("disabled", false);
+
+                                var count = $('#divPendMRNGrid tr').length;
+                                $('#totalRows').text(count);
+                                i++;
+                            });
+
+                        }
+                        else {
+                            $('#divPendMRNGrid').empty();
+                            var count = $('#divPendMRNGrid tr').length;
+                            $('#totalRows').text(count);
+                            $('#divPendMRNGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function CheckacceptedQtySHA(i) {
+
+            var checkedtruevalues = [];
+            var rowCount = $('#divPendMRNGrid tr').length;
+            for (let i = 1; i <= rowCount; i++) {
+                checkedtruevalues.push({
+                    "checked": $('#AcceptedQtySHA' + i).is(':checked')
+                })
+            }
+
+            var checkedonlytrue = checkedtruevalues.filter(function (item) {
+                return item.checked;
+            }).length;
+            if (rowCount == checkedonlytrue) {
+                $('#checkuncheck').prop('checked', true)
+            } else {
+                $('#checkuncheck').prop('checked', false)
+            }
+        }
+
+        $('#checkuncheck').change(function () {
+
+            var rowCount = $('#divPendMRNGrid tr').length;
+            if ($('#checkuncheck').is(':checked') == true) {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#AcceptedQtySHA' + i).prop('checked', true)
+                }
+            }
+            else {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#AcceptedQtySHA' + i).prop('checked', false)
+                }
+            }
+        })
+
+        function CheckDataforQc() {
+             
+            var GridList = [];
+            var rowCount = $('#divPendMRNGrid tr').length;
+
+            for (let i = 1; i <= rowCount; i++) {
+
+                if ($('#AcceptedQtySHA' + i).is(':checked') == true) {
+                    GridList.push({
+                        "TransferMatEntryId": $('#TransferEntry' + i).text(),
+                        "TransferMatYearCode": $('#TransferMatYearCode' + i).text(),
+                        "ItemCode": $('#ItemCode' + i).val(),
+                        "IssueToStoreWC": $('#WorkCenter' + i).text()
+                    });
+                }
+            }
+
+            $.ajax({
+                url: "@Url.Action("GetDataReceiveItem")",
+                type: "POST",
+                data: { DisplayPendReceiveItem: JSON.stringify(GridList) },
+                success: function (data, status, xhr) {
+                     
+                    var url = '/ReceiveItem/Index/?';
+                    window.location.href = url;
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                    console.log(result.responseText);
+                }
+            });
+        }
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('divPendMRNGrid', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('divPendMRNGrid', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#divPendMRNGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+    </script>
+}

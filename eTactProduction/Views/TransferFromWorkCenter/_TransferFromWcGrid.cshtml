@@ -1,0 +1,68 @@
+﻿@model eTactWeb.DOM.Models.TransferFromWorkCenterModel
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        <tr class="small style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                <a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+            <td>@item.SeqNo</td>
+            <td>@item.PartCode</td>
+            <td>@item.ItemName<input type="hidden" asp-for="ItemCode" value="@item.ItemCode"/></td>
+            <td>@item.BatchNo</td>
+            <td>@item.UniqueBatchNo</td>
+            <td>@item.BatchStock</td>
+            <td>@item.TotalStock</td>
+            <td>@item.Unit</td>
+            <td>@item.AltUnit</td>
+            <td>@item.TransferQty</td>
+            <td>@item.AltTransferQty</td>
+            <td>@item.ProcessName<input type="hidden" asp-for="ProcessId" value="@item.ProcessId" /></td>
+            <td>@item.ProdSlipNo</td>
+            <td>@item.ProdEntryId</td>
+            <td>@item.ProdEntryYearCode</td>
+            <td>@item.ProdDate</td>
+            <td>@item.ProdPlanNo</td>
+            <td>@item.ProdPlanYearCode</td>
+            <td>@item.ProdSchNo</td>
+            <td>@item.ProdSchYearCode</td>
+            <td>@item.ParentProdSchNo</td>
+            <td>@item.ParentProdSchYearCode</td>
+            <td>@item.QcOkQty</td>
+            <td>@item.ProdQty</td>
+            <td>@item.PendingToAcknowledge</td>
+            <td>@item.PendingQtyToAcknowledge</td>
+            <td>@item.ItemSize</td>
+            <td>@item.ItemColor</td>
+            <td>@item.InProcessQcSlipNo</td>
+            <td>@item.InProcessQcEntryId</td>
+            <td>@item.InProcessQcYearCode</td>
+            <td>@item.QcCleaningDate</td>
+            <td>@item.ProcessName</td>
+            <td>@item.ReceivedByStoreQty</td>
+            <td>@item.ReceivedCompleted</td>
+            <td>@item.ReceivebyEmpName</td>
+            <td>@item.Rate</td>
+            <td>@item.ItemWeight</td>
+        </tr>
+    }
+}

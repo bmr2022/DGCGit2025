@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="12/07/2023 12:51:17" ReportInfo.Modified="12/11/2023 10:01:38" ReportInfo.CreatorVersion="2023.2.0.0">
+  <ScriptText>using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Data;
+using FastReport;
+using FastReport.Data;
+using FastReport.Dialog;
+using FastReport.Barcode;
+using FastReport.Table;
+using FastReport.Utils;
+
+namespace FastReport
+{
+  public class ReportScript
+  {
+   
+            public decimal sum;
+
+   // private void Text66_BeforePrint(object sender, EventArgs e)
+   // {
+     
+          // Text61.Text = ToString((((Decimal)Report.GetColumnValue(&quot;stock.opn&quot;)) +((Decimal)Report.GetColumnValue(&quot;stock.TotalRec&quot;))-((Decimal)Report.GetColumnValue(&quot;stock.TotalIss&quot;))));
+   // }
+    
+    
+
+    private void Data1_BeforePrint(object sender, EventArgs e)
+    {
+     // if (Report.GetColumnValue(&quot;stock.Part_Code&quot;))=   
+      //{
+   // }
+      
+      //DataSourceBase ds = Report.GetDataSource(&quot;stock&quot;);
+      //ds.Init();
+      
+      // sum = (string)Report.GetColumnValue((string)(Report.GetColumnValue(&quot;stock.TotalRec&quot;)));
+      sum+=(decimal)Report.GetColumnValue(&quot;stock.TotalRec&quot;)+(decimal)Report.GetColumnValue(&quot;stock.opn&quot;)-(decimal)Report.GetColumnValue(&quot;stock.TotalIss&quot;);
+    
+      }
+
+    private void Text66_BeforePrint(object sender, EventArgs e)
+    {
+       sum=0;
+    }
+  }
+}
+</ScriptText>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gm+pxqUEPFs5ArZTHMiAZrDl/CfcXTHbciGdhcro7wnA49QD7321tdnLJXqace9y1rJfKw/AsPTy41iXr7PUEw8mWNp1x0fSjVLq3dgXqVStYuCcbawPUt5ormtXl52hVU83idnONQXw6wBh8gz5LZBFtNDoGO5a+zcOUdqTMDLv4nSzqiZ2U5Gv6AZ/4Q3wag==">
+      <TableDataSource Name="Table" Alias="stock" DataType="System.Int32" Enabled="true" SelectCommand="exec SPStockReport   @FromDate = '01/apr/2023', @ToDate = '31/mar/2024'">
+        <Column Name="StoreName" DataType="System.String"/>
+        <Column Name="TotalStock" DataType="System.Decimal"/>
+        <Column Name="unit" DataType="System.String"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="AltStock" DataType="System.Double"/>
+        <Column Name="Group_name" DataType="System.String"/>
+        <Column Name="TRansactionType" DataType="System.String"/>
+        <Column Name="TRansDAte" DataType="System.DateTime"/>
+        <Column Name="Part_Code" DataType="System.String"/>
+        <Column Name="item_name" DataType="System.String"/>
+        <Column Name="opn" DataType="System.Decimal"/>
+        <Column Name="TotalRec" DataType="System.Decimal"/>
+        <Column Name="TotalIss" DataType="System.Decimal"/>
+        <Column Name="Minimum_Level" DataType="System.Int64"/>
+        <Column Name="BillNo" DataType="System.String"/>
+        <Column Name="BillDate" DataType="System.DateTime"/>
+        <Column Name="accountcode" DataType="System.Int64"/>
+        <Column Name="PartyName" DataType="System.String"/>
+        <Column Name="MRNNo" DataType="System.String"/>
+        <Column Name="Rate" DataType="System.Double"/>
+        <Column Name="batchno" DataType="System.String"/>
+        <Column Name="Uniquebatchno" DataType="System.String"/>
+        <Column Name="entryId" DataType="System.Int64"/>
+        <Column Name="AltRecQty" DataType="System.Double"/>
+        <Column Name="AltIssQty" DataType="System.Double"/>
+        <Column Name="DateFrom" DataType="System.DateTime"/>
+        <Column Name="Todate" DataType="System.DateTime"/>
+        <Column Name="CompanyName" DataType="System.String"/>
+        <Column Name="Address1" DataType="System.String"/>
+        <Column Name="Address2" DataType="System.String"/>
+        <Column Name="SeqNo" DataType="System.Int64"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Total Name="BalStock" Expression="[stock.opn]+[stock.TotalRec]-[stock.TotalIss]" Evaluator="Data1" PrintOn="GroupFooter5"/>
+    <Total Name="Total" Expression="[stock.TotalRec]-[stock.TotalIss]+[stock.opn]" Evaluator="Data1" PrintOn="GroupFooter5" ResetAfterPrint="false"/>
+    <Total Name="Total1" Expression="[stock.TotalRec]" Evaluator="Data1" PrintOn="GroupFooter5"/>
+    <Total Name="Total2" Expression="[stock.TotalIss]" Evaluator="Data1" PrintOn="GroupFooter5"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="75.6">
+      <TextObject Name="Text42" Left="9.45" Top="28.35" Width="453.6" Height="28.35" Text="DETAIL STOCK REGISTER" Font="Arial, 16pt, style=Bold, Underline" TextFill.Color="Brown"/>
+      <TextObject Name="Text49" Left="9.45" Top="56.7" Width="122.85" Height="18.9" Text="For The Duration " Font="Arial, 10pt, style=Bold" Style="Header"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="78.93" Width="718.2"/>
+    <GroupHeaderBand Name="GroupHeader5" Top="82.27" Width="718.2" Height="28.35" Condition="[stock.Part_Code]">
+      <TextObject Name="Text1" Left="103.95" Top="9.45" Width="396.9" Height="18.9" Text="[stock.StoreName]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text59" Top="9.45" Width="85.05" Height="18.9" Text="Store Name" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <GroupHeaderBand Name="GroupHeader1" Top="113.95" Width="718.2" Height="56.7" Condition="[stock.Part_Code]">
+        <TextObject Name="Text2" Left="113.4" Top="9.45" Width="113.4" Height="18.9" CanGrow="true" Text="[stock.Part_Code]" Font="Arial, 10pt" TextFill.Color="192, 0, 0"/>
+        <TextObject Name="Text5" Left="302.4" Top="28.35" Width="94.5" Height="18.9" Text="[stock.opn]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" TextFill.Color="Brown" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text3" Left="9.45" Top="9.45" Width="94.5" Height="18.9" Text="Part Code" Font="Arial, 10pt"/>
+        <TextObject Name="Text4" Left="226.8" Top="9.45" Width="472.5" Height="18.9" CanGrow="true" Text="[stock.item_name]" Font="Arial, 10pt" TextFill.Color="Blue"/>
+        <TextObject Name="Text51" Left="226.8" Top="28.35" Width="94.5" Height="18.9" Text="Opn Qty" Font="Arial, 10pt"/>
+        <GroupHeaderBand Name="GroupHeader2" Top="173.98" Width="718.2" Height="56.7" Condition="[stock.Part_Code]">
+          <LineObject Name="Line1" Left="-9.45" Top="56.7" Width="718.2" Border.Style="Dash" Border.Width="0.25"/>
+          <TextObject Name="Text55" Left="28.35" Top="9.45" Width="47.25" Height="28.35" Text="Trans Date" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <TextObject Name="Text7" Left="207.9" Top="9.45" Width="37.8" Height="37.8" Text="Rec Qty" HorzAlign="Right" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <TextObject Name="Text13" Left="510.3" Top="9.45" Width="47.25" Height="18.9" Text="BillNo" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <TextObject Name="Text15" Left="567" Top="9.45" Width="94.5" Height="18.9" Text="Batch no" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <TextObject Name="Text18" Left="642.6" Top="9.45" Width="94.5" Height="18.9" Text="MRNNo" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <TextObject Name="Text52" Left="368.55" Top="9.45" Width="56.7" Height="37.8" Text="Total Bal Qty" HorzAlign="Center" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <TextObject Name="Text53" Left="274.05" Top="9.45" Width="37.8" Height="37.8" Text="Iss Qty" HorzAlign="Right" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <TextObject Name="Text56" Left="85.05" Top="9.45" Width="47.25" Height="37.8" Text="Trans Type" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <TextObject Name="Text57" Top="9.45" Width="37.8" Height="37.8" Text="Sr No" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <TextObject Name="Text58" Left="444.15" Top="9.45" Width="56.7" Height="37.8" Text="Party Name" Font="Arial, 10pt" TextFill.Color="Blue"/>
+          <LineObject Name="Line2" Left="-9.45" Width="718.2" Border.Style="Dash" Border.Width="0.25"/>
+          <DataBand Name="Data1" Top="234.02" Width="718.2" Height="28.35" CanGrow="true" BeforePrintEvent="Data1_BeforePrint" DataSource="Table">
+            <TextObject Name="Text10" Left="28.35" Top="9.45" Width="66.15" Height="18.9" Text="[stock.TRansDAte]" Format="Date" Format.Format="d" Font="Arial, 7pt"/>
+            <TextObject Name="Text11" Left="94.5" Top="9.45" Width="94.5" Height="18.9" Text="[stock.TRansactionType]" Font="Arial, 7pt"/>
+            <TextObject Name="Text12" Left="519.75" Top="9.45" Width="56.7" Height="18.9" Text="[stock.BillNo]" Font="Arial, 7pt"/>
+            <TextObject Name="Text14" Left="585.9" Top="9.45" Width="66.15" Height="18.9" Text="[stock.batchno]" Font="Arial, 7pt"/>
+            <TextObject Name="Text17" Left="661.5" Top="9.45" Width="47.25" Height="18.9" Text="[stock.MRNNo]" Font="Arial, 7pt"/>
+            <TextObject Name="Text19" Left="415.8" Top="9.45" Width="94.5" Height="18.9" Text="[stock.PartyName]" Font="Arial, 7pt"/>
+            <TextObject Name="Text20" Top="9.45" Width="37.8" Height="18.9" Text="[stock.SeqNo]" Font="Arial, 7pt"/>
+            <TextObject Name="Text22" Left="387.45" Top="9.45" Width="28.35" Height="18.9" Text="[stock.unit]" Font="Arial, 7pt"/>
+            <TextObject Name="Text6" Left="198.45" Top="9.45" Width="66.15" Height="18.9" Text="[stock.TotalRec]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text8" Left="264.6" Top="9.45" Width="56.7" Height="18.9" Text="[stock.TotalIss]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text65" Left="321.3" Top="9.45" Width="94.5" Height="18.9" Text="[sum]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" Font="Arial, 8pt, style=Bold" TextFill.Color="SeaGreen"/>
+          </DataBand>
+          <GroupFooterBand Name="GroupFooter2" Top="265.7" Width="718.2">
+            <TextObject Name="Text66" Left="302.4" Width="94.5" BeforePrintEvent="Text66_BeforePrint" Text="[sum]" HorzAlign="Center" Font="Arial, 8pt, style=Bold" TextFill.Color="SeaGreen"/>
+          </GroupFooterBand>
+        </GroupHeaderBand>
+        <GroupFooterBand Name="GroupFooter1" Top="269.03" Width="718.2"/>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter5" Top="272.37" Width="718.2" Height="9.45">
+        <LineObject Name="Line3" Top="9.45" Width="718.2" Border.Style="Dash" Border.Width="0.25"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="285.15" Width="718.2"/>
+  </ReportPage>
+</Report>

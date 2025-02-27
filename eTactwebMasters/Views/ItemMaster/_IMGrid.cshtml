@@ -1,0 +1,248 @@
+﻿@model eTactWeb.DOM.Models.ItemMasterModel
+@if (Model.SwitchAll == "true")
+{
+    <partial name="_IMGridAllColumns" />
+}
+else
+{
+
+
+    <div class="card">
+        <div class="card-body table-responsive" style="max-height:350px;">
+            <table class="table table-bordered TbCss text-nowrap mb-0" id="IMData">
+                <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashThead">
+                    <tr>
+                        <th>Sr#</th>
+                        <th>Action</th>
+                        <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Code</th>
+                        <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                        <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                        <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Group</th>
+                        <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Category</th>
+                        <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> @Html.DisplayNameFor(model => model.Unit)                    </th>
+                        <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt.Unit</th>
+                        <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>  @Html.DisplayNameFor(model => model.HSNNO)                    </th>
+                        <th data-columnno="10" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>                       @Html.DisplayNameFor(model => model.MinimumLevel)                    </th>
+                        <th data-columnno="11" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>                        @Html.DisplayNameFor(model => model.MaximumLevel)                    </th>
+                        <th data-columnno="12" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>                        @Html.DisplayNameFor(model => model.StdPacking)                    </th>
+                        <th data-columnno="13" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>                        @Html.DisplayNameFor(model => model.ProdInWorkcenter)                    </th>
+                        <th data-columnno="14" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>                        @Html.DisplayNameFor(model => model.ProdInhouseJW)                    </th>
+                        <th data-columnno="15" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>                        @Html.DisplayNameFor(model => model.BatchNO)                    </th>
+                        <th data-columnno="16" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>                        @Html.DisplayNameFor(model => model.EntryDate)                    </th>
+                        <th data-columnno="17" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created By</th>
+                        <th data-columnno="18" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created On</th>
+                        <th data-columnno="19" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
+                        <th data-columnno="20" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated On</th>
+                        <th data-columnno="21" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Old PartCode</th>
+                        <th data-columnno="22" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voltage Value</th>
+                        <th data-columnno="23" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Serial No</th>
+                        <th data-columnno="24" data-sortorder=" asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Package</th>
+                    </tr>
+                </thead>
+                <tbody id="divDashboardGrid">
+                    @if (Model.MasterList.Count == 0)
+                    {
+                        <tr class="text-center">
+                            <td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        var @Cntr = 0;
+                        foreach (var item in Model.MasterList)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr>
+                                <td class="FWB">@Cntr</td>
+                                <td style="text-align:center;white-space: nowrap;">
+                                    <div id="container">
+                                        <div id="viewCursorDiv-@Cntr">
+                                            <a class="table-link link-success" asp-action="ItemDetail" asp-route-ID="@item.Item_Code" asp-route-Mode="V">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="editCursorDiv-@Cntr">
+                                            <a class="table-link link-primary" asp-action="ItemDetail" asp-route-ID="@item.Item_Code" asp-route-Mode="U">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="deleteCursorDiv-@Cntr">
+                                            <a class="table-link link-danger" onclick="confirmDelete(event,@item.Item_Code)" asp-action="DeleteItemByID" asp-controller="ItemMaster">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="FWB">
+                                    @Html.DisplayFor(modelItem => item.Item_Code)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PartCode)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Item_Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ItemGroup)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TypeName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Unit)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AlternateUnit)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.HSNNO)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MinimumLevel)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MaximumLevel)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StdPacking)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProdWorkCenterDescription)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProdInhouseJW)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.BatchNO)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EntryDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreatedByName)
+                                </td>
+                                <td>
+                                    @item.CreatedOn.ToString().Split(" ")[0]
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UpdatedByName)
+                                </td>
+                                 
+
+                                @if (item.UpdatedOn != null)
+                                {
+                                    <td>
+                                        @item.UpdatedOn.ToString().Split(" ")[0]
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.UpdatedOn)
+                                    </td>
+                                }
+                               
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SerialNo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.VoltageVlue)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OldPartCode)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Package)
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+                @*            <tfoot>
+            <tr>
+            <th colspan="11" class="ts-pager">
+            <div class="form-inline">
+            <div class="btn-group btn-group-sm mx-1" role="group">
+            <button type="button" class="btn btn-secondary first" title="first">⇤</button>
+            <button type="button" class="btn btn-secondary prev" title="previous">←</button>
+            </div>
+            <span class="pagedisplay"></span>
+            <div class="btn-group btn-group-sm mx-1" role="group">
+            <button type="button" class="btn btn-secondary next" title="next">→</button>
+            <button type="button" class="btn btn-secondary last" title="last">⇥</button>
+            </div>
+            <select class="form-control-sm custom-select px-1 pagesize" title="Select page size">
+            <option selected="selected" value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="all">All Rows</option>
+            </select>
+            <select class="form-control-sm custom-select px-4 mx-1 pagenum" title="Select page number"></select>
+            </div>
+            </th>
+            </tr>
+            </tfoot>*@
+
+            </table>
+        </div>
+    </div>
+}
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #IMData {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -18px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>
+
+@*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/css/theme.default.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/css/theme.bootstrap_4.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/css/jquery.tablesorter.pager.min.css" />*@

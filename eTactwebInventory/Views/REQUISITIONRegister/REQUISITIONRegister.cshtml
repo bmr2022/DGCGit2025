@@ -1,0 +1,440 @@
+﻿@model eTactWeb.DOM.Models.REQUISITIONRegistermodel
+@{
+    ViewData["Title"] = "REQUISITION Register";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>REQUISITION Register</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReqType" class="form-label">Req Type</label>
+                                    <select class="form-select" asp-for="ReqType">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="REQUISITIONWITHOUTBOM">Requisition Without Bom</option>
+                                        <option value="REQUISITIONWITHBOM">Requisition With Bom</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportMode" class="form-label">Report Type</label>
+                                    <select asp-for="ReportMode" class="form-select" onchange="GetREQUISITIONRegisterData()">                                        
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReqNo" class="form-label">Req No</label>
+                                    <input asp-for="ReqNo" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">Part Code</label>
+                                    <input asp-for="PartCode" class="form-control" />
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label">Item Name</label>
+                                    <input asp-for="ItemName" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="FromStore" class="form-label">From Store</label>
+                                    <input asp-for="FromStore" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ToWorkCentrer" class="form-label">To Work Center</label>
+                                    <input asp-for="ToWorkCentrer" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label">Global search</label>
+                                    <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
+                                </div>
+                                <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 justify-content-center mt-4">
+                                    <label class="color-box mt-3" style="background-color: #f3dea1;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Closed Challan</label>
+                                    <label class="color-box mt-3" style="background-color: rgb(158 225 149);margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Pending Challan</label>
+                                </div>
+                                <div class=" d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="LedgerPartyWiseOpening" asp-action="LedgerPartyWiseOpeningDashBoard">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase" id="ItemHeading"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Challan Grid</strong>
+                                    </button>
+                                </h2>
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12" id="divRCRegister">
+                                                    <partial name="_ReQWithoutBomListReport" />
+                                                    <partial name="_ReQWithBomListReport" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" id="TOTALREQQtyforwithwithoutBom">
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Qty</label>
+                                                <input id="TotalReqQty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Pend Qty</label>
+                                                <input id="TotalPendQty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Alt Qty</label>
+                                                <input id="TotalAltQty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Stock</label>
+                                                <input id="TotalStock" class="form-control" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="row" id="TOTALReQQtyforChildPart">
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total FGREQ Qty</label>
+                                                <input id="TotalFGReQqty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total FGAlt Qty</label>
+                                                <input id="TotalFGAltQty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">FG Total Stock</label>
+                                                <input id="TotalFGStock" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">RM ReQ Qty</label>
+                                                <input id="TotalRMReqqty" class="form-control" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>
+@section Scripts{
+    <script>
+
+
+        $(document).ready(function () {
+            GetServerDate();
+            $('#ReportMode').select2();
+            AutoComplete('Account_Head_Master', 'PartyName', 'Account_Name', null);
+            AutoComplete('VJobworkIssueMainDetail', 'IssueChallanNo', 'JWChallanNo', null);
+            AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
+            AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
+            AutoComplete('VRequisitionThrBOMMainDetail', 'ReqNo', 'REQNo', null);
+            AutoComplete('VRequisitionMainDetail', 'ReqNo', 'REQNo', null);
+            AutoComplete('VRequisitionMainDetail', 'ToWorkCentrer', 'WorkCenter', null);
+            AutoComplete('VRequisitionThrBOMMainDetail', 'ToWorkCentrer', 'WorkCenter', null);
+
+            $('#ReportMode').empty();
+            $('#ReportMode').append('<option value="REQUISITIONWITHOUTBOMLIST">Requisition Without BomList</option>');
+            $('#TOTALREQQtyforwithwithoutBom').show();
+            $('#TOTALReQQtyforChildPart').hide();
+            $('#ItemHeading').text('');
+            $('#ItemHeading').text('Requisition Without Bom List Detail');
+            GetREQUISITIONRegisterData();
+
+            $('#ReportMode').change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue === 'REQUISITIONWITHOUTBOMLIST') {
+                    $('#TOTALREQQtyforwithwithoutBom').show();
+                    $('#TOTALReQQtyforChildPart').hide();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Requisition Without Bom List Detail');
+                }
+                else if (selectedValue === 'REQUISITIONWITHBOMLIST') {
+                    $('#TOTALREQQtyforwithwithoutBom').show();
+                    $('#TOTALReQQtyforChildPart').hide();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Requisition With Bom List Detail');
+                }
+                else if (selectedValue === 'REQUISITIONWITHBOMWITHCHILPARTDETAIL') {
+                    $('#TOTALREQQtyforwithwithoutBom').hide();
+                    $('#TOTALReQQtyforChildPart').show();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Requisition With Bom With ChildPart List Detail');
+                }
+            });
+
+            FreezeSelection();
+            
+        });
+         
+        $('#ReqType').change(function () {
+            if ($(this).val() === 'REQUISITIONWITHBOMLIST') {
+                FreezeSelection();
+            }
+        });
+
+        if ($('#ReqType').val() === 'REQUISITIONWITHBOMLIST') {
+            FreezeSelection();
+        }
+        function DeleteRow(i) {
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
+            countAllTotal();
+        }
+
+        function FreezeSelection(Currentrow) {
+
+            FillColorAccordingPendQty();
+            $(Currentrow).css({ 'background-color': '#00bcd4' });
+        }
+
+        function countAllTotal() {
+             
+            var Rowcount = 0;
+            if ($('#divStockRegisterBody tr td').length > 1) {
+                Rowcount = $('#divStockRegisterBody tr').length;
+            } else {
+                Rowcount = 0;
+            }
+            $('#TotalReqQty').val(0);
+            $('#TotalPendQty').val(0);
+            $('#TotalAltQty').val(0);
+            $('#TotalStock').val(0);
+            $('#TotalFGReQqty').val(0);
+            $('#TotalFGAltQty').val(0);
+            $('#TotalFGStock').val(0);
+            $('#TotalRMReqqty').val(0);
+            var TotalReqQty = 0;
+            var TotalPendQty = 0;
+            var TotalAltQty = 0;
+            var TotalStock= 0;
+            var TotalFGReQqty = 0;
+            var TotalFGAltQty = 0;
+            var TotalFGStock = 0;
+            var TotalRMReqqty = 0;
+             
+            for (i = 1; i <= Rowcount; i++) {
+                TotalReqQty += $('#SAGridRow-' + i).find('#TotalQty').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#TotalQty').text());
+                TotalPendQty += $('#SAGridRow-' + i).find('#TotalPendQtyforReq').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#TotalPendQtyforReq').text());
+                TotalAltQty += $('#SAGridRow-' + i).find('#TotalAltQtyforreq').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#TotalAltQtyforreq').text());
+                TotalStock += $('#SAGridRow-' + i).find('#TotalStockforReq').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#TotalStockforReq').text());
+                TotalFGReQqty += $('#SAGridRow-' + i).find('#FGTotalRecQty').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#FGTotalRecQty').text());
+                TotalFGAltQty += $('#SAGridRow-' + i).find('#FGTotalAltQty').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#FGTotalAltQty').text());
+                TotalFGStock += $('#SAGridRow-' + i).find('#FGTotalStock').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#FGTotalStock').text());
+                TotalRMReqqty += $('#SAGridRow-' + i).find('#RMTotalReqQty').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#RMTotalReqQty').text());
+            }
+            $('#TotalReqQty').val(TotalReqQty.toFixed(2));
+            $('#TotalPendQty').val(TotalPendQty.toFixed(2));
+            $('#TotalAltQty').val(TotalAltQty.toFixed(2));
+            $('#TotalStock').val(TotalStock.toFixed(2));
+            $('#TotalFGReQqty').val(TotalFGReQqty.toFixed(2));
+            $('#TotalFGAltQty').val(TotalFGAltQty.toFixed(2));
+            $('#TotalFGStock').val(TotalFGStock.toFixed(2));
+            $('#TotalRMReqqty').val(TotalRMReqqty.toFixed(2));
+        }
+
+        function FillColorAccordingPendQty() {
+            var Rowcount = $('#divStockRegisterBody tr').length;
+            for (i = 1; i <= Rowcount; i++) {
+                if (parseFloat($('#GridPendQty-' + i).text()) == 0) {
+                    $('#SAGridRow-' + i).css({ 'background-color': '#f3dea1' });
+                    $('#StickyHearder-' + i).css({ 'background-color': '#f3dea1' });
+                } else {
+                    $('#SAGridRow-' + i).css({
+                        'background-color': 'rgb(158 225 149)'
+                    });
+                    $('#StickyHearder-' + i).css({
+                        'background-color': 'rgb(158 225 149)'
+                    });
+                }
+            }
+        }
+
+        $('#ReqType').change(function () {
+             
+            if ($('#ReqType').val() == 'REQUISITIONWITHOUTBOM') {
+                $('#ReportMode').empty();
+                $('#ReportMode').append('<option value="REQUISITIONWITHOUTBOMLIST">Requisition Without BomList</option>');
+                $('#TOTALREQQtyforwithwithoutBom').show();
+                $('#TOTALReQQtyforChildPart').hide();
+                $('#ItemHeading').text('');
+                $('#ItemHeading').text('Requisition Without Bom List Detail');
+
+            }
+            else if ($('#ReqType').val() == 'REQUISITIONWITHBOM') {
+                $('#ReportMode').empty();
+                $('#ReportMode').append('<option selected value="REQUISITIONWITHBOMLIST">Requisition With BomList</option>\
+                                                 <option value="REQUISITIONWITHBOMWITHCHILPARTDETAIL">Requisition With Bom With ChildPart Detail</option>');
+                $('#TOTALREQQtyforwithwithoutBom').show();
+                $('#TOTALReQQtyforChildPart').hide();
+                $('#ItemHeading').text('');
+                $('#ItemHeading').text('Requisition With Bom List Detail');
+
+            }          
+            GetREQUISITIONRegisterData();
+        });
+
+        function GetREQUISITIONRegisterData() {
+             
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetREQUISITIONRegisterData")",
+                async: false,
+                data: { fromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), REQNo: $('#ReqNo').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), ReqType: $('#ReqType').val(), Flag: $('#ReportMode').val(), FromstoreId: $('#FromStore').val(), Toworkcenter: $('#ToWorkCentrer').val(), ReqYearcode: $('#ReQYearCode').val() },
+                success: function (result, status, error) {
+                     
+                    $('#divRCRegister').empty();
+                    $('#divRCRegister').html(result);
+                    $('#totalRows').text($('#divRCRegister tr').length - 1);
+                    countAllTotal();
+                }
+            });
+        }
+
+        $('#sendToExcel').click(function () {
+            let table = $("#ReportTable");
+            console.log(table);
+            TableToExcel.convert(table[0], {
+                name: `ReportTable.xlsx`,
+                sheet: {
+                    name: 'ReportTable'
+                }
+            });
+        });
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate","SaleOrder")",
+                async: false,
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+
+                        var firstDayOfMonth = getFirstDayOfMonth(result);
+                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                    }
+                }
+            });
+        }
+
+        function getFirstDayOfMonth(dateString) {
+            const [day, month, year] = dateString.split('/');
+
+            const currentDate = new Date(year, month - 1, day);
+
+            currentDate.setDate(1);
+
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
+        }
+
+
+        var currentSearchColumn = null;
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+            countAllTotal();
+            $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
+        });
+
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable('ReportTable', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('ReportTable', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+
+}
+

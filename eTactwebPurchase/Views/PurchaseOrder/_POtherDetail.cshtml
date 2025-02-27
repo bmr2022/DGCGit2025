@@ -1,0 +1,160 @@
+﻿@model eTactWeb.DOM.Models.PurchaseOrderModel
+
+<div class="accordion-body">
+    <div class="row g-2 gx-3">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="DeliverySch" class="form-label">Delivery Sch</label>
+            <input asp-for="DeliverySch" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PackingChg" class="form-label">Packaging Chrg</label>
+            <select class="form-select" asp-for="PackingChg" asp-items="Model.PackingChgList">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PackingType" class="form-label">Packing Type</label>
+            <input asp-for="PackingType" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PreparedBy" class="form-label">Prepared By</label>
+            <input type="hidden" asp-for="PreparedBy" class="form-control" value="@Model.PreparedBy" readonly />
+            <input asp-for="PreparedByName" class="form-control" value="@Model.PreparedByName" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Discount" class="form-label">Discount</label>
+            <input asp-for="Discount" class="form-control" />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GSTIncludedONRate" class="form-label">GST Included ON Rate</label>
+            <select class="form-select" asp-for="GSTIncludedONRate" asp-items="Model.YesNoList"></select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PriceBasis" class="form-label">Price Basis</label>
+            <input asp-for="PriceBasis" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Installation" class="form-label">Installation</label>
+            <input asp-for="Installation" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Inspection" class="form-label">Inspection</label>
+            <input asp-for="Inspection" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Warrenty" class="form-label">Warrenty</label>
+            <input asp-for="Warrenty" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Clause" class="form-label">Clause</label>
+            <input asp-for="Clause" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="ManufTrade" class="form-label">Manuf Trade</label>
+            <select class="form-select" asp-for="ManufTrade" asp-items="Model.ManufTradeList"></select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="ShipmentTerm" class="form-label">Shipment Term</label>
+            <input asp-for="ShipmentTerm" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="LDClause" class="form-label">L/D Clause</label>
+            <input asp-for="LDClause" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="FreightPaidBy" class="form-label">Freight T&C</label>
+            <input asp-for="FreightPaidBy" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="InsurancePaidBy" class="form-label">Insurance</label>
+            <input asp-for="InsurancePaidBy" class="form-control" />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="ModeOFTransport" class="form-label">Mode OF Transport</label>
+            <input asp-for="ModeOFTransport" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PaymentTerms" class="form-label">Payment Terms</label>
+            <input asp-for="PaymentTerms" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PaymentDays" class="form-label">Payment Days</label>
+            <input asp-for="PaymentDays" class="form-control" />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="ItemsForDepartment" class="form-label">Items For Department</label>
+            <select asp-for="ItemsForDepartment" class="form-select" asp-items="@(new SelectList(Model.DepartmentList,"Value","Text"))">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+        <div class="DH col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="ResposibleEmplforQC" class="form-label">Resp Emp for QC</label>
+            <select asp-for="ResposibleEmplforQC" class="form-select" asp-items="@(new SelectList(Model.PreparedByList,"Value","Text"))">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="FOC" class="form-label">FOC</label>
+            <select asp-for="FOC" class="form-select" asp-items="Model.YesNoList"></select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="OrderNo" class="form-label">Order No</label>
+            <input asp-for="OrderNo" class="form-control" readonly disabled />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="POPrefix" class="form-label">PO Prefix</label>
+            <input asp-for="POPrefix" class="form-control" readonly disabled />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label asp-for="PathOfFile1" class="form-label">PathOfFile1</label>
+            <input class="form-control form-control" asp-for="PathOfFile1" type="file" data-val="false">
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label asp-for="PathOfFile2" class="form-label">PathOfFile2</label>
+            <input class="form-control form-control" asp-for="PathOfFile2" type="file" data-val="false">
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label asp-for="PathOfFile3" class="form-label">PathOfFile3</label>
+            <input class="form-control form-control" asp-for="PathOfFile3" type="file" data-val="false">
+        </div>
+        <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label class="form-label">Remarks</label>
+            <input asp-for="PORemark" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="CreatedBy" class="form-label">Created By</label>
+            <input type="hidden" asp-for="CreatedBy" class="form-control" value="@Model.CreatedBy" readonly />
+            <input asp-for="CretaedByName" class="form-control" value="@Model.CretaedByName" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="CreatedOn" class="form-label">Created On</label>
+            <input asp-for="CreatedOn" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+            <input type="hidden" asp-for="UpdatedBy" class="form-control" value="@Model.UpdatedBy" readonly />
+            <input asp-for="UpdatedByName" class="form-control" value="@Model.UpdatedByName" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+            <input asp-for="UpdatedOn" class="form-control" readonly />
+        </div>
+        @if (Model.Mode == "POA" || Model.Mode == "PAU" || Model.Mode == "POC")
+        {
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="AmmEntryId" class="form-label">AmmEntry ID</label>
+                <input asp-for="AmmEntryId" class="form-control" readonly />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                <label asp-for="AmmYearCode" class="form-label">Amm Year</label>
+                <input asp-for="AmmYearCode" class="form-control" value="@Model.AmmYearCode" readonly />
+            </div>
+        }
+        @*<div class="row g-2 gx-3 mt-1">
+        <div class="col">
+        <label class="form-label">Remarks</label>
+        <textarea asp-for="PORemark" class="form-control" role="10" rows="5"></textarea>
+        </div>
+        </div>*@
+    </div>

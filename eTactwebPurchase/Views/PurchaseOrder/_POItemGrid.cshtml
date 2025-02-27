@@ -1,0 +1,82 @@
+﻿@model eTactWeb.DOM.Models.PurchaseOrderModel
+
+<input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        <tr class="small @item.SeqNo" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.SeqNo</td>
+            <td class="divPOItemListPartCode">@item.PartText</td>
+            <td>@item.ItemText</td>
+            <td>@item.HSNNo</td>
+            <td>@item.POQty</td>
+            <td>@item.Unit</td>
+            <td>@item.AltPOQty</td>
+            <td>@item.AltUnit</td>
+            <td>@item.PendQty</td>
+            <td>@item.AltPendQty</td>
+            <td>@item.PkgStd</td>
+            <td>@item.Process</td>
+            <td>@item.Rate.ToString("#.#0")</td>
+            <td>@item.OldRate</td>
+            <td>@item.OtherRateCurr.ToString("#.#0")</td>
+            <td>@item.UnitRate</td>
+            <td>@item.DiscPer</td>
+            <td>@item.DiscRs</td>
+            <td id="GridAmount-@item.SeqNo">@item.Amount.ToString("#.#0")</td>
+            <td>@item.TolLimitQty</td>
+            <td>@item.TolLimitPercent</td>
+            <td>@item.SizeDetail</td>
+            <td>@item.PIRemark</td>
+            <td>@item.Description</td>
+            <td>@item.AdditionalRate</td>
+            <td>@item.Color</td>
+            <td>@item.CostCenter</td>
+            <td>@item.FirstMonthTentQty</td>
+            <td>@item.SecMonthTentQty</td>
+            <td>@item.AmendmentNo</td>
+            <td>@item.AmendmentDate</td>
+            <td>@item.AmendmentReason</td>
+        </tr>
+    }
+}

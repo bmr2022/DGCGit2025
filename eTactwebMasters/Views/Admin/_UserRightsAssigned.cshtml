@@ -1,0 +1,111 @@
+﻿@model eTactWeb.DOM.Models.UserRightModel
+
+<div class="card-body table-responsive" style="max-height:350px;">
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover table-bordered table-striped TbCss" id='UserData'>
+                <thead class="bg-gradient card-headerBG text-light">
+                    <tr>
+                        <th style="display:none">@Html.DisplayNameFor(model => model.EmpID)</th>
+                        <th>Sr#</th>
+                        <th>@Html.DisplayNameFor(model => model.EmpName)</th>
+                        <th>@Html.DisplayNameFor(model => model.Module)</th>
+                        <th>@Html.DisplayNameFor(model => model.MainMenu)</th>
+                        @*<th>@Html.DisplayNameFor(model => model.SubMenu)</th>*@
+                        <th>@Html.DisplayNameFor(model => model.All)</th>
+                        <th>@Html.DisplayNameFor(model => model.Update)</th>
+                        <th>@Html.DisplayNameFor(model => model.Save)</th>
+                        <th>@Html.DisplayNameFor(model => model.Delete)</th>
+                        <th>@Html.DisplayNameFor(model => model.View)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var @Cntr = 0;
+                    }
+                    @if (Model.UserRights.Count == 0)
+                    {
+                        <tr class="text-center">
+                            <td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.UserRights)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr>
+                                <td style="display:none">@Html.DisplayFor(modelItem => item.EmpID)</td>
+                                <th>@Cntr</th>
+                                <td>@Html.DisplayFor(modelItem => item.EmpName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Module)</td>
+                                <td>@Html.DisplayFor(modelItem => item.MainMenu)</td>
+                                @*<td>@Html.DisplayFor(modelItem => item.SubMenu)</td>*@
+                                <td>
+                                    <div class="form-check form-switch">
+                                        @if (item.All == "true")
+                                        {
+                                            <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" type="checkbox" role="switch" style="pointer-events: none;">
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        @if (item.Update == "true")
+                                        {
+                                            <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" type="checkbox" role="switch" style="pointer-events: none;">
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        @if (item.Save == "true")
+                                        {
+                                            <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" type="checkbox" role="switch" style="pointer-events: none;">
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        @if (item.Delete == "true")
+                                        {
+                                            <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" type="checkbox" role="switch" style="pointer-events: none;">
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        @if (item.View == "true")
+                                        {
+                                            <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" type="checkbox" role="switch" style="pointer-events: none;">
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

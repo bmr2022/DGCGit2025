@@ -1,0 +1,35 @@
+﻿@model eTactWeb.DOM.Models.SaleOrderModel
+
+<div class="modal fade" id="SOConfirmationBox" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="hidden" id="type" value="" />
+                <input type="hidden" id="type2" value="" />
+                <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="CancelButton()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body text-center overflow-auto pb-0">
+                                    <h5>Changing this type will clear the grid data? Are you sure you want to do it?</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" id="confirmBtn" data-bs-dismiss="modal" onclick="ConfirmBtn()">YES</button>
+                    <button type="button" class="btn btn-sm btn-danger" id="cancelBtn" data-bs-dismiss="modal" onclick="CancelButton()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

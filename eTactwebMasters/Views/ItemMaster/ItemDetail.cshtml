@@ -1,0 +1,1080 @@
+﻿@model eTactWeb.DOM.Models.ItemMasterModel
+
+@{
+    ViewData["Title"] = Model.Item_Code == 0 ? "Item Master" : "Update/Edit Item Master";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="rounded shadow-lg">
+    <partial name="_ItemDetailConfirmation" />
+
+    <form asp-action="ItemDetail" enctype="multipart/form-data" autocomplete="off" class="form-horizontal">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Act">
+        <input type="hidden" asp-for="ImageURL">
+        <input type="hidden" asp-for="Mode">
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    @ViewData["Title"] - @Model.YearCode
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    @*Model.Mode = "U";*@
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <div class="card rounded shadow-lg">
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionAccountMaster">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_BasicParameter">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_BasicParameter">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Basic Parameter</strong>
+                            </button>
+                        </h2>
+                        <div id="B_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicParameter">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                        <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
+                                        <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                        <input asp-for="EntryDate" class="form-control" onkeypress="return false;" />
+                                    </div>
+                                    <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
+                                        <label asp-for="YearCode" class="form-label">Year Code</label>
+                                        <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
+                                    </div>
+
+
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CC" class="form-label">Branch</label>
+                                        <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label id="Types" class="form-label">Type</label>
+                                        <select asp-for="ItemServAssets" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="Item" selected>Item</option>
+                                            <option value="Service">Service</option>
+                                            <option value="Asset">Asset</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PartCode" class="form-label">Part Code</label>
+                                        @if (string.IsNullOrEmpty(Model.Mode))
+                                        {
+                                            if (Model.FeatureOption.AllowPartCode == true)
+                                            {
+                                                <input asp-for="PartCode" style="background-color:rgb(248,255,178);" class="form-control" data-val="false" readonly />
+                                            }
+                                            if (Model.FeatureOption.AllowPartCode == false)
+                                            {
+                                                <input asp-for="PartCode" style="background-color:aqua;" class="form-control" data-val="false" onchange="CheckDuplicate('Part Code',this.id);" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="PartCode" class="form-control" data-val="false" readonly />
+                                        }
+                                    </div>
+                                    <div class="col-xl-3 col-lg-6 col-md-8 col-sm-6 col-xs-12">
+                                        <label asp-for="Item_Name" class="form-label">Item Name</label>
+                                        <input asp-for="Item_Name" class="form-control" onchange="CheckDuplicate('Item_Name',this.id);" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ItemType" class="form-label">Item Category</label>
+                                        <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                            <select asp-for="ItemType" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ItemTypeList,"Value", "Text"))">
+                                                <option value="">-Select-</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ParentCode" class="form-label">Item Group</label>
+                                        <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                            <select asp-for="ParentCode" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ParentGroupList,"Value", "Text"))" onfocus=" setFocus()">
+                                                <option value="">-Select-</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="HSNNO" class="form-label">HSN No</label>
+                                        <input asp-for="HSNNO" class="form-control" required />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Unit" class="form-label">Unit</label>
+                                        <select asp-for="Unit" class="form-select" asp-items="@(new SelectList(Model.UnitList,"Value", "Text"))">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AlternateUnit" class="form-label">Alternate Unit</label>
+                                        <select asp-for="AlternateUnit" class="form-select" data-val="false" asp-items="@(new SelectList(Model.AltUnitList,"Value", "Text"))">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="WtSingleItem" class="form-label">WT Single Item</label>
+                                        <input asp-for="WtSingleItem" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="NoOfPcs" class="form-label">No Of Pcs</label>
+                                        <input asp-for="NoOfPcs" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmpName" class="form-label">Emp Name</label>
+                                        <select asp-for="EmpName" class="form-select" asp-items="@(new SelectList(Model.EmpList,"Value", "Text"))">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Store" class="form-label">Store</label>
+                                        <select asp-for="Store" class="form-select" data-val="false" asp-items="@(new SelectList(Model.StoreList,"Value", "Text"))">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="DispItemName" class="form-label">Disp. Item Name</label>
+                                        <input asp-for="DispItemName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Item_Code" class="form-label">Item Code</label>
+                                        <input asp-for="Item_Code" class="form-control" readonly />
+                                    </div>
+
+                                    @if (@Model.Mode == "U")
+                                    {
+                                        <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                            <label class="form-label">Change PartCode</label>
+                                            <input type="checkbox" id="ChangePartCode" />
+                                        </div>
+                                    }
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_Measurements">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Measurements" aria-expanded="true" aria-controls="B_Measurements">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Costing Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="B_Measurements" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_Measurements">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="SalePrice" class="form-label">Sale Price</label>
+                                        <input asp-for="SalePrice" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PurchasePrice" class="form-label">Purchase Price</label>
+                                        <input asp-for="PurchasePrice" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ModelNo" class="form-label">Model No</label>
+                                        <input asp-for="ModelNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CostPrice" class="form-label">Cost Price</label>
+                                        <input asp-for="CostPrice" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_Procurment">
+                            <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Procurment" aria-expanded="true" aria-controls="B_Procurment">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Procurment Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="B_Procurment" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="H_Procurment">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ReorderLevel" class="form-label">Reorder Level</label>
+                                        <input asp-for="ReorderLevel" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="LeadTime" class="form-label">LeadTime</label>
+                                        <input asp-for="LeadTime" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MinimumLevel" class="form-label">Minimum Level</label>
+                                        <input asp-for="MinimumLevel" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaximumLevel" class="form-label">Maximum Level</label>
+                                        <input asp-for="MaximumLevel" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MinimumLevel" class="form-label">Min Level Days</label>
+                                        <input asp-for="MinimumLevel" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaximumLevel" class="form-label">Max Level Days</label>
+                                        <input asp-for="MaximumLevel" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="YearlyConsumedQty" class="form-label">Yearly Cons Qty</label>
+                                        <input asp-for="YearlyConsumedQty" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="DailyRequirment" class="form-label">Daily Requirement</label>
+                                        <input asp-for="DailyRequirment" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaxWipStock" class="form-label">Max Wip Stock</label>
+                                        <input asp-for="MaxWipStock" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="JobWorkItem" class="form-label">Job Work Item</label>
+                                        <select asp-for="JobWorkItem" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PurchaseAccountcode" class="form-label">Purchased Account</label>
+                                        <select asp-for="PurchaseAccountcode" class="form-select" asp-items="@(new SelectList(Model.PurchaseAccList,"Value", "Text"))">
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="SaleAccountcode" class="form-label">Sale Account</label>
+                                        <select asp-for="SaleAccountcode" class="form-select" asp-items="@(new SelectList(Model.SaleAccList,"Value", "Text"))">
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ProductLifeInus" class="form-label">Prod Life<small>(in months)</small></label>
+                                        <input asp-for="ProductLifeInus" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Active" class="form-label">Active</label>
+                                        <select asp-for="Active" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UniversalPartCode" class="form-label">Universal PartCode</label>
+                                        <input asp-for="UniversalPartCode" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UniversalDescription" class="form-label">Universal Description</label>
+                                        <input asp-for="UniversalDescription" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_Inventory">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Inventory" aria-expanded="true" aria-controls="B_Inventory">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Inventory Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="B_Inventory" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_Inventory">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Stockable" class="form-label">Stockable</label>
+                                        <select asp-for="Stockable" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="WipStockable" class="form-label">Wip Stockable</label>
+                                        <select asp-for="WipStockable" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="NeedPO" class="form-label">Need Po</label>
+                                        <select asp-for="NeedPO" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="QcReq" class="form-label">QC Req</label>
+                                        <select asp-for="QcReq" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="NeedSo" class="form-label">Need So</label>
+                                        <select asp-for="NeedSo" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BomRequired" class="form-label">Bom Required</label>
+                                        <select asp-for="BomRequired" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="StdPacking" class="form-label">Std Packing</label>
+                                        <input asp-for="StdPacking" type="number" step="0.01" min="0" max="100" placeholder="0.00" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PackingType" class="form-label">Packing Type</label>
+                                        <input asp-for="PackingType" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ItemSize" class="form-label">Item Size</label>
+                                        <input asp-for="ItemSize" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Colour" class="form-label">Colour</label>
+                                        <input asp-for="Colour" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="RackID" class="form-label">Rack No</label>
+                                        <input asp-for="RackID" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BinNo" class="form-label">Bin No</label>
+                                        <input asp-for="BinNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="WastagePercent" class="form-label">Wastage Percentage</label>
+                                        <input asp-for="WastagePercent" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="VendorBatchNoMandatory" class="form-label">VendorBatchNoMandatory</label>
+                                        <select asp-for="VendorBatchNoMandatory" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaterialType" class="form-label">Material Type</label>
+                                        <select asp-for="MaterialType" class="form-select"></select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaterialIssueinStdPkgOnly" class="form-label">Issue in Std PKG</label>
+                                        <select asp-for="MaterialIssueinStdPkgOnly" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_DrawingDetail">
+                            <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_DrawingDetail" aria-expanded="true" aria-controls="B_DrawingDetail">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Drawing & Production Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="B_DrawingDetail" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="H_DrawingDetail">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ItemDesc" class="form-label">Item Description</label>
+                                        <input asp-for="ItemDesc" class="form-control" data-val="false" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="DrawingNo" class="form-label">Drawing No</label>
+                                        <input asp-for="DrawingNo" class="form-control" data-val="false" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ProdInWorkcenter" class="form-label">Prod In Workcenter</label>
+                                        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <input type="hidden" id="hiddenProdInWorkcenter" value="@Model.ProdInWorkcenter" />
+                                            }
+                                        </div>
+                                        <select asp-for="ProdInWorkcenter" class="form-select">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ProdInhouseJW" class="form-label">ProdInhouseJW</label>
+                                        <select asp-for="ProdInhouseJW" class="form-select">
+                                            <option value="" Selected>-Select-</option>
+                                            <option value="Inhouse">Inhouse</option>
+                                            <option value="Jobwork">Jobwork</option>
+                                            <option value="Inhouse+JW">Inhouse+JW</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BatchNO" class="form-label">BatchNO</label>
+                                        <select asp-for="BatchNO" class="form-select">
+                                            <option value="" Selected>-Select-</option>
+                                            <option value="MRNWISE">MRN WISE</option>
+                                            <option value="NOOFCase">NO OF Case</option>
+                                            <option value="ForEachQty">For Each Qty</option>
+                                        </select>
+                                    </div>
+                                    @{
+                                        if (!string.IsNullOrEmpty(Model.ImageURL))
+                                        {
+                                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <label class="form-label">Upload Drawing File</label>
+                                                        <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
+                                                            <i class="fa-solid fa-eye fa-fw fa-lg" style=""></i>
+                                                            View File
+                                                        </button>
+                                                        <div>
+                                                            <span>@Model.ImageURL.Split("/")[3]</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <div class="form-check form-switch pt-4">
+                                                            <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
+                                                            <label class="form-check-label" for="ReUpload">Re-Upload</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile">
+                                                <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                                <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                                <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                            </div>
+                                        }
+                                        if (!string.IsNullOrEmpty(Model.ItemImageURL))
+                                        {
+                                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <label class="form-label">Upload Item Image</label>
+                                                        <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
+                                                            <i class="fa-solid fa-eye fa-fw fa-lg"></i>
+                                                            View File
+                                                        </button>
+                                                        <div>
+                                                            <span>@Model.ItemImageURL.Split("/")[3]</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-5">
+                                                        <div class="form-check form-switch pt-4">
+                                                            <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
+                                                            <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadItemFile">
+                                                <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                                <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                                <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_Measurements">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Measurements" aria-expanded="true" aria-controls="B_Measurements">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Other Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="B_Measurements" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_Measurements">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedBy" class="form-label">Created By</label>
+                                        <input asp-for="CreatedBy" type="hidden" class="form-control" />
+                                        <input asp-for="CreatedByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedOn" class="form-label">Created On</label>
+                                        <input asp-for="CreatedOn" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+                                        <input asp-for="UpdatedBy" type="hidden" class="form-control" />
+                                        <input asp-for="UpdatedByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryByMachineName" class="form-label">Entry By Machine</label>
+                                        <input asp-for="EntryByMachineName" value="@Environment.MachineName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="LastUpdatedDate" class="form-label">Last Updated</label>
+                                        <input asp-for="LastUpdatedDate" class="form-control" onkeypress="return false;" />
+                                    </div>
+                                    <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
+                                        <label asp-for="OldPartCode" class="form-label">Old PartCode</label>
+                                        <input asp-for="OldPartCode" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
+                                        <label asp-for="VoltageVlue" class="form-label">Voltage Value</label>
+                                        <input asp-for="VoltageVlue" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
+                                        <label asp-for="SerialNo" class="form-label">Serial No</label>
+                                        <input asp-for="SerialNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
+                                        <label asp-for="Package" class="form-label">Package</label>
+                                        <input asp-for="Package" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    @*<div class="col-auto">
+                    <a class="btn btn-sm btn-secondary" href="#" onclick="back();">
+                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                    BACK
+                    </a>
+                    </div>*@
+                    <div class="card border-light bg-gradient rounded shadow-lg">
+                        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                            <h4>
+                                @ViewData["Title"] - @Model.YearCode
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U")
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function setFocus() {
+            document.getElementById('ParentCode').focus();
+        }
+        $(function () {
+            AutoComplete('VItemMaster', 'Item_Name', 'Item_Name', null);
+            GetProdInWorkcenter();
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                var ProdInWorkcenter = $('#hiddenProdInWorkcenter').val();
+                $('#ProdInWorkcenter').val(ProdInWorkcenter);
+            }
+
+
+            var finFromDate = $('#FinFromDate').val();
+            var finToDate = $('#FinToDate').val();
+
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+            console.log(formattedDate1);
+            console.log(formattedDate2);
+            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            $('#EntryDate').datepicker("option", "minDate", formattedDate1);
+            $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
+            $('#Item_Name').focus();
+            $("#LastUpdatedDate").datepicker({ minDate: 0, dateFormat: 'mm/dd/yy' });
+
+            $('#Item_Name').change(function () {
+
+                const format = /['\']/;
+                var string = $(this).val();
+
+                //if (format.test(string)) {
+                //    $.notify("Special characters are not allowed!", "error");
+                //    $('#Item_Name').val('');
+                //} else {
+                //    // do nothing
+                //}
+
+                // if (format.test(string)) {
+                //     $.notify("Special characters are not allowed!", "error");
+                //     $('#Item_Name').val('');
+                // } else {
+                //     // do nothing
+                // }
+
+            });
+
+            $('#ParentCode').select2();
+            $('#ItemType').select2();
+
+            $("#Item_Name").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("AutoComplete")',
+                        type: "POST",
+                        data: { "ColumnName": "Item_Name", "prefix": request.term },
+                        success: function (data) {
+                            response($.map(data, function (key, value) {
+                                return key.text;
+                            }));
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#DispItemName").val(i.item.value);
+                },
+                minLength: 1
+            });
+        });
+
+        function simulateBackspace(element) {
+            var event = new KeyboardEvent("keydown", {
+                key: "Backspace",
+                keyCode: 8,
+                code: "Backspace",
+                which: 8,
+                bubbles: true,
+                cancelable: true,
+            });
+
+            element.dispatchEvent(event);
+        }
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit']").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("button[type='submit']").prop("disabled", true);
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        $('#ItemServAssets').change(function () {
+            var itemServAssets = $(this).val();
+            if (itemServAssets == "Service") {
+                //costing detail
+                $('#SalePrice,#PurchasePrice,#ModelNo, #CostPrice').prop("disabled", true);
+                //procurment detail
+                $('#ReorderLevel,#LeadTime,#MinimumLevel, #MaximumLevel,#YearlyConsumedQty, #DailyRequirment, #MaxWipStock, #JobWorkItem, #PurchaseAccountcode,#SaleAccountcode, #ProductLifeInus, #Active').prop("disabled", true);
+                //inventory detail
+                $('#Stockable,#WipStockable,#NeedPO, #QcReq,#NeedSo, #BomRequired, #StdPacking, #PackingType, #ItemSize,#Colour, #RackID, #BinNo,#WastagePercent').prop("disabled", true);
+                //drawing detail
+                $('#ItemDesc,#DrawingNo,#UploadImage').prop("disabled", true);
+            }
+            else if (itemServAssets == "Asset") {
+                //costing detail
+                $('#SalePrice,#PurchasePrice,#ModelNo, #CostPrice').prop("disabled", false);
+                //procurment detail
+                $('#ReorderLevel,#LeadTime,#MinimumLevel, #MaximumLevel,#YearlyConsumedQty, #DailyRequirment, #MaxWipStock, #JobWorkItem, #PurchaseAccountcode,#SaleAccountcode, #ProductLifeInus, #Active').prop("disabled", true);
+                //inventory detail
+                $('#Stockable,#WipStockable,#NeedPO, #QcReq,#NeedSo, #BomRequired, #StdPacking, #PackingType, #ItemSize,#Colour, #RackID, #BinNo,#WastagePercent').prop("disabled", true);
+                //drawing detail
+                $('#ItemDesc,#DrawingNo,#UploadImage').prop("disabled", true);
+            }
+            else if (itemServAssets == "Item") {
+                //costing detail
+                $('#SalePrice,#PurchasePrice,#ModelNo, #CostPrice').prop("disabled", false);
+                //procurment detail
+                $('#ReorderLevel,#LeadTime,#MinimumLevel, #MaximumLevel,#YearlyConsumedQty, #DailyRequirment, #MaxWipStock, #JobWorkItem, #PurchaseAccountcode,#SaleAccountcode, #ProductLifeInus, #Active').prop("disabled", false);
+                //inventory detail
+                $('#Stockable,#WipStockable,#NeedPO, #QcReq,#NeedSo, #BomRequired, #StdPacking, #PackingType, #ItemSize,#Colour, #RackID, #BinNo,#WastagePercent').prop("disabled", false);
+                //drawing detail
+                $('#ItemDesc,#DrawingNo,#UploadImage').prop("disabled", false);
+            }
+            GetItemCategory();
+            GetItemGroup();
+        });
+
+        $('#ChangePartCode').change(function () {
+            if ($('#ChangePartCode').is(":checked")) {
+                $('#ItemType,#ParentCode').prop("disabled", false);
+                $('#ItemType,#ParentCode').removeAttr("style");
+
+
+            }
+        });
+
+        function GetItemCategory() {
+            $.ajax({
+                url: "@Url.Action("GetItemCategory")",
+                data: { "ItemServAssets": $('#ItemServAssets').val() },
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                    var obj = $.parseJSON(data);
+
+                    $('#ItemType').empty();
+                    $('#ItemType').append('<option disabled selected> -Select - </option>');
+                    $.each(obj.Result.Table, function (key, val) {
+                        $('#ItemType').append('<option value = "' + val.Entry_id + '"> ' + val.Type_Item + ' </option>');
+                    });
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+        function GetProdInWorkcenter() {
+
+            $.ajax({
+                url: "@Url.Action("GetProdInWorkcenter")",
+                data: {},
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                    var obj = $.parseJSON(data);
+
+                    $('#ProdInWorkcenter').empty();
+                    $('#ProdInWorkcenter').append('<option disabled selected> -Select - </option>');
+                    //$.each(obj.Result.Table, function (key, val) {
+                    //    $('#ProdInWorkcenter').append('<option value = "' + val.EntryID + '"> ' + val.WorkCenterDesription + ' </option>');
+                    //});
+
+                    for (i = 0; i < obj.Result.Table.length; i++) {
+                        $('#ProdInWorkcenter').append('<option value = "' + obj.Result.Table[i].WCID + '"> ' + obj.Result.Table[i].WorkCenterDescription + ' </option>');
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+        function GetItemGroup() {
+            $.ajax({
+                url: "@Url.Action("GetItemGroup")",
+                data: { "ItemServAssets": $('#ItemServAssets').val() },
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    $('#ParentCode').empty();
+                    $('#ParentCode').append('<option disabled selected> -Select - </option>');
+                    $.each(obj.Result.Table, function (key, val) {
+                        $('#ParentCode').append('<option value = "' + val.Group_Code + '"> ' + val.Group_name + ' </option>');
+                    });
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('#Item_Name').css('background-color', 'rgb(248 255 178)');
+
+            if ('@Model.Mode' == "U") {
+
+                $('#ItemType,#ParentCode').attr("style", "pointer-events: none;");
+            }
+
+            $('#AlternateUnit').rules("remove", "required");
+            GetFormRights();
+            if ('@Model.Act' == "V") {
+                $(':input').prop('disabled', true);
+            }
+
+            $('.datefield').keyup(function (e) {
+                e.preventDefault();
+                if (e.keyCode == 8) {
+                    return false;
+                }
+            });
+
+            $('#Item_Name').keyup(function () { $("#DispItemName").val(this.value); });
+            AutoComplete('VItemMaster', 'Colour', 'Colour', null);
+            AutoComplete('VItemMaster', 'RackID', 'RackID', null);
+            AutoComplete('VItemMaster', 'BinNo', 'BinNo', null);
+            AutoComplete('VItemMaster', 'ModelNo', 'ModelNo', null);
+            AutoComplete('VItemMaster', 'PackingType', 'PackingType', null);
+
+            $('#ReUpload').is(':checked') == true ? $('.ReUploadFile').fadeIn() : $('.ReUploadFile').fadeOut();
+            $('#ReUpload').change(function () {
+                $('#ReUpload').is(':checked') == true ? $('.ReUploadFile').fadeIn() : ($('.ReUploadFile').fadeOut(), $('#UploadImage').val(''));
+            });
+
+            $('#ReUploadItem').is(':checked') == true ? $('.ReUploadItemFile').fadeIn() : $('.ReUploadItemFile').fadeOut();
+            $('#ReUploadItem').change(function () {
+                $('#ReUploadItem').is(':checked') == true ? $('.ReUploadItemFile').fadeIn() : ($('.ReUploadItemFile').fadeOut(), $('#UploadItemImage').val(''));
+            });
+
+        });
+
+        function CheckDuplicate(n, v) {
+
+            $.ajax({
+                url: "@Url.Action("isDuplicate", "ItemMaster")",
+                type: "POST",
+                data: { "ColName": n, "Colval": $('#' + v).val() },
+                success: function (data) {
+
+                    if ('@Model.FeatureOption.DuplicateItemName' === "False") {
+                        if (data.result !== "0" && data.statusText === "Error") {
+                            var message = 'Duplicate Entry : ' + $('#' + v).val() + ' Found For Column : ' + n;
+                            $('#' + v).val('');
+                            $.notify(message, { position: "top center", className: "error" });
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+            // $('#Item_Name').select2('open').select2('focus');
+        }
+
+        $('#ParentCode').change(function () {
+
+            if ($('#ItemType').prop('selectedIndex') == 0) {
+                // do nothing
+            }
+            else {
+                $.ajax({
+                    url: "@Url.Action("GetPartCode")",
+                    data: { "ParentCode": $('#ParentCode').val(), "ItemType": $('#ItemType').val() },
+                    type: "POST",
+                    success: function (data) {
+
+                        if (data != null) {
+                            if ("@Model.FeatureOption.AllowPartCode" == true || "@Model.FeatureOption.AllowPartCode" == "True") {
+                                var obj = $.parseJSON(data);
+                                console.log(obj);
+                                $('#PartCode').val(obj.Result.Table[0].partcode);
+                            };
+                        }
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
+                    }
+                });
+            }
+
+        });
+
+        $('#ItemType').change(function () {
+            if ($('#ParentCode').prop('selectedIndex') == 0) {
+                // do nothing
+            }
+            else {
+                $.ajax({
+                    url: "@Url.Action("GetPartCode")",
+                    data: { "ParentCode": $('#ParentCode').val(), "ItemType": $('#ItemType').val() },
+                    type: "POST",
+                    success: function (data) {
+                        if (data != null) {
+                            if ("@Model.FeatureOption.AllowPartCode" == true || "@Model.FeatureOption.AllowPartCode" == "True") {
+                                var obj = $.parseJSON(data);
+                                console.log(obj);
+                                $('#PartCode').val(obj.Result.Table[0].partcode);
+                            };
+                        }
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
+                    }
+                });
+            }
+        });
+
+        $('#confirmSave').click(function () {
+
+            var Err = 0;
+            if ($('#AlternateUnit').val() != "") {
+                if ($('#WtSingleItem').val() == "0" || $('#WtSingleItem').val() == "") {
+                    $('#WtSingleItem').removeClass('valid').addClass('is-invalid');
+                    Err = 1;
+                }
+                if ($('#NoOfPcs').val() == "0" || $('#NoOfPcs').val() == "") {
+                    $('#NoOfPcs').removeClass('valid').addClass('is-invalid');
+                    Err = 1;
+                }
+
+                if (Err === 1) {
+                    return false;
+                }
+                else {
+                    $('#WtSingleItem').removeClass('is-invalid');
+                    RemoveErrorCls('WtSingleItem');
+                    $('#NoOfPcs').removeClass('is-invalid');
+                    RemoveErrorCls('NoOfPcs');
+                    $('form').submit();
+                    //return true;
+                }
+            }
+            else {
+                $('form').submit();
+            }
+        });
+
+        $("button[type='submit']").click(function (e) {
+            e.preventDefault();
+
+            if ($('#Mode').val() == "U") {
+                var Err = 0;
+                if ($('#AlternateUnit').val() != "") {
+                    if ($('#WtSingleItem').val() == "0" || $('#WtSingleItem').val() == "") {
+                        $('#WtSingleItem').removeClass('valid').addClass('is-invalid');
+                        Err = 1;
+                    }
+                    if ($('#NoOfPcs').val() == "0" || $('#NoOfPcs').val() == "") {
+                        $('#NoOfPcs').removeClass('valid').addClass('is-invalid');
+                        Err = 1;
+                    }
+
+                    if (Err === 1) {
+                        return false;
+                    }
+                    else {
+                        $('#WtSingleItem').removeClass('is-invalid');
+                        RemoveErrorCls('WtSingleItem');
+                        $('#NoOfPcs').removeClass('is-invalid');
+                        RemoveErrorCls('NoOfPcs');
+                        $('form').submit();
+                        //return true;
+                    }
+                }
+                else {
+                    $('form').submit();
+                }
+            }
+            else {
+                $('#ConfirmationPartCode').text($('#PartCode').val());
+                $('#ItemDetailConfirmationBox').modal("show");
+            }
+        });
+    </script>
+}

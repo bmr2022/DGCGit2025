@@ -1,0 +1,142 @@
+﻿@model eTactWeb.DOM.Models.PrimaryAccountGroupMasterDashBoardModel;
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th>Group Name</th>
+                <th>Parent Group</th>
+                <th>Main Group</th>
+                <th>Sub Group</th>
+                <th>Sub Sub Group</th>
+                <th>Under Group</th>
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.PrimaryAccountGroupMasterDashBoardGrid == null || Model.PrimaryAccountGroupMasterDashBoardGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="21" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.PrimaryAccountGroupMasterDashBoardGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="SubVoucher" asp-route-Mode="V" asp-route-ID="@item.EnteredEMPID"  onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary" id="editCursor-@Cntr"
+                                           asp-action="PrimaryAccountGroupMaster"
+                                           asp-controller="PrimaryAccountGroupMaster"
+                                           asp-route-Mode="U"
+                                           asp-route-EnteredEMPID="@Cntr"
+                                           asp-route-Account_Name="@item.Account_Name"
+                                           asp-route-Account_Code="@item.Account_Code"
+                                           asp-route-Parent_Account_Code="@item.Parent_Account_Code"
+                                           asp-route-ParentAccountName="@item.ParentAccountName"
+                                           asp-route-Main_Group="@item.Main_Group"
+                                           asp-route-SubGroup="@item.SubGroup"
+                                           asp-route-SubSubGroup="@item.SubSubGroup"
+                                           asp-route-UnderGroup="@item.UnderGroup"
+                                           onclick="confirmEdit(event)">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" 
+                                        onclick="confirmDelete(event)" 
+                                        asp-action="DeleteByID" 
+                                        
+                                        >
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.Account_Name<input type="hidden" asp-for="@item.Account_Code" value="@item.Account_Code" /></td>
+                            <td>@item.ParentAccountName<input type="hidden" asp-for="@item.Parent_Account_Code" value="@item.Parent_Account_Code" /></td>
+
+                            <td>@item.Main_Group</td>
+                            <td>@item.SubGroup</td>
+                            <td>@item.SubSubGroup</td>
+                            <td>@item.UnderGroup</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%; /* Ensure table fills the container width */
+    }
+
+    th, td {
+        white-space: nowrap; /* Prevent content from wrapping */
+    }
+</style>
+

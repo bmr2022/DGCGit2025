@@ -1,0 +1,167 @@
+﻿@model eTactWeb.DOM.Models.VendJWRegisterModel
+
+@if (Model.ReportMode == "JOBWORKISSUECHALLANITEMDETAIL")
+{
+    <partial name="_JWIssueChallanDetalGridReport" />
+}
+else if (Model.ReportMode == "JOBWORKISSUEITEMDETAIL")
+{
+    <partial name="_JWIssueItemDetailReport" />
+}
+else if (Model.ReportMode == "JOBWORKISSUEPatyITEMDETAIL")
+{
+    <partial name="_JWIssuePartyItemDetailReport" />
+}
+else
+{
+    
+<div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+            <tr>
+                <th>Action</th>
+                <th>Sr#</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>JW Challan No</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gsttype</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VendorStateCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TolApprVal</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalWt</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Totalamt </th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>NetAmt</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterName</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Distance</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EwayBillNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="13"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Types</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="15"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CompletlyReceive</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByMachineName</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEnteredBy</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="18"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedBy</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="19"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="20"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Id</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="21"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+            </tr>
+        </thead>
+        <tbody id="divStockRegisterBody">
+            @{
+                var @Cntr = 0;
+                if (Model.VendJWRegisterDetails == null)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.VendJWRegisterDetails)
+                    {
+                        Cntr = Cntr + 1;
+
+                        <tr id="SAGridRow-@Cntr" onclick="FreezeSelection(this)">
+                            <td>
+                                <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </td>
+                            <th id="StickyHearder-@Cntr">@Cntr</th>
+                            <td>@item.JWChallanNo</td>
+                            <td>@(item.ChallanDate == null ? string.Empty : item.ChallanDate.Split(" ")[0])</td>
+                            <td>@item.Account_Name</td>
+                            <td>@item.Gsttype</td>
+                            <td>@item.VendorStateCode</td>
+                            <td>@item.TolApprVal</td>
+                            <td id="GridTotalWeightIssSum">@item.TotalWt</td>
+                            <td id="GridTotalAmountIssSum">@item.Totalamt</td>
+                            <td id="GridNetAmountIssSum">@item.NetAmt</td>
+                            <td>@item.TransporterName</td>
+                            <td>@item.Distance</td>
+                            <td>@item.EwayBillNo</td>
+                            <td>@item.Closed</td>
+                            <td>@item.Types</td>
+                            <td>@item.CompletlyReceive</td>
+                            <td>@item.EntryByMachineName</td>
+                            <td>@item.ActualEnteredBy</td>
+                            <td>@item.UpdatedBy</td>
+                            <td>@item.Remark</td>
+                            <td>@item.entryid</td>
+                            <td>@item.YearCode</td>
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+
+}
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+
+
+    .PMRPGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashRThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        height: 40px;
+        z-index: 1;
+    }
+
+    #dashRThead tr {
+        overflow-y: auto;
+        position: sticky;
+        z-index: 99;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .INascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .INdescCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    #divStockRegisterBody {
+        overflow-x: auto;
+        position: relative;
+    }
+
+        #divStockRegisterBody th {
+            position: sticky;
+            left: 0;
+            z-index: 1;
+        }
+
+
+    tbody td {
+        /*/ Table cell styles /*/
+    }
+
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+</style>
+
+

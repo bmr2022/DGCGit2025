@@ -1,0 +1,408 @@
+﻿@model eTactWeb.DOM.Models.TaxMasterModel
+
+@{
+    ViewData["Title"] = "Tax Master";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="TaxMaster" method="post" autocomplete="off" class="form-horizontal">
+        <input type="hidden" asp-for="Mode" />
+        <input type="hidden" asp-for="TaxTypeName" />
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    @ViewData["Title"]
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    @*Model.Mode = "U";*@
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div asp-validation-summary="All" class="text-danger pt-1"></div>
+            <div class="accordion shadow-lg">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_Panel1">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Panel1" aria-expanded="true" aria-controls="B_Panel1">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>Required Parameter
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="B_Panel1" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_Panel1">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryID" class="form-label">Entry ID</label>
+                                    <input asp-for="EntryID" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TaxName" class="form-label">Tax Name</label>
+                                    <input asp-for="TaxName" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ParentGroup" class="control-label">Parent Group</label>
+                                    <select class="form-select" asp-for="ParentGroup" asp-items="@(new SelectList(Model.ParentGroupList,"Value","Text"))" onchange="OnParentGroup(this.value)">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="DisplayName" class="form-label">Display Name</label>
+                                    <input asp-for="DisplayName" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TaxType" class="control-label">Tax Type</label>
+                                    <select class="form-select" asp-for="TaxType" asp-items="@(new SelectList(Model.TaxTypeList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="AddInTaxable" class="control-label">Add In Taxable</label>
+                                    <select class="form-select" asp-for="AddInTaxable" asp-items="@(new SelectList(Model.AddInTaxableList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TaxPercent" class="form-label">Tax %</label>
+                                    <input asp-for="TaxPercent" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TaxCategory" class="control-label">Tax Category</label>
+                                    <select class="form-select" asp-for="TaxCategory" asp-items="@(new SelectList(Model.TaxCategoryList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TaxApplicable" class="control-label">Tax Applicable</label>
+                                    <select class="form-select" asp-for="TaxApplicable" asp-items="@(new SelectList(Model.TaxApplicableList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Refundable" class="control-label">Refundable</label>
+                                    <select class="form-select" asp-for="Refundable" asp-items="@(new SelectList(Model.RefundableList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EffectiveDate" class="form-label">Eff. Date</label>
+                                    <input asp-for="EffectiveDate" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TaxAppliedOn" class="control-label">Tax Applied On</label>
+                                    <select class="form-select" asp-for="TaxAppliedOn" asp-items="@(new SelectList(Model.TaxAppliedOnList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="SGSTHead" class="control-label">SGST Head</label>
+                                    <select class="form-select" asp-for="SGSTHead" asp-items="@(new SelectList(Model.SGSTHeadList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SubGroup" class="form-label">Sub Group</label>
+                                    <input asp-for="SubGroup" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountType" class="form-label">Account Type</label>
+                                    <input asp-for="AccountType" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MainGroup" class="form-label">Main Group</label>
+                                    <input asp-for="MainGroup" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SubSubGroup" class="form-label">Sub Sub Group</label>
+                                    <input asp-for="SubSubGroup" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="UnderGroup" class="form-label">Under Group</label>
+                                    <input asp-for="UnderGroup" class="form-control" readonly="readonly" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="HSN" class="control-label">HSN List</label>
+                                    <br />
+                                    <select class="form-select" multiple="multiple" asp-for="HSN" asp-items="@(new SelectList(Model.HSNList,"Value","Text"))"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_Measurements">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Measurements" aria-expanded="true" aria-controls="B_Measurements">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="B_Measurements" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_Measurements">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedBy" class="form-label">Created By</label>
+                                    <input asp-for="CreatedBy" type="hidden" class="form-control" />
+                                    <input asp-for="CreatedByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedOn" class="form-label">Created On</label>
+                                    <input asp-for="CreatedOn" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+                                    <input asp-for="UpdatedBy" type="hidden" class="form-control" />
+                                    <input asp-for="UpdatedByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+                                    <input asp-for="UpdatedOn" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    @*<div class="col-auto">
+                    <a class="btn btn-sm btn-secondary" href="#" onclick="back();">
+                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                    BACK
+                    </a>
+                    </div>*@
+                    <div class="card border-light bg-gradient rounded shadow-lg">
+                        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                            <h4>
+                                @ViewData["Title"]
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U")
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            if ('@Model.Mode' == "U") {
+                $('#TaxTypeName').val($("#TaxType option:selected").text());
+
+            }
+            GetFormRights();
+            $("#EffectiveDate").datepicker({ dateFormat: 'dd/mm/yy' });
+            $('.hasDatepicker').datepicker("option", "showAnim", "clip");
+
+            $("#HSN").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+
+                //checkboxName: function (option) {
+                //    return 'multiselect[]';
+                //}
+
+                //optionClass: function (element) {
+                //    var value = $(element).val();
+
+                //    if (value % 2 == 0) {
+                //        return 'even';
+                //    }
+                //    else {
+                //        return 'odd';
+                //    }
+                //}
+            });
+
+            $('#TaxName').keyup(function () { $("#DisplayName").val(this.value); });
+
+            //$('form').submit(function (event) {
+            //    var form = $(this);
+            //    var url = form.attr('action');
+            //    $("form :input").prop("disabled", false);
+            //});
+        });
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit']").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("button[type='submit']").prop("disabled", true);
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        $('#TaxType').on('change', function () {
+
+            $('#TaxTypeName').val($("#TaxType option:selected").text());
+
+            if ($(this).val() == "25") {
+                $('#AddInTaxable').val('N').css('pointer-events', "none");
+                $('#TaxCategory').val('0').css('pointer-events', "auto");
+                $('#Refundable').val('Y').css('pointer-events', "none");
+            }
+            else {
+                $('#AddInTaxable').val('0').css('pointer-events', "auto");
+                $('#TaxCategory').val('0').css('pointer-events', "none");
+                $('#Refundable').val('0').css('pointer-events', "auto");
+            }
+        });
+
+
+        $('#HSN').on('change', function () {
+
+        });
+
+        function OnParentGroup(ID) {
+            if (!ID) {
+                $('#SubGroup').val(''), $('#AccountType').val(''), $('#MainGroup').val(''), $('#SubSubGroup').val(''), $('#UnderGroup').val('');
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetParentGroupDetail", "AccountMaster")",
+                    data: { ID: ID },
+                    success: function (response, status, error) {
+
+                        var obj = $.parseJSON(response);
+                        if (obj.StatusCode === 200 || obj.StatusText === "Success") {
+                            $('#SubGroup').val(obj.Result.Table[0].SubGroup), $('#AccountType').val(obj.Result.Table[0].AccountType),
+                                $('#MainGroup').val(obj.Result.Table[0].MainGroup), $('#SubSubGroup').val(obj.Result.Table[0].SubSubGroup),
+                                $('#UnderGroup').val(obj.Result.Table[0].UnderGroup);
+                        }
+                        else {
+                            $('#SubGroup').val(''), $('#AccountType').val(''), $('#MainGroup').val(''), $('#SubSubGroup').val(''), $('#UnderGroup').val('');
+                        }
+                    },
+                    error: function (req, status, error) {
+                        console.log(req);
+                    }
+                });
+            }
+        }
+    </script>
+}

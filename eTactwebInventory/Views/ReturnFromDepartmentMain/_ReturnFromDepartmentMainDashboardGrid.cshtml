@@ -1,0 +1,138 @@
+﻿@model eTactWeb.DOM.Models.RDMDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="ReqBomTable">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="ReqBomThead">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th
+                <!-- New columns -->
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryId</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Slip No</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Return Date</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machie Name</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Return By Employee</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry By Emp Name</th>
+            </tr>
+        </thead>
+        <tbody id="RetFromDepMainTbody">
+            @{
+                var @Cntr = 0;
+                if (Model.RetFromDeptMainDashboard == null || Model.RetFromDeptMainDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="34" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.RetFromDeptMainDashboard)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr id="@Cntr">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="printData-@Cntr" class="action-buttons">
+                                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.RetFromDepEntryId" asp-route-YearCode="@item.RetFromDepYearCode" asp-route-Type="Summary">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="viewCursorDiv-@Cntr" class="action-buttons">
+                                        <a class="table-link link-success" asp-action="ReturnFromDepartmentMain" asp-route-Mode="V" asp-route-ID="@item.RetFromDepEntryId" asp-route-YC="@item.RetFromDepYearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="editCursorDiv-@Cntr">
+                                                <a class="table-link link-primary" asp-action="ReturnFromDepartmentMain" asp-route-Mode="U" asp-route-ID="@item.RetFromDepEntryId" asp-route-YC="@item.RetFromDepYearCode">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div id="deleteCursorDiv-@Cntr">
+                                                <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day).ToString("dd/MM/yyyy")" asp-route-Todate="@DateTime.Today.ToString("dd/MM/yyyy")" asp-route-ID="@item.RetFromDepEntryId" asp-route-YC="@item.RetFromDepYearCode">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                </div>
+                            </td>
+
+                            <!-- Bind new columns -->
+                            <td>@item.RetFromDepEntryId</td>
+                            <td>@item.RetFromDepSlipNo</td>
+                            <td>@item.RetFromDepEntrydate.Split(" ")[0]</td>
+                            <td>@item.RetFromDepActualReturnDate.Split(" ")[0]</td>
+                            <td>@item.RetFromDepYearCode</td>
+                            <td>@item.EntryByMachineName</td>
+                            <td>@item.ReturnByEmpName</td>
+                            <td>@item.ActualEntryDate.Split(" ")[0]</td>
+                            <td>@item.ActualEntryByEmpName</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #ReqBomTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #ReqBomThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

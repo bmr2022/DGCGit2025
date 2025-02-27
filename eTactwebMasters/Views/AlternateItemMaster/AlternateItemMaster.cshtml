@@ -1,0 +1,719 @@
+﻿@model eTactWeb.DOM.Models.AlternateItemMasterModel;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="AlternateItemMaster" asp-controller="AlternateItemMaster" method="post" autocomplete="on" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h5>
+                    <strong>Alternate Item Master</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-controller="AlternateItemMaster" asp-action="AlternateItemMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U"  )
+                                {
+                                    Model.Mode = "U";
+                                    <div class="col-auto">
+                                        <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+                             
+                                else
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionItemCategory">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Alternate Item Master Detail</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+                                    <input type="hidden" asp-for="MachineName" value="@Environment.MachineName" />
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MainPartCode" class="form-label">Main Part Code</label>
+                                        <select class="form-control" id="MainPartCode" asp-for="MainPartCode">
+                                            <option value="@Model.ItemCode">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                
+                                                <option value="@Model.ItemCode" selected >@Model.MainPartCode</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MainItemName" class="form-label">Main Item Name</label>
+                                        <select class="form-control" id="MainItemName" asp-for="MainItemName">
+                                            <option value="@Model.ItemCode">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ItemCode"  selected>@Model.MainItemName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AltPartCode" class="form-label">Alternate Part Code</label>
+                                        <input type="hidden" asp-for="ItemCode" />
+                                        <select class="form-control" id="AltPartCode" asp-for="AltPartCode">
+                                            <option value="@Model.ItemCode">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ItemCode" selected>@Model.AlternatePartCode</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label class="form-label" asp-for="AltItemName">Alternate Item Name</label>
+                                        <input type="hidden" asp-for="ItemCode" />
+                                        <select class="form-control" asp-for="AltItemName" id="AltItemName">
+                                            <option value="@Model.ItemCode">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ItemCode" selected>@Model.AltItemName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label class="form-label">Update Stock In Main Item Only </label>
+                                        <select class="form-control" id="yesNo">
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"  style="margin-top:33px;" >
+                                        <button type="button" class="btn btn-sm btn-outline-danger " id="GridButton">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                        </button>
+                                    </div>
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress my-2 mb-3" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="card">
+                <div class="card-body overflow-auto pb-0">
+                    <table class="table table-hover table-bordered table-striped">
+                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                            <tr>
+                                <th>Action</th>
+                                <th>Sr NO</th>
+                                <th>Main Part Code</th>
+                                <th>Main Item Name</th>
+                                <th>Alternate Part Code</th>
+                                <th>Alternate Item Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="divStockGrid">
+                            <partial name="_AlternateItemMasterGrid" />
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row g-2 gx-3">
+                <div class="col-12 text-center">
+                    <strong>Total No Of Items : <span id="lblTotalNoOfBelowItems"></span></strong>
+                </div>
+            </div>
+            <div class="progress my-3 mb-3" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="OtherGrid">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                    </button>
+                </h2>
+                <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                    <div class="accordion-body">
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="row g-2 gx-3" id="_ItemGrid">
+
+                            @if (Model.Mode != "U" && Model.Mode != "V")
+                            {
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ActualEntryByEmp" class="form-label">Created By</label>
+                                    <input type="hidden" asp-for="ActualEntryByEmp" class="form-control" readonly />
+                                    <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ActualEntryDate" class="form-label">Created On</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
+                            }
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="MachineName" class="form-label">Entered by Machine Name</label>
+                                <input asp-for="MachineName" class="form-control" readonly value="@Environment.MachineName" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="EffectiveDate" class="form-label">Effective Date</label>
+                                <input asp-for="EffectiveDate" class="form-control" readonly />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="ActualEntryDate" class="form-label">Entry Date</label>
+                                <input asp-for="ActualEntryDate" class="form-control" readonly />
+                            </div>
+                            @if (Model.Mode == "U" || Model.Mode == "V")
+                            {
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="EntryByEmpName" class="form-label">Created By</label>
+                                    <input type="hidden" asp-for="ActualEntryByEmp" class="form-control" readonly />
+                                    <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ActualEntryDate" class="form-label">Created On</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="LastUpdatedBy" class="form-label" style="width:150px">Updated By</label>
+                                    <input type="hidden" asp-for="UpdatedByEmp" class="form-control" readonly />
+                                    <input asp-for="LastUpdatedBy" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+                                    <input asp-for="UpdatedOn" class="form-control" readonly />
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    <div class="card-header card-headerBG text-light bg-gradient">
+                        <h5>
+                            <strong>Alternate Item Master</strong>
+
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        PRINT
+                                    </button>
+                                </div>
+                                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                <a asp-controller="AlternateItemMaster" asp-action="AlternateItemMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                    Dashboard
+                                </a>
+                                @*<partial name="_FormsButton" />*@
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                        <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                        <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
+                                        <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
+                                        <input asp-for="OpeningForYearBack" type="hidden" value="@Model.OpeningForYearBack" />
+                                        <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
+                                        <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
+                                        <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+
+                                        @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                    {
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode == "U"  )
+                                        {
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                    <i class="fa-solid fa-chevron-circle-right"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <script>
+
+        $('.submitBTN').click(function (e) {
+            e.preventDefault();
+            $('form').submit();
+        });
+
+       
+        $(document).ready(function () {
+             
+            $('#AlternatePartyName').rules("remove", "required");
+            $('#AltItemName').rules("remove", "required");
+            $('#yesNo').rules("remove", "required");
+            $('#MainItemName').rules("remove", "required");
+            $('#MainPartyName').rules("remove", "required");
+            $('#MainPartCode').rules("remove", "required");
+            $('#AltPartCode').rules("remove", "required");
+            $('#yesNo').select2();
+            $('#AlternatePartyName').select2();
+            $('#AltItemName').select2();
+            $('#MainItemName').select2();
+            $('#MainPartCode').select2();
+            $('#AltPartCode').select2();
+            $('#MainPartyName').select2();
+
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                
+            }
+
+            // Trigger AltItemName and AltPartCode retrieval on change
+            GetAltPartCode();
+            GetAltItemName();
+            if ($('#Mode').val() !== 'U' && $('#Mode').val() !== 'V') {
+                GetMainPartCode();
+                GetMainItemName();
+            }
+        });
+        if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
+            $('#MainPartCode').prop('disabled', true);
+            $('#MainItemName').prop('disabled', true);
+            //GetAltPartCode();
+        }
+        // $('#GroupName').change(function () {
+        //     if ($('#Mode').val() !== "U") {
+        //         $('#GroupAccountCode').val($('#GroupName').val());
+        //     }
+        // });
+
+    
+        // $('#PreviousAmount').change(function () {
+        //     $('#Amount').val($('#PreviousAmount').val());
+        // })
+        function TotalNoOfRows() {
+            var Row = $('#divStockGrid tr').length;
+            var tdCount = $('#divStockGrid tr td').length;
+            if (tdCount >= 1) {
+                $('#lblTotalNoOfBelowItems').text(Row);
+            } else {
+                $('#lblTotalNoOfBelowItems').text(0);
+            }
+        }
+
+        function CheckBeforeUpdate() {
+            $.ajax({
+                url: '@Url.Action("CheckBeforeUpdate")',
+                type: "POST",
+                data: { "Type": $('#Entry_id').val() },
+                success: function (data) {
+                    console.log("success");
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result != null) {
+                            if (obj.Result.Table[0].Column1 > 0) {
+                                $.notify("You cannot update this Category as Item with this category already exists", "error");
+                            }
+                            else {
+                                $('form').submit();
+                            }
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        function GetMainPartCode() {
+            $.ajax({
+                url: '@Url.Action("GetMainPartCode", "AlternateItemMaster")', // Action that returns FillGroup data
+                type: 'POST',
+                async:false,
+                success: function (response, status, error) {
+                      
+                    var ledgerDropdown = $('#MainPartCode');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">--Select--</option>');
+
+                     
+                    $.each(obj.Result, function (index, ledger) {
+                         
+                        ledgerDropdown.append('<option value="' + ledger.Itemcode + '">' + ledger.MainPartCode + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                         
+                        var GroupCode = '@Model.MainPartCode';
+                        $('#MainPartCode').val(GroupCode).trigger("change");
+                        $('#MainPartCode').val(GroupCode);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+
+        }
+
+        function GetMainItemName() {
+            $.ajax({
+                url: '@Url.Action("GetMainItemName", "AlternateItemMaster")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ledgerDropdown = $('#MainItemName');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, ledger) {
+                        ledgerDropdown.append('<option value="' + ledger.Itemcode + '">' + ledger.MainItemName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var GroupCode = '@Model.MainItemName';
+                        $('#MainItemName').val(GroupCode).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        $(document).on('select2:select', '#MainItemName,#MainPartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'MainItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                 
+                var v = $('#' + ID).select2('val');
+                if (ID == "MainPartCode") {
+                    $("#MainItemName").val(v).trigger("change");
+                }
+
+                if (ID == "MainItemName") {
+                    $("#MainPartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+        $('#MainPartCode').change(function(){
+            GetAltPartCode();
+            GetAltItemName();
+        })
+
+        function GetAltPartCode() {
+             
+            var MainItemcode = $('#MainPartCode').val();
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V"){
+            var MainItemcode = '@Model.MainItemCode'
+            }
+            $.ajax({
+                url: '@Url.Action("GetAltPartCode", "AlternateItemMaster")',
+                type: 'GET',
+                data: { MainItemcode: MainItemcode },
+                success: function (response) {
+                     
+                    var ledgerDropdown = $('#AltPartCode');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ledgerDropdown.append('<option value="' + item.Itemcode + '">' + item.AltPartCode + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var GroupCode = '@Model.AltPartCode';
+                        $('#AltPartCode').val(GroupCode).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
+                }
+            });
+        }
+        $(document).on('select2:select', '#AltItemName,#AltPartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'AltItemName') {
+                AltItemNameChange(cntId);
+            }
+            else {
+                AltPartCodeChange(cntId);
+            }
+        });
+
+        function AltItemNameChange(ID) {
+            SetAltPartCodeItemName(ID);
+        }
+
+        function AltPartCodeChange(ID) {
+            $.when(SetAltPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetAltPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "AltPartCode") {
+                    $("#AltItemName").val(v).trigger("change");
+                }
+
+                if (ID == "AltItemName") {
+                    $("#AltPartCode").val(v).trigger("change");
+                }
+            }
+        }
+        
+        function GetAltItemName() {
+            var MainItemcode = $('#MainPartCode').val();
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                var MainItemcode = '@Model.MainItemCode'
+            }
+            $.ajax({
+                url: '@Url.Action("GetAltItemName", "AlternateItemMaster")',
+                type: 'GET',
+                data: { MainItemcode: MainItemcode },
+                success: function (response) {
+                    var ledgerDropdown = $('#AltItemName');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ledgerDropdown.append('<option value="' + item.Itemcode + '">' + item.AltItemName + '</option>');
+                    });
+
+                    // Automatically select AltPartCode if required
+                    var groupCode = $('#AltItemName').val();
+                    if (groupCode && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
+                        ledgerDropdown.trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate item names.');
+                }
+            });
+        }
+
+        $('#GridButton').click(function (e) {
+            e.preventDefault();
+             
+            var SchData = {
+                "MainItemCode": $('#MainPartCode').val(),
+                "MainItemName": $('#MainItemName').val(),
+                "AlternateItemCode": $('#AltPartCode').val(),
+                "AltItemName": $('#AltItemName').val(),
+                "MainPartCode": $('#MainPartCode').find(":selected").text(),
+                "MainItemName": $('#MainItemName').find(":selected").text(),
+                "AltPartCode": $('#AltPartCode').find(":selected").text(),
+                "AltItemName": $('#AltItemName').find(":selected").text(),
+            };
+            console.log(SchData);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddAlternateItemMasterDetail", "AlternateItemMaster")',
+                data: { model: SchData },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        
+                        $('#divStockGrid').html(result);
+                        TotalNoOfRows();
+                    } else if (xhr.status == 207) {
+                        $.notify('Duplicate Item...!', "info");
+                    }
+                },
+                error: function () {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
+        var isEditAllowed = "false";
+
+        // function DeleteItemRow(SrNO) {
+
+        //     return new Promise((resolve, reject) => {
+        //         $.ajax({
+        //             url: '@Url.Action("DeleteItemRow")',
+        //             type: "POST",
+        //             data: { "SrNO": SrNO, "Mode": $('#Mode').val() },
+        //             success: function (data) {
+        //                 $('#divStockGrid').html(data);
+        //                 $.notify("Item Deleted from Grid", "info");
+        //                 isEditAllowed = "true";
+        //                 resolve();
+        //             },
+        //             error: function (response) {
+        //                 reject(response.responseText);
+        //             }
+
+
+        //         });
+        //     }
+        // }
+                var editingNow = false;
+            function EditItemRow(SrNO) {
+
+                if (editingNow == false) {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: '@Url.Action("EditItemRow")',
+                            type: "POST",
+                            data: { "SrNO": SrNO, "Mode": $('#Mode').val() },
+                        })
+                            .done(function (data, status, xhr) {
+                                editingNow = true;
+                                var obj = $.parseJSON(data);
+                                DeleteItemRow(SeqNo)
+                                    .then(() => {
+                                    $('#MainPartCode').val(obj[0].MainPartCode).trigger('change');
+                                    $('#MainItemName').val(obj[0].MainItemName).trigger('change');
+                                    $('#AltPartCode').val(obj[0].AltPartCode).trigger('change');
+                                    $('#AltItemName').val(obj[0].AltItemName).trigger('change');
+                                        var currentSrNo = $('#SrNO').val();
+                                        var newSrNo = obj[0].SrNO;
+                                        if (currentSrNo !== newSrNo) {
+                                            $('#SrNO').val(newSrNo).trigger('change');
+                                        }
+
+                                    })
+                                    .catch((error) => {
+                                        reject(error);
+                                    });
+
+                            })
+                            .fail(function (response) {
+                                reject(response.responseText);
+                            });
+                        $.notify("Item Updated from Grid", "info");
+                    });
+                }
+                else {
+                    $.notify("Cannot edit as one item is already on above edit grid", "error");
+                }
+            }
+
+            function PressBack() {
+
+                sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+                sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+                sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+                sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+                sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
+                sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+                sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+                sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+                window.history.back();
+            }
+
+
+
+    </script>
+
+
+}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+

@@ -1,0 +1,72 @@
+﻿@model eTactWeb.DOM.Models.PurchaseOrderModel
+
+<style>
+    .modal-content {
+        border: none;
+    }
+</style>
+<!-- Modal -->
+<div class="modal fade" id="PopupModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="RefreshSchedule('');" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                <label asp-for="POItemCode" class="form-label">Item Name</label>
+                                <select class="form-select" asp-for="POItemCode" onchange="RefreshSchedule(this.id)">
+                                    <option>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="DDays" class="form-label">Days</label>
+                                <input asp-for="DDays" class="form-control" value="1" min="1" />
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="DDate" class="form-label">Date</label>
+                                <input asp-for="DDate" type="date" class="form-control" />
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="DTQty" class="form-label">Total Qty</label>
+                                <input asp-for="DTQty" class="form-control" readonly disabled />
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="DQty" class="form-label">Qty</label>
+                                <input asp-for="DQty" class="form-control" min=1 value="" />
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="DAltQty" class="form-label">Alt Qty</label>
+                                <input asp-for="DAltQty" class="form-control" readonly disabled />
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="DRemark" class="form-label">Remark</label>
+                                <input asp-for="DRemark" class="form-control" />
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-xs-12 text-end mt-4">
+                                <button type="button" class="addSchedule btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>ADD TO GRID
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress my-2" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="card">
+                    <div class="card-body" id="SOGrid">
+                        <partial name="_SADeliveryGrid" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" onclick="RefreshSchedule('');">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

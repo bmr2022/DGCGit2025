@@ -1,0 +1,67 @@
+﻿@model eTactWeb.DOM.Models.IssueAgainstProdSchedule
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                <a class="table-link link-primary" onclick="EditFromMemoryGrid(@Cntr);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+
+            </td>
+            <td>@Cntr</td>
+            <td>@item.RMPartCode</td>
+            <td>@item.RMItemName<input type="hidden" id="IssueItemCode-@Cntr" value="@item.IssueItemCode" /></td>
+            <td>@item.PendQty.ToString("F2")</td>
+            <td>@item.IssueQty.ToString("F2")</td>
+            <td>@item.ToatlStock.ToString("F2")</td>
+            <td>@item.BatchStock.ToString("F2")</td>
+            <td>@item.WorkCenter<input type="hidden" id="WCId" value="@item.WCId" /></td>
+            <td>@item.MaxIssueQty.ToString("F2")</td>
+            <td>@item.Unit</td>
+            <td>@item.BatchNo</td>
+            <td>@item.UniqueBatchNo</td>
+            <td>@item.ProdPlanNo</td>
+            <td>@item.ProdSchNo</td>
+            <td>@item.FGPartCode<input type="hidden" id="ProdPlanFGItemCode-@Cntr" value="@item.ProdPlanFGItemCode" /><input type="hidden" id="ProdSchFGItemCode-@Cntr" value="@item.ProdSchFGItemCode" /></td>
+            <td>@item.FGItemName</td>
+            <td>@item.ProdPlanYearcode</td>
+            <td>@item.ProdPlanDate</td>
+            <td>@item.AltQty.ToString("F2")</td>
+            <td>@item.AltUnit</td>
+            <td>@item.ProdPlanEntryId</td>
+            <td>@item.ProdSchEntryId</td>
+            <td>@item.ProdSchYearcode</td>
+            <td>@item.ProdSchDate</td>
+            <td>@item.StdPacking</td>
+            <td>@item.ProdSchQty.ToString("F2")</td>
+            <td>@item.PendAfterIssue</td>
+            <td>@item.Batchdate</td>
+            <td>@item.Rate</td>
+            <td>@item.Remark</td>
+            <td>@item.ItemSize</td>
+            <td>@item.ItemColor</td>
+            <td>@item.RemainingStock</td>
+        </tr>
+    }
+}
+

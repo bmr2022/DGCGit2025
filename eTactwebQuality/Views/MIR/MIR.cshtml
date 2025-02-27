@@ -1,0 +1,2415 @@
+﻿@model eTactWeb.DOM.Models.MirModel
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <form asp-action="MIR" autocomplete="off" class="form-horizontal">
+
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Quality Module</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="PendingMRNtoQc" asp-controller="PendingMRNtoQc" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                            Add New
+                        </a>
+                    </span>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="MIRDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                                <input asp-for="MRNNoBack" type="hidden" value="@Model.MRNNoBack" />
+                                <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                                <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                                <input asp-for="InvNoBack" type="hidden" value="@Model.InvNoBack" />
+                                <input asp-for="DeptNameBack" type="hidden" value="@Model.DeptNameBack" />
+                                <input asp-for="MRNJWBack" type="hidden" value="@Model.MRNJWBack" />
+                                <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                                <input asp-for="Searchbox" type="hidden" value="@Model.Searchbox" />
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    @*Model.Mode = "U";*@
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                    </span>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            @*<div class="loader-container" id="loader-wrapper">
+            <div class="loader" id="loader"></div>
+            </div>*@
+
+            @*<div asp-validation-summary="All" class="text-danger pt-1"></div>*@
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <input type="hidden" asp-for="DateIntact" value="@Model.DateIntact" />
+                                    <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+                                    <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                    <label asp-for="EntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="EntryId " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="YearCode" class="form-label">Year Code</label>
+                                    <input asp-for="YearCode " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                    <input asp-for="EntryDate " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MIRNo" class="form-label">MIR No</label>
+                                    <input asp-for="MIRNo " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    @if (Model.FromPend == "Y")
+                                    {
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" class="form-control" value="@Model.FromDate" readonly />
+                                    }
+                                    else
+                                    {
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" class="form-control" />
+                                    }
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    @if (Model.FromPend == "Y")
+                                    {
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" class="form-control" value="@Model.ToDate" />
+                                    }
+                                    else
+                                    {
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" class="form-control" />
+                                    }
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    @if (Model.FromPend == "Y")
+                                    {
+                                        <label class="form-label">MRN/JW/CustJW</label>
+                                        <input asp-for="MRNJWCustJW" class="form-control" value="@Model.MRNJWCustJW" readonly />
+                                    }
+                                    else
+                                    {
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <label class="form-label">MRN/JW/CustJW</label>
+                                            <input asp-for="MRNJWCustJW" class="form-control" value="@Model.MRNJWCustJW" readonly />
+                                        }
+                                        else
+                                        {
+
+                                            <label asp-for="MRNJWCustJW" class="form-label">MRN</label>
+                                            <select class="form-select" asp-for="MRNJWCustJW" asp-items="Model.MRNList">
+                                            </select>
+                                        }
+                                    }
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="MIRDate" class="form-label">MIR Date</label>
+                                    <input asp-for="MIRDate " class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    @if (Model.FromPend == "Y")
+                                    {
+                                        <label class="form-label">MRN NO</label>
+                                        <input asp-for="MRNNo" class="form-control" value="@Model.MRNNo" readonly />
+                                    }
+                                    else
+                                    {
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <label class="form-label">MRN NO</label>
+                                            <input asp-for="MRNNo" class="form-control" value="@Model.MRNNo" readonly />
+                                        }
+                                        else
+                                        {
+                                            <label asp-for="MRNNo" class="form-label">MRN No</label>
+                                            <select class="form-select" asp-for="MRNNo">
+                                                <option value="" disabled selected>-Select-</option>
+                                            </select>
+                                        }
+
+                                    }
+                                </div>
+
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    @if (Model.FromPend == "Y")
+                                    {
+                                        <label class="form-label">MRN Year Code</label>
+                                        <input asp-for="MRNYearCode" class="form-control" value="@Model.MRNYearCode" readonly />
+                                    }
+                                    else
+                                    {
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <label class="form-label">MRN Year Code</label>
+                                            <input asp-for="MRNYearCode" class="form-control" value="@Model.MRNYearCode" readonly />
+                                        }
+                                        else
+                                        {
+                                            <label asp-for="MRNYearCode" class="form-label">MRN Year Code</label>
+                                            <select class="form-select" asp-for="MRNYearCode">
+                                                <option value="" disabled selected>-Select-</option>
+                                            </select>
+                                        }
+                                    }
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="MRNDate" class="form-label">MRN Date</label>
+                                    <input asp-for="MRNDate " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="GateNo" class="form-label">Gate Entry No</label>
+                                    <input asp-for="GateNo " class="form-control" readonly />
+                                    <input id="GateEntry" type="hidden" />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="GateYearCode" class="form-label">Gate Year Code</label>
+                                    <input asp-for="GateYearCode " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountCode" class="form-label">Vendor Name</label>
+                                    <input type="hidden" asp-for="AccountCode" />
+                                    <input asp-for="AccountName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemServTypes" class="form-label">Types</label>
+                                    <select class="form-select" asp-for="ItemServTypes" asp-items="Model.TypeList" readonly>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="INVNo" class="form-label">Invoice Number</label>
+                                    <input asp-for="INVNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="INVDate" class="form-label">Invoice Date</label>
+                                    <input asp-for="INVDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="FromStoreId" class="form-label">Store</label>
+                                    <input asp-for="FromStoreId" readonly type="hidden" />
+                                    <input asp-for="StoreName" readonly class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG bg-gradient addToGridHeading" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>MRIR Grid</strong>
+                            </button>
+                            <button type="button" class="addToGrid btn btn-sm btn-outline-danger" onclick="Add2Grid()" style="width:150px">
+                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <div class="table-responsive" style="max-height:250px;">
+                                            <table class="table table-hover table-bordered table-striped" id="TableGrid">
+                                                <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static;" id="GridLabels">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>Sr</th>
+                                                        <th>Part Code</th>
+                                                        <th>Item Name</th>
+                                                        <th>Bill Qty</th>
+                                                        <th>Rec Qty</th>
+                                                        <th>Acc Qty &nbsp;<input id="AcceptedQtySHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>Alt Acc Qty</th>
+                                                        <th>OkRecStore &nbsp;<input id="SHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>Rej Qty &nbsp;<input id="RejectedQtySHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>Alt Rej Qty</th>
+                                                        <th>Rej Rec Store &nbsp;<input id="SHARej" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>Rejected Reason</th>
+                                                        <th>Hold Qty &nbsp;<input id="HoldQtySHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>Hold Store &nbsp;<input id="SHAHold" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>Rew Qty &nbsp;<input id="ReworkQtySHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>Rework Store &nbsp;<input id="SHARework" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>Rework Reason</th>
+                                                        <th>Dev Qty &nbsp;<input id="DeviationQtySHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>Responsible Emp for Deviation</th>
+                                                        <th>PO NO</th>
+                                                        <th>PO Year Code</th>
+                                                        <th>SchNo</th>
+                                                        <th>Sch year Code</th>
+                                                        <th>Unit</th>
+                                                        <th>Alt Unit</th>
+                                                        <th>Alt Rec Qty</th>
+                                                        <th>Remarks</th>
+                                                        <th>Default Type</th>
+                                                        <th>Approved By Emp</th>
+                                                        <th>Process</th>
+                                                        <th>Color</th>
+                                                        <th>Size</th>
+                                                        <th>Responsible Factor</th>
+                                                        <th>Supplier Batch No</th>
+                                                        <th>Shelf Life</th>
+                                                        <th>Batch No</th>
+                                                        <th>Unique Batch No</th>
+                                                        <th>Allow Debit Note</th>
+                                                        <th>File Upload</th>
+                                                        <th>Preview</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="divMIRGrid">
+                                                    <div class="spinner-container" id="loader-container">
+                                                        <div class="spinner-border" id="loader" role="status">
+                                                            <span class="sr-only">Loading...</span>
+                                                        </div>
+                                                    </div>
+                                                    <partial name="_MIRDetailGrid" />
+                                                  @*   @await Html.PartialAsync("_MIRDetailGrid", Model) *@
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <center><p>Total rows: <span id="totalMirRows"></span></p></center>
+                                    </div>
+                                </div>
+                                <div class="col-xl-12 col-md-12 mt-4 col-auto">
+                                </div>
+                                <div class="row g-2 gx-3">
+                                </div>
+                                @* <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>*@
+
+                                @*   <div class=" col-4 col-auto">
+                                <div class="row justify-content-around">
+                                <div class="col-auto">
+                                <button type="button" class="addToGrid btn btn-sm btn-outline-danger mt-3" onclick="Add2Grid()">
+                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                </button>
+                                </div>
+                                </div>
+                                </div>
+                                *@
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0 table-responsive" style="max-height:250px;">
+                                        <table class="table table-hover table-bordered">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static;" id="ItemListStyle">
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>Part Code</th>
+                                                    <th>Item Name</th>
+                                                    <th>Bill Qty</th>
+                                                    <th>Rec Qty</th>
+                                                    <th>Accepted Qty</th>
+                                                    <th>Alt Accepted Qty</th>
+                                                    <th>OkRecStore</th>
+                                                    <th>Rejected Qty</th>
+                                                    <th>Alt Rejected Qty</th>
+                                                    <th>Rej Rec Store</th>
+                                                    <th>Hold Qty</th>
+                                                    <th>Hold Store</th>
+                                                    <th>Rework Qty</th>
+                                                    <th>Rework Store</th>
+                                                    <th>Deviation Qty</th>
+                                                    <th>Responsible Emp for Deviation</th>
+                                                    <th>PO NO</th>
+                                                    <th>PO Year Code</th>
+                                                    <th>SchNo</th>
+                                                    <th>Sch year Code</th>
+                                                    <th>Unit</th>
+                                                    <th>Alt Unit</th>
+                                                    <th>Alt Rec Qty</th>
+                                                    <th>Remarks</th>
+                                                    <th>Default Type</th>
+                                                    <th>Approved By Emp</th>
+                                                    <th>Process</th>
+                                                    <th>Color</th>
+                                                    <th>Size</th>
+                                                    <th>Responsible Factor</th>
+                                                    <th>Supplier Batch No</th>
+                                                    <th>Shelf Life</th>
+                                                    <th>Batch No</th>
+                                                    <th>Unique Batch No</th>
+                                                    <th>Allow Debit Note</th>
+                                                    <th>File</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divMIRModuleGrid">
+                                                <partial name="_MIRGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ModeOfTransport" class="form-label">Mode Of Transport</label>
+                                    <input asp-for="ModeOfTransport " class="form-control" />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryByMachineName" class="form-label">Machine Name</label>
+                                    <input asp-for="EntryByMachineName" value="@Environment.MachineName" readonly class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedBy" class="form-label">Created By</label>
+                                    <input type="hidden" asp-for="CreatedBy" class="form-control" readonly />
+                                    <input asp-for="ActualEnteredByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedOn" class="form-label">Created Date</label>
+                                    <input asp-for="CreatedOn" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedBy" class="form-label">Updated By</label>
+                                    <input type="hidden" asp-for="UpdatedBy" class="form-control" readonly />
+                                    <input asp-for="UpdatedByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedOn" class="form-label">Updated Date</label>
+                                    <input asp-for="UpdatedOn" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-footer p-3">
+            <div class="card-header card-headerBG text-light bg-gradient">
+                <h5>
+                    <strong>Quality Module</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <span class="d-flex float-end" style="margin-top:-2px;">
+                            <a asp-action="MIRDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                Dashboard
+                            </a>
+
+                            <partial name="_FormsButton" />
+                        </span>
+                    </span>
+                </h5>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal fade" id="ImageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <center><img id="selectedImage" height="350" width="350" src="#" alt="your image" /></center>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        //$(document).ajaxStart(function () {
+        //    // Show loader when Ajax request starts
+        //    $('#loader').show();
+        //});
+
+        //$(document).ajaxStop(function () {
+        //    // Hide loader when Ajax request stops
+        //    $('#loader').hide();
+        //});
+
+        $(document).ready(function () {
+            $('#loader').hide();
+            $('#loader-container').hide();
+
+            //$('#loader').show();
+            // for arrow on next row
+            var $rows = $('#divMIRGrid tr');
+            var currentRowIndex = 0;
+
+            $(document).on('keydown', function (event) {
+
+                if (event.key === 'ArrowDown') {
+
+                    var focusedElement = event.target;
+
+                    if (focusedElement.tagName.toLowerCase() !== 'select') {
+                        event.preventDefault();
+
+                        var $currentRow = $('#divMIRGrid tr').eq(currentRowIndex);
+                        $currentRow.find('input').blur();
+
+                        currentRowIndex = (currentRowIndex + 1) % $('#divMIRGrid tr').length;
+                        var $nextRow = $('#divMIRGrid tr').eq(currentRowIndex);
+                        $nextRow.find('input').first().focus();
+
+                    }
+                }
+                if (event.key === 'ArrowUp') {
+
+                    var focusedElement = event.target;
+
+                    if (focusedElement.tagName.toLowerCase() !== 'select') {
+                        event.preventDefault();
+
+                        var $currentRow = $('#divMIRGrid tr').eq(currentRowIndex);
+                        $currentRow.find('input').blur();
+
+                        currentRowIndex = (currentRowIndex - 1 + $('#divMIRGrid tr').length) % $('#divMIRGrid tr').length;
+                        var $nextRow = $('#divMIRGrid tr').eq(currentRowIndex);
+                        $nextRow.find('input').first().focus();
+
+                    }
+                }
+            });
+
+
+            $('form').on('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                }
+            });
+            alert("before");
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != "V") {
+            alert("inside");
+                GetNewEntry();
+                FillFromPend();
+                var now = new Date();
+                var fromDate;
+                var toDate;
+                // $('#YearCode').val(new Date().getFullYear());
+                var today = new (Date);
+                var inputDate = $('#FromDate').val();
+                var parts = inputDate.split('/');
+                var day = parseInt(parts[0], 10);
+                var month = parseInt(parts[1], 10); // Months are zero-indexed in JavaScript
+                var year = parseInt(parts[2], 10);
+                var date = new Date(year, month, day);
+                var mindate = date.toString();
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $("#MIRDate").datepicker("option", "maxDate", formatDate(today));
+                $("#MIRDate").datepicker("option", "minDate", formatDate(mindate));
+                $("#EntryDate").datepicker("option", "maxDate", formatDate(today));
+                $("#EntryDate").datepicker("option", "minDate", formatDate(mindate));
+                //fromDate & ToDate
+                $('#FromDate,#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#FromDate').change(function () {
+                    fromDate = $(this).datepicker('getDate');
+                    $('#ToDate').datepicker("option", "minDate", fromDate);
+                });
+                $('#ToDate').change(function () {
+                    toDate = $(this).datepicker('getDate');
+                    $('#FromDate').datepicker("option", "maxDate", toDate);
+                });
+                if ($('#DateIntact').val() == "Y") {
+                    var fromDt = $('#FromDate').val();
+                    var toDt = $('#ToDate').val();
+                    $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", fromDt);
+                    $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDt);
+                    FillMRNData();
+                }
+            } else {
+                // do nothing
+                alert("else");
+            }
+
+            //GetFormRights();
+            $('#ModeOfTransport').rules("remove", "required");
+            $('#INVNo').rules("remove", "required");
+            $('#INVDate').rules("remove", "required");
+            $('#FromStoreId').rules("remove", "required");
+            $('#StoreName').rules("remove", "required");
+            $('#EntryId').rules("remove", "required");
+            $('#YearCode').rules("remove", "required");
+            $('#EntryDate').rules("remove", "required");
+            $('#MIRNo').rules("remove", "required");
+            $('#CC').rules("remove", "required");
+            $('#MRNJWCustJW').rules("remove", "required");
+            $('#MIRDate').rules("remove", "required");
+            $('#MRNNo').rules("remove", "required");
+            $('#MRNYearCode').rules("remove", "required");
+            $('#MRNDate').rules("remove", "required");
+            $('#GateNo').rules("remove", "required");
+            $('#GateYearCode').rules("remove", "required");
+            $('#ItemServTypes').rules("remove", "required");
+
+            if ($('#Mode').val() == 'U') {
+
+                AllowUpdelete();
+                $('.addToGridHeading').click(function () {
+                    $('#loader').hide();
+                    $('#loader-container').hide();
+                    $('#divMIRGrid').empty();
+                    var totalRows = $('#divMIRGrid tr').length;
+                    $('#totalMirRows').text(totalRows);
+                })
+                // $('#YearCode').val(new Date().getFullYear());
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var MIRDate = parseDateToFormat($('#MIRDate').val().split(" ")[0]);
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", MIRDate);
+            }
+        });
+
+        function GetNewEntry() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetNewEntry")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#EntryId').val("");
+                        $('#EntryId').val(obj.Result[0].EntryId);
+                        $('#MIRNo').val("");
+                        $('#MIRNo').val(obj.Result[0].EntryId);
+                    }
+                }
+            });
+        }
+
+        $('#submitBTN').click(function (e) {
+
+            e.preventDefault();
+            if ($('#divMIRModuleGrid tr td').length <= 1) {
+                $.notify('MIR Grid Should Have Atleast 1 Item...!', "error");
+            }
+            else {
+                $("form").submit();
+            }
+        });
+
+        function FillFromPend() {
+
+            $.ajax({
+                url: "@Url.Action("FillGridFromMemoryCache")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                    //$('#loader').show();
+                    if (data != null) {
+
+                        console.log(data);
+                        $('#FromDate').val(data.fromDate);
+                        $('#ToDate').val(data.toDate);
+                        $('#MRNJWCustJW').val(data.mrnjwCustJW);
+                        $('#MRNNo').val(data.mrnNo);
+                        $('#MRNYearCode').val(data.mrnYearCode);
+                        $('#GateNo').val(data.gateNo);
+                        var dataParams = {
+                            "MRNNo": $('#MRNNo').val(),
+                            "MRNYearCode": $('#MRNYearCode').val(),
+                            "GateNo": null,
+                            "GateYear": 0,
+                            "GateEntryId": 0,
+                            "MRNCustJW": $('#MRNJWCustJW').val()
+                        }
+
+                        GetMRNData(dataParams);
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        function alertDOO() {
+            alert("Hello");
+        }
+        // function GetFormRights() {
+        //     $.ajax({
+        //         url: "@Url.Action("GetFormRights")",
+        //         type: "POST",
+        //         success: function (data) {
+        //             if (data != null) {
+        //                 var obj = $.parseJSON(data);
+        //                 console.log(obj);
+        //                 var optAll = obj.Result.Table[0].OptAll;
+        //                 var optSave = obj.Result.Table[0].OptSave;
+        //                 var optUpdate = obj.Result.Table[0].OptUpdate;
+        //                 var optDelete = obj.Result.Table[0].OptDelete;
+        //                 var optView = obj.Result.Table[0].OptView;
+        //                 if (!optAll) {
+        //                     if (!optSave) {
+        //                         $("#submitBTN").prop("disabled", true);
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         error: function (errMsg) {
+        //             $.notify(errMsg, { position: "top center", className: "error" });
+        //         }
+        //     });
+        // }
+
+        function formatDate(d) {
+
+            var newDate = new Date(d);
+            var day = newDate.getDate();
+            var month = newDate.getUTCMonth();
+            var year = newDate.getFullYear();
+            finaldate = new Date(year, month, day);
+            return finaldate;
+        }
+        $('#ToDate').change(function () {
+            if ($('#MRNJWCustJW').val() == 'MRN') {
+                FillMRNData();
+            }
+        });
+        $('#MRNJWCustJW').change(function () {
+            if ($('#MRNJWCustJW').val() == 'MRN') {
+                FillMRNData();
+            }
+            else {
+                $('#MRNNo').empty();
+                $('#MRNNo').append('<option disabled selected>-Select-</option>');
+                $('#MRNYearCode').empty();
+                $('#MRNYearCode').append('<option disabled selected>-Select-</option>');
+                $('#GateNo,#GateEntry,#GateYearCode,#AccountName,#INVNo,#INVDate,#StoreName,#FromStoreId').val('');
+            }
+        });
+
+        function FillMRNData() {
+            var dataParams = {
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val(),
+                "MRNCustJW": $('#MRNJWCustJW').val()
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMRNNo")",
+                data: dataParams,
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MRNNo').empty();
+                            $('#MRNNo').append('<option disabled selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#MRNNo').append('<option value="' + val.MRNNo +
+                                    '" data-mrn-year="' + val.MRNYEAR +
+                                    '" data-gate-no="' + val.GateNo +
+                                    '" data-gate-year="' + val.YEARCODE +
+                                    '" data-entry-no="' + val.EntryId +
+                                    '" data-mrn-date="' + formatInvDate(val.EntryDate) +
+                                    '">' + val.MRNNo + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#MRNNo').change(function () {
+            $('#divMIRModuleGrid').empty();
+            var MRNYearCode = $(this).find(":selected").data('mrn-year');
+            var GateNo = $(this).find(":selected").data('gate-no');
+            var GateYearCode = $(this).find(":selected").data('gate-year');
+            var GateEntry = $(this).find(":selected").data('entry-no');
+            var MRNDate = $(this).find(":selected").data('mrn-date');
+            $('#MRNYearCode').empty();
+            $('#MRNYearCode').append('<option disabled selected>-Select-</option>');
+            $('#MRNYearCode').append('<option value="' + MRNYearCode + '" data-gate-no="' + GateNo + '" data-mrn-date="' + MRNDate + '" data-gate-year="' + GateYearCode + '" data-gate-entry="' + GateEntry + '">' + MRNYearCode + '</option>');
+        });
+
+        $('#MRNYearCode').change(function () {
+            $('#GateNo').val($(this).find(":selected").data('gate-no'));
+            $('#GateYearCode').val($(this).find(":selected").data('gate-year'));
+            $('#GateEntry').val($(this).find(":selected").data('entry-no'));
+            $('#MRNDate').val($(this).find(":selected").data('mrn-date'));
+        });
+
+
+        function GetMRNData(dataParams) {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateData")",
+                data: { MRNNo: $('#MRNNo').val(), MRNYearCode: $('#MRNYearCode').val(), MRNCustJW: $('#MRNJWCustJW').val() },
+                async: false,
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MRNDate,#GateNo,#GateYearCode').val('');
+                            $.each(obj.Result, function (index, val) {
+                                $('#MRNDate').val(formatInvDate(val.EntryDate));
+                                $('#GateNo').val(val.GateNo);
+                                $('#GateYearCode').val(val.YEARCODE);
+                                dataParams = {
+                                    "MRNNo": $('#MRNNo').val(),
+                                    "MRNYearCode": $('#MRNYearCode').val(),
+                                    "GateNo": $('#GateNo').val(),
+                                    "GateYear": $('#GateYear').val(),
+                                    "GateEntryId": $('#GateEntryId').val(),
+                                    "MRNCustJW": $('#MRNJWCustJW').val()
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMRNData")",
+                data: dataParams,
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#AccountCode,#AccountName,#INVNo,#INVDate,#FromStoreId,#StoreName').val('');
+                            $.each(obj.Result, function (index, val) {
+                                $('#AccountCode').val(val.AccountCode);
+                                $('#AccountName').val(val.account_name);
+                                $('#INVNo').val(val.Invoiceno);
+                                $('#INVDate').val(formatInvDate(val.InvoiceDate));
+                                $('#FromStoreId').val(val.RecStoreid);
+                                $('#StoreName').val(val.RecStore);
+                            });
+                        }
+                    }
+                }
+            });
+
+            $('#divMIRGrid').empty();
+
+        }
+
+        $('.addToGridHeading').click(function () {
+
+            $('#loader').show();
+            $('#loader-container').show();
+            loadMIRItem();
+        });
+
+        var start = 0;
+        var pageSize = 10;
+        var isLoading = false;
+        function loadMIRItem() {
+
+            isLoading = true;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMIRMainItem")",
+                data: { "MRNNo": $('#MRNNo').val(), "MRNYearCode": $('#MRNYearCode').val(), "GateNo": $('#GateNo').val(), "GateYear": $('#GateYear').val(), "GateEntryId": $('#GateEntryId').val(), "MRNCustJW": $('#MRNJWCustJW').val(), start: start, pageSize: pageSize },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null && !result.includes('<tr class="text-center" id="nodata">')) {
+
+                        $('#divMIRGrid').append(result);
+                        start += pageSize;
+                        isLoading = false;
+                        var totalRows = $('#divMIRGrid tr').length;
+                        $('#totalMirRows').text(totalRows);
+                        loadMIRIteminBackGround();
+                    } else {
+                        $('#loader-container').hide();
+                        $('#loader').hide();
+                    }
+                }
+            });
+        }
+        var recursionCounter = 0;
+        var countFlag = false;
+        var counter = 5000;
+        function loadMIRIteminBackGround() {
+            if (countFlag == true) {
+                pageSize = pageSize + 10;
+                counter = 100;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMIRMainItem")",
+                data: { "MRNNo": $('#MRNNo').val(), "MRNYearCode": $('#MRNYearCode').val(), "GateNo": $('#GateNo').val(), "GateYear": $('#GateYear').val(), "GateEntryId": $('#GateEntryId').val(), "MRNCustJW": $('#MRNJWCustJW').val(), start: start, pageSize: pageSize },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        $('#divMIRGrid').append(result);
+                        var totalRows = $('#divMIRGrid tr').length;
+                        $('#totalMirRows').text(totalRows);
+                        start += pageSize;
+                        isLoading = false;
+                        countFlag = true;
+                        var countRows = $('#mirtotalRows').val();
+                        if (totalRows < countRows) {
+                            setTimeout(loadMIRIteminBackGround, counter);
+                        }
+                    }
+
+                    if (totalRows == countRows) {
+                        $('#loader-container').hide();
+                        $('#loader').hide();
+
+                        var i = 1;
+                        fillEmp();
+                        fillAllStore();
+                        fillAllRewStore();
+                        fillAllHoldStore();
+                        fillAllRecOkStore();
+                        FillOkRecStore(i);
+                        i++;
+                    }
+                }
+            });
+        }
+
+        function deletebyitem(ItemCode) {
+
+            var rowCount = $('#divMIRGrid tr').length;
+        }
+
+        function deletebyitemcode(ItemCode, SeqNo) {
+
+            $.ajax({
+                url: '@Url.Action("DeleteByItemCode")',
+                type: "POST",
+                data: { "ItemCode": ItemCode, "SeqNo": SeqNo },
+                async: false,
+                success: function (data, status, xhr) {
+
+                    $('#divMIRGrid').html(data);
+                    var rowcount = $('#divMIRGrid tr').length;
+                    $('#totalMirRows').text(rowcount);
+                    $.notify('Item Deleted from Grid.', "info");
+                    fillAllStore();
+                    fillAllRewStore();
+                    fillAllHoldStore();
+                    fillAllRecOkStore();
+                    // FillOkRecStore();
+                }
+            });
+        }
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#selectedImage').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+            $('#ImageModal').modal("show");
+        }
+
+        function formatInvDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [day, month, year].join('/');
+        }
+
+        function DeleteItemRow(i) {
+            $('tbody#divMIRGrid tr#' + i).remove();
+        }
+        function DeleteItemRowFromGrid(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                async: false,
+                success: function (data, status, xhr) {
+                    $('#divMIRModuleGrid').html(data);
+                    $.notify('Item Deleted from Grid.', "info");
+                },
+                error: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                },
+            });
+        }
+
+        function AllowUpdelete() {
+
+            $.ajax({
+                url: '@Url.Action("AllowUpdelete")',
+                type: "POST",
+                data: { "EntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val() },
+                async: false,
+                success: function (data, status, xhr) {
+
+                    var obj = $.parseJSON(data);
+                    RowCount = $('#divMIRModuleGrid tr').length;
+                    if (obj.Result.length != 0) {
+                        for (i = 0; i < RowCount; i++) {
+                            if ($('#ItemCode-' + (i + 1)).data('itemgrid') == obj.Result[i].itemcode) {
+                                $('#BtnEdit-' + (i + 1)).css("pointer-events", "none");
+                                $('#MIRRowGrid-' + (i + 1)).css("color", "red");
+
+                                $('#MIRRowGrid-' + (i + 1)).attr('data-toggle', 'tooltip');
+                                $('#MIRRowGrid-' + (i + 1)).attr('title', obj.Result[i].Column1);
+                                $('#MIRRowGrid-' + (i + 1)).tooltip();
+                            }
+                        }
+                    }
+                },
+            });
+        }
+
+        function EditItemRowFromGrid(SeqNo) {
+
+            $.ajax({
+                url: '@Url.Action("EditItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                async: false,
+                success: function (data, status, xhr) {
+
+                    var obj = $.parseJSON(data);
+                    DeleteItemRowFromGrid(SeqNo);
+                    if (obj != null && obj.length == 1) {
+                        var html = '';
+                        $('#divMIRGrid').empty();
+                        var i = 1;
+
+                        if (obj[0].PathOfFileURL != "") {
+                            var pathUrl = obj[0].PathOfFileURL;
+                            html += '<tr id="' + i + '"><td><i class="fa fa-trash" aria-hidden="true" style="color: red; font-size: 18px;" onclick="deletebyitem(' + i + ')"></i></td><td>' + i + '</td><td><input id="PartCode-' + i + '" value=' + obj[0].PartCode + ' readonly ></td><td><input id="ItemName-' + i + '" value=' + JSON.stringify(obj[0].ItemName) + ' readonly ><input type="hidden"  id="ItemCode-' + i + '" value=' + obj[0].ItemCode + '></td><td><input id="BillQty-' + i + '" value=' + obj[0].BillQty + ' readonly style="width:50px"></td><td><input id="RECQTY-' + i + '" value=' + obj[0].RecQty + ' readonly style="width:50px"></td><td><input onchange="ToggleOkRecStore(' + i + ')" value=' + obj[0].AcceptedQty + '  id="AcceptedQty-' + i + '" style="width:50px"></td><td><input value=' + obj[0].AltAcceptedQty + ' id="AltAcceptedQty-' + i + '" style="width:50px"></td><td><select class=""  id="OkRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input type="number" onchange="ToggleRejRecStore(' + i + ')" value=' + obj[0].RejectedQty + ' id="RejectedQty-' + i + '" style="width:50px"/></td><td><input type="number" value=' + obj[0].AltRejectedQty + ' id="AltRejectedQty-' + i + '" style="width:50px"/></td><td><select id="RejRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input  id="RejReason-' + i + '" /></td><td><input type="number" onchange="ToggleHoldStore(' + i + ')" value=' + obj[0].HoldQty + ' id="HoldQty-' + i + '" style="width:50px"/></td><td><select id="HoldStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input onchange="ToggleReworkStore(' + i + ')" value=' + obj[0].ReworkQty + ' id="ReworkQty-' + i + '" style="width:50px"/></td><td><select readonly  id="RewokStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input id="ReworkReason(' + i + ')" /></td><td><input onchange="ToggleDeviationQty(' + i + ')" type="number" value=' + obj[0].DeviationQty + ' id="DeviationQty-' + i + '" style="width:50px"/></td><td><input value=' + obj[0].ResponsibleEmpForDeviation + ' id="ResponsibleEmp-' + i + '" /></td><td><input id="PONo' + i + '" value=' + obj[0].PONo + ' readonly ></td><td><input id="POYearCode-' + i + '" value=' + obj[0].POYearCode + ' readonly style="width:50px"></td><td><input id="SchNo-' + i + '" readonly value=' + obj[0].SchNo + '  ></td><td><input id="SchYearCode-' + i + '" value=' + obj[0].SchYearCode + ' readonly style="width:50px"></td><td><input id="Unit-' + i + '" value=' + obj[0].Unit + ' readonly style="width:50px"></td><td><input style="width:50px" id="AltUnit-' + i + '" readonly value=' + obj[0].AltUnit + ' ></td><td><input id="AltRecQty-' + i + '" value=' + obj[0].ALtRecQty + ' readonly style="width:50px"></td><td><input  id="Remarks-' + i + '" value=' + obj[0].Remarks + '></td><td><select id="DefaultType-' + i + '" style="width:150px;height:25px"></select></td><td><select id="ApprovedByEmp-' + i + '" style="width:150px;height:25px"></select></td><td><input value=' + obj[0].ProcessId + ' readonly id="ProcessId-' + i + '" ></td><td><input style="width:50px" readonly id="Color-' + i + '" value=' + obj[0].Color + ' ></td><td><input style="width:50px" readonly id="ItemSize-' + i + '" value=' + obj[0].ItemSize + ' ></td><td><input readonly  id="ResponsibleFactor-' + i + '" value=' + obj[0].ResponsibleFactor + '></td><td><input style="width:70px" readonly value="' + obj[0].SupplierBatchNo + '"  id="SupplierBatchNo-' + i + '" /></td><td><input readonly id="ShelfLife-' + i + '" value=' + obj[0].ShelfLife + ' style="width:50px"/></td><td><input style="width:70px" readonly id="BatchNo-' + i + '" value=' + obj[0].BatchNo + ' /></td><td><input style="width:280px" readonly id="uniquebatchno-' + i + '" value=' + obj[0].UniqueBatchNo + ' /></td><td><input value=' + JSON.stringify(obj[0].AllowDebitNote) + '  id="AllowDebitNote-' + i + '" readonly /></td><td><i onmouseover="displayreuploadbtn()" class="fa fa-eye" onclick="ViewFile1(\'' + pathUrl + '\')" aria-hidden="true"></i>&nbsp;<button id="hidebtn" onchange="ReUploadFile();"><i class="fa fa-plus" aria-hidden="true"></i></button><div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile"><input type="file" data-val="false" value="' + pathUrl + '" id="UploadedFilePath-' + i + '" /></div></td><td><a class="btn btn-primary" onclick="readURL(UploadedFilePath' + i + ')"><i class="fa fa-eye" aria-hidden="true"></i></a></td></tr>'
+                        }
+                        else {
+                            html += '<tr id="' + i + '"><td><i class="fa fa-trash" aria-hidden="true" style="color: red; font-size: 18px;" onclick="deletebyitem(' + i + ')"></i></td><td>' + i + '</td><td><input id="PartCode-' + i + '" value=' + obj[0].PartCode + ' readonly ></td><td><input id="ItemName-' + i + '" value=' + JSON.stringify(obj[0].ItemName) + ' readonly ><input type="hidden" id="ItemCode-' + i + '" value=' + obj[0].ItemCode + '></td><td><input id="BillQty-' + i + '" value=' + obj[0].BillQty + ' readonly style="width:50px"></td><td><input id="RECQTY-' + i + '" value=' + obj[0].RecQty + ' readonly style="width:50px"></td><td><input onchange="ToggleOkRecStore(' + i + ')" value=' + obj[0].AcceptedQty + '  id="AcceptedQty-' + i + '" style="width:50px"></td><td><input value=' + obj[0].AltAcceptedQty + ' id="AltAcceptedQty-' + i + '" style="width:50px"></td><td><select class=""  id="OkRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input type="number" onchange="ToggleRejRecStore(' + i + ')" value=' + obj[0].RejectedQty + ' id="RejectedQty-' + i + '" style="width:50px"/></td><td><input type="number" value=' + obj[0].AltRejectedQty + ' id="AltRejectedQty-' + i + '" style="width:50px"/></td><td><select id="RejRecStore-' + i + '" style="width:150px;height:25px"></select></td><td><input  id="RejReason-' + i + '" /></td><td><input type="number" onchange="ToggleHoldStore(' + i + ')" value=' + obj[0].HoldQty + ' id="HoldQty-' + i + '" style="width:50px"/></td><td><select id="HoldStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input onchange="ToggleReworkStore(' + i + ')" value=' + obj[0].ReworkQty + ' id="ReworkQty-' + i + '" style="width:50px"/></td><td><select readonly  id="RewokStoreId-' + i + '" style="width:150px;height:25px"></select></td><td><input id="ReworkReason(' + i + ')" /></td><td><input onchange="ToggleDeviationQty(' + i + ')" type="number" value=' + obj[0].DeviationQty + ' id="DeviationQty-' + i + '" style="width:50px"/></td><td><input value=' + obj[0].ResponsibleEmpForDeviation + ' id="ResponsibleEmp-' + i + '" /></td><td><input id="PONo' + i + '" value=' + obj[0].PONo + ' readonly ></td><td><input id="POYearCode-' + i + '" value=' + obj[0].POYearCode + ' readonly style="width:50px"></td><td><input id="SchNo-' + i + '" readonly value=' + obj[0].SchNo + '  ></td><td><input id="SchYearCode-' + i + '" value=' + obj[0].SchYearCode + ' readonly style="width:50px"></td><td><input id="Unit-' + i + '" value=' + obj[0].Unit + ' readonly style="width:50px"></td><td><input style="width:50px" id="AltUnit-' + i + '" readonly value=' + obj[0].AltUnit + ' ></td><td><input id="AltRecQty-' + i + '" value=' + obj[0].ALtRecQty + ' readonly style="width:50px"></td><td><input  id="Remarks-' + i + '" value=' + obj[0].Remarks + '></td><td><select id="DefaultType-' + i + '" style="width:150px;height:25px"></select></td><td><select id="ApprovedByEmp-' + i + '" style="width:150px;height:25px"></select></td><td><input value=' + obj[0].ProcessId + ' readonly id="ProcessId-' + i + '" ></td><td><input style="width:50px" readonly id="Color-' + i + '" value=' + obj[0].Color + ' ></td><td><input style="width:50px" readonly id="ItemSize-' + i + '" value=' + obj[0].ItemSize + ' ></td><td><input readonly  id="ResponsibleFactor-' + i + '" value=' + obj[0].ResponsibleFactor + '></td><td><input style="width:70px" readonly value="' + obj[0].SupplierBatchNo + '"  id="SupplierBatchNo-' + i + '" /></td><td><input readonly id="ShelfLife-' + i + '" value=' + obj[0].ShelfLife + ' style="width:50px"/></td><td><input style="width:70px" readonly id="BatchNo-' + i + '" value=' + obj[0].BatchNo + ' /></td><td><input style="width:280px" readonly id="uniquebatchno-' + i + '" value=' + obj[0].UniqueBatchNo + ' /></td><td><input value=' + JSON.stringify(obj[0].AllowDebitNote) + '  id="AllowDebitNote-' + i + '" readonly /></td><td><input  style="width:150px" type="file" data-val="false" id="UploadedFilePath-' + i + '" /></td><td><a class="btn btn-primary" onclick="readURL(UploadedFilePath' + i + ')"><i class="fa fa-eye" aria-hidden="true"></i></a></td></tr>';
+                        }
+
+                        $('#divMIRGrid').append(html);
+                        $('#hidebtn').hide();
+                        var rowCount = $('#divMIRGrid tr').length;
+                        $('#totalMirRows').text(rowCount);
+                        fillAllStoreOnEdit(i, obj[0].OkRecStore, obj[0].RejRecStore, obj[0].HoldStoreId, obj[0].RewokStoreId);
+                        //fillEmpOnEdit(i);
+                    }
+                    $('.ReUploadFile').fadeOut();
+                    AllowUpdelete();
+                    //$('#divMIRModuleGrid').html(data);
+                    //$.notify('Item Deleted from Grid.', "info");
+                },
+                error: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        function ReUploadFile() {
+
+            $('#ReUpload').is(':checked') == true ? $('.ReUploadFile').fadeIn() : ($('.ReUploadFile').fadeOut());
+        }
+
+        $('#ReUpload').change(function () {
+
+            $('#ReUpload').is(':checked') == true ? $('.ReUploadFile').fadeIn() : ($('.ReUploadFile').fadeOut());
+        });
+
+        function ViewFile1(URL) {
+
+            if (URL) {
+                window.open(URL, '_blank');
+            }
+        }
+
+        async function ViewImage(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("ViewImage")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                success: await function (data, status, xhr) {
+                    $('#divMIRModuleGrid').html(data);
+                    $.notify('Item Deleted from Grid.', "info");
+                },
+                error: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        function ToggleOkRecStore(i) {
+
+            var flag = false;
+            if (flag == false) {
+                if ($('#AcceptedQty-' + i).val() > 0) {
+                    $('#OkRecStore-' + i).prop('disabled', false);
+                }
+                else {
+                    $('#OkRecStore-' + i).prop('selectedIndex', 0);
+                    $('#OkRecStore-' + i).prop('disabled', true);
+                }
+                var recQty = parseFloat($('#RECQTY-' + i).val());
+                var accQty = parseFloat($('#AcceptedQty-' + i).val() == '' ? 0 : parseFloat($('#AcceptedQty-' + i).val()));
+                var rejQty = parseFloat($('#RejectedQty-' + i).val() == '' ? 0 : parseFloat($('#RejectedQty-' + i).val()));
+                var devQty = parseFloat($('#DeviationQty-' + i).val() == '' ? 0 : parseFloat($('#DeviationQty-' + i).val()));
+                var holdQty = parseFloat($('#HoldQty-' + i).val() == '' ? 0 : parseFloat($('#HoldQty-' + i).val()));
+                var reWorkQty = parseFloat($('#ReworkQty-' + i).val() == '' ? 0 : parseFloat($('#ReworkQty-' + i).val()));
+
+
+                if (accQty > recQty) {
+                    $.notify("Accepted Qty cannot be greater than Rec Qty", "error");
+                    $('#AcceptedQty-' + i).val(recQty - (rejQty + devQty + holdQty + reWorkQty));
+                }
+                else if (accQty < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#AcceptedQty-' + i).val(recQty - (rejQty + devQty + holdQty + reWorkQty));
+                }
+
+                else {
+                    $('#RejectedQty-' + i).val(recQty - (accQty + devQty + holdQty + reWorkQty));
+                    ToggleRejRecStore(i);
+                }
+                flag = true;
+            }
+            else {
+                if ($('#AcceptedQty-' + i).val() > 0) {
+                    $('#OkRecStore-' + i).prop('disabled', false);
+                }
+                else {
+                    $('#OkRecStore-' + i).prop('selectedIndex', 0);
+                    $('#OkRecStore-' + i).prop('disabled', true);
+                }
+
+                if (parseFloat($('#AcceptedQty-' + i).val()) < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#AcceptedQty-' + i).val(0);
+                }
+            }
+            if (parseFloat($('#AcceptedQty-' + i).val()) < 0) {
+                $('#AcceptedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#RejectedQty-' + i).val()) < 0) {
+                $('#RejectedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#DeviationQty-' + i).val()) < 0) {
+                $('#DeviationQty-' + i).val(0)
+            }
+            else if (parseFloat($('#HoldQty-' + i).val()) < 0) {
+                $('#HoldQty-' + i).val(0)
+            }
+            else if (parseFloat($('#ReworkQty-' + i).val()) < 0) {
+                $('#ReworkQty-' + i).val(0)
+            }
+        }
+
+        function ToggleRejRecStore(i) {
+
+            var flag = false;
+            if (flag == false) {
+                if ($('#RejectedQty-' + i).val() > 0) {
+                    $('#RejRecStore-' + i).prop('disabled', false);
+                }
+
+                else {
+                    $('#RejRecStore-' + i).prop('selectedIndex', 0);
+                    $('#RejRecStore-' + i).prop('disabled', true);
+                }
+                var recQty = parseFloat($('#RECQTY-' + i).val());
+                var accQty = parseFloat($('#AcceptedQty-' + i).val() == '' ? 0 : parseFloat($('#AcceptedQty-' + i).val()));
+                var rejQty = parseFloat($('#RejectedQty-' + i).val() == '' ? 0 : parseFloat($('#RejectedQty-' + i).val()));
+                var devQty = parseFloat($('#DeviationQty-' + i).val() == '' ? 0 : parseFloat($('#DeviationQty-' + i).val()));
+                var holdQty = parseFloat($('#HoldQty-' + i).val() == '' ? 0 : parseFloat($('#HoldQty-' + i).val()));
+                var reWorkQty = parseFloat($('#ReworkQty-' + i).val() == '' ? 0 : parseFloat($('#ReworkQty-' + i).val()));
+
+                if (rejQty > recQty) {
+                    $.notify("Invalid value for Rejected Qty", "error");
+                    $('#RejectedQty-' + i).val(recQty - (accQty + devQty + holdQty + reWorkQty));
+                }
+                else if (rejQty < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#RejectedQty-' + i).val(recQty - (rejQty + devQty + holdQty + reWorkQty));
+                }
+                else {
+                    if (accQty > (recQty - rejQty)) {
+                        $('#AcceptedQty-' + i).val(recQty - (rejQty + devQty + holdQty + reWorkQty));
+                        accQty = parseFloat($('#AcceptedQty-' + i).val() == '' ? 0 : parseFloat($('#AcceptedQty' + i).val()));
+                    }
+                    else {
+                        $('#HoldQty-' + i).val(recQty - (accQty + rejQty + devQty + reWorkQty));
+                        ToggleHoldStore(i);
+                    }
+                }
+                flag = true;
+            }
+            else {
+                if ($('#RejectedQty-' + i).val() > 0) {
+                    $('#RejRecStore-' + i).prop('disabled', false);
+                }
+                else {
+                    $('#RejRecStore-' + i).prop('selectedIndex', 0);
+                    $('#RejRecStore-' + i).prop('disabled', true);
+                }
+                if (parseFloat($('#RejectedQty-' + i).val()) < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#RejectedQty-' + i).val(0);
+                }
+            }
+            if (parseFloat($('#AcceptedQty-' + i).val()) < 0) {
+                $('#AcceptedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#RejectedQty-' + i).val()) < 0) {
+                $('#RejectedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#DeviationQty-' + i).val()) < 0) {
+                $('#DeviationQty-' + i).val(0)
+            }
+            else if (parseFloat($('#HoldQty-' + i).val()) < 0) {
+                $('#HoldQty-' + i).val(0)
+            }
+            else if (parseFloat($('#ReworkQty-' + i).val()) < 0) {
+                $('#ReworkQty-' + i).val(0)
+            }
+        }
+
+        function ToggleHoldStore(i) {
+
+            var flag = false;
+            if (flag == false) {
+                if ($('#HoldQty-' + i).val() > 0) {
+                    $('#HoldStoreId-' + i).prop('disabled', false);
+                }
+
+                else {
+                    $('#HoldStoreId-' + i).prop('selectedIndex', 0);
+                    $('#HoldStoreId-' + i).prop('disabled', true);
+                }
+                var recQty = parseFloat($('#RECQTY-' + i).val());
+                var accQty = parseFloat($('#AcceptedQty-' + i).val() == '' ? 0 : parseFloat($('#AcceptedQty-' + i).val()));
+                var rejQty = parseFloat($('#RejectedQty-' + i).val() == '' ? 0 : parseFloat($('#RejectedQty-' + i).val()));
+                var devQty = parseFloat($('#DeviationQty-' + i).val() == '' ? 0 : parseFloat($('#DeviationQty-' + i).val()));
+                var holdQty = parseFloat($('#HoldQty-' + i).val() == '' ? 0 : parseFloat($('#HoldQty-' + i).val()));
+                var reWorkQty = parseFloat($('#ReworkQty-' + i).val() == '' ? 0 : parseFloat($('#ReworkQty-' + i).val()));
+
+                if (holdQty > recQty) {
+                    $.notify("Invalid value for Hold Qty", "error");
+                    $('#HoldQty-' + i).val(recQty - (accQty + devQty + rejQty + reWorkQty));
+                }
+                else if (holdQty < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#HoldQty-' + i).val(recQty - (rejQty + devQty + accQty + reWorkQty));
+                }
+
+                else {
+                    if (holdQty > (recQty - (accQty + rejQty))) {
+                        $('#RejectedQty-' + i).val(recQty - (accQty + devQty + holdQty + reWorkQty));
+                        rejQty = parseFloat($('#AcceptedQty-' + i).val() == '' ? 0 : parseFloat($('#AcceptedQty-' + i).val()));
+                    }
+                    else {
+                        $('#ReworkQty-' + i).val(recQty - (accQty + rejQty + devQty + holdQty));
+                        ToggleReworkStore(i);
+                    }
+                }
+                flag = true;
+            }
+            else {
+                if ($('#HoldQty-' + i).val() > 0) {
+                    $('#HoldStoreId-' + i).prop('disabled', false);
+                }
+                else {
+                    $('#HoldStoreId-' + i).prop('selectedIndex', 0);
+                    $('#HoldStoreId-' + i).prop('disabled', true);
+                }
+                if (parseFloat($('#HoldQty-' + i).val()) < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#HoldQty-' + i).val(0);
+                }
+            }
+            if (parseFloat($('#AcceptedQty-' + i).val()) < 0) {
+                $('#AcceptedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#RejectedQty-' + i).val()) < 0) {
+                $('#RejectedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#DeviationQty-' + i).val()) < 0) {
+                $('#DeviationQty-' + i).val(0)
+            }
+            else if (parseFloat($('#HoldQty-' + i).val()) < 0) {
+                $('#HoldQty-' + i).val(0)
+            }
+            else if (parseFloat($('#ReworkQty-' + i).val()) < 0) {
+                $('#ReworkQty-' + i).val(0)
+            }
+        }
+
+        function ToggleReworkStore(i) {
+
+            var flag = false;
+            if (flag == false) {
+                if ($('#ReworkQty-' + i).val() > 0) {
+                    $('#RewokStoreId-' + i).prop('disabled', false);
+                } else {
+                    $('#RewokStoreId-' + i).prop('selectedIndex', 0);
+                    $('#RewokStoreId-' + i).prop('disabled', true);
+                }
+                var recQty = parseFloat($('#RECQTY-' + i).val());
+                var accQty = parseFloat($('#AcceptedQty-' + i).val() == '' ? 0 : parseFloat($('#AcceptedQty-' + i).val()));
+                var rejQty = parseFloat($('#RejectedQty-' + i).val() == '' ? 0 : parseFloat($('#RejectedQty-' + i).val()));
+                var devQty = parseFloat($('#DeviationQty-' + i).val() == '' ? 0 : parseFloat($('#DeviationQty-' + i).val()));
+                var holdQty = parseFloat($('#HoldQty-' + i).val() == '' ? 0 : parseFloat($('#HoldQty-' + i).val()));
+                var reWorkQty = parseFloat($('#ReworkQty-' + i).val() == '' ? 0 : parseFloat($('#ReworkQty-' + i).val()));
+
+                if (reWorkQty > recQty) {
+                    $.notify("Invalid value for Rework Qty", "error");
+                    $('#ReworkQty-' + i).val(recQty - (accQty + devQty + rejQty + holdQty));
+                }
+                else if (reWorkQty < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#ReworkQty-' + i).val(recQty - (rejQty + devQty + accQty + holdQty));
+                }
+                else {
+                    if (reWorkQty > (recQty - (accQty + rejQty + holdQty))) {
+                        $('#HoldQty-' + i).val(recQty - (accQty + devQty + rejQty + reWorkQty));
+                        holdQty = parseFloat($('#HoldQty-' + i).val() == '' ? 0 : parseFloat($('#HoldQty-' + i).val()));
+
+                    }
+                    else {
+                        $('#DeviationQty-' + i).val(recQty - (accQty + rejQty + reWorkQty + holdQty));
+                        ToggleDeviationQty(i);
+                    }
+                }
+                flag = true;
+            }
+            else {
+                if ($('#ReworkQty-' + i).val() > 0) {
+                    $('#RewokStoreId-' + i).prop('disabled', false);
+                }
+                else {
+                    $('#RewokStoreId-' + i).prop('selectedIndex', 0);
+                    $('#RewokStoreId-' + i).prop('disabled', true);
+                }
+                if (parseFloat($('#ReworkQty-' + i).val()) < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#ReworkQty-' + i).val(0);
+                }
+            }
+            if (parseFloat($('#AcceptedQty-' + i).val()) < 0) {
+                $('#AcceptedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#RejectedQty-' + i).val()) < 0) {
+                $('#RejectedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#DeviationQty-' + i).val()) < 0) {
+                $('#DeviationQty-' + i).val(0)
+            }
+            else if (parseFloat($('#HoldQty-' + i).val()) < 0) {
+                $('#HoldQty-' + i).val(0)
+            }
+            else if (parseFloat($('#ReworkQty-' + i).val()) < 0) {
+                $('#ReworkQty-' + i).val(0)
+            }
+        }
+
+        function ToggleDeviationQty(i) {
+
+            var flag = false;
+            if (flag == false) {
+                var recQty = parseFloat($('#RECQTY-' + i).val());
+                var accQty = parseFloat($('#AcceptedQty-' + i).val() == '' ? 0 : parseFloat($('#AcceptedQty-' + i).val()));
+                var rejQty = parseFloat($('#RejectedQty-' + i).val() == '' ? 0 : parseFloat($('#RejectedQty-' + i).val()));
+                var devQty = parseFloat($('#DeviationQty-' + i).val() == '' ? 0 : parseFloat($('#DeviationQty-' + i).val()));
+                var holdQty = parseFloat($('#HoldQty-' + i).val() == '' ? 0 : parseFloat($('#HoldQty-' + i).val()));
+                var reWorkQty = parseFloat($('#ReworkQty-' + i).val() == '' ? 0 : parseFloat($('#ReworkQty-' + i).val()));
+
+                if (parseFloat($('#DeviationQty-' + i).val()) < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#DeviationQty-' + i).val(0);
+                }
+                if (accQty + rejQty + holdQty + reWorkQty + devQty > recQty) {
+                    alert("Rec Qty must be equal to AccQty + RejQty + HoldQty + ReWorkQty + DevQty");
+                    $('#DeviationQty-' + i).val(devQty);
+                }
+                flag = true;
+            }
+            else {
+                if (parseFloat($('#DeviationQty-' + i).val()) < 0) {
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#DeviationQty-' + i).val(0);
+                }
+            }
+            if (parseFloat($('#AcceptedQty-' + i).val()) < 0) {
+                $('#AcceptedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#RejectedQty-' + i).val()) < 0) {
+                $('#RejectedQty-' + i).val(0)
+            }
+            else if (parseFloat($('#DeviationQty-' + i).val()) < 0) {
+                $('#DeviationQty-' + i).val(0)
+            }
+            else if (parseFloat($('#HoldQty-' + i).val()) < 0) {
+                $('#HoldQty-' + i).val(0)
+            }
+            else if (parseFloat($('#ReworkQty-' + i).val()) < 0) {
+                $('#ReworkQty-' + i).val(0)
+            }
+        }
+
+        function ValidateMIR_Grid(i) {
+
+            var rowCount = $('#divMIRGrid tr').length;
+            for (i = 1; i <= rowCount; i++) {
+                var Err = 0;
+                var accQty = $('#AcceptedQty-' + i).val() == '' ? 0 : parseFloat($('#AcceptedQty-' + i).val());
+                var rejQty = parseFloat($('#RejectedQty-' + i).val() == '' ? 0 : parseFloat($('#RejectedQty-' + i).val()));
+                var devQty = parseFloat($('#DeviationQty-' + i).val() == '' ? 0 : parseFloat($('#DeviationQty-' + i).val()));
+                var holdQty = parseFloat($('#HoldQty-' + i).val() == '' ? 0 : parseFloat($('#HoldQty-' + i).val()));
+                var reWorkQty = parseFloat($('#ReworkQty-' + i).val() == '' ? 0 : parseFloat($('#ReworkQty-' + i).val()));
+                var recQty = parseFloat($('#RECQTY-' + i).val());
+
+                if ($('#divMIRGrid tr').length == 0) {
+                    $.notify("Nothing to add from MRIR Grid", "error");
+                    Err = 1;
+                }
+                else {
+                    //do nothing
+                }
+
+                if (recQty != (accQty + rejQty + devQty + holdQty + reWorkQty)) {
+
+                    AddErrorCls('RecQty-' + i);
+                    $.notify("Rec Qty must be equal to AccQty + RejQty + HoldQty + ReWorkQty + DevQty for " + $('#ItemName-' + i).val(), "error");
+                    $('#RecQty-' + i).css('border', '1px solid red');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('RecQty-' + i);
+                    $('#RecQty-' + i).css('border', '1px solid black');
+                }
+                if (accQty < 0) {
+                    AddErrorCls('AcceptedQty-' + i);
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#AcceptedQty-' + i).css('border', '1px solid red');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('AcceptedQty-' + i);
+                    $('#AcceptedQty-' + i).css('border', '1px solid black');
+                }
+                if (rejQty < 0) {
+                    AddErrorCls('RejectedQty-' + i);
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#RejectedQty-' + i).css('border', '1px solid red');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('RejectedQty-' + i);
+                    $('#RejectedQty-' + i).css('border', '1px solid black');
+                }
+                if (devQty < 0) {
+                    AddErrorCls('DeviationQty-' + i);
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#DeviationQty-' + i).css('border', '1px solid red');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('DeviationQty-' + i);
+                    $('#DeviationQty-' + i).css('border', '1px solid black');
+                }
+                if (holdQty < 0) {
+                    AddErrorCls('HoldQty-' + i);
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#HoldQty-' + i).css('border', '1px solid red');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('HoldQty-' + i);
+                    $('#HoldQty-' + i).css('border', '1px solid black');
+                }
+                if (reWorkQty < 0) {
+                    AddErrorCls('ReworkQty-' + i);
+                    $.notify("Quantity cannot be less than 0", "error");
+                    $('#ReworkQty-' + i).css('border', '1px solid red');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('ReworkQty-' + i);
+                    $('#ReworkQty-' + i).css('border', '1px solid black');
+                }
+
+
+                if (accQty > 0) {
+                    if ($('#OkRecStore-' + i).val() == null) {
+                        AddErrorCls('OkRecStore-' + i);
+                        $('#OkRecStore-' + i).css('border', '1px solid red');
+                        Err = 1;
+                    }
+                    else {
+                        RemoveErrorCls('OkRecStore-' + i);
+                        $('#OkRecStore-' + i).css('border', '1px solid black');
+                    }
+                }
+                if (rejQty > 0) {
+                    if ($('#RejRecStore-' + i).val() == null) {
+                        AddErrorCls('RejRecStore-' + i);
+                        $('#RejRecStore-' + i).css('border', '1px solid red');
+                        Err = 1;
+                    }
+                    else {
+                        RemoveErrorCls('RejRecStore-' + i);
+                        $('#RejRecStore-' + i).css('border', '1px solid black');
+                    }
+                }
+                if (holdQty > 0) {
+                    if ($('#HoldStoreId-' + i).val() == null) {
+                        AddErrorCls('HoldStoreId-' + i);
+                        $('#HoldStoreId-' + i).css('border', '1px solid red');
+                        Err = 1;
+                    }
+                    else {
+                        RemoveErrorCls('HoldStoreId-' + i);
+                        $('#HoldStoreId-' + i).css('border', '1px solid black');
+                    }
+                }
+                if (reWorkQty > 0) {
+                    if ($('#RewokStoreId-' + i).val() == null) {
+                        AddErrorCls('RewokStoreId-' + i);
+                        $('#RewokStoreId-' + i).css('border', '1px solid red');
+                        Err = 1;
+                    }
+                    else {
+                        RemoveErrorCls('RewokStoreId-' + i);
+                        $('#RewokStoreId-' + i).css('border', '1px solid black');
+                    }
+                }
+                if (devQty > 0) {
+                    if ($('#ResponsibleEmp-' + i).val() == '') {
+                        AddErrorCls('ResponsibleEmp-' + i);
+                        $('#ResponsibleEmp-' + i).css('border', '1px solid red');
+                        Err = 1;
+                    }
+                    else {
+                        RemoveErrorCls('ResponsibleEmp-' + i);
+                        $('#ResponsibleEmp-' + i).css('border', '1px solid black');
+                    }
+                }
+                if (accQty != 0) {
+                    if ($('#OkRecStore-' + i).prop('selectedIndex') == 0) {
+                        $.notify("OkRecStore is required", "error");
+                        AddErrorCls('#OkRecStore-' + i);
+                    }
+                    else {
+                        RemoveErrorCls('OkRecStore-' + i);
+                    }
+                }
+                if (rejQty != 0) {
+                    if ($('#RejRecStore-' + i).prop('selectedIndex') == 0) {
+                        $.notify("RejRecStore is required", "error");
+                        AddErrorCls('#RejRecStore-' + i);
+                    }
+                    else {
+                        RemoveErrorCls('RejRecStore-' + i);
+                    }
+                }
+                if (holdQty != 0) {
+                    if ($('#HoldStoreId-' + i).prop('selectedIndex') == 0) {
+                        $.notify("HoldStoreId is required", "error");
+                        AddErrorCls('#HoldStoreId-' + i);
+                    }
+                    else {
+                        RemoveErrorCls('HoldStoreId-' + i);
+                    }
+                }
+                if (reWorkQty != 0) {
+                    if ($('#RewokStoreId-' + i).prop('selectedIndex') == 0) {
+                        $.notify("RewokStoreId is required", "error");
+                        AddErrorCls('#RewokStoreId-' + i);
+                    }
+                    else {
+                        RemoveErrorCls('RewokStoreId-' + i);
+                    }
+                }
+
+                Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
+                if (Err == 1) return false;
+            }
+            return true;
+        }
+        //global image array
+        var imageArray = [];
+
+        function Add2Grid() {
+
+            var rowCount = $('#divMIRGrid tr').length;
+            if (rowCount == 0) {
+                $.notify("Nothing to add from MRIR Grid", "error");
+                return false;
+            }
+
+            if (!ValidateMIR_Grid()) return;
+
+            var ItemData = [];
+            var formData = new FormData();
+            for (let i = 1; i <= rowCount; i++) {
+                var model = $('#UploadedFilePath-' + i).prop("files");
+                var Imagepath = $('#UploadedFilePath-' + i).prop("files");
+                formData.append("model", model[0]);
+                var pathoffile = '';
+                if ($('#UploadedFilePath-' + i).attr('value') == undefined) {
+                    pathoffile = $('#UploadedFilePath-' + i).val() == undefined ? '' : $('#UploadedFilePath-' + i).val();
+                }
+                else {
+                    pathoffile = $('#UploadedFilePath-' + i).attr('value');
+                }
+
+                ItemData.push({
+                    "PONo": $('#PONo-' + i).val(),
+                    "POYearCode": $('#POYearCode-' + i).val(),
+                    "SchNo": $('#SchNo-' + i).val(),
+                    "SchYearCode": $('#SchYearCode-' + i).val(),
+                    "PartCode": $('#PartCode-' + i).val(),
+                    "ItemName": $('#ItemName-' + i).val(),
+                    "ItemCode": $('#ItemCode-' + i).val(),
+                    "Unit": $('#Unit-' + i).val(),
+                    "AltUnit": $('#AltUnit-' + i).val(),
+                    "BillQty": $('#BillQty-' + i).val(),
+                    "RecQty": $('#RECQTY-' + i).val(),
+                    "ALtRecQty": $('#AltRecQty-' + i).val(),
+                    "AcceptedQty": $('#AcceptedQty-' + i).val(),
+                    "AltAcceptedQty": $('#AltAcceptedQty-' + i).val(),
+                    "OkRecStore": $('#OkRecStore-' + i).val(),
+                    "DeviationQty": $('#DeviationQty-' + i).val(),
+                    "RejectedQty": $('#RejectedQty-' + i).val(),
+                    "AltRejectedQty": $('#AltRejectedQty-' + i).val(),
+                    "RejRecStore": $('#RejRecStore-' + i).val(),
+                    "Remarks": $('#Remarks-' + i).val(),
+                    "DefaultType": $('#DefaultType-' + i).val(),
+                    "ApprovedByEmp": $('#ApprovedByEmp-' + i).val(),
+                    "HoldQty": $('#HoldQty-' + i).val(),
+                    "HoldStoreId": $('#HoldStoreId-' + i).val(),
+                    "RewokStoreId": $('#RewokStoreId-' + i).val(),
+                    "ProcessId": $('#ProcessId-' + i).val(),
+                    "ReworkQty": $('#ReworkQty-' + i).val(),
+                    "Color": $('#Color-' + i).val(),
+                    "ResponsibleEmpForDeviation": $('#ResponsibleEmp-' + i).val(),
+                    "ItemSize": $('#ItemSize-' + i).val(),
+                    "ResponsibleFactor": $('#ResponsibleFactor-' + i).val(),
+                    "SupplierBatchNo": $('#SupplierBatchNo-' + i).val(),
+                    "ShelfLife": $('#ShelfLife-' + i).val(),
+                    "Remarks": $('#Remarks-' + i).val(),
+                    "PathOfFile": pathoffile,
+                    "OkRecStoreName": $('#OkRecStore-' + i).find(':selected').text(),
+                    "RejRecStoreName": $('#RejRecStore-' + i).find(':selected').text(),
+                    "HoldStoreName": $('#HoldStoreId-' + i).find(':selected').text(),
+                    "RewokStoreName": $('#RewokStoreId-' + i).find(':selected').text(),
+                    "BatchNo": $('#BatchNo-' + i).val(),
+                    "UniqueBatchNo": $('#uniquebatchno-' + i).val(),
+                });
+            }
+            //FormAdd(formData);
+            console.log(ItemData);
+            $.ajax({
+                url: "@Url.Action("AddToMIRGrid")",
+                type: "POST",
+                data: { model: ItemData, ImageList: imageArray },
+                beforeSend: function (xhr) {
+
+                },
+                success: function (data, status, xhr) {
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        // $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                    }
+                    else {
+                        $('#divMIRModuleGrid').html(data);
+                        $.notify('Item Added To Grid.', "success");
+                        ClearGrid();
+                    }
+
+                    AllowUpdelete();
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+
+                    $('.Schedule').fadeIn();
+                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                }
+            }).done(function () {
+
+            }).fail(function () {
+            }).always(function () {
+
+            });
+
+
+        }
+
+        function ClearGrid() {
+            $('#divMIRGrid').empty();
+        }
+
+        function FormAdd(formData) {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddToMIRGrid2")",
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                success: function (data, status, xhr) {
+
+                    console.log(data);
+                    imageArray = data;
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                    console.log(result.responseText)
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+
+                    $('.Schedule').fadeIn();
+                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                }
+            }).done(function () {
+
+            }).fail(function () {
+            }).always(function () {
+
+            });
+        }
+
+        function fillAllStore() {
+            var rowCount = $('#divMIRGrid tr').length;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStore")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            for (let j = 1; j <= rowCount; j++) {
+                                $('#RejRecStore-' + j).empty();
+                                $('#RejRecStore-' + j).append('<option disabled value="0">-Select-</option>');
+                                // $('#HoldStoreId-' + j).empty();
+                                // $('#HoldStoreId-' + j).append('<option disabled value="0">-Select-</option>');
+                                // $('#RewokStoreId-' + j).empty();
+                                // $('#RewokStoreId-' + j).append('<option disabled value="0">-Select-</option>');
+                                $.each(obj.Result, function (index, val) {
+                                    if (val.entryid != 1) {
+                                        $('#RejRecStore-' + j).append('<option value="' + val.entryid +
+                                            '">' + val.store_name + '</option>');
+                                    }
+                                    // $('#HoldStoreId-' + j).append('<option value="' + val.entryid +
+                                    //     '">' + val.store_name + '</option>');
+                                    // $('#RewokStoreId-' + j).append('<option value="' + val.entryid +
+                                    //     '">' + val.store_name + '</option>');
+                                });
+
+                                $('#RejRecStore-' + j).prop('selectedIndex', 0);
+                                $('#RejRecStore-' + j).prop('disabled', true);
+                                // $('#HoldStoreId-' + j).prop('selectedIndex', 0);
+                                // $('#HoldStoreId-' + j).prop('disabled', true);
+                                // $('#RewokStoreId-' + j).prop('selectedIndex', 0);
+                                // $('#RewokStoreId-' + j).prop('disabled', true);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function fillAllRewStore() {
+            var rowCount = $('#divMIRGrid tr').length;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetRewStore")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            for (let j = 1; j <= rowCount; j++) {
+                                $('#RewokStoreId-' + j).empty();
+                                $('#RewokStoreId-' + j).append('<option disabled value="0">-Select-</option>');
+                                $.each(obj.Result, function (index, val) {
+                                    if (val.entryid != 1) {
+                                        $('#RewokStoreId-' + j).append('<option value="' + val.entryid +
+                                            '">' + val.store_name + '</option>');
+                                    }
+                                });
+                                $('#RewokStoreId-' + j).prop('selectedIndex', 0);
+                                $('#RewokStoreId-' + j).prop('disabled', true);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function fillAllHoldStore() {
+            var rowCount = $('#divMIRGrid tr').length;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetHoldStore")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            for (let j = 1; j <= rowCount; j++) {
+                                $('#HoldStoreId-' + j).empty();
+                                $('#HoldStoreId-' + j).append('<option disabled value="0">-Select-</option>');
+                                $.each(obj.Result, function (index, val) {
+                                    if (val.entryid != 1) {
+                                        $('#HoldStoreId-' + j).append('<option value="' + val.entryid +
+                                            '">' + val.store_name + '</option>');
+                                    }
+                                });
+                                $('#HoldStoreId-' + j).prop('selectedIndex', 0);
+                                $('#HoldStoreId-' + j).prop('disabled', true);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function fillAllRecOkStore() {
+            var rowCount = $('#divMIRGrid tr').length;
+             
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetRecOkStore")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                     
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            for (let j = 1; j <= rowCount; j++) {
+                                $('#OkRecStore-' + j).empty();
+                                $('#OkRecStore-' + j).append('<option disabled value="0">-Select-</option>');
+
+                                $.each(obj.Result, function (index, val) {
+                                    if (val.entryid != 4) {
+                                        $('#OkRecStore-' + j).append('<option selected value="' + val.entryid +
+                                            '">' + val.store_name + '</option>');
+                                    }
+                                });
+                                $('#OkRecStore-' + j).prop('selectedIndex', 0);
+                                if ($('AcceptedQty-' + j).val() <= 0) {
+                                    $('#OkRecStore-' + j).prop('disabled', true);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function fillEmp() {
+            var rowCount = $('#divMIRGrid tr').length;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetEmployeeList")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            for (let j = 1; j <= rowCount; j++) {
+                                $('#ApprovedByEmp-' + j).empty();
+                                $('#ApprovedByEmp-' + j).append('<option>-Select-</option>');
+                                $.each(obj.Result, function (index, val) {
+                                    $('#ApprovedByEmp-' + j).append('<option value="' + val.Emp_Id +
+                                        '">' + val.EmpNameCode + '</option>');
+                                });
+
+                                $('#ApprovedByEmp-' + j).val($('#CreatedBy').val());
+                            }
+                        }
+                    }
+                }
+
+            });
+
+        }
+
+        function FillOkRecStore(i) {
+             
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetOkRecStore")",
+                dataType: "json",
+                data: { "ItemCode": parseInt($('#ItemCode-' + i).val()) },
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var rowCount = $('#divMIRGrid tr').length;
+                            for (let i = 1; i <= rowCount; i++) {
+                                $('#OkRecStore-' + i).empty();
+                                $('#OkRecStore-' + i).append('<option value="0" selected>-Select-</option>');
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#OkRecStore-' + i).append('<option selected value="' + val.Store +
+                                        '">' + val.Store_Name + '</option>');
+                                    $('#OkRecStore-' + i).val(val.Store).trigger("change");
+                                });
+                            }
+                             
+                            $('#OkRecStore-' + i + ' option').filter(function () {
+                                return $(this).val() === obj.Result.Table[0].Store_Name;
+                            }).prop('selected', true);
+                            //$('#OkRecStore-' + i).val(obj.Result.Table[0].Store_Name);
+                        }
+                    }
+                }
+
+            });
+        }
+
+        function fillAllStoreOnEdit(j, okRec, RejStore, holdStore, rewokStore) {
+
+            var rowCount = $('#divMIRGrid tr').length;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStore")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#OkRecStore-' + j).empty();
+                            $('#OkRecStore-' + j).append('<option disabled value="0" selected>-Select-</option>');
+                            $('#RejRecStore-' + j).empty();
+                            $('#RejRecStore-' + j).append('<option disabled value="0" selected>-Select-</option>');
+                            $('#HoldStoreId-' + j).empty();
+                            $('#HoldStoreId-' + j).append('<option disabled value="0" selected>-Select-</option>');
+                            $('#RewokStoreId-' + j).empty();
+                            $('#RewokStoreId-' + j).append('<option disabled value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                if (val.entryid != 4) {
+                                    $('#OkRecStore-' + j).append('<option selected value="' + val.entryid +
+                                        '">' + val.store_name + '</option>');
+                                }
+                                if (val.entryid != 1) {
+                                    $('#RejRecStore-' + j).append('<option value="' + val.entryid +
+                                        '">' + val.store_name + '</option>');
+                                }
+                                $('#HoldStoreId-' + j).append('<option value="' + val.entryid +
+                                    '">' + val.store_name + '</option>');
+                                $('#RewokStoreId-' + j).append('<option value="' + val.entryid +
+                                    '">' + val.store_name + '</option>');
+                            });
+                            $('#OkRecStore-' + j).val(okRec);
+                            $('#RejRecStore-' + j).val(RejStore);
+                            $('#HoldStoreId-' + j).val(holdStore);
+                            $('#RewokStoreId-' + j).val(rewokStore);
+
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function StoreChange(i) {
+
+            var Store = $('#OkRecStore-' + i).val();
+            if (SameStore) {
+                var RowCount = $('#divMIRGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#OkRecStore-' + j).val(Store);
+                }
+            }
+        }
+
+        function displayreuploadbtn() {
+
+            $('#hidebtn').show();
+        }
+
+        var SameStore = false;
+        $('#SHA').change(function () {
+
+            var RowCount = $('#divMIRGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#OkRecStore-' + i).val('');
+            }
+            if ($('#SHA').prop("checked") == true) {
+                SameStore = true;
+            } else {
+                SameStore = false;
+            }
+        });
+
+        function AcceptedQtyChange(i, ItemCode) {
+             
+            var Acceptedqty = $('#AcceptedQty-' + i).val();
+            var RowCount = $('#divMIRGrid tr').length;
+            if (AcceptedchekedQty) {
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#ItemCode-' + i).val() == ItemCode) {
+                        var ReqQty = $('#RECQTY-' + i).val();
+                        $('#AcceptedQty-' + i).val(Acceptedqty);
+                        if (Acceptedqty == 0) {
+                            $('#OkRecStore-' + i).prop('selectedIndex', 0);
+                            $('#OkRecStore-' + i).prop('disabled', true);
+                        }
+                        else {
+                            $('#OkRecStore-' + i).prop('disabled', false);
+                        }
+                        $('#RejectedQty-' + i).val(ReqQty - Acceptedqty);
+                        if ($('#RejectedQty-' + i).val() == 0) {
+                            $('#RejRecStore-' + i).prop('selectedIndex', 0);
+                            $('#RejRecStore-' + i).prop('disabled', true);
+                        } else {
+                            $('#RejRecStore-' + i).prop('disabled', false);
+                        }
+                    }
+                }
+            }
+            for (var i = 1; i <= RowCount; i++) {
+                if (Acceptedqty == 0) {
+                    $('#OkRecStore-' + i).prop('selectedIndex', 0);
+                    $('#OkRecStore-' + i).prop('disabled', true);
+                }
+            }
+        }
+
+        var AcceptedchekedQty = false;
+        $('#AcceptedQtySHA').change(function () {
+
+            if ($('#AcceptedQtySHA').prop("checked") == true) {
+                AcceptedchekedQty = true;
+            } else {
+                AcceptedchekedQty = false;
+            }
+        })
+
+        function RejectedQtyChange(i, ItemCode) {
+
+            var Rejectedqty = $('#RejectedQty-' + i).val();
+            if (RejectedchekedQty) {
+                var RowCount = $('#divMIRGrid tr').length;
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#ItemCode-' + i).val() == ItemCode) {
+                        var ReqQty = $('#RECQTY-' + i).val();
+                        $('#RejectedQty-' + i).val(Rejectedqty);
+                        if (Rejectedqty == 0) {
+                            $('#RejRecStore-' + i).prop('selectedIndex', 0);
+                            $('#RejRecStore-' + i).prop('disabled', true);
+                        }
+                        else {
+                            $('#RejRecStore-' + i).prop('disabled', false);
+                        }
+                        $('#HoldQty-' + i).val(ReqQty - Rejectedqty);
+                        if ($('#HoldQty-' + i).val() == 0) {
+                            $('#HoldRecStore-' + i).prop('selectedIndex', 0);
+                            $('#HoldRecStore-' + i).prop('disabled', true);
+                        } else {
+                            $('#HoldRecStore-' + i).prop('disabled', false);
+                        }
+                    }
+                }
+            }
+        }
+
+        var RejectedchekedQty = false;
+        $('#RejectedQtySHA').change(function () {
+            if ($('#RejectedQtySHA').prop("checked") == true) {
+                RejectedchekedQty = true;
+            } else {
+                RejectedchekedQty = false;
+            }
+        })
+
+        function HoldQtyChange(i, ItemCode) {
+
+            var Holdqty = $('#HoldQty-' + i).val();
+            if (HoldchekedQty) {
+                var RowCount = $('#divMIRGrid tr').length;
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#ItemCode-' + i).val() == ItemCode) {
+                        var ReqQty = $('#RECQTY-' + i).val();
+                        $('#HoldQty-' + i).val(Holdqty);
+                        if (Holdqty == 0) {
+                            $('#HoldRecStore-' + i).prop('selectedIndex', 0);
+                            $('#HoldRecStore-' + i).prop('disabled', true);
+                        }
+                        else {
+                            $('#HoldRecStore-' + i).prop('disabled', false);
+                        }
+                        $('#ReworkQty-' + i).val(ReqQty - Holdqty);
+                        if ($('#ReworkQty-' + i).val() == 0) {
+                            $('#ReworkRecStore-' + i).prop('selectedIndex', 0);
+                            $('#ReworkRecStore-' + i).prop('disabled', true);
+                        } else {
+                            $('#ReworkRecStore-' + i).prop('disabled', false);
+                        }
+                    }
+                }
+            }
+        }
+
+        var HoldchekedQty = false;
+        $('#HoldQtySHA').change(function () {
+            if ($('#HoldQtySHA').prop("checked") == true) {
+                HoldchekedQty = true;
+            } else {
+                HoldchekedQty = false;
+            }
+        })
+
+        function ReworkQtyChange(i, ItemCode) {
+            var Reworkqty = $('#ReworkQty-' + i).val();
+            if (Reworkqty) {
+                var RowCount = $('#divMIRGrid tr').length;
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#ItemCode-' + i).val() == ItemCode) {
+                        var ReqQty = $('#RECQTY-' + i).val();
+                        $('#ReworkQty-' + i).val(Reworkqty);
+                        if (Reworkqty == 0) {
+                            $('#ReworkRecStore-' + i).prop('selectedIndex', 0);
+                            $('#ReworkRecStore-' + i).prop('disabled', true);
+                        }
+                        else {
+                            $('#ReworkRecStore-' + i).prop('disabled', false);
+                        }
+                        $('#DeviationQty-' + i).val(ReqQty - Reworkqty);
+                        if ($('#DeviationQty-' + i).val() == 0) {
+                            $('#DeviationRecStore-' + i).prop('selectedIndex', 0);
+                            $('#DeviationRecStore-' + i).prop('disabled', true);
+                        } else {
+                            $('#DeviationRecStore-' + i).prop('disabled', false);
+                        }
+                    }
+                }
+            }
+        }
+
+        var Reworkqty = false;
+        $('#ReworkQtySHA').change(function () {
+            if ($('#ReworkQtySHA').prop("checked") == true) {
+                Reworkqty = true;
+            } else {
+                Reworkqty = false;
+            }
+        })
+
+        function DeviationQtyChange(i, ItemCode) {
+
+            var Deviationqty = $('#DeviationQty-' + i).val();
+            if (Reworkqty) {
+                var RowCount = $('#divMIRGrid tr').length;
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#ItemCode-' + i).val() == ItemCode) {
+                        var ReqQty = $('#RECQTY-' + i).val();
+                        $('#DeviationQty-' + i).val(Deviationqty);
+                        if (Deviationqty == 0) {
+                            $('#DeviationRecStore-' + i).prop('selectedIndex', 0);
+                            $('#DeviationRecStore-' + i).prop('disabled', true);
+                        }
+                        else {
+                            $('#DeviationRecStore-' + i).prop('disabled', false);
+                        }
+                        $('#AcceptedQty-' + i).val(ReqQty - Deviationqty);
+                        if ($('#AcceptedQty-' + i).val() == 0) {
+                            $('#OkRecStore-' + i).prop('selectedIndex', 0);
+                            $('#OkRecStore-' + i).prop('disabled', true);
+                        } else {
+                            $('#OkRecStore-' + i).prop('disabled', false);
+                        }
+                    }
+                }
+            }
+        }
+
+        var Deviationqty = false;
+        $('#DeviationQtySHA').change(function () {
+            if ($('#DeviationQtySHA').prop("checked") == true) {
+                Deviationqty = true;
+            } else {
+                Deviationqty = false;
+            }
+        })
+
+        function RejStoreChange(i) {
+
+            var Store = $('#RejRecStore-' + i).val();
+            if (SameStore) {
+                var RowCount = $('#divMIRGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    if ($('#RejRecStore-' + j).prop('disabled') === false) {
+                        $('#RejRecStore-' + j).val(Store);
+                    }
+                }
+            }
+        }
+        var SameStore = false;
+        $('#SHARej').change(function () {
+
+            var RowCount = $('#divMIRGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                if ($('#RejRecStore-' + i).prop('disabled') === false) {
+
+                    $('#RejRecStore-' + i).val('');
+                }
+            }
+            if ($('#SHARej').prop("checked") == true) {
+                SameStore = true;
+            } else {
+                SameStore = false;
+            }
+        })
+
+        function HoldStoreChange(i) {
+
+            var Store = $('#HoldStoreId-' + i).val();
+            if (SameStore) {
+                var RowCount = $('#divMIRGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    if ($('#HoldStoreId-' + j).prop('disabled') === false) {
+                        $('#HoldStoreId-' + j).val(Store);
+                    }
+                }
+            }
+        }
+
+        var SameStore = false;
+        $('#SHAHold').change(function () {
+
+            var RowCount = $('#divMIRGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                if ($('#HoldStoreId-' + i).prop('disabled') === false) {
+
+                    $('#HoldStoreId-' + i).val('');
+                }
+            }
+            if ($('#SHAHold').prop("checked") == true) {
+                SameStore = true;
+            } else {
+                SameStore = false;
+            }
+        })
+
+        function ReworkStoreChange(i) {
+
+            var Store = $('#RewokStoreId-' + i).val();
+            if (SameStore) {
+                var RowCount = $('#divMIRGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    if ($('#RewokStoreId-' + j).prop('disabled') === false) {
+                        $('#RewokStoreId-' + j).val(Store);
+                    }
+                }
+            }
+        }
+
+        var SameStore = false;
+        $('#SHARework').change(function () {
+
+            var RowCount = $('#divMIRGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                if ($('#RewokStoreId-' + i).prop('disabled') === false) {
+
+                    $('#RewokStoreId-' + i).val('');
+                }
+            }
+            if ($('#SHARework').prop("checked") == true) {
+                SameStore = true;
+            } else {
+                SameStore = false;
+            }
+        })
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('MRNNoBack', $('#MRNNoBack').val());
+            sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('InvNoBack', $('#InvNoBack').val());
+            sessionStorage.setItem('DeptNameBack', $('#DeptNameBack').val());
+            sessionStorage.setItem('MRNJWBack', $('#MRNJWBack').val());
+
+            window.history.back();
+        }
+    </script>
+}
+
+<style>
+    #TableGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #GridLabels th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #ItemListStyle th {
+        background-color: #127387;
+        position: sticky;
+        top: -20px;
+        z-index: 1;
+    }
+
+    .focused {
+        background-color: #f0f0f0; /* Change the background color as desired */
+    }
+
+    .spinner-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* Ensure it appears above other content */
+    }
+
+    .spinner-border {
+        color: #fff; /* Color of the spinner */
+    }
+</style>

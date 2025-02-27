@@ -1,0 +1,248 @@
+﻿@model eTactWeb.DOM.Models.IssueAgainstProdScheduleDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+    string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
+}
+
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod PlanNo</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod PlanDate</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod SchNo</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod SchDate</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM PartCode</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM ItemName</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Qty</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Max Issue Qty</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch Stock</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Wip Stock</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Std pkg</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique BatchNo</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Iss Agt ProdSchYearCode</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Iss Agt ProdSchEntryDate</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Iss Agt ProdSchSlipNo</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Plan No YearCode</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Plan No EntryId</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG PartCode</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG ItemName</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch EntryId</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch YearCode</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Parent Prod SchNo</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Parent Prod SchEntryId</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Parent Prod SchYearCode</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Parent Prod SchDate</th>
+                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Issue Qty</th>
+                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prev Issue Qty</th>
+                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pree Issue Alt Qty</th>
+                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom No</th>
+                <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Qty</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Wip Max Qty</th>
+                <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>In ProcessQc EntryId</th>
+                <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>In ProcessQc SlipNo</th>
+                <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>In ProcessQc YearCode</th>
+                <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>In ProcessQc Date</th>
+                <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Has SubBom</th>
+                <th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Material Issue From WC</th>
+                <th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Iss Agt ProdSch SlipDate</th>
+                <th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issued ByEmp</th>
+                <th data-columnno="45" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Received ByEmp</th>
+                <th data-columnno="46" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acknowledged ByProd</th>
+                <th data-columnno="47" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ack Date</th>
+                <th data-columnno="48" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryDate</th>
+                <th data-columnno="49" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryBy</th>
+                <th data-columnno="50" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated ByEmp</th>
+                <th data-columnno="51" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last UpdatedDate</th>
+                <th data-columnno="52" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                <th data-columnno="53" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
+                <th data-columnno="54" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issued From Store</th>
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var @Cntr = 0;
+                if (Model.IssueAgainstProdScheduleDashboard == null || Model.IssueAgainstProdScheduleDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.IssueAgainstProdScheduleDashboard)
+                    {
+
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)" id="TransferData-@Cntr">
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="printData-@Cntr">
+                                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.IssAgtProdSchEntryId" asp-route-YearCode="@item.IssAgtProdSchYearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="IssueAgainstProdSchedule" asp-route-Mode="V" asp-route-ID="@item.IssAgtProdSchEntryId" asp-route-YC="@item.IssAgtProdSchYearCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    @if (item.IssAgtProdSchYearCode == yearCode)
+                                    {
+                                        <div id="editCursorDiv-@Cntr">
+                                            <a class="table-link link-primary" id="editCursor-@Cntr" onclick="CheckEditOrDelete(event,'@item.IssAgtProdSchEntryId','@item.IssAgtProdSchYearCode','edit')" asp-action="IssueAgainstProdSchedule" asp-route-Mode="U" asp-route-ID="@item.IssAgtProdSchEntryId" asp-route-YC="@item.IssAgtProdSchYearCode" asp-route-ProdSchSlipNo="@item.IssAgtProdSchSlipNo">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="deleteCursorDiv-@Cntr">
+                                            <a class="table-link link-danger" onclick="CheckEditOrDelete(event,'@item.IssAgtProdSchEntryId','@item.IssAgtProdSchYearCode','delete')" id="deleteCursor-@Cntr" asp-action="DeleteByID" asp-route-ID="@item.IssAgtProdSchEntryId" asp-route-YC="@item.IssAgtProdSchYearCode" asp-route-ProdSchSlipNo="@item.IssAgtProdSchSlipNo">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <a class="table-link link-primary noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a class="table-link link-danger noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                            <td>@item.ProdPlanNo</td>
+                            <td>@item.PlanDate</td>
+                            <td>@item.ProdSchNo</td>
+                            <td>@item.ProdSchDate</td>
+                            <td>@item.PartCode<input type="hidden" value="@item.IssueItemCode"/></td>
+                            <td>@item.ItemName</td>
+                            <td>@item.WorkCenter</td>
+                            <td>@item.IssueQty.ToString("F2")</td>
+                            <td>@item.MaxIssueQtyAllowed.ToString("F2")</td>
+                            <td>@item.TotalStock.ToString("F2")</td>
+                            <td>@item.BatchStock.ToString("F2")</td>
+                            <td>@item.WIPStock.ToString("F2")</td>
+                            <td>@item.StdPkg.ToString("F2")</td>
+                            <td>@item.Unit</td>
+                            <td>@item.BatchNo</td>
+                            <td>@item.UniqueBatchno</td>
+                            <td>@item.IssAgtProdSchYearCode</td>
+                            <td>@item.IssAgtProdSchEntryDate</td>
+                            <td>@item.IssAgtProdSchSlipNo</td>
+                            <td>@item.PlanNoYearCode</td>
+                            <td>@item.PlanNoEntryId</td>
+                            <td>@item.FGItemName<input type="hidden" value="@item.PRODSCHFGItemCode"/></td>
+                            <td>@item.FGPartCode<input type="hidden" value="@item.PRODPlanFGItemCode"/></td>
+                            <td>@item.ProdSchEntryId</td>
+                            <td>@item.ProdSchYearCode</td>
+                            <td>@item.ParentProdSchNo</td>
+                            <td>@item.ParentProdSchEntryId</td>
+                            <td>@item.ParentProdSchYearCode</td>
+                            <td>@item.ParentProdSchDate</td>
+                            <td>@item.AltIssueQty.ToString("F2")</td>
+                            <td>@item.Altunit</td>
+                            <td>@item.PrevissueQty.ToString("F2")</td>
+                            <td>@item.PreIssueAltQty.ToString("F2")</td>
+                            <td>@item.BOMNo</td>
+                            <td>@item.BomQty.ToString("F2")</td>
+                            <td>@item.WIPMaxQty.ToString("F2")</td>
+                            <td>@item.InProcessQCEntryId</td>
+                            <td>@item.InprocessQCSlipNo</td>
+                            <td>@item.InProcessQCYearCode</td>
+                            <td>@item.InProcessQCDate</td>
+                            <td>@item.ItemHasSubBom</td>
+                            <td>@item.MaterialIsIssuedDirectlyFrmWC</td>
+                            <td>@item.IssAgtProdSchSlipDate</td>
+                            <td>@item.IssuedByEmp<input type="hidden" value="@item.IssuedByEmpId"/></td>
+                            <td>@item.ReceivedByEmp<input type="hidden" value="@item.ReceivedByEmpId"/></td>
+                            <td>@item.AcknowledgedByProd</td>
+                            <td>@item.AckDate</td>
+                            <td>@item.ActualEntryDate</td>
+                            <td>@item.ActualEntryByEmp<input type="hidden" value="@item.ActualEntryBy"/></td>
+                            <td>@item.UpdatedByEmp<input type="hidden" value="@item.LastUpdatedBy"/></td>
+                            <td>@item.LastUpdatedDate</td>
+                            <td>@item.CC</td>
+                            <td>@item.MachineName </td>
+                            <td>@item.IssueFromStore</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

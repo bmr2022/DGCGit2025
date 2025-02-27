@@ -1,0 +1,1137 @@
+﻿using eTactWeb.DOM.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.VisualBasic;
+using Newtonsoft.Json;
+using System.Data.SqlClient;
+using System.Runtime.Caching;
+using System.Text.Json;
+using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
+using eTactWeb.Services.Interface;
+using System.Data;
+using System.Globalization;
+
+namespace eTactWeb.Controllers
+{
+    public class CommonController : Controller
+    {
+        private readonly IMemoryCacheService _iMemoryCacheService;
+        private readonly IWebHostEnvironment _IWebHostEnvironment;
+        private readonly IConfiguration iconfiguration;
+        public CommonController(IMemoryCache imemoryCache, ILogger<CommonController> logger, IDataLogic iDataLogic)
+        {
+            _MemoryCache = imemoryCache;
+            Logger = logger;
+            IDataLogic = iDataLogic;
+        }
+
+        public IDataLogic IDataLogic { get; }
+        public ILogger<CommonController> Logger { get; }
+        private IMemoryCache _MemoryCache { get; }
+
+        private void StoreInCache(string CacheKey, object CacheObject)
+        {
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set(CacheKey, CacheObject, cacheEntryOptions);
+        }
+
+        #region For Dbit Credit Grid
+        public async Task<JsonResult> GetDbCrDataGrid(string PageName,int docAccountCode, int AccountCode, decimal? BillAmt, decimal? NetAmt)
+        {
+            dynamic MainModel = new DirectPurchaseBillModel();
+            dynamic TaxGrid = new List<TaxModel>();
+            dynamic TdsGrid = new List<TDSModel>();
+
+            _MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
+            _MemoryCache.TryGetValue("KeyTDSGrid", out TdsGrid);
+            DataTable DbCrGridd = new DataTable();
+            DataTable TaxGridd = new DataTable();
+            DataTable TdsGridd = new DataTable();
+
+            if (PageName == "ItemList")
+            {
+                MainModel = new SaleOrderModel();
+            }
+            else if (PageName == "PurchaseOrder")
+            {
+                MainModel = new PurchaseOrderModel();
+            }
+            else if (PageName == "DirectPurchaseBill")
+            {
+                MainModel = new DirectPurchaseBillModel();
+            }
+            else if (PageName == "PurchaseBill")
+            {
+                MainModel = new PurchaseBillModel();
+            }
+            else if (PageName == "SaleInvoice")
+            {
+                MainModel = new SaleBillModel();
+            }
+            else if (PageName == "CreditNote")
+            {
+                MainModel = new AccCreditNoteModel();
+            }
+            else if (PageName == "SaleRejection")
+            {
+                MainModel = new SaleRejectionModel();
+            }
+            else if (PageName == "JobWorkIssue")
+            {
+                MainModel = new JobWorkIssueModel();
+            }
+
+            if (HttpContext.Session.GetString(PageName) != null)
+            {
+                if (PageName == "ItemList")
+                {
+                    MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(PageName));
+                }
+                else if (PageName == "PurchaseOrder")
+                {
+                    _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                }
+                else if (PageName == "DirectPurchaseBill")
+                {
+                    _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                    DbCrGridd = GetDbCrDetailTable(MainModel);
+                    TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
+                }
+                else if (PageName == "PurchaseBill")
+                {
+                    _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                    DbCrGridd = GetPbDbCrDetailTable(MainModel);
+                    TdsGridd = GetTDSDetailTableForPB(TdsGrid, MainModel);
+                }
+                else if (PageName == "SaleInvoice")
+                {
+                    _MemoryCache.TryGetValue("SaleBillModel", out MainModel);
+                    DbCrGridd = GetSbDbCrDetailTable(MainModel);
+                    //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
+                }
+                else if (PageName == "CreditNote")
+                {
+                    _MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
+                    DbCrGridd = GetCNDbCrDetailTable(MainModel);
+                    //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
+                }
+                else if (PageName == "SaleRejection")
+                {
+                    _MemoryCache.TryGetValue("SaleRejectionModel", out MainModel);
+                    DbCrGridd = GetSRDbCrDetailTable(MainModel);
+                }
+                else if (PageName == "JobWorkIssue")
+                {
+                    _MemoryCache.TryGetValue("JobWorkIssue", out MainModel);
+                }
+
+                TaxGridd = GetTaxDetailTable(TaxGrid);
+            }
+
+
+            var JSON = await IDataLogic.GetDbCrDataGrid(DbCrGridd, TaxGridd, TdsGridd, PageName.ToUpper().ToString(), docAccountCode, AccountCode, BillAmt, NetAmt);
+            //var JSON = "success" + PageName + "_" + AccountCode + "_" + NetAmt + "_" + BillAmt;
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            var DrCrGridd = TransformJsonToDbCrModel(JsonString);
+            _MemoryCache.Set("KeyDrCrGrid", DrCrGridd == null ? new List<DbCrModel>() : DrCrGridd, DateTimeOffset.Now.AddMinutes(60));
+            return Json(JsonString);
+        }
+        private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
+        {
+            DataTable Table = new();
+            Table.Columns.Add("SeqNo", typeof(int));
+            Table.Columns.Add("[Type]", typeof(string));
+            Table.Columns.Add("ItemCode", typeof(int));
+            Table.Columns.Add("TaxTypeID", typeof(int));
+            Table.Columns.Add("TaxAccountCode", typeof(string));
+            Table.Columns.Add("TaxPercentg", typeof(float));
+            Table.Columns.Add("AddInTaxable", typeof(char));
+            Table.Columns.Add("RountOff", typeof(string));
+            Table.Columns.Add("Amount", typeof(float));
+            Table.Columns.Add("TaxRefundable", typeof(char));
+            Table.Columns.Add("TaxonExp", typeof(string));
+            Table.Columns.Add("Remark", typeof(string));
+
+            if (TaxDetailList != null && TaxDetailList.Count > 0)
+            {
+                var groupedTaxDetails = TaxDetailList
+                .GroupBy(item => item.TxItemCode)
+                .Select(group => new
+                {
+                    FirstItem = group.First(),
+                    TotalAmount = group.Sum(item => item.TxAmount)
+                });
+
+                foreach (var group in groupedTaxDetails)
+                {
+                    var Item = group.FirstItem;
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                    Item.TxSeqNo,
+                    Item.TxType ?? string.Empty,
+                    Item.TxItemCode,
+                    Item.TxTaxType,
+                    Item.TxAccountCode,
+                    Item.TxPercentg,
+                    !string.IsNullOrEmpty(Item.TxAdInTxable) && Item.TxAdInTxable.Length == 1 ? Convert.ToChar(Item.TxAdInTxable) : 'N',
+                    Item.TxRoundOff,
+                    //Math.Round(Item.TxAmount, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(group.TotalAmount, 2, MidpointRounding.AwayFromZero),
+                    !string.IsNullOrEmpty(Item.TxRefundable) && Item.TxRefundable.Length == 1 ? Convert.ToChar(Item.TxRefundable) : 'N',
+                    Item.TxOnExp,
+                    Item.TxRemark,
+                        });
+                }
+            }
+
+            return Table;
+        }
+        private static DataTable GetTDSDetailTableForDPB(List<TDSModel> TDSDetailList, dynamic MainModel)
+        {
+            try
+            {
+                DataTable Table = new();
+                Table.Columns.Add("PurchBillEntryId", typeof(int));
+                Table.Columns.Add("PurchBillYearCode", typeof(int));
+                Table.Columns.Add("SeqNo", typeof(int));
+                Table.Columns.Add("InvoiceNo", typeof(string));
+                Table.Columns.Add("InvoiceDate", typeof(DateTime));
+                Table.Columns.Add("PurchVoucherNo", typeof(string));
+                Table.Columns.Add("AccountCode", typeof(int));
+                Table.Columns.Add("TaxTypeID", typeof(int));
+                Table.Columns.Add("TaxNameCode", typeof(int));
+                Table.Columns.Add("TaxPer", typeof(float));
+                Table.Columns.Add("RoundOff", typeof(string));
+                Table.Columns.Add("TDSAmount", typeof(float));
+                Table.Columns.Add("InvBasicAmt", typeof(float));
+                Table.Columns.Add("InvNetAmt", typeof(float));
+                Table.Columns.Add("Remark", typeof(string));
+                Table.Columns.Add("TypePBDirectPBVouch", typeof(string));
+                Table.Columns.Add("BankChallanNo", typeof(string));
+                Table.Columns.Add("challanDate", typeof(DateTime));
+                Table.Columns.Add("BankVoucherNo", typeof(string));
+                Table.Columns.Add("BankVoucherDate", typeof(DateTime));
+                Table.Columns.Add("BankVouchEntryId", typeof(int));
+                Table.Columns.Add("BankYearCode", typeof(int));
+                Table.Columns.Add("RemainingAmt", typeof(float));
+                Table.Columns.Add("RoundoffAmt", typeof(float));
+
+                if (TDSDetailList != null && TDSDetailList.Count > 0)
+                {
+                    foreach (TDSModel Item in TDSDetailList)
+                    {
+                        DateTime InvoiceDate = new DateTime();
+                        DateTime challanDate = new DateTime();
+                        DateTime BankVoucherDate = new DateTime();
+                        string InvoiceDt = "";
+                        string challanDt = "";
+                        string BankVoucherDt = "";
+                        if (MainModel.InvDate != null)
+                        {
+                            InvoiceDate = DateTime.Parse(MainModel.InvDate, new CultureInfo("en-GB"));
+                            InvoiceDt = InvoiceDate.ToString("yyyy/MM/dd");
+                        }
+                        else
+                        {
+                            InvoiceDt = DateTime.Today.ToString();
+                        }
+                        challanDt = DateTime.Today.ToString();
+                        BankVoucherDt = DateTime.Today.ToString();
+
+                        Table.Rows.Add(
+                            new object[]
+                            {
+                            MainModel.EntryID > 0 ? MainModel.EntryID : 0,
+                            MainModel.YearCode > 0 ? MainModel.YearCode : 0,
+                            Item.TDSSeqNo,
+                            MainModel.InvoiceNo ?? string.Empty,
+                            InvoiceDt,
+                            !string.IsNullOrEmpty(MainModel.PurchVouchNo) ? MainModel.PurchVouchNo : string.Empty,
+                            MainModel.AccountCode,
+                            Item.TDSTaxType,
+                            Item.TDSAccountCode,
+                            Item.TDSPercentg,
+                            Item.TDSRoundOff,
+                            Item.TDSAmount,
+                            MainModel.ItemNetAmount,
+                            MainModel.NetTotal,
+                            Item.TDSRemark ?? string.Empty,
+                            "DirectPurchaseBill",
+                            string.Empty,
+                            challanDt,
+                            string.Empty,
+                            BankVoucherDt,
+                            0,
+                            0,
+                            0f,
+                            Item.TDSRoundOffAmt ?? 0,
+                            });
+                    }
+                }
+                return Table;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        private static DataTable GetTDSDetailTableForPB(List<TDSModel> TDSDetailList, dynamic MainModel)
+        {
+            try
+            {
+                DataTable Table = new();
+                Table.Columns.Add("PurchBillEntryId", typeof(int));
+                Table.Columns.Add("PurchBillYearCode", typeof(int));
+                Table.Columns.Add("SeqNo", typeof(int));
+                Table.Columns.Add("InvoiceNo", typeof(string));
+                Table.Columns.Add("InvoiceDate", typeof(DateTime));
+                Table.Columns.Add("PurchVoucherNo", typeof(string));
+                Table.Columns.Add("AccountCode", typeof(int));
+                Table.Columns.Add("TaxTypeID", typeof(int));
+                Table.Columns.Add("TaxNameCode", typeof(int));
+                Table.Columns.Add("TaxPer", typeof(float));
+                Table.Columns.Add("RoundOff", typeof(string));
+                Table.Columns.Add("TDSAmount", typeof(float));
+                Table.Columns.Add("InvBasicAmt", typeof(float));
+                Table.Columns.Add("InvNetAmt", typeof(float));
+                Table.Columns.Add("Remark", typeof(string));
+                Table.Columns.Add("TypePBDirectPBVouch", typeof(string));
+                Table.Columns.Add("BankChallanNo", typeof(string));
+                Table.Columns.Add("challanDate", typeof(DateTime));
+                Table.Columns.Add("BankVoucherNo", typeof(string));
+                Table.Columns.Add("BankVoucherDate", typeof(DateTime));
+                Table.Columns.Add("BankVouchEntryId", typeof(int));
+                Table.Columns.Add("BankYearCode", typeof(int));
+                Table.Columns.Add("RemainingAmt", typeof(float));
+                Table.Columns.Add("RoundoffAmt", typeof(float));
+                
+                if (TDSDetailList != null && TDSDetailList.Count > 0)
+                {
+                    foreach (TDSModel Item in TDSDetailList)
+                    {
+                        DateTime InvoiceDate = new DateTime();
+                        DateTime challanDate = new DateTime();
+                        DateTime BankVoucherDate = new DateTime();
+                        string InvoiceDt = "";
+                        string challanDt = "";
+                        string BankVoucherDt = "";
+                        if (MainModel.InvDate != null)
+                        {
+                            InvoiceDate = DateTime.Parse(MainModel.InvDate, new CultureInfo("en-GB"));
+                            InvoiceDt = InvoiceDate.ToString("yyyy/MM/dd");
+                        }
+                        else
+                        {
+                            InvoiceDt = DateTime.Today.ToString();
+                        }
+                        challanDt = DateTime.Today.ToString();
+                        BankVoucherDt = DateTime.Today.ToString();
+
+                        Table.Rows.Add(
+                            new object[]
+                            {
+                            MainModel.EntryID > 0 ? MainModel.EntryID : 0,
+                            MainModel.YearCode > 0 ? MainModel.YearCode : 0,
+                            Item.TDSSeqNo,
+                            MainModel.InvNo ?? string.Empty,
+                            InvoiceDt,
+                            !string.IsNullOrEmpty(MainModel.PurchVouchNo) ? MainModel.PurchVouchNo : string.Empty,
+                            MainModel.AccountCode,
+                            Item.TDSTaxType,
+                            Item.TDSAccountCode,
+                            Item.TDSPercentg,
+                            Item.TDSRoundOff,
+                            Item.TDSAmount,
+                            MainModel.ItemNetAmount,
+                            MainModel.NetTotal,
+                            Item.TDSRemark ?? string.Empty,
+                            "PurchaseBill",
+                            string.Empty,
+                            challanDt,
+                            string.Empty,
+                            BankVoucherDt,
+                            0,
+                            0,
+                            0f,
+                            Item.TDSRoundOffAmt ?? 0,
+                            });
+                    }
+                }
+                return Table;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        private static DataTable GetDbCrDetailTable(DirectPurchaseBillModel MainModel)
+        {
+            DataTable Table = new();
+            Table.Columns.Add("AccEntryId", typeof(int));
+            Table.Columns.Add("AccYearCode", typeof(int));
+            Table.Columns.Add("SeqNo", typeof(int));
+            Table.Columns.Add("InvoiceNo", typeof(string));
+            Table.Columns.Add("VoucherNo", typeof(string));
+            Table.Columns.Add("AginstInvNo", typeof(string));
+            Table.Columns.Add("AginstVoucherYearCode", typeof(int));
+            Table.Columns.Add("AccountCode", typeof(int));
+            Table.Columns.Add("DocTypeID", typeof(int));
+            Table.Columns.Add("ItemCode", typeof(int));
+            Table.Columns.Add("BillQty", typeof(float));
+            Table.Columns.Add("Rate", typeof(float));
+            Table.Columns.Add("DiscountPer", typeof(float));
+            Table.Columns.Add("DiscountAmt", typeof(float));
+            Table.Columns.Add("AccountAmount", typeof(float));
+            Table.Columns.Add("DRCR", typeof(string));
+
+            IList<DPBItemDetail> itemDetailList = MainModel.ItemDetailGrid;
+            if (itemDetailList != null && itemDetailList.Any())
+            {
+                foreach (var Item in itemDetailList)
+                {
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                    MainModel.EntryID,
+                    MainModel.YearCode,
+                    Item.SeqNo,
+                    MainModel.InvoiceNo ?? string.Empty,
+                    MainModel.PurchVouchNo ?? string.Empty,
+                    string.Empty,
+                    0,
+                    MainModel.AccountCode,
+                    Item.docTypeId,
+                    Item.ItemCode,
+                    Math.Round(Item.BillQty, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DiscPer, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DiscRs, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.Amount, 2, MidpointRounding.AwayFromZero),
+                    "CR",
+                        });
+                }
+            }
+            return Table;
+        }
+        private static DataTable GetPbDbCrDetailTable(PurchaseBillModel MainModel)
+        {
+            DataTable Table = new();
+            Table.Columns.Add("AccEntryId", typeof(int));
+            Table.Columns.Add("AccYearCode", typeof(int));
+            Table.Columns.Add("SeqNo", typeof(int));
+            Table.Columns.Add("InvoiceNo", typeof(string));
+            Table.Columns.Add("VoucherNo", typeof(string));
+            Table.Columns.Add("AginstInvNo", typeof(string));
+            Table.Columns.Add("AginstVoucherYearCode", typeof(int));
+            Table.Columns.Add("AccountCode", typeof(int));
+            Table.Columns.Add("DocTypeID", typeof(int));
+            Table.Columns.Add("ItemCode", typeof(int));
+            Table.Columns.Add("BillQty", typeof(float));
+            Table.Columns.Add("Rate", typeof(float));
+            Table.Columns.Add("DiscountPer", typeof(float));
+            Table.Columns.Add("DiscountAmt", typeof(float));
+            Table.Columns.Add("AccountAmount", typeof(float));
+            Table.Columns.Add("DRCR", typeof(string));
+
+            IList<PBItemDetail> itemDetailList = MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0 ? MainModel.ItemDetailGrid : MainModel.ItemDetailGridd;
+            if (itemDetailList != null && itemDetailList.Any())
+            {
+                foreach (var Item in itemDetailList)
+                {
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                    MainModel.EntryID,
+                    MainModel.YearCode,
+                    Item.SeqNo,
+                    MainModel.InvNo ?? string.Empty,
+                    MainModel.PurchVouchNo ?? string.Empty,
+                    string.Empty,
+                    0,
+                    MainModel.AccountCode,
+                    Item.DocTypeID,
+                    Item.ItemCode,
+                    Math.Round(Item.BillQty ?? 0, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Convert.ToDecimal(Item.BillRate != null ? Item.BillRate : 0), 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DisPer ?? 0, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DisAmt ?? 0, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Convert.ToDecimal(Item.Amount != null ? Item.Amount : 0), 2, MidpointRounding.AwayFromZero),
+                    "CR",
+                        });
+                }
+            }
+            return Table;
+        }
+        private static DataTable GetSbDbCrDetailTable(SaleBillModel MainModel)
+        {
+            try
+            {
+                DataTable Table = new();
+                Table.Columns.Add("AccEntryId", typeof(int));
+                Table.Columns.Add("AccYearCode", typeof(int));
+                Table.Columns.Add("SeqNo", typeof(int));
+                Table.Columns.Add("InvoiceNo", typeof(string));
+                Table.Columns.Add("VoucherNo", typeof(string));
+                Table.Columns.Add("AginstInvNo", typeof(string));
+                Table.Columns.Add("AginstVoucherYearCode", typeof(int));
+                Table.Columns.Add("AccountCode", typeof(int));
+                Table.Columns.Add("DocTypeID", typeof(int));
+                Table.Columns.Add("ItemCode", typeof(int));
+                Table.Columns.Add("BillQty", typeof(float));
+                Table.Columns.Add("Rate", typeof(float));
+                Table.Columns.Add("DiscountPer", typeof(float));
+                Table.Columns.Add("DiscountAmt", typeof(float));
+                Table.Columns.Add("AccountAmount", typeof(float));
+                Table.Columns.Add("DRCR", typeof(string));
+
+                IList<SaleBillDetail> itemDetailList = MainModel.ItemDetailGrid;
+                foreach (var Item in itemDetailList)
+                {
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                    MainModel.SaleBillEntryId,
+                    MainModel.SaleBillYearCode,
+                    Item.SeqNo,
+                    MainModel.ExportInvoiceNo ?? string.Empty, //invoice no
+                    MainModel.adjustmentModel?.AdjAgnstVouchNo, //MainModel.voucherNo ?? string.Empty,
+                    string.Empty, // AginstInvNo
+                    2024, // AginstVoucherYearCode
+                    MainModel.AccountCode,
+                    MainModel.DocTypeAccountCode,
+                    Item.ItemCode,
+                    Math.Round(Item.Qty, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DiscountPer, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
+                    Math.Round(Item.Amount, 2, MidpointRounding.AwayFromZero),
+                    "CR",
+                        });
+                }
+
+                return Table;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        private static DataTable GetCNDbCrDetailTable(AccCreditNoteModel MainModel)
+        {
+            try
+            {
+                DataTable Table = new();
+                Table.Columns.Add("AccEntryId", typeof(int));
+                Table.Columns.Add("AccYearCode", typeof(int));
+                Table.Columns.Add("SeqNo", typeof(int));
+                Table.Columns.Add("InvoiceNo", typeof(string));
+                Table.Columns.Add("VoucherNo", typeof(string));
+                Table.Columns.Add("AginstInvNo", typeof(string));
+                Table.Columns.Add("AginstVoucherYearCode", typeof(int));
+                Table.Columns.Add("AccountCode", typeof(int));
+                Table.Columns.Add("DocTypeID", typeof(int));
+                Table.Columns.Add("ItemCode", typeof(int));
+                Table.Columns.Add("BillQty", typeof(float));
+                Table.Columns.Add("Rate", typeof(float));
+                Table.Columns.Add("DiscountPer", typeof(float));
+                Table.Columns.Add("DiscountAmt", typeof(float));
+                Table.Columns.Add("AccountAmount", typeof(float));
+                Table.Columns.Add("DRCR", typeof(string));
+
+                IList<AccCreditNoteDetail> itemDetailList = MainModel.AccCreditNoteDetails;
+                foreach (var Item in itemDetailList)
+                {
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                    MainModel.CreditNoteEntryId,
+                    MainModel.CreditNoteYearCode,
+                    Item.SeqNo,
+                    MainModel.CreditNoteInvoiceNo ?? string.Empty, //invoice no
+                    MainModel.adjustmentModel == null ? string.Empty : MainModel.adjustmentModel.AdjAgnstVouchNo, //MainModel.voucherNo ?? string.Empty,
+                    string.Empty, // AginstInvNo
+                    2024, // AginstVoucherYearCode
+                    MainModel.AccountCode,
+                    MainModel.DocAccountCode,
+                    Item.ItemCode,
+                    Math.Round(Item.BillQty, 2, MidpointRounding.AwayFromZero), // qty
+                    Math.Round(Item.CRNRate, 2, MidpointRounding.AwayFromZero), // creditnote rate
+                    Math.Round(Item.DiscountPer, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
+                    Math.Round(Item.Amount ?? 0, 2, MidpointRounding.AwayFromZero),
+                    "CR",
+                        });
+                }
+
+                return Table;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        private static DataTable GetSRDbCrDetailTable(SaleRejectionModel MainModel)
+        {
+            try
+            {
+                DataTable Table = new();
+                Table.Columns.Add("AccEntryId", typeof(int));
+                Table.Columns.Add("AccYearCode", typeof(int));
+                Table.Columns.Add("SeqNo", typeof(int));
+                Table.Columns.Add("InvoiceNo", typeof(string));
+                Table.Columns.Add("VoucherNo", typeof(string));
+                Table.Columns.Add("AginstInvNo", typeof(string));
+                Table.Columns.Add("AginstVoucherYearCode", typeof(int));
+                Table.Columns.Add("AccountCode", typeof(int));
+                Table.Columns.Add("DocTypeID", typeof(int));
+                Table.Columns.Add("ItemCode", typeof(int));
+                Table.Columns.Add("BillQty", typeof(float));
+                Table.Columns.Add("Rate", typeof(float));
+                Table.Columns.Add("DiscountPer", typeof(float));
+                Table.Columns.Add("DiscountAmt", typeof(float));
+                Table.Columns.Add("AccountAmount", typeof(float));
+                Table.Columns.Add("DRCR", typeof(string));
+
+                IList<SaleRejectionDetail> itemDetailList = MainModel.ItemDetailGrid;
+                foreach (var Item in itemDetailList)
+                {
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                    MainModel.SaleRejEntryId,
+                    MainModel.SaleRejYearCode,
+                   1, //Item.SeqNo,
+                    MainModel.CustInvoiceNo ?? string.Empty, //invoice no
+                    string.Empty, //MainModel.voucherNo ?? string.Empty,
+                    string.Empty,
+                    0,
+                    MainModel.AccountCode,
+                    MainModel.DocTypeAccountCode,
+                    Item.ItemCode,
+                    Math.Round(Item.RejQty, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.Rate, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DiscountPer, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
+                    Math.Round(Item.Amount, 2, MidpointRounding.AwayFromZero),
+                    "CR",
+                        });
+                }
+
+                return Table;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        private List<DbCrModel> TransformJsonToDbCrModel(string jsonData)
+        {
+            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonData);
+
+            // Extract the "Result" property as a JSON array string
+            var resultArrayString = jsonObject["Result"].ToString();
+
+            // Deserialize the JSON array string into a list of dynamic objects
+            var rawData = JsonConvert.DeserializeObject<List<dynamic>>(resultArrayString);
+            var dbCrModels = new List<DbCrModel>();
+
+            foreach (var item in rawData)
+            {
+                // Transform dynamic data into DbCrModel
+                dbCrModels.Add(new DbCrModel
+                {
+                    AccountCode = item.AccountCode != null ? (int)item.AccountCode : 0,
+                    //AccountName = (string)item.AccountName,
+                    DrAmt = item.DrAmt != null ? (float)item.DrAmt : 0,
+                    CrAmt = item.CrAmt != null ? (float)item.CrAmt : 0,
+                    //DRCR = (item.DrAmt > 0) ? "DR" : "CR" // DR/CR based on the DrAmt
+                });
+            }
+
+            return dbCrModels;
+        }
+        public static DataTable GetDrCrDetailTable(List<DbCrModel> dbCrDetailList)
+        {
+            DataTable Table = new();
+            Table.Columns.Add("AccountCode", typeof(int));
+            Table.Columns.Add("DrAmt", typeof(float));
+            Table.Columns.Add("CrAmt", typeof(float));
+
+            if (dbCrDetailList != null && dbCrDetailList.Count > 0)
+            {
+                foreach (var Item in dbCrDetailList)
+                {
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                        Item.AccountCode,
+                        Item.DrAmt ?? 0,
+                        Item.CrAmt ?? 0,
+                    });
+                }
+            }
+            return Table;
+        }
+        #endregion
+
+        #region For Adjustment Grid
+        public IActionResult AddAdjstmntDetail(AdjustmentModel model)
+        {
+            var isDuplicate = false;
+            var isExpAdded = isDuplicate;
+            var taxFound = isExpAdded;
+
+            model.AdjDueDate = model.DueDate == null ? new DateTime() : Convert.ToDateTime(ParseFormattedDate(model.DueDate));
+
+            var _List = new List<AdjustmentModel>();
+
+            dynamic MainModel = new SaleOrderModel();
+
+            if (model.AdjPageName == "ItemList")
+            {
+                MainModel = new SaleOrderModel();
+            }
+            else if (model.AdjPageName == "PurchaseOrder")
+            {
+                MainModel = new PurchaseOrderModel();
+            }
+            else if (model.AdjPageName == "DirectPurchaseBill")
+            {
+                MainModel = new DirectPurchaseBillModel();
+            }
+            else if (model.AdjPageName == "PurchaseBill")
+            {
+                MainModel = new PurchaseBillModel();
+            }
+            else if (model.AdjPageName == "SaleInvoice")
+            {
+                MainModel = new SaleBillModel();
+            }
+            else if (model.AdjPageName == "SaleRejection")
+            {
+                MainModel = new SaleRejectionModel();
+            }
+            else if (model.AdjPageName == "CreditNote")
+            {
+                MainModel = new AccCreditNoteModel();
+            }
+            else if (model.AdjPageName == "JobWorkIssue")
+            {
+                MainModel = new JobWorkIssueModel();
+            }
+
+            //var CgstSgst = ITDSModule.SgstCgst(model.TDSAccountCode);
+
+            _MemoryCache.TryGetValue("KeyAdjGrid", out AdjustmentModel AdjGrid);
+
+            if (HttpContext.Session.GetString(model.AdjPageName) != null)
+            {
+                if (model.AdjPageName == "ItemList")
+                {
+                    MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(model.AdjPageName));
+                }
+                else if (model.AdjPageName == "PurchaseOrder")
+                {
+                    _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                }
+                else if (model.AdjPageName == "DirectPurchaseBill")
+                {
+                    _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                }
+                else if (model.AdjPageName == "PurchaseBill")
+                {
+                    _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                }
+                else if (model.AdjPageName == "SaleInvoice")
+                {
+                    _MemoryCache.TryGetValue("SaleBillModel", out MainModel);
+                }
+                else if (model.AdjPageName == "SaleRejection")
+                {
+                    _MemoryCache.TryGetValue("SaleRejectionModel", out MainModel);
+                }
+                else if (model.AdjPageName == "CreditNote")
+                {
+                    _MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
+                }
+                else if (model.AdjPageName == "JobWorkIssue")
+                {
+                    _MemoryCache.TryGetValue("JobWorkIssue", out MainModel);
+                }
+                if (AdjGrid?.AdjAdjustmentDetailGrid != null && AdjGrid?.AdjAdjustmentDetailGrid?.Count > 0)
+                {
+                    MainModel.adjustmentModel = AdjGrid;
+
+                    isDuplicate = AdjGrid.AdjAdjustmentDetailGrid.Any(a => a.AdjNewRefNo.Equals(model.AdjNewRefNo) && a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment));
+                }
+
+                if (!isDuplicate)
+                {
+                    if (AdjGrid?.AdjAdjustmentDetailGrid != null && AdjGrid?.AdjAdjustmentDetailGrid?.Count > 0)
+                    {
+                        _List.AddRange(MainModel.adjustmentModel.AdjAdjustmentDetailGrid);
+                        _List.AddRange(Add2List(model, _List));
+                    }
+                    else
+                    {
+                        var AdjModelList = Add2List(model, _List);
+                        _List.AddRange(AdjModelList);
+                    }
+                }
+                else
+                {
+                    return StatusCode(200);
+                }
+                if (MainModel.adjustmentModel == null)
+                {
+                    MainModel.adjustmentModel = new AdjustmentModel();
+                }
+                MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
+
+                StoreInCache("KeyAdjGrid", MainModel.adjustmentModel);
+            }
+            else
+            {
+                return StatusCode(501, "Please Add Data In Adjustment Detail Grid");
+            }
+
+            return PartialView("_AdjGrid", MainModel.adjustmentModel);
+        }
+
+        public IList<AdjustmentModel> Add2List(AdjustmentModel model, IList<AdjustmentModel> AdjGrid, bool? IsAgnstRefPopupData = false)
+        {
+            var _List = new List<AdjustmentModel>();
+            if (IsAgnstRefPopupData != true)
+            {
+                _List.Add(new AdjustmentModel
+                {
+                    AdjSeqNo = AdjGrid == null ? 1 : AdjGrid.Count + 1,
+                    AdjModeOfAdjstment = model.AdjModeOfAdjstment,
+                    AdjModeOfAdjstmentName = model.AdjModeOfAdjstmentName,
+                    AdjDescription = model.AdjDescription,
+                    AdjDueDate = model.AdjDueDate,
+                    AdjNewRefNo = model.AdjNewRefNo,
+                    AdjPendAmt = model.AdjPendAmt,
+                    AdjDrCr = model.AdjDrCr,
+                    AdjDrCrName = model.AdjDrCrName,
+                    AdjPurchOrderNo = model.AdjPurchOrderNo,
+                    AdjPOYear = model.AdjPOYear,
+                    AdjPODate = model.AdjPODate,
+                    AdjOpenEntryID = model.AdjOpenEntryID ?? 0,
+                    AdjOpeningYearCode = model.AdjOpeningYearCode ?? 0,
+                    AdjAgnstAccEntryID = model.AdjAgnstAccEntryID ?? 0,
+                    AdjAgnstAccYearCode = model.AdjAgnstAccYearCode ?? 0,
+                });
+            }
+            else
+            {
+                foreach (var item in model.AdjAdjustmentDetailGrid)
+                {
+                    _List.Add(new AdjustmentModel
+                    {
+                        AdjSeqNo = AdjGrid == null ? 1 : AdjGrid.Count + 1,
+                        AdjModeOfAdjstment = "AgainstRef",
+                        AdjModeOfAdjstmentName = "Against Ref",
+                        AdjDescription = item.AdjAgnstVouchNo,
+                        AdjDueDate = item.AdjAgnstVouchDate,
+                        AdjNewRefNo = item.AdjAgnstVouchType,
+                        AdjPendAmt = item.AdjAgnstAdjstedAmt,
+                        AdjDrCr = item.AdjAgnstDrCr,
+                        AdjDrCrName = item.AdjAgnstDrCr,
+                        AdjPurchOrderNo = string.Empty,
+                        AdjPOYear = 0,
+                        AdjPODate = null,
+                        AdjAgnstVouchNo = item.AdjAgnstVouchNo,
+                        AdjAgnstVouchType = item.AdjAgnstVouchType,
+                        AdjOpenEntryID = item.AdjAgnstOpenEntryID ?? 0,
+                        AdjOpeningYearCode = item.AdjAgnstOpeningYearCode ?? 0,
+                        AdjAgnstAccEntryID = item.AdjAgnstAccEntryID ?? 0,
+                        AdjAgnstAccYearCode = item.AdjAgnstAccYearCode ?? 0,
+                    });
+                }
+            }
+            return _List;
+        }
+        public static DataTable GetAdjDetailTable(List<AdjustmentModel> AdjDetailList, int? entryid, int? yearcode, int? acccode)
+        {
+            DataTable Table = new();
+            Table.Columns.Add("EntryId", typeof(int));
+            Table.Columns.Add("YearCode", typeof(int));
+            Table.Columns.Add("AccountCode", typeof(int));
+            Table.Columns.Add("ModOfAdjustment", typeof(string));
+            Table.Columns.Add("DrCr", typeof(string));
+            Table.Columns.Add("AdjustedAmount", typeof(float));
+            Table.Columns.Add("AgainstAccEntryId", typeof(int));
+            Table.Columns.Add("AgainstVoucheryearcode", typeof(int));
+            Table.Columns.Add("AgainstvoucherType", typeof(string));
+            Table.Columns.Add("AgainstVoucherNo", typeof(string));
+            Table.Columns.Add("AgainstVoucherAmount", typeof(float));
+            Table.Columns.Add("AgainstVoucherModAdjustment", typeof(string));
+            Table.Columns.Add("AgainstAccOpeningEntryId", typeof(int));
+            Table.Columns.Add("AgainstOpeningVoucheryearcode", typeof(int));
+            Table.Columns.Add("RefNo", typeof(string));
+            Table.Columns.Add("VchDescription", typeof(string));
+            Table.Columns.Add("DueDate", typeof(string));
+            Table.Columns.Add("AgainstOrderno", typeof(string));
+            Table.Columns.Add("AgainstOrderYearCode", typeof(int));
+            Table.Columns.Add("AgainstOrderDate", typeof(string));
+            Table.Columns.Add("field1", typeof(string));
+            Table.Columns.Add("field2", typeof(string));
+            Table.Columns.Add("field3", typeof(string));
+            Table.Columns.Add("fieldNumINT1", typeof(int));
+            Table.Columns.Add("fieldNumINT2", typeof(int));
+            Table.Columns.Add("fieldNumINT3", typeof(int));
+            Table.Columns.Add("fieldNum1", typeof(float));
+            Table.Columns.Add("fieldNum2", typeof(float));
+            Table.Columns.Add("fieldNum3", typeof(float));
+            Table.Columns.Add("fieldDate1", typeof(string));
+            Table.Columns.Add("fieldDate2", typeof(string));
+            Table.Columns.Add("fieldDate3", typeof(string));
+
+            if (AdjDetailList != null && AdjDetailList.Count > 0)
+            {
+                foreach (var Item in AdjDetailList)
+                {
+                      var  AdjOrderDt = ParseFormattedDate(DateTime.Today.ToString());
+                      var  AdjDueDt = ParseFormattedDate(DateTime.Today.ToString());
+                      var  fdt1 = ParseFormattedDate(DateTime.Today.ToString());
+                      var  fdt2 = ParseFormattedDate(DateTime.Today.ToString());
+                      var  fdt3 = ParseFormattedDate(DateTime.Today.ToString());
+                    if (Item.AdjModeOfAdjstment != null && Item.AdjModeOfAdjstment != "AgainstRef")
+                    {
+                        Table.Rows.Add(
+                        new object[]
+                        {
+                        entryid ?? 0,
+                        yearcode ?? 0,
+                        acccode ?? 0,
+                        Item.AdjModeOfAdjstment,
+                        Item.AdjDrCr ?? string.Empty,
+                        (Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0,//Item.AdjAdjstedAmt ?? 0,
+                        0,//AgainstAccEntryId
+                        0,//AgainstVoucheryearcode
+                        string.Empty,//AgainstvoucherType
+                        string.Empty,//AgainstVoucherNo
+                        0,//AgainstVoucherAmount
+                        string.Empty,//AgainstVoucherModAdjustment
+                        0,//AgainstAccOpeningEntryId
+                        0,//AgainstOpeningVoucheryearcode
+                        Item.AdjNewRefNo,
+                        Item.AdjDescription,
+                        Item.DueDate == null ? AdjDueDt : ParseFormattedDate(Item.DueDate.Split(" ")[0]),
+                        string.Empty,//AgainstOrderno
+                        0,//AgainstOrderYeearCode
+                        AdjOrderDt,//AgainstOrderDate
+                        string.Empty,//field1
+                        string.Empty,//field2
+                        string.Empty,//field3
+                        0,//fieldNumINT1
+                        0,//fieldNumINT2
+                        0,//fieldNumINT3
+                        0,//fieldNum1
+                        0,//fieldNum2
+                        0,//fieldNum3
+                        fdt1,//fieldDate1
+                        fdt2,//fieldDate2
+                        fdt3,//fieldDate3
+                        });
+                    }
+                    else
+                    {
+                        Table.Rows.Add(
+                        new object[]
+                        {
+                        entryid ?? 0,
+                        yearcode ?? 0,
+                        acccode ?? 0,
+                        Item.AdjModeOfAdjstment,
+                        Item.AdjDrCr ?? string.Empty,
+                        (Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0,
+                        Item.AdjAgnstAccEntryID ?? 0,
+                        Item.AdjAgnstAccYearCode ?? 0,
+                        Item.AdjAgnstVouchType ?? (Item.AdjNewRefNo ?? string.Empty),
+                        Item.AdjAgnstVouchNo ?? (Item.AdjDescription ?? string.Empty),
+                        Item.AdjAgnstPendAmt ?? (Item.AdjPendAmt ?? 0),
+                        Item.AdjAgnstModeOfAdjstment ?? (Item.AdjModeOfAdjstment ?? string.Empty),
+                        Item.AdjAgnstOpenEntryID ?? (Item.AdjOpenEntryID ?? 0),
+                        Item.AdjAgnstOpeningYearCode ?? (Item.AdjOpeningYearCode ?? 0),
+                        string.Empty,//Item.AdjNewRefNo,
+                        string.Empty,//Item.AdjDescription,
+                        Item.DueDate == null ? string.Empty : ParseFormattedDate(Item.DueDate.Split(" ")[0]),
+                        string.Empty,//AgainstOrderno
+                        0,//AgainstOrderYeearCode
+                        AdjOrderDt,//AgainstOrderDate
+                        string.Empty,//field1
+                        string.Empty,//field2
+                        string.Empty,//field3
+                        0,//fieldNumINT1
+                        0,//fieldNumINT2
+                        0,//fieldNumINT3
+                        0,//fieldNum1
+                        0,//fieldNum2
+                        0,//fieldNum3
+                        fdt1,//fieldDate1
+                        fdt2,//fieldDate2
+                        fdt3,//fieldDate3
+                        });
+                    }
+                }
+            }
+            return Table;
+        }
+        public IActionResult EditAdjRow(string SeqNo, string SN)
+        {
+            _MemoryCache.TryGetValue("KeyAdjGrid", out AdjustmentModel AdjGrid);
+            var SSGrid = AdjGrid.AdjAdjustmentDetailGrid.Where(x => x.AdjSeqNo.ToString() == SeqNo);
+            string JsonString = JsonConvert.SerializeObject(SSGrid);
+            return Json(JsonString);
+        }
+        public IActionResult DeleteAdjRow(string SeqNo, string SN)
+        {
+            dynamic MainModel = null;
+            if (SN == "ItemList")
+            {
+                MainModel = new SaleOrderModel();
+            }
+            else if (SN == "PurchaseOrder")
+            {
+                MainModel = new PurchaseOrderModel();
+            }
+            else if (SN == "DirectPurchaseBill")
+            {
+                MainModel = new DirectPurchaseBillModel();
+            }
+            else if (SN == "PurchaseBill")
+            {
+                MainModel = new PurchaseBillModel();
+            }
+            else if (SN == "JobWorkIssue")
+            {
+                MainModel = new JobWorkIssueModel();
+            }
+            else if (SN == "SaleInvoice")
+            {
+                MainModel = new SaleBillModel();
+            }
+            //MainModel = SN == "ItemList" ? new SaleOrderModel() : new PurchaseOrderModel();
+
+            if (_MemoryCache.TryGetValue("KeyAdjGrid", out AdjustmentModel AdjGrid))
+            {
+                bool canDelete = true;
+
+                MainModel.adjustmentModel = AdjGrid;
+                int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                if (canDelete)
+                {
+                    var Remove = AdjGrid.AdjAdjustmentDetailGrid.Where(s => s.AdjSeqNo == Convert.ToInt32(SeqNo)).ToList();
+
+                    foreach (var item in Remove)
+                    {
+                        AdjGrid.AdjAdjustmentDetailGrid.Remove(item);
+                    }
+
+                    Indx = 0;
+                    foreach (AdjustmentModel item in AdjGrid.AdjAdjustmentDetailGrid)
+                    {
+                        Indx++;
+                        item.AdjSeqNo = Indx;
+                    }
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(55),
+                        SlidingExpiration = TimeSpan.FromMinutes(60),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyAdjGrid", AdjGrid, cacheEntryOptions);
+                }
+                else
+                {
+                    return StatusCode(statusCode: 300);
+                }
+            }
+            return PartialView("_AdjGrid", MainModel.adjustmentModel);
+        }
+
+        [Route("Common/GetPendVouchBillAgainstRefPopupByID")]
+        public async Task<JsonResult> GetPendVouchBillAgainstRefPopupByID(int AC, int? YC, int? PayRecEntryId, int? PayRecYearcode, string DRCR, string TransVouchType, string TransVouchDate)
+        {
+            string Flag = "";
+            var JSON = await IDataLogic.GetPendVouchBillAgainstRefPopupByID(AC, YC, PayRecEntryId, PayRecYearcode, DRCR, TransVouchType, TransVouchDate, Flag);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public IActionResult AddAgnstRefToAdjstmntDetail([FromBody] AdjustmentModel model)
+        {
+            var isDuplicate = false;
+            var _List = new List<AdjustmentModel>();
+
+            dynamic MainModel = new DirectPurchaseBillModel();
+            var SN = model.AdjPageName;
+            if (SN == "DirectPurchaseBill")
+            {
+                MainModel = new DirectPurchaseBillModel();
+            }
+            else if (SN == "PurchaseBill")
+            {
+                MainModel = new PurchaseBillModel();
+            }
+
+            _MemoryCache.TryGetValue("KeyAdjGrid", out AdjustmentModel AdjGrid);
+
+            if (model != null && model.AdjAdjustmentDetailGrid != null && model.AdjAdjustmentDetailGrid.Count > 0)
+            {
+                MainModel.adjustmentModel = AdjGrid;
+                model.AdjAgnstModeOfAdjstment = "AgainstRef";
+                isDuplicate = AdjGrid?.AdjAdjustmentDetailGrid?.Any(a => (a.AdjModeOfAdjstment != null && a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstmentName ?? string.Empty)) && (a.AdjNewRefNo != null && a.AdjNewRefNo.Equals(model.AdjAgnstNewRefNo ?? string.Empty))) ?? false;
+            }
+
+            if (!isDuplicate && model != null)
+            {
+                if (AdjGrid.AdjAdjustmentDetailGrid != null && AdjGrid.AdjAdjustmentDetailGrid.Count > 0)
+                {
+                    _List.AddRange(MainModel.adjustmentModel.AdjAdjustmentDetailGrid);
+                    _List.AddRange(Add2List(model, _List, true));
+                }
+                else
+                {
+                    var AdjModelList = Add2List(model, _List, true);
+                    _List.AddRange(AdjModelList);
+                }
+            }
+            else
+            {
+                return StatusCode(200);
+            }
+
+            MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
+
+            StoreInCache("KeyAdjGrid1", MainModel.adjustmentModel);
+            string JsonString = JsonConvert.SerializeObject(_List);
+            return Json(JsonString);
+        }
+        public IActionResult GetUpdatedAdjGridData()
+        {
+            // Retrieve the updated data from the cache
+            _MemoryCache.TryGetValue("KeyAdjGrid1", out AdjustmentModel AdjGrid);
+
+            if (AdjGrid != null)
+            {
+                return Json(AdjGrid.AdjAdjustmentDetailGrid);
+            }
+            return Json(new List<AdjustmentModel>());
+        }
+        #endregion
+
+        
+    }
+}

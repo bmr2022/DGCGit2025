@@ -1,0 +1,46 @@
+﻿@model eTactWeb.DOM.Models.JobWorkReceiveModel
+
+@if (Model.JobWorkReceiveGrid == null)
+{
+        <tr class="text-center">
+            <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+        </tr>
+}
+else
+{
+    foreach (var item in Model.JobWorkReceiveGrid)
+    {
+                <tr id="itemGrid" class="small" style="white-space:nowrap">
+                    <td>@item.ItemName</td>
+                    <td>@item.PartCode</td>
+                    <td>@item.Unit</td>
+                    <td>@item.BillQty</td>
+                    <td>@item.RecQty</td>
+                    <td>@item.JWRate</td>
+                    <td>@item.BomRevNo</td>
+                    <td>@item.BomRevDate</td>
+                    <td>@item.ProducedUnprod</td>
+                    <td>@item.BomInd</td>
+                    <td>@item.Amount</td>
+                    <td>@item.Remark</td>
+                    <td>@item.ProcessId</td>
+                    <td>@item.Adjusted</td>
+                    <td>@item.NoOfCase</td>
+                    <td>@item.QCCompleted</td>
+                    <td>@item.PONO</td>
+                    <td>@item.POYearCode</td>
+                    <td>@item.PODate</td>
+                    <td>@item.SchNo</td>
+                    <td>@item.SchYearCode</td>
+                    <td>@item.POType</td>
+                    <td>@item.BatchNo</td>
+                    <td>@item.UniqueBatchNo</td>
+                    <td>@item.BatchWise</td>
+                    <td>@item.JWRateUnit</td>
+                    <td>@item.ProcessUnitQty</td>
+                    <td>@item.ProcessUnit</td>
+                    <td>@item.POAmendNo</td>
+                    <td>@item.PartCode</td>
+                </tr>
+    }
+}

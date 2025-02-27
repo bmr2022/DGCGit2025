@@ -1,0 +1,159 @@
+﻿@model eTactWeb.DOM.Models.PurchaseBillModel
+<style>
+    #poItemTable {
+        max-height: 400px; /* Adjust as needed */
+        overflow-y: auto;
+    }
+
+    #poItemThead {
+        max-height: 400px; /* Adjust as needed */
+        overflow-y: auto;
+    }
+</style>
+<input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+<table class="table table-hover table-bordered table-striped" id="poItemTable">
+    <thead class="bg-gradient card-headerBG text-light small" id="poItemThead" style="white-space:nowrap">
+        <tr id="headerRow">
+            <th>Action</th>
+            <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i></span>Seq No</th>
+            <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="color:  yellow; padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Doc Name</th>
+            <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="color:  yellow; padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+            <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="color:  yellow; padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+            <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="color:  yellow; padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSNNO</th>
+            <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="color:  yellow; padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
+            <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
+            <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+            <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="color:  yellow; padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Rate</th>
+            <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Rate</th>
+            <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Per</th>
+            <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Amt</th>
+            <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="color:  yellow; padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+            <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acct Qty</th>
+            <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rej Qty</th>
+            <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rew Qty</th>
+            <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Hold Qty</th>
+            <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>No Of Case</th>
+            <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Rec Qty</th>
+            <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+            <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate Incl Tax</th>
+            <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AmtInOther Curr</th>
+            <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate Of ConvFactor</th>
+            <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRP</th>
+            <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Parent group</th>
+            <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Assess Rate</th>
+            <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Size</th>
+            <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
+            <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Model</th>
+            <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>For Department</th>
+            <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process Name</th>
+            <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>New Po Rate</th>
+            <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
+            <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
+            <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+            <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+            <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year</th>
+            <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
+            <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Amend</th>
+            <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIRNo</th>
+            <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIRYEAR</th>
+            <th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIRDATE</th>
+            <th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProjectNo</th>
+            <th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProjectDate</th>
+            <th data-columnno="45" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProjectyearCode</th>
+            <th data-columnno="46" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstImportAccountCode</th>
+            <th data-columnno="47" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstImportInvoiceNo</th>
+            <th data-columnno="48" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstImportYearCode</th>
+            <th data-columnno="49" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AgainstImportInvDate</th>
+        </tr>
+    </thead>
+    <tbody id="divPBItemList">
+        @if (Model.ItemDetailGridd == null || (Model.ItemDetailGridd != null && (!Model.ItemDetailGridd.Any() || Model.ItemDetailGridd.Count <= 0)))
+        {
+            <tr class="text-center">
+                <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+            </tr>
+        }
+        else
+        {
+            var Cntr = 0;
+            foreach (var item in Model.ItemDetailGridd)
+            {
+                Cntr = Cntr + 1;
+                <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+                    <td>
+                        <div id="deleteCursorDiv-@Cntr">
+                            <a class="table-link link-success" onclick="EditItemRow(@Cntr)">
+                                <span class="fa-stack">
+                                    <i class="fa fa-square fa-stack-2x"></i>
+                                    <i class="fa-solid fa-pencil fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                            @* <a class="table-link link-danger" onclick="DeleteRowItem(@Cntr)">
+                                <span class="fa-stack">
+                                    <i class="fa fa-square fa-stack-2x"></i>
+                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a> *@
+                        </div>
+                    </td>
+                    <td>
+                        <input value="@item.DocTypeID" id="MainItemGridd-DocTypeID-@Cntr" type="hidden" />
+                        <input value="@item.ItemCode" id="MainItemGridd-ItemCode-@Cntr" type="hidden" />
+                        <input value="@item.DepartmentId" id="MainItemGridd-DepartmentId-@Cntr" type="hidden" />
+                        <input value="@item.ProcessId" id="MainItemGridd-ProcessId-@Cntr" type="hidden" />
+                        <span readonly class="styled-input styled-qty" id="MainItemGridd-SeqNo-@Cntr">@item.SeqNo</span>
+                    </td>
+                    <td><span readonly class="" id="MainItemGridd-DocumentName-@Cntr">@item.DocumentName</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ItemName-@Cntr">@item.Item_Name</span></td>
+                    <td><span readonly class="divPBItemListPartCode" id="MainItemGridd-PartCode-@Cntr">@item.PartCode</span></td>
+                    <td><span readonly class="" id="MainItemGridd-HSNNO-@Cntr">@item.HSNNO</span></td>
+                    <td><span readonly class="" id="MainItemGridd-BillQty-@Cntr">@item.BillQty</span></td>
+                    <td><span readonly class="" id="MainItemGridd-RecQty-@Cntr">@item.RecQty</span></td>
+                    <td><span readonly class="" id="MainItemGridd-unit-@Cntr">@item.Unit</span></td>
+                    <td><span readonly class="" id="MainItemGridd-BillRate-@Cntr">@item.BillRate</span></td>
+                    <td><span readonly class="" id="MainItemGridd-PORate-@Cntr">@item.PORate</span></td>
+                    <td><span readonly class="" id="MainItemGridd-DisPer-@Cntr">@item.DisPer</span></td>
+                    <td><span readonly class="" id="MainItemGridd-DisAmt-@Cntr">@item.DisAmt</span></td>
+                    <td><span readonly class="" id="GridAmount-@Cntr">@item.Amount</span></td>
+                    <td><span readonly class="" id="MainItemGridd-AcceptedQty-@Cntr">@item.AcceptedQty</span></td>
+                    <td><span readonly class="" id="MainItemGridd-rejectedQty-@Cntr">@item.rejectedQty</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ReworkQty-@Cntr">@item.ReworkQty</span></td>
+                    <td><span readonly class="" id="MainItemGridd-HoldQty-@Cntr">@item.HoldQty</span></td>
+                    <td><span readonly class="" id="MainItemGridd-NoOfCase-@Cntr">@item.NoOfCase</span></td>
+                    <td><span readonly class="" id="MainItemGridd-AltRecQty-@Cntr">@item.AltRecQty</span></td>
+                    <td><span readonly class="" id="MainItemGridd-AltUnit-@Cntr">@item.AltUnit</span></td>
+                    <td><span readonly class="" id="MainItemGridd-RateIncludingTax-@Cntr">@item.RateIncludingTax</span></td>
+                    <td><span readonly class="" id="MainItemGridd-AmtInOtherCurrency-@Cntr">@item.AmtInOtherCurrency</span></td>
+                    <td><span readonly class="" id="MainItemGridd-RateOfConvFactor-@Cntr">@item.RateOfConvFactor</span></td>
+                    <td><span readonly class="" id="MainItemGridd-MRP-@Cntr">@item.MRP</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ParentCode-@Cntr">@item.ParentCode</span></td>
+                    <td><span readonly class="" id="MainItemGridd-AssessRate-@Cntr">@item.AssessRate</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ItemSize-@Cntr">@item.ItemSize</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ItemColor-@Cntr">@item.ItemColor</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ItemModel-@Cntr">@item.ItemModel</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ForDepartment-@Cntr">@item.ForDepartment</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ProcessName-@Cntr">@item.ProcessName</span></td>
+                    <td><span readonly class="" id="MainItemGridd-NewPoRate-@Cntr">@item.NewPoRate</span></td>
+                    <td><span readonly class="" id="MainItemGridd-pono-@Cntr">@item.pono</span></td>
+                    <td><span readonly class="" id="MainItemGridd-poyearcode-@Cntr">@item.poyearcode</span></td>
+                    <td><span readonly class="" id="MainItemGridd-PODate-@Cntr">@item.PODate.ToString()</span></td>
+                    <td><span readonly class="" id="MainItemGridd-schno-@Cntr">@item.schno</span></td>
+                    <td><span readonly class="" id="MainItemGridd-schyearcode-@Cntr">@item.schyearcode</span></td>
+                    <td><span readonly class="" id="MainItemGridd-SchDate-@Cntr">@item.SchDate</span></td>
+                    <td><span readonly class="" id="MainItemGridd-PoAmendNo-@Cntr">@item.PoAmendNo</span></td>
+                    <td><span readonly class="" id="MainItemGridd-MIRNO-@Cntr">@item.MIRNO</span></td>
+                    <td><span readonly class="" id="MainItemGridd-MIRYEARCODE-@Cntr">@item.MIRYEARCODE</span></td>
+                    <td><span readonly class="" id="MainItemGridd-MIRDATE-@Cntr">@item.MIRDATE</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ProjectNo-@Cntr">@item.ProjectNo</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ProjectDate-@Cntr">@item.ProjectDate</span></td>
+                    <td><span readonly class="" id="MainItemGridd-ProjectyearCode-@Cntr">@item.ProjectyearCode</span></td>
+                    <td><span readonly class="" id="MainItemGridd-AgainstImportAccountCode-@Cntr">@item.AgainstImportAccountCode</span></td>
+                    <td><span readonly class="" id="MainItemGridd-AgainstImportInvoiceNo-@Cntr">@item.AgainstImportInvoiceNo</span></td>
+                    <td><span readonly class="" id="MainItemGridd-AgainstImportYearCode-@Cntr">@item.AgainstImportYearCode</span></td>
+                    <td><span readonly class="" id="MainItemGridd-AgainstImportInvDate-@Cntr">@item.AgainstImportInvDate</span></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

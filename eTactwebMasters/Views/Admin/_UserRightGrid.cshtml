@@ -1,0 +1,118 @@
+﻿@model eTactWeb.DOM.Models.UserRightModel
+@{
+    var @Cntr = 0;
+}
+@if (Model.UserRights == null)
+{
+    <tr class="text-center">
+        <td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+    </tr>
+}
+else
+{
+    @foreach (var item in Model.UserRights)
+    {
+        Cntr = Cntr + 1;
+        <tr>
+            <td style="display:none">@Html.DisplayFor(modelItem => item.EmpID)<input type="hidden" asp-for="Mode" /></td>
+            @*<th>@Cntr</th>*@
+            <td style="display: -webkit-box;-webkit-box-pack: center;">
+                @if (Model.Mode == "V")
+                {
+                    <a class="table-link link-primary noCursor">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+
+            <td>@Html.DisplayFor(modelItem => item.EmpName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Module)</td>
+            <td>@Html.DisplayFor(modelItem => item.MainMenu)</td>
+            @*<td>@Html.DisplayFor(modelItem => item.SubMenu)</td>*@
+            <td>
+                <div class="form-check form-switch">
+                    @if (item.All == "true")
+                    {
+                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                    }
+                    else
+                    {
+                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                    }
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch">
+                    @if (item.Update == "true")
+                    {
+                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                    }
+                    else
+                    {
+                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                    }
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch">
+                    @if (item.Save == "true")
+                    {
+                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                    }
+                    else
+                    {
+                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                    }
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch">
+                    @if (item.Delete == "true")
+                    {
+                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                    }
+                    else
+                    {
+                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                    }
+                </div>
+            </td>
+            <td>
+                <div class="form-check form-switch">
+                    @if (item.View == "true")
+                    {
+                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                    }
+                    else
+                    {
+                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                    }
+                </div>
+            </td>
+        </tr>
+    }
+}

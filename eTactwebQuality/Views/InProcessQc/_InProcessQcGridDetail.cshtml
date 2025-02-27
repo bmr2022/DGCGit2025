@@ -1,0 +1,75 @@
+﻿@model eTactWeb.DOM.Models.InProcessQc
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                <a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+           <td>@item.SeqNo</td>
+           <td>@item.ProdSlipNo</td>
+           <td>@item.ProdDate</td>
+           <td>@item.PartCode</td>
+           <td>@item.ItemName</td><input type="hidden" value="@item.ItemCode"/>
+           <td>@item.TotProdQty.ToString("F2")</td>
+           <td>@item.OKProdQty.ToString("F2")</td>
+           <td>@item.QCOKQty.ToString("F2")</td>
+           <td>@item.QCRejQty.ToString("F2")</td>
+           <td>@item.RewQty.ToString("F2")</td>
+           <td>@item.WorkCenter<input type="hidden" value="@item.WcId"/></td>
+           <td>@item.ToStoreOrWc</td>
+           <td>@item.ToStoreName<input type="hidden" value="@item.ToStoreId"/></td>
+           <td>@item.ToWorkCenter<input type="hidden" value="@item.ToWcId"/></td>
+           <td>@item.RejReason</td>
+           <td>@item.RewRemark</td>
+           <td>@item.BatchNo</td>
+           <td>@item.UniqueBatchNo</td>
+           <td>@item.OperatorName</td>
+           <td>@item.otherdetail</td>
+           <td>@item.ShiftName</td>
+           <td>@item.MachineName</td>
+           <td>@item.ProdPlanSchNo</td>
+           <td>@item.ProdPlanSchYearCode</td>
+           <td>@item.ProdPlanSchDate</td>
+           <td>@item.ProdPlanNo</td>
+           <td>@item.ProdPlanYearCode</td>
+           <td>@item.ProdPlanDate</td>
+           <td>@item.Reqno</td>
+           <td>@item.ReqDate</td>
+           <td>@item.ReqYearCode</td>
+           <td>@item.NewProdRework</td>
+           <td>@item.SchQty</td>
+           <td>@item.FGRejQty</td>
+           <td>@item.ProdEntryId</td>
+           <td>@item.ProdYearcode</td>
+            <td>@item.TransferedQty</td>
+            <td>@item.PendForTransfQty</td>
+            <td>@item.ToWcId</td>
+            <td>@item.ToStoreId</td>
+            <td>@item.MaterialIstransfered</td>
+            <td>@item.SampleQty</td>
+            <td>@item.TestingMethod</td>
+        </tr>
+    }
+}

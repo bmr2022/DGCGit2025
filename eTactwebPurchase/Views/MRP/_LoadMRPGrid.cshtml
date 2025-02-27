@@ -1,0 +1,41 @@
+﻿@model eTactWeb.DOM.Models.MRPMain
+
+
+@if (Model.MRPGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="19" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.MRPGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small @item.SeqNo" style="white-space:nowrap">
+            <th>@Cntr</th>
+            <td><input value="@item.FGPartCode" id="FGPartCode-@Cntr" /><input type="hidden" value="@item.FGItemCode" id="FGItemCode-@Cntr" /></td>
+            <td><input value="@item.FGItemName" id="FGItemName-@Cntr" /></td>
+            <td><input value="@item.RMPartCode" id="RMPartCode-@Cntr" /><input type="hidden" value="@item.RMItemCode" id="RMItemCode-@Cntr" /></td>
+            <td><input value="@item.RMItemName" id="RMItemName-@Cntr" /></td>
+            <td><input value="@item.ReqQty" id="ReqQty-@Cntr" /></td>
+            <td><input value="@item.Unit" id="Unit-@Cntr" /></td>
+            <td><input value="@item.CurrMonthQty" id="CurrMonthQty-@Cntr" /></td>
+            <td><input value="@item.WIPStock" id="WIPStock-@Cntr" /></td>
+            <td><input value="@item.TotalStock" id="TotalStock-@Cntr" /></td>
+            <td><input value="@item.RecorderLvl" id="RecorderLvl-@Cntr" /></td>
+            <td><input value="@item.PORate" id="PORate-@Cntr" /></td>
+            <td><input value="@item.AllocatedQty" id="AllocatedQty-@Cntr" /></td>
+            <td><input value="@item.ConsumedQty" id="ConsumedQty-@Cntr" /></td>
+            <td><input value="@item.AccountName" id="AccountName-@Cntr" /></td>
+            <td><input value="@item.PrevOrderQty" id="PrevOrderQty-@Cntr" /></td>
+            <td><input value="@item.IIndMonthQty" id="IIndMonthQty-@Cntr" /></td>
+            <td><input value="@item.IIrdMonthQty" id="IIrdMonthQty-@Cntr" /></td>
+            <td><input value="@item.IIndMonthActualReqQty" id="IIndMonthActualReqQty-@Cntr" /></td>
+            <td><input value="@item.IIrdMonthActualReqQty" id="IIrdMonthActualReqQty-@Cntr" /></td>
+        </tr>
+
+    }
+}
+

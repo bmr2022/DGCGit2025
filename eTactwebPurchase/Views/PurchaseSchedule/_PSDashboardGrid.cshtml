@@ -1,0 +1,185 @@
+﻿@model eTactWeb.DOM.Models.PSDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+@if (Model.DashboardType == "Detail")
+{
+    <partial name="_PSDetailDashboardGrid" />
+}
+else
+{
+    <div class="table-responsive" style="max-height:350px;">
+        <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="PSDashboard">
+            <thead class="bg-gradient card-headerBG text-light " id="dashPOThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th>Action</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONO</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Eff From Date</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Eff Till Date</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Approved</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved By Emp</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created By</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created On</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Amend No</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amend Approved By</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amend Date</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRP NO</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchCompleted </th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Active </th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Entry Id</th>
+
+                </tr>
+            </thead>
+            <tbody id="divDashboardGrid">
+                @{
+                    var @Cntr = 0;
+                    if (Model.PSDashboard == null || Model.PSDashboard.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.PSDashboard)
+                        {
+
+                            Cntr = Cntr + 1;
+                            <tr id="purchaseSchDashboardRow-@Cntr">
+                                <th>@Cntr</th>
+                                <td style="text-align:center;white-space: nowrap;">
+                                    <div id="container">
+                                        <div class="d-flex">
+                                            <div id="viewCursorDiv-@Cntr">
+                                                <a class="table-link link-success" asp-action="PurchaseSchedule" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            @if (item.SchApproved == "N" || item.SchApproved == null || item.POYearCode == yearCode)
+                                            {
+                                                <div id="editCursorDiv-@Cntr">
+                                                    <a class="table-link link-primary" asp-action="PurchaseSchedule" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear">
+                                                        <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div id="deleteCursorDiv-@Cntr">
+                                                    <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear" asp-route-createdBy="@item.CreatedBy" asp-route-entryByMachineName="@item.EntryByMachineName">
+                                                        <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            }
+                                            else if (item.SchApproved == "Y" || item.POYearCode != yearCode)
+                                            {
+                                                <div>
+                                                    <a class="table-link link-primary noCursor">
+                                                        <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <a class="table-link link-danger noCursor">
+                                                        <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @item.SchNo    
+                                    <input type="hidden" id="approvedOrNot-@Cntr" value="@item.SchApproved" />
+                                    <input type="hidden" id="schAmendApproved-@Cntr" value="@item.SchAmendApprove" />
+                                </td>
+                                @if (item.Schdate != null)
+                                {
+                                    <td>@item.Schdate.Split(" ")[0]</td>
+                                }
+                                else
+                                {
+                                    <td>@item.Schdate</td>
+                                }
+                                <td>@item.PONO</td>
+                                @if (item.PODate != null)
+                                {
+                                    <td>@item.PODate.Split(" ")[0]</td>
+                                }
+                                else
+                                {
+                                    <td>@item.PODate</td>
+                                }
+                                <td>@item.VendorName</td>
+                                <td>@item.DeliveryAddress</td>
+
+                                @if (item.SchEffFromDate != null)
+                                {
+                                    <td>@item.SchEffFromDate.Split(" ")[0]</td>
+                                }
+                                else
+                                {
+                                    <td>@item.SchEffFromDate</td>
+                                }
+                                @if (item.SchEffTillDate != null)
+                                {
+                                    <td>@item.SchEffTillDate.Split(" ")[0]</td>
+                                }
+                                else
+                                {
+                                    <td>@item.SchEffTillDate</td>
+                                }
+                                <td>@item.SchApproved</td>
+                                <td>@item.ApprovedBy</td>
+                                <td>@item.CreatedByEmpName</td>
+                                @if (item.CreatedOn != null)
+                                {
+                                    <td>@item.CreatedOn.Split(" ")[0]</td>
+                                }
+                                else
+                                {
+                                    <td>@item.CreatedOn</td>
+                                }
+                                <td>@item.schAmendNo</td>
+                                <td>@item.SchAmendApprovedByEmp</td>
+                                <td>@item.schAmendDate</td>
+                                <td>@item.MRPNO</td>
+                                <td>@item.Branch</td>
+                                <td>@item.SchCompleted</td>
+                                <td>@item.Active</td>
+                                <td>@item.SchYear</td>
+                                <td>@item.POYearCode</td>
+                                <td>@item.EntryID</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+<style>
+
+</style>

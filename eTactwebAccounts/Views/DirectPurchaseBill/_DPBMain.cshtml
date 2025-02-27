@@ -1,0 +1,123 @@
+﻿@model eTactWeb.DOM.Models.DirectPurchaseBillModel
+
+
+<div class="accordion-body">
+    <div class="row g-2 gx-3">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <input type="hidden" asp-for="FinFromDate" />
+            <input type="hidden" asp-for="FinToDate" />
+            <label asp-for="EntryID" class="form-label">Entry ID</label>
+            <input asp-for="EntryID" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="YearCode" class="form-label">Year</label>
+            <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="EntryDate" class="form-label">Entry Date</label>
+            <input asp-for="EntryDate" class="form-control" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Branch" class="form-label">Branch</label>
+            <input class="form-control" asp-for="Branch" readonly />
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PurchVouchNo" class="form-label">Voucher No*</label>
+            @{
+                <input asp-for="PurchVouchNo" class="form-control" readonly disabled />
+
+            }
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="VouchDate" class="form-label">Voucher Date*</label>
+            <input asp-for="VouchDate" tabindex="7" disabled class="form-control datePickerControl" />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="DPBType" class="form-label">Order Type</label>
+            <select class="form-select" asp-for="DPBType" tabindex="3" asp-items="Model.DPBTypeList"></select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="DPBTypeServItem" class="form-label">Item Type</label>
+            <select asp-for="DPBTypeServItem" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.DPBTypeServList,"Value","Text"))">
+                <option value="0" selected>-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="InvoiceNo" class="form-label">Vend Invoice No*</label>
+            @{
+                <input asp-for="InvoiceNo" class="form-control" onchange="onInvoiceChange('InvoiceNo')" />
+
+            }
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="InvDate" class="form-label">Inv Date*</label>
+            <input asp-for="InvDate" tabindex="7" class="form-control datePickerControl" />
+        </div>
+
+
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="AccountCode" class="form-label">Vendor Name*</label>
+            <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
+            </div>
+
+            <select class="form-select" asp-for="AccountCode" tabindex="5" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="VendorAddress" class="form-label">Vendor Address</label>
+            <input asp-for="VendorAddress" disabled class="form-control" readonly />
+        </div>
+
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GstType" class="form-label">GST Type</label>
+            @{
+                <input asp-for="GstType" disabled class="form-control" readonly />
+            }
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="VendorStateName" class="form-label">State Name</label>
+            @{
+                <input asp-for="VendorStateName" disabled class="form-control" readonly />
+            }
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Transport" class="form-label">Transporter</label>
+            @{
+                <input asp-for="Transport" class="form-control" />
+            }
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="VehicleNo" class="form-label">VehicleNo</label>
+            @{
+                <input asp-for="VehicleNo" class="form-control" />
+            }
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="ModeOfTransport" class="form-label">Mode Of Transp</label>
+            @{
+                <input asp-for="ModeOfTransport" class="form-control" />
+            }
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Currency" class="form-label">Currency</label>
+            <input type="hidden" id="hiddenCurrency" value="@Model.Currency" />
+            <select class="form-select" asp-for="Currency" tabindex="4" disabled></select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="ExchangeRate" class="form-label">Exchange Rate*</label>
+            @{
+                <input asp-for="ExchangeRate" class="form-control" step="any" type="number" min="0" pattern="^([0-9]{1,6}\.[0-9]{2,})$" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
+            }
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="PaymentDays" class="form-label">Payment Days</label>
+            <input asp-for="PaymentDays" class="form-control" />
+        </div>
+        <input type="hidden" asp-for="Approved" class="form-control" />
+        <input type="hidden" asp-for="ApprovedDate" class="form-control" />
+        <input type="hidden" asp-for="Approvedby" class="form-control" />
+    </div>
+</div>
+

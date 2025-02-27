@@ -1,0 +1,113 @@
+﻿@model eTactWeb.DOM.Models.SaleOrderModel
+
+@*<table class="table table-bordered table-striped mb-0">
+    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+    <tr>
+    <th style="width:10%">Sr#</th>
+    <th style="width:10%">Days</th>
+    <th style="width:10%">Date</th>
+    <th style="width:10%">Qty</th>
+    <th style="width:10%">Alt Qty</th>
+    <th style="width:50%">Remarks</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model.DeliveryScheduleList == null)
+    {
+    <tr class="text-center">
+    <td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+    </tr>
+    }
+    else
+    {
+    var @Cntr = 0;
+    foreach (var item in Model.DeliveryScheduleList)
+    {
+    Cntr = Cntr + 1;
+    <tr class="@item.SRNo">
+    <th>
+    @Cntr &nbsp;
+    <a onclick="DeleteDeliveryRow(@item.SRNo);" >
+    <i class="fa-solid fa-hexagon-xmark fa-fw fa-lg" style="--fa-secondary-opacity: 1.0; --fa-primary-color: white; --fa-secondary-color: red;"></i>
+    </a>
+    </th>
+    <th>@item.Days</th>
+    <th>@item.Date</th>
+    <th class="Qty">@item.Qty</th>
+    <th>@item.AltQty</th>
+    <th>@item.Remarks</th>
+    </tr>
+    }
+    <tr>
+    <th class="text-center" colspan="3">TOTAL</th>
+    <th colspan="3">@Model.DeliveryScheduleList.Select(x=>x.TotalQty).LastOrDefault()</th>
+    </tr>
+    }
+    </tbody>
+    </table>*@
+
+<table class="table table-hover table-bordered table-striped mb-0">
+    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+        <tr>
+            <th style="width:10%">Sr#</th>
+            <th style="width:30%">ItemName</th>
+            <th style="width:10%">Days</th>
+            <th style="width:10%">Date</th>
+            <th style="width:10%">Qty</th>
+            <th style="width:10%">Alt Qty</th>
+            <th style="width:20%">Remarks</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @{
+            var model = Model.ItemDetailGrid;
+
+            if (Model.ItemDetailGrid == null)
+            {
+                <tr class="text-center">
+                    <td colspan="7" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                </tr>
+            }
+            else
+            {
+                var ScheduleList = model.FirstOrDefault(x => x.PartCode == Model.DPartCode);
+                //var ScheduleList = model.Where(x => x.PartCode == Model.DPartCode).FirstOrDefault();
+                //var ScheduleList = model.SelectMany(x => x.DeliveryScheduleList).ToList();
+
+                if (ScheduleList == null || ScheduleList.DeliveryScheduleList == null)
+                {
+                    <tr class="text-center">
+                        <td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                    </tr>
+                }
+                else
+                {
+                    var @Cntr = 0;
+                    foreach (var item in ScheduleList.DeliveryScheduleList)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr class="@item.SRNo">
+                            <th>
+                                @Cntr &nbsp;
+                                <a onclick="DeleteDeliveryRow(@item.SRNo,@item.DPartCode);">
+                                    <i class="fa-solid fa-hexagon-xmark fa-fw fa-lg" style="--fa-secondary-opacity: 1.0; --fa-primary-color: white; --fa-secondary-color: red;"></i>
+                                </a>
+                            </th>
+                            <th>@item.ItemName</th>
+                            <th>@item.Days</th>
+                            <th>@item.Date</th>
+                            <th class="Qty">@item.Qty</th>
+                            <th>@item.AltQty</th>
+                            <th>@item.Remarks</th>
+                        </tr>
+                    }
+                    <tr>
+                        <th class="text-center" colspan="3">TOTAL</th>
+                        <th colspan="3">@ScheduleList.DeliveryScheduleList.Select(x=>x.TotalQty).LastOrDefault()</th>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>

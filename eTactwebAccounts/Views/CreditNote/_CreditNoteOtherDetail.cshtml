@@ -1,0 +1,104 @@
+﻿@model eTactWeb.DOM.Models.AccCreditNoteModel
+
+<div class="accordion-body">
+    <div class="row g-2 gx-3">
+        <div class="col-md-2">
+            <label asp-for="BillAmt" class="form-label">Bill Amount</label>
+            <input asp-for="BillAmt" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="RoundOffAmt" class="form-label">Round Off Amount</label>
+            <input asp-for="RoundOffAmt" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="RoundoffType" class="form-label">Round Off Type</label>
+            <input asp-for="RoundoffType" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Taxableamt" class="form-label">Taxable Amount</label>
+            <input asp-for="Taxableamt" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="ToatlDiscountPercent" class="form-label">Total Discount (%)</label>
+            <input asp-for="ToatlDiscountPercent" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="TotalDiscountAmount" class="form-label">Total Discount Amount</label>
+            <input asp-for="TotalDiscountAmount" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="NetAmt" class="form-label">Net Amount</label>
+            <input asp-for="NetAmt" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Remark" class="form-label">Remark</label>
+            <input asp-for="Remark" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="CC" class="form-label">CC</label>
+            <input asp-for="CC" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Uid" class="form-label">UID</label>
+            <input asp-for="Uid" class="form-control" type="number" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="ItemService" class="form-label">Item/Service</label>
+            <input asp-for="ItemService" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="INVOICETYPE" class="form-label">Invoice Type</label>
+            <input asp-for="INVOICETYPE" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="MachineName" class="form-label">Machine Name</label>
+            <input asp-for="MachineName" class="form-control" value="@Environment.MachineName" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date</label>
+            <input asp-for="ActualEntryDate" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="ActualEnteredByName" class="form-label">Actual Entered By Name</label>
+            <input asp-for="ActualEnteredBy" class="form-control" type="hiddeb" />
+            <input asp-for="ActualEnteredByName" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="LastUpdatedByName" class="form-label">Last Updated By Name</label>
+            <input asp-for="LastUpdatedBy" class="form-control" type="hidden" />
+            <input asp-for="LastUpdatedByName" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="LastUpdationDate" class="form-label">Last Updation Date</label>
+            <input asp-for="LastUpdationDate" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="EntryFreezToAccounts" class="form-label">Entry Freeze to Accounts</label>
+            <input asp-for="EntryFreezToAccounts" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="BalanceSheetClosed" class="form-label">Balance Sheet Closed</label>
+            <input asp-for="BalanceSheetClosed" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="EInvNo" class="form-label">E-Invoice Number</label>
+            <input asp-for="EInvNo" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="EinvGenerated" class="form-label">E-Invoice Generated</label>
+            <input asp-for="EinvGenerated" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="AttachmentFilePath1" class="form-label">Attachment File Path 1</label>
+            <input asp-for="AttachmentFilePath1" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="AttachmentFilePath2" class="form-label">Attachment File Path 2</label>
+            <input asp-for="AttachmentFilePath2" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="AttachmentFilePath3" class="form-label">Attachment File Path 3</label>
+            <input asp-for="AttachmentFilePath3" class="form-control" />
+        </div>
+    </div>
+</div>

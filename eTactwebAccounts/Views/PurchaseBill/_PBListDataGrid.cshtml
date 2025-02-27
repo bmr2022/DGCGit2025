@@ -1,0 +1,123 @@
+﻿@model eTactWeb.DOM.Models.PBListDataModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@using System.Globalization
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+@if (Model.DashboardType == "Detail")
+{
+    @* <partial name="_DashboardDetailGrid" /> *@
+}
+else
+{
+    <div class="table-responsive" style="max-height:350px;">
+        <table class="table table-bordered TbCss text-nowrap mb-0" id="PBDashboardGrid">
+            <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashPBThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN No.</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRN Year Code</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No.</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice Date</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate No.</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Date</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Document Name</th>
+                </tr>
+            </thead>
+            <tbody id="divDashboardGrid1">
+                @{
+                    var @Cntr = 0;
+                    if (Model.PBListData == null || Model.PBListData.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="18" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.PBListData)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr id="approvedRow-@Cntr">
+                                <td class="FWB">
+                                    @Cntr
+                                    <input type="hidden" id="accountCode_@Cntr" value="@item.AccountCode" />
+                                    @*<input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
+                                    <input type="hidden" id="fLevelApproved-@Cntr" value="@item.Approval1Levelapproved" />
+                                    <input type="hidden" id="AmmApproved-@Cntr" value="@item.ApproveAmm" />*@
+                                </td>
+                                <td id='MRNNo_@Cntr'><a onclick="transferDataToEdit('@Cntr')">@item.MRNNo</a></td>
+                                <td id='MRNYearCode_@Cntr'>@item.MRNYearCode</td>
+                                <td id ='MRNEntryDate_@Cntr'>
+                                    @(item.MRNEntryDate.HasValue
+                                    ? item.MRNEntryDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                    : string.Empty)
+                                </td>
+                                <td id='PartyName_@Cntr'>@item.PartyName</td>
+                                <td id='InvoiceNo_@Cntr'>@item.InvoiceNo</td>
+                                <td id='InvoiceDate_@Cntr'>
+                                    @(item.InvoiceDate.HasValue
+                                    ? item.InvoiceDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                    : string.Empty)
+                                </td>
+                                <td id='GateNo_@Cntr'>@item.GateNo</td>
+                                <td id='GateDate_@Cntr'>
+                                    @(item.GateDate.HasValue
+                                    ? item.GateDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                    : string.Empty)
+                                </td>
+                                <td id='DocumentName_@Cntr'>@item.DocumentName</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+    <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+}
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #PBDashboardGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashPBThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

@@ -1,0 +1,194 @@
+﻿@model eTactWeb.DOM.Models.WIPStockRegisterModel
+
+
+@if (Model.ReportMode == "WIPSTOCKSUMMARY")
+{
+    <partial name="_WIPStockSummaryReport" />
+}
+@*else if (Model.ReportMode == "SHOWALLWIPSTORESTOCK")
+{
+    <partial name="_ShowAllWIPStoreStockReport" />
+
+}*@
+else if (Model.ReportMode == "ZeroInventory")
+{
+    <partial name="_WIPStockSummaryReport" />
+
+}
+else if (Model.ReportMode == "OnlyBalance")
+{
+    <partial name="_WIPStockSummaryReport" />
+}
+else if (Model.ReportMode == "SHOWONLYRECDATA")
+{
+    <partial name="_ShowOnlyRecReport" />
+
+}
+else if (Model.ReportMode == "SHOWONLYISSUEDATA")
+{
+    <partial name="_ShowOnlyIssueReport" />
+
+}
+else if (Model.ReportMode == "BATCHWISESTOCKSUMMARY")
+{
+    <partial name="_BatchWiseSummaryReport" />
+
+}
+@*else if (Model.ReportMode == "SHOWALLSTORE+WIPSTOCK")
+{
+    <partial name="_ShowAllStockandWIPStock" />
+
+}
+else if (Model.ReportMode == "SHOWALLSTORE+WIPSTOCK+JOBWORK")
+{
+    <partial name="_ShowAllStoreWIPandJW" />
+
+}*@
+else
+{
+    <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+        <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+            <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+                <tr>
+                    <th>Action</th>
+                    <th>Sr#</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transaction Type</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Trans Date</th>
+
+                    <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Slip No</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Date</th>
+
+                    <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part code</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Desc</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Opn Stk</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Iss Qty</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tot Stk</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Rec</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Iss</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Stk</th>
+
+                    <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+
+                    <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+
+                    <th class="sortCol" data-sortorder="asc" data-columnno="20"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="21"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="22"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Id</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="23"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From WC</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="24"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From Str</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="25"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TO WC</th>
+                    <th class="sortCol" data-sortorder="asc" data-columnno="25"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TO Store</th>
+
+                </tr>
+            </thead>
+            <tbody id="divStockRegisterBody">
+                @{
+                    var @Cntr = 0;
+                    if (Model.WIPStockRegisterDetail == null)
+                    {
+                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.WIPStockRegisterDetail)
+                        {
+                            Cntr = Cntr + 1;
+
+                            <tr id="SAGridRow-@Cntr">
+                                <td>
+                                    <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </td>
+                                <th>@Cntr</th>
+                                <td>@item.WorkCenterName</td>
+                                <td>@item.TransactionType</td>
+                                @if (item.TransDate != null)
+                                {
+                                    <td>@item.TransDate.Split(" ")[0]</td>
+
+                                }
+                                else
+                                {
+                                    <td>@item.TransDate</td>
+                                }
+                                <td>@item.BillNo</td>
+                                <td>@(item.BillDate != null ? Convert.ToDateTime(item.BillDate).ToString("dd/MM/yyyy") : "")</td>
+
+
+                                <td>@item.PartCode</td>
+                                <td>@item.ItemName</td>
+                                <td id="opnStk-@Cntr">@item.OpnStk</td>
+                                <td id="recQty-@Cntr">@item.RecQty</td>
+                                <td id="issQty-@Cntr">@item.IssQty</td>
+                                @if (item.TotStk < 0)
+                                {
+
+                                    <td id="totStk-@Cntr" style="color:red;">@item.TotStk</td>
+                                }
+                                else
+                                {
+                                    <td id="totStk-@Cntr">@item.TotStk</td>
+
+                                }
+                                <td>@item.Unit</td>
+                                <td>@item.AltRecQty</td>
+                                <td>@item.AltIssQty</td>
+                                <td>@item.AltStock</td>
+                                <td>@item.AltUnit</td>
+
+                                <td id="rate-@Cntr">@item.Rate</td>
+                                <td id="amount-@Cntr">@item.Amount</td>
+
+                                <td>@item.BatchNo</td>
+                                <td>@item.UniquebatchNo</td>
+                                <td>@item.EntryId</td>
+                                <td>@item.FromWc</td>
+                                <td>@item.FromStore</td>
+                                <td>@item.ToWC</td>
+                                <td>@item.ToStore</td>
+
+                            </tr>
+                        }
+                    }
+                }
+
+            </tbody>
+        </table>
+    </div>
+}
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    #dashRThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+</style>
+

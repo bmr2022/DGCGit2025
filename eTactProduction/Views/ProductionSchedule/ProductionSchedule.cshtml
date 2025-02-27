@@ -1,0 +1,3197 @@
+﻿@model eTactWeb.DOM.Models.ProductionScheduleModel
+
+@{
+    ViewData["Title"] = "Production Schedule";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="ProductionSchedule" asp-controller="ProductionSchedule" method="post" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Production Schedule - Financial Year: @Model.YearCode</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                        @* string fromDate,string toDate,string partCode,string itemName ,string accountName,string prodSchNo,string wono,string summaryDetail,string searchBox *@
+                        <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="AccountNameBack" type="hidden" value="@Model.AccountNameBack" />
+                            <input asp-for="ProdSchNoBack" type="hidden" value="@Model.ProdSchNoBack" />
+                            <input asp-for="WONOBack" type="hidden" value="@Model.WONOBack" />
+                            <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+                            <input asp-for="SearchBoxBack" type="hidden" value="@Model.SearchBoxBack" />
+
+                    <a asp-action="PSDashboard" asp-route-ID="0" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    @* <partial name="_FormsButton" /> *@
+
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V"  )
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U"  )
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            } 
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Pending Prod Plan
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3 align-items-center">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                    <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <label asp-for="EntryID" class="form-label" style="color: blue;">Entry ID</label>
+                                    <input asp-for="EntryID" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryDate" class="form-label" style="color: blue;">Entry Date</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="YearCode" class="form-label">Year Code</label>
+                                    <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
+                                </div>
+                                @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="EffectiveFrom" class="form-label">Plan FromDate</label>
+                                <input asp-for="EffectiveFrom" class="form-control" />
+
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="EffectiveTill" class="form-label">Plan TillDate</label>
+                                <input asp-for="EffectiveTill" class="form-control" />
+                                </div>*@
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ShowWOWithOrWOItem" class="form-label" style="color: red;">Show ProdPlan Items</label>
+                                    <select class="form-select" asp-for="ShowWOWithOrWOItem" onchange="ShowDataWo();ClearProductionSchGrid();ClearBomGrid();">
+                                        <option>-Select-</option>
+                                        <option value="OnlyProdPlan" selected>Only ProdPlan</option>
+                                        <option value="ProdPlan+SO+CUSTOMER">ProdPlan+SO+Customer</option>
+                                        <option value="ProdPlan+SO+CUSTOMER+iTEM">ProdPlan+SO+Customer+Item</option>
+                                        <option value="ProdPlan+ITEM">ProdPlan+Item</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ProdSchNo" class="form-label" style="color: red;">Prod SchNo</label>
+                                    <input asp-for="ProdSchNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ProdSchDate" class="form-label" style="color: red;">Prod SchDate</label>
+                                    <input asp-for="ProdSchDate" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label class="form-label" style="color: deepskyblue;font-weight: bold;">Filter Here  </label>
+                                    </div>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12"></div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="WONo" class="form-label" style="color: deepskyblue;font-weight: bold;">Prod Plan No</label>
+                                    <input asp-for="WONo" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label" style="color: deepskyblue;font-weight: bold;">Part Code</label>
+                                    <input asp-for="PartCode" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label" style="color: deepskyblue;font-weight: bold;">Item Name</label>
+                                    <input asp-for="ItemName" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountName" class="form-label" style="color: deepskyblue;font-weight: bold;">Party Name</label>
+                                    <input asp-for="AccountName" class="form-control" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CustOrderNo" class="form-label" style="color: deepskyblue;font-weight: bold;">Cust Order # </label>
+                                    <input asp-for="CustOrderNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9">
+                                    <label asp-for="SONo" class="form-label" style="color: deepskyblue;font-weight: bold;">SO No</label>
+                                    <input asp-for="SONo" class="form-control" />
+                                </div>
+                                <div class="col-sm-3 col-md-3 col-lg-2 col-xl-3 d-flex justify-content-end mt-3">
+                                    <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData(event);">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:70px;margin-left:20px;" type="button" id="SendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" asp-controller="ProductionSchedule" asp-action="ProductionSchedule">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>
+                                    </a>
+                                </div>
+
+                                @*<div class="col-xl-5 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex">
+                                <div class="form-check form-switch d-flex align-items-center mt-2">
+                                <input id="SH" class="form-check-input me-2" type="checkbox" role="switch" />
+                                <label class="form-label d-flex justify-content-center" style="margin-bottom:0 !important;">Show/Hide Additional Fields</label>
+                                </div>
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient prodPlanGridBtn" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase">
+                                <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;">
+
+                                </i>Prod Plan Grid
+                            </strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient prodPlandiv" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="d-flex">
+                                <button class="btn btn-sm btn-outline-warning me-3 mb-2" type="button" id="CheckAll">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i> Ch/UnCh All
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger me-3 mb-2" type="button" id="ResetFields">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i> Reset Fields
+                                </button>
+                                <button type="button" class="GridButton btn btn-sm btn-outline-danger me-3 mb-2" id="AddToGrid" onclick="AddPendWO(event);">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i> Disp Item to Sch Grid
+                                    @* <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID *@
+                                </button>
+                                @* <button id="clearGridBtn" type="button" class="btn btn-sm btn-outline-danger mb-2" onclick="ClearGrid()">
+                                <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i> CLEAR GRID
+                                </button>*@
+                                <div class="ms-auto d-flex align-items-center">
+                                    <div class="col-md-5">
+                                        <label class="form-label me-2">Global search</label>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped divPendWOTable">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr id="PendWOHeaderRow">
+                                                <th data-columnno="0" data-columns="Action">Action</th>
+                                                <th data-columnno="1" data-columns="CustomerName" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="2" data-columns="CustomerOrderNo" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer OrderNo<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="3" data-columns="FGStock" data-sortorder="asc" class="sortCol">
+                                                    <span style="padding:5px;margin:5px;display:none; width = 100x" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Stock<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i>
+                                                </th>
+                                                <th data-columnno="4" data-columns="ItemName" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="6" data-columns="PartCode" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="7" data-columns="PendForProd" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend ForProd<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="8" data-columns="PendPlanQty" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend PlanQty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="9" data-columns="PlanNo" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Plan No<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i><label style="float:right;"></th>
+                                                <th data-columnno="10" data-columns="PlanYearCode" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Plan YearCode<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i> <label style="float:right;"></th>
+                                                <th data-columnno="12" data-columns="PlanEntryId" data-sortorder="asc" class="sortCol" style="width = 100x">
+                                                    <span style="padding:1px;margin:1px ; width = 100x" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Plan EntryId <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i>
+                                                </th>
+                                                <th data-columnno="13" data-columns="PlanQty" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Plan Qty <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="14" data-columns="PlanDate" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Plan Date <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="15" data-columns="PrevProdSchQty" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prev Prod SchQty <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="16" data-columns="SchDate" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="17" data-columns="SODate" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="18" data-columns="SONO" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO NO<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="19" data-columns="SOYearCode" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO YearCode<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="20" data-columns="SchNo" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="21" data-columns="SchYeaarCode" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch YearCode<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="22" data-columns="TotalProdQty" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total ProdQty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="23" data-columns="WIPStock" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WIP Stock<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divPendWOGrid">
+                                            @*<partial name="_RoutingGrid" />*@
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row g-2 gx-3">
+                                <div class="col-12 text-center">
+                                    <strong>Total No Of Items : <span id="lblPendTotalNoOfItems"></span></strong>
+                                </div>
+                            </div>
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            @*  <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase">
+                            <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;">
+
+                            </i>Scheduled Item's Grid
+                            </strong>
+                            </button> *@
+                            <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                                <strong style="text-transform:uppercase">
+                                    <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;">
+
+                                    </i>Scheduled Item's Grid
+                                </strong>
+                            </button>
+                        </h2>
+                        <div class="row justify-content-around">
+
+                            <div class="col-auto d-flex justify-content-center align-items-center mt-2">
+                                <button id="ResetProdSch" type="button" class="btn btn-sm btn-outline-danger">
+                                    <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i> Reset Prod Schedule
+                                </button>
+                            </div>
+                            <div class="col-auto d-flex justify-content-center align-items-center mt-2">
+                                <button type="button" class="btn btn-sm btn-primary" id="AddQty" style="color:white!important; float:right;">
+                                    Get Bom Child Part
+                                </button>
+                            </div>
+                            <div class="col-auto d-flex align-items-center me-3 mt-2">
+                                <button type="button" class="Importbtn btn btn-sm btn-outline-success" id="ProdExcel">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Excel
+                                </button>
+                            </div>
+                            <div class="col-auto d-flex align-items-center mt-3">
+                                <button id="addNewItem" type="button" class="btn btn-sm btn-outline-danger mb-2">
+                                    <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i> Add New item
+                                </button>
+                            </div>
+                            <div class="col-auto d-flex align-items-center mt-2">
+                                <button type="button" class="Importbtn btn btn-sm btn-outline-warning" id="ImportExcel">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>Import Excel
+                                </button>
+                            </div>
+                            <div class="col-auto d-flex align-items-center mt-2">
+                                <button type="button" class="RefreshBom btn btn-sm btn-outline-danger" id="ImportExcel">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Refresh Bom
+                                </button>
+                            </div>
+                            <div class="col-md-1 mb-2 p-2">
+                                <label asp-for="EffectiveFrom" class="form-label">Sch From Date</label>
+                                <input asp-for="EffectiveFrom" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-1 mb-2 p-2">
+                                <label asp-for="EffectiveTo" class="form-label">Sch Till Date</label>
+                                <input asp-for="EffectiveTo" class="form-control" readonly />
+                            </div>
+                            <div class="col-auto mb-2 p-2">
+                                <label asp-for="PlanForNoOFDays" class="form-label">Plan For No Of Days</label>
+                                @if (Model.Mode == "U" || Model.Mode == "V")
+                                {
+                                    <input asp-for="PlanForNoOFDays" class="form-control" onchange="PlanForNoOfDays();" value="@(Model.PlanForNoOFDays )" />
+                                }
+                                else
+                                {
+                                    <input asp-for="PlanForNoOFDays" class="form-control" onchange="PlanForNoOfDays();" value="3" />
+                                }
+                            </div>
+                        </div>
+
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        @* <div class="d-flex mt-3 justify-content-end">
+                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-center mb-2">
+                        <input type="radio" id="ManualEntry" name="ManualEntry" value="ManualEntry" checked class="me-1" />
+                        <label class="control-label">Manual Entry</label>
+                        </div>
+                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-center mb-2">
+                        <input type="radio" id="DaysColumns" name="ManualEntry" value="DaywiseCol" class="me-1" />
+                        <label class="control-label">Days Columns</label>
+                        </div>
+                        </div>*@
+                        <div class="card">
+                            <div class="card-body overflow-auto pb-0 divManualEntry scrollable-table-container">
+                                @*  <div class="d-flex">
+                                <div class="mt-auto d-flex align-items-center me-3 mb-2">
+                                <button type="button" class="Importbtn btn btn-sm btn-outline-success" id="ProdExcel">
+                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Excel
+                                </button>
+                                </div>
+                                <div class="mt-auto d-flex align-items-center me-3">
+                                <button id="addNewItem" type="button" class="btn btn-sm btn-outline-danger mb-2">
+                                <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i> Add New item
+                                </button>
+                                </div>
+                                <div class="mt-auto d-flex align-items-center mb-2">
+                                <button type="button" class="Importbtn btn btn-sm btn-outline-warning" id="ImportExcel">
+                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>Import Excel
+                                </button>
+                                </div>
+                                <div class="ms-auto d-flex align-items-center">
+                                <div class="col-auto">
+                                <label class="form-label me-2">Global search</label>
+                                </div>
+                                <div class="col-auto">
+                                <input type="text" class="form-control" id="global-searchbox" placeholder="Search..." style="background-color:#FFFACD;">
+                                </div>
+                                </div>
+                                </div> *@
+                                <table class="table table-hover table-bordered table-striped AddedPlansGrid scrollable-table">
+                                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                        <tr class="ProductionSchRow">
+                                            <th>Action</th>
+                                            <th data-columnno="1">Part code<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="2">Item Name<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="3">Bom No<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="4">Bom EffDate<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="5" style="display:none;">SchDate<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="6">Prod PendQty<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="7" style="display:none;">Original Qty<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="8">Total WOQty<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="8">WorkCenter &nbsp; <input id="SHAWC" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />Same WC</label><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="9" style="display:none;">Account Name<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="10">Planned Machine1<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="11">Planned Machine2<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="12">Planned Machine3<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="13" style="display:none;">Start FromTime<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="14" style="display:none;">To Time<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="15" style="display:none;">SO EntryId<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="16" style="display:none;">SO No<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="17" style="display:none;">Cust OrderNo<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="18">SO YearCode<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="19" style="display:none;">SO Date<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="20" style="display:none;">Sub Bom<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="divProductionSchGrid">
+                                        <partial name="_ProductionScheduleGrid" />
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row g-2 gx-3">
+                            <div class="col-12 text-center">
+                                <strong>Total No Of Items : <span id="lblTotalNoOfItems"></span></strong>
+                            </div>
+                        </div>
+                        <div class="progress my-3 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                                <strong style="text-transform:uppercase">
+                                    <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;">
+
+                                    </i>Bom Summary Grid
+                                </strong>
+                            </button>
+                        </h2>
+
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body overflow-auto pb-0 divManualEntry scrollable-table-container">
+                                <div class="d-flex">
+                                    <div class="ms-auto d-flex align-items-center">
+                                        <div class="col-auto">
+                                            <label class="form-label me-2">Global search</label>
+                                        </div>
+                                        <div class="col-auto">
+                                            <input type="text" class="form-control" id="global-bomSummary-searchbox" placeholder="Search..." style="background-color:#FFFACD;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <table class="table table-hover table-bordered table-striped scrollable-table">
+                                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                        <tr class="bomSummaryRow">
+                                            <th data-columnno="1">RM PartCode<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="2">RM ItemName<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="3">Unit<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="4">Total ReqQty<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="5">Pend Qty<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="6">Main Store Stock<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="7">QC Store Stock<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="8">WIP Stock<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="divPSBomSummary">
+                                        <partial name="_PSBOMSummary" />
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="row g-2 gx-3">
+                            <div class="col-12 text-center">
+                                <strong>Total No Of Items : <span id="lblTotalNoOfBomSummaryItems"></span></strong>
+                            </div>
+                        </div>
+                        <div class="progress my-3 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                                <strong style="text-transform:uppercase">
+                                    <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;">
+
+                                    </i>Bom Detail Grid
+                                </strong>
+                            </button>
+                        </h2>
+
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body overflow-auto pb-0 divManualEntry scrollable-table-container">
+                                <div class="d-flex">
+                                    <div class="ms-auto d-flex align-items-center">
+                                        <div class="col-auto">
+                                            <label class="form-label me-2">Global search</label>
+                                        </div>
+                                        <div class="col-auto">
+                                            <input type="text" class="form-control" id="global-bomDetail-searchbox" placeholder="Search..." style="background-color:#FFFACD;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table table-hover table-bordered table-striped scrollable-table">
+                                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                        <tr class="bomDetailRow">
+                                            <th data-columnno="1">FG PartCode<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="2">FG ItemName<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="3">FG Qty<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="7">RM PartCode<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="8">RM ItemName<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="9">Unit<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="10">Req Qty<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                            <th data-columnno="11">Pend Qty<button class="toggle-btn" type="button"><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="divPSBomDetail">
+                                        <partial name="_PSBOMDetail" />
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row g-2 gx-3">
+                            <div class="col-12 text-center">
+                                <strong>Total No Of Items : <span id="lblTotalNoOfBomDetailItems"></span></strong>
+                            </div>
+                        </div>
+                        <div class="progress my-3 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="HPanel2">
+                            <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                            </button>
+                        </h2>
+                        <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3 align-items-center">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="UID" class="form-label">UID</label>
+                                        <input asp-for="UID" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ActualEntryByName" class="form-label">Actual EntryBy</label>
+                                        <input asp-for="ActualEntryByName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ActualEntryDate" class="form-label">Actual EntryDate</label>
+                                        <input asp-for="ActualEntryDate" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="LastUpdatedByName" class="form-label">Last UpdatedBy</label>
+                                        <input asp-for="LastUpdatedByName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="LastUpdatedDate" class="form-label">Last UpdatedDate</label>
+                                        <input asp-for="LastUpdatedDate" class="form-control" />
+                                    </div>
+                                    @*<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Approved" class="form-label">Approved</label>
+                                    <input asp-for="Approved" class="form-control" readonly />
+                                    </div>*@
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Remark" class="form-label">Remark</label>
+                                        <input asp-for="Remark" class="form-control"  />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryByMachineName" class="form-label">Machine Name</label>
+                                        <input asp-for="EntryByMachineName" class="form-control" value="@Environment.MachineName" readonly />
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Closed" class="form-label">Closed</label>
+                                        <input asp-for="Closed" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Completed" class="form-label">Completed</label>
+                                        <input asp-for="Completed" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <partial name="_DisplayProdSchBomDetail" />
+                <partial name="_AddNewProdPlanItem" />
+                <div class="card-footer card-headerBG text-light bg-gradient">
+                    <div class="row justify-content-between g-2">
+                        <h5>
+                            <strong>Production Schedule - Financial Year: @Model.YearCode</strong>
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+                                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+
+                                        <a asp-action="PSDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                            <i class="fa-solid fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                            Dashboard
+                                        </a>
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V")
+                                    {
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" asp-action="ProductionSchedule" asp-controller="ProductionSchedule">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode == "U")
+                                        {
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                <button type="submit" class="btn btn-primary btn-sm" id="submitBTNfooter">
+                                                    <i class="fa-solid fa-chevron-circle-right"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .toggle-btn {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+        .toggle-btn .fa {
+            color: white;
+            margin-left: 3px;
+        }
+
+    .fa {
+        margin-left: 3px;
+    }
+
+    .scrollable-table-container {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .scrollable-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .fixed-column {
+        position: sticky;
+        left: 0;
+        background-color: white;
+    }
+
+    .divManualEntry {
+        table-layout: fixed;
+        overflow-x: auto;
+    }
+
+    .fixed-column {
+        background-color: #82f982 !important;
+    }
+
+    .partCode {
+        left: 0;
+    }
+
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+
+    .ItemName {
+        left: 100px;
+    }
+
+
+    .formateBtn {
+        margin-left: 10px;
+        border-radius: 7px;
+        background-color: #ffd6dd;
+        border: none;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+</style>
+@section Scripts
+{
+    <script>
+
+        $(document).ready(function () {
+          // var serverDate;
+          // alert('load');
+            GetServerDate();
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                NewEntryId();
+            } else {
+                GetMachineName(0);
+                GetWorkCenter(0);
+                               // alert('prodplanqty'+$('#PlanForNoOFDays').val());
+                SetViewQty();
+                if (@Html.Raw(Json.Serialize(Model.LastUpdatedDate)) != null && @Html.Raw(Json.Serialize(Model.LastUpdatedDate)) != '') {
+                    var lastUpdatedDate = parseDateToFormates($('#LastUpdatedDate').val().split(" ")[0]);
+                    $('#LastUpdatedDate').val(lastUpdatedDate);
+                }
+            }
+            ShowDataWo();
+            PlanForNoOfDays();
+            SetPlanDays();
+            TotalnoOfItems();
+            TotalNoOfBomDetailItems();
+            TotalNoOfBomSummaryItems();
+
+            AutoComplete("WONo", "PlanNo");
+            AutoComplete("PartCode", "PartCode");
+            AutoComplete("ItemName", "ItemName");
+            AutoComplete("AccountName", "CustomerName");
+            AutoComplete("CustOrderNo", "CustomerOrderNo");
+            AutoComplete("SONo", "SONO");
+            var maxSize = getMaxInputSize();
+            $('td').css('width', maxSize * 10 + 'px');
+            var tableWidth = $('table').width();
+            $('table').css('width', tableWidth + 'px');
+            //SetPlanDays();
+
+            $('#EntryID').removeClass('valid');
+            $('#EntryDate').removeClass('valid');
+            $('#YearCode').removeClass('valid');
+            $('#CC').removeClass('valid');
+            $('#ShowWOWithOrWOItem').removeClass('valid');
+            $('#ProdSchDate').removeClass('valid');
+            $('#WONo').removeClass('valid');
+            $('#PartCode').removeClass('valid');
+            $('#ItemName').removeClass('valid');
+            $('#AccountName').removeClass('valid');
+            $('#CustOrderNo').removeClass('valid');
+            $('#LastUpdatedByName').rules('remove','required');
+                            $('#LastUpdatedDate').rules('remove','required');
+            $('#EntryID').rules('remove', 'required');
+            $('#EntryDate').rules('remove', 'required');
+            $('#YearCode').rules('remove', 'required');
+            $('#CC').rules('remove', 'required');
+            $('#ShowWOWithOrWOItem').rules('remove', 'required');
+            $('#ProdSchDate').rules('remove', 'required');
+            $('#WONo').rules('remove', 'required');
+            $('#PartCode').rules('remove', 'required');
+            $('#ItemName').rules('remove', 'required');
+            $('#AccountName').rules('remove', 'required');
+            $('#CustOrderNo').rules('remove', 'required');
+            $('#ActualEntryDate').rules('remove', 'required');
+            $('#LastUpdatedByName').rules('remove', 'required');
+            $('#LastUpdatedDate').rules('remove', 'required');
+            $('#Remark').rules('remove', 'required');
+            $('#Closed').rules('remove', 'required');
+            $('#Completed').rules('remove', 'required');
+            $('#SONo').rules('remove', 'required');
+            $('#EffectiveFrom').rules('remove', 'required');
+            $('#EffectiveTo').rules('remove', 'required');
+            $('#PlanForNoOFDays').rules('remove', 'required');
+                    $('#WONo').rules('remove', 'required');
+                    $('#PartCode').rules('remove', 'required');
+                    $('#ItemName').rules('remove', 'required');
+                    $('#AccountName').rules('remove', 'required');
+            $('#CustOrderNo').rules('remove', 'required');
+                              $('#SONo').rules('remove', 'required');
+
+            //$('.divManualEntry').show();
+            //$('.divDaywise').hide();
+        });
+
+        //$('#UpdateButton').click(function (event) {
+        //
+        //    event.preventDefault();
+        //    //AddPendWO(event);
+        //    // $('#AddQty').click();
+        //    var formData = $('form').serialize();
+        //      $.ajax({
+        //        type: "POST",
+        //        url: "@Url.Action("ProductionSchedule")",
+        //        data: formData,
+        //        success: function (result, status, error) {
+        //        }
+        //    });
+        //});
+
+        function workCenterChange(i) {
+            
+            if (WCSameStore) {
+                var WCValue = parseInt($('#WorkCenter-' + i).val());
+                var rowCount = $('#divProductionSchGrid tr').length;
+                for (var j = 1; j <= rowCount; j++) {
+                    $('#WorkCenter-' + j).val(WCValue);
+                }
+            }
+            ClearBomGrid();
+            // PSBomSummary();
+            // PSBomDetail();
+        }
+
+        $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (event) {
+            event.preventDefault();
+             
+            if ($('input[type="checkbox"]:checked').length == 0) {
+                $.notify('please checked any item from PendingProdGrid.', "error");
+            }
+            else if ($('#divProductionSchGrid tr td').length == 1) {
+                $.notify('please checked any Bom summary Grid.', "error");
+            }
+            else if ($('#divPSBomSummary tr td').length == 1) {
+                $.notify('please checked any Bom summary Grid. For the fill bom summary grid adjuested qty first..!', "error");
+            }
+            else if ($('#divPSBomDetail tr td').length == 1) {
+                $.notify('please checked any Bom Detail Grid. For the fill bom Detail grid adjuested qty first..!', "error");
+            }
+            else {
+                //alert("before save");
+                 $('form').attr('novalidate', 'novalidate');
+                         $('#WONo').rules('remove', 'required');
+                            $('#PartCode').rules('remove', 'required');
+                            $('#ItemName').rules('remove', 'required');
+                            $('#AccountName').rules('remove', 'required');
+                             $('#CustOrderNo').rules('remove', 'required');
+                             $('#SONo').rules('remove', 'required');
+                $('form').submit();
+            }
+        });
+
+        function SetViewQty() {
+            // var prodSchList = deleteqty ? prodSchGrid : @Html.Raw(Json.Serialize(Model.ProductionScheduleDetails));
+            var prodSchList = @Html.Raw(Json.Serialize(Model.ProductionScheduleDetails));
+
+            if (deletedItemcodeArr.length > 0) {
+                for (var i = 0; i <= deletedItemcodeArr.length; i++) {
+                    prodSchList = prodSchList.filter(item => item.itemCode !== deletedItemcodeArr[i]);
+                }
+            }
+            // prodSchList = prodSchList.filter(item => item !== 3);
+            var prodDisnictList = [];
+            var itemCodeSet = new Set();
+
+            for (var i = 0; i < prodSchList.length; i++) {
+                var item = prodSchList[i];
+                if (!itemCodeSet.has(item.itemCode)) {
+                    itemCodeSet.add(item.itemCode);
+                    prodDisnictList.push(item);
+                }
+            }
+
+            $('#divProductionSchGrid').empty();
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ViewProduction")",
+                data: { model: prodDisnictList },
+                success: function (response) {
+                   // alert(response);
+                    $('#divProductionSchGrid').html(response);
+                    GetMachineName(0);
+                    GetWorkCenter(0);
+                    SetColumnsDaywise();
+                    TotalnoOfItems();
+
+                    var rowCount = $('#divProductionSchGrid tr').length;
+                    var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+                    var EffDate = EffDates();
+
+
+                    for (var rowIndex = 1; rowIndex <= rowCount; rowIndex++) {
+                        var Row = $('#itemGrid-' + rowIndex);
+                        var itemCode = Row.find('input[id^="GridItemCode-"]').val();
+
+                        for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) {
+                            var idEffDate = EffDate[dayIndex].split("/")[0];
+                                    //                 alert(' item.schDate.split(" ")[0]'+ item.schDate.split(" ")[0]);
+                                    // alert('EffDate[dayIndex]'+ EffDate[dayIndex]);
+                            //parseDateToFormates
+                            var matchingSchItem = prodSchList.find(item =>
+                                item.itemCode == itemCode &&
+                                item.schDate.split(" ")[0] == EffDate[dayIndex]
+                            );
+                                    //parseDateToFormates
+                            //alert('matchingSchItem'+matchingSchItem);
+                            if (matchingSchItem) {
+                              // alert('inside');
+                                var inputId = `dayValus-${idEffDate}-${rowIndex}`;
+                                $('#' + inputId).val(matchingSchItem.qty);
+                            }
+                        }
+
+                        if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                            $('#Machine1-' + rowIndex).val(prodDisnictList[(rowIndex - 1)].plannedMachineid1);
+                            $('#Machine2-' + rowIndex).val(prodDisnictList[(rowIndex - 1)].plannedMachineid2);
+                            $('#Machine3-' + rowIndex).val(prodDisnictList[(rowIndex - 1)].plannedMachineid3);
+
+                            $('#WorkCenter-' + rowIndex).val(prodDisnictList[(rowIndex - 1)].prodInWC);
+                        }
+                    }
+                    //var schDate = [];
+                    //$('input[id^="schDate"]').each(function () {
+                    //    schDate.push($(this).val());
+                    //});
+
+                    //var row = $('#divProductionSchGrid tr').length;
+                    //var inputVal = "";
+
+                    //for (var j = 0; j < prodSchList.length; j++) {
+                    //    for (var p = 1; p <= row; p++) {
+                    //        inputVal = parseDateToFormates(schDate[j]);
+
+                    //        if (inputVal == parseDateToFormates(prodSchList[j].schDate.split(" ")[0]) && itemcodeArr[j] == prodSchList[j].itemCode) {
+                    //            $('#dayValus-' + inputVal.split("/")[0] + "-" + p).val(prodSchList[j].qty);
+                    //        }
+                    //    }
+                    //}
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        }
+
+        function selectAddedItems() {
+            var prodPlanList = @Html.Raw(Json.Serialize(Model.prodPlanDetails));
+            console.log($('#divPendWOGrid tr').length);
+            $('#divPendWOGrid tr').each(function () {
+
+                var currentRow = $(this);
+                for (var i = 0; i < prodPlanList.length; i++) {
+                    if (currentRow.find('[data-columns="PlanNo"]').find('input').val() == prodPlanList[i].planNo) {
+                        currentRow.find('input[id^="Checkbox"]').prop("checked", true);
+                    }
+                }
+            });
+        }
+
+        $('#addNewItem').click(function () {
+            $('#addNewProdPlanmodal').modal('show');
+            AddNewProdPlanItem();
+        });
+
+        $('.RefreshBom').click(function () {
+            
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetBomMultiLevelGrid")",
+                success: function (response) {
+                     if($.parseJSON(response).Result.length > 0){
+                        $.notify('Bom refresh successfully.', 'success');
+                     }else{
+                          $.notify('Bom not refresh properly.', 'error');
+                     }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+
+        var rowCounter = 1;
+
+        function AddNewProdPlanItem() {
+            var html = "";
+            $('#divAddNewItem').empty();
+            html += '<tr id="DisplayBomRow">' +
+                '<td><button onclick="AddRow(this,event)" class="formateBtn"><i class="fa-solid fa-plus"></i></button></td>' +
+                '<td id="srNo">1</td>' +
+                '<td><select class="new-part-code" id="NewPartCode' + rowCounter + '"></select></td>' +
+                '<td><select class="new-item-name" id="NewItemName' + rowCounter + '"></select></td>' +
+                '<td><select id="NewMachineName1' + rowCounter + '"></select></td>' +
+                '<td><select id="NewMachineName2' + rowCounter + '"></select></td>' +
+                '<td><select id="NewMachineName3' + rowCounter + '"></select></td>' +
+                '</tr>';
+            $('#divAddNewItem').append(html);
+            GetItems();
+            AddNewItemMachineName();
+            SetNewItemValue();
+        }
+
+        $(document).on('change', '.new-part-code, .new-item-name', function () {
+            var id = $(this).attr('id');
+            var row = id.match(/\d+/)[0];
+            newRowItemsChange(id, row);
+        });
+
+        function newRowItemsChange(id, row) {
+            SetPartCodeItemName(id, row);
+        }
+
+        function SetPartCodeItemName(id, row) {
+            if (!id) return;
+
+            var value = $('#' + id).val();
+            var partCode = 'NewPartCode';
+            var itemName = 'NewItemName';
+
+            if (id.includes(partCode)) {
+                value === "" ? $('#NewItemName' + row).val("") : $('#NewItemName' + row).val(value);
+            }
+
+            if (id.includes(itemName)) {
+                value === "" ? $('#NewPartCode' + row).val("") : $('#NewPartCode' + row).val(value);
+            }
+        }
+
+        var rowCounter = 1;
+
+        function AddRow(button, event) {
+
+            event.preventDefault();
+
+            var row = $(button).closest('tr');
+            var clone = row.clone();
+            rowCounter++;
+
+            clone.find('select, input, textarea').each(function () {
+                var oldId = $(this).attr('id');
+                if (oldId) {
+                    var newId = oldId.replace(/\d+$/, '') + rowCounter;
+                    $(this).attr('id', newId);
+                }
+            });
+            clone.find('#srNo').text(rowCounter);
+            $('#divAddNewItem').append(clone);
+        }
+
+        function GetItems() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItems")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    var notAddedItems = [];
+                    $('#NewPartCode1').empty();
+                    $('#NewItemName1').empty();
+                    $('#NewPartCode1').append('<option value="0">-Select-</option>');
+                    $('#NewItemName1').append('<option value="0">-Select-</option>');
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                $('#NewPartCode1').append('<option value="' + val.Item_Code +
+                                    '">' + val.PartCode + '</option>');
+                                $('#NewItemName1').append('<option value="' + val.Item_Code +
+                                    '">' + val.Item_Name + '</option>');
+
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        function getUniqueArray(arr) {
+            const seen = new Set();
+            return arr.filter(item => {
+                const uniqueKey = JSON.stringify({
+                    itemCode: item.itemCode
+                });
+                return seen.has(uniqueKey) ? false : seen.add(uniqueKey);
+            });
+        }
+
+        $('#btnAddNewItems').click(function () {
+
+            var newItems = [];
+            var rowCount = $('#divAddNewItem tr').length;
+            var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+            var EffDate = EffDates();
+            var hasinputValue = false;
+            for (var i = 1; i <= rowCount; i++) {
+                for (var j = 0; j < PlanNoOfDays; j++) {
+                    var inputId = 'dayValusNewItem-' + EffDate[j].split("/")[0] + "-" + i;
+                    var inputValue = parseFloat($('#' + inputId).val() || 0);
+
+                    if (inputValue !== 0) {
+                        hasinputValue = true;
+                        newItems.push({
+                            PartCode: $('#NewPartCode' + i).find(':selected').text(),
+                            ItemName: $('#NewItemName' + i).find(':selected').text(),
+                            ItemCode: $('#NewPartCode' + i).val(),
+                            plannedMachineid1: $('#NewMachineName1' + i).val(),
+                            plannedMachineid2: $('#NewMachineName2' + i).val(),
+                            plannedMachineid3: $('#NewMachineName3' + i).val(),
+                            SchDate: $('#schDateNewItem-' + EffDate[j].split("/")[0] + "-" + i).val(),
+                            Qty: inputValue
+                        });
+                    }
+                }
+                var itemCode = parseInt($('#GridItemCode-' + i).val());
+                if (!hasinputValue) {
+                    if (!newItems.some(item => item.ItemCode === itemCode)) {
+                        newItems.push({
+                            PartCode: $('#NewPartCode' + i).find(':selected').text(),
+                            ItemName: $('#NewItemName' + i).find(':selected').text(),
+                            ItemCode: $('#NewPartCode' + i).val(),
+                            plannedMachineid1: $('#NewMachineName1' + i).val(),
+                            plannedMachineid2: $('#NewMachineName2' + i).val(),
+                            plannedMachineid3: $('#NewMachineName3' + i).val(),
+                            Qty: 0
+                        });
+                    }
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddNewItemInGrid")",
+                data: JSON.stringify(newItems),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var obj = response;
+                    $('#addNewProdPlanmodal').modal('hide');
+                    var tableBody = $('.AddedPlansGrid tbody');
+                    //tableBody.empty();
+                    var rowCount = $('#divProductionSchGrid tr').length;
+                    var newRow = "";
+                    var currentIndex = 0;
+                    if (obj.productionScheduleDetails && obj.productionScheduleDetails.length > 0) {
+                        const uniqueProductionScheduleDetails = getUniqueArray(obj.productionScheduleDetails);
+                        $.each(uniqueProductionScheduleDetails, function (index, item) {
+
+                            currentIndex = (rowCount + index) + 1;
+
+                            newRow = `<tr id="itemGrid-${currentIndex}" class="small" style="white-space:nowrap">
+                                                                                                         <td>
+                                                                                                         <a class="table-link link-danger" onclick="DeleteItemRow(${currentIndex});">
+                                                                                                         <span class="fa-stack">
+                                                                                                         <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                         </span>
+                                                                                                         </a>
+                                                                                                         <input type="hidden" value="${currentIndex}" id="hiddenSeqNo-${currentIndex}" />
+                                                                                                         </td>
+                                                                                                         <td id="GridPartCode-${currentIndex}" class="fixed-column partCode">` + item.partCode + `<input type="hidden" value="${item.itemCode}" id="GridItemCode-${currentIndex}" /></td>
+                                                                                                         <td class="ItemName fixed-column">${item.itemName}</td>
+                                                                                                         <td class="Bomno">${item.bomno} <button onclick="DisplayProdPlanBomDetail(${currentIndex},event)" class="formateBtn"><i class="fa-solid fa-plus"></i></button></td>
+                                                                                                         <td class="BomEffDate">${item.bomEffDate == null ? "" : item.BomEffDate}</td>
+                                                                                                         <td class="d-none SchDate">${item.schDate == null ? "" : item.SchDate}</td>
+                                                                                                         <td class="ProdPendQty">${item.prodPendQty == null ? "" : item.prodPendQty}</td>
+                                                                                                         <td class="OriginalQty">${item.originalqty == null ? "" : item.originalqty}</td>
+                                                                                                          <td class="TotalWOQty">${item.totalWOQty == null ? "" : item.totalWOQty}</td>
+                                                                                                          <td id="GridAcName-${currentIndex}" style="width:40px;">${item.accountName == null ? "" : item.accountName}</td>
+                                                                                                          <td class="Machine1"><select id="Machine1-${currentIndex}"></select></td>
+                                                                                                          <td class="Machine2"><select id="Machine2-${currentIndex}"></select></td>
+                                                                                                          <td class="Machine3"><select id="Machine3-${currentIndex}"></select></td>
+                                                                                                          <td class="d-none StartFromTime">${item.startFromTime == null ? "" : item.startFromTime}</td>
+                                                                                                          <td class="d-none ToTime">${item.toTime == null ? "" : item.toTime}</td>
+                                                                                                          <td class="d-none WONo">${item.woNo == null ? "" : item.woNo}</td>
+                                                                                                          <td class="d-none WOEntryId">${item.woEntryId == null ? "" : item.woEntryId}</td>
+                                                                                                          <td class="d-none WOYC">${item.woYearCode == null ? "" : item.woYearCode}</td>
+                                                                                                          <td class="d-none WODate">${item.woDate == null ? "" : item.woDate}</td>
+                                                                                                          <td class="d-none SOEntryId">${item.soEntryId == null ? "" : item.soEntryId}</td>
+                                                                                                          <td class="d-none SONo">${item.soNo == null ? "" : item.soNo}</td>
+                                                                                                          <td class="d-none CustOrderNo">${item.custOrderNo == null ? "" : item.custOrderNo}</td>
+                                                                                                          <td class="SOYC">${item.soYearCode == null ? "" : item.soYearCode}</td>
+                                                                                                          <td class="d-none SODate">${item.soDate == null ? "" : item.soDate}</td>
+                                                                                                          <td class="d-none SubBom">${item.subBOM == null ? "" : item.subBOM}</td>
+                                                                                                          </tr>`;
+
+                            tableBody.append(newRow);
+                            var EffDate = EffDates();
+                            var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+                            GetMachineName(currentIndex);
+                            GetWorkCenter(currentIndex);
+                            $('#Machine1-' + currentIndex).val(item.plannedMachineid1);
+                            $('#Machine2-' + currentIndex).val(item.plannedMachineid2);
+                            $('#Machine3-' + currentIndex).val(item.plannedMachineid3);
+                            for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) {
+                                var schDate = EffDate[dayIndex];
+                                var idEffDate = parseDateToFormates(schDate).split("/")[0];
+                                var dayValueId = 'dayValus-' + idEffDate + '-' + currentIndex;
+                                var schDateId = 'schDate-' + idEffDate + '-' + currentIndex;
+
+                                var schDate = EffDate[dayIndex];
+                                var dayValueId = 'dayValus-' + schDate.split("/")[0] + '-' + currentIndex;
+                                var schDateId = 'schDate-' + schDate.split("/")[0] + '-' + currentIndex;
+
+                                var dayCellHtml = '<td class="day-value">' +
+                                    '<input type="hidden" value="' + schDate + '" id="' + schDateId + '"/>' +
+                                    '<input style="width:80px;" id="' + dayValueId + '" value="0">' +
+                                    '</td>';
+
+                                $('#itemGrid-' + currentIndex).append(dayCellHtml);
+
+                            }
+
+                        });
+                        //var itemQty = [];
+                        var EffDate = EffDates();
+                        var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+
+                        // $.each(obj.productionScheduleDetails, function (index, item) {
+                        //
+                        //     var Row = $('#itemGrid-' + (rowCount + 1));
+                        //     var itemCode = Row.find('input[id^="GridItemCode-"]').val();
+                        //     if (item.itemCode == itemCode) {
+                        //         var idEffDate = parseDateToFormates(EffDate[index]).split("/")[0];
+                        //         var inputId = `#dayValus-${idEffDate}-${(rowCount + 1)}`;
+                        //         $(inputId).val(item.qty);
+                        //     }
+                        // });
+
+                        // $.each(obj.productionScheduleDetails, function (index, item) {
+
+                        //     $('.AddedPlansGrid tbody tr').each(function (rowIndex) {
+                        //         var Row = $(this);
+                        //         var itemCode = Row.find('input[id^="GridItemCode-"]').val();
+                        //
+                        //         if (item.itemCode == itemCode) {
+
+                        //             // $.each(EffDate, function (dateIndex, effDate) {
+                        //             //     var idEffDate = parseDateToFormates(effDate).split("/")[0];
+                        //             //     var inputId = `#dayValus-${idEffDate}-${rowIndex + 1}`;
+                        //             //     var inputElement = Row.find(inputId);
+
+                        //             //     if (inputElement.length) {
+                        //             //         inputElement.val(item.qty);
+                        //             //     }
+                        //             //     console.log(inputId + ":" + item.qty);
+                        //             // });
+
+                        //         }
+                        //     });
+
+                        // });
+                        rowCount = $('#divProductionSchGrid tr').length;
+                        for (var rowIndex = 1; rowIndex <= rowCount; rowIndex++) {
+
+                            var Row = $('#itemGrid-' + rowIndex);
+                            var itemCode = Row.find('input[id^="GridItemCode-"]').val();
+                            if (item.itemCode == itemCode) {
+
+                                for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) {
+                                    var idEffDate = parseDateToFormates(EffDate[dayIndex]).split("/")[0];
+
+                                    var matchingSchItem = prodSchList.find(item =>
+                                        item.itemCode == itemCode &&
+                                        parseDateToFormates(item.schDate.split(" ")[0]) == EffDate[dayIndex]
+                                    );
+                                    if (matchingSchItem) {
+                                        var inputId = `dayValus-${idEffDate}-${rowIndex + 1}`;
+                                        $('#' + inputId).val(item.qty);
+                                    }
+                                    console.log(inputId + ":" + item.qty);
+                                }
+
+                            }
+
+                        }
+                        $.notify('Data Added successfully.', 'success');
+
+                    } else {
+                        $.notify('Something went wrong..!', 'error');
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+
+        function AddNewItemMachineName() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMachineName")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    $('#NewMachineName11').empty();
+                    $('#NewMachineName11').append('<option value="0">-Select-</option>');
+                    $('#NewMachineName21').empty();
+                    $('#NewMachineName21').append('<option value="0">-Select-</option>');
+                    $('#NewMachineName31').empty();
+                    $('#NewMachineName31').append('<option value="0">-Select-</option>');
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                $('#NewMachineName11').append('<option value="' + val.EntryId +
+                                    '">' + val.MachineName + '</option>');
+                                $('#NewMachineName21').append('<option value="' + val.EntryId +
+                                    '">' + val.MachineName + '</option>');
+                                $('#NewMachineName31').append('<option value="' + val.EntryId +
+                                    '">' + val.MachineName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+       
+        // $('.textbox').keydown(function (e) {
+        //    if (e.which === 40) {
+        //        e.preventDefault();
+        //        var currentIndex = $('.textbox').index(this);
+        //        var totalColumns = $('#divProductionSchGrid tr:first td').length;
+        //        var totalRows = $('.textbox').length / totalColumns;
+
+        //        var currentColumn = currentIndex % totalColumns;
+        //        var nextIndex = (currentIndex + totalColumns) % $('.textbox').length;
+
+        //        $('.textbox').eq(nextIndex).focus();
+        //    }
+        // });
+
+        function TotalnoOfPendItems() {
+            var rowCount = $('#divPendWOGrid tr').length;
+            var columnCount = $('#divPendWOGrid tr td').length;
+            if (columnCount < 1) {
+                $('#lblPendTotalNoOfItems').text(0);
+            } else {
+                $('#lblPendTotalNoOfItems').text(rowCount);
+            }
+        }
+
+        function TotalnoOfItems() {
+            var rowCount = $('#divProductionSchGrid tr').length;
+            var columnCount = $('#divProductionSchGrid tr td').length;
+            if (columnCount == 1) {
+                $('#lblTotalNoOfItems').text(0);
+            } else {
+                $('#lblTotalNoOfItems').text(rowCount);
+            }
+        }
+
+        async function AutoComplete(CtrlID, ColName) {
+
+            $("#" + CtrlID).autocomplete({
+                source: await function (request, response) {
+                    $.ajax({
+                        url: '/ProductionSchedule/GetPendWOData',
+                        type: "POST",
+                        data: { PendWoType: $('#ShowWOWithOrWOItem').val(), YearCode: $('#YearCode').val(), SOEffFromDate: $('#EffectiveFrom').val(), CurrentDate: $('#EntryDate').val() },
+                        success: function (data) {
+                            var obj = JSON.parse(data);
+                            //const filteredData = obj.Result.map(item => item[ColName]);
+                            const distinctValues = new Set();
+
+                            obj.Result.forEach(item => {
+                                const colValue = item[ColName];
+                                if (!distinctValues.has(colValue)) {
+                                    distinctValues.add(colValue);
+                                }
+                            });
+
+                            const distinctData = Array.from(distinctValues);
+                            response(distinctData.map(text => ({ label: text, value: text })));
+                        },
+                        error: function (response) {
+                            $.notify(response.responseText, { position: "top center", className: "error" });
+                        },
+                        failure: function (response) {
+                            $.notify(response.responseText, { position: "top center", className: "error" });
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    //$("#" + SelectFunc).val(i.item.value);
+                },
+                minLength: 1
+            });
+        }
+                function parseDateToFormates(dateString) {
+                    var parts = dateString.split('/');
+                    return new Date(parts[2], parts[1] - 1, parts[0]); // year, month (0-based), day
+                  }
+
+        function PlanForNoOfDays() {
+            var planForDays = parseInt($('#PlanForNoOFDays').val());
+            //alert('planForDays' + planForDays);
+            var effFromDateStr = $('#EffectiveFrom').val();
+            var effFromDateParts = effFromDateStr.split('/');
+            var EffFromDate = new Date(effFromDateParts[2], effFromDateParts[1]-1 ,effFromDateParts[0]);
+            var effTillDate = new Date(EffFromDate);
+            //alert('effTillDate' + effTillDate);
+            var formattedDate = addDays(effTillDate, planForDays);
+            //alert('formattedDate' + formattedDate);
+            formattedDate = convertRegularFormate(formattedDate);
+                //    alert(' convertRegularFormate formattedDate' + formattedDate);
+                    //        alert('parseDateToFormates(formattedDate) : ' + parseDateToFormates(formattedDate));
+            $('#EffectiveTo').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormates(formattedDate));
+                 //   alert('before SetColumnsDaywise');
+            SetColumnsDaywise();
+             //alert('AFTER SetColumnsDaywise');
+            var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+            var EffDate = EffDates();
+            var rowCount = $('#divProductionSchGrid tr').length;
+            //alert('rowCount' + rowCount);
+             
+            for (var i = 0; i <= rowCount; i++) {
+                var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+
+                for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) {
+                    // alert('parseDateToFormates(EffDate[dayIndex]).split("/")[0];   ' + parseDateToFormates(EffDate[dayIndex]).split("/")[0]);
+                    // alert('EffDate[dayIndex])  '+ EffDate[dayIndex]) ;
+                    var idEffDate = parseDateToFormat(EffDate[dayIndex]).split("/")[0];
+                     
+                    var rowIndex = i + 1;
+                    var inputId = `dayValus-${idEffDate}-${rowIndex}`;
+                    $('#' + inputId).val((totalWOQty / PlanNoOfDays).toFixed(2));
+                }
+            }
+        }
+        function SetColumnsDaywise() {
+            //alert('isndie SetColumnsDaywise');
+                    var rowCount = $('#divProductionSchGrid tr').length;
+                    var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+                           // alert('PlanNoOfDays'+PlanNoOfDays);
+                    var EffDate = EffDates();
+                          // alert('EffDate : '+ EffDate);
+                    for (var j = 1; j <= rowCount; j++) {
+                        $('#itemGrid-' + j + ' td.day-value').remove();
+                    }
+                       $('.ProductionSchRow th.day-header').remove();
+                    var currentDate = new Date();
+                    var currentMonth = currentDate.getMonth() + 1;
+                    var currentYear = currentDate.getFullYear();
+                    for (var i = 0; i < PlanNoOfDays; i++) {
+                        var dayValues = [];
+                        var schDate = EffDate[i];
+                    //    alert('schdate :----->' + schDate);
+                        $('.AddedPlansGrid thead tr').append('<th class="day-header">' + EffDate[i].split("/")[0] + '</th>');
+                        for (var j = 1; j <= rowCount; j++) {
+                            $('#itemGrid-' + j).append('<td class="day-value"><input type="hidden" value=' + schDate + ' id="schDate-' + EffDate[i].split("/")[0] + "-" + j + '"/><input style="width:80px;background-color:#fff8b8;" id="dayValus-' + EffDate[i].split("/")[0] + "-" + j + '" value="0" onchange="dayValuesQty()"></td>');
+                        }
+                    }
+                }
+        function EffDates() {
+             
+                            var EffFromDate = parseDateToFormates($('#EffectiveFrom').val())
+                            //.split(" ")[0]).split("/");
+                        //    alert('EffFromDate inside effdate func' + EffFromDate);
+                            var EffTillDate = parseDateToFormates($('#EffectiveTo').val())
+                            //.split(" ")[0]).split("/");
+                            // EffFromDate = new Date(EffFromDate[2], EffFromDate[0]-1,EffFromDate[1] );
+                            // EffTillDate = new Date(EffTillDate[2], EffTillDate[1]-1,EffTillDate[0]);
+                            const range = [];
+                            var startDate = new Date(EffFromDate);
+                            //alert('sumu '+ startDate);
+                            var endDate = new Date(EffTillDate);
+                            while (startDate <= endDate) {
+                                var start = new Date(startDate);
+                                range.push(convertRegularFormate(start));
+                                startDate.setDate(startDate.getDate() +1);
+                            }
+                            return range;
+                        }
+        function convertRegularFormate(futureDate) {
+                            var day = futureDate.getDate();
+                            var month = futureDate.getMonth() + 1;
+                            var year = futureDate.getFullYear();
+                            var formattedDate = addLeadingZero(day) + '/' + addLeadingZero(month) + '/' + year;
+                                    return (formattedDate);
+                        }
+        function addDays(date, days) {
+            
+            var result = new Date(date.toISOString());
+                    //alert('resyult' + result.getDate());
+            result.setDate(result.getDate() + days-1);
+            return result;
+        }
+
+        var currentSearchColumn = null;
+        $(document).on("click", "#PendWOHeaderRow th[data-columnno]", function () {
+
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $("#search-box").val().toLowerCase();
+            $("#divPendWOGrid tr").filter(function () {
+                if (currentSearchColumn != null) {
+                    var rowContainsValue = false;
+                    $(this).find('td').eq(currentSearchColumn).each(function () {
+                        var columnInput = $(this).find('input, select');
+                        var columnInputValue = "";
+
+                        if (columnInput.is('input')) {
+                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+                        } else if (columnInput.is('select')) {
+                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+                        }
+
+                        if (columnInputValue.indexOf(value) > -1) {
+                            rowContainsValue = true;
+                            return false;
+                        }
+                    });
+
+                    $(this).toggle(rowContainsValue);
+
+                } else {
+                    var rowContainsValue = false;
+
+                    $(this).find('td').each(function () {
+
+                        var columnInput = $(this).find('input, select');
+                        var columnInputValue = "";
+
+                        if (columnInput.is('input')) {
+                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+                        } else if (columnInput.is('select')) {
+                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+                        }
+
+                        if (columnInputValue.indexOf(value) > -1) {
+                            rowContainsValue = true;
+                            return false;
+                        }
+
+                    });
+
+                    $(this).toggle(rowContainsValue);
+                }
+            });
+        });
+
+        var currentSearchColumnProdGrid = null;
+        $(document).on("click", ".ProductionSchRow th[data-columnno]", function () {
+
+            currentSearchColumnProdGrid = $(this).data('columnno');
+            $("#global-searchbox").val('').trigger('keyup');
+        });
+
+        $("#global-searchbox").on("keyup", function () {
+
+            var rows = $("#divProductionSchGrid tr");
+            var value = $("#global-searchbox").val().toLowerCase();
+            rows.filter(function () {
+                if (currentSearchColumnProdGrid != null) {
+                    var rowContainsValue = false;
+                    $(this).find('td').eq(currentSearchColumnProdGrid).each(function () {
+                        var cell = $(this);
+                        var fieldValue = "";
+                        var input = cell.find('input');
+                        var select = cell.find('select');
+                        if (input.length) {
+                            fieldValue = (input.val() || "").toLowerCase();
+                        } else if (select.length) {
+                            fieldValue = (select.find('option:selected').text() || "").toLowerCase();
+                        } else {
+                            fieldValue = cell.text().toLowerCase();
+                        }
+                        if (fieldValue.indexOf(value) > -1) {
+                            rowContainsValue = true;
+                            return false;
+                        }
+                    });
+
+                    $(this).toggle(rowContainsValue);
+
+                } else {
+
+                    var rowContainsValue = false;
+                    rows.each(function () {
+                        var row = $(this);
+                        var rowContainsValue = false;
+                        row.find('td').each(function () {
+                            var cell = $(this);
+                            var fieldValue = "";
+                            var input = cell.find('input');
+                            var select = cell.find('select');
+
+                            if (input.length) {
+                                fieldValue = (input.val() || "").toLowerCase();
+                            } else if (select.length) {
+                                fieldValue = (select.find('option:selected').text() || "").toLowerCase();
+                            } else {
+                                fieldValue = cell.text().toLowerCase();
+                            }
+                            if (fieldValue.indexOf(value) > -1) {
+                                rowContainsValue = true;
+                                return false;
+                            }
+                        });
+
+                        row.toggle(rowContainsValue);
+                    });
+
+                }
+            });
+        });
+
+        var currentBomSummarySearchColumn = null;
+        $(document).on("click", ".bomSummaryRow th[data-columnno]", function () {
+
+            currentBomSummarySearchColumn = $(this).data('columnno');
+            $("#global-bomSummary-searchbox").val('').trigger('keyup');
+        });
+
+        $("#global-bomSummary-searchbox").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divPSBomSummary tr").filter(function () {
+                if (currentBomSummarySearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentBomSummarySearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+            TotalNoOfBomSummaryItems();
+        });
+
+        var currentBomDetailSearchColumn = null;
+        $(document).on("click", ".bomDetailRow th[data-columnno]", function () {
+
+            currentBomDetailSearchColumn = $(this).data('columnno');
+            $("#global-bomDetail-searchbox").val('').trigger('keyup');
+        });
+
+        $("#global-bomDetail-searchbox").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divPSBomDetail tr").filter(function () {
+                if (currentBomDetailSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentBomDetailSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+            TotalNoOfBomDetailItems();
+        });
+
+        function SetNewItemValue() {
+
+            var rowCount = $('#divAddNewItem tr').length;
+            var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+            var EffDate = EffDates();
+            
+            for (var i = 0; i < PlanNoOfDays; i++) {
+                var dayValues = [];
+                var schDate = EffDate[i];
+                $('.NewItemDetailtable thead tr').append('<th class="day-header">' + EffDate[i].split("/")[0] + '</th>');
+
+                for (var j = 1; j <= rowCount; j++) {
+                    $('#DisplayBomRow').append('<td class="day-value"><input type="hidden" value=' + schDate + ' id="schDateNewItem-' + EffDate[i].split("/")[0] + "-" + j + '"/><input style="width:80px;" id="dayValusNewItem-' + EffDate[i].split("/")[0] + "-" + j + '" value="0"></td>');
+                }
+            }
+        }
+
+       
+        function dayValuesQty() {
+            var rowCount = $('#divProductionSchGrid tr').length;
+            var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+            var EffDate = EffDates();
+            for (var i = 0; i <= rowCount; i++) 
+            {
+                var inputValueId = 0;
+                var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+                for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) 
+                {
+                    var idEffDate = parseDateToFormates(EffDate[dayIndex]).split("/")[0];
+                    var rowIndex = i + 1;
+                    var inputId = `dayValus-${idEffDate}-${rowIndex}`;
+                     inputValueId += $('#' + inputId).val() == '' ? 0 : parseFloat($('#' + inputId).val());
+                }
+                    if (inputValueId > totalWOQty) 
+                    {
+                        $('#itemGrid-' + (i+1)).css("background-color", "#abd6df");
+                    }
+                    else
+                    {
+                        $('#itemGrid-' + (i + 1)).css("background-color", "");
+                    }
+
+            }
+            ClearBomGrid();
+        }
+
+        function GetSearchData(event) {
+            event.preventDefault();
+            showLoadingIndicator();
+
+            resetTable().then(function () {
+                var WONO = $('#WONo').val().trim();
+                var PartCode = $('#PartCode').val().trim();
+                var ItemName = $('#ItemName').val().trim();
+                var AccountName = $('#AccountName').val().trim();
+                var CustOrderNo = $('#CustOrderNo').val().trim();
+                var SONO = $('#SONo').val().trim();
+
+                var i = 1;
+                $('#divPendWOGrid tr').each(function () {
+                    var $row = $(this);
+                    var WONOGrid = $('#PlanNo' + i).val().trim();
+                    var PartCodeGrid = $('#PartCode' + i).val().trim();
+                    var ItemNameGrid = $('#ItemName' + i).val().trim();
+                    var CustNameGrid = $('#CustName' + i).val().trim();
+                    var CustOrderNoGrid = $('#CustOrderNo' + i).val().trim();
+                    var SONOGrid = $('#SONO' + i).val().trim();
+
+                    var matchFoundPartCode = !PartCode || PartCodeGrid.toLowerCase().includes(PartCode.toLowerCase());
+                    var matchFoundWONO = !WONO || WONOGrid.toLowerCase().includes(WONO.toLowerCase());
+                    var matchFoundItemName = !ItemName || ItemNameGrid.toLowerCase().includes(ItemName.toLowerCase());
+                    var matchFoundAccountName = !AccountName || CustNameGrid.toLowerCase().includes(AccountName.toLowerCase());
+                    var matchFoundCustOrderNo = !CustOrderNo || CustOrderNoGrid.toLowerCase().includes(CustOrderNo.toLowerCase());
+                    var matchFoundSONO = !SONO || SONOGrid.toLowerCase().includes(SONO.toLowerCase());
+
+                    if (matchFoundPartCode && matchFoundWONO && matchFoundItemName && matchFoundAccountName && matchFoundCustOrderNo && matchFoundSONO) {
+                        $row.show();
+                    } else {
+                        $row.hide();
+                    }
+                    i++;
+                });
+
+                hideLoadingIndicator();
+            });
+        }
+
+        function resetTable() {
+            return new Promise(function (resolve, reject) {
+                showLoadingIndicator();
+
+                $('.divPendWOTable th').hide();
+                var ShowPendWO = $('#ShowWOWithOrWOItem').val();
+                toggleColumns(ShowPendWO);
+                GetPendWOData(ShowPendWO);
+
+                setTimeout(function () {
+                    hideLoadingIndicator();
+                    resolve();
+                }, 1000);
+            });
+        }
+
+        var WCSameStore = false;
+        $('#SHAWC').change(function () {
+            var RowCount = $('#divSaleOrderGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#WIPStore' + i).val(0);
+
+                if ($('#WorkCenter-' + i).val() != 0) {
+                    workCenterChange(i);
+                }
+            }
+            if ($('#SHAWC').prop("checked") == true) {
+                WCSameStore = true;
+            } else {
+                WCSameStore = false;
+            }
+
+        });
+
+
+        function showLoadingIndicator() {
+            $('#loadingIndicator').show();
+        }
+
+        function hideLoadingIndicator() {
+            $('#loadingIndicator').hide();
+        }
+        var isAdjustedQty = false;
+
+        $('#AddQty').click(function () {
+            var addQtyWC = 0;
+            var rowCount = $('#divProductionSchGrid tr').length;
+            var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+            var EffDate = EffDates();
+            
+            var dayValues = [];
+            var RowValues = [];
+            for (var j = 1; j <= rowCount; j++) {
+                var Row = $('#itemGrid-' + j);
+                var hasInputValue = false;
+                for (var i = 0; i < PlanNoOfDays; i++) {
+                    var inputId = 'dayValus-' + EffDate[i].split("/")[0] + "-" + j;
+                    var inputValue = parseFloat($('#' + inputId).val() || 0);
+                    var Machine1 = parseInt($('#Machine1-' + j).val());
+                    var Machine2 = parseInt($('#Machine2-' + j).val());
+                    var Machine3 = parseInt($('#Machine3-' + j).val());
+                    var WorkCenter = parseInt($('#WorkCenter-' + j).val());
+
+                    if (parseInt($('#WorkCenter-' + j).val()) == 0) {
+                        // isAdjustedQty = true;
+                        addQtyWC++;
+                    } 
+
+                    if (inputValue !== 0) {
+                        hasInputValue = true;
+                        dayValues.push({
+                            ItemCode: parseInt($('#GridItemCode-' + j).val()),
+                            AccountName: $('#GridAcName-' + j).text(),
+                            ItemName: Row.find('.ItemName').text(),
+                            BOMNO: Row.find('.Bomno').text(),
+                            BomEffDate: Row.find('.BomEffDate').text(),
+                            SchDate: Row.find('.SchDate').text(),
+                            ProdPendQty: Row.find('.ProdPendQty').text(),
+                            Originalqty: Row.find('.OriginalQty').text(),
+                            TotalWOQty: Row.find('.TotalWOQty').text(),
+                            StartFromTime: Row.find('.StartFromTime').text(),
+                            ToTime: Row.find('.ToTime').text(),
+                            WONo: Row.find('.WONo').text(),
+                            WOEntryId: Row.find('.WOEntryId').text(),
+                            WOYearCode: Row.find('.WOYC').text(),
+                            WODate: Row.find('.WODate').text(),
+                            SOEntryId: Row.find('.SOEntryId').text(),
+                            SONo: Row.find('.SONo').text(),
+                            CustOrderNo: Row.find('.CustOrderNo').text(),
+                            SOYearCode: Row.find('.SOYC').text(),
+                            SODate: Row.find('.SODate').text(),
+                            SubBOM: Row.find('.SubBom').text(),
+                            PartCode: $('#GridPartCode-' + j).text(),
+                            SchDate: $('#schDate-' + EffDate[i].split("/")[0] + "-" + j).val(),
+                            PlannedMachineid1: Machine1,
+                            PlannedMachineid2: Machine2,
+                            PlannedMachineid3: Machine3,
+                            ProdInWC: WorkCenter,
+                            Qty: inputValue
+                        });
+                    }
+                }
+
+                var itemCode = parseInt($('#GridItemCode-' + j).val());
+                if (!dayValues.some(item => item.ItemCode === itemCode)) {
+                    dayValues.push({
+                        ItemCode: parseInt($('#GridItemCode-' + j).val()),
+                        AccountName: $('#GridAcName-' + j).text(),
+                        ItemName: Row.find('.ItemName').text(),
+                        BOMNO: Row.find('.Bomno').text(),
+                        BomEffDate: Row.find('.BomEffDate').text(),
+                        SchDate: Row.find('.SchDate').text(),
+                        ProdPendQty: Row.find('.ProdPendQty').text(),
+                        Originalqty: Row.find('.OriginalQty').text(),
+                        TotalWOQty: Row.find('.TotalWOQty').text(),
+                        StartFromTime: Row.find('.StartFromTime').text(),
+                        ToTime: Row.find('.ToTime').text(),
+                        WONo: Row.find('.WONo').text(),
+                        WOEntryId: Row.find('.WOEntryId').text(),
+                        WOYearCode: Row.find('.WOYC').text(),
+                        WODate: Row.find('.WODate').text(),
+                        SOEntryId: Row.find('.SOEntryId').text(),
+                        SONo: Row.find('.SONo').text(),
+                        CustOrderNo: Row.find('.CustOrderNo').text(),
+                        SOYearCode: Row.find('.SOYC').text(),
+                        SODate: Row.find('.SODate').text(),
+                        SubBOM: Row.find('.SubBom').text(),
+                        PartCode: $('#GridPartCode-' + j).text(),
+                        PlannedMachineid1: parseInt($('#Machine1-' + j).val()),
+                        PlannedMachineid2: parseInt($('#Machine2-' + j).val()),
+                        PlannedMachineid3: parseInt($('#Machine3-' + j).val()),
+                        ProdInWC: parseInt($('#WorkCenter-' + j).val()),
+                        Qty: 0
+                    });
+                }
+            }
+            if(addQtyWC > 0){
+                isAdjustedQty = true;
+            }else{
+                isAdjustedQty = false;
+            }
+
+            
+            if (isAdjustedQty) {
+                $.notify('Workcenter should not empty..!.', "error");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddProductionScheduleGrid")",
+                    data: { model: dayValues },
+                    success: function (response) {
+                        if (response === "Ok") {
+                            $.notify('Adjust Qty successfully.', "success");
+                        } else {
+                            $.notify('Qty does not Adjusted.', "error");
+                        }
+                        PSBomDetail();
+                        PSBomSummary();
+                        TotalnoOfItems();
+                        
+                        isAdjustedQty = false;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred: " + error);
+                    }
+                });
+            }
+        });
+
+        $("#SendToExcel").click(function () {
+            const table = document.querySelector(".divPendWOTable");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    headerData.push(cell.textContent);
+                }
+            });
+
+            let maxColumns = 0;
+            for (let i = 1; i < rows.length; i++) {
+                const cellsCount = rows[i].querySelectorAll("td, input").length;
+                maxColumns = Math.max(maxColumns, cellsCount);
+            }
+            for (let i = headerData.length; i < maxColumns; i++) {
+                headerData.push('');
+            }
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                const cells = rows[i].querySelectorAll("td");
+
+                cells.forEach((cell, index) => {
+                    if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                        rowData.push(cell.textContent);
+                    }
+                });
+
+                const inputCells = rows[i].querySelectorAll("input");
+                if (inputCells.length > 0) {
+                    inputCells.forEach((inputCell, index) => {
+                        if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                            rowData.push(inputCell.value);
+                        }
+                    });
+                }
+                for (let j = rowData.length; j < headerData.length; j++) {
+                    rowData.push('');
+                }
+
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            const colsWidths = [];
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    colsWidths.push({ wch: 15 });
+                }
+            });
+            ws["!cols"] = colsWidths;
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1")
+
+            XLSX.writeFile(wb, "PendProductionSchGrid.xlsx");
+        });
+
+        $("#SendToExcel").click(function () {
+
+            const table = document.querySelector(".divPendWOTable");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    headerData.push(cell.textContent);
+                }
+            });
+
+            let maxColumns = 0;
+            for (let i = 1; i < rows.length; i++) {
+                const cellsCount = rows[i].querySelectorAll("td, input").length;
+                maxColumns = Math.max(maxColumns, cellsCount);
+            }
+            for (let i = headerData.length; i < maxColumns; i++) {
+                headerData.push('');
+            }
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                const cells = rows[i].querySelectorAll("td");
+
+                cells.forEach((cell, index) => {
+                    if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                        rowData.push(cell.textContent);
+                    }
+                });
+
+                const inputCells = rows[i].querySelectorAll("input");
+                if (inputCells.length > 0) {
+                    inputCells.forEach((inputCell, index) => {
+                        if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                            rowData.push(inputCell.value);
+                        }
+                    });
+                }
+                for (let j = rowData.length; j < headerData.length; j++) {
+                    rowData.push('');
+                }
+
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            const colsWidths = [];
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    colsWidths.push({ wch: 15 });
+                }
+            });
+            ws["!cols"] = colsWidths;
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1")
+
+            XLSX.writeFile(wb, "PendProductionSchGrid.xlsx");
+        });
+
+
+        function UploadProdExcel() {
+
+            const table = document.querySelector(".AddedPlansGrid");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    headerData.push(cell.textContent);
+                }
+            });
+
+            let maxColumns = 0;
+            for (let i = 1; i < rows.length; i++) {
+                const cellsCount = rows[i].querySelectorAll("td, input").length;
+                maxColumns = Math.max(maxColumns, cellsCount);
+            }
+            for (let i = headerData.length; i < maxColumns; i++) {
+                headerData.push('');
+            }
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                const cells = rows[i].querySelectorAll("td");
+
+                cells.forEach((cell, index) => {
+                    if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                        rowData.push(cell.textContent);
+                    }
+                });
+
+                const inputCells = rows[i].querySelectorAll("input");
+                if (inputCells.length > 0) {
+                    inputCells.forEach((inputCell, index) => {
+                        if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                            rowData.push(inputCell.value);
+                        }
+                    });
+                }
+                for (let j = rowData.length; j < headerData.length; j++) {
+                    rowData.push('');
+                }
+
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            const colsWidths = [];
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    colsWidths.push({ wch: 15 });
+                }
+            });
+            ws["!cols"] = colsWidths;
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1")
+
+            XLSX.writeFile(wb, "ProductionGrid.xlsx");
+        }
+
+        $('#EffectiveFrom').change(function () {
+            var effFromDateStr = parseDateToFormates($('#EffectiveFrom').val());
+            var effFromDateParts = effFromDateStr.split('/');
+            var EffFromDate = new Date(effFromDateParts[2], effFromDateParts[1] - 1, effFromDateParts[0]);
+            var addMaxNoOfDays = new Date(EffFromDate.getTime() + (15 * 24 * 60 * 60 * 1000));
+            var maxEffDate = convertRegularFormate(addMaxNoOfDays);
+            $('#EffectiveFrom,#EffectiveTo').datepicker("option", "maxDate", parseDateToFormates(maxEffDate));
+            if ($('#EffectiveFrom').val() > $('#EffectiveTo').val()) {
+                $('#EffectiveTo').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormates(maxEffDate));
+            }
+            SetPlanDays();
+            SetColumnsDaywise();
+        });
+
+        $('#EffectiveTo').change(function () {
+            SetPlanDays();
+            SetColumnsDaywise();
+        });
+
+        $('#PlanForNoOFDays').on('input', function () {
+            var noOfDays = $(this).val();
+            if (noOfDays < 1 || noOfDays > 15 || isNaN(noOfDays)) {
+                $(this).val('');
+            }
+        });
+
+        function SetPlanDays() {
+
+            var EffFrom = parseDateToFormates($('#EffectiveFrom').val().split(" ")[0]);
+            var EffTill = parseDateToFormates($('#EffectiveTo').val().split(" ")[0]);
+            // alert('effto: '+ $('#EffectiveTo').val());
+              //  alert('after convert effto: '+EffTill);
+            var Fromparts = EffFrom.split("/");
+
+              // alert('(Fromparts[1]'+Fromparts[1]);
+              // alert('(Fromparts[2]'+Fromparts[2]);
+              //  alert('(Fromparts[0]'+Fromparts[0]);
+            var Fromday = parseInt(Fromparts[1], 10);
+            var Frommonth = parseInt(Fromparts[0], 10) - 1;
+            var Fromyear = parseInt(Fromparts[2], 10);
+            var Fromdate = new Date(Fromyear, Frommonth, Fromday);
+             //alert('Fromdate'+Fromdate);
+            var Tillparts = EffTill.split("/");
+            var Tillday = parseInt(Tillparts[1], 10);
+            var Tillmonth = parseInt(Tillparts[0], 10) - 1;
+            var Tillyear = parseInt(Tillparts[2], 10);
+            var Tilldate = new Date(Tillyear, Tillmonth, Tillday);
+             //alert('Tilldate'+Tilldate);
+
+ 
+             
+             var  Frommonth= parseInt(Fromparts[0]-1, 10);
+                      //  alert('Frommonth: '+Frommonth);
+            var Fromday  = parseInt(Fromparts[1], 10) ;
+            var Fromyear = parseInt(Fromparts[2], 10);
+            var Fromdate = new Date(Fromyear, Frommonth, Fromday);
+                 // alert('Fromdate: '+Fromdate);
+            var Tillparts = EffTill.split("/");
+             var  Tillmonth= parseInt(Tillparts[1]-1, 10);
+             // alert('Tillmonth: '+Tillmonth);
+            var Tillday  = parseInt(Tillparts[0], 10);
+            var Tillyear = parseInt(Tillparts[2], 10);
+            var Tilldate = new Date(Tillyear, Tillmonth, Tillday);
+                 //alert('Tilldate: '+Tilldate);
+ 
+            var timeDifference = Tilldate.getTime() - Fromdate.getTime();
+             //alert('timeDifference'+timeDifference);
+            var daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+ 
+             // alert('daysDifference'+daysDifference);
+ 
+//alert('daysDifference'+daysDifference);
+ 
+            $('#PlanForNoOFDays').val(daysDifference + 1);
+        }
+
+        function getMaxInputSize() {
+            var max = 0;
+            $('.PendWODataRows input').each(function () {
+                var inputSize = $(this).val().length;
+                if (inputSize > max) {
+                    max = inputSize;
+                }
+            });
+            return max;
+        }
+
+        $('.toggle-btn').click(function (event) {
+            if ($(event.target).hasClass('toggle-icon')) {
+                var columnName = $(this).closest('th').data('columnno');
+                var table = $('.AddedPlansGrid');
+                var columns = table.find('td[data-columnno="' + columnName + '"], th[data-columnno="' + columnName + '"]');
+                columns.toggle();
+            }
+        });
+
+        $('#ResetProdSch').click(function (event) {
+            event.preventDefault();
+            $('.AddedPlansGrid').load(location.href + ' .AddedPlansGrid');
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                SetViewQty();
+            } else {
+                SetColumnsDaywise();
+            }
+        });
+
+        $(document).on('click', '.sortCol', function (event) {
+
+            if ($(event.target).hasClass('toggle-icon')) {
+                var columnName = $(this).closest('th').data('columns');
+                var table = $('.divPendWOTable');
+                var columns = table.find('td[data-columns="' + columnName + '"], th[data-columns="' + columnName + '"]');
+                columns.toggle();
+            } else {
+
+                var $column = $(this).parent().closest("th");
+                var colno = $(this).data('columns');
+                var currentOrder = $(this).data('sortorder');
+
+                $('.sortCol').css('color', 'white');
+
+                if (currentOrder === 'asc') {
+                    sortinputTable(colno, false);
+                    $(this).data('sortorder', 'desc');
+                    $(this).css('color', 'yellow');
+                    $(this).find('i:first').removeClass('fa-arrow-up');
+                    $(this).find('i:first').addClass('fa-arrow-down');
+                } else {
+                    sortinputTable(colno, true);
+                    $(this).data('sortorder', 'asc');
+                    $(this).css('color', 'yellow');
+                    $(this).find('i:first').removeClass('fa-arrow-down');
+                    $(this).find('i:first').addClass('fa-arrow-up');
+                }
+            }
+        });
+
+        function GetMachineName(row) {
+            var RowCount = $('#divProductionSchGrid tr').length;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMachineName")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (row == 0) {
+                        for (var i = 1; i <= RowCount; i++) {
+                            $('#Machine1-' + i).empty();
+                            $('#Machine1-' + i).append('<option value="0" selected>-Select-</option>');
+                            $('#Machine2-' + i).empty();
+                            $('#Machine2-' + i).append('<option value="0" selected>-Select-</option>');
+                            $('#Machine3-' + i).empty();
+                            $('#Machine3-' + i).append('<option value="0" selected>-Select-</option>');
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $.each(obj.Result, function (index, val) {
+                                        $('#Machine1-' + i).append('<option value="' + val.EntryId +
+                                            '">' + val.MachineName + '</option>');
+                                        $('#Machine2-' + i).append('<option value="' + val.EntryId +
+                                            '">' + val.MachineName + '</option>');
+                                        $('#Machine3-' + i).append('<option value="' + val.EntryId +
+                                            '">' + val.MachineName + '</option>');
+                                    });
+                                }
+                            }
+                        }
+                    } else {
+                        $('#Machine1-' + row).empty();
+                        $('#Machine1-' + row).append('<option value="0" selected>-Select-</option>');
+                        $('#Machine2-' + row).empty();
+                        $('#Machine2-' + row).append('<option value="0" selected>-Select-</option>');
+                        $('#Machine3-' + row).empty();
+                        $('#Machine3-' + row).append('<option value="0" selected>-Select-</option>');
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $.each(obj.Result, function (index, val) {
+                                    $('#Machine1-' + row).append('<option value="' + val.EntryId +
+                                        '">' + val.MachineName + '</option>');
+                                    $('#Machine2-' + row).append('<option value="' + val.EntryId +
+                                        '">' + val.MachineName + '</option>');
+                                    $('#Machine3-' + row).append('<option value="' + val.EntryId +
+                                        '">' + val.MachineName + '</option>');
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function GetWorkCenter(row) {
+            var RowCount = $('#divProductionSchGrid tr').length;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetWorkCenter")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (row == 0) {
+                        for (var i = 1; i <= RowCount; i++) {
+                            $('#WorkCenter-' + i).empty();
+                            $('#WorkCenter-' + i).append('<option value="0" selected>-Select-</option>');
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $.each(obj.Result, function (index, val) {
+                                        $('#WorkCenter-' + i).append('<option value="' + val.entryid +
+                                            '">' + val.WorkCenterDescription + '</option>');
+                                    });
+                                }
+                            }
+                        }
+                    } else {
+                        $('#WorkCenter-' + row).empty();
+                        $('#WorkCenter-' + row).append('<option value="0" selected>-Select-</option>');
+
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $.each(obj.Result, function (index, val) {
+                                    $('#WorkCenter-' + row).append('<option value="' + val.entryid +
+                                        '">' + val.WorkCenterDescription + '</option>');
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function sortinputTable(columnName, ascending) {
+            var table = $('.divPendWOTable');
+            var rows = table.find('#divPendWOGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td[data-columns="' + columnName + '"]').find('input').val();
+                var bValue = $(b).find('td[data-columns="' + columnName + '"]').find('input').val();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divPendWOGrid').append(row);
+            });
+        }
+
+        function ValidateNoOFDays(e) {
+            e.preventDefault();
+            var noOfDays = $('#PlanForNoOFDays').val();
+            if (noOfDays == 0) {
+                $.notify('No of Days is Manadatory...!', "error");
+                return false;
+            } else {
+                if (noOfDays < 1) {
+                    $.notify('No of Days should more then 1...!', "error");
+                    return false;
+                } else if (noOfDays > 30) {
+                    $.notify('No of Days should not more then 30...!', "error");
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+
+        $('#ValidateNoOFDays').change(function () {
+            ValidateNoOFDays(event);
+        });
+
+        function ShowDataWo() {
+
+            var ShowPendWO = $('#ShowWOWithOrWOItem').val();
+            GetPendWOData(ShowPendWO);
+            toggleColumns(ShowPendWO);
+            // if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+            //     ClearBomGrid();
+            // }
+        }
+
+        function ClearProductionSchGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearProductionSchGrid")",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        $('#divProductionSchGrid').empty();
+                        $('#divProductionSchGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>');
+                        TotalnoOfItems();
+                    }
+                }
+            });
+        }
+
+        function ClearBomGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearBomGrid")",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        $('#divPSBomSummary').empty();
+                        $('#divPSBomSummary').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>');
+                        $('#divPSBomDetail').empty();
+                        $('#divPSBomDetail').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>');
+                        TotalNoOfBomDetailItems();
+                        TotalNoOfBomSummaryItems();
+                    }
+                }
+            });
+        }
+
+        function PSBomDetail() {
+
+            $.ajax({
+                type: "POST",
+                data: { "YearCode": $('#YearCode').val() },
+                url: "@Url.Action("PSBomDetail")",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        $('#divPSBomDetail').empty();
+                        $('#divPSBomDetail').html(result);
+                        TotalNoOfBomDetailItems();
+                        TotalNoOfBomSummaryItems();
+                    }
+                }
+            });
+        }
+
+        function TotalNoOfBomDetailItems() {
+            var rowCount = $('#divPSBomDetail tr:visible').length;
+            var cellCount = $('#divPSBomDetail tr td').length;
+            if (cellCount > 1) {
+                $('#lblTotalNoOfBomDetailItems').text(rowCount);
+            } else {
+                $('#lblTotalNoOfBomDetailItems').text(0);
+            }
+        }
+
+        function TotalNoOfBomSummaryItems() {
+
+            var rowCount = $('#divPSBomSummary tr:visible').length;
+            var cellCount = $('#divPSBomSummary tr td').length;
+            if (cellCount > 1) {
+                $('#lblTotalNoOfBomSummaryItems').text(rowCount);
+            } else {
+                $('#lblTotalNoOfBomSummaryItems').text(0);
+            }
+        }
+
+        function PSBomSummary() {
+            $.ajax({
+                type: "POST",
+                data: { "YearCode": $('#YearCode').val() },
+                url: "@Url.Action("PSBomSummary")",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        $('#divPSBomSummary').empty();
+                        $('#divPSBomSummary').html(result);
+                        TotalNoOfBomDetailItems();
+                        TotalNoOfBomSummaryItems();
+                    }
+                }
+            });
+        }
+
+        function NewEntryId() {
+            var YearCode = $('#YearCode').val();
+            $.ajax({
+                type: "POST",
+                data: { "YearCode": YearCode },
+                url: "@Url.Action("NewEntryId")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        
+                        var obj = $.parseJSON(result);
+                        $('#EntryID').val("");
+                        $('#EntryID').val(obj.Result[0].EntryId);
+                        $('#ProdSchNo').val("");
+                        $('#ProdSchNo').val(obj.Result[0].ProdSchNo);
+                    }
+                }
+            });
+        }
+        var deletedItemcodeArr = [];
+        async function DeleteItemRow(SeqNo, itemCode) {
+            deletedItemcodeArr.push(itemCode);
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo, "itemCode": itemCode },
+                success: await function (data, status, xhr) {
+
+                    $('#divProductionSchGrid').html(data);
+                    $.notify("Process deleted from Grid", "info");
+
+                    TotalnoOfItems();
+                    SetColumnsDaywise();
+                    GetMachineName(0);
+                    //GetWorkCenter(0);
+
+                    if ($('#divProductionSchGrid tr td').length == 1) {
+                        $('#divPendWOGrid tr:visible').each(function () {
+                            var checkbox = $(this).find('input[type="checkbox"]');
+                            checkbox.prop("checked", false);
+                        });
+                    }
+                    //SetViewQty();
+                    //   GetNewProductionList();
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        $('.PendWODataRows .textbox').keydown(function (e) {
+            if (e.which === 40) {
+                e.preventDefault();
+                var currentIndex = $('.textbox').index(this);
+                var totalColumns = $('#divSaleOrderGrid tr:first td').length;
+                var totalRows = $('.textbox').length / totalColumns;
+
+                var currentColumn = currentIndex % totalColumns;
+                var nextIndex = currentIndex + totalColumns;
+
+                if (nextIndex < $('.textbox').length) {
+                    $('.textbox').eq(nextIndex).focus();
+                }
+            }
+        });
+
+        $(document).on('keyup', '.textbox', function (event) {
+
+            // ArrowKey(event);
+            ArrowKeys();
+        });
+
+        function ArrowKeys() {
+            if (e.which === 40) {
+                e.preventDefault();
+                var currentIndex = $('.textbox').index(this);
+                var totalColumns = $('#divPendWOGrid tr:first td').length;
+                var totalRows = $('.textbox').length / totalColumns;
+
+                var currentColumn = currentIndex % totalColumns;
+                var nextIndex = currentIndex + totalColumns;
+
+                if (nextIndex < $('.textbox').length) {
+                    $('.textbox').eq(nextIndex).focus();
+                }
+            }
+        }
+
+        function ArrowKey(event) {
+            if ([37, 38, 39, 40].includes(event.which)) {
+                event.preventDefault();
+                let $inputs = $('.textbox:visible');
+                let currentIndex = $inputs.index(event.target);
+                let totalColumns = $('#inputTable tr:visible:first td:visible').length;
+
+                switch (event.which) {
+                    case 37:
+                        if (currentIndex % totalColumns > 0) {
+                            $inputs.eq(currentIndex - 1).focus();
+                        }
+                        break;
+                    case 38:
+                        if (currentIndex - totalColumns >= 0) {
+                            $inputs.eq(currentIndex - totalColumns).focus();
+                        }
+                        break;
+                    case 39:
+                        if (currentIndex % totalColumns < totalColumns - 1) {
+                            $inputs.eq(currentIndex + 1).focus();
+                        }
+                        break;
+                    case 40:
+                        if (currentIndex + totalColumns < $inputs.length) {
+                            $inputs.eq(currentIndex + totalColumns).focus();
+                        }
+                        break;
+                }
+            }
+        }
+
+        function GetPendWOData(PendWoType) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetPendWOData")",
+                data: { PendWoType: PendWoType, YearCode: $('#YearCode').val(), SOEffFromDate: $('#EffectiveFrom').val(), CurrentDate: $('#EntryDate').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divPendWOGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result, function (index, val) {
+                                html += ' <tr id = "PendWORow-' + i + '" class="PendWODataRows"> ' +
+                                    '<td data-columnno="0" data-columns="Action"><input id = "Checkbox' + i + '" type = "checkbox"> ' +
+                                    '<input type="hidden" id="AccountCode' + i + '" value="' + val.Accountcode + '" readonly>' +
+                                    '<input type="hidden" id="itemCode' + i + '" value="' + val.itemcode + '" readonly></td>' +
+                                    '<td data-columnno="2" data-columns="CustomerName"><input id="CustName' + i + '" value="' + val.CustomerName + '" onkeyup="ArrowKey(event);" class="textbox" style="width:270px;" readonly></td>' +
+                                    '<td data-columnno="3" data-columns="CustomerOrderNo"><input id="CustOrderNo' + i + '" onkeyup="ArrowKey(event);" value="' + val.CustomerOrderNo + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="3" data-columns="FGStock"><input id="FGStock' + i + '" onkeyup="ArrowKey(event);" value="' + val.FGStock + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="4" data-columns="ItemName"><input id="ItemName' + i + '" onkeyup="ArrowKey(event);" value="' + val.ItemName + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="6" data-columns="PartCode"><input id="PartCode' + i + '" onkeyup="ArrowKey(event);" value="' + val.PartCode + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="7" data-columns="PendForProd"><input id="PendForProd' + i + '" onkeyup="ArrowKey(event);" value="' + val.PendForProd + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="8" data-columns="PendPlanQty"><input id="PendPlanQty' + i + '" onkeyup="ArrowKey(event);" value="' + val.PendPlanQty + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="10" data-columns="PlanNo"><input id="PlanNo' + i + '" onkeyup="ArrowKey(event);" value="' + val.PlanNo + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="12" data-columns="PlanYearCode"><input id="PlanYearCode' + i + '" onkeyup="ArrowKey(event);" value="' + val.PlanYearCode + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="9" data-columns="PlanEntryId"><input id="PlanEntryId' + i + '" onkeyup="ArrowKey(event);" value="' + val.PlanEntryId + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="11" data-columns="PlanQty"><input id="PlanQty' + i + '" onkeyup="ArrowKey(event);" value="' + val.PlanQty + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="13" data-columns="PlanDate"><input id="PlanDate' + i + '" onkeyup="ArrowKey(event);" value="' + val.Plandate.split("T")[0] + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="14" data-columns="PrevProdSchQty"><input id="PrevProdSchQty' + i + '" onkeyup="ArrowKey(event);" value="' + val.PrevProdSchQty + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="15" data-columns="SchDate"><input id="SchDate' + i + '" onkeyup="ArrowKey(event);" value="' + val.SCHDATE.split("T")[0] + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="16" data-columns="SODate"><input id="SODate' + i + '" onkeyup="ArrowKey(event);" value="' + val.SODATE.split("T")[0] + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="17" data-columns="SONO"><input id="SONO' + i + '" onkeyup="ArrowKey(event);" value="' + val.SONO + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="18" data-columns="SOYearCode"><input id="SOYearCode' + i + '" onkeyup="ArrowKey(event);" value="' + val.SOYearCode + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="19" data-columns="SchNo"><input id="SchNo' + i + '" onkeyup="ArrowKey(event);" value="' + val.SchNo + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="20" data-columns="SchYeaarCode"><input id="SchYearCode' + i + '" onkeyup="ArrowKey(event);" value="' + val.SchYearcode + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="21" data-columns="TotalProdQty"><input id="TotalProdQty' + i + '" onkeyup="ArrowKey(event);" value="' + val.TotProdQty + '" class="textbox" readonly></td>' +
+                                    '<td data-columnno="22" data-columns="WIPStock"><input id="WIPStock' + i + '" onkeyup="ArrowKey(event);" value="' + val.WIPStock + '" class="textbox" readonly></td>' +
+                                    '</tr>';
+                                i++;
+                            });
+
+                            $('#divPendWOGrid').append(html);
+                            toggleColumnsData(PendWoType);
+                        }
+                    }
+                    TotalnoOfPendItems();
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        selectAddedItems();
+                    }
+                }
+            });
+        }
+
+        function toggleColumns(ShowPendWO) {
+            var ShowPendWOArr = [];
+            ShowPendWOArr.push($('#PendWOHeaderRow').find('[data-columns="Action"]').data('columnno'),
+                $('#PendWOHeaderRow').find('[data-columns="PlanEntryId"]').data('columnno'),
+                $('#PendWOHeaderRow').find('[data-columns="PlanNo"]').data('columnno'),
+                $('#PendWOHeaderRow').find('[data-columns="PlanYearCode"]').data('columnno')
+            );
+            if (ShowPendWO != "OnlyProdPlan") {
+                if (ShowPendWO == "ProdPlan+SO+CUSTOMER") {
+                    ShowPendWOArr.push($('#PendWOHeaderRow').find('[data-columns="SchDate"]').data('columnno'),
+                        $('#PendWOHeaderRow').find('[data-columns="FGStock"]').data('columnno'),
+                        $('#PendWOHeaderRow').find('[data-columns="SODate"]').data('columnno'),
+                        $('#PendWOHeaderRow').find('[data-columns="SONO"]').data('columnno'),
+                        $('#PendWOHeaderRow').find('[data-columns="SOYearCode"]').data('columnno'),
+                        $('#PendWOHeaderRow').find('[data-columns="SchNo"]').data('columnno'),
+                        $('#PendWOHeaderRow').find('[data-columns="SchYeaarCode"]').data('columnno'),
+                        $('#PendWOHeaderRow').find('[data-columns="CustomerName"]').data('columnno'),
+                        $('#PendWOHeaderRow').find('[data-columns="CustomerOrderNo"]').data('columnno'));
+                } else if (ShowPendWO == "ProdPlan+SO+CUSTOMER+iTEM") {
+                    //ShowPendWOArr = [];
+                    $('#PendWOHeaderRow th').show();
+                } else {
+                    ShowPendWOArr.push($('#PendWOHeaderRow').find('[data-columns="ItemName"]').data('columnno'),
+                        $('#PendWOHeaderRow').find('[data-columns="PartCode"]').data('columnno'));
+                }
+            }
+
+            if (ShowPendWO != "ProdPlan+SO+CUSTOMER+iTEM") {
+                $('#PendWOHeaderRow th').hide();
+
+                for (var i = 0; i < ShowPendWOArr.length; i++) {
+
+                    var columnNo = ShowPendWOArr[i];
+                    $('#PendWOHeaderRow').find('[data-columnno="' + columnNo + '"]').show();
+                    //$('#divPendWOGrid').find('td:nth-child(' + (columnNo + 1) + ')').show();
+                }
+            }
+        }
+
+        function toggleColumnsData(ShowPendWO) {
+
+            var ShowPendWOArr = [];
+            ShowPendWOArr.push($('.PendWODataRows').find('[data-columns="Action"]').data('columnno'),
+                $('.PendWODataRows').find('[data-columns="PlanEntryId"]').data('columnno'),
+                $('.PendWODataRows').find('[data-columns="PlanNo"]').data('columnno'),
+                $('.PendWODataRows').find('[data-columns="PlanYearCode"]').data('columnno')
+            );
+            if (ShowPendWO != "OnlyProdPlan") {
+                if (ShowPendWO == "ProdPlan+SO+CUSTOMER") {
+                    ShowPendWOArr.push($('.PendWODataRows').find('[data-columns="SchDate"]').data('columnno'),
+                        $('.PendWODataRows').find('[data-columns="SODate"]').data('columnno'),
+                        $('.PendWODataRows').find('[data-columns="SONO"]').data('columnno'),
+                        $('.PendWODataRows').find('[data-columns="SOYearCode"]').data('columnno'),
+                        $('.PendWODataRows').find('[data-columns="SchNo"]').data('columnno'),
+                        $('.PendWODataRows').find('[data-columns="SchYeaarCode"]').data('columnno'),
+                        $('.PendWODataRows').find('[data-columns="CustomerName"]').data('columnno'),
+                        $('.PendWODataRows').find('[data-columns="CustomerOrderNo"]').data('columnno'));
+                } else if (ShowPendWO == "ProdPlan+SO+CUSTOMER+iTEM") {
+                    //ShowPendWOArr = [];
+                    $('#PendWOHeaderRow td').show();
+                } else {
+                    ShowPendWOArr.push($('.PendWODataRows').find('[data-columns="ItemName"]').data('columnno'),
+                        $('.PendWODataRows').find('[data-columns="PartCode"]').data('columnno'));
+                }
+            }
+
+            if (ShowPendWO != "ProdPlan+SO+CUSTOMER+iTEM") {
+                $('.PendWODataRows td').hide();
+
+                for (var i = 0; i < ShowPendWOArr.length; i++) {
+
+                    var columnNo = ShowPendWOArr[i];
+                    $('.PendWODataRows').find('[data-columnno="' + columnNo + '"]').show();
+                    //$('#divPendWOGrid').find('td:nth-child(' + (columnNo + 1) + ')').show();
+                }
+            }
+        }
+
+        $('#CheckAll').click(function () {
+            var allChecked = true;
+
+            $('#divPendWOGrid tr:visible').each(function () {
+                var checkbox = $(this).find('input[type="checkbox"]');
+                if (!checkbox.prop("checked")) {
+                    allChecked = false;
+                    return;
+                }
+            });
+
+            $('#divPendWOGrid tr:visible').each(function () {
+                var checkbox = $(this).find('input[type="checkbox"]');
+                checkbox.prop("checked", !allChecked);
+            });
+        });
+
+        $('#ResetFields').click(function () {
+            $('.divPendWOTable th').hide();
+            var ShowPendWO = $('#ShowWOWithOrWOItem').val();
+            toggleColumns(ShowPendWO);
+            GetPendWOData(ShowPendWO);
+
+            return false;
+        });
+
+        var items = [];
+
+        function AddPendWO(event) 
+        {
+            event.preventDefault();
+            if (!ValidateNoOFDays(event)) return;
+            var ProdPlan = [];
+            var rowCount = $('#divPendWOGrid tr').length;
+            var checkedCount = 0;
+            var displayFlag = $('#ShowWOWithOrWOItem').find(':selected').val();
+           // alert('displayFlag' + displayFlag);
+            if (displayFlag == "OnlyProdPlan")
+            {
+                for (var i = 0; i <= rowCount; i++) 
+                {
+
+                    if ($('#Checkbox' + i).prop("checked")) 
+                    {
+                        ProdPlan.push({
+                            WONo: $('#PlanNo' + i).val(),
+                            WOEntryId: $('#PlanEntryId' + i).val(),
+                            WOYearCode: $('#PlanYearCode' + i).val()
+                        });
+                    } else 
+                    {
+                        checkedCount++;
+                    }
+                }
+            } 
+            else if (displayFlag == "ProdPlan+SO+CUSTOMER") 
+            {
+                for (var i = 0; i <= rowCount; i++) 
+                {
+                    if ($('#Checkbox' + i).prop("checked")) 
+                    {
+                        ProdPlan.push({
+                            WONo: $('#PlanNo' + i).val(),
+                            WOEntryId: $('#PlanEntryId' + i).val(),
+                            WOYearCode: $('#PlanYearCode' + i).val(),
+                            AccountCode: $('#AccountCode' + i).val(),
+                            CustOrderNo: $('#CustOrderNo' + i).val(),
+                            SODate: $('#SODate' + i).val(),
+                            SONo: $('#SONO' + i).val(),
+                            SOYearCode: $('#SOYearCode' + i).val()
+                        });
+                    } 
+                    else 
+                    {
+                        checkedCount++;
+                    }
+                }
+            }
+            else if (displayFlag == "ProdPlan+SO+CUSTOMER+iTEM") 
+            {
+                for (var i = 0; i <= rowCount; i++) 
+                {
+                    if ($('#Checkbox' + i).prop("checked")) 
+                    {
+                        ProdPlan.push({
+                            AccountCode: $('#AccountCode' + i).val(),
+                            CustOrderNo: $('#CustOrderNo' + i).val(),
+                            ItemCode: $('#itemCode' + i).val(),
+                            WONo: $('#PlanNo' + i).val(),
+                            WOEntryId: $('#PlanEntryId' + i).val(),
+                            WOYearCode: $('#PlanYearCode' + i).val(),
+                            WODate: $('#PlanDate' + i).val(),
+                            SODate: $('#SODate' + i).val(),
+                            SONo: $('#SONO' + i).val(),
+                            SOYearCode: $('#SOYearCode' + i).val()
+                        });
+                    } 
+                    else 
+                    {
+                        checkedCount++;
+                    }
+                }
+            }
+            else 
+            {
+                for (var i = 0; i <= rowCount; i++) 
+                {
+                    if ($('#Checkbox' + i).prop("checked")) 
+                    {
+                        ProdPlan.push({
+                            ItemCode: $('#itemCode' + i).val(),
+                            WONo: $('#PlanNo' + i).val(),
+                            WOEntryId: $('#PlanEntryId' + i).val(),
+                            WOYearCode: $('#PlanYearCode' + i).val()
+                        });
+                    } else {
+                        checkedCount++;
+                    }
+                }
+            }
+            if (rowCount == (checkedCount + 1)) 
+            {
+                $.notify('please checked any item from PendingProdGrid.', "error");
+            }
+            else
+            {
+                $.ajax({
+                    type: "POST",
+                    //data: { prodPlanList: ProdPlan.map(item => ({ PlanNo: item.PlanNo, PlanEntryId: item.PlanEntryId, PlanYearCode: item.PlanYearCode })) },
+                    data: { "yearCode": parseInt($('#YearCode').val()), "schFromDate": $('#EffectiveFrom').val(), "schTillDate": $('#EffectiveTo').val(), "displayFlag": displayFlag, "noOfDays": parseInt($('#PlanForNoOFDays').val()), "prodPlanList": ProdPlan },
+                    url: "@Url.Action("AddPendingProdPlans")",
+                    async: false,
+                    success: function (result) {
+
+                        $('#divProductionSchGrid').empty();
+                        $('#divProductionSchGrid').append(result);
+                        GetMachineName(0);
+                        GetWorkCenter(0);
+                        TotalnoOfItems();
+                        var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
+                        var rowCount = $('#divProductionSchGrid tr').length;
+                        items = [];
+                                //alert("before  SetColumnsDaywise");
+
+                        SetColumnsDaywise();
+                                // alert("AFTER  SetColumnsDaywise");
+                        var EffDate = EffDates();
+                        for (var i = 0; i <= rowCount; i++) {
+                            items.push({
+                                ItemCode: $('#GridItemCode-' + i).val(),
+                                ItemName: $('#itemGrid-' + i).find('.ItemName').text(),
+                                PartCode: $('#GridPartCode-' + i).text()
+                            });
+
+                            var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+                                        //    alert('totalWOQty/PLANDAYS'+(totalWOQty / PlanNoOfDays));
+                            for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) {
+                             //   alert('EffDate[dayIndex] nusrat :' + EffDate[dayIndex]);
+                                    //    alert('EffDate[dayIndex]'+ EffDate[dayIndex]);
+                                                          //      alert('parseDateToFormates(EffDate[dayIndex])'+ parseDateToFormates(EffDate[dayIndex]));
+                                var idEffDate = EffDate[dayIndex];
+                                                //parseDateToFormates
+                                //.split("/")[0];
+                                        //inputVal.split("/")[0]
+                                var rowIndex = i + 1;
+                                        var inputId = `dayValus-${idEffDate.split("/")[0]}-${rowIndex}`;
+                                     //   alert('inputId  ====>'+ inputId);
+                                $('#' + inputId).val((totalWOQty / PlanNoOfDays).toFixed(2));
+                            }
+                        }
+
+                        // if ($('input[id^="Checkbox"]').prop("checked", "true")) {
+                        //     $(this).prop("disabled", "true");
+                        // }
+
+                        // var $button = $('.prodPlanGridBtn');
+                        // $button.addClass('collapsed').attr('aria-expanded', 'false');
+                        // $('.prodPlandiv').addClass('collapsed');
+                    },
+                    error: function (xhr, status, error) {
+                    }
+                });
+            }
+                 let prodPlanDiv = document.getElementById("B_SAGrid");
+        if (prodPlanDiv.classList.contains("show"))
+        {
+            new bootstrap.Collapse(prodPlanDiv).hide();
+        }
+             // event.preventDefault();
+             //  $('#B_SAGrid').collapse('toggle');
+                 //$('.pnl1BG').addClass('collapsed show');
+        }
+
+        function DisplayProdPlanBomDetail(i, event) {
+
+            event.preventDefault();
+            $('#DisplayProdPlanbomDetailModal').modal('show');
+            var Row = $('#itemGrid-' + i);
+            var woQty = Row.find('.TotalWOQty').text() == '' ? 0 : parseFloat(Row.find('.TotalWOQty').text());
+            var bomRevNo = parseInt(Row.find('.Bomno').text());
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("DisplayBomDetail", "WorkOrder")",
+                dataType: "json",
+                data: { "ItemCode": $('#GridItemCode-' + i).val(), "WOQty": Row.find('.TotalWOQty').text(), "BomRevNo": Row.find('.Bomno').text() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divDisplayProdPlanSchBomDetail').empty();
+                            var i = 1;
+                            $.each(obj.Result, function (index, val) {
+                                //html += '<tr><td><input id="Checkbox' + i + '"  type="checkbox"><input type="hidden" value="' + val.AccountCode + '" id="Accountcode' + i + '"/><input type="hidden" value="' + val.itemcode + '" id="Itemcode' + i + '"/></td><td><input id="AcName' + i + '" value=' + JSON.stringify(val.Account_Name) + ' readonly></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly style="width:90px;"></td><td><input id="ItemName' + i + '" value=' + JSON.stringify(val.ItemName) + ' readonly></td><td><select id="Store' + i + '" onchange = "StoreChange(' + i + ')"></select></td><td><input id="Stock' + i + '" style="width:70px;" readonly></td> <td><input id="WOQty' + i + '" value=' + val.OrderQty + ' style="width:60px;background-color:#ffd6dd"><td><input id="OrderQty' + i + '" value=' + val.OrderQty + ' readonly style="width:60px;"></td><td><input id="OrderType' + i + '" value=' + val.OrderType + ' readonly style="width:90px;"></td><td><input id="wef' + i + '" value=' + val.wef.split("T")[0] + ' readonly style="width:90px;"></td><td><input type="hidden" id="SOType' + i + '" value=' + val.SOType + '><input id="AmmNo' + i + '" value=' + val.AmmNo + ' readonly style="width:40px;"></td><td><input id="AmmEffDate' + i + '" value=' + val.AmmEffDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="unit' + i + '" value=' + val.unit + ' readonly style="width:40px;"></td><td><input id="AltQty' + i + '" value=' + val.AltQty + ' readonly style="width:30px;"></td><td><input id="AltUnit' + i + '" value=' + val.AltUnit + ' readonly style="width:50px;"></td><td><input id="Color' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " ></td><td><input id="Description' + i + ' " readonly  value=' + val.Description + '></td><td><input id="CustOrderNo' + i + '" value=' + JSON.stringify(val.CustOrderNo) + ' readonly style="width:80px;"></td><td class="SONo' + i + '"><input id="SONo' + i + '" value=' + val.SONo + ' readonly style="width:40px;"></td><td><input id="SODate' + i + '" value=' + val.SODate.split("T")[0] + '  readonly style="width:90px;"></td><td class="SchNo' + i + '" ><input readonly  style="width:60px;" id="SchNO' + i + '" value=' + val.SchNO + ' ></td><td><input id="Schdate' + i + '" value=' + val.Schdate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="FGStoreName' + i + '" value=' + JSON.stringify(val.FGStoreName) + ' readonly style="width:90px;"></td><td><input id="FGStock' + i + '" value=' + val.FGStock + ' readonly style="width:90px;"></td><td><input id="ItemAmendmentNo' + i + '" value=' + val.ItemAmendmentNo + ' readonly style="width:100px;"></td><td><input id="SOCloseDate' + i + '" value=' + val.SOCloseDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="SchEffTillDate' + i + '" value=' + val.ScheduleEffectiveTillDate.split("T")[0] + ' readonly style="width:90px;"></td>';
+                                html += '<tr id="DisplayBomRow-' + i + '">' +
+                                    '<td>' + i + '</td>' +
+                                    '<td>' + val.MainPartCode + '</td>' +
+                                    '<td>' + val.MainItemName + '</td>' +
+                                    '<td>' + val.SUBBOMPartCode + '</td>' +
+                                    '<td>' + val.SubBOMITEMNAME + '</td>' +
+                                    '<td>' + val.PartCode + '</td>' +
+                                    '<td>' + val.Item_Name + '</td>' +
+                                    '<td>' + val.RMQty + '</td>' +
+                                    '<td>' + val.RMTotalReq + '</td>' +
+                                    '<td>' + val.ReqQtyForWO + '</td>' +
+                                    '<td id="SubBom-' + i + '">' + val.SUBBOM + '</td>' +
+                                    '<td>' + val.levelNo + '</td>' +
+                                    '</tr>';
+                                i++;
+                            });
+                            $('#divDisplayProdPlanSchBomDetail').append(html);
+
+                            var RowCount = $('#divDisplayProdPlanSchBomDetail tr').length;
+                            var TdRow = $('#divDisplayProdPlanSchBomDetail tr td').length;
+
+                            if (TdRow > 1) {
+                                $('#lblTotalNoOfItems').text(RowCount);
+                            }
+                            // ColorRows();
+                        }
+                    }
+                }
+            });
+
+        }
+
+        $("#btnBomExcel").click(function () {
+
+            const table = document.querySelector(".BomDetailtable");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell) => {
+                // cell.style.backgroundColor = "#fcba03";
+                headerData.push(cell.textContent);
+            });
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                rows[i].querySelectorAll("td").forEach((cell) => {
+                    rowData.push(cell.textContent);
+                });
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "BomDetail.xlsx");
+        });
+
+        //function ColorRows() {
+        //
+        //    var row = $('#divDisplayProdPlanSchBomDetail tr').length;
+        //    for (var i = 1; i <= row; i++) {
+        //        if ($('#SubBom-' + i).text() == 'NO') {
+        //            $('#DisplayBomRow-' + i).css({ 'background-color': '#94d6df' });
+        //        } else {
+        //            $('#DisplayBomRow-' + i).css({ 'background-color': '#ffddbf' });
+        //        }
+        //    }
+        //}
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate", "WorkOrder")",
+                async: false,
+                success: function (result, status, error) {
+                    // alert('org resultdate' +result);
+                                   // serverDate=result; //dd/mm/yyyy format here
+                          //  serverDate = new Date(result);
+                            //alert('serverdate'+serverDate);
+
+                                      // const parts = result.split('/');
+                        // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
+                        // January - 0, February - 1, etc.
+                        // const day = parseInt(parts[0], 10);
+                        // const month = parseInt(parts[1], 10) - 1; // Months are 0-based
+                        // const year = parseInt(parts[2], 10);
+
+                        // const date1 = new Date(year, month, day);
+                        // alert('after convert' + date1 );
+                    var FinFromDate = parseDateToFormates($('#FinFromDate').val().split(" ")[0]);
+                    var FinToDate = parseDateToFormates($('#FinToDate').val().split(" ")[0]);
+                   // var currentdate = 
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#EffectiveTo').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    //$('#ForTheMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ProdSchDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#RevDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#EntryDate,#EffectiveTo,#ProdSchDate,#RevDate').datepicker("option", "minDate", FinFromDate);
+                    $('#EntryDate,#EffectiveTo,#ProdSchDate,#RevDate').datepicker("option", "maxDate", FinToDate);
+                    var dateComponents = result.split('/');
+                    var currentDate = new Date(dateComponents[2], dateComponents[1] - 1, dateComponents[0]);
+                    var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDate();
+                    var SchFromDate = addLeadingZero(firstDayOfMonth) + "/" + addLeadingZero(currentDate.getMonth() + 1) + "/" + currentDate.getFullYear();
+                    var lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+                    var SchTillDate = addLeadingZero(lastDayOfMonth) + "/" + addLeadingZero(currentDate.getMonth() + 1) + "/" + currentDate.getFullYear();
+
+
+                    if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                        $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#EffectiveTo').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchTillDate);
+
+                        $('#EffectiveFrom,#EffectiveTo').datepicker("option", "minDate", result);
+                    }
+                    else {
+                        var effFromDate = parseDateToFormates($('#EffectiveFrom').val());
+                        var effToDate = parseDateToFormates($('#EffectiveTo').val());
+                        $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", effFromDate);
+                        $('#EffectiveTo').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", effToDate);
+                        $('#EffectiveFrom,#EffectiveTo').datepicker("option", "minDate", effFromDate);
+                    }
+                    var effFromDateStr = parseDateToFormates($('#EffectiveFrom').val());
+                    var effFromDateParts = effFromDateStr.split('/');
+                    var EffFromDate = new Date(effFromDateParts[2], effFromDateParts[1] - 1, effFromDateParts[0]);
+                    var addMaxNoOfDays = new Date(EffFromDate.getTime() + (15 * 24 * 60 * 60 * 1000));
+                    var maxEffDate = convertRegularFormate(addMaxNoOfDays);
+                    $('#EffectiveFrom,#EffectiveTo').datepicker("option", "maxDate", parseDateToFormates(maxEffDate));
+
+                    //$('#EffectiveFrom').datepicker({
+                    //    dateFormat: 'dd/mm/yy',
+                    //    defaultDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), firstDayOfMonth)
+                    //}).datepicker("setDate", SchFromDate);
+
+                    //$('#EffectiveTill').datepicker({
+                    //    dateFormat: 'dd/mm/yy',
+                    //    defaultDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), lastDayOfMonth)
+                    //}).datepicker("setDate", SchTillDate);
+                }
+            });
+        }
+                //   function parseDateToFormates(dateStr) {
+                //     var parts = dateStr.split('/');
+                //     alert('MONTH PART:' + parts[1]-1 );
+                //             alert('DAY PART:' + parts[0] );
+                //     return new Date(parts[2], parts[1] - 1, parts[0]);
+                // }
+       
+
+        function addLeadingZero(number) {
+            return number < 10 ? '0' + number : number;
+        }
+
+         // <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+         //                    <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+         //                    <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+         //                    <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+         //                    <input asp-for="AccountNameBack" type="hidden" value="@Model.AccountNameBack" />
+         //                    <input asp-for="ProdSchNoBack" type="hidden" value="@Model.ProdSchNoBack" />
+         //                    <input asp-for="WONOBack" type="hidden" value="@Model.WONOBack" />
+         //                    <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+         //                    <input asp-for="SearchBoxBack" type="hidden" value="@Model.SearchBoxBack" />
+
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('AccountNameBack', $('#AccountNameBack').val());
+            sessionStorage.setItem('ProdSchNoBack', $('#ProdSchNoBack').val());
+            sessionStorage.setItem('WONOBack', $('#WONOBack').val());
+            sessionStorage.setItem('SummaryDetailBack', $('#SummaryDetailBack').val());
+            sessionStorage.setItem('SearchBoxBack', $('#SearchBoxBack').val());
+
+            window.history.back();
+        }
+
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+}

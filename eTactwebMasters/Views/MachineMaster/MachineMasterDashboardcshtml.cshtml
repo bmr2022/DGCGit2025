@@ -1,0 +1,216 @@
+﻿@model eTactWeb.DOM.Models.Master.MachineMasterModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="shadow-lg">
+    <form method="post" id="SParam">
+        <div class="card rounded border-light bg-gradient">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h5>
+                    Machine Master - <strong>Dashboard</strong>
+                    <span class="d-flex float-end" style="margin-top: -2px;">
+                        <a asp-action="MachineMaster" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                            <i class="fa fa-plus-circle fa-fw fa-lg" aria-hidden="true"></i>
+                            Add New
+                        </a>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                                <label for="state" class="control-label">Machine Name</label>
+                                <input asp-for="MachineName" class="form-control form-control-sm" data-val="false" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class=" d-flex justify-content-center mt-3" width="inherit">
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="GetSearchData();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnExport">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <button type="reset" class="btn btn-sm btn-outline-danger" onclick="Reload();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress my-3 mb-3" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="card" id="divDashboardGrid">
+                    <partial name="_MachineMasterDashboardGrid" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            GetDashBoardDetailData();
+        });
+        $(document).ready(function() {
+            var dashGrid = $('#divDashboardGrid tr').length - 1;
+            $('#totalRows').text(dashGrid);
+
+            //GetDashboardData();
+        });
+
+        function GetDashBoardDetailData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetDashBoardDetailData", "MachineMaster")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    if ($('#gateDashboardtable').val() == '') {
+                        var dashGrid = 0;
+                        $('#totalRows').text(dashGrid);
+                    } else {
+                        var dashGrid = $('#gateDashboardtable tr').length;
+                        $('#totalRows').text(dashGrid);
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+
+        var currentSearchColumn = null;
+
+        $(document).on("click", "th[data-columnno]", function() {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#gateDashboardtable tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        $('#sendToExcel').click(function () {
+            $("#GateDataTable").table2excel({
+                filename: "WorkOrderProcessDetailData.xls"
+            });
+        });
+
+        $('#sendToExcel').click(function() {
+            $("#GateDataTable").table2excel({
+                filename: "ProductionDetailData.xls"
+            });
+        });
+
+        $(document).on("click", ".sortCol", function() {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('MachineMasterTable', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('MachineMasterTable', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+
+
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#MachineMasterBody tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+
+
+
+        function GetSearchData() {
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                data: { "CategoryName": $('#Category_Name').val(), "TypeItem": $('#Type_Item').val() },
+                async: false,
+                success: function(data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    var dashGrid = $('#ItemcatBody tr').length;
+                    $('#totalRows').text(dashGrid);
+                    GetFormRights();
+                },
+                error: function(response) {
+                    alert(response.responseText);
+                },
+                failure: function(response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function confirmDelete(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to Delete this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+                window.location.href = linkUrl;
+            }
+        }
+        function confirmEdit(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to Edit this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+
+                // Redirect without appending additional parameters manually
+                window.location.href = linkUrl;
+            }
+        }
+    </script>
+}

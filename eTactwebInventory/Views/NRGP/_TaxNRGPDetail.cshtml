@@ -1,0 +1,148 @@
+﻿@*@model eTactWeb.DOM.Models.SaleOrderModel*@
+
+@model eTactWeb.DOM.Models.IssueNRGPTaxDetail
+
+<div class="row g-2 gx-3">
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxType" class="form-label">Type</label>
+        <select class="form-select" asp-for="TxType" asp-items="Model.TaxList">
+            <option>-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxPartCode" class="form-label">Part Code</label>
+        <select class="form-select" asp-for="TxPartCode" onchange="SetTxPartItem(this.id,'TxItemCode');">
+            <option value="0">-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <label asp-for="TxItemCode" class="form-label">Item Name</label>
+        <select class="form-select" asp-for="TxItemCode" onchange="SetTxPartItem(this.id,'TxPartCode');">
+            <option value="0">-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxTaxType" class="form-label">Tax Type</label>
+        <select class="form-select" asp-for="TxTaxType">
+            <option>-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxAccountCode" class="form-label">Tax Name</label>
+        <select class="form-select" asp-for="TxAccountCode">
+            <option>-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxPercentg" class="form-label">Tax %</label>
+        <input asp-for="TxPercentg" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxAdInTxable" class="form-label">Add In Taxable</label>
+        <select class="form-select" asp-for="TxAdInTxable" asp-items="Model.YesNo">
+            <option>-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxAmount" class="form-label">Tax Amount</label>
+        <input asp-for="TxAmount" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxRoundOff" class="form-label">Round Off</label>
+        <select class="form-select" asp-for="TxRoundOff" asp-items="Model.YesNo">
+            <option>-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxRefundable" class="form-label">Tax Refundable</label>
+        <select class="form-select" asp-for="TxRefundable" asp-items="Model.YesNo">
+            <option>-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxOnExp" class="form-label">Tax On Exp</label>
+        <input asp-for="TxOnExp" class="form-control" value="0.00" disabled readonly />
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TxRemark" class="form-label">Remark</label>
+        <input asp-for="TxRemark" class="form-control" />
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col-sm-auto py-2 text-center">
+                <button type="button" class="btn btn-sm btn-outline-danger btnClearTax" style="margin-top:10px;" onclick="ClearTaxGrid();">
+                    <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
+                    CLEAR TAX
+                </button>
+            </div>
+            <div class="col-sm-auto py-2 text-center">
+                <button type="button" class="btn btn-sm btn-outline-success btnAddTax2Grid" style="margin-top:10px;">
+                    <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i>
+                    ADD TO GRID
+                </button>
+            </div>
+            <div class="col-sm-auto py-2 text-center divTax2All" style="display:none;">
+                <button type="button" class="btn btn-sm btn-outline-warning btnTax2All" onclick="ApplyIssueNRGPTax2All();" style="margin-top:10px;">
+                    <i class="fa-solid fa-angles-down"></i>
+                    ADD TO ALL
+                </button>
+            </div>
+            <div class="col-sm-auto py-2 text-center divTax4HSN" style="display:none;">
+                <button type="button" class="btn btn-sm btn-outline-primary btnTax4HSN" onclick="ApplyTax4HSN();" style="margin-top:10px;">
+                    <i class="fa-solid fa-money-bill-trend-up fa-fw fa-lg"></i>
+                    ADD HSN TAX
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="progress my-3" style="height: 4px;">
+    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<div class="card">
+    <div class="card-body overflow-auto pb-0">
+        <div class="table-responsive" style="max-height:150px;">
+            <table class="table table-hover table-bordered table-striped" id="taxTable">
+                <thead class="bg-gradient card-headerBG text-light small" id="taxThead" style="white-space:nowrap">
+                    <tr>
+                        <th>Action</th>
+                        <th>Sr#</th>
+                        <th>Type</th>
+                        <th>Part Code</th>
+                        <th>Item Name</th>
+                        <th>Tax Type</th>
+                        <th>Tax Name</th>
+                        <th>Tax%</th>
+                        <th>Add In Taxable</th>
+                        <th>Round Off</th>
+                        <th>Amount</th>
+                        <th>Refundable</th>
+                        <th>Tax On Exp</th>
+                        <th>Remark</th>
+                    </tr>
+                </thead>
+                <tbody id="divTaxGrid">
+                    <partial name="_TaxNRGPGrid" />
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    #taxTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #taxThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        / Table cell styles /
+    }
+</style>

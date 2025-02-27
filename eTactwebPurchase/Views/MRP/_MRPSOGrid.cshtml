@@ -1,0 +1,30 @@
+﻿@model eTactWeb.DOM.Models.MRPMain
+
+
+@if (Model.MRPSOGrid == null)
+{
+        <tr class="text-center">
+            <td colspan="19" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+        </tr>
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.MRPSOGrid)
+    {
+        Cntr = Cntr + 1;
+                <tr class="small @item.SeqNo" style="white-space:nowrap">
+                    <th>@Cntr</th>
+                    <td>@item.SONo</td>
+                    <td>@item.SOYearCode</td>
+                    <td>@item.SODAte</td>
+                    <td>@item.ScheduleNo</td>
+                    <td>@item.SchYearCode</td>
+                    <td>@item.AccountName</td>
+                    <td id="Months-@Cntr">@item.Months</td>
+                    <td id="MonthYear-@Cntr">@item.MonthYear</td>
+                    <td>@item.BOMExist</td>
+                </tr>
+
+    }
+}

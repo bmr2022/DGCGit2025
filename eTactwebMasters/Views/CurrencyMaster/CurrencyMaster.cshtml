@@ -1,0 +1,454 @@
+﻿@model eTactWeb.DOM.Models.CurrencyMasterModel;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="CurrencyMaster" asp-controller="CurrencyMaster" method="post" autocomplete="on" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h5>
+                    <strong>Currency Master </strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-controller="CurrencyMaster" asp-action="CurrencyMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    Model.Mode = "U";
+                                    <div class="col-auto">
+                                        <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionItemCategory">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Currency Master</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+
+                                   @*  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                        <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                        <input asp-for="EntryDate" class="form-control" readonly />
+                                    </div> *@
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CurrencyId" class="form-label">  Currency Id</label>
+                                        <input asp-for="CurrencyId" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="Currency" class="form-label" style="color:red;">Currency*</label>
+                                        <input asp-for="Currency" class="form-control" required />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="IsDefault" class="form-label" style="color:red;">IsDefault*</label>
+                                        <select class="form-control" asp-for="IsDefault" required>
+                                            <option value="" selected>-Select-</option> 
+                                            <option value="Y">YES</option> 
+                                            <option value="N">NO</option>
+                                            
+                                        </select>
+                                    </div>
+                                    
+                                    
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress my-3 mb-3" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <div class="card-footer p-3">
+                    <div class="row justify-content-between g-2">
+                        <div class="card-header card-headerBG text-light bg-gradient">
+                            <h5>
+                                <strong>Currency Master</strong>
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                    <a asp-controller="CurrencyMaster" asp-action="CurrencyMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                            <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
+                                            <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
+                                            <input asp-for="OpeningForYearBack" type="hidden" value="@Model.OpeningForYearBack" />
+                                            <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
+                                            <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
+                                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U")
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <script>
+
+        $('.submitBTN').click(function (e) {
+            e.preventDefault();
+            $('form').submit();
+        });
+
+
+        $(document).ready(function () {
+
+            $('#IsDefault').rules("remove", "required");
+            $('#IsDefault').select2();
+            // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name
+            //     $.notify("SaleBill Nunmber is required.", "warn");
+            // }
+
+        
+            //FillStoreType();
+            if ($("#Currency").val() == "") {
+                $.notify("Currency Can not be Blanck", "error");
+            }
+            var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+//     FillStoreType();
+                    // if ($("#Store_Name").val() == "") {
+                    //     $.notify("StoreName Can not be Blanck", "error");
+                    // }
+        });
+
+
+        // if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+        //     FillStoreID();
+        // }
+
+        // if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+        //     $('#Store_Name').change(function () {
+        //         ChkForDuplicate();
+        //     });
+        //     $('#StoreType').change(function () {
+        //         ChkForDuplicateStoreType();
+        //     });
+        // }
+        let originalStoreName = $('#Store_Name').val();
+        let originalStoreType = $('#StoreType').val();
+
+
+        // $('#Store_Name').change(function () {
+        //     if ($('#Mode').val() === 'U') {
+        //         if ($(this).val() !== originalStoreName) {
+        //             ChkForDuplicate();
+        //         }
+        //     } else if ($('#Mode').val() !== 'V') {
+        //         ChkForDuplicate();
+        //     }
+        // });
+
+
+        // $('#StoreType').change(function () {
+        //     if ($('#Mode').val() === 'U') {
+        //         if ($(this).val() !== originalStoreType) {
+        //             ChkForDuplicateStoreType();
+        //         }
+        //     } else if ($('#Mode').val() !== 'V') {
+        //         ChkForDuplicateStoreType();
+        //     }
+        // });
+
+        // function FillStoreType() {
+        //     $.ajax({
+        //        
+        //         type: 'POST',
+        //         async: false,
+        //         success: function (response, status, error) {
+        //             var StoreTypeDropdown = $('#StoreType');
+        //             var obj = $.parseJSON(response);
+        //             StoreTypeDropdown.empty();
+        //             StoreTypeDropdown.append('<option value="">--Select--</option>');
+        //             $.each(obj.Result, function (index, StoreName) {
+        //                 StoreTypeDropdown.append('<option value="' + StoreName.StoreType + '">' + StoreName.StoreType + '</option>');
+        //             });
+        //             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+        //                
+        //                 $('#StoreType').val(StoreType).trigger("change");
+        //                 $('#StoreType').val(StoreType);
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             alert('Failed to load groups.');
+        //         }
+        //     });
+        // }
+        // function ChkForDuplicate() {
+
+        //     var storeName = $('#StoreName').val();
+        //     $.ajax({
+        //         url: ,
+        //         type: 'POST',
+        //         data: { StoreName: storeName },
+        //         success: function (data, status, xhr) {
+        //             var obj = $.parseJSON(data);
+        //             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                 $.notify('The store name already exists. Please choose another name.', 'error');
+        //             }
+        //             else {
+        //                 $.notify('The store name is available.', 'success');
+
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             notify('Error occurred while checking for duplicate store names.', 'error');
+        //         }
+        //     });
+        // }
+        // function ChkForDuplicateStoreType() {
+
+        //     var StoreType = $('#StoreType').val();
+        //     $.ajax({
+        //         url: 
+        //         type: 'POST',
+        //         data: { StoreType: StoreType },
+        //         success: function (data, status, xhr) {
+        //             var obj = $.parseJSON(data);
+        //             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                 $.notify('The store Type already exists. Please choose another name.', 'error');
+        //                 FillStoreType();
+        //             }
+        //             else {
+        //                 $.notify('The store Type is available.', 'success');
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             notify('Error occurred while checking for duplicate store names.', 'error');
+        //         }
+        //     });
+        // }
+
+        // function FillStoreID() {
+        //     $.ajax({
+        //         url: 
+        //         type: 'POST',
+        //         async: false,
+        //         success: function (data, status, xhr) {
+        //             console.log(data);
+        //             var obj = $.parseJSON(data);
+        //             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                 $('#StoreId').val(0);
+        //                 $('#StoreId').val(obj.Result[0].Storeid);
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             alert('Failed to load groups.');
+        //         }
+        //     });
+        // }
+
+
+        function TotalNoOfRows() {
+            var Row = $('#divStockGrid tr').length;
+            var tdCount = $('#divStockGrid tr td').length;
+            if (tdCount >= 1) {
+                $('#lblTotalNoOfBelowItems').text(Row);
+            } else {
+                $('#lblTotalNoOfBelowItems').text(0);
+            }
+        }
+
+        function CheckBeforeUpdate() {
+            $.ajax({
+                url: '@Url.Action("CheckBeforeUpdate")',
+                type: "POST",
+                data: { "Type": $('#Entry_id').val() },
+                success: function (data) {
+                    console.log("success");
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result != null) {
+                            if (obj.Result.Table[0].Column1 > 0) {
+                                $.notify("You cannot update this Category as Item with this category already exists", "error");
+                            }
+                            else {
+                                $('form').submit();
+                            }
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+
+
+        var isEditAllowed = "false";
+
+
+        var editingNow = false;
+        function EditItemRow(SrNO) {
+
+            if (editingNow == false) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditItemRow")',
+                        type: "POST",
+                        data: { "SrNO": SrNO, "Mode": $('#Mode').val() },
+                    })
+                        .done(function (data, status, xhr) {
+                            editingNow = true;
+                            var obj = $.parseJSON(data);
+                            DeleteItemRow(SeqNo)
+                                .then(() => {
+                                    $('#MainPartCode').val(obj[0].MainPartCode).trigger('change');
+                                    $('#MainItemName').val(obj[0].MainItemName).trigger('change');
+                                    $('#AltPartCode').val(obj[0].AltPartCode).trigger('change');
+                                    $('#AltItemName').val(obj[0].AltItemName).trigger('change');
+                                    var currentSrNo = $('#SrNO').val();
+                                    var newSrNo = obj[0].SrNO;
+                                    if (currentSrNo !== newSrNo) {
+                                        $('#SrNO').val(newSrNo).trigger('change');
+                                    }
+
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                    $.notify("Item Updated from Grid", "info");
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+            sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
+            sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+            sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+
+
+    </script>
+
+
+}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+

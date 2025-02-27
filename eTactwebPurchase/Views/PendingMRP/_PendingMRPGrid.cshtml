@@ -1,0 +1,41 @@
+﻿@model eTactWeb.DOM.Models.PendingMRP
+
+
+
+
+@{
+    var @Cntr = 0;
+    if (Model.PendingMRPGrid.Count == 0)
+    {
+        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+    }
+    else
+    {
+        foreach (var item in Model.PendingMRPGrid)
+        {
+            Cntr = Cntr + 1;
+
+            <tr id="SAGridRow-@Cntr">
+                <th><input type="checkbox" id="dataCheckbox-@Cntr" /></th>
+                <th>@Cntr</th>
+                <td id="GMRPsono-@Cntr">@item.sono</td>
+                <td id="GMRPsoEntryId-@Cntr">@item.SOEntryId</td>
+                <td>@item.SODate</td>
+                <td id="GMRPYC-@Cntr">@item.SOYearCode</td>
+                <td>@item.account_name</td>
+                <td>@item.SOTYPE</td>
+                <td>@item.ScheduleNo</td>
+                <td>@item.schYearCode</td>
+                <td>@item.schEntryID</td>
+                <td>@item.sch_date</td>
+                <td>@item.orderQty</td>
+                <td>@item.FGItem</td>
+                <td>@item.FGstock</td>
+                <td>@item.SaleRate</td>
+                <td>@item.IIndMonthQty</td>
+                <td>@item.IIIrdMonthQty</td>
+                <td>@item.BOM</td>
+            </tr>
+        }
+    }
+}

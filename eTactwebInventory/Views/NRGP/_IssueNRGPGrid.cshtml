@@ -1,0 +1,76 @@
+﻿@model eTactWeb.DOM.Models.IssueNRGPModel
+
+@*<input type="hidden" asp-for="NetAmount" class="form-control" />*@
+<input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+@{
+    @if (Model.IssueNRGPDetailGrid == null)
+    {
+        <tr class="text-center">
+            <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+        </tr>
+    }
+    else
+    {
+
+        var @Cntr = 0;
+        foreach (var item in Model.IssueNRGPDetailGrid)
+        {
+            Cntr = Cntr + 1;
+            <tr id="@Cntr" class="small" style="white-space:nowrap">
+                <td style="white-space:nowrap;">
+
+                    <a class="table-link link-primary" style="border:none;" id="editButton-@Cntr" onclick="EditItemRow(@item.SEQNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SEQNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+
+                </td>
+                <th data-seqno="@item.SEQNo">@item.SEQNo <input type="hidden" id="SeqNo-@Cntr" value="@item.SEQNo" /></th>
+                <td class="divNRGPItemListPC">@item.PartCode <input type="hidden" value="@item.ItemCode" id="GridIC-@item.SEQNo" /></td>
+                <td>@item.ItemName</td>
+                <td>@item.HSNNo</td>
+                <td>@item.StoreName</td>
+                <td id="GridBatchNo-@item.SEQNo">@item.BatchNo</td>
+                <td id="GridUniqueBatchNo-@item.SEQNo">@item.uniquebatchno</td>
+                <td>@item.TotalStock</td>
+                <td id="ItemBatchNo-@item.SEQNo">@item.BatchStock</td>
+                <td>@item.ProcessName</td>
+                <td>@item.Qty.ToString("#.#0")</td>
+                <td>@item.unit</td>
+                <td>@item.Rate.ToString("#.#0")</td>
+                <td id="GridAmount-@Cntr">@item.Amount.ToString("#.#0")</td>
+                <td>@item.PurchasePrice</td>
+                <td>@item.AltQty</td>
+                <td>@item.AltUnit</td>
+                <td>@item.RemarkDetail</td>
+                <td>@item.Purpose</td>
+                <td>@item.PONO</td>
+                <td>@item.POYearCode</td>
+                <td>@item.PODate</td>
+                <td>@item.POAmendementNo</td>
+                <td>@item.discper</td>
+                <td>@item.disamt</td>
+                <td>@item.Amount</td>
+                <td>@item.AgainstChallanEntryId</td>
+                <td>@item.AgainstChallanNo</td>
+                <td>@item.AgainstChallanYearCode</td>
+                <td>@item.AgainstChallanType</td>
+                <td>@item.Closed</td>
+                <td>@item.ItemColor</td>
+                <td>@item.ItemSize</td>
+                <td>@item.ItemModel</td>
+                <td>@item.PendQty</td>
+                <td>@item.PendAltQty</td>
+            </tr>
+        }
+    }
+}

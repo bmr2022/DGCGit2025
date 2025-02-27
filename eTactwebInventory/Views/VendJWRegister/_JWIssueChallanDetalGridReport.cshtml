@@ -1,0 +1,113 @@
+﻿@model eTactWeb.DOM.Models.VendJWRegisterModel
+
+<div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+            <tr>
+                <th>Action</th>
+                <th>Sr#</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>JW Challan No</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Date</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gsttype</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VendorStateCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssQty </th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UniqueBatchNo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="13"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemarkDetail</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PurchasePrice</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="15"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StockQty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchStockQty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecItemCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="18"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecQty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="19"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltQty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="20"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltUnit</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="21"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendQty </th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="22"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendAlyQty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="23"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONo</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="24"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PODate</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="25"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POYearCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="26"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TolApprVal</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="27"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalWt</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="28"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Totalamt</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="29"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Netamt</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="30"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CompletlyReceive</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="31"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByMachineName</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="32"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEnteredBy</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="33"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedBy</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="34"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="35"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Id</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="36"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+            </tr>
+        </thead>
+        <tbody id="divStockRegisterBody">
+            @{
+                var @Cntr = 0;
+                if (Model.VendJWRegisterDetails == null)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.VendJWRegisterDetails)
+                    {
+                        Cntr = Cntr + 1;
+
+                        <tr id="SAGridRow-@Cntr" onclick="FreezeSelection(this)">
+                            <td>
+                                <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </td>
+                            <th id="StickyHearder-@Cntr">@Cntr</th>
+                            <td>@item.JWChallanNo</td>
+                            <td>@(item.ChallanDate == null ? string.Empty : item.ChallanDate.Split(" ")[0])</td>
+                            <td>@item.Account_Name</td>
+                            <td>@item.Gsttype</td>
+                            <td>@item.VendorStateCode</td>
+                            <td>@item.Itemname</td>
+                            <td>@item.partcode</td>
+                            <td id="TotalIssueQtyChallan">@item.IssQty</td>
+                            <td>@item.unit</td>
+                            <td>@item.batchno</td>
+                            <td>@item.uniquebatchno</td>
+                            <td>@item.ItemAmount</td>
+                            <td>@item.RemarkDetail</td>
+                            <td>@item.PurchasePrice</td>
+                            <td>@item.StockQty</td>
+                            <td>@item.BatchStockQty</td>
+                            <td>@item.RecItemCode</td>
+                            <td>@item.RecQty</td>
+                            <td>@item.AltQty</td>
+                            <td>@item.altUnit</td>
+                            <td id="TotalPendQtyChallan">@item.pendqty</td>
+                            <td>@item.PendAltQty</td>
+                            <td>@item.PONo</td>
+                            <td>@item.PODate</td>
+                            <td>@item.PoYear</td>
+                            <td>@item.TolApprVal</td>
+                            <td id="TotalWeightAmountChallan">@item.TotalWt</td>
+                            <td id="TotalAmountChallan">@item.Totalamt</td>
+                            <td id="TotalNetamountChallan">@item.NetAmt</td>
+                            <td>@item.CompletlyReceive</td>
+                            <td>@item.EntryByMachineName</td>
+                            <td>@item.ActualEnteredBy</td>
+                            <td>@item.UpdatedBy</td>
+                            <td>@item.Remark</td>
+                            <td>@item.entryid</td>
+                            <td>@item.YearCode</td>
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+</div>

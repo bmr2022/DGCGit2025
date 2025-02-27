@@ -1,0 +1,95 @@
+﻿@model eTactWeb.DOM.Models.Common.TDSModel
+
+
+<div class="row g-2 gx-3">
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TDSTaxType" class="form-label">Tax Type</label>
+        <select class="form-select" asp-for="TDSTaxType">
+            <option>-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TDSAccountCode" class="form-label">Tax Name</label>
+        <select class="form-select" asp-for="TDSAccountCode">
+            <option>-Select-</option>
+        </select>
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TDSPercentg" class="form-label">TDS %</label>
+        <input asp-for="TDSPercentg" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TDSRoundOff" class="form-label">Round Off</label>
+        <select class="form-select" asp-for="TDSRoundOff" asp-items="Model.TdsYesNo">
+            <option>-Select-</option>
+        </select>
+        <input type="hidden" asp-for="TDSRoundOffAmt" value="" class="form-control" />
+    </div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TDSAmount" class="form-label">TDS Amount</label>
+        <input asp-for="TDSAmount" class="form-control" />
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="TDSRemark" class="form-label">Remark</label>
+        <input asp-for="TDSRemark" class="form-control" />
+    </div>
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="col-sm-auto py-2">
+            <button type="button" class="btn btn-sm btn-outline-danger btnClearTDS" style="margin-top:10px;">
+                <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
+                CLEAR TDS
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-success btnAddTDS2Grid" style="margin-top:10px;margin-left:10px;">
+                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>
+                ADD TO GRID
+            </button>
+        </div>
+    </div>
+</div>
+<div class="progress my-3" style="height: 4px;">
+    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<div class="card">
+    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left:1100px">
+        <input type="text" class="form-control" id="tdssearch-box" style="background-color:#FFFACD" placeholder="Search...">
+    </div>
+    <div class="card-body overflow-auto pb-0">
+        <div class="table-responsive" style="max-height:150px;">
+            <table class="table table-hover table-bordered table-striped" id="tdsTable">
+                <thead class="bg-gradient card-headerBG text-light small" id="tdsThead" style="white-space:nowrap">
+                    <tr>
+                        <th>Action</th>
+                        <th>Sr#</th>
+                        <th>Tax Type</th>
+                        <th>Tax Name</th>
+                        <th>TDS%</th>
+                        <th>Round Off</th>
+                        <th>Amount</th>
+                        <th>Remark</th>
+                    </tr>
+                </thead>
+                <tbody id="divTDSGrid">
+                    <partial name="_TDSGrid" />
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    #tdsTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #tdsThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+</style>

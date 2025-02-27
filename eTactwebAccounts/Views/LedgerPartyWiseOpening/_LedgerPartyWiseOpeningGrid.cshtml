@@ -1,0 +1,76 @@
+﻿@model eTactWeb.DOM.Models.LedgerPartyWiseOpeningModel;
+@if (Model.LedgerPartyWiseOpeningDetails == null){
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else{
+    var @Cntr = 0;
+    foreach (var item in Model.LedgerPartyWiseOpeningDetails)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small " style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditItemRow(@item.SrNO);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNO);" asp-action="DeleteItemRow">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td id="SrNO-@Cntr"><input type="hidden" value="@item.SrNO" />@item.SrNO</td>
+            @* <td><input type="hidden" value="@item.CC" /></td> *@
+            <td>
+                @* @(string.IsNullOrEmpty(item.BillNo) ? item.InvoiceNo : item.BillNo) *@
+                @item.BillNo
+            </td>
+            <td>
+                @* @(string.IsNullOrEmpty(item.BillDate) ? item.InvoiceDate : item.BillDate) *@
+            @item.BillDate    
+            </td>
+            
+            <td>@item.BillYear</td>
+            <td id="totNetAmtG-@Cntr">
+               @*  @(item.BillNetAmt != 0 ? item.BillNetAmt : item.InvNetAmt) *@
+                @item.BillNetAmt
+            </td>
+            <td id="totPendAmtG-@Cntr">
+               @*  @(item.PendAmt != 0 ? item.PendAmt : item.InvPendAmt) *@
+               @item.PendAmt
+            </td>
+            <td id="typeG-@Cntr">
+                @* @(string.IsNullOrEmpty(item.Type) ? item.DrCrType : item.Type) *@
+                @item.Type
+            </td>
+            <td>@item.TransactionType</td>
+            <td>@item.DueDate</td>
+            <td>@item.EntryId</td>
+            <td>@item.Unit</td>
+            <td>@item.Adjustment</td>
+        </tr>
+    }
+}

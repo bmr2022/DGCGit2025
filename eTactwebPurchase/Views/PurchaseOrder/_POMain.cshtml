@@ -1,0 +1,327 @@
+﻿@model eTactWeb.DOM.Models.PurchaseOrderModel
+
+
+@if (Model.Mode == "POA" || Model.Mode == "PAU" || Model.Mode == "POC")
+{
+    <div class="accordion-body">
+        <div class="row g-2 gx-3">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <input type="hidden" asp-for="FinFromDate" />
+                <input type="hidden" asp-for="FinToDate" />
+                <label asp-for="EntryID" class="form-label">Entry ID</label>
+                <input asp-for="EntryID" class="form-control" readonly />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="YearCode" class="form-label">Year</label>
+                <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
+            </div>
+            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                <input asp-for="EntryDate" class="form-control" readonly />
+            </div>
+            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="Branch" class="form-label">Branch</label>
+                <input class="form-control" asp-for="Branch" readonly />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="POFor" class="form-label" style="color: red;">PO For*</label>
+                <select class="form-select" disabled asp-for="POFor" tabindex="1" asp-items="@(new SelectList(Model.POForList,"Value","Text"))">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="POType" class="form-label" style="color: red;">PO Type*</label>
+                <select class="form-select" asp-for="POType" tabindex="2" asp-items="Model.POTypeList" disabled></select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="OrderType" class="form-label" style="color: red;">Order Type*</label>
+                <select class="form-select" asp-for="OrderType" tabindex="3" asp-items="Model.OrderTypeList" disabled></select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="Currency" class="form-label" style="color: red;">Currency*</label>
+                @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "POA" || Model.Mode == "PAU" || Model.Mode == "POC")
+                {
+                    <input type="hidden" id="hiddenCurrency" value="@Model.Currency" />
+                }
+                <select class="form-select" asp-for="Currency" tabindex="4" disabled></select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="POTypeServItem" class="form-label" style="color: red;">Item Type*</label>
+                <select asp-for="POTypeServItem" disabled class="form-select" tabindex="6" asp-items="@(new SelectList(Model.POTypeServList,"Value","Text"))">
+                    <option value="0" selected disabled>-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="PONo" class="form-label">PO No</label>
+                @{
+                    if (@Model.isPONo == true)
+                    {
+                        <input asp-for="PONo" class="form-control" />
+                    }
+                    else
+                    {
+                        <input asp-for="PONo" class="form-control" readonly disabled />
+                    }
+                }
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="PODate" class="form-label" style="color: red;">PO Date*</label>
+                <input asp-for="PODate" tabindex="7" disabled class="form-control datePickerControl" />
+            </div>
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <label asp-for="AccountCode" class="form-label" style="color: red;">Vendor Name*</label>
+                <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+
+                    <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
+                </div>
+                <select class="form-select" asp-for="AccountCode">
+                    <option>-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <label asp-for="VendorAddress" class="form-label">Vendor Address</label>
+                <input asp-for="VendorAddress" disabled class="form-control" readonly />
+            </div>
+
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="WEF" class="form-label" style="color: red;">PO Eff Date*</label>
+                <input asp-for="WEF" tabindex="8" disabled class="form-control datePickerControl" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="POCloseDate" class="form-label"> Expiry Date</label>
+                <input asp-for="POCloseDate" tabindex="9" class="form-control datePickerControl" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="AmmNo" class="form-label">Amm No</label>
+                <input asp-for="AmmNo" disabled tabindex="10" class="form-control firstAfterDatePicker" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="AmmDate" class="form-label"> Eff Date</label>
+                <input asp-for="AmmDate" tabindex="11" class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="MRPNo" class="form-label">MRP No</label>
+                <select class="form-select form-control" asp-for="MRPNo" disabled tabindex="12" asp-items="@(new SelectList(Model.MRPNoList,"Value","Text"))">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="MRPYearCode" class="form-label">MRP Year </label>
+                <input asp-for="MRPYearCode" disabled class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="QuotNo" class="form-label">Quot No</label>
+                <select class="form-select" asp-for="QuotNo" disabled asp-items="@(new SelectList(Model.QuotList,"Value","Text"))">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="QuotYear" class="form-label"> Year</label>
+                <input asp-for="QuotYear" disabled class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label class="form-label">Quote Date</label>
+                <input asp-for="QuotDate" class="form-control" readonly disabled />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="DeliveryTerms" class="form-label">Delivery Terms</label>
+                <input asp-for="DeliveryTerms" disabled class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="RefNo" class="form-label">Ref No</label>
+                <input asp-for="RefNo" disabled class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="RefDate" class="form-label">Ref Date</label>
+                <input asp-for="RefDate" disabled class="form-control" />
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="ShipTo" class="form-label">Ship To</label>
+                <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                    <input asp-for="PN2" disabled class="form-check-input" type="checkbox" role="switch" />Show All
+                </div>
+                <input type="hidden" id="GSTRegistered" value="" />
+                @* <select class="form-select" asp-for="ShipTo" disabled asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+            <option value="0">-Select-</option>
+            </select> *@
+                <select class="form-select" asp-for="ShipTo">
+                    <option>-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <label asp-for="ShippingAddress" class="form-label">Shipping Address</label>
+                <input asp-for="ShippingAddress" disabled class="form-control" />
+            </div>
+            <input type="hidden" asp-for="Approved" class="form-control" />
+            <input type="hidden" asp-for="ApprovedDate" class="form-control" />
+            <input type="hidden" asp-for="Approvedby" class="form-control" />
+            <input type="hidden" asp-for="AmmApproved" class="form-control" />
+            <input type="hidden" asp-for="AmmApprovedDate" class="form-control" />
+            <input type="hidden" asp-for="AmmApprovedby" class="form-control" />
+            <input type="hidden" asp-for="FirstLvlApproved" class="form-control" />
+            <input type="hidden" asp-for="FirstLvlApprovedDate" class="form-control" />
+            <input type="hidden" asp-for="FirstLvlApprovedby" class="form-control" />
+        </div>
+    </div>
+}
+else
+{
+    <div class="accordion-body">
+        <div class="row g-2 gx-3">
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <input type="hidden" asp-for="FinFromDate" />
+                <input type="hidden" asp-for="FinToDate" />
+                <label asp-for="EntryID" class="form-label">Entry ID</label>
+                <input asp-for="EntryID" class="form-control" readonly />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="YearCode" class="form-label">Year</label>
+                <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
+            </div>
+            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                <input asp-for="EntryDate" class="form-control" readonly />
+            </div>
+            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="Branch" class="form-label">Branch</label>
+                <input class="form-control" asp-for="Branch" readonly />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="POFor" class="form-label" style="color: red;">PO For*</label>
+                <select class="form-select" asp-for="POFor" tabindex="1" asp-items="@(new SelectList(Model.POForList,"Value","Text"))">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="POType" class="form-label" style="color: red;">PO Type*</label>
+                <select class="form-select" asp-for="POType" tabindex="2" asp-items="Model.POTypeList"></select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="OrderType" class="form-label" style="color: red;">Order Type*</label>
+                <select class="form-select" asp-for="OrderType" tabindex="3" asp-items="Model.OrderTypeList"></select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="Currency" class="form-label" style="color: red;">Currency*</label>
+                @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "POA" || Model.Mode == "PAU" || Model.Mode == "POC")
+                {
+                    <input type="hidden" id="hiddenCurrency" value="@Model.Currency" />
+                }
+                <select class="form-select" asp-for="Currency" tabindex="4"></select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="POTypeServItem" class="form-label" style="color: red;">Item type*</label>
+                <select asp-for="POTypeServItem" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.POTypeServList,"Value","Text"))">
+                    <option value="0" selected disabled>-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="PONo" class="form-label" style="color: red;">PO No*</label>
+                @{
+                    if (@Model.isPONo == true)
+                    {
+                        <input asp-for="PONo" class="form-control" />
+                    }
+                    else
+                    {
+                        <input asp-for="PONo" class="form-control" readonly disabled />
+                    }
+                }
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="PODate" class="form-label" style="color: red;">PO Date*</label>
+                <input asp-for="PODate" tabindex="7" readonly class="form-control datePickerControl" />
+            </div>
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <label asp-for="AccountCode" class="form-label" style="color: red;">Vendor Name*</label>
+                <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+
+                    <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
+                </div>
+                @*                 <select class="form-select" asp-for="AccountCode" tabindex="5" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+            <option value="0">-Select-</option>
+            </select> *@
+                <select class="form-select" asp-for="AccountCode">
+                    <option>-Select-</option>
+                </select>
+                @* <select class="form-select" asp-for="ShipTo">
+            <option>-Select-</option>
+            </select> *@
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <label asp-for="VendorAddress" class="form-label" style="color: red;">Vendor Address*</label>
+                <input asp-for="VendorAddress" class="form-control" readonly />
+            </div>
+
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="WEF" class="form-label" style="color: red;">Eff Date*</label>
+                <input asp-for="WEF" tabindex="8" readonly class="form-control datePickerControl" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="POCloseDate" class="form-label" style="color: red;">Close Date*</label>
+                <input asp-for="POCloseDate" readonly tabindex="9" class="form-control datePickerControl" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="AmmNo" class="form-label">Amm No</label>
+                <input asp-for="AmmNo" tabindex="10" class="form-control firstAfterDatePicker" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="AmmDate" class="form-label">Amm Eff Date</label>
+                <input asp-for="AmmDate" readonly tabindex="11" class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="MRPNo" class="form-label">MRP No</label>
+                <select class="form-select form-control" asp-for="MRPNo" tabindex="12" asp-items="@(new SelectList(Model.MRPNoList,"Value","Text"))">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="MRPYearCode" class="form-label">MRP Year Code</label>
+                <input asp-for="MRPYearCode" class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="QuotNo" class="form-label">Quot No</label>
+                <select class="form-select" asp-for="QuotNo" asp-items="@(new SelectList(Model.QuotList,"Value","Text"))">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="QuotYear" class="form-label">Quotation Year</label>
+                <input asp-for="QuotYear" class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label class="form-label">Quote Date</label>
+                <input asp-for="QuotDate" readonly class="form-control" disabled />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="DeliveryTerms" class="form-label">Delivery Terms</label>
+                <input asp-for="DeliveryTerms" class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="RefNo" class="form-label">Ref No</label>
+                <input asp-for="RefNo" class="form-control" />
+            </div>
+            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="RefDate" class="form-label">Ref Date</label>
+                <input asp-for="RefDate" readonly class="form-control" />
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <label asp-for="ShipTo" class="form-label">Ship To</label>
+                <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                    <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" />Show All
+                </div>
+                <input type="hidden" id="GSTRegistered" value="" />
+                @* <select class="form-select" asp-for="ShipTo" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+            <option value="0">-Select-</option>
+            </select> *@
+
+                <select class="form-select" asp-for="ShipTo">
+                    <option>-Select-</option>
+                </select>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <label asp-for="ShippingAddress" class="form-label">Shipping Address</label>
+                <input asp-for="ShippingAddress" class="form-control" />
+            </div>
+        </div>
+    </div>
+}

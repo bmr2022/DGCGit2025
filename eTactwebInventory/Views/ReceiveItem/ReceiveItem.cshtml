@@ -1,0 +1,667 @@
+﻿@model eTactWeb.DOM.Models.ReceiveItemModel
+
+@{
+    ViewData["Title"] = "Receive Item";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="ReceiveItem" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Receive Item - Financial Year: @Model.RecMatYearCode</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="PendingToReceiveItem" asp-route-ID="0" asp-controller="PendingToReceiveItem" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                            <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                            Add New
+                        </a>
+                    </span>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            PRINT
+                        </button>
+                    </div>
+                    <a asp-action="ReceiveItemInStoreDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U"  )
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                          
+                            else
+                            {
+                                <div class="col-auto">
+                                    <button type="submit submitBTN" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
+                                    <label asp-for="RecMatEntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="RecMatEntryId" class="form-control" readonly />
+                                    <input asp-for="Mode" value="@Model.Mode" class="form-control" type="hidden" />
+                                    <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
+                                    <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
+
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
+                                    <label asp-for="RecMatEntryDate" class="form-label">Rec Entry Date</label>
+                                    <input asp-for="RecMatEntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
+                                    <label asp-for="RecMatYearCode" class="form-label">Rec Year Code</label>
+                                    <input asp-for="RecMatYearCode" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="RecMatSlipNo" class="form-label">Rec Slip No</label>
+                                    <input asp-for="RecMatSlipNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
+                                    <label asp-for="RecMatSlipDate" class="form-label">Rec Slip Date</label>
+                                    <input asp-for="RecMatSlipDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
+                                    <label asp-for="CC" class="form-label">Brach</label>
+                                    <input asp-for="CC" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
+                                    <label asp-for="DepName" class="form-label">Dep Name</label>
+                                    <input asp-for="DepID" class="form-control" type="hidden" />
+                                    <select class="form-select" asp-for="DepName"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Receive Item Detail</strong>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" style="width:150px;" type="button" onclick="GridButton()">
+                            <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
+                        </button>
+
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Seq No</th>
+                                                <th>Material Type</th>
+                                                <th>From Dep WorkCenter</th>
+                                                <th>From WorkCenter</th>
+                                                <th>PartCode</th>
+                                                <th>ItemName</th>
+                                                <th>Qty</th>
+                                                <th>Unit</th>
+                                                <th>Alt Transfer Qty</th>
+                                                <th>Alt Unit</th>
+                                                <th>Item remark</th>
+                                                <th>Rec In Store</th>
+                                                <th>Prod Entry Id</th>
+                                                <th>Prod Year Code</th>
+                                                <th>Prod Entry Date</th>
+                                                <th>Prod Plan No</th>
+                                                <th>Prod Plan YearCode</th>
+                                                <th>Prod SchNo</th>
+                                                <th>Prod Sch YearCode</th>
+                                                <th>In Proc Qc SlipNo</th>
+                                                <th>In Proc Qc YearCode</th>
+                                                <th>Prod Qty</th>
+                                                <th>Qc Ok Qty</th>
+                                                <th>Rej Qty</th>
+                                                <th>Batch No</th>
+                                                <th>Unique BatchNo</th>
+                                                <th>TransferMat EntryId</th>
+                                                <th>TransferMat YearCode</th>
+                                                <th>TransferMat SlipNo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divReceiveItemDetail">
+                                            <partial name="_ReceiveItemGrid" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="progress my-3 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body overflow-auto pb-0">
+                                <table class="table table-hover table-bordered table-striped">
+                                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                        <tr>
+                                            <th>Action</th>
+                                            <th>Seq No</th>
+                                            <th>Material Type</th>
+                                            <th>From Dep WorkCenter</th>
+                                            <th>From WorkCenter</th>
+                                            <th>PartCode</th>
+                                            <th>ItemName</th>
+                                            <th>Qty</th>
+                                            <th>Unit</th>
+                                            <th>Alt Transfer Qty</th>
+                                            <th>Alt Unit</th>
+                                            <th>Item remark</th>
+                                            <th>Rec In Store</th>
+                                            <th>Prod Entry Id</th>
+                                            <th>Prod Year Code</th>
+                                            <th>Prod Entry Date</th>
+                                            <th>Prod Plan No</th>
+                                            <th>Prod Plan YearCode</th>
+                                            <th>Prod SchNo</th>
+                                            <th>Prod Sch YearCode</th>
+                                            <th>In Proc Qc SlipNo</th>
+                                            <th>In Proc Qc YearCode</th>
+                                            <th>Prod Qty</th>
+                                            <th>Qc Ok Qty</th>
+                                            <th>Rej Qty</th>
+                                            <th>Batch No</th>
+                                            <th>Unique BatchNo</th>
+                                            <th>TransferMat EntryId</th>
+                                            <th>TransferMat YearCode</th>
+                                            <th>TransferMat SlipNo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="divReceiveItemDetailGrid">
+                                        <partial name="_ReceiveItemDetailGrid" />
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="OtherGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                        <div class="accordion-body">
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                @if (Model.Mode != "U" && Model.Mode != "V")
+                                {
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                        <label asp-for="ActualEnteredBy" class="form-label">Created By</label>
+                                        <input type="hidden" asp-for="ActualEnteredBy" class="form-control" readonly />
+                                        <input asp-for="ActualEnteredByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                        <label asp-for="ActualEntrydate" class="form-label">Created On</label>
+                                        <input asp-for="ActualEntrydate" class="form-control" readonly />
+                                    </div>
+                                }
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                    <label asp-for="EnteredbyMachineName" class="form-label">Entered by Machine Name</label>
+                                    <input asp-for="EnteredbyMachineName" class="form-control" readonly value="@Environment.MachineName" />
+                                </div>
+                                @if (Model.Mode == "U" || Model.Mode == "V")
+                                {
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                        <label asp-for="ActualEnteredBy" class="form-label">Created By</label>
+                                        <input type="hidden" asp-for="ActualEnteredBy" class="form-control" readonly />
+                                        <input asp-for="ActualEnteredByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                        <label asp-for="ActualEntrydate" class="form-label">Created On</label>
+                                        <input asp-for="ActualEntrydate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                        <label asp-for="UpdatedByName" class="form-label" style="width:150px">Updated By</label>
+                                        <input type="hidden" asp-for="UpdatedBy" class="form-control" readonly />
+                                        <input asp-for="UpdatedByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                        <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    <div class="card-header card-headerBG text-light bg-gradient">
+                        <h5>
+                            <strong>Receive Item</strong>
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    <a asp-action="PendingInProcesstoQc" asp-route-ID="0" asp-controller="PendingInProcesstoQc" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                                        Add New
+                                    </a>
+                                </span>
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        PRINT
+                                    </button>
+                                </div>
+                                <a asp-action="InProcessQcDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                    Dashboard
+                                </a>
+                                @*<partial name="_FormsButton" />*@
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                        <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                        <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                                        <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                                        <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                                        <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                                        @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                    {
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode == "U"  )
+                                        {
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+                                        
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                <button type="submit submitBTN" class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-chevron-circle-right"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+<style>
+    .toggle-btn {
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+        .toggle-btn .fa {
+            color: white;
+            margin-left: 3px;
+        }
+
+    .fa {
+        margin-left: 3px;
+    }
+</style>
+
+@section Scripts {
+
+    <script>
+
+        $('.submitBTN').click(function (e) {
+            e.preventDefault();
+            $('form').submit();
+        });
+
+        $(document).ready(function () {
+            BindDepartmentList();
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                $('#RecMatEntryDate,#RecMatSlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#ActualEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                FillEntryId();
+                FillGridFromGridMemoryCache();
+            }
+            if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
+                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#divReceiveItemDetail').empty();
+            }
+        });
+
+        function FillEntryId() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillEntryId")",
+                dataType: "json",
+                data: { "YearCode": $('#RecMatYearCode').val() },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#RecMatEntryId').val(obj.Result[0].EntryId);
+                        $('#RecMatSlipNo').val(obj.Result[0].SlipNo);
+                    }
+                }
+            });
+        }
+
+        function BindDepartmentList() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("BindDepartmentList")",
+                dataType: "json",
+                data: { },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#DepName').empty();
+                            $('#DepName').append('<option>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#DepName').append('<option value="' + val.DeptId + '">' + val.DeptName + '</option>');
+                                $('#DepID').val($('#DepName').val());
+                            })
+                             
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                 
+                                var DepId = '@Model.DepID';
+                                $('#DepName').val(DepId).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillGridFromGridMemoryCache() {
+             
+            $.ajax({
+                url: "@Url.Action("FillGridFromMemoryCache")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                     
+                    if (data != null) {
+                        $('#divReceiveItemDetail').html(data);
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        $('#DepName').change(function () {
+            $('#DepID').val($('#DepName').val());
+        })
+
+        function GridButton() {
+              
+            // if (!ValidateGI_Grid()) return;
+            var rowCount = $('#divReceiveItemDetail tr').length;
+            var ItemData = [];
+            for (var i = 1; i <= rowCount; i++) {
+                ItemData.push({
+                    "SeqNo": i,
+                    "MaterialType": $('#MaterialType-' + i).val(),
+                    "FromDepWorkCenter": $('#FromDepWorkCenter-' + i).val(),
+                    "FromWorkcenter": $('#FromWorkcenter-' + i).val(),
+                    "PartCode": $('#PartCode-' + i).val(),
+                    "ItemName": $('#ItemName-' + i).val(),
+                    "ItemCode": $('#ItemCode-' + i).val(),
+                    "WCID": $('#WCID-' + i).val(),
+                    "Qty": $('#Qty-' + i).val(),
+                    "Unit": $('#Unit-' + i).val(),
+                    "AltTransferQty": $('#AltTransferQty-' + i).val(),
+                    "AltUnit": $('#AltUnit-' + i).val(),
+                    "Itemremark": $('#Itemremark-' + i).val(),
+                    "RecStoreId": $('#RecStoreId-' + i).val(),
+                    "RecInStore": $('#RecInStore-' + i).val(),
+                    "ProdEntryId": $('#ProdEntryId-' + i).val(),
+                    "ProdYearCode": $('#ProdYearCode-' + i).val(),
+                    "ProdEntryDate": $('#ProdEntryDate-' + i).val(),
+                    "ProdPlanNo": $('#ProdPlanNo-' + i).val(),
+                    "ProdPlanYearCode": $('#ProdPlanYearCode-' + i).val(),
+                    "ProdSchNo": $('#ProdSchNo-' + i).val(),
+                    "ProdSchYearCode": $('#ProdSchYearCode-' + i).val(),
+                    "InProcQCSlipNo": $('#InProcQCSlipNo-' + i).val(),
+                    "InProcQCYearCode": $('#InProcQCYearCode-' + i).val(),
+                    "ProdQty": $('#ProdQty-' + i).val(),
+                    "QCOkQty": $('#QCOkQty-' + i).val(),
+                    "RejQty": $('#RejQty-' + i).val(),
+                    "BatchNo": $('#BatchNo-' + i).val(),
+                    "uniquebatchno": $('#uniquebatchno-' + i).val(),
+                    "TransferMatEntryId": $('#TransferMatEntryId-' + i).val(),
+                    "TransferMatYearCode": $('#TransferMatYearCode-' + i).val(),
+                    "TransferMatSlipNo": $('#TransferMatSlipNo-' + i).val()
+                });
+            }
+
+            $.ajax({
+                url: "@Url.Action("AddReceiveItemGridEntry")",
+                type: "POST",
+                data: { model: ItemData, Mode: $('#Mode').val() },
+                success: function (data, status, xhr) {
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                    }
+                    else {
+                        $('#divReceiveItemDetailGrid').html(data);
+                        $('#divReceiveItemDetail').empty();
+                    }
+                    editingNow = false;
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+
+                    $('.Schedule').fadeIn();
+                }
+            }).done(function () {
+
+            }).fail(function () {
+                alert("error");;
+            }).always(function () {
+
+            });
+        }
+
+        var isEditAllowed = "false";
+        function DeleteItemRow(SeqNo) {
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Action("DeleteItemRow")',
+                    type: "POST",
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                    success: function (data) {
+                        $('#divReceiveItemDetailGrid').html(data);
+                        $.notify("Item Deleted from Grid", "info");
+                        isEditAllowed = "true";
+                        resolve();
+                    },
+                    error: function (response) {
+                        reject(response.responseText);
+                    }
+                });
+            });
+        }
+
+        var editingNow = false;
+        function EditItemRow(SeqNo) {
+             
+            if (editingNow == false) {
+
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditItemRow")',
+                        type: "POST",
+                        data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
+                    })
+                        .done(function (data, status, xhr) {
+                            editingNow = true;
+                            var obj = $.parseJSON(data);
+                            DeleteItemRow(SeqNo)
+                                .then(() => {
+                                    if (obj != null && obj.length == 1) {
+                                         
+                                        var html = '';
+                                        var i = 1;
+                                        html += '<tr id="itemGrid-' + i + '" class="small" style="white-space:nowrap">' +
+                                            '<td><input id="SeqNo-' + i + '" value=' + obj[0].SeqNo + ' readonly type="number" style="width:50px;"></td>' +
+                                            '<td><input id="MaterialType-' + i + '" value=' + obj[0].MaterialType + ' readonly type="text" style="width:150px;"></td>' +
+                                            '<td><input id="FromDepWorkCenter-' + i + '" value=' + obj[0].FromDepWorkCenter + ' readonly type="text" style="width:150px;"></td>' +
+                                            '<td><input id="FromWorkcenter-' + i + '" value=' + obj[0].FromWorkcenter + ' type="text" style="width:100px;" readonly></td>' +
+                                            '<td><input id="PartCode-' + i + '" value=' + obj[0].PartCode + ' type="text" style="width:200px;" readonly><input type="hidden" id="ItemCode-' + i + '" value=' + obj[0].ItemCode + '></td>' +
+                                            '<td><input id="ItemName-' + i + '" type="text" style="width:50px;" value=' + JSON.stringify(obj[0].ItemName) + ' readonly ></td>' +
+                                            '<td><input id="Qty-' + i + '" value=' + obj[0].Qty.toFixed(2) + ' type="number" style="width:50px;" readonly></td>' +
+                                            '<td><input id="Unit-' + i + '" value=' + obj[0].Unit + ' type="text" style="width:50px;background-color:#98ffa0" onchange="CheckQcQty(' + i + ')" min="0"></td>' +
+                                            '<td><input id="AltTransferQty-' + i + '" value=' + obj[0].AltTransferQty + ' type="text" style="width:50px;background-color:#98ffa0" onchange="CheckQcQty(' + i + ')" min="0"></td>' +
+                                            '<td><input id="AltUnit-' + i + '" value=' + obj[0].AltUnit + ' type="text" style="width:50px;background-color:#98ffa0" onchange="CheckQcRejQty(' + i + ')" min="0" ></td>' +
+                                            '<td><input id="Itemremark-' + i + '" style="width:50px;background-color:#98ffa0" value=' + (obj[0].Itemremark == null ? '' : obj[0].Itemremark) + '></td>' +
+                                            '<td><input id="RecInStore-' + i + '" type="text" readonly style="width:150px;" value=' + (obj[0].RecInStore == null ? '' : obj[0].RecInStore) + ' ></td>' +
+                                            '<td><input id="ProdEntryId-' + i + '" value=' + obj[0].ProdEntryId + ' type="text" style="width:200px;" readonly></td>' +
+                                            '<td><input id="ProdYearCode-' + i + '" type="text" style="width:150px;" readonly value=' + obj[0].ProdYearCode + ' ></td>' +
+                                            '<td><input id="ProdEntryDate-' + i + '" style="width:150px;" type="text" readonly value=' + obj[0].ProdEntryDate + ' ></td>' +
+                                            '<td><input id="ProdPlanNo-' + i + '" type="text" style="width:100px;" readonly value=' + (obj[0].ProdPlanNo == null ? '' : obj[0].ProdPlanNo) + ' ></td>' +
+                                            '<td><input id="ProdPlanYearCode-' + i + '" type="text" style="width:150px;" readonly value=' + obj[0].ProdPlanYearCode + ' ></td>' +
+                                            '<td><input id="ProdSchNo-' + i + '" type="text" style="width:150px;" readonly value=' + (obj[0].ProdSchNo == null ? '' : obj[0].ProdSchNo) + '></td>' +
+                                            '<td><input id="ProdSchYearCode-' + i + '" type="text" style="width:50px;" readonly value=' + obj[0].ProdSchYearCode + ' ></td>' +
+                                            '<td><input id="InProcQCSlipNo-' + i + '" type="text" style="width:150px;" value=' + obj[0].InProcQCSlipNo + ' ></td>' +
+                                            '<td><input id="InProcQCYearCode-' + i + '" type="text" style="width:100px;" readonly value=' + obj[0].InProcQCYearCode + ' ></td>' +
+                                            '<td><input id="ProdQty-' + i + '" type="text" style="width:50px;" readonly value=' + obj[0].ProdQty + ' ></td>' +
+                                            '<td><input id="QCOkQty-' + i + '" value=' + obj[0].QCOkQty + ' ></td>' +
+                                            '<td><input id="RejQty-' + i + '" type="text" style="width:150px;" readonly value=' + obj[0].RejQty + ' type="text" style="width:150px;" readonly></td>' +
+                                            '<td><input id="BatchNo-' + i + '" type="text" style="width:150px;" value=' + obj[0].BatchNo + ' ></td>' +
+                                            '<td><input id="uniquebatchno-' + i + '" type="text" style="width:100px;" readonly value=' + obj[0].uniquebatchno + ' ></td>' +
+                                            '<td><input id="TransferMatEntryId-' + i + '" type="number" style="width:50px;" readonly value=' + obj[0].TransferMatEntryId + ' ></td>' +
+                                            '<td><input id="TransferMatYearCode-' + i + '" type="number" style="width:50px;" readonly value=' + obj[0].TransferMatYearCode + ' ></td>' +
+                                            '<td><input id="TransferMatSlipNo-' + i + '" style="width:50px;" type="text" readonly value=' + obj[0].TransferMatSlipNo + ' ></td>' +
+                                            '</tr>'
+                                    }
+                                    $('#divReceiveItemDetail').append(html);
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+    </script>
+}

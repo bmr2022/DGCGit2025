@@ -1,0 +1,75 @@
+﻿@model eTactWeb.DOM.Models.PurchaseOrderModel
+
+<div class="modal fade" id="IndentDetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel"> Indent Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="row align-items-center">
+                        <div class="col-auto form-check form-switch" style="margin-left: 35px;">
+                            <input id="showAllIndent" class="form-check-input" type="checkbox" role="switch" />
+                            <label for="showAllIndent" id="IN12" class="form-check-label ms-2">Show All</label>
+                        </div>
+
+                        <div class="col-md-auto ms-auto" style="margin-top: 10px;">
+                            <input type="text" class="form-control" id="indent-search-box" style="background-color:#FFFACD" placeholder="Search...">
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card-body text-center overflow-auto pb-0">
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped mb-0 IndentDetailTable">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Sr#</th>
+                                                <th>Action</th>
+                                                <th>Indent No</th>
+                                                <th>Indent Date</th>
+                                                <th>Indent EntryId</th>
+                                                <th>Part Code</th>
+                                                <th>Item Name</th>
+                                                <th>Qty</th>
+                                                <th>Alt Qty</th>
+                                                <th>Pend Qty for PO</th>
+                                                <th>Unit</th>
+                                                <th>Alt Unit</th>
+                                                <th>Req Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divIndentDetail">
+                                            <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfIndentItems"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 justify-content-center mt-4" style="margin-left:50px;margin-top:10px;">
+                        <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnAddIndentQty">
+                            <i class="fa-solid fa-upload fa-fw fa-lg "></i> Add  Indent
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1624 @@
+﻿@model eTactWeb.DOM.Models.ReceiveChallanModel
+
+@{
+    ViewData["Title"] = "Receive Challan";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="ReceiveChallan" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Receive Challan</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @if (Model.Mode == "U" || Model.Mode == "V")
+                    {
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient me-2" asp-action="PrintReport" asp-controller="Indent" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.Yearcode">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            PRINT
+                        </a>
+                    }
+                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                    <a asp-action="RCDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                        <i class="fa-duotone fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="GateNoBack" type="hidden" value="@Model.GateNoBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="ChallanNoBack" type="hidden" value="@Model.ChallanNoBack" />                          
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />                           
+                            <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+                            <input asp-for="AccountNameBack" type="hidden" value="@Model.AccountNameBack" />
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V"  )
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U"  )
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                           
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                 @*   <partial name="_FormsButton" />*@
+                </span>
+            </h5>
+        </div>
+        <div>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3 align-items-center">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <input type="hidden" asp-for="SeqNo" id="hiddenSeqNo" />
+                                    <label asp-for="EntryId" class="form-label">Entry ID</label>
+                                    <input asp-for="EntryId" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Entrydate" class="form-label">Entry Date</label>
+                                    <input asp-for="Entrydate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                    <label asp-for="Yearcode" class="form-label">Year Code</label>
+                                    <input asp-for="Yearcode" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" value="@Model.CC" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="FinFromDate" class="form-label">From Date</label>
+                                    <input asp-for="FinFromDate" value="@Model.FinFromDate" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="FinToDate" class="form-label">To Date</label>
+                                    <input asp-for="FinToDate" value="@Model.FinToDate" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="RetNotRetChallan" class="form-label" style="color: red;">Ret/NotRet Challan*</label>
+                                    @if (Model.Mode == "U" || @Model.Mode == "V")
+                                    {
+                                        <select class="form-select" asp-for="RetNotRetChallan">
+                                            <option value="">-Select-</option>
+                                            <option value="R">Returnable Challan</option>
+                                            <option value="N" selected>Non-Returnable Challan</option>
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <select class="form-select" asp-for="RetNotRetChallan">
+                                            <option value="">-Select-</option>
+                                            <option value="R">Returnable Challan</option>
+                                            <option value="N" selected>Non-Returnable Challan</option>
+                                        </select>
+                                    }
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="AgainstMRNNOrGate" class="form-label" style="color: red;">MRN Or Gate*</label>
+                                    <select class="form-select" asp-for="AgainstMRNNOrGate">
+                                        <option value="">-Select-</option>
+                                        <option value="MRN">MRN</option>
+                                        <option value="Gate" selected>Gate</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MRNNo" class="form-label">MRN No</label>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <input type="hidden" value="@Model.MRNNo" id="hiddenMRNNo" />
+                                    }
+                                    <select class="form-select" asp-for="MRNNo" onchange="FillMRNYC();" disabled>
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="AgainstMRNYearCode" class="form-label">MRN YC</label>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <input type="hidden" value="@Model.AgainstMRNYearCode" id="hiddenMRNYC" />
+                                    }
+                                    <select class="form-select" asp-for="AgainstMRNYearCode" disabled>
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MRNDate" class="form-label">MRN Date</label>
+                                    <input asp-for="MRNDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="BillOrChallan" class="form-label" style="color: red;">BillOrChallan*</label>
+                                    <select class="form-select" asp-for="BillOrChallan">
+                                        <option value="">-Select-</option>
+                                        <option value="Bill">Bill</option>
+                                        <option value="Challan">Challan</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="gateno" class="form-label" style="color: red;">Gate No*</label>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <input type="hidden" value="@Model.gateno" id="hiddenGateno" />
+                                    }
+                                    <select class="form-select" asp-for="gateno">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="GateYearCode" class="form-label" style="color: red;">Gate YC*</label>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <input type="hidden" value="@Model.GateYearCode" id="hiddenGateYC" />
+                                    }
+                                    <select class="form-select" asp-for="GateYearCode">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="GateDate" class="form-label" style="color: red;">Gate Date*</label>
+                                    <input asp-for="GateDate" class="form-control" readonly />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ChallanNo" class="form-label" style="color: red;">Challan No*</label>
+                                    <input asp-for="ChallanNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ChallanDate" class="form-label" style="color: red;">Challan Date*</label>
+                                    <input asp-for="ChallanDate" class="form-control" readonly />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToStore">
+                                    <label asp-for="AccountCode" class="control-label" style="color: red;">Vendor Name*</label>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <input type="hidden" value="@Model.AccountCode-@Model.AccountName" id="hiddenAccountCode" />
+                                    }
+                                    <select class="form-select" asp-for="AccountCode" readonly>
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="RGPNRGP" class="form-label" style="color: red;">RGP/NRGP*</label>
+                                    <select class="form-select" asp-for="RGPNRGP" onchange="FillChallanType();">
+                                        <option value="">-Select-</option>
+                                        <option value="RGP">RGP</option>
+                                        <option value="NRGP" selected>NRGP</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ChallanType" class="form-label" style="color: red;">Challan Type*</label>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <input type="hidden" value="@Model.ChallanType" id="hiddenChallanType" />
+                                    }
+                                    <select class="form-select" asp-for="ChallanType">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="DocTypeCode" class="form-label" style="color: red;">Doc Type Name</label>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <input type="hidden" value="@Model.DocTypeCode-@Model.DocTypeName" id="hiddenDocType" />
+                                    }
+                                    <select class="form-select" asp-for="DocTypeCode">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>Part Code</th>
+                                                    <th>Item Name</th>
+                                                    <th>Rec Qty</th>
+                                                    <th>Unit</th>
+                                                    <th>Rate</th>
+                                                    <th>Amount</th>
+                                                    <th>Issued Qty</th>
+                                                    <th>Pend Qty</th>
+                                                    <th>Produced</th>
+                                                    <th>Remark</th>
+                                                    <th>Gate Qty</th>
+                                                    <th>Store Name<input id="SHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />Same Store</label></th>
+                                                    <th>IC EntryId</th>
+                                                    <th>IC YC</th>
+                                                    <th>IC No</th>
+                                                    <th>Pend To Issue</th>
+                                                    <th>Batch No</th>
+                                                    <th>Unique BatchNo</th>
+                                                    <th>ItemSize</th>
+                                                    <th>AltUnit</th>
+                                                    <th>AltQty</th>
+                                                    <th>PONO</th>
+                                                    <th>PO YearCode</th>
+                                                    <th>PO Date</th>
+                                                    <th>Sch No</th>
+                                                    <th>Sch Date</th>
+                                                    <th>Sch YC</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divReceiveGrid">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="col-md-10">
+                                        <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-2" id="GridButton">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <!-- Use the 'text-right' class -->
+                                        <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                </div>
+
+
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped RCItemGrid">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>SR#</th>
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                                                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IC EntryId</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IC YC</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IC No</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
+                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issued Qty</th>
+                                                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Qty</th>
+                                                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Produced</th>
+                                                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                                                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Qty</th>
+                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
+                                                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend To Issue</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
+                                                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique BatchNo</th>
+                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemSize</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltUnit</th>
+                                                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltQty</th>
+                                                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONO</th>
+                                                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO YearCode</th>
+                                                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                                                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                                                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
+                                                    <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch YC</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divReceiveChallanGrid">
+                                                <partial name="_ReceiveChallanGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row g-2 gx-3 justify-content-end">
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="TotalAmount" class="form-label">Total Amount</label>
+                                        <input asp-for="TotalAmount" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="TotalDiscountPercent" class="form-label">Total Dis%</label>
+                                        <input asp-for="TotalDiscountPercent" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="TotalDiscountAmount" class="form-label">Total Dis Amount</label>
+                                        <input asp-for="TotalDiscountAmount" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="NetAmt" class="form-label">Net Amount</label>
+                                        <input asp-for="NetAmt" class="form-control" readonly disabled />
+                                    </div>
+                                </div>
+
+                                <div class="progress my-3 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UID" class="form-label">UID</label>
+                                    <input asp-for="UID" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedByEmpName" class="form-label">Created By Emp</label>
+                                    <input asp-for="CreatedByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedOn" class="form-label">Created Date</label>
+                                    <input asp-for="CreatedOn" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="InvoiceNo" class="form-label">Invoice No</label>
+                                    <input asp-for="InvoiceNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="InvoiceYearCode" class="form-label">Invoice YC</label>
+                                    <input asp-for="InvoiceYearCode" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="pendcompleted" class="form-label">Pend Completed</label>
+                                    <input asp-for="pendcompleted" class="form-control" readonly disabled />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ForChallan" class="form-label">For Challan</label>
+                                    <input asp-for="ForChallan" class="form-control" readonly disabled />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SendforQC" class="form-label">Send for QC</label>
+                                    <input asp-for="SendforQC" class="form-control" readonly disabled />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="TruckNo" class="form-label">Truck No</label>
+                                    <input asp-for="TruckNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="TransPort" class="form-label">Transport</label>
+                                    <input asp-for="TransPort" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="DeptTo" class="form-label">Dept To</label>
+                                    <input asp-for="DeptTo" class="form-control" readonly disabled />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedByEmpName" class="form-label">Updated By EmpName</label>
+                                    <input asp-for="UpdatedByEmpName " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedOn" class="form-label">Updated Date</label>
+                                    <input asp-for="UpdatedOn " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="MachineName" class="form-label">Machine Name</label>
+                                    <input asp-for="MachineName " class="form-control" value="@Environment.MachineName" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Remark" class="form-label">Remark</label>
+                                    <input asp-for="Remark" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer card-headerBG text-light bg-gradient">
+                <div class="row justify-content-between g-2">
+                    <h5>
+                        <strong>Receive Challan</strong>
+                        <span class="d-flex float-end" style="margin-top:-2px;">
+                            @if (Model.Mode == "U" || Model.Mode == "V")
+                            {
+                                <a type="button" class="btn btn-sm btn-outline-light bg-gradient me-2" asp-action="PrintReport" asp-controller="Indent" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.Yearcode">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    PRINT
+                                </a>
+                            }
+                            @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                            <a asp-action="RCDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                <i class="fa-duotone fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                Dashboard
+                            </a>
+                            @*<partial name="_FormsButton" />*@
+                            <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="GateNoBack" type="hidden" value="@Model.GateNoBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="ChallanNoBack" type="hidden" value="@Model.ChallanNoBack" />                          
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />                           
+                            <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+                            <input asp-for="AccountNameBack" type="hidden" value="@Model.AccountNameBack" />
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U"  )
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                            
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                        </span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            
+            $('#PartCode').select2();
+            $('#ItemCode').select2();
+            GetGateNo();
+            
+            $('#MRNDate').val('');
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                NewEntryId();
+                GetServerDate();
+            } 
+            else {
+                
+                if ($('#MRNDate').val() == "01-01-1900 00:00:00") {
+                    $('#MRNDate').val('');
+                }
+                if ($('#AgainstMRNNOrGate').val() == "Gate") {
+                    $('#gateno').append('<option value=' + $('#hiddenGateno').val() + ' selected>' + $('#hiddenGateno').val() + '</option>');
+                    $('#GateYearCode').append('<option value=' + $('#hiddenGateYC').val() + ' selected>' + $('#hiddenGateYC').val() + '</option>');
+                    if ($('#GateDate').val() == "01-01-1900 00:00:00") {
+                        $('#GateDate').val('');
+                    } else {
+                        $('#GateDate').val($('#GateDate').val().split(" ")[0]);
+                    }
+                } else {
+                    $('#MRNNo').append('<option value=' + $('#hiddenMRNNo').val() + ' selected>' + $('#hiddenMRNNo').val() + '</option>');
+                    $('#AgainstMRNYearCode').append('<option value=' + $('#hiddenMRNYC').val() + ' selected>' + $('#hiddenMRNYC').val() + '</option>');
+                    if ($('#MRNDate').val() == "01-01-1900 00:00:00") {
+                        $('#MRNDate').val('');
+                    } else {
+                        $('#MRNDate').val($('#MRNDate').val().split(" ")[0]);
+                    }
+                }
+                $('#AccountCode').append('<option value=' + $("#hiddenAccountCode").val().split("-")[0] + ' selected>' + $("#hiddenAccountCode").val().split("-")[1] + '</option>')
+                $('#DocTypeCode').append('<option value=' + $("#hiddenDocType").val().split("-")[0] + ' selected>' + $("#hiddenDocType").val().split("-")[1] + '</option>')
+                TotalNetAmount();
+            }
+
+            FillChallanType();
+
+            $('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
+            $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
+            //$('#FinFromDate,#FinToDate').datepicker("option", "minDate", $('#FinFromDate').val());
+            $('#FinFromDate,#FinToDate').datepicker("option", "maxDate", $('#FinToDate').val());
+
+            $('#RetNotRetChallan').rules("remove", "required");
+            $('#AccountCode').rules("remove", "required");
+            $('#ChallanType').rules("remove", "required");
+            $('#BillOrChallan').rules("remove", "required");
+            $('#UpdatedByEmpName').rules("remove", "required");
+            $('#UpdatedOn').rules("remove", "required");
+            $('#Remark').rules("remove", "required");
+            $('#TruckNo').rules("remove", "required");
+            $('#TransPort').rules("remove", "required");
+            $('#MRNDate').rules("remove", "required");
+            $('#CreatedByEmpName').rules("remove", "required");
+            $('#RGPNRGP').rules("remove", "required");
+            $('#InvoiceNo').rules("remove", "required");
+        });
+
+
+        //$('.textbox').keydown(function (e) {
+        //     
+        //    if (e.which === 40) {
+        //        e.preventDefault();
+        //        var currentIndex = $('.textbox').index(this);
+        //        var totalColumns = 52;
+        //        var totalRows = $('.textbox').length / totalColumns;
+
+        //        var currentColumn = currentIndex % totalColumns;
+        //        var nextIndex = (currentIndex + totalColumns) % $('.textbox').length;
+
+        //        $('.textbox').eq(nextIndex).focus();
+        //    }
+        //});
+
+        $(document).on('keydown', '.textbox', function (e) {
+             
+            if (e.which === 40) {  
+                var currentIndex = $('.textbox').index(this);
+                var numRows = $('#divReceiveGrid tr').length;
+                var numCols = $('#divReceiveGrid tr:first td').length;
+
+                var currentRow = Math.floor(currentIndex / numCols);
+                var nextRow = (currentRow + 1) % numRows;
+
+                var nextIndex = nextRow * numCols + (currentIndex % numCols);
+                $('.textbox:eq(' + nextIndex + ')').focus();
+                e.preventDefault();
+            }
+        });
+
+        $(document).on('select2:select', '#PartCode,#ItemCode', function (e) {
+            var cntId = e.target.id;
+
+            if (cntId == 'ItemCode') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+            GetUnitAltUnit($('#ItemCode').val());
+            FillRate();
+        });
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divReceiveChallanGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+            }
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $('#AgainstMRNNOrGate').change(function () {
+            if ($('#AgainstMRNNOrGate').val() == 'MRN') {
+                $('#gateno').val('').prop("disabled", true);
+                $('#GateYearCode').val('').prop("disabled", true);
+                $('#MRNNo').val('').prop("disabled", false);
+                $('#AgainstMRNYearCode').val('').prop("disabled", false);
+                $('#GateDate').val('');
+                GetMRNNo();
+            } else {
+                $('#gateno').val('').prop("disabled", false);
+                $('#GateYearCode').val('').prop("disabled", false);
+                $('#MRNNo').val('').prop("disabled", true);
+                $('#AgainstMRNYearCode').val('').prop("disabled", true);
+                GetGateNo();
+                $('#MRNDate').val('');
+            }
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('.RCItemGrid');
+            var rows = table.find('#divReceiveChallanGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text().trim();
+                var bValue = $(b).find('td').eq(columnIndex).text().trim();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divReceiveChallanGrid').append(row);
+            });
+        }
+
+        var SameStore = false;
+        $('#SHA').change(function () {
+
+            var RowCount = $('#divReceiveGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#StoreName' + i).val('');
+            }
+            if ($('#SHA').prop("checked") == true) {
+                SameStore = true;
+            } else {
+                SameStore = false;
+            }
+        });
+
+        $('#submitBTN').click(function (event) {
+
+            event.preventDefault();
+
+            var Gridcount = $('#divReceiveChallanGrid tr td').length;
+            if (Gridcount < 2) {
+                $.notify('Please enter any value in Grid.', 'error');
+            }
+            else if ($('#GateYearCode').prop('selectedIndex') == 0) {
+                $.notify('Please Select GateYearCode', 'error');
+            }
+            else if ($('#ChallanType').prop('selectedIndex') == 0) {
+                $.notify('Please Select ChallanType', 'error');
+            }
+            else {
+                $("form").submit();
+            }
+        });
+
+        
+
+        $('#UpdateButton').click(function (event) {
+
+            event.preventDefault();
+
+            var Gridcount = $('#divReceiveChallanGrid tr td').length;
+            if (Gridcount < 2) {
+                $.notify('Please enter any value in Grid.', 'error');
+            }
+            else if ($('#GateYearCode').prop('selectedIndex') == 0) {
+                $.notify('Please Select GateYearCode', 'error');
+            }
+            else if ($('#ChallanType').prop('selectedIndex') == 0) {
+                $.notify('Please Select ChallanType', 'error');
+            }
+            else {
+                $("form").submit();
+            }
+        });
+
+        function FillChallanType() {
+             
+            var RGPNRGP = $('#RGPNRGP').val();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FillChallanType","NRGP")",
+                data: { "RGPNRGP": RGPNRGP },
+                dataType: "json",
+                success: function (result, status, error) {
+                     
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ChallanType').empty();
+                            $('#ChallanType').append('<option value="0">-Select-</option>');
+                            $(obj.Result).each(function (index, val) {
+                                $('#ChallanType').append('<option value="' + val.ChallanType + '">' + val.ChallanType + '</option>');
+                            });
+
+                            //if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                            //    //  $('ChallanType').val($('#hiddenChallanType').val().trim());
+                            //    var ChallanVal = $('#hiddenChallanType').val().trim();
+                            //    $('#ChallanType').val(ChallanVal);
+                            //}
+                            if($('#Mode').val() == "U" || $('#Mode').val() == "V"){
+                                $('#ChallanType').val($('#hiddenChallanType').val());
+                            }
+                        } else {
+
+                        }
+
+                    }
+                }
+            });
+        }
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+            FillTotalStock();
+            FillStockBatchNo();
+            $('#BatchNo,#UniqueBatchNo').val('');
+            if ($('#IssueToStoreWC').val() == 'S') {
+                FillRecStoreStock();
+            } else {
+                //FillWIPStock();
+                FillCurrentWIPBatchINStore();
+                GetWIPStockBatchWise();
+            }
+        }
+
+        function PartCodeChange(ID) {
+            SetPartCodeItemName(ID);
+            FillTotalStock();
+            FillStockBatchNo();
+            if ($('#IssueToStoreWC').val() == 'S') {
+                FillRecStoreStock();
+            } else {
+                // FillWIPStock();
+                FillCurrentWIPBatchINStore();
+                GetWIPStockBatchWise();
+            }
+        }
+
+        function GetUnitAltUnit(ItemCode) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUnitAltUnit")",
+                async: false,
+                data: { "ItemCode": ItemCode },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#Unit').val("");
+                            $('#Unit').val(obj.Result[0].unit);
+                            $('#AltUnit').val("");
+                            $('#AltUnit').val(obj.Result[0].AlternateUnit);
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillRate() {
+            var ItemCode = $('#ItemCode').val();
+            var YearCode = $('#YearCode').val();
+            var UniqueBatchNo = "";
+            var BatchNo = "";
+            if ($('#UniqueBatchNo').prop('selectedIndex') != 0) {
+                UniqueBatchNo = $('#UniqueBatchNo').val();
+            }
+            if ($('#BatchNo').prop('selectedIndex') != 0) {
+                BatchNo = $('#BatchNo').val();
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillRateAmount","StockAdjustment")",
+                async: false,
+                data: { "ItemCode": ItemCode, "YearCode": YearCode, "UniqueBatchNo": UniqueBatchNo, "BatchNo": BatchNo },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#Rate').val("");
+                            $('#Rate').val(obj.Result[0].Rate);
+                        }
+                    }
+                }
+            });
+        }
+
+        function TotalNetAmount() {
+            var Count = $('#divReceiveChallanGrid tr').length;
+            var Amount = 0;
+            //$('#TotalAmount').val('');
+            for (var i = 1; i <= Count; i++) {
+                Amount += parseFloat($('#GridAmount-' + i).text());
+            }
+            $('#TotalAmount').val(Amount);
+            var TotalAmt = $('#TotalAmount').val();
+            var DisPr = $('#TotalDiscountPercent').val();
+            var DisAmount = TotalAmt * DisPr / 100;
+            $('#TotalDiscountAmount').val(DisAmount);
+            var NetAmt = TotalAmt - DisAmount;
+            $('#NetAmt').val(NetAmt);
+        }
+
+        $('#TotalDiscountPercent').change(function () {
+            TotalNetAmount();
+        });
+
+        function ValidateGrid() {
+
+            var Err = 0;
+            var RowCount = $('#divReceiveGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                if ($('#StoreName' + i).prop('selectedIndex') == 0) {
+                    AddErrorCls('StoreName' + i);
+                    $.notify('StoreName is Mandatory!!!', "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('StoreName' + i);
+                }
+            }
+
+            Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        $('#Qty').keyup(function () {
+            var TotalStock = parseFloat($('#TotalStockQty').val());
+            var LotStock = parseFloat($('#LotStockQty').val());
+            var MinValue = Math.min(TotalStock, LotStock);
+            if (parseFloat($('#Qty').val()) > MinValue) {
+                AddErrorCls('Qty');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Qty');
+            }
+        });
+
+
+
+        var EditEachItem = false;
+        function EditItemRows(SeqNo) {
+            var RowCount = $('#divReceiveChallanGrid tr').length;
+            if (EditEachItem) {
+                $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+            else {
+                $.ajax({
+                    url: '/ReceiveChallan/EditItemRows',
+                    type: "POST",
+                    data: { SeqNo: SeqNo },
+                    async: false,
+                    success: function (data) {
+                         
+                        var obj = $.parseJSON(data);
+                        var html = '';
+                        obj = replaceNullWithEmptyString(obj[0]);
+                        if (obj != null) {
+                            EditEachItem = true;
+                            var RowCount = $('#divReceiveGrid tr').length + 1;
+                            html += '<tr>' +
+                                '<td><input id="PartCode' + RowCount + '" value=' + JSON.stringify(obj.PartCode) + ' class="textbox" readonly><input type="hidden" id="ItemCode' + RowCount + '" value=' + obj.ItemCode + '></td>' +
+                                '<td><input id="ItemName' + RowCount + '" value=' + JSON.stringify(obj.ItemName) + ' readonly class="textbox"></td>' +
+                                '<td><input id="RecQty' + RowCount + '" value=' + obj.RecQty + ' style="width:90px;" class="textbox" onchange="GateAmount();"></td>' +
+                                '<td><input id="Unit' + RowCount + '" value=' + obj.Unit + ' readonly style="width:90px;" class="textbox"></td>' +
+                                '<td><input id="Rate' + RowCount + '" value=' + obj.Rate + ' style="width:90px;" class="textbox" onchange="GateAmount();"></td>' +
+                                '<td><input id="GateAmount' + RowCount + '" value=' + obj.Amount + ' class="textbox" readonly></td>' +
+                                '<td><input id="IssuedQty' + RowCount + '" value=' + obj.IssuedQty + ' class="textbox" style="width: 60px;" readonly></td>' +
+                                '<td><input id="PendQty' + RowCount + '" class=" textbox"value=' + obj.PendQty + ' style="width: 60px;" readonly></td>' +
+                                '<td><select id="Produced' + RowCount + '" style="background-color:#ffd6dd;" class="textbox"><option value="">-Select-</option><option value="Yes">Yes</option><option value="No">No</option></select></td>' +
+                                '<td><input id="RemarkDetail' + RowCount + '"  style="width:120px;" class="textbox" value=' + obj.RemarkDetail + '></td>' +
+                                '<td><input id="GateQty' + RowCount + '" value=' + obj.GateQty + ' readonly style="width:60px;" class="textbox"></td>' +
+                                '<td><select id="StoreName' + RowCount + '" style="background-color:#ffd6dd;" class="textbox"><option value="" selected>-Select-</option></select></td>' +
+                                '<td><input id="ICEntryId' + RowCount + '" value=' + obj.IssueChallanEntryId + ' readonly style="width:90px;" class="textbox"></td>' +
+                                '<td><input id="ICYC' + RowCount + '" value=' + obj.IssueChallanYearCode + ' readonly style="width:90px;" class="textbox"></td>' +
+                                '<td><input class="textbox" style="width:60px;" id="ICNo' + RowCount + '" value=' + obj.IssueChallanNo + ' readonly></td>' +
+                                '<td><input id="PendToIssue' + RowCount + '" readonly style="width:60px;" class="textbox" value=' + obj.pendtoissue + '></td>' +
+                                '<td><input id="BatchNo' + RowCount + '" value=' + JSON.stringify(obj.BatchNo) + ' readonly style="width:60px;" class="textbox"></td>' +
+                                '<td><input id="UniqueBatchNo' + RowCount + '" value=' + JSON.stringify(obj.UniqueBatchno) + ' readonly class="textbox"></td>' +
+                                '<td><input id="ItemSize' + RowCount + '" style="width:100px;" class="textbox" value=' + obj.ItemSize + '></td>' +
+                                '<td><input id="AltUnit' + RowCount + '" readonly style="width:100px;" class="textbox" value=' + obj.AltUnit + '></td>' +
+                                '<td><input id="AltQty' + RowCount + '" readonly style="width:100px;" class="textbox" value=' + obj.AltQty + '></td>' +
+                                '<td><input id="PONO' + RowCount + '" readonly style="width:100px;" class="textbox" value=' + obj.PONO + '></td>' +
+                                '<td><input id="PoYC' + RowCount + '" readonly style="width:100px;" class="textbox" value=' + obj.POYearCode + '></td>' +
+                                '<td><input id="PODate' + RowCount + '" readonly style="width:100px;" class="textbox" value=' + obj.PODate + '></td>' +
+                                '<td><input id="SchNo' + RowCount + '" readonly style="width:100px;" class="textbox" value=' + obj.SchNo + '></td>' +
+                                '<td><input id="SchDate' + RowCount + '" readonly style="width:100px;" class="textbox" value=' + obj.SchDate + '></td>' +
+                                '<td><input id="SchYC' + RowCount + '" readonly style="width:100px;" class="textbox" value=' + obj.SchYearCode + '></td>' +
+                                '</tr>';
+                            //$('#divReceiveChallanGrid tr#' + SeqNo).remove();
+                            $('#divReceiveGrid').append(html);
+                            FillStore();
+                            $('#Produced' + RowCount).val(obj.Produced);
+                            $('#StoreName' + RowCount).val(obj.Storeid);
+                            $('#hiddenSeqNo').val(obj.SeqNo);
+                            var rowCount = $('#divReceiveChallanGrid tr').length;
+                            //for (var i = 1; i <= rowCount + 1; i++) {
+                            //    $('#editButton-' + i).css("pointer-events", "none");
+                            //    $('#editButton-' + i).css("cursor", "not-allowed");
+                            //}
+                            DeleteItemRow(SeqNo);
+                        }
+                    },
+                    error: function (response) {
+                        $.notify(response.responseText, "error");
+                    },
+                    failure: function (response) {
+                        $.notify(response.responseText, "error");
+                    }
+                });
+            }
+        }
+        function replaceNullWithEmptyString(obj) {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key) && obj[key] === null) {
+                    obj[key] = '';
+                }
+            }
+            return obj;
+        }
+
+        async function DeleteItemRow(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                success: await function (data, status, xhr) {
+                    $('#divReceiveChallanGrid').html(data);
+                    $.notify("Receive Challan deleted from Grid", "info");
+                    TotalNetAmount();
+
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+         function back(){
+            
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('AccountNameBack', $('#AccountNameBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('GateNoBack', $('#GateNoBack').val());
+            sessionStorage.setItem('ChallanNoBack', $('#ChallanNoBack').val()); 
+            sessionStorage.setItem('SummaryDetailBack', $('#SummaryDetailBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+
+            window.history.back();
+        }
+
+        $('#GridButton').click(function (e) {
+            e.preventDefault();
+            EditEachItem = false;
+
+            var ItemData = [];
+            var seqnoarray = [];
+            $('#divReceiveChallanGrid tr').each(function (index, element) {
+
+                var currentRow = $(element);
+                var seqnoText = currentRow.find('th').data('seqno') == undefined ? 0 : currentRow.find('th').data('seqno');
+                if (seqnoText != 0) {
+                    seqnoarray.push(parseInt(seqnoText));
+                }
+            });
+
+            var highestValue = 0;
+            if (seqnoarray.length == 0) {
+                highestValue = 0;
+            }
+            else {
+                highestValue = Math.max(...seqnoarray);
+            }
+
+            if (!ValidateGrid()) return;
+            var RowCount = $('#divReceiveGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                ItemData.push({
+                    "ItemCode": parseInt($('#ItemCode' + i).val()),
+                    "PartCode": $('#PartCode' + i).val(),
+                    "ItemName": $('#ItemName' + i).val(),
+                    "IssueChallanEntryId": $('#ICEntryId' + i).val(),
+                    "IssueChallanYearCode": $('#ICYC' + i).val(),
+                    "IssueChallanNo": $('#ICNo' + i).val(),
+                    "RecQty": $('#RecQty' + i).val(),
+                    "Unit": $('#Unit' + i).val(),
+                    "Rate": $('#Rate' + i).val(),
+                    "Amount": $('#GateAmount' + i).val(),
+                    "IssuedQty": $('#IssuedQty' + i).val(),
+                    "PendQty": $('#PendQty' + i).val(),
+                    "Produced": $('#Produced' + i).val(),
+                    "Storeid": $('#StoreName' + i).val(),
+                    "StoreName": $('#StoreName' + i).find(':selected').text() == "-Select-" ? "" : $('#StoreName' + i).find(':selected').text(),
+                    "GateQty": $('#GateQty' + i).val(),
+                    "pendtoissue": $('#PendToIssue' + i).val(),
+                    "BatchNo": $('#BatchNo' + i).val(),
+                    "UniqueBatchno": $('#UniqueBatchNo' + i).val(),
+                    "ItemSize": $('#ItemSize' + i).val(),
+                    "AltUnit": $('#AltUnit' + i).val(),
+                    "AltQty": $('#AltQty' + i).val(),
+                    "PONO": $('#PONO' + i).val(),
+                    "POYearCode": $('#PoYC' + i).val(),
+                    "PODate": $('#PODate' + i).val(),
+                    "SchNo": $('#SchNo' + i).val(),
+                    "SchDate": $('#SchDate' + i).val(),
+                    "SchYearCode": $('#SchYC' + i).val(),
+                    "RemarkDetail": $('#RemarkDetail' + i).val(),
+                    "SeqNo": parseInt($('#hiddenSeqNo').val()) == 0 ? (highestValue + i) : parseInt($('#hiddenSeqNo').val())
+                });
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddReceiveChallanDetail")',
+                data: { "model": ItemData },
+                statusCode: {
+                    207: function () {
+                        $.notify('Duplicate Item...!', "info");
+                    }
+                },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+
+                        $('#divReceiveChallanGrid').html(result);
+                        $('#divReceiveGrid').empty();
+                        TotalNetAmount();
+                        //$('#Storeid,#Wcid').prop("disabled", false);
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
+
+        function GetServerDate() {
+             
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate", "Routing")",
+                async: false,
+                success: function (result, status, error) {
+                      
+                    //var serverDateTime = new Date();
+                    //$('#Entrydate').datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'HH:mm:ss' }).datetimepicker("setDate", serverDateTime);
+                   
+                    
+                    $('#Entrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#Entrydate,#ChallanDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
+                    $('#Entrydate,#ChallanDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
+                }
+            });
+        }
+
+        function NewEntryId() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("NewEntryId")",
+                data: { "YearCode": $('#Yearcode').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#EntryId').val("");
+                        $('#EntryId').val(obj.Result[0].EntryId);
+                        $('#ChallanNo').val("");
+                        $('#ChallanNo').val(obj.Result[0].challanno);
+                    }
+                }
+            });
+        }
+
+        function FillStore() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStore")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var RowCount = $('#divReceiveGrid tr').length;
+                            for (var i = 1; i <= RowCount; i++) {
+                                $('#StoreName' + i).empty();
+                                $('#StoreName' + i).append('<option value="" disabled selected>-Select-</option>');
+
+                                $.each(obj.Result, function (index, val) {
+                                    $('#StoreName' + i).append('<option value="' + val.EntryID + '">' + val.store_name + '</option>');
+                                });
+                            }
+                        }
+
+                    }
+                }
+            });
+        }
+
+        function GetMRNNo() {
+            var yearcode = $('#Yearcode').val();
+            var FromDate = $('#FinFromDate').val();
+            var ToDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMRNNo")",
+                data: { "YearCode": yearcode, "FromDate": FromDate, "ToDate": ToDate },
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MRNNo').empty();
+                            $('#MRNNo').append('<option value="" disabled selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#MRNNo').append('<option value="' + val.MRNNo + '">' + val.MRNNo + '</option>');
+                            });
+                        }
+                        else {
+                            $('#MRNNo').empty();
+                            $('#MRNNo').append('<option value="" disabled selected>-Select-</option>');
+                        }
+                    }
+                }
+            });
+        }
+        $('#FinFromDate').change(function () {
+            GetGateNo();
+        });
+
+        $('#FinToDate').change(function () {
+            GetGateNo();
+        });
+
+        function GetGateNo() {
+             
+            var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+            var ToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
+            // var ToDate = $('#FinToDate').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateNo")",
+                data: { "YearCode": $('#Yearcode').val(), "FromDate": FromDate, "ToDate": ToDate },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                     
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#gateno').empty();
+                            $('#gateno').append('<option disabled selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#gateno').append('<option value="' + val.GateNo + '">' + val.GateNo + '</option>');
+                            });
+                        }
+                        else {
+                             
+                            $('#gateno').empty();
+                            $('#gateno').append('<option disabled selected>-Select-</option>');
+                            $.notify("Gate No: " + obj.Result.Message, 'error');
+                        }
+                    }
+                }
+            });
+        }
+
+         
+        var GateEntryId = 0;
+        $('#GateYearCode').change(function () {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateDate")",
+                dataType: "json",
+                data: { "Gateno": $('#gateno').val(), "GateYC": $('#GateYearCode').val() },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            var GateDate = (obj.Result[0].GateDate).split("T")[0];
+                            GateEntryId = obj.Result[0].EntryId;
+                            $('#GateDate').val('');
+                            $('#GateDate').val(GateDate);
+                        }
+                    }
+                }
+            });
+
+            GateMRN = 'Gate';
+            GetGateDetail();
+            FillAllDetail();
+            FillStore();
+        });
+
+        function handleInput(inputElement) {
+            var inputValue = $(inputElement).val();
+
+            inputValue = inputValue.replace(/[^0-9.]/g, '');
+
+            var dotCount = inputValue.split('.').length - 1;
+            if (dotCount > 1) {
+                inputValue = inputValue.slice(0, -1);
+            }
+
+            $(inputElement).val(inputValue);
+        }
+
+        function GetGateDetail() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateDetail")",
+                data: { "GateNo": $('#gateno').val(), "GateYc": $('#GateYearCode').val(), "GateEntryId": GateEntryId, "FromDate": $('#FinFromDate').val(), "ToDate": $('#FinToDate').val(), "Flag": "Gate" },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        for (var i = 0; i < obj.Result.length; i++) {
+                            var resultItem = obj.Result[i];
+
+                            for (var key in resultItem) {
+                                if (resultItem[key] === null) {
+                                    resultItem[key] = "";
+                                }
+                            }
+                        }
+                        var html = '';
+                        $('#divReceiveGrid').empty();
+                        var i = 1;
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                html += '<tr>' +
+                                    '<td><input id="PartCode' + i + '" value=' + JSON.stringify(val.PartCode) + ' class="textbox" readonly><input type="hidden" id="ItemCode' + i + '" value=' + val.ItemCode + '></td>' +
+                                    '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly class="textbox"></td>' +
+                                    '<td><input id="RecQty' + i + '" value=' + val.RecQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox" onchange="GateAmount();" oninput="handleInput(this)"></td>' +
+                                    '<td><input id="Unit' + i + '" value=' + val.unit + ' readonly style="width:70px;" class="textbox"></td>' +
+                                    '<td><input id="Rate' + i + '" value=' + val.Rate + ' style="width:60px;" class="textbox" onchange="GateAmount();" oninput="handleInput(this)" onkeyup="ItemRate(' + val.ItemCode + ', this.value);"></td>' +
+                                    '<td><input id="GateAmount' + i + '" value="" class="textbox" style="width:60px;" readonly></td>' +
+                                    '<td><input id="IssuedQty' + i + '" value=' + val.IssueChallanQty + ' style="width:60px;" readonly value="" class="textbox" style="width: 60px;"></td>' +
+                                    '<td><input id="PendQty' + i + '" class=" textbox"value=' + val.PendQty + ' style="width: 60px;" readonly></td>' +
+                                    '<td><select id="Produced' + i + '" style="background-color:#ffd6dd;" class="textbox"><option value="">-Select-</option><option value="Yes" selected>Yes</option><option value="No">No</option></select></td>' +
+                                    '<td><input id="RemarkDetail' + i + '" value="" style="width:120px;" class="textbox"></td>' +
+                                    '<td><input id="GateQty' + i + '" value=' + val.GateQty + ' readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><select id="StoreName' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="StoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +
+                                    '<td><input id="ICEntryId' + i + '" value=' + val.entryid + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="ICYC' + i + '" value=' + val.AgainstChallanyearcode + ' readonly style=`"width:90px;" class="textbox"></td>' +
+                                    '<td><input class="textbox" style="width:120px;" id="ICNo' + i + '" value=' + val.AgainstChallanNo + ' readonly></td>' +
+                                    '<td><input id="PendToIssue' + i + '" value="" readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><input id="BatchNo' + i + '" value=' + JSON.stringify(val.batchno1) + ' readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><input id="UniqueBatchNo' + i + '" value=' + JSON.stringify(val.uniquebatchno1) + ' readonly class="textbox"></td>' +
+                                    '<td><input id="ItemSize' + i + '" style="width:100px;" class="textbox" value=' + val.ItemSize + '></td>' +
+                                    '<td><input id="AltUnit' + i + '" readonly style="width:100px;" class="textbox" value=' + val.altunit + '></td>' +
+                                    '<td><input id="AltQty' + i + '" readonly style="width:100px;" class="textbox" value=' + val.altqty + '></td>' +
+                                    '<td><input id="PONO' + i + '" readonly style="width:100px;" class="textbox" value=' + val.PONo + '></td>' +
+                                    '<td><input id="PoYC' + i + '" readonly style="width:100px;" class="textbox" value=' + val.POYearCode + '></td>' +
+                                    '<td><input id="PODate' + i + '" readonly style="width:100px;" class="textbox" value=' + val.PODate + '></td>' +
+                                    '<td><input id="SchNo' + i + '" readonly style="width:100px;" class="textbox" value=' + val.SchNo + '></td>' +
+                                    '<td><input id="SchDate' + i + '" readonly style="width:100px;" class="textbox" value=""></td>' +
+                                    '<td><input id="SchYC' + i + '" readonly style="width:100px;" class="textbox" value=' + val.SchYearCode + '></td>' +
+                                    '</tr>';
+                                i++;
+                            });
+                            $('#divReceiveGrid').append(html);
+                            GateAmount();
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function ItemRate(ItemCode, Rate) {
+            var Rowcount = $('#divReceiveGrid tr').length;
+            for (var i = 1; i <= Rowcount; i++) {
+                if ($('#ItemCode' + i).val() == ItemCode) {
+                    $('#Rate' + i).val(parseInt(Rate));
+                } else {
+                    // $('#Rate'+i).val(0);
+                }
+            }
+        }
+
+        function FillAllDetail() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillAlltDetail")",
+                dataType: "json",
+                data: { "Gateno": $('#gateno').val(), "GateYC": $('#GateYearCode').val() },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#AccountCode').prop("disabled", false);
+                            $('#DocTypeCode').prop("disabled", false);
+                            $('#AccountCode').empty();
+                            $('#AccountCode').append('<option value="" disabled selected>-Select-</option>');
+                            $('#DocTypeCode').empty();
+                            $('#DocTypeCode').append('<option value="" disabled selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#AccountCode').append('<option value="' + val.AccountCode + '" selected>' + val.Account_Name + '</option>');
+                                $('#DocTypeCode').append('<option value="' + val.docTypeId + '" selected>' + val.DocName + '</option>');
+                            });
+                            $('#TransPort').val('');
+                            $('#TransPort').val(obj.Result[0].Transporter);
+                            $('#TruckNo').val('');
+                            $('#TruckNo').val(obj.Result[0].Truck);
+                            $('#TransPort').val('');
+                            $('#TransPort').val(obj.Result[0].Transporter);
+                            $('#InvoiceNo').val('');
+                            $('#InvoiceNo').val(obj.Result[0].Invoiceno);
+                             $('#ChallanNo').val('');
+                            $('#ChallanNo').val(obj.Result[0].ChallanNo);
+                            $('#AccountCode').prop("readonly", true);
+                            $('#DocTypeCode').prop("readonly", true);
+                        }
+                    }
+                }
+            });
+        }
+
+        function GateAmount() {
+            var Rowcount = $('#divReceiveGrid tr').length;
+            var Amount = 0;
+            for (var i = 1; i <= Rowcount; i++) {
+                Amount = $('#RecQty' + i).val() * $('#Rate' + i).val();
+                $('#GateAmount' + i).val(Amount);
+            }
+        }
+
+        $('#gateno').change(function () {
+           // alert("Change event triggered!");
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateYear")",
+                dataType: "json",
+                data: { "Gateno": $('#gateno').val(), "FromDate": $('#FinFromDate').val(), "ToDate": $('#FinToDate').val(), "yearcode": $('#Yearcode').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#GateYearCode').empty();
+                            $('#GateYearCode').append('<option value="" disabled selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#GateYearCode').append('<option value="' + val.YearCode + '">' + val.YearCode + '</option>');
+                            });
+                        }
+                        else {
+                            $('#GateYearCode').empty();
+                            $('#GateYearCode').append('<option disabled selected>-Select-</option>');
+                        }
+                    }
+                }
+            });
+        });
+
+        function FillMRNYC() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMRNYear")",
+                dataType: "json",
+                data: { "MRNNO": $('#MRNNo').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#AgainstMRNYearCode').empty();
+                            $('#AgainstMRNYearCode').append('<option value="" disabled selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#AgainstMRNYearCode').append('<option value="' + val.YearCode + '">' + val.YearCode + '</option>');
+                            });
+                        }
+                        else {
+                            $('#AgainstMRNYearCode').empty();
+                            $('#AgainstMRNYearCode').append('<option disabled selected>-Select-</option>');
+                        }
+                    }
+                }
+            });
+        }
+        var GateMRN = '';
+        var MRNEntryId = 0;
+        $('#AgainstMRNYearCode').change(function () {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMRNDate")",
+                dataType: "json",
+                async: false,
+                data: { "MRNNO": $('#MRNNo').val(), "MRNYC": $('#AgainstMRNYearCode').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            MRNEntryId = obj.Result[0].EntryId;
+                            $('#MRNDate').val('');
+                            $('#MRNDate').val(obj.Result[0].MRNDate);
+                        }
+                    }
+                }
+            });
+            GateMRN = 'MRN';
+            GetMRNDetail();
+            FillAllDetail();
+            FillStore();
+        });
+
+        function StoreChange(i) {
+
+            var Store = $('#StoreName' + i).val();
+            if (SameStore) {
+                var RowCount = $('#divReceiveGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#StoreName' + j).val(Store);
+                }
+            }
+        }
+
+        function GetMRNDetail() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateDetail")",
+                data: { "GateNo": $('#MRNNo').val(), "GateYc": $('#AgainstMRNYearCode').val(), "GateEntryId": MRNEntryId, "FromDate": $('#FinFromDate').val(), "ToDate": $('#FinToDate').val(), "Flag": "MRN" },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        var html = '';
+                        $('#divReceiveGrid').empty();
+                        var i = 1;
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                html += '<tr>' +
+                                    '<td><input id="PartCode' + i + '" value=' + JSON.stringify(val.PartCode) + ' class="textbox" readonly><input type="hidden" id="ItemCode' + i + '" value=' + val.ItemCode + '></td>' +
+                                    '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly class="textbox"></td>' +
+                                    '<td><input id="RecQty' + i + '" value=' + val.RecQty + ' style="width:90px;background-color:#ffd6dd;" class="textbox" onchange="GateAmount();" oninput="handleInput(this)"></td>' +
+                                    '<td><input id="Unit' + i + '" value=' + val.unit + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="Rate' + i + '" value=' + val.Rate + ' style="width:90px;" class="textbox" onchange="GateAmount();" oninput="handleInput(this)" onkeyup="ItemRate(' + val.ItemCode + ', this.value);"></td>' +
+                                    '<td><input id="GateAmount' + i + '" value="" class="textbox" readonly></td>' +
+                                    '<td><input id="IssuedQty' + i + '" value=' + val.IssueChallanQty + ' readonly value="" class="textbox" style="width: 60px;"></td>' +
+                                    '<td><input id="PendQty' + i + '" class=" textbox"value=' + val.PendQty + ' style="width: 60px;" readonly></td>' +
+                                    '<td><select id="Produced' + i + '" style="background-color:#ffd6dd;" class="textbox"><option value="">-Select-</option><option value="Yes" selected>Yes</option><option value="No">No</option></select></td>' +
+                                    '<td><input id="RemarkDetail' + i + '" value="" style="width:120px;" class="textbox"></td>' +
+                                    '<td><input id="GateQty' + i + '" value=' + val.GateQty + ' readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><select id="StoreName' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="StoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +
+                                    '<td><input id="ICEntryId' + i + '" value=' + val.entryid + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="ICYC' + i + '" value=' + val.AgainstChallanyearcode + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input class="textbox" style="width:60px;" id="ICNo' + i + '" value=' + val.AgainstChallanNo + '></td>' +
+                                    '<td><input id="PendToIssue' + i + '" value="" readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><input id="BatchNo' + i + '" value=' + JSON.stringify(val.batchno1) + ' readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><input id="UniqueBatchNo' + i + '" value=' + JSON.stringify(val.uniquebatchno1) + ' readonly class="textbox"></td>' +
+                                    '<td><input id="ItemSize' + i + '" style="width:100px;" class="textbox" value=' + val.ItemSize + '></td>' +
+                                    '<td><input id="AltUnit' + i + '" readonly style="width:100px;" class="textbox" value=' + val.altunit + '></td>' +
+                                    '<td><input id="AltQty' + i + '" readonly style="width:100px;" class="textbox" value=' + val.altqty + '></td>' +
+                                    '<td><input id="PONO' + i + '" readonly style="width:100px;" class="textbox" value=' + val.PONo + '></td>' +
+                                    '<td><input id="PoYC' + i + '" readonly style="width:100px;" class="textbox" value=' + val.POYearCode + '></td>' +
+                                    '<td><input id="PODate' + i + '" readonly style="width:100px;" class="textbox" value=' + val.PODate + '></td>' +
+                                    '<td><input id="SchNo' + i + '" readonly style="width:100px;" class="textbox" value=' + val.SchNo + '></td>' +
+                                    '<td><input id="SchDate' + i + '" readonly style="width:100px;" class="textbox" value=""></td>' +
+                                    '<td><input id="SchYC' + i + '" readonly style="width:100px;" class="textbox" value=' + val.SchYearCode + '></td>' +
+                                    '</tr>';
+                                i++;
+                            });
+                            $('#divReceiveGrid').append(html);
+                            GetAmount();
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+}

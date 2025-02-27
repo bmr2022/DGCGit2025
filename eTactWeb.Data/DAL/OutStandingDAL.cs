@@ -1,0 +1,144 @@
+﻿using eTactWeb.DOM.Models;
+using eTactWeb.Services.Interface;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
+
+namespace eTactWeb.Data.DAL
+{
+    public class OutStandingDAL
+    {
+        private readonly IDataLogic _IDataLogic;
+        private readonly string DBConnectionString = string.Empty;
+        private IDataReader? Reader;
+
+        public OutStandingDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        {
+            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _IDataLogic = iDataLogic;
+        }
+
+        public async Task<ResponseResult> GetPartyName(string outstandingType, string TillDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillAccountName"));
+                SqlParams.Add(new SqlParameter("@outstandingType", outstandingType));
+                //SqlParams.Add(new SqlParameter("Debtors", underGroup));
+                SqlParams.Add(new SqlParameter("@TillDate", TillDate));
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpLedgerOutstanding", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+        }
+
+        public async Task<ResponseResult> GetGroupName(string outstandingType, string TillDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillGroupName"));
+                SqlParams.Add(new SqlParameter("@outstandingType", outstandingType));
+                //SqlParams.Add(new SqlParameter("Debtors", underGroup));
+                SqlParams.Add(new SqlParameter("@TillDate", TillDate));
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpLedgerOutstanding", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+        }
+
+
+        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string AccountNamwList,string ShowOnlyApprovedBill)
+        {
+            var resultList = new OutStandingModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("AccSpLedgerOutstanding", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+
+                    command.Parameters.AddWithValue("@Flag", "Outstanding");
+                    command.Parameters.AddWithValue("@outstandingType", outstandingType);
+                    command.Parameters.AddWithValue("@TillDate", TillDate);
+                    command.Parameters.AddWithValue("@Groupname", GroupName);
+                    command.Parameters.AddWithValue("@AccountNamwList", AccountNamwList);
+                    command.Parameters.AddWithValue("@ShowOnlyApprovedBill", ShowOnlyApprovedBill);
+
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+                
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        resultList.OutStandingGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                         select new OutStandingModel
+                                                         {
+                                                             LedgerDescription = row["LedgerDescription"] == DBNull.Value ? string.Empty : row["LedgerDescription"].ToString(),
+                                                             VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
+
+                                                             VoucherDate = row["VoucherDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["VoucherDate"]).ToString("dd-MM-yyyy"),
+                                                             VoucherType = row["VoucherType"] == DBNull.Value ? string.Empty : row["VoucherType"].ToString(),
+                                                             DrAmt = row["DrAmt"] == DBNull.Value ? string.Empty : row["DrAmt"].ToString(),
+                                                             CrAmt = row["CrAmt"] == DBNull.Value ? string.Empty : row["CrAmt"].ToString(),
+                                                             BillAmt = row["BillAmt"] == DBNull.Value ? string.Empty : row["BillAmt"].ToString(),
+                                                             PendingAmt = row["PendingAmt"] == DBNull.Value ? string.Empty : row["PendingAmt"].ToString(),
+                                                             DueDate = row["DueDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["DueDate"]).ToString("dd-MM-yyyy"),
+
+                                                             OverDueDays = row["OverDueDays"] == DBNull.Value ? string.Empty : row["OverDueDays"].ToString(),
+                                                             TotBalanceAmt = row["TotBalanceAmt"] == DBNull.Value ? string.Empty : row["TotBalanceAmt"].ToString(),
+                                                             AccEntryId = row["AccEntryId"] == DBNull.Value ? string.Empty : row["AccEntryId"].ToString(),
+                                                             AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
+                                                             SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
+                                                            
+
+                                                         }).ToList();
+                    }
+                
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log it or rethrow)
+                throw new Exception("Error fetching BOM tree data.", ex);
+            }
+
+            return resultList;
+        }
+    }
+}

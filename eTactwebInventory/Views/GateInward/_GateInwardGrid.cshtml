@@ -1,0 +1,74 @@
+﻿@model eTactWeb.DOM.Models.GateInwardModel
+
+@*<input type="hidden" asp-for="itemnetamount" class="form-control" />
+*@
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        <tr class="small @item.PoNo" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.ModeOfTransport == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.PoNo</td>
+            <td>@item.PoYear</td>
+            <td>@item.SchNo</td>
+            <td>@item.SchYearCode</td>
+            <td>@item.ItemName</td>
+            <td>@item.PartCode</td>
+            <td>@item.Unit</td>
+            <td id="Qty-@item.SeqNo">@item.Qty</td>
+            <td id="Rate-@item.SeqNo">@item.Rate</td>
+            <td>@item.AltUnit</td>
+            <td>@item.AltQty</td>
+            <td>@item.ItemSize</td>
+            <td>@item.ItemColor</td>
+            <td>@item.Remarks</td>
+            <td>@item.ProcessName</td>
+            <td>@item.SaleBillNo</td>
+            <td>@item.SaleBillYearCode</td>
+            <td>@item.SaleBillQty</td>
+            <td>@item.AgainstChallanNo</td>
+            <td>@item.AgainstChallanYearcode</td>
+            <td>@item.ChallanQty</td>
+            <td>@item.SupplierBatchNo</td>
+            <td>@item.ShelfLife</td>
+            <td>@item.NoOfBoxes</td>
+        </tr>
+    }
+}

@@ -1,0 +1,239 @@
+﻿@model eTactWeb.DOM.Models.AccPurchaseRejectionModel
+<div class="table-responsive" style="max-height:150px;">
+    <table class="table table-hover table-bordered table-striped" id="poTable">
+        <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
+            <tr id="headerRow">
+                <th data-columnno="1" data-sortorder="asc" class="sortCol position-relative">
+                    <span class="sort-icon p-2">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>
+                    Doc Head
+                    <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                        <input asp-for="DA" class="form-check-input mt-2" type="checkbox" role="switch" />
+                        <label class="form-check-label ms-2">Show All</label>
+                    </div>
+                </th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol" style="color:yellow">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Part Code
+                </th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol" style="color:yellow">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Item Name
+                    <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                        <input asp-for="ItemSA" class="form-check-input" type="checkbox" role="switch" />Show All
+                    </div>
+
+                </th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol" style="color:darkblue">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>From Bill Date
+                </th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol" style="color:darkblue">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>To Bill Date
+                </th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Hsn No
+                </th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol" style="color:yellow">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Bill  Qty*
+                </th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol" style="color:yellow">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Bill Rate*
+                </th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol" style="color:yellow">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Rej Qty*
+                </th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol" style="color:yellow">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Unit*
+                </th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol" style="color:yellow">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>CRN Rate*
+                </th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol" style="color:yellow">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Item Amount*
+                </th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Disc Per
+                </th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Disc Amt
+                </th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Store Name
+                </th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Cost Center
+                </th>
+
+                <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Alt Qty
+                </th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Alt Unit
+                </th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Alt Rate
+                </th>
+
+                <th data-columnno="19" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Unit Rate
+                </th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>No Of Case
+                </th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Item Size
+                </th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Item Description
+                </th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Remark
+                </th>
+            </tr>
+        </thead>
+        <tbody id="divInputPurchaseRejectionList">
+        <td>
+            <select asp-for="DocAccountCode" class="form-control" style="width:180px;">
+                <option value="0">-Select-</option>
+            </select>
+        </td>
+        <td>
+            <select asp-for="PartCode" class="form-control" style="width:200px;">
+                <option value="0">-Select-</option>
+            </select>
+        </td>
+        <td>
+            <select asp-for="ItemCode" class="form-control" style="width:200px;">
+                <option value="0">-Select-</option>
+            </select>
+        </td>
+        <td>
+            <input id="fromBillDate" class="form-control" />
+        </td>
+        <td>
+            <input id="toBillDate" class="form-control" />
+        </td>
+        <td>
+            <input asp-for="HSNNo" class="form-control" />
+        </td>
+        <td>
+            <input asp-for="BillQty" class="form-control" readonly />
+        </td>
+        <td>
+            <input asp-for="BillRate" class="form-control" readonly />
+        </td>
+        <td>
+            <input asp-for="RejectedQty" class="form-control" onchange="CalculateItemAmount();" />
+        </td>
+        <td>
+            <input asp-for="Unit" class="form-control" readonly />
+        </td>
+        <td>
+            <input asp-for="PRRate" class="form-control" type="number" min="0" onchange="CalculateItemAmount();" />
+        </td>
+        <td>
+            <input asp-for="ItemAmount" class="form-control" readonly />
+        </td>
+        <td>
+            <input asp-for="DiscountPer" class="form-control" />
+        </td>
+        <td>
+            <input asp-for="DiscountAmt" class="form-control" />
+        </td>
+        <td>
+            <select asp-for="StoreId" class="form-control">
+                <option value="0">-Select-</option>
+            </select>
+        </td>
+        <td>
+            <select asp-for="CostCenterId" class="form-control">
+                <option value="0">-Select-</option>
+            </select>
+        </td>
+
+        <td>
+            <input asp-for="AltQty" class="form-control" />
+        </td>
+        <td>
+            <input asp-for="AltUnit" class="form-control" />
+        </td>
+        <td>
+            <input asp-for="AltRate" class="form-control" />
+        </td>
+        <td>
+            <input asp-for="UnitRate" class="form-control" />
+        </td>
+
+        <td>
+            <input asp-for="NoOfCase" class="form-control" />
+        </td>
+        <td>
+            <input asp-for="ItemSize" class="form-control" />
+        </td>
+        <td>
+            <input asp-for="ItemDescription" class="form-control" />
+        </td>
+        <td>
+            <input asp-for="Remark" class="form-control" />
+        </td>
+        </tbody>
+    </table>
+</div>
+<div class="d-flex">
+    <div class="col-auto mt-3">
+        <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
+            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+        </button>
+    </div>
+
+    <div class="col-auto mt-3">
+        <button type="button" class="btnItemData btn btn-sm btn-outline-danger">
+            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Data
+        </button>
+    </div>
+</div>

@@ -1,0 +1,495 @@
+﻿@model eTactWeb.DOM.Models.HRShiftMasterModel;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="AlternateItemMaster" asp-controller="AlternateItemMaster" method="post" autocomplete="on" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h5>
+                    <strong>HR ShiftMaster Model</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-controller="HRShiftMaster" asp-action="HRShiftMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    Model.Mode = "U";
+                                    <div class="col-auto">
+                                        <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionItemCategory">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Alternate Item Master Detail</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                       <label asp-for="ShiftId" class="form-label">Shift Id</label>
+                                        <input asp-for="ShiftId" class="form-control" readonly />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                        <input asp-for="EntryDate" type="text" class="form-control" readonly />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="YearCode" class="form-label">YearCode</label>
+                                        <input asp-for="YearCode" class="form-control" readonly/>
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ShiftName" class="form-label">Shift Name</label>
+                                        <input asp-for="ShiftName" class="form-control"  />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ShiftCode" class="form-label">Shift Code</label>
+                                        <input asp-for="ShiftCode" class="form-control"  />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:95px;">
+                                        <label asp-for="FromTime" class="form-label">FromTime</label>
+                                        <input asp-for="FromTime" class="form-control" readonly />
+                                   </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:98px;">
+                                        <label asp-for="ToTime" class="form-label">ToTime</label>
+                                        <input asp-for="ToTime" class="form-control" readonly />
+                                   </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="GraceTimeIn" class="form-label">GraceTimeIn (Minutes)</label>
+                                        <input asp-for="GraceTimeIn" id="GraceTimeIn" class="form-control" type="number" min="1" max="60" />
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="GraceTimeOut" class="form-label">GraceTimeOut (Minutes)</label>
+                                        <input asp-for="GraceTimeOut" id="GraceTimeOut" class="form-control" type="number" min="1" max="60" />
+                                    </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Lunchfrom" class="form-label">Lunchfrom</label>
+                                        <input asp-for="Lunchfrom" class="form-control" type="time" step="1" />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Lunchto" class="form-label">Lunchto</label>
+                                        <input asp-for="Lunchto" class="form-control" type="time" step="1" />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="FirstBreakFrom" class="form-label">First Break From</label>
+                                        <input asp-for="FirstBreakFrom" class="form-control" type="time" step="1" />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="FirstBreakTo" class="form-label">FirstBreakTo</label>
+                                        <input asp-for="FirstBreakTo" class="form-control" type="time" step="1" />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="SecondBreakFrom" class="form-label">SecondBreakFrom</label>
+                                        <input asp-for="SecondBreakFrom" class="form-control" type="time" step="1" />
+                                   </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="SecondBreakTo" class="form-label">SecondBreakTo</label>
+                                        <input asp-for="SecondBreakTo" class="form-control" type="time" step="1" />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="CC" class="form-label">CC</label>
+                                        <input asp-for="CC" class="form-control" readonly />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="UID" class="form-label">UID</label>
+                                        <input asp-for="UID" class="form-control" readonly />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ThirdBreakFrom" class="form-label">ThirdBreakFrom</label>
+                                        <input asp-for="ThirdBreakFrom" class="form-control" type="time" step="1" />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="ThirdBreakTo" class="form-label">ThirdBreakTo</label>
+                                        <input asp-for="ThirdBreakTo" class="form-control" type="time" step="1" />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="duration" class="form-label">Duration</label>
+                                        <input asp-for="duration" class="form-control"  />
+                                   </div>
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="ShiftForProdOnly" class="form-label">ShiftForProdOnly</label>
+                                        <select asp-for="ShiftForProdOnly" class="form-select" >
+                                            <option disabled value="">-Select-</option>
+                                            <option value="Yes" selected>Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div> 
+                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="OutDay" class="form-label">OutDay</label>
+                                        <select asp-for="OutDay" class="form-select" >
+                                            <option  value="">-Select-</option>
+                                            <option value="Same">Same</option>
+                                            <option value="NextDay">NextDay</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="ShiftTypeFixRotFlex" class="form-label">ShiftTypeFixRotFlex</label>
+                                        <input asp-for="ShiftTypeFixRotFlex" class="form-control"  />
+                                   </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="ApplicableToEmployeeCategory" class="form-label">ApplicableToEmployeeCategory</label>
+                                        <input asp-for="ApplicableToEmployeeCategory" class="form-control"  />
+                                   </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                        <label asp-for="AttandanceMode" class="form-label">AttandanceMode</label>
+                                        <input asp-for="AttandanceMode" class="form-control"  />
+                                   </div>
+                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="MinimumHourRequiredForFullDay" class="form-label">MinimumHourRequiredForFullDay</label>
+                                        <input asp-for="MinimumHourRequiredForFullDay" class="form-control"  />
+                                   </div>
+                                   
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress my-2 mb-3" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+           
+           
+           @*  <div class="accordion-item">
+                <h2 class="accordion-header" id="OtherGrid">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                    </button>
+                </h2>
+                <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                    <div class="accordion-body">
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="row g-2 gx-3" id="_ItemGrid">
+
+                            @if (Model.Mode != "U" && Model.Mode != "V")
+                            {
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="EntryByEmpId" class="form-label">Created By</label>
+                                    <input type="hidden" asp-for="EntryByEmpId" class="form-control" readonly />
+                                    <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="EntryDate" class="form-label">Created On</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                            }
+                           
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                <input asp-for="EntryDate" class="form-control" readonly />
+                            </div>
+                            @if (Model.Mode == "U" || Model.Mode == "V")
+                            {
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="EntryByEmpId" class="form-label">Created By</label>
+                                    <input type="hidden" asp-for="EntryByEmpId" class="form-control" readonly />
+                                    <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="EntryDate" class="form-label">Created On</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="UpdatedById" class="form-label" style="width:150px">Updated By</label>
+                                    <input type="hidden" asp-for="UpdatedByEmpName" class="form-control" readonly />
+                                    <input asp-for="UpdatedById" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="UpdatedOn" class="form-label">Updated On</label>
+                                    <input asp-for="UpdatedOn" class="form-control" readonly />
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div> *@
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    <div class="card-header card-headerBG text-light bg-gradient">
+                        <h5>
+                            <strong>HrShift Master</strong>
+
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        PRINT
+                                    </button>
+                                </div>
+                                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                <a asp-controller="HRShiftMaster" asp-action="HRShiftMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                    Dashboard
+                                </a>
+                               
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                    {
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode == "U")
+                                        {
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                    <i class="fa-solid fa-chevron-circle-right"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <script>
+
+        $('.submitBTN').click(function (e) {
+            e.preventDefault();
+            $('form').submit();
+        });
+
+
+        $(document).ready(function () {
+
+            //$('#AlternatePartyName').rules("remove", "required");
+            $('#ShiftForProdOnly').select2();
+            $('#OutDay').select2();
+
+            let today = new Date();
+            let formattedDate = today.getDate() + '/' + today.toLocaleString('en-us', { month: 'short' }).toLowerCase() + '/' + today.getFullYear();
+
+            $('#EntryDate').val(formattedDate);
+          
+            // $('.form-control').on('change', function () {
+            //     let fromTime = $('#ThirdBreakFrom').val();
+            //     let toTime = $('#ThirdBreakTo').val();
+
+            //     if (fromTime && toTime && fromTime >= toTime) {
+            //         $.notify('ThirdBreakTo should be greater than ThirdBreakFrom!','error');
+            //         $('#ThirdBreakTo').val(''); 
+            //     }
+            // });
+            function validateTime(fromSelector, toSelector) {
+                let fromTime = $(fromSelector).val();
+                let toTime = $(toSelector).val();
+
+                if (fromTime && toTime) {
+                    let fromDate = new Date(`1970-01-01T${fromTime}`);
+                    let toDate = new Date(`1970-01-01T${toTime}`);
+
+                    if (fromDate >= toDate) {
+                        $.notify(`${toSelector.replace('#', '')} should be greater than ${fromSelector.replace('#', '')}`,'error');
+                        $(toSelector).val(''); // Clear incorrect value
+                    }
+                }
+            }
+            $('.form-control').on('change', function () {
+                validateTime('#FirstBreakFrom', '#FirstBreakTo');
+                validateTime('#SecondBreakFrom', '#SecondBreakTo');
+                validateTime('#Lunchfrom', '#Lunchto');
+                validateTime('#ThirdBreakFrom', '#ThirdBreakTo');
+            });
+            $('.form-control').on('input', function () {
+                let value = $(this).val();
+                let regex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+
+                if (!regex.test(value)) {
+                    $.notify('Invalid time format! Please enter time in HH:mm:ss format.','error');
+                    $(this).val('');
+                }
+            });
+            //GraceTimein------
+            function validateMinutes(input) {
+                let value = $(input).val();
+                let regex = /^([1-5]?[0-9]|60)$/; // Only allows numbers from 1 to 60
+
+                if (!regex.test(value)) {
+                    $.notify('Invalid input! Value should be between 1 and 60 minutes.','error');
+                    $(input).val('');
+                }
+            }
+            $('#GraceTimeIn').on('input', function () {
+                validateMinutes(this);
+            });
+
+           
+            $('#GraceTimeOut').on('input', function () {
+                validateMinutes(this);
+            });
+
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+            }
+
+            // Trigger AltItemName and AltPartCode retrieval on change
+          
+            if ($('#Mode').val() !== 'U' && $('#Mode').val() !== 'V') {
+                GetShiftId();
+            }
+        });
+       
+       
+        function TotalNoOfRows() {
+            var Row = $('#divStockGrid tr').length;
+            var tdCount = $('#divStockGrid tr td').length;
+            if (tdCount >= 1) {
+                $('#lblTotalNoOfBelowItems').text(Row);
+            } else {
+                $('#lblTotalNoOfBelowItems').text(0);
+            }
+        }
+
+        function CheckBeforeUpdate() {
+            $.ajax({
+                url: '@Url.Action("CheckBeforeUpdate")',
+                type: "POST",
+                data: { "Type": $('#Entry_id').val() },
+                success: function (data) {
+                    console.log("success");
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result != null) {
+                            if (obj.Result.Table[0].Column1 > 0) {
+                                $.notify("You cannot update this Category as Item with this category already exists", "error");
+                            }
+                            else {
+                                $('form').submit();
+                            }
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetShiftId() {
+            $.ajax({
+                url: '@Url.Action("GetShiftId", "HRShiftMaster")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                        $('#ShiftId').val(obj.Result[0].EntryId || 0);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load opening amount.');
+                }
+            });
+        }
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+            sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
+            sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+            sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+
+
+    </script>
+
+
+}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+

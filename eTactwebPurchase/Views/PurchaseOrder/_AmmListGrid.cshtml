@@ -1,0 +1,358 @@
+﻿@model eTactWeb.DOM.Models.PODashBoard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    int yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+<div class="table-responsive" style="max-height:350px;">
+    @if (Model.SummaryDetail == "Summary")
+    {
+        <table class="table table-bordered TbCss text-nowrap mb-0" id="PODashboardGrid">
+            <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashPOThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th>Action</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Address</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONo</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AmmNo</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AmmEffDate</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PODate</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WEF</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POCloseDate</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OrderType</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POType</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POTypeServeItem</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Amt</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Net Amt</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry By</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Terms</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Payment Terms</th>
+                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By Emp</th>
+                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated On</th>
+
+                </tr>
+            </thead>
+            <tbody id="divDashboardGridMain">
+                @{
+                    var @Cntr = 0;
+                    if (Model.PODashboard == null || Model.PODashboard.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="18" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.PODashboard)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr id="approvedRow-@Cntr">
+                                <td class="FWB">
+                                    @Cntr
+                                    <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
+                                    <input type="hidden" id="fLevelApproved-@Cntr" value="@item.Approval1Levelapproved" />
+                                    <input type="hidden" id="AmmApproved-@Cntr" value="@item.ApproveAmm" />
+                                    <input type="hidden" id="PoYearCode" value="@item.YearCode" />
+                                </td>
+                                @{
+                                    if (Model.Mode == "Pending")
+                                    {
+                                        @if (yearCode >= item.YearCode)
+                                        {
+                                            <td style="text-align:center;">
+                                                <a class="table-link link-primary" onclick="location.href='@Url.Action("PODetail",new{Mode="POA",ID=item.EntryID,YC=item.YearCode})'">
+                                                    <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                                </a>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td style="text-align:center;">
+                                                <a class="table-link link-primary noCursor">
+                                                    <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                                </a>
+                                            </td>
+                                        }
+                                    }
+                                    if (Model.Mode == "U")
+                                    {
+                                        <td style="text-align:center;">
+                                            <a class="table-link link-primary" onclick="location.href='@Url.Action("PODetail",new{Mode="PAU",ID=item.EntryID,YC=item.YearCode})'">
+                                                <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            </a>
+                                        </td>
+                                    }
+                                    if (Model.Mode == "Completed")
+                                    {
+                                        <td style="text-align:center;">
+                                            <a class="table-link link-primary" id="AmmCompleteView-@Cntr" onclick="location.href='@Url.Action("ViewPOCompleted",new{Mode="POC",ID=item.EntryID,YC=item.YearCode,PONO=item.PONO})'">
+                                                <i class="fa-regular fa-eye" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            </a>
+                                        </td>
+                                    }
+                                }
+                                <td class="FWB">@item.EntryID</td>
+                                <td class="FWB">@item.YearCode</td>
+                                <td class="FWB">@item.VendorName</td>
+                                <td>@item.VendorAddress</td>
+                                <td>@item.EntryDate?.Split(" ")[0]</td>
+                                <td>@item.PONo</td>
+                                <td>@item.AmmNo</td>
+                                <td>@item.AmmEffDate?.Split(" ")[0]</td>
+                                <td>@item.PODate?.Split(" ")[0]</td>
+                                <td>@item.WEF?.Split(" ")[0]</td>
+                                <td>@item.POCloseDate?.Split(" ")[0]</td>
+                                <td>@item.OrderType</td>
+                                <td>@item.POType</td>
+                                <td>@item.POTypeServItem</td>
+                                <td>@item.Currency</td>
+                                <td>@item.OrderAmt</td>
+                                <td>@item.OrderNetAmt</td>
+                                <td>@item.ActualEntryBy</td>
+                                <td>@item.Branch</td>
+                                <td>@item.DeliveryTerms</td>
+                                <td>@item.PaymentTerms</td>
+                                <td>@item.UpdatedByName</td>
+                                <td>@item.UpdatedOn?.Split(" ")[0]</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <table class="table table-bordered TbCss text-nowrap mb-0" id="PODashboardGrid">
+            <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashPOThead">
+                <tr>
+                    <th>Sr#</th>
+                    <th>Action</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Address</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONo</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AmmNo</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AmmEffDate</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PODate</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WEF</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POCloseDate</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OrderType</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POType</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POTypeServeItem</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OldRate</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POQty</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendQty</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Per</th>
+                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Rs</th>
+                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt POQty</th>
+                    <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend AltQty</th>
+                    <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                    <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Additional Rate</th>
+                    <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
+                    <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol LimitQty</th>
+                    <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TolLimit Per</th>
+                    <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description</th>
+                    <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Amt</th>
+                    <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Net Amt</th>
+                    <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry By</th>
+                    <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                    <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Terms</th>
+                    <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Payment Terms</th>
+                    <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By Emp</th>
+                    <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated On</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="divDashboardGridMain">
+                @{
+                    var @Cntr = 0;
+                    if (Model.PODashboard == null || Model.PODashboard.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="18" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.PODashboard)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr id="approvedRow-@Cntr">
+                                <td class="FWB">
+                                    @Cntr
+                                    <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
+                                    <input type="hidden" id="fLevelApproved-@Cntr" value="@item.Approval1Levelapproved" />
+                                    <input type="hidden" id="AmmApproved-@Cntr" value="@item.ApproveAmm" />
+                                    <input type="hidden" id="PoYearCode" value="@item.YearCode" />
+                                </td>
+                                @{
+                                    if (Model.Mode == "Pending")
+                                    {
+                                        @if (yearCode >= item.YearCode)
+                                        {
+                                            <td style="text-align:center;">
+                                                <a class="table-link link-primary" onclick="location.href='@Url.Action("PODetail",new{Mode="POA",ID=item.EntryID,YC=item.YearCode})'">
+                                                    <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                                </a>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td style="text-align:center;">
+                                                <a class="table-link link-primary noCursor">
+                                                    <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                                </a>
+                                            </td>
+                                        }
+                                    }
+                                    if (Model.Mode == "U")
+                                    {
+                                        <td style="text-align:center;">
+                                            <a class="table-link link-primary" onclick="location.href='@Url.Action("PODetail",new{Mode="PAU",ID=item.EntryID,YC=item.YearCode})'">
+                                                <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            </a>
+                                        </td>
+                                    }
+                                    if (Model.Mode == "Completed")
+                                    {
+                                        <td style="text-align:center;">
+                                            <a class="table-link link-primary" id="AmmCompleteView-@Cntr" onclick="location.href='@Url.Action("ViewPOCompleted",new{Mode="POC",ID=item.EntryID,YC=item.YearCode,PONO=item.PONO})'">
+                                                <i class="fa-regular fa-eye" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            </a>
+                                        </td>
+                                    }
+                                }
+                                <td class="FWB">@item.EntryID</td>
+                                @*<td class="FWB">@item.AmmNo</td>
+                                <td class="FWB">@item.PONo</td>*@
+                                @*@if (item.PODate != null)
+                                //{
+                                //    <td>@item.PODate.Split(" ")[0]</td>
+                                //}
+                                //else
+                                //{
+                                //    <td>@item.PODate</td>
+                                //}
+                                //<td>@item.POType</td>
+                                //<td>@item.POFor</td>
+                                //@if (item.WEF != null)
+                                //{
+                                //    <td>@item.WEF.Split(" ")[0]</td>
+                                //}
+                                //else
+                                //{
+                                //    <td>@item.WEF</td>
+                                //}
+                                //<td>@item.FOC</td>
+                                //@if (item.POCloseDate != null)
+                                //{
+                                //    <td>@item.POCloseDate.Split(" ")[0]</td>
+                                //}
+                                //else
+                                //{
+                                //    <td>@item.POCloseDate</td>
+                                //}*@
+                                <td>@item.YearCode</td>
+                                <td>@item.VendorName</td>
+                                <td>@item.VendorAddress</td>
+                                <td>@item.EntryDate?.Split(" ")[0]</td>
+                                <td>@item.PONo</td>
+                               @* <td>@item.orderno</td> *@
+                                <td>@item.AmmNo</td>
+                                <td>@item.AmmEffDate?.Split(" ")[0]</td>
+                                <td>@item.PODate?.Split(" ")[0]e</td>
+                                <td>@item.WEF?.Split(" ")[0]</td>
+                                <td>@item.POCloseDate?.Split(" ")[0]</td>
+                                <td>@item.OrderType</td>
+                                <td>@item.POType</td>
+                                <td>@item.POTypeServItem</td>
+                                <td>@item.Currency</td>
+                                <td>@item.ItemName</td>
+                                <td>@item.Rate</td>
+                                <td>@item.OldRate</td>
+                                <td>@item.POQty</td>
+                                <td>@item.PendQty</td>
+                                <td>@item.Unit</td>
+                                <td>@item.DiscPer</td>
+                                <td>@item.DiscRs</td>
+                                <td>@item.Amount</td>
+                                <td>@item.AltPOQty</td>
+                                <td>@item.PendAltQty</td>
+                                <td>@item.AltUnit</td>
+                                <td>@item.AdditionalRate</td>
+                                <td>@item.HsnNo</td>
+                                <td>@item.TolLimitQty</td>
+                                <td>@item.TolLimitPercentage</td>
+                                <td>@item.Description</td>
+                                <td>@item.OrderAmt</td>
+                                <td>@item.OrderNetAmt</td>
+                                <td>@item.ActualEntryBy</td>
+                                <td>@item.Branch</td>
+                                <td>@item.DeliveryTerms</td>
+                                <td>@item.PaymentTerms</td>
+                                <td>@item.UpdatedByName</td>
+                                <td>@item.UpdatedOn?.Split(" ")[0]</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    }
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #PODashboardGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashPOThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

@@ -1,0 +1,370 @@
+﻿@model eTactWeb.DOM.Models.ItemMasterModel
+
+@{
+    ViewData["Title"] = Model.Item_Code == 0 ? "Item Master" : "Update/Edit Item Master";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="rounded shadow-lg">
+    <form enctype="multipart/form-data" autocomplete="off" class="form-horizontal">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Act">
+        <input type="hidden" asp-for="ImageURL">
+        <input type="hidden" asp-for="Mode">
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    @ViewData["Title"] - @Model.YearCode
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                        </a>*@
+                        <div class="col-auto">
+                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                            <a class="btn btn-secondary btn-sm" onclick="ExportItems();">
+                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                IMPORT FORMAT
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                            <a class="btn btn-secondary btn-sm" onclick="UploadButton();">
+                                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                            <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            IMPORT
+                                        </a>
+                        </div>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="window.location.reload()">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button class="btn btn-primary btn-sm" id="BtnSubmit" onclick="SubmitData(event);">
+                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <div class="card rounded shadow-lg">
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionAccountMaster">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_BasicParameter">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_BasicParameter">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Basic Parameter</strong>
+                            </button>
+                        </h2>
+                        <div id="B_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicParameter">
+                            <div class="accordion-body">
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <div class="table-responsive" style="max-height:350px;">
+                                            <table class="table table-hover table-bordered table-striped" id="itemtable">
+                                                <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap">
+                                                    <tr id="headerRow">
+                                                        <th>Action</th>
+                                                        <th>Part Code</th>
+                                                        <th>Item Name</th>
+                                                        <th>Unit</th>
+                                                        <th>HSN No</th>
+                                                        <th>Item Group</th>
+                                                        <th>Group Code</th>
+                                                        <th>Item Category</th>
+                                                        <th>Category Code</th>
+                                                        <th>Min Level</th>
+                                                        <th>Max Level</th>
+                                                        <th>Stockable</th>
+                                                        <th>WIP stockable</th>
+                                                        <th>Need PO</th>
+                                                        <th>QC Req</th>
+                                                        <th>Std Pkg</th>
+                                                        <th>ItemServAssets</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="divItemList">
+                                                    <partial name="_DisplayExcelData" />
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <center>
+                                        <input class="form-control" type="file" id="ExcelFile" />
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    @*<div class="col-auto">
+                    <a class="btn btn-sm btn-secondary" href="#" onclick="back();">
+                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                    BACK
+                    </a>
+                    </div>*@
+                    <div class="card border-light bg-gradient rounded shadow-lg">
+                        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                            <h4>
+                                @ViewData["Title"] - @Model.YearCode
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                    Dashboard
+                                    </a>*@
+                                    <div class="col-auto">
+                                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                        <a class="btn btn-secondary btn-sm" onclick="ExportItems();">
+                                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                            <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            IMPORT FORMAT
+                                        </a>
+                                    </div>
+                                    <div class="col-auto">
+                                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                        <a class="btn btn-secondary btn-sm" onclick="UploadButton();">
+                                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                            <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            IMPORT
+                                        </a>
+                                    </div>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="window.location.reload()">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                <button class="btn btn-primary btn-sm" id="BtnSubmit" onclick="SubmitData(event);">
+                                                    <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+    {
+    <script>
+         $(document).ready(function () {
+            GetFormRights();
+         });
+        function UploadButton() {
+            var fileInput = $('#ExcelFile');
+            var file = fileInput.prop("files")[0];
+
+            var formData = new FormData();
+            formData.append("excelFile", file);
+             
+            $.ajax({
+                url: "/ItemMaster/UploadExcel",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                     
+                    $('#divItemList').html(result);
+                    //CheckBeforeSubmit();
+                }
+            });
+        }
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("#BtnSubmit").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#BtnSubmit").prop("disabled", true);
+
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+        function CheckBeforeSubmit() {
+            //$.ajax({
+            //    url: "/ItemMaster/UploadExcel",
+            //    type: "POST",
+            //    data: formData,
+            //    processData: false,
+            //    contentType: false,
+            //    success: function (result) {
+            //         
+            //        $('#divItemList').html(result);
+            //        CheckBeforeSubmit();
+            //    }
+            //});
+        }
+
+        function DeleteItemRow(seqNo) {
+            $('.' + seqNo).remove();
+        }
+
+        function SubmitData(e) {
+             
+            var RowCount = $('#divItemList tr').length;
+            var errorCount = parseInt($('#ErrorCntr-' + RowCount).val());
+
+            if (errorCount != 0) {
+                e.preventDefault();
+                $.notify("Error in data can't submit", "error");
+                return false;
+            }
+            else {
+                var ItemData = [];
+                for (let i = 1; i <= RowCount; i++) {
+
+                    ItemData.push({
+                        "PartCode": $('#PartCode-' + i).text(),
+                        "ItemName": $('#ItemName-' + i).text(),
+                        "Unit": $('#Unit-' + i).text(),
+                        "HSNNo": parseInt($('#HsnNo-' + i).text()),
+                        "ItemGroupCode": parseInt($('#ItemgroupCode-' + i).text()),
+                        "ItemCategoryCode": parseInt($('#ItemCatCode-' + i).text()),
+                        "MinLevel": parseInt($('#MinLevel-' + i).text()),
+                        "MaxLevel": parseInt($('#MaxLevel-' + i).text()),
+                        "Stockable": $('#Stockable-' + i).text(),
+                        "WIPStockable": $('#WIPStock-' + i).text(),
+                        "NeedPO": $('#NeedPo-' + i).text(),
+                        "QcReq": $('#QCReq-' + i).text(),
+                        "StdPkg": parseInt($('#StdPkg-' + i).text()),
+                        "ItemServAssets": $('#ItemServAssets-' + i).text()
+                    });
+                }
+            }
+             
+            $.ajax({
+                url: "@Url.Action("AddItemListdata")",
+                type: "POST",
+                data: { model: ItemData },
+                beforeSend: function (xhr) {
+
+                },
+                success: function (data, status, xhr) {
+                    console.log("success");
+
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+
+                //$('.uploadButton').click(function(){
+                //    var fileInput = $('#ExcelFile');
+                //    var file = fileInput.files[0];
+
+                //    var formData = new FormData();
+                //    formData.append("excelFile",file);
+
+                //    $.ajax({
+                //        url: "/ItemMaster/UploadExcel",
+                //        type:"POST",
+                //        data: {excelFile : formData},
+                //        processData:false,
+                //        contentType:false,
+                //        success:function(result){
+                //             
+                //            $('#divItemList').html(result);
+                //        }
+                //    });
+                //})
+
+        function ExportItems() {
+            $('#divItemList').empty();
+            var firstTh = $("#headerRow th:first");
+            //var groupTh = $("#headerRow th:eq(5)");
+            //var catTH = $("#headerRow th:eq(6)");
+            firstTh.remove();
+            $("#headerRow th:eq(5)").remove();
+            $("#headerRow th:eq(6)").remove();
+            var newTh = $("<th>Action</th>");
+
+            let table = $("#itemtable");
+            console.log(table);
+             ;
+            TableToExcel.convert(table[0], {
+                name: `ImportItemsFile.xlsx`,
+                sheet: {
+                    name: 'ImportItemsFile'
+                }
+            });
+             
+            var groupTh=$("<th>Group Code</th>");
+            var catTh=$("<th>Category Code</th>");
+            $("#headerRow").prepend(newTh);
+            $("#headerRow th:eq(6)").before(groupTh);
+            $("#headerRow th:eq(7)").before(catTh);
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+
+}

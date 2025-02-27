@@ -1,0 +1,241 @@
+﻿@model eTactWeb.DOM.Models.PurchaseBillModel
+<style>
+    #poTable {
+        max-height: 400px; /* Adjust as needed */
+        overflow-y: auto;
+    }
+
+    #poThead {
+        max-height: 400px; /* Adjust as needed */
+        overflow-y: auto;
+    }
+
+    /* Set the maximum width for columns */
+    #poTable th {
+        /* max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip; */
+        white-space: nowrap;
+        text-align: center; 
+        line-height: 1; 
+        height: 40px;
+        vertical-align: middle;
+    }
+
+        #poTable th span {
+            display: block; /* Ensures multi-line text behaves consistently */
+        }
+    /* Ensure the columns inside the colgroup have flexible widths */
+    colgroup col {
+        width: auto; /* This allows each column to adjust */
+    }
+
+    td > input {
+        width: -webkit-fill-available;
+    }
+</style>
+
+<table class="table table-hover table-bordered table-striped" style="table-layout: fixed; width: 100%;" id="poTable">
+    <colgroup>
+        @* <col style="width: 50px;"> *@ <!-- Action -->
+        <col style="width: 40px;"> <!-- Seq No -->
+        <col style="width: 145px;"> <!-- Document Name -->
+        <col style="width: 120px;"> <!-- Item Name -->
+        <col style="width: 100px;"> <!-- Part Code -->
+        <col style="width: 70px;"> <!-- HSNNO -->
+        <col style="width: 80px;"> <!-- Bill Qty -->
+        <col style="width: 80px;"> <!-- Rec Qty -->
+        <col style="width: 45px;"> <!-- Unit -->
+        <col style="width: 100px;"> <!-- Bill Rate -->
+        <col style="width: 100px;"> <!-- PO Rate -->
+        <col style="width: 40px;"> <!-- Disc Per -->
+        <col style="width: 100px;"> <!-- Disc Amt -->
+        <col style="width: 100px;"> <!-- Amount -->
+        <col style="width: 60px;"> <!-- Accp Qty -->
+        <col style="width: 60px;"> <!-- Rej Qty -->
+        <col style="width: 60px;"> <!-- Rew Qty -->
+        <col style="width: 60px;"> <!-- Hold Qty -->
+        <col style="width: 50px;"> <!-- No Of Case -->
+        <col style="width: 60px;"> <!-- Alt Rec Qty -->
+        <col style="width: 45px;"> <!-- Alt Unit -->
+        <col style="width: 150px;"> <!-- Rate Including Tax -->
+        <col style="width: 150px;"> <!-- AmtInOtherCurrency -->
+        <col style="width: 150px;"> <!-- Rate Of ConvFactor -->
+        <col style="width: 100px;"> <!-- MRP -->
+        <col style="width: 120px;"> <!-- Parent Code -->
+        <col style="width: 90px;"> <!-- Assess Rate -->
+        <col style="width: 80px;"> <!-- Size -->
+        <col style="width: 90px;"> <!-- Color -->
+        <col style="width: 90px;"> <!-- Model -->
+        <col style="width: 120px;"> <!-- For Department -->
+        <col style="width: 150px;"> <!-- Process Name -->
+        <col style="width: 100px;"> <!-- New Po Rate -->
+        <col style="width: 120px;"> <!-- PO No -->
+        <col style="width: 70px;"> <!-- PO Year Code -->
+        <col style="width: 100px;"> <!-- PO Date -->
+        <col style="width: 120px;"> <!-- Sch No -->
+        <col style="width: 70px;"> <!-- Sch Year Code -->
+        <col style="width: 100px;"> <!-- Sch Date -->
+        <col style="width: 120px;"> <!-- PO Amend No -->
+        <col style="width: 120px;"> <!-- MIRNo -->
+        <col style="width: 70px;"> <!-- MIRYEARCODE -->
+        <col style="width: 100px;"> <!-- MIRDATE -->
+        <col style="width: 120px;"> <!-- Project# -->
+        <col style="width: 100px;"> <!-- ProjectDate -->
+        <col style="width: 70px;"> <!-- ProjectyearCode -->
+        <col style="width: 100px;"> <!-- Against Import Account Code -->
+        <col style="width: 100px;"> <!-- Against Import Invoice No -->
+        <col style="width: 100px;"> <!-- Against Import Year Code -->
+        <col style="width: 100px;"> <!-- Against Import Inv Date -->
+    </colgroup>
+    <thead class="bg-gradient card-headerBG text-light small" id="poThead">
+        <input type="hidden" id="AllowDocNameChange" />
+        <input type="hidden" id="AllowDocNameChangePassWord" />
+        <tr id="headerRow">
+            @* <th>Action</th> *@
+            <th data-columnno="1" data-sortorder="asc" class="sortCol">@* <span style="padding:1px;margin:1px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i></span> *@SNo.</th>
+            <th data-columnno="2" data-sortorder="asc" class="sortCol" style="color:  yellow;">
+                @* <span style="padding:1px;margin:1px" class="sort-icon" >
+                    <i class="fa" aria-hidden="true" ></i> *@
+                </span>Document Name <input id="SHADoc" class="form-check-input" style="margin:0;" type="checkbox" role="switch" />
+            </th>
+            <th data-columnno="3" data-sortorder="asc" class="sortCol" style="color:  yellow;">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Item Name</th>
+            <th data-columnno="4" data-sortorder="asc" class="sortCol" style="color:  yellow;">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Part Code</th>
+            <th data-columnno="5" data-sortorder="asc" class="sortCol" style="color:  yellow;">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@HSNNO</th>
+            <th data-columnno="6" data-sortorder="asc" class="sortCol" style="color:  yellow;">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Bill<br />Qty</th>
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Rec<br />Qty</th>
+            <th data-columnno="8" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Unit</th>
+            <th data-columnno="9" data-sortorder="asc" class="sortCol" style="color:  yellow;">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Bill Rate</th>
+            <th data-columnno="10" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@PO Rate</th>
+            <th data-columnno="11" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Disc<br />Per</th>
+            <th data-columnno="12" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Disc Amt</th>
+            <th data-columnno="13" data-sortorder="asc" class="sortCol" style="color:  yellow;">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Amount</th>
+            <th data-columnno="14" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Accp<br />Qty</th>
+            <th data-columnno="15" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Rej<br />Qty</th>
+            <th data-columnno="16" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Rew<br />Qty</th>
+            <th data-columnno="17" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Hold<br />Qty</th>
+            <th data-columnno="18" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@No Of <br />Case</th>
+            <th data-columnno="19" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Alt Rec<br />Qty</th>
+            <th data-columnno="20" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Alt<br />Unit</th>
+            <th data-columnno="21" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Rate Incl. Tax</th>
+            <th data-columnno="22" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@AmtInOther<br />Currency</th>
+            <th data-columnno="23" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Rate Of<br />ConvFactor</th>
+            <th data-columnno="24" data-sortorder="asc" class="sortCol" style="color:  yellow;">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@MRP</th>
+            <th data-columnno="25" data-sortorder="asc" class="sortCol">
+                @* <span style="padding:1px;margin:1px" class="sort-icon">
+                <i class="fa" aria-hidden="true"></i></span> *@Parent Code
+            </th>
+            <th data-columnno="26" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Assess Rate</th>
+            <th data-columnno="27" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@ Size</th>
+            <th data-columnno="28" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Color</th>
+            <th data-columnno="29" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Model</th>
+            <th data-columnno="30" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@For Department</th>
+            <th data-columnno="31" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Process Name</th>
+            <th data-columnno="32" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@New Po Rate</th>
+            <th data-columnno="33" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@PO No</th>
+            <th data-columnno="34" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@PO Year</th>
+            <th data-columnno="35" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@PO Date</th>
+            <th data-columnno="36" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Sch No</th>
+            <th data-columnno="37" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Sch Year</th>
+            <th data-columnno="38" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Sch<br />Date</th>
+            <th data-columnno="39" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@PO Amend No</th>
+            <th data-columnno="40" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@MIRNo</th>
+            <th data-columnno="41" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@MIRYEAR</th>
+            <th data-columnno="42" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@MIRDATE</th>
+            <th data-columnno="43" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Project#</th>
+            <th data-columnno="44" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@ProjectDate</th>
+            <th data-columnno="45" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Projectyear</th>
+            <th data-columnno="46" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Against Import<br />Account Code</th>
+            <th data-columnno="47" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Against Import<br />Invoice No</th>
+            <th data-columnno="48" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Against Import<br />Year Code</th>
+            <th data-columnno="49" data-sortorder="asc" class="sortCol">@*<span style="padding:1px;margin:1px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>*@Against Import<br />Inv Date</th>
+        </tr>
+    </thead>
+    <tbody id="divPBItemListToAddInGrid">
+        @if (Model.ItemDetailGrid == null)
+        {
+            <tr class="text-center">
+                <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+            </tr>
+        }
+        else
+        {
+            var Cntr = 0;
+            foreach (var item in Model.ItemDetailGrid)
+            {
+                Cntr = Cntr + 1;
+                <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+                    @* <td>
+                        <div id="deleteCursorDiv-@Cntr">
+                            <a class="table-link link-danger" onclick="DeleteFromMemoryGrid(@Cntr)">
+                                <span class="fa-stack">
+                                    <i class="fa fa-square fa-stack-2x"></i>
+                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </td> *@
+                    <td>
+                        <input value="@item.DocTypeID" id="MainItemGrid-DocTypeID-@Cntr" type="hidden" />
+                        <input value="@item.ItemCode" id="MainItemGrid-ItemCode-@Cntr" type="hidden" />
+                        <input value="@item.DepartmentId" id="MainItemGrid-DepartmentId-@Cntr" type="hidden" />
+                        <input value="@item.ProcessId" id="MainItemGrid-ProcessId-@Cntr" type="hidden" />
+                        <input readonly style="" class="styled-input styled-qty" id="MainItemGrid-SeqNo-@Cntr" value="@item.SeqNo" />
+                    </td>
+                    <td onclick="AllowDocNameChange()">
+                        <span onclick="AllowDocNameChange()"><select id="MainItemGrid-DocName-@Cntr" onchange="OnChangeDocName(@Cntr)" style="background-color:yellow;pointer-events: none; width: -webkit-fill-available;" readonly><option value="0" selected>-Select-</option></select></span>
+                    </td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-ItemName-@Cntr" value="@item.Item_Name" /></td>
+                    <td><input style="" class="styled-input styled-qty divPBItemListPartCode" id="MainItemGrid-PartCode-@Cntr" value="@item.PartCode" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-HSNNO-@Cntr" value="@item.HSNNO" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-BillQty-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.BillQty" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-RecQty-@Cntr" value="@item.RecQty" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-unit-@Cntr" value="@item.Unit" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-BillRate-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.BillRate" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-PORate-@Cntr" value="@item.PORate" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-DisPer-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.DisPer" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-DisAmt-@Cntr" onchange="BillRateChange(@Cntr)" value="@item.DisAmt" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-Amount-@Cntr" value="@item.Amount" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AcceptedQty-@Cntr" value="@item.AcceptedQty" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-rejectedQty-@Cntr" value="@item.rejectedQty" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ReworkQty-@Cntr" value="@item.ReworkQty" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-HoldQty-@Cntr" value="@item.HoldQty" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-NoOfCase-@Cntr" value="@item.NoOfCase" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AltRecQty-@Cntr" value="@item.AltRecQty" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AltUnit-@Cntr" value="@item.AltUnit" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-RateIncludingTax-@Cntr" value="@item.RateIncludingTax" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AmtInOtherCurrency-@Cntr" value="@item.AmtInOtherCurrency" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-RateOfConvFactor-@Cntr" value="@item.RateOfConvFactor" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-MRP-@Cntr" value="@item.MRP" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ParentCode-@Cntr" value="@item.ParentCode" title="@item.ParentCode" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AssessRate-@Cntr" value="@item.AssessRate" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ItemSize-@Cntr" value="@item.ItemSize" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ItemColor-@Cntr" value="@item.ItemColor" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ItemModel-@Cntr" value="@item.ItemModel" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ForDepartment-@Cntr" value="@item.ForDepartment" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ProcessName-@Cntr" value="@item.ProcessName" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-NewPoRate-@Cntr" value="@item.NewPoRate" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-pono-@Cntr" value="@item.pono" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-poyearcode-@Cntr" value="@item.poyearcode" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-PODate-@Cntr" value="@item.PODate.ToString()" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-schno-@Cntr" value="@item.schno" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-schyearcode-@Cntr" value="@item.schyearcode" /></td>
+                    <td><input style="" class="styled-input styled-qty" id="MainItemGrid-SchDate-@Cntr" value="@item.SchDate" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-PoAmendNo-@Cntr" value="@item.PoAmendNo" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-MIRNO-@Cntr" value="@item.MIRNO" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-MIRYEARCODE-@Cntr" value="@item.MIRYEARCODE" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-MIRDATE-@Cntr" value="@item.MIRDATE" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ProjectNo-@Cntr" value="@item.ProjectNo" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ProjectDate-@Cntr" value="@item.ProjectDate" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-ProjectyearCode-@Cntr" value="@item.ProjectyearCode" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AgainstImportAccountCode-@Cntr" value="@item.AgainstImportAccountCode" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AgainstImportInvoiceNo-@Cntr" value="@item.AgainstImportInvoiceNo" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AgainstImportYearCode-@Cntr" value="@item.AgainstImportYearCode" /></td>
+                    <td><input readonly style="" class="styled-input styled-qty" id="MainItemGrid-AgainstImportInvDate-@Cntr" value="@item.AgainstImportInvDate" /></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

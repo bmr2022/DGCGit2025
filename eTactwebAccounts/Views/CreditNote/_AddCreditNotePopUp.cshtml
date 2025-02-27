@@ -1,0 +1,113 @@
+﻿@model eTactWeb.DOM.Models.AccCreditNoteModel
+
+<div class="modal fade" id="addCreditNotePopupModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="d-flex gap-2 justify-content-between mb-2">
+                                        <div class="d-flex me-2">
+                                            <div>
+                                                <input class="form-control" id="popUpPartCode" placeholder="Part Code" readonly />
+                                            </div>
+                                            <div>
+                                                <input class="form-control" id="popUpItemName" placeholder="Item Name" readonly />
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-warning me-3 mb-2" type="button" id="CheckAll">
+                                                <i class="fa fa-check-square" aria-hidden="true"></i> Ch/UnCh All
+                                            </button>
+                                            <div class="form-check form-switch mx-3" style="color:#000;font-size:15px;">
+                                                <input asp-for="ShowAllBill" class="form-check-input" type="checkbox" role="switch" />
+                                                <label class="form-check-label ms-2">Show All</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto ms-3">
+                                            <input type="text" class="form-control" id="popup-search-box" style="background-color: #FFFACD;" placeholder="Search...">
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive" style="max-height:250px;">
+                                        <table class="table table-hover table-bordered table-striped poPopUpData" id="poPopUpData">
+                                            <thead class="bg-gradient card-headerBG text-light small"
+                                                   style="white-space:nowrap; font-size: 12px; position: sticky; top: 0; z-index: 10;">
+                                                <tr>
+                                                    <th data-columnno="0" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sr#</th>
+                                                    <th data-columnno="0" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Action</th>
+                                                    <th data-columnno="0" data-sortorder="asc" class="sortCol hnSOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBill EntryId</th>
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol hnSOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBill YearCode</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol hnSOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale BillNo</th>
+                                                    <th data-columnno="3" data-sortorder="asc" class="sortCol hnSOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale BillDate</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol hnPOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PurchBill EntryId</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol hnPOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PurchBill YearCode</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
+                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice Date</th>
+                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>INV NetAmt</th>
+                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Due Date</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Paid Amt</th>
+                                                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remaining Amt</th>
+                                                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
+                                                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Rate</th>
+                                                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amount</th>
+                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Per</th>
+                                                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dis Amt</th>
+                                                    <th data-columnno="17" data-sortorder="asc" class="sortCol hnSOfields" id="popupSONOHeader"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
+                                                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustOrderNo</th>
+                                                    <th data-columnno="19" data-sortorder="asc" class="sortCol hnSOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
+                                                    <th data-columnno="20" data-sortorder="asc" class="sortCol hnPOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO NO</th>
+                                                    <th data-columnno="21" data-sortorder="asc" class="sortCol hnPOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                                                    <th data-columnno="22" data-sortorder="asc" class="sortCol hnPOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO EntryId</th>
+                                                    <th data-columnno="23" data-sortorder="asc" class="sortCol hnPOfields"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Yearcode</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divCreditNoteDataGrid">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="row g-2 gx-3">
+                    <div class="col-12 text-center text-dark" style="font-size: 14px;">
+                        <strong>BASIC Inv Amount : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemPopupNetInvAmount"></span></strong>
+                        <strong>BASIC Bill  Qty : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemPopupTotalBillQty"></span></strong>
+                        <strong>, TOTAL NO OF ITEMS : <span id="lblPopupItemGridCount"></span></strong>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:250px;margin-left:20px;" type="button" id="AddPopDataInGrid">
+                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>Add To Grid
+                    </button>
+                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="soDetailExcel">
+                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" onclick="RefreshSchedule('');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+</style>

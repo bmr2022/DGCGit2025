@@ -1,0 +1,454 @@
+﻿@model eTactWeb.DOM.Models.BomModel
+
+@{
+    ViewData["Title"] = "Form";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="rounded shadow-lg">
+    <form enctype="multipart/form-data" autocomplete="off" class="form-horizontal">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Mode">
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    @ViewData["Title"] - @Model.YearCode
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                        </a>*@
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="ExportBom();">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                    IMPORT FORMAT
+                                </a>
+                            </div>
+                        <div class="col-auto">
+                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                            <a class="btn btn-secondary btn-sm" onclick="UploadButton();" style="margin-left:10px !important;">
+                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                IMPORT
+                            </a>
+                        </div>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="back();" style="margin-left:10px !important;">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="window.location.reload()">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button class="btn btn-primary btn-sm" id="BtnSubmit" onclick="SubmitData(event);">
+                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <div class="card rounded shadow-lg">
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionAccountMaster">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_BasicParameter">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_BasicParameter">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Basic Parameter</strong>
+                            </button>
+                        </h2>
+                        <div id="B_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicParameter">
+                            <div class="accordion-body">
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <div class="table-responsive" style="max-height:350px;">
+                                            <table class="table table-hover table-bordered" id="itemtable">
+                                                <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap">
+                                                    <tr id="headerRow">
+                                                        <th>Action</th>
+                                                        <th>FG Part Code</th>
+                                                        <th>FG Item Name</th>
+                                                        <th>RM Part Code</th>
+                                                        <th>RM Item Name</th>
+                                                        <th>BOM Name</th>
+                                                        <th>RM Qty</th>
+                                                        <th>RM Unit</th>
+                                                        <th>Location</th>
+                                                        <th>MPN Number</th>
+                                                        <th>Alt PartCode 1</th>
+                                                        <th>Alt PartCode 2</th>
+                                                        <th>Alt Qty 1</th>
+                                                        <th>Alt Qty 2</th>
+                                                        <th>Scrap</th>
+                                                        <th>Gross Weight</th>
+                                                        <th>Net Weight</th>
+                                                        <th>Remark</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="divItemList">
+                                                    <partial name="_DisplayExcelData" />
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <center>
+                                        <input class="form-control" type="file" id="ExcelFile" />
+                                    </center>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    @*<div class="col-auto">
+                    <a class="btn btn-sm btn-secondary" href="#" onclick="back();">
+                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                    BACK
+                    </a>
+                    </div>*@
+                    <div class="card border-light bg-gradient rounded shadow-lg">
+                        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                            <h4>
+                                @ViewData["Title"] - @Model.YearCode
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                    Dashboard
+                                    </a>*@
+                                    <div class="col-auto">
+                                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                        <a class="btn btn-secondary btn-sm" onclick="ExportBom();">
+                                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                            <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            IMPORT FORMAT
+                                        </a>
+                                    </div>
+                                    <div class="col-auto">
+                                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                        <a class="btn btn-secondary btn-sm" onclick="UploadButton();" style="margin-left:10px !important;">
+                                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                            <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            IMPORT
+                                        </a>
+                                    </div>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();" style="margin-left:10px !important;">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="window.location.reload()">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                <button class="btn btn-primary btn-sm" id="FooterBtnSubmit" onclick="SubmitData(event);">
+                                                    <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+    {
+    <script>
+
+        function CheckNumberOfCols(file) {
+             
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, { type: 'binary' });
+                var sheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[sheetName];
+                var rowCount = XLSX.utils.decode_range(worksheet['!ref']).e.r + 1; // Number of rows
+                var columnCount = XLSX.utils.decode_range(worksheet['!ref']).e.c + 1; // Number of columns
+
+                // Define the expected number of columns
+                var expectedColumnCount = 15; // Change this to your desired number of columns
+
+                if (columnCount === expectedColumnCount) {
+                    console.log('The Excel file has the expected number of columns.');
+                } else {
+                    $.notify('The file does not have the expected number of columns.', "error");
+                    return false;
+                }
+            };
+
+            reader.readAsBinaryString(file);
+        }
+        $(document).ready(function () {
+            GetFormRights();
+        });
+        function GetFormRights() {
+             
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                         
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("#BtnSubmit").prop("disabled", true);
+                            $("#FooterBtnSubmit").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#BtnSubmit").prop("disabled", true);
+                                    $("#FooterBtnSubmit").prop("disabled", true);
+                                }
+                            }
+                        }
+
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        function UploadButton() {
+            var fileInput = $('#ExcelFile');
+            var file = fileInput.prop("files")[0];
+
+
+            if (file) {
+                //if(!CheckNumberOfCols(file)) return false;
+                var fileName = file.name;
+                 
+                var fileExtension = fileName.split('.').pop().toLowerCase();
+
+                if (fileExtension === 'xls' || fileExtension === 'xlsx') {
+                    // The selected file is in Excel format
+                    console.log('File is in Excel format.');
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        var data = e.target.result;
+                        var workbook = XLSX.read(data, { type: 'binary' });
+                        var sheetName = workbook.SheetNames[0];
+                        var worksheet = workbook.Sheets[sheetName];
+                        var rowCount = XLSX.utils.decode_range(worksheet['!ref']).e.r + 1; // Number of rows
+                        var columnCount = XLSX.utils.decode_range(worksheet['!ref']).e.c + 1; // Number of columns
+                        alert('columnCount'+columnCount);
+                        // Define the expected number of columns
+                        var expectedColumnCount = 17; // Change this to your desired number of columns
+
+                        if (columnCount === expectedColumnCount) {
+                            console.log('The Excel file has the expected number of columns.');
+
+                            var formData = new FormData();
+                            formData.append("excelFile", file);
+                             
+                            $.ajax({
+                                url: "/Bom/UploadExcel",
+                                type: "POST",
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (result) {
+                                     
+                                    $('#divItemList').html(result);
+                                    var RowCount = $('#divItemList tr').length;
+                                    var errorCount = 0;
+                                    for (let i = 1; i <= RowCount; i++) {
+                                        if ($('#Constraint-' + i).val() == "true") {
+                                            $('.' + i).css("color", "red");
+                                        }
+
+
+                                    }
+
+                                }
+                            });
+
+                        } else {
+                             
+                            $.notify('The file does not have the expected number of columns.', "error");
+                            return false;
+                        }
+                    };
+
+                    reader.readAsBinaryString(file);
+
+                } else {
+                    // The selected file is not in Excel format
+                    $.notify('File is not in Excel format.', "error");
+                    return false;
+                }
+            }
+            else {
+                // No file selected
+                $.notify('No file selected.', 'error');
+                return false;
+            }
+             
+
+
+        }
+
+        function DeleteItemRow(seqNo) {
+            //var Indx = parseInt(seqNo) - 1;
+            //$('.' + seqNo).remove();
+             
+            var $row = $('.' + seqNo);
+            if ($row.length) {
+                // Delete the row
+                $row.remove();
+
+                // Reset IDs in sequence for remaining rows
+                var $table = $('#divItemList'); // Replace with your table's ID
+                var $rows = $table.find('tr');
+
+                $rows.each(function (index) {
+                    var $currentRow = $(this);
+                    $currentRow.attr('class', (index + 1)); // Reset row class
+
+                    // Reset IDs for elements inside the row
+                    $currentRow.find('[id^="FGPartCode-"]').attr('id', 'FGPartCode-' + (index + 1));
+                    $currentRow.find('[id^="FGItemCode-"]').attr('id', 'FGItemCode-' + (index + 1));
+                    $currentRow.find('[id^="FGItemName-"]').attr('id', 'FGItemName-' + (index + 1));
+                    $currentRow.find('[id^="RMPartCode-"]').attr('id', 'RMPartCode-' + (index + 1));
+                    $currentRow.find('[id^="RMItemCode-"]').attr('id', 'RMItemCode-' + (index + 1));
+                    $currentRow.find('[id^="RMItemName-"]').attr('id', 'RMItemName-' + (index + 1));
+                    $currentRow.find('[id^="BomName-"]').attr('id', 'BomName-' + (index + 1));
+                    $currentRow.find('[id^="BomNo-"]').attr('id', 'BomNo-' + (index + 1));
+                    $currentRow.find('[id^="RMQty-"]').attr('id', 'RMQty-' + (index + 1));
+                    $currentRow.find('[id^="RMUnit-"]').attr('id', 'RMUnit-' + (index + 1));
+                    $currentRow.find('[id^="Location-"]').attr('id', 'Location-' + (index + 1));
+                    $currentRow.find('[id^="Constraint-"]').attr('id', 'Constraint-' + (index + 1));
+                });
+            }
+        }
+
+        function SubmitData(e) {
+             
+            var RowCount = $('#divItemList tr').length;
+            var errorCount = 0;
+            for (let i = 1; i <= RowCount; i++) {
+                if ($('#Constraint-' + i).val() == "true") {
+                    errorCount++;
+                }
+
+                if (errorCount > 0) {
+                    e.preventDefault();
+                    $.notify("Error in data can't submit", "error");
+                    return false;
+                }
+            }
+
+
+            var ItemData = [];
+            for (let i = 1; i <= RowCount; i++) {
+
+                ItemData.push({
+                    "FGPartCode": $('#FGPartCode-' + i).text(),
+                    "FGItemName": $('#FGItemName-' + i).text(),
+                    "RMPartCode": $('#RMPartCode-' + i).text(),
+                    "RMItemName": $('#RMItemName-' + i).text(),
+                    "BomName": $('#BomName-' + i).text(),
+                    "RMQty": $('#RMQty-' + i).text(),
+                    "RMUnit": $('#RMUnit-' + i).text(),
+                    "Location": $('#Location-' + i).text(),
+                    "MPNNumber": $('#MPNNumber-' + i).text(),
+                    "FGItemCode": parseInt($('#FGItemCode-' + i).val()),
+                    "RMItemCode": parseInt($('#RMItemCode-' + i).val()),
+                    "AltItemCode1": parseInt($('#AltItemCode1-' + i).val()),
+                    "AltItemCode2": parseInt($('#AltItemCode2-' + i).val()),
+                    "AltQty1": parseInt($('#AltQty1-' + i).val()),
+                    "AltQty2": parseInt($('#AltQty2-' + i).val()),
+                    "Scrap": parseInt($('#Scrap-' + i).val()),
+                    "GrossWeight": parseInt($('#GrossWeight-' + i).val()),
+                    "NetWeight": parseInt($('#NetWeight-' + i).val()),
+                    "Remark": $('#Remark-' + i).text(),
+                    "BomNo": parseInt($('#BomNo-' + i).val())
+                });
+            }
+             debugger
+            $.ajax({
+                url: "@Url.Action("AddBomListData")",
+                type: "POST",
+                data: { model: ItemData },
+                beforeSend: function (xhr) {
+
+                },
+                success: function (data, status, xhr) {
+                    console.log("success");
+
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+
+        function ExportBom() {
+            $('#divItemList').empty();
+            var firstTh = $("#headerRow th:first");
+            firstTh.remove();
+            var newTh = $("<th>Action</th>");
+
+            $("#itemtable").table2excel({
+                filename: "ImportBOMFormat.xls"
+            });
+
+            $("#headerRow").prepend(newTh);
+        }
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+
+}

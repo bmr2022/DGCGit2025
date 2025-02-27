@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="02/13/2024 15:21:22" ReportInfo.Modified="02/14/2024 10:42:27" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gm+pxqUEPFs5ArZTHMiAZrDl/CfcXTHbciGdhcro7wnA49QD7321tdnLJXqace9y1jbeEtvzr7ny1f+FStELhA9aGPwl4fRPual2l2k+yErek3fXJQhYQI2s497qjtfTUy0mhvua0kyGhUlXgj4gQ98VX4nu1G3s+vd0/b1XrYkXI8Fw0R9NQeTxYzL6NUFD1NkeRY+r+tMVfkHDKJkaAYE=">
+      <TableDataSource Name="Account_Head_Master" DataType="System.Int32" Enabled="true" TableName="Account_Head_Master">
+        <Column Name="Account_Code" DataType="System.Int64"/>
+        <Column Name="DebCredCode" DataType="System.String"/>
+        <Column Name="Party_Code" DataType="System.String"/>
+        <Column Name="Entry_Date" DataType="System.String"/>
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="DisplayName" DataType="System.String"/>
+        <Column Name="ParentAccountCode" DataType="System.Int64"/>
+        <Column Name="MainGroup" DataType="System.String"/>
+        <Column Name="AccountType" DataType="System.String"/>
+        <Column Name="SubGroup" DataType="System.String"/>
+        <Column Name="SubSubGroup" DataType="System.String"/>
+        <Column Name="UnderGroup" DataType="System.String"/>
+        <Column Name="ComAddress" DataType="System.String"/>
+        <Column Name="ComAddress1" DataType="System.String"/>
+        <Column Name="PinCode" DataType="System.String"/>
+        <Column Name="City" DataType="System.String"/>
+        <Column Name="State" DataType="System.String"/>
+        <Column Name="Country" DataType="System.String"/>
+        <Column Name="PhoneNo" DataType="System.String"/>
+        <Column Name="MobileNo" DataType="System.String"/>
+        <Column Name="ContactPerson" DataType="System.String"/>
+        <Column Name="PartyType" DataType="System.String"/>
+        <Column Name="GSTRegistered" DataType="System.String"/>
+        <Column Name="GSTNO" DataType="System.String"/>
+        <Column Name="GSTPartyTypes" DataType="System.String"/>
+        <Column Name="GSTTAXTYPE" DataType="System.String"/>
+        <Column Name="Segment" DataType="System.String"/>
+        <Column Name="SSLNo" DataType="System.String"/>
+        <Column Name="PANNO" DataType="System.String"/>
+        <Column Name="TDS" DataType="System.String"/>
+        <Column Name="TDSRate" DataType="System.Double"/>
+        <Column Name="TDSPartyCategery" DataType="System.String"/>
+        <Column Name="ResponsibleEmployee" DataType="System.String"/>
+        <Column Name="ResponsibleEmpContactNo" DataType="System.String"/>
+        <Column Name="SalesPersonName" DataType="System.String"/>
+        <Column Name="SalesPersonEmailId" DataType="System.String"/>
+        <Column Name="SalesPersonMobile" DataType="System.String"/>
+        <Column Name="PurchPersonName" DataType="System.String"/>
+        <Column Name="PurchasePersonEmailId" DataType="System.String"/>
+        <Column Name="PurchMobileNo" DataType="System.String"/>
+        <Column Name="QCPersonEmailId" DataType="System.String"/>
+        <Column Name="WebSite_Add" DataType="System.String"/>
+        <Column Name="EMail" DataType="System.String"/>
+        <Column Name="RANGE" DataType="System.String"/>
+        <Column Name="Division" DataType="System.String"/>
+        <Column Name="Commodity" DataType="System.String"/>
+        <Column Name="WorkingAdd1" DataType="System.String"/>
+        <Column Name="WorkingAdd2" DataType="System.String"/>
+        <Column Name="RateOfInt" DataType="System.Double"/>
+        <Column Name="CreditLimit" DataType="System.Double"/>
+        <Column Name="CreditDays" DataType="System.String"/>
+        <Column Name="SSL" DataType="System.String"/>
+        <Column Name="BankAccount_No" DataType="System.String"/>
+        <Column Name="BankAddress" DataType="System.String"/>
+        <Column Name="BankIFSCCode" DataType="System.String"/>
+        <Column Name="BankSwiftCode" DataType="System.String"/>
+        <Column Name="InterbranchSaleBILL" DataType="System.String"/>
+        <Column Name="salesperson_name" DataType="System.String"/>
+        <Column Name="salesemailid" DataType="System.String"/>
+        <Column Name="salesmobileno" DataType="System.String"/>
+        <Column Name="Approved_By" DataType="System.String"/>
+        <Column Name="Approved" DataType="System.String"/>
+        <Column Name="ApprovalDate" DataType="System.DateTime"/>
+        <Column Name="BlackListed" DataType="System.String"/>
+        <Column Name="BlackListed_By" DataType="System.String"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="Uid" DataType="System.String"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="CreatedBy" DataType="System.Int64"/>
+        <Column Name="CreatedOn" DataType="System.DateTime"/>
+        <Column Name="UpdatedBy" DataType="System.Int64"/>
+        <Column Name="UpdatedOn" DataType="System.DateTime"/>
+        <Column Name="Active" DataType="System.String"/>
+      </TableDataSource>
+      <TableDataSource Name="BarcodeMain" DataType="System.Int32" Enabled="true" TableName="BarcodeMain">
+        <Column Name="EntryId" DataType="System.Int64"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="Serialno" DataType="System.String"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="SONO" DataType="System.String"/>
+        <Column Name="CustOrderNo" DataType="System.String"/>
+        <Column Name="SODate" DataType="System.DateTime"/>
+        <Column Name="SOYearCode" DataType="System.Int64"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="SizeNo" DataType="System.String"/>
+        <Column Name="ItemSize" DataType="System.Int64"/>
+        <Column Name="GendCategory" DataType="System.String"/>
+        <Column Name="PlanNo" DataType="System.String"/>
+        <Column Name="PlanDate" DataType="System.DateTime"/>
+        <Column Name="PlanYearcode" DataType="System.Int64"/>
+        <Column Name="PlanQty" DataType="System.Double"/>
+        <Column Name="PrintBarCodeQty" DataType="System.Int64"/>
+        <Column Name="PendQtyToPrint" DataType="System.String"/>
+        <Column Name="PrintedNoOfTimes" DataType="System.Int64"/>
+        <Column Name="TotalQty" DataType="System.Double"/>
+        <Column Name="StdPkg" DataType="System.Double"/>
+        <Column Name="WCId" DataType="System.Int64"/>
+        <Column Name="EneterdBy" DataType="System.Int64"/>
+        <Column Name="UpdatedBy" DataType="System.Int64"/>
+        <Column Name="LastUpdationDate" DataType="System.DateTime"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="UID" DataType="System.Int64"/>
+        <Column Name="EnteredByMachine" DataType="System.String"/>
+        <Column Name="BarcodeData" DataType="System.String"/>
+        <Column Name="BatchNo" DataType="System.String"/>
+        <Column Name="Uniquebatchno" DataType="System.String"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="ItemColor" DataType="System.String"/>
+        <Column Name="EvaTPRTPU" DataType="System.String"/>
+        <Column Name="NoOfLots" DataType="System.Int64"/>
+      </TableDataSource>
+      <TableDataSource Name="Table" Alias="SPBarcode" DataType="System.Int32" Enabled="true" SelectCommand="exec SPBarcode @ENtryId,@yearcode">
+        <Column Name="EntryId" DataType="System.Int64"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="Serialno" DataType="System.String"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="SONO" DataType="System.String"/>
+        <Column Name="CustOrderNo" DataType="System.String"/>
+        <Column Name="SODate" DataType="System.DateTime"/>
+        <Column Name="SOYearCode" DataType="System.Int64"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="SizeNo" DataType="System.String"/>
+        <Column Name="ItemSize" DataType="System.Int64"/>
+        <Column Name="GendCategory" DataType="System.String"/>
+        <Column Name="PlanNo" DataType="System.String"/>
+        <Column Name="PlanDate" DataType="System.DateTime"/>
+        <Column Name="PlanYearcode" DataType="System.Int64"/>
+        <Column Name="PlanQty" DataType="System.Double"/>
+        <Column Name="PrintBarCodeQty" DataType="System.Int64"/>
+        <Column Name="PendQtyToPrint" DataType="System.String"/>
+        <Column Name="PrintedNoOfTimes" DataType="System.Int64"/>
+        <Column Name="TotalQty" DataType="System.Double"/>
+        <Column Name="StdPkg" DataType="System.Double"/>
+        <Column Name="WCId" DataType="System.Int64"/>
+        <Column Name="EneterdBy" DataType="System.Int64"/>
+        <Column Name="UpdatedBy" DataType="System.Int64"/>
+        <Column Name="LastUpdationDate" DataType="System.DateTime"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="UID" DataType="System.Int64"/>
+        <Column Name="EnteredByMachine" DataType="System.String"/>
+        <Column Name="BarcodeData" DataType="System.String"/>
+        <Column Name="BatchNo" DataType="System.String"/>
+        <Column Name="Uniquebatchno" DataType="System.String"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="ItemColor" DataType="System.String"/>
+        <Column Name="EvaTPRTPU" DataType="System.String"/>
+        <Column Name="NoOfLots" DataType="System.Int64"/>
+        <CommandParameter Name="ENtryId" Expression="ENtryId"/>
+        <CommandParameter Name="yearcode" Expression="yearcode"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Relation Name="BarcodeMain_Account_Head_Master" ParentDataSource="BarcodeMain" ChildDataSource="Account_Head_Master" ParentColumns="AccountCode" ChildColumns="Account_Code" Enabled="true"/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2"/>
+    <PageHeaderBand Name="PageHeader1" Top="3.33" Width="718.2" Height="18.9">
+      <TextObject Name="Text24" Left="141.75" Width="170.1" Height="18.9" Text="NARMADA POLYMERS" Font="Arial, 10pt, style=Bold"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="25.57" Width="718.2" Height="387.45" DataSource="BarcodeMain">
+      <BarcodeObject Name="Barcode1" Left="264.6" Top="217.35" Width="132" Height="132" Text="[BarcodeMain.BarcodeData]" ShowText="false" AllowExpressions="true" Barcode="QR Code" Barcode.ErrorCorrection="L" Barcode.Encoding="UTF8" Barcode.QuietZone="true"/>
+      <TextObject Name="Text1" Left="18.9" Top="9.45" Width="94.5" Height="18.9" Text="Serial No" Font="Arial, 10pt"/>
+      <TextObject Name="Text2" Left="18.9" Top="37.8" Width="94.5" Height="18.9" Text="Plan No" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="18.9" Top="66.15" Width="94.5" Height="18.9" Text="Plan Name" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="18.9" Top="94.5" Width="94.5" Height="18.9" Text="Cusotmer Name" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="18.9" Top="122.85" Width="94.5" Height="18.9" Text="Article No" Font="Arial, 10pt"/>
+      <TextObject Name="Text6" Left="18.9" Top="151.2" Width="94.5" Height="18.9" Text="Color" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="18.9" Top="179.55" Width="94.5" Height="18.9" Text="Gender Category" Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Left="18.9" Top="207.9" Width="94.5" Height="18.9" Text="Creation Date" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="18.9" Top="236.25" Width="94.5" Height="18.9" Text="Department" Font="Arial, 10pt"/>
+      <TextObject Name="Text10" Left="18.9" Top="264.6" Width="94.5" Height="18.9" Text="Size" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="18.9" Top="283.5" Width="94.5" Height="18.9" Text="Quantity" Font="Arial, 10pt"/>
+      <TextObject Name="Text12" Left="18.9" Top="311.85" Width="94.5" Height="18.9" Text="Weight" Font="Arial, 10pt"/>
+      <TextObject Name="Text13" Left="18.9" Top="349.65" Width="94.5" Height="18.9" Text="Picked by" Font="Arial, 10pt"/>
+      <TextObject Name="Text14" Left="141.75" Top="9.45" Width="94.5" Height="18.9" Text="[BarcodeMain.Serialno]" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="141.75" Top="37.8" Width="94.5" Height="18.9" Text="[BarcodeMain.PlanNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text16" Left="141.75" Top="179.55" Width="94.5" Height="18.9" Text="[BarcodeMain.GendCategory]" Font="Arial, 10pt"/>
+      <TextObject Name="Text17" Left="141.75" Top="264.6" Width="94.5" Height="18.9" Text="[BarcodeMain.SizeNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text18" Left="141.75" Top="283.5" Width="94.5" Height="18.9" Text="[BarcodeMain.TotalQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text19" Left="141.75" Top="151.2" Width="94.5" Height="18.9" Text="[BarcodeMain.ItemColor]" Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Left="141.75" Top="207.9" Width="94.5" Height="18.9" Text="[BarcodeMain.EntryDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text22" Left="141.75" Top="349.65" Width="94.5" Height="18.9" Text="[BarcodeMain.EneterdBy]" Font="Arial, 10pt"/>
+      <TextObject Name="Text23" Left="141.75" Top="94.5" Width="94.5" Height="18.9" Text="[Account_Head_Master.Account_Name]" Font="Arial, 10pt"/>
+      <TextObject Name="Text25" Left="283.5" Top="9.45" Width="94.5" Height="18.9" Text="Lot No" Font="Arial, 10pt"/>
+      <LineObject Name="Line1" Left="132.3" Height="378"/>
+      <LineObject Name="Line2" Left="274.05" Height="378"/>
+      <LineObject Name="Line3" Top="28.35" Width="425.25"/>
+      <LineObject Name="Line4" Top="56.7" Width="425.25"/>
+      <LineObject Name="Line5" Top="85.05" Width="425.25"/>
+      <LineObject Name="Line6" Top="113.4" Width="425.25"/>
+      <LineObject Name="Line7" Top="141.75" Width="425.25"/>
+      <LineObject Name="Line8" Top="170.1" Width="425.25"/>
+      <LineObject Name="Line9" Top="198.45" Width="425.25"/>
+      <LineObject Name="Line10" Top="226.8" Width="425.25"/>
+      <LineObject Name="Line11" Top="255.15" Width="274.05"/>
+      <LineObject Name="Line12" Top="283.5" Width="274.05"/>
+      <LineObject Name="Line13" Top="311.85" Width="274.05"/>
+      <LineObject Name="Line14" Top="340.2" Width="274.05"/>
+      <ShapeObject Name="Shape1" Width="425.25" Height="378"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="416.35" Width="718.2"/>
+  </ReportPage>
+</Report>

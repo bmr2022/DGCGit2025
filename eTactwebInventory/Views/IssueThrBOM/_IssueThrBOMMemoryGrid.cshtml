@@ -1,0 +1,73 @@
+﻿@model eTactWeb.DOM.Models.IssueThrBom
+
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+            <td>
+                <div id="deleteCursorDiv-@Cntr">
+                    <a class="table-link link-danger" onclick="DeleteFromMemoryGrid(@Cntr)">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </div>
+            </td>
+            @*<td><input readonly id="MainGridReqNo-@Cntr" type="text" value="@item.ReqNo1" /></td>
+    <td><input readonly id="MainGridReqDate-@Cntr" type="text" value="@item.ReqDate1" /></td>
+    <td><input readonly id="MainGridReqYearCode-@Cntr" type="text" value="@item.ReqyearCode1" /></td>*@
+            <td><input readonly id="MainGridItemname-@Cntr" type="text" value="@item.ItemName" /><input value="@item.ReqNo1" id="MainREQNo" type="hidden" /><input value="@item.ReqyearCode1" id="MainREQYearCode" type="hidden" /><input value="@item.ReqDate1" id="MainREQDate" type="hidden" /><input type="hidden" id="MainGridItemCode-@Cntr" value="@item.ItemCode" /><input type="hidden" id="MainGridStockable-@Cntr" /><input type="hidden" id="MainGridWorkCenter" value="@item.WorkCenter" /><input type="hidden" id="MainGridWCId" value="@item.WCId" /><input type="hidden" id="MainGridWONO" value="@item.WONO" /><input type="hidden" id="MainGridWOYearCode" value="@item.WOYearCode" /><input type="hidden" id="MainGridWoDate" value="@item.WoDate" /></td>
+            <td><input readonly id="MainGridPartCode-@Cntr" style="width:100px;" type="text" value="@item.PartCode" /><input type="hidden" id="IssuedDateMemory" value="@item.IssuedDate" /></td>
+            <td><input id="MainGridReqQty-@Cntr" type="text" style="width:50px;" value="@item.ReqQty" readonly /><input type="hidden" id="MachineCodeMemory" value="@item.MachineCodee" /></td>
+            <td><input readonly id="MainGridStorename-@Cntr" style="width:100px;" type="text" value="@item.StoreName" /><input id="MainGridStoreId-@Cntr" type="hidden" value="@item.StoreId" /></td>
+            <td onclick="AllowBatchChange(@Cntr)">
+                <input type="hidden" id="MainGridBatchNo1-@Cntr" value="@item.BatchNo" />
+                <input type="hidden" id="AllowBatchChange" />
+                <input type="hidden" id="AllowBatchChangePassWord" />
+                <select id="MainGridBatchNo-@Cntr" onchange="BatchNumberChange(@Cntr)" style="width:80px;"><option value="0" selected disabled>-Select-</option></select>
+            </td>
+            <td>
+                <input type="hidden" id="MainGridUniqueBatchNo1-@Cntr" value="@item.uniqueBatchNo" />
+                <select readonly id="MainGridUniqueBatchNo-@Cntr" onchange="UniqBatchNumberChange(@Cntr)">
+                    <option value="0" selected disabled>-Select-</option>
+
+                </select>
+            </td>
+            <td><input id="MainGridIssueQty-@Cntr" style="width:50px;" onchange="AltUnitConversion(@Cntr,'IssueQtyChange')" onkeyup="IssueQtyValidation(@Cntr)" type="number" value="@item.IssueQty" /></td>
+            <td><input readonly id="MainGridUnit-@Cntr" type="text" style="width:50px;" value="@item.Unit" /></td>
+            <td><input id="MainGridLotStock-@Cntr" type="text" style="width:50px;" value="@item.LotStock" readonly /></td>
+            <td><input id="MainGridTotalStock-@Cntr" type="text" style="width:50px;" value="@item.TotalStock" readonly /></td>
+            <td><input id="MainGridAltQty-@Cntr" style="width:50px;" onchange="AltUnitConversion(@Cntr,'AltQtyChange')" type="text" value="@item.AltQty" /></td>
+            <td><input readonly id="MainGridAltUnit-@Cntr" style="width:50px;" type="text" value="@item.AltUnit" /></td>
+            <td><input readonly id="MainGridStdPacking-@Cntr" style="width:50px;" type="text" value="@item.StdPacking" /></td>
+            <td><input id="MainGridRate-@Cntr" type="text" style="width:50px;" value="@item.Rate" /></td>
+            <td><input id="MainGridRemark-@Cntr" type="text" style="width:100px;" value="@item.Remark" /></td>
+            <td><input readonly id="MainGridWorkCenter-@Cntr" style="width:100px;" type="text" value="@item.WorkCenter" /><input id="MainGridWCId-@Cntr" type="hidden" value="@item.WCId" /></td>
+            @*<td><input readonly id="MainGridAltItemCode-@Cntr" type="text" value="@item.AltItemCode" /></td>*@
+            <td><select id="MainGridAltPartCode-@Cntr" onchange="AltPartCodeChange(this.id,@Cntr)"><option value="0" selected disabled>-Select-</option></select></td>
+            <td><select id="MainGridAltItemName-@Cntr" onchange="AltItemNameChange(this.id,@Cntr)"><option value="0" selected disabled>-Select-</option></select></td>
+            <td><input readonly id="MainGridOGItemname-@Cntr" type="text" value="@item.ItemName" /><input type="hidden" id="MainGridOGItemCode-@Cntr" value="@item.ItemCode" /></td>
+            <td><input readonly id="MainGridOGPartCode-@Cntr" style="width:100px;" type="text" value="@item.PartCode" /></td>
+            <td><input readonly id="MainGridCostCenter-@Cntr" style="width:50px;" type="text" value="@item.CostCenterId" /></td>
+            <td><input readonly id="MainGridItemSize-@Cntr" type="text" value="@item.ItemSize" /></td>
+            <td><input readonly id="MainGridItemColor-@Cntr" style="width:50px;" type="text" value="@item.ItemColor" /></td>
+            <td>
+                <select id="MainGridProjectNo-@Cntr" onchange="ProjectNumberChange(@Cntr)"><option value="0" selected disabled>-Select-</option></select>
+                @*<input id="MainGridProjectNo-@Cntr" type="text" value="@item.ProjectNo" />*@
+            </td>
+            <td><input id="MainGridProjectYearCode-@Cntr" type="text" /></td>
+            <td><input id="MainGridIssuedAltItem-@Cntr" type="text" value="@item.IssuedAlternateItem" /></td>
+
+        </tr>
+    }
+}

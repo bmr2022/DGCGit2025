@@ -1,0 +1,53 @@
+﻿@model eTactWeb.DOM.Models.Common.TDSModel
+
+<input type="hidden" asp-for="TotalTDSAmt" class="form-control" />
+@if (Model == null || Model.TDSDetailGridd == null)
+{
+    <tr class="text-center">
+        <td colspan="14" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.TDSDetailGridd)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small @item.TDSSeqNo" style="white-space:nowrap">
+            <td>
+                @if (Model.Mode == "V")
+                {
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-danger" onclick="DeleteTDSRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.TDSSeqNo</td>
+            <td id="tdsGridType-@item.TDSSeqNo">@item.TDSTaxTypeName</td>
+            <td id="tdsGridName-@item.TDSSeqNo">@item.TDSAccountName</td>
+            <td>@item.TDSPercentg</td>
+            @if (@item.TDSRoundOff == "Y")
+            {
+                <td>YES</td>
+            }
+            else
+            {
+                <td>NO</td>
+            }
+            <td id="tdsGridAmount-@item.TDSSeqNo">@item.TDSAmount.ToString("#.#0")</td>
+            <td>@item.TDSRemark</td>
+        </tr>
+    }
+}

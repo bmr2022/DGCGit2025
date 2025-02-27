@@ -1,0 +1,157 @@
+﻿@model eTactWeb.DOM.Models.AccountMasterModel
+@if (Model.Mode == "DetailSearch")
+{
+    <partial name="_AccountMasterDetailDashboard" />
+}
+else
+{
+
+<div class="card-body table-responsive" style="max-height:350px;">
+            <table class="table table-bordered TbCss text-nowrap mb-0" id="AccountTable">
+                <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashThead">
+            <tr>
+                <th style="display: none">
+                    @Html.DisplayNameFor(model => model.Account_Code)
+                </th>
+                <th>Action</th>
+                <th>Sr#</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Parent Account</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Main Group</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sub Group</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Under Group</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Com Address</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Com Address1</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pincode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Country</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>State</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>City</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="13"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST No</th>
+            </tr>
+        </thead>
+        <tbody id="bodyAccountDash">
+            @if (Model.AccountMasterList == null)
+            {
+                <tr class="text-center">
+                    <td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                </tr>
+            }
+            else
+            {
+                var @Cntr = 0;
+                foreach (var item in Model.AccountMasterList)
+                {
+                    Cntr = Cntr + 1;
+                    <tr>
+                        <td style="display: none">
+                            @Html.DisplayFor(modelItem => item.Account_Code)
+                        </td>
+                        <td style="white-space: nowrap;" class="text-center">
+                            <div id="container">
+                                <div id="viewCursorDiv-@Cntr">
+                            <a class="table-link link-success" asp-controller="AccountMaster" asp-action="Form" asp-route-ID="@item.Account_Code" asp-route-Mode="V">
+                                <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                            </a>
+                            </div>
+                                <div id="editCursorDiv-@Cntr">
+                            <a class="table-link link-primary" asp-controller="AccountMaster" asp-action="Form" asp-route-ID="@item.Account_Code" asp-route-Mode="U">
+                                <span class="fa-stack">
+                                    <i class="fa fa-square fa-stack-2x"></i>
+                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                             </div>
+                                <div id="deleteCursorDiv-@Cntr">
+                            <a class="table-link link-danger" onclick="confirmDelete(event)" asp-controller="AccountMaster" asp-action="DeleteByID" asp-route-ID="@item.Account_Code">
+                                <span class="fa-stack">
+                                    <i class="fa fa-square fa-stack-2x"></i>
+                                    <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                                </div>
+                            </div>
+                        </td>
+                        <th>@Cntr</th>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Account_Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ParentAccountName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MainGroup)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubGroup)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UnderGroup)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ComAddress)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ComAddress1)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PinCode)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Country)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.State)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.City)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GSTNO)
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+}
+                        <style>
+    #AccountTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -18px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }    
+    #container {
+        display: flex;
+    }
+                        </style>

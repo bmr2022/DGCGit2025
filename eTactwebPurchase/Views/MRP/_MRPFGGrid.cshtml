@@ -1,0 +1,33 @@
+﻿@model eTactWeb.DOM.Models.MRPMain
+
+
+@if (Model.MRPFGRMGrid == null)
+{
+        <tr class="text-center">
+            <td colspan="19" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+        </tr>
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.MRPFGRMGrid)
+    {
+        Cntr = Cntr + 1;
+                <tr class="small @item.SeqNo" style="white-space:nowrap">
+                    <th>@Cntr</th>
+                    <td>@item.FGPartCode</td>
+                    <td>@item.FGItemName</td>
+                    <td>@item.FGQty</td>
+                    <td>@item.RMPartCode</td>
+                    <td>@item.RMItemName</td>
+                    <td>@item.BOMQty</td>
+                    <td>@item.CurrMonthOrderQty</td>
+                    <td>@item.OrderQtyInclPrevPOQty</td>
+                    <td>@item.AltUnit</td>
+                    <td>@item.BOMNo</td>
+                    <td>@item.AllocatedQty</td>
+                    <td>@item.BOMEffDate.Split(" ")[0]</td> 
+                </tr>
+
+    }
+}

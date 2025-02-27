@@ -1,0 +1,1599 @@
+﻿@model eTactWeb.DOM.Models.TransferFromWorkCenterModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Transfer From WorkCenter";
+    string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="TransferFromWorkCenter" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Transfer From WorkCenter : @Model.TransferMatYearCode</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            PRINT
+                        </button>
+                    </div>
+                    <a asp-action="TransferFromWorkCenterDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="TransferSlipNoBack" type="hidden" value="@Model.TransferSlipNoBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="FromWorkCenterBack" type="hidden" value="@Model.FromWorkCenterBack" />
+                            <input asp-for="ToWorkCenterBack" type="hidden" value="@Model.ToWorkCenterBack" />
+                            <input asp-for="StoreNameBack" type="hidden" value="@Model.StoreNameBack" />
+                            <input asp-for="ProdSlipNoBack" type="hidden" value="@Model.ProdSlipNoBack" />
+                            <input asp-for="ProdSchNoBack" type="hidden" value="@Model.ProdSchNoBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V"    || Model.Mode != "U")
+                        {
+                            if (Model.Mode == "U" || Model.Mode == "V")
+                            {
+                                <div class="col-auto">
+                                    <a class="btn btn-secondary btn-sm noCursor" onclick="location.href=$('form')[0].action">
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-auto">
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                            }
+                            @if (Model.Mode == "U")
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
+                                    <input asp-for="Mode" value="@Model.Mode" class="form-control" type="hidden" />
+                                    <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
+                                    <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
+                                    <label asp-for="TransferMatEntryId" class="form-label" style="color:blue">Entry Id</label>
+                                    <input asp-for="TransferMatEntryId" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TransferMatYearCode" class="form-label" style="color:blue">Year Code</label>
+                                    <input asp-for="TransferMatYearCode" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
+                                    <label asp-for="TransferMatEntrydate" class="form-label" style="color:blue">Entry Date</label>
+                                    <input asp-for="TransferMatEntrydate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
+                                    <label asp-for="TransferMatSlipNo" class="form-label" style="color:blue">Transfer Slip No</label>
+                                    <input asp-for="TransferMatSlipNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                    <label asp-for="TransferMatSlipDate" class="form-label" style="color:blue">Transfer Slip Date</label>
+                                    <input asp-for="TransferMatSlipDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PRODSTATUSProdUnProdRej" class="form-label" style="color:red">ProdUnprod*</label>
+                                    <select class="form-select" asp-for="PRODSTATUSProdUnProdRej">
+                                        <option value="Produce" selected>Produce</option>
+                                        <option value="UnProduce">UnProduce</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                    <label asp-for="IssueFromWCid" class="form-label" style="color:red">Issue From Wc*</label>
+                                    <input asp-for="IssueFromWCid" class="form-control" type="hidden" />
+                                    <select class="form-select" asp-for="IssueFromWc">
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                    <label asp-for="IssueToStoreWC" class="form-label" style="color:red">Issue To Store/Wc*</label>
+                                    <select class="form-select" asp-for="IssueToStoreWC">
+                                        <option value="S">Store</option>
+                                        <option value="W" selected>WorkCenter</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="IssueTOWCid" class="form-label" style="color:red">Issue To Wc/Store*</label>
+                                    <input asp-for="IssueTOWCid" class="form-control" type="hidden" />
+                                    <input asp-for="IssueToStoreId" class="form-control" type="hidden" />
+                                    <select class="form-select" asp-for="IssueToWcStore">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 100%;">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Transfer From WorkCenter Detail</strong>
+                        </button>
+                        @*   <button class="ItemBtn btn btn-sm btn-outline-danger" style="width:150px;" type="button">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
+                        </button> *@
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="PartCode" class="form-label" style="color:red">PartCode*</label>
+                                    <select class="form-select" asp-for="PartCode" style="width:180px"></select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="ItemName" class="form-label" style="color:red">ItemName*</label>
+                                    <input asp-for="ItemCode" class="form-control" type="hidden" />
+                                    <select class="form-select" asp-for="ItemName" style="width:180px"></select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                    <label asp-for="BatchNo" class="form-label" style="color:red">Batch No*</label>
+                                    <select class="form-select" asp-for="BatchNo"></select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                    <label asp-for="UniqueBatchNo" class="form-label" style="color:red">UniqueBatch No*</label>
+                                    <select class="form-select" asp-for="UniqueBatchNo"></select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="BatchStock" class="form-label" style="color:blue">Batch Stock</label>
+                                    <input asp-for="BatchStock" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="TotalStock" class="form-label" style="color:blue">Total Stock</label>
+                                    <input asp-for="TotalStock" class="form-control" readonly />
+                                </div>
+
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="TransferQty" class="form-label" style="color:red">Transfer Qty*</label>
+                                    <input asp-for="TransferQty" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="Unit" class="form-label" style="color:blue">Unit</label>
+                                    <input asp-for="Unit" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="AltUnit" class="form-label" style="color:blue">Alt Unit</label>
+                                    <input asp-for="AltUnit" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
+                                    <label asp-for="AltTransferQty" class="form-label" style="color:blue">Alt Transfer Qty</label>
+                                    <input asp-for="AltTransferQty" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px" id="ProdSlipNoDiv">
+                                    <label asp-for="ProdSlipNo" class="form-label">Prod SlipNo</label>
+                                    <input asp-for="ProdSlipNo" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px" id="ProdEntryDiv">
+                                    <label asp-for="ProdEntryId" class="form-label">Prod Entry Id</label>
+                                    <input asp-for="ProdEntryId" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px" id="ProdEntryYearCodeDiv">
+                                    <label asp-for="ProdEntryYearCode" class="form-label">Prod Entry YearCode</label>
+                                    <input asp-for="ProdEntryYearCode" class="form-control" readonly value="@Model.TransferMatYearCode" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px" id="ProdDateDiv">
+                                    <label asp-for="ProdDate" class="form-label">Prod Entry Date</label>
+                                    <input asp-for="ProdDate" class="form-control" readonly />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px" id="ProdPlanNoDiv">
+                                    <label asp-for="ProdPlanNo" class="form-label">Prod Plan No</label>
+                                    <input asp-for="ProdPlanNo" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px" id="ProdPlanYearCodeDiv">
+                                    <label asp-for="ProdPlanYearCode" class="form-label">Prod Plan YearCode</label>
+                                    <input asp-for="ProdPlanYearCode" class="form-control" readonly value="@Model.TransferMatYearCode" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px" id="ProdSchNoDiv">
+                                    <label asp-for="ProdSchNo" class="form-label">Prod Sch No</label>
+                                    <input asp-for="ProdSchNo" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px" id="ProdSchYearCodeDiv">
+                                    <label asp-for="ProdSchYearCode" class="form-label">Prod Sch YearCode</label>
+                                    <input asp-for="ProdSchYearCode" class="form-control" readonly value="@Model.TransferMatYearCode" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px" id="ParentProdSchNoDiv">
+                                    <label asp-for="ParentProdSchNo" class="form-label">Parent Prod Sch No</label>
+                                    <input asp-for="ParentProdSchNo" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px" id="ParentProdSchYearCodeDiv">
+                                    <label asp-for="ParentProdSchYearCode" class="form-label">Parent Prod Sch YearCode</label>
+                                    <input asp-for="ParentProdSchYearCode" class="form-control" readonly value="@Model.TransferMatYearCode" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="QcOkQty" class="form-label">Qc Ok Qty</label>
+                                    <input asp-for="QcOkQty" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="ProdQty" class="form-label">Prod Qty</label>
+                                    <input asp-for="ProdQty" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px">
+                                    <label asp-for="PendingToAcknowledge" class="form-label">Pending To Acknowledge</label>
+                                    <input asp-for="PendingToAcknowledge" class="form-control" readonly />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                    <label asp-for="PendingQtyToAcknowledge" class="form-label">Pending Qty To Acknowledge</label>
+                                    <input asp-for="PendingQtyToAcknowledge" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="ItemSize" class="form-label">Item Size</label>
+                                    <input asp-for="ItemSize" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="ItemColor" class="form-label">Item Color</label>
+                                    <input asp-for="ItemColor" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px">
+                                    <label asp-for="InProcessQcSlipNo" class="form-label">In Process Qc Slip No</label>
+                                    <input asp-for="InProcessQcSlipNo" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px">
+                                    <label asp-for="InProcessQcEntryId" class="form-label">In Process Qc EntryId</label>
+                                    <input asp-for="InProcessQcEntryId" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px">
+                                    <label asp-for="InProcessQcYearCode" class="form-label">In Process Qc YearCode</label>
+                                    <input asp-for="InProcessQcYearCode" class="form-control" readonly value="@Model.TransferMatYearCode" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px">
+                                    <label asp-for="QcCleaningDate" class="form-label">Qc Cleaning Date</label>
+                                    <input asp-for="QcCleaningDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                    <label asp-for="ProcessName" class="form-label">Process Name</label>
+                                    <select class="form-select" asp-for="ProcessName" style="width:180px">
+                                    </select>
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ReceivedByStoreQty" class="form-label">ReceivedBy Store Qty</label>
+                                    <input asp-for="ReceivedByStoreQty" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ReceivedCompleted" class="form-label">Received Completed</label>
+                                    <input asp-for="ReceivedCompleted" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ReceivebyEmpName" class="form-label">Receive By EmpName</label>
+                                    <input asp-for="ReceivebyEmpName" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+                                    <label asp-for="Rate" class="form-label">Rate</label>
+                                    <input asp-for="Rate" class="form-control" />
+                                </div>
+                                <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
+                                    <label asp-for="ItemWeight" class="form-label">Item Weight</label>
+                                    <input asp-for="ItemWeight" class="form-control" />
+                                </div>
+                                <div class="col-auto">
+                                    <div class="form-check form-switch d-flex mt-2">
+                                        <input id="SH" class="form-check-input" type="checkbox" role="switch" />
+                                    </div>
+                                    <label class="form-label d-flex justify-content-center">Show/Hide Fields</label>
+
+                                </div>
+                                <div class="col-auto">
+                                    <button class="ItemBtn btn btn-sm btn-outline-danger" style="width:150px;" type="button">
+                                        <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress my-3 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body overflow-auto pb-0">
+                                <table class="table table-hover table-bordered table-striped">
+                                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                        <tr>
+                                            <th>Action</th>
+                                            <th>Seq No</th>
+                                            <th>PartCode</th>
+                                            <th>ItemName</th>
+                                            <th>BatchNo</th>
+                                            <th>Unique BatchNo</th>
+                                            <th>Batch Stock</th>
+                                            <th>Total Stock</th>
+                                            <th>Unit</th>
+                                            <th>Alt Unit</th>
+                                            <th>Transfer Qty</th>
+                                            <th>Alt Transfer Qty</th>
+                                            <th>Process Name</th>
+                                            <th>Prod SlipNo</th>
+                                            <th>Prod EntryId</th>
+                                            <th>Prod Entry YearCode</th>
+                                            <th>Prod Date</th>
+                                            <th>Prod PlanNo</th>
+                                            <th>Prod Plan YearCode</th>
+                                            <th>Prod SchNo</th>
+                                            <th>Prod Sch YearCode</th>
+                                            <th>Parent Prod SchNo</th>
+                                            <th>Parent Prod Sch YearCode</th>
+                                            <th>Qc Ok Qty</th>
+                                            <th>Prod Qty</th>
+                                            <th>Pending To Acknowledge</th>
+                                            <th>Pending Qty To Acknowledge</th>
+                                            <th>Item Size</th>
+                                            <th>Item Color</th>
+                                            <th>In Process Qc SlipNo</th>
+                                            <th>In Process Qc YearCode</th>
+                                            <th>Qc Cleaning Date</th>
+                                            <th>Process Name</th>
+                                            <th>Rew Remark</th>
+                                            <th>Received By StoreQty</th>
+                                            <th>Received Completed</th>
+                                            <th>Receive By EmpName</th>
+                                            <th>Rate</th>
+                                            <th>Item Weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="divTransferGrid">
+                                        <partial name="_TransferFromWcGrid" />
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="OtherGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                        <div class="accordion-body">
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                    <label asp-for="IssuedByEmp" class="form-label" style="color:red">Issue By Emp*</label>
+                                    <input asp-for="IssuedByEmp" class="form-control" type="hidden" />
+                                    <select class="form-select" asp-for="IssueByEmpName">
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="RecByEmpId" class="form-label" style="color:red">Rec By Emp*</label>
+                                    <input asp-for="RecByEmpId" class="form-control" type="hidden" />
+                                    <select class="form-select" asp-for="RecByEmpName">
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="Remark" class="form-label">Remark</label>
+                                    <input asp-for="Remark" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
+                                    <label asp-for="PendingToRecByStore" class="form-label" style="color:red">Pending To Rec By Store*</label>
+                                    <select class="form-select" asp-for="PendingToRecByStore">
+                                        <option value="Y" selected>Yes</option>
+                                        <option value="N">No</option>
+                                    </select>
+                                </div>
+                                @if (Model.Mode != "U" && Model.Mode != "V")
+                                {
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="ActualEnteredBy" class="form-label" style="color:blue">Created By</label>
+                                        <input type="hidden" asp-for="ActualEnteredBy" class="form-control" readonly />
+                                        <input asp-for="ActualEnteredByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="ActualEntrydate" class="form-label" style="color:blue">Created On</label>
+                                        <input asp-for="ActualEntrydate" class="form-control" readonly />
+                                    </div>
+                                }
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                    <label asp-for="EntryByMachineNo" class="form-label" style="color:blue">Entered by Machine Name</label>
+                                    <input asp-for="EntryByMachineNo" class="form-control" readonly value="@Environment.MachineName" />
+                                </div>
+                                @if (Model.Mode == "U" || Model.Mode == "V")
+                                {
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="ActualEnteredBy" class="form-label" style="color:blue">Created By</label>
+                                        <input type="hidden" asp-for="ActualEnteredBy" class="form-control" readonly />
+                                        <input asp-for="ActualEnteredByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="ActualEntrydate" class="form-label" style="color:blue">Created On</label>
+                                        <input asp-for="ActualEntrydate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="UpdatedByName" class="form-label" style="width:150px" style="color:blue">Updated By</label>
+                                        <input type="hidden" asp-for="UpdatedBy" class="form-control" readonly />
+                                        <input asp-for="UpdatedByName" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                        <label asp-for="UpdatedOn" class="form-label" style="color:blue">Updated On</label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                }
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="CC" class="form-label" style="color:blue">CC</label>
+                                    <input asp-for="CC" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    <div class="card-header card-headerBG text-light bg-gradient">
+                        <h5>
+                            <strong>Transfer From WorkCenter</strong>
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        PRINT
+                                    </button>
+                                </div>
+                                <a asp-action="TransferFromWorkCenterDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                    Dashboard
+                                </a>
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                        <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                        <input asp-for="TransferSlipNoBack" type="hidden" value="@Model.TransferSlipNoBack" />
+                                        <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                                        <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                                        <input asp-for="FromWorkCenterBack" type="hidden" value="@Model.FromWorkCenterBack" />
+                                        <input asp-for="ToWorkCenterBack" type="hidden" value="@Model.ToWorkCenterBack" />
+                                        <input asp-for="StoreNameBack" type="hidden" value="@Model.StoreNameBack" />
+                                        <input asp-for="ProdSlipNoBack" type="hidden" value="@Model.ProdSlipNoBack" />
+                                        <input asp-for="ProdSchNoBack" type="hidden" value="@Model.ProdSchNoBack" />
+                                        <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                                        <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC" || Model.Mode != "U")
+                                    {
+                                        if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <div class="col-auto">
+                                                <a class="btn btn-secondary btn-sm noCursor" onclick="location.href=$('form')[0].action">
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                        }
+                                        @if (Model.Mode == "U")
+                                        {
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient UpdateButton" id="UpdateButton">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+
+                                        else
+                                        {
+                                            <div class="col-auto">
+
+                                                <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                    <i class="fa-solid fa-chevron-circle-right"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+
+        $('.submitBTN').click(function (e) {
+            e.preventDefault();
+            if (!ValidateTransfer_SubmitGrid()) return;
+            $('form').submit();
+        });
+
+        $('.UpdateButton').click(function (e) {
+            if (!ValidateTransfer_SubmitGrid()) return;
+            e.preventDefault();
+            $('form').submit();
+        });
+
+        function ValidateTransfer_SubmitGrid() {
+
+            var Err = 0;
+            if ($('#divTransferGrid').is(':empty') || $('#divTransferGrid').text().trim() === "NO DATA ADDED") {
+                AddErrorCls('PRODSTATUSProdUnProdRej');
+                $.notify('Grid Should Have Atleast 1 Item...!', "error");
+                Err = 1;
+            } else {
+                RemoveErrorCls('PRODSTATUSProdUnProdRej');
+            }
+            if ($('#PRODSTATUSProdUnProdRej').val() == null) {
+                AddErrorCls('PRODSTATUSProdUnProdRej');
+                $.notify("PRODSTATUSProdUnProdRej Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('PRODSTATUSProdUnProdRej');
+            }
+            if ($('#IssueToStoreWC').val() == null) {
+                AddErrorCls('IssueToStoreWC');
+                $.notify("IssueToStoreWC Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('IssueToStoreWC');
+            }
+            if ($('#IssueFromWc').val() == null) {
+                AddErrorCls('IssueFromWc');
+                $.notify("IssueFromWc Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('IssueFromWc');
+            }
+            if ($('#IssueToWcStore').val() == null) {
+                AddErrorCls('IssueToWcStore');
+                $.notify("IssueToWcStore Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('IssueToWcStore');
+            }
+            if ($('#IssueToWcStore').prop('selectedIndex') == 0) {
+                AddErrorCls('IssueToWcStore');
+                $.notify("IssueToWcStore Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('IssueToWcStore');
+            }
+            if ($('#IssueToStoreWC').val() == "W") {
+                if (parseInt($('#IssueFromWc').val()) == parseInt($('#IssueToWcStore').val())) {
+                    AddErrorCls('IssueToStoreWC');
+                    $.notify("Issue FromWorkCenter and Issue ToWorkCenter are not same.", "error");
+                    $('#IssueToWcStore').val('-Select-');
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('IssueToStoreWC');
+                }
+            }
+            Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
+            if (Err == 1) return false;
+            return true;
+        }
+
+
+        $(document).ready(function () {
+             
+            FillItemName();
+            FillPartCode();
+            FillWorkCenter();
+            FillToWorkCenter();
+            FillIssueByEmp();
+            FillRecByEmp();
+            FillProcessName();
+            GetServerDate();
+            $('#BatchNo').empty();
+            $('#BatchNo').append('<option selected>-Select-</option>');
+            $('#UniqueBatchNo').empty();
+            $('#UniqueBatchNo').append('<option selected>-Select-</option>');
+            $('#ItemName').select2();
+            $('#PartCode').select2();
+            $('#ProcessName').select2();
+            $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
+            $('#IssueToStoreWC').rules("remove", "required");
+            $('#IssueFromWc').rules("remove", "required");
+            $('#IssueToWcStore').rules("remove", "required");
+            $('#PartCode').rules("remove", "required");
+            $('#ItemName').rules("remove", "required");
+            $('#BatchNo').rules("remove", "required");
+            $('#UniqueBatchNo').rules("remove", "required");
+            $('#TransferQty').rules("remove", "required");
+            $('#AltTransferQty').rules("remove", "required");
+            $('#Remark').rules("remove", "required");
+            $('.AF').fadeOut();
+            if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
+                 
+                $('.AF').fadeOut();
+                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                var TransferMatEntrydate = $('#TransferMatEntrydate').val().split(" ")[0];
+                $('#TransferMatEntrydate').val(TransferMatEntrydate);
+                var TransferMatSlipDate = $('#TransferMatSlipDate').val().split(" ")[0];
+                $('#TransferMatSlipDate').val(TransferMatSlipDate);
+                var ProdStatus = "@Model.PRODSTATUSProdUnProdRej";
+                $('#PRODSTATUSProdUnProdRej').val(ProdStatus).trigger("change");
+            }
+            else {
+                GetEntryId();
+                var finFromDate = $('#FromDate').val();
+                var finToDate = $('#ToDate').val();
+
+                var dateParts1 = finFromDate.split("/");
+                var monthNames = {
+                    "Jan": "01",
+                    "Feb": "02",
+                    "Mar": "03",
+                    "Apr": "04",
+                    "May": "05",
+                    "Jun": "06",
+                    "Jul": "07",
+                    "Aug": "08",
+                    "Sep": "09",
+                    "Oct": "10",
+                    "Nov": "11",
+                    "Dec": "12"
+                };
+
+                var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                var dateParts2 = finToDate.split("/");
+
+                var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+                console.log(formattedDate1);
+                console.log(formattedDate2);
+                $('#TransferMatEntrydate,#TransferMatSlipDate,#ProdDate,#QcCleaningDate').datepicker("option", "minDate", formattedDate1);
+                $('#TransferMatEntrydate,#TransferMatSlipDate,#ProdDate,#QcCleaningDate').datepicker("option", "maxDate", formattedDate2);
+                // $('#TransferMatEntrydate,#TransferMatSlipDate,#ActualEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                // $('#ProdDate,#QcCleaningDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            }
+        });
+
+        function GetEntryId() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillEntryandGate")",
+                dataType: "json",
+                data: { "YearCode": $('#TransferMatYearCode').val(), "EntryDate": $('#EntryDate').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#TransferMatEntryId').val(obj.Result[0].EntryId);
+                        $('#TransferMatSlipNo').val(obj.Result[0].slipno);
+                    }
+                }
+            });
+        }
+
+        function GetServerDate() {
+             
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                     
+                    console.log(result);
+                    if (result != null) {
+
+                        var today = new Date();
+                        var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
+
+                        if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                            $('#TransferMatEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                            $('#TransferMatSlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                            //$('#ActualEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                            $('#ProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                            $('#QcCleaningDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        }
+                    }
+                }
+            });
+        }
+
+        $('#TransferQty').keyup(function () {
+            var BatchStock = parseInt($('#BatchStock').val());
+            if (parseInt($('#TransferQty').val()) > BatchStock) {
+                $.notify("Transfer Qty cannot be greater than Batch Stock.", "error");
+                $('#TransferQty').val(0);
+                return false;
+            }
+        })
+
+        $("#TransferQty").on("keydown", function (event) {
+            if (event.key.toLowerCase() === 'e' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+
+        $("#AltTransferQty").on("keydown", function (event) {
+            if (event.key.toLowerCase() === 'e' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+
+        $('#AltTransferQty').keyup(function () {
+            var BatchStock = parseInt($('#BatchStock').val());
+            if (parseInt($('#AltTransferQty').val()) > BatchStock) {
+                $.notify("AltTransfer Qty cannot be greater than Batch Stock.", "error");
+                $('#AltTransferQty').val(0);
+                return false;
+            }
+        })
+
+        $('#SH').change(function () {
+            if ($('#SH').is(':checked') == true) {
+                $('.AF').fadeIn();
+            }
+            else {
+                $('.AF :input').val('');
+                $('.AF').fadeOut();
+            }
+        });
+
+        function CheckWorkCenter() {
+            if (parseInt($('#IssueFromWc').val()) == parseInt($('#IssueToWcStore').val())) {
+                $.notify("Issue FromWorkCenter and Issue ToWorkCenter are not same.", "error");
+                $('#IssueToWcStore').val('-Select-');
+                return false;
+            }
+        }
+
+        $('#IssueFromWc').change(function () {
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                $('#IssueFromWCid').val($('#IssueFromWc').val())
+                if ("@Model.IssueFromWCid" != $('#IssueFromWc').val()) {
+                    $('#divTransferGrid').empty();
+                }
+                CheckWorkCenter();
+                ClearGrid();
+            }
+            else {
+                $('#IssueFromWCid').val($('#IssueFromWc').val())
+                CheckWorkCenter();
+                ClearGrid();
+                $('#divTransferGrid').empty();
+            }
+        });
+
+        $('#IssueToWcStore').change(function () {
+
+            ClearGrid();
+            if ($('#IssueToStoreWC').val() == "W") {
+                $('#IssueTOWCid').val($('#IssueToWcStore').val());
+                $('#IssueToStoreId').val(0);
+                CheckWorkCenter();
+            }
+            else {
+                $('#IssueToStoreId').val($('#IssueToWcStore').val());
+                $('#IssueTOWCid').val(0);
+            }
+        });
+
+        $('#IssueByEmpName').change(function () {
+            $('#IssuedByEmp').val($('#IssueByEmpName').val())
+        });
+
+        $('#RecByEmpName').change(function () {
+            $('#RecByEmpId').val($('#RecByEmpName').val())
+        });
+
+        function FillStoreName() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStoreName")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#IssueToWcStore').empty();
+                            $('#IssueToWcStore').append('<option selected disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#IssueToWcStore').append('<option selected value="' + val.StoreId + '">' + val.Store_Name + '</option>');
+                                $('#IssueToStoreId').val($('#IssueToWcStore').val());
+                                $('#IssueTOWCid').val(0);
+                            })
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                if ($('#IssueToStoreWC').val() == "W") {
+                                    var ToWc = "@Model.IssueTOWCid";
+                                    $('#IssueToWcStore').val(ToWc).trigger("change");
+                                }
+                                else {
+                                    var ToStore = "@Model.IssueToStoreId";
+                                    $('#IssueToWcStore').val(ToStore).trigger("change");
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillWorkCenter() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillWorkCenter")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#IssueFromWc').empty();
+                            $('#IssueFromWc').append('<option>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#IssueFromWc').append('<option selected value="' + val.WCID + '">' + val.WorkCenterDescription + '</option>');
+                                $('#IssueFromWCid').val($('#IssueFromWc').val());
+                                $('#IssueToStoreId').val(0);
+                            })
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var FromWc = "@Model.IssueFromWCid";
+                                $('#IssueFromWc').val(FromWc).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillToWorkCenter() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillWorkCenter")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#IssueToWcStore').empty();
+                            $('#IssueToWcStore').append('<option>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#IssueToWcStore').append('<option value="' + val.WCID + '">' + val.WorkCenterDescription + '</option>');
+                                $('#IssueTOWCid').val($('#IssueToWcStore').val());
+                                $('#IssueToStoreId').val(0);
+                            })
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                if ($('#IssueToStoreWC').val() == "W") {
+                                    var ToWc = "@Model.IssueTOWCid";
+                                    $('#IssueToWcStore').val(ToWc).trigger("change");
+                                }
+                                else {
+                                    var ToStore = "@Model.IssueToStoreId";
+                                    $('#IssueToWcStore').val(ToStore).trigger("change");
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillItemName() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillItemName")",
+                dataType: "json",
+                data: { "TransferMatYearCode": $('#TransferMatYearCode').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ItemName').empty();
+                            $('#ItemName').append('<option>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemName').append('<option value="' + val.Item_code + '">' + val.Itemname + '</option>');
+                                $('#ItemCode').val($('#ItemName').val());
+                            })
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillProcessName() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillProcessName")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProcessName').empty();
+                            $('#ProcessName').append('<option>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProcessName').append('<option value="' + val.ProcessId + '">' + val.ProcessName + '</option>');
+                                $('#ProcessId').val($('#ProcessName').val());
+                            })
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillPartCode() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillPartCode")",
+                dataType: "json",
+                data: { "TransferMatYearCode": $('#TransferMatYearCode').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#PartCode').append('<option value="' + val.Item_code + '">' + val.PartCode + '</option>');
+                            })
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillIssueByEmp() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("BindEmpList")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#IssueByEmpName').empty();
+                            $('#IssueByEmpName').append('<option disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+
+                                $('#IssueByEmpName').append('<option value="' + val.Emp_Id + '">' + val.Emp_Name + '</option>');
+                                $('#IssuedByEmp').val($('#IssueByEmpName').val());
+                            })
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var IssueEmpId = "@Model.IssuedByEmp";
+                                $('#IssueByEmpName').val(IssueEmpId).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function FillRecByEmp() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("BindEmpList")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RecByEmpName').empty();
+                            $('#RecByEmpName').append('<option disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#RecByEmpName').append('<option value="' + val.Emp_Id + '">' + val.Emp_Name + '</option>');
+                                $('#RecByEmpId').val($('#RecByEmpName').val());
+                            })
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var RecByEmp = "@Model.RecByEmpId";
+                                $('#RecByEmpName').val(RecByEmp).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function Validate_TransferGrid() {
+
+            var Err = 0;
+            if ($('#PartCode').prop('selectedIndex') == 0) {
+                AddErrorCls('PartCode');
+                $.notify("PartCode is required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('PartCode');
+            }
+            if ($('#ItemName').prop('selectedIndex') == 0) {
+                AddErrorCls('ItemName');
+                $.notify("ItemName is required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ItemName');
+            }
+            if ($('#BatchNo').prop('selectedIndex') == 0) {
+                AddErrorCls('BatchNo');
+                $.notify("BatchNo is required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('BatchNo');
+            }
+            if ($('#UniqueBatchNo').prop('selectedIndex') == 0) {
+                AddErrorCls('UniqueBatchNo');
+                $.notify("UniqueBatchNo is required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('UniqueBatchNo');
+            }
+            if ($('#TransferQty').val() == 0) {
+                AddErrorCls('TransferQty');
+                $.notify("TransferQty is must be greater than 0.", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('TransferQty');
+            }
+            // if ($('#AltTransferQty').val() == 0) {
+            //     AddErrorCls('AltTransferQty');
+            //     $.notify("AltTransferQty is must be greater than 0.", "error");
+            //     Err = 1;
+            // }
+            // else {
+            //     RemoveErrorCls('AltTransferQty');
+            // }
+            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        $('.ItemBtn').click(function (e) {
+
+            e.preventDefault();
+            if (!Validate_TransferGrid()) return;
+
+            var ItemData = {
+                "PartCode": $('#PartCode').find(":selected").text(),
+                "ItemName": $('#ItemName').find(":selected").text(),
+                "ProdEntryId": parseInt($('#ProdEntryId').val()),
+                "ProdEntryYearCode": parseInt($('#ProdEntryYearCode').val()),
+                "ProdDate": $('#ProdDate').val(),
+                "ProdPlanNo": $('#ProdPlanNo').val(),
+                "ProdPlanYearCode": parseInt($('#ProdPlanYearCode').val()),
+                "ProdSchNo": $('#ProdSchNo').val(),
+                "ProdSchYearCode": parseInt($('#ProdSchYearCode').val()),
+                "ParentProdSchNo": $('#ParentProdSchNo').val(),
+                "ParentProdSchYearCode": parseInt($('#ParentProdSchYearCode').val()),
+                "TransferQty": parseFloat($('#TransferQty').val()),
+                "QcOkQty": parseFloat($('#QcOkQty').val()),
+                "ProdQty": parseFloat($('#ProdQty').val()),
+                "Unit": $('#Unit').val(),
+                "AltTransferQty": parseFloat($('#AltTransferQty').val()),
+                "AltUnit": $('#AltUnit').val(),
+                "PendingToAcknowledge": $('#PendingToAcknowledge').val(),
+                "PendingQtyToAcknowledge": parseFloat($('#PendingQtyToAcknowledge').val()),
+                "ItemSize": $('#ItemSize').val(),
+                "ItemColor": $('#ItemColor').val(),
+                "InProcessQcSlipNo": $('#InProcessQcSlipNo').val(),
+                "InProcessQcEntryId": parseInt($('#InProcessQcEntryId').val()),
+                "InProcessQcYearCode": parseInt($('#InProcessQcYearCode').val()),
+                "QcCleaningDate": $('#QcCleaningDate').val(),
+                "ProcessName": $('#ProcessName').find(":selected").text() == '-Select-' ? "" : $('#ProcessName').find(":selected").text(),
+                "ProcessId": $('#ProcessName').val(),
+                "TotalStock": parseFloat($('#TotalStock').val()),
+                "BatchNo": $('#BatchNo').val(),
+                "UniqueBatchNo": $('#UniqueBatchNo').val(),
+                "BatchStock": parseFloat($('#BatchStock').val()),
+                "ReceivedByStoreQty": parseFloat($('#ReceivedByStoreQty').val()),
+                "ReceivedCompleted": $('#ReceivedCompleted').val(),
+                "ReceivebyEmpName": $('#ReceivebyEmpName').val(),
+                "Rate": parseFloat($('#Rate').val()),
+                "ItemWeight": parseFloat($('#ItemWeight').val()),
+                "ItemCode": parseFloat($('#ItemName').val())
+            }
+
+            $.ajax({
+                url: "@Url.Action("AddTransferFromWorkCenter")",
+                type: "POST",
+                data: ItemData,
+                beforeSend: function (xhr) {
+                    console.log(1);
+                },
+                success: function (data, status, xhr) {
+                    console.log(2);
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
+                    }
+                    else {
+                        $('#divTransferGrid').html(data);
+                        $.notify('Item Added To Grid.', "success");
+                    }
+                    editingNow = false;
+                    ClearGrid();
+                    $('#BatchNo').empty();
+                    $('#BatchNo').append('<option selected>-Select-</option>');
+                    $('#UniqueBatchNo').empty();
+                    $('#UniqueBatchNo').append('<option selected>-Select-</option>');
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+                    console.log(5);
+                    $('.Schedule').fadeIn();
+                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                }
+            }).done(function () {
+                console.log(3);
+            }).fail(function () {
+                alert("error");;
+            }).always(function () {
+                console.log(4);
+            });
+        });
+
+        function ClearGrid() {
+
+            $('#PartCode').prop('selectedIndex', 0).trigger("change");
+            $('#ItemName').prop('selectedIndex', 0).trigger("change");
+            $('#ProdSlipNo').val('');
+            $('#ProdEntryId').val(0);
+            // $('#ProdEntryYearCode').val(0),
+            $('#ProdDate').val('');
+            $('#ProdPlanNo').val('');
+            // $('#ProdPlanYearCode').val(''),
+            $('#ProdSchNo').val('');
+            // $('#ProdSchYearCode').val(''),
+            $('#ParentProdSchNo').val('');
+            // $('#ParentProdSchYearCode').val(''),
+            $('#TransferQty').val(0);
+            $('#QcOkQty').val(0);
+            $('#ProdQty').val(0);
+            $('#Unit').val('');
+            $('#AltTransferQty').val(0);
+            $('#AltUnit').val('');
+            $('#PendingToAcknowledge').val('');
+            $('#PendingQtyToAcknowledge').val(0);
+            $('#ItemSize').val('');
+            $('#ItemColor').val('');
+            $('#InProcessQcSlipNo').val('');
+            $('#InProcessQcEntryId').val(0);
+            // $('#InProcessQcYearCode').val(0),
+            $('#QcCleaningDate').val('');
+            $('#ProcessName').val('');
+            $('#TotalStock').val(0);
+            $('#BatchNo').val('');
+            $('#UniqueBatchNo').val('');
+            $('#BatchStock').val(0);
+            $('#ReceivedByStoreQty').val(0);
+            $('#ReceivedCompleted').val('');
+            $('#ReceivebyEmpName').val('');
+            $('#Rate').val(0);
+            $('#ItemWeight').val('');
+        }
+
+        $('#IssueToStoreWC').change(function () {
+
+            if ($('#IssueToStoreWC').val() == "S") {
+                FillStoreName();
+            }
+            else if ($('#IssueToStoreWC').val() == "W") {
+                FillToWorkCenter();
+            }
+            $('#divTransferGrid').empty();
+        })
+
+        $('#PRODSTATUSProdUnProdRej').change(function () {
+            if ($('#PRODSTATUSProdUnProdRej').val() == "Produce") {
+                $('#ProdEntryDiv').show();
+                $('#ProdEntryYearCodeDiv').show();
+                $('#ProdDateDiv').show();
+                $('#ProdPlanNoDiv').show();
+                $('#ProdPlanYearCodeDiv').show();
+                $('#ProdSchNoDiv').show();
+                $('#ProdSchYearCodeDiv').show();
+                $('#ParentProdSchNoDiv').show();
+                $('#ParentProdSchYearCodeDiv').show();
+                $('#ProdSlipNoDiv').show();
+            }
+            else if ($('#PRODSTATUSProdUnProdRej').val() == "UnProduce") {
+                $('#ProdEntryDiv').hide();
+                $('#ProdEntryYearCodeDiv').hide();
+                $('#ProdDateDiv').hide();
+                $('#ProdPlanNoDiv').hide();
+                $('#ProdPlanYearCodeDiv').hide();
+                $('#ProdSchNoDiv').hide();
+                $('#ProdSchYearCodeDiv').hide();
+                $('#ParentProdSchNoDiv').hide();
+                $('#ParentProdSchYearCodeDiv').hide();
+                $('#ProdSlipNoDiv').hide();
+            }
+        })
+
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+            $('#ItemCode').val($('#ItemName').val())
+            GetBatchNo();
+            GetUnit();
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+        var editingNow = false;
+        function EditItemRow(SeqNo) {
+
+            if (editingNow == false) {
+
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditItemRow")',
+                        type: "POST",
+                        data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
+                    })
+                        .done(function (data, status, xhr) {
+                            editingNow = true;
+                            var obj = $.parseJSON(data);
+                            DeleteItemRow(SeqNo)
+                                .then(() => {
+
+                                    $('#PartCode').val(obj[0].ItemCode).trigger('change');
+                                    $('#ItemName').val(obj[0].ItemCode).trigger('change');
+                                    GetBatchNo();
+                                    if ($('#Mode').val() == "U") {
+                                        $('#BatchNo').append('<option selected>' + obj[0].BatchNo + '</option>');
+                                        $('#UniqueBatchNo').append('<option selected>' + obj[0].UniqueBatchNo + '</option>');
+                                    } else {
+                                        $('#BatchNo').val(obj[0].BatchNo).trigger('change');
+                                        $('#UniqueBatchNo').val(obj[0].UniqueBatchNo);
+                                    }
+                                    $('#Unit').val(obj[0].Unit);
+                                    $('#AltUnit').val(obj[0].AltUnit);
+                                    $('#BatchStock').val(obj[0].BatchStock);
+                                    $('#TotalStock').val(obj[0].TotalStock);
+                                    $('#TransferQty').val(obj[0].TransferQty);
+                                    $('#AltTransferQty').val(obj[0].AltTransferQty);
+                                    $('#ProcessName').val(obj[0].ProcessName);
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+        var itemBatchArray = [];//for deleting and adding batchnos in batchlist if its performed
+        var BatchUniqueUpd = [];//for deleting batches in sequence
+        var SeqForBatch = 1;
+        function GetBatchNo() {
+
+            var dateValue = $('#TransferMatEntrydate').val();
+            var [day, month, year] = dateValue.split('/');
+            day = day.padStart(2, '0'); // Ensure day has two digits
+            month = month.padStart(2, '0'); // Ensure month has two digits
+            var formattedDate = `${day}/${month}/${year}`;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetBatchNumber")',
+                data: { ItemCode: $('#ItemName').val(), YearCode: $('#TransferMatYearCode').val(), WcId: $('#IssueFromWc').val(), TransDate: formattedDate, BatchNo: $('#BatchNo').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
+                            //$('#uniquebatchno').empty();
+                            //$('#uniquebatchno').append('<option value="" disabled selected>-Select-</option>');
+
+                            var seenValues = {};
+                            $.each(obj.Result, function (index, val) {
+
+                                if (!seenValues[val.batchno]) {
+                                    seenValues[val.batchno] = true;
+                                    $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                }
+                                //$('#RmUniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
+                            });
+
+                            var selectListLength = $('#BatchNo option').length - 1;
+                            // var selectList
+                            var itemArrayLength = itemBatchArray.length;
+                            if (itemArrayLength > 0) {
+
+                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
+                                    return item.itemcode === parseInt(ItemCode);
+                                });
+                                var selectList = $('#BatchNo');
+                                selectList.find('option').each(function () {
+
+                                    var optionValue = $(this).val();
+
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.batchno === optionValue;
+                                    });
+
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+                            }
+                        } else {
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
+                            $('#UniqueBatchNo').empty();
+                            $('#UniqueBatchNo').append('<option value="0" disabled selected>-Select-</option>');
+                        }
+
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        $('#BatchNo').change(function () {
+            var dateValue = $('#TransferMatEntrydate').val();
+            var [day, month, year] = dateValue.split('/');
+            day = day.padStart(2, '0'); // Ensure day has two digits
+            month = month.padStart(2, '0'); // Ensure month has two digits
+            var formattedDate = `${day}/${month}/${year}`;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetBatchNumber")',
+                data: { ItemCode: $('#ItemName').val(), YearCode: $('#TransferMatYearCode').val(), WcId: $('#IssueFromWc').val(), TransDate: formattedDate, BatchNo: $('#BatchNo').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            $('#UniqueBatchNo').empty();
+                            $('#UniqueBatchNo').append('<option selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                if ($("#UniqueBatchNo option[value='" + val.UniqueBatchNo + "']").length == 0) {
+                                    $('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" data-stock="' + val.stock + '">' + val.UniqueBatchNo + '</option>');
+                                }
+                            });
+                        }
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        });
+
+        $('#UniqueBatchNo').change(function () {
+            GetBatchWorkCenterQty();
+            GetWorkCenterTotalQty();
+        });
+
+        var BatchStock = 0;
+        function GetBatchWorkCenterQty() {
+            var dateValue = $('#TransferMatEntrydate').val();
+            var [day, month, year] = dateValue.split('/');
+            day = day.padStart(2, '0'); // Ensure day has two digits
+            month = month.padStart(2, '0'); // Ensure month has two digits
+            var formattedDate = `${day}/${month}/${year}`;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetWorkCenterQty")",
+                data: { ItemCode: $('#ItemName').val(), WcId: $('#IssueFromWc').val(), TillDate: formattedDate, BatchNo: $('#BatchNo').val(), UniqueBatchNo: $('#UniqueBatchNo').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        // BatchStock=0
+                        $('#BatchStock').val($.parseJSON(result).Result[0].STOCK);
+
+                        BatchStock = $.parseJSON(result).Result[0].STOCK;
+                    }
+                }
+            });
+        }
+
+        function GetWorkCenterTotalQty() {
+            var dateValue = $('#TransferMatEntrydate').val();
+            var [day, month, year] = dateValue.split('/');
+            day = day.padStart(2, '0'); // Ensure day has two digits
+            month = month.padStart(2, '0'); // Ensure month has two digits
+            var formattedDate = `${day}/${month}/${year}`;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetWorkCenterTotalStock")",
+                data: { ItemCode: $('#ItemName').val(), WcId: $('#IssueFromWc').val(), TillDate: formattedDate },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#TotalStock').val($.parseJSON(result).Result[0].STOCK);
+                    }
+                }
+            });
+        }
+
+        function GetUnit() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetUnit")",
+                data: { ItemCode: $('#ItemName').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#Unit').val($.parseJSON(result).Result[0].Unit);
+                        $('#AltUnit').val($.parseJSON(result).Result[0].Unit);
+                    }
+                }
+            });
+        }
+
+        var isEditAllowed = "false";
+
+        function DeleteItemRow(SeqNo) {
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Action("DeleteItemRow")',
+                    type: "POST",
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                    success: function (data) {
+                        $('#divTransferGrid').html(data);
+                        $.notify("Item Deleted from Grid", "info");
+                        isEditAllowed = "true";
+                        resolve();
+                    },
+                    error: function (response) {
+                        reject(response.responseText);
+                    }
+                });
+            });
+        }
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('TransferSlipNoBack', $('#TransferSlipNoBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('FromWorkCenterBack', $('#FromWorkCenterBack').val());
+            sessionStorage.setItem('ToWorkCenterBack', $('#ToWorkCenterBack').val());
+            sessionStorage.setItem('StoreNameBack', $('#StoreNameBack').val());
+            sessionStorage.setItem('ProdSlipNoBack', $('#ProdSlipNoBack').val());
+            sessionStorage.setItem('ProdSchNoBack', $('#ProdSchNoBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+    </script>
+}

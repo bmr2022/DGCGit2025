@@ -1,0 +1,702 @@
+﻿@model eTactWeb.DOM.Models.SubVoucherDashBoardModel;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <form id="SParam" method="post" asp-controller="SubVoucher" asp-action="SubVoucherDashboard" autocomplete="off">
+        <div class="card rounded border-light bg-gradient">
+            <div class="card-header card-headerBG text-light bg-gradient">
+                <h5>
+                    SubVoucher - <strong>Dashboard</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="SubVoucher" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                            <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                            Add New
+                        </a>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" class="form-control" />
+                                    </div>
+                                    <input asp-for="FromDate1" type="hidden" />
+                                    <input asp-for="ToDate1" type="hidden" />
+                                    <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" />
+                                    <input asp-for="PrefixEntryId" type="hidden" class="form-control" value="@Model.PrefixEntryId" />
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <input type="hidden" asp-for="ID" name="ID" value="@Model.ID" />
+
+                                </div>
+                            </div>
+                           @*  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="MainVoucherName" class="form-label">MainVoucher Name</label>
+                                <select asp-for="MainVoucherName" id="MainVoucherName" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="MainVoucherTableName" class="form-label">MainVoucher Table Name</label>
+                                <input asp-for="MainVoucherTableName" id="MainVoucherTableName" class="form-control" value="@Model.MainVoucherTableName" readonly />
+                            </div> *@
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="SubVoucherName" class="form-label">SubVoucher Name</label>
+                                <input asp-for="SubVoucherName" class="form-control" value="@Model.SubVoucherName" />
+                            </div>
+                           @*  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                <label for="StartSubVouchDiffSeries" class="form-label">Start SubVoucher With different Series</label>
+                                <select asp-for="StartSubVouchDiffSeries" id="StartSubVouchDiffSeries" class="form-control">
+                                    <option value="">-Select-</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="SubVouchPrefix" class="form-label">Prefix</label>
+                                <input asp-for="SubVouchPrefix" class="form-control" value="@Model.SubVouchPrefix" />
+                                <span asp-validation-for="SubVouchPrefix" class="text-danger"></span>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="FromYearPrefix" class="form-label">FromYear Prefix</label>
+                                <select asp-for="FromYearPrefix" id="FromYearPrefix" class="form-control">
+                                    <option value="">-Select-</option>
+                                    <option value="YY">YY</option>
+                                    <option value="YYYY">YYYY</option>
+                                    <option value="NA">NA</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="ToYearPreFix" class="form-label">ToYear PreFix</label>
+                                <select asp-for="ToYearPreFix" id="ToYearPreFix" class="form-control">
+                                    <option value="">-Select-</option>
+                                    <option value="YY">YY</option>
+                                    <option value="YYYY">YYYY</option>
+                                    <option value="NA">NA</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="MonthPrefix" class="form-label">Month Prefix</label>
+                                <select asp-for="MonthPrefix" id="MonthPrefix" class="form-control">
+                                    <option value="">-Select-</option>
+                                    <option value="MM">MM</option>
+                                    <option value="MMM">MMM</option>
+                                    <option value="NA">NA</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="DayPrefix" class="form-label">Day Prefix</label>
+                                <select asp-for="DayPrefix" id="DayPrefix" class="form-control">
+                                    <option value="">-Select-</option>
+                                    <option value="DD">DD</option>
+                                    <option value="NA">NA</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="SeparatorApplicable" class="form-label">Separator Applicable</label>
+                                <select asp-for="SeparatorApplicable" class="form-control">
+                                    <option value="">-Select-</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="Separator" class="form-label">Separator</label>
+                                <select asp-for="Separator" class="form-control">
+                                    <option value="/">-select-</option>
+                                    <option value="/">/</option>
+                                    <option value="-">-</option>
+                                    <option value=",">,</option>
+                                    <option value="|">|</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="TotalLength" class="form-label">Voucher Series Length</label>
+                                <input asp-for="TotalLength" class="form-control" value="@Model.TotalLength" />
+                                <span asp-validation-for="TotalLength" class="text-danger"></span>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label for="VoucherRotationType" class="form-label">Rotate Every</label>
+                                <select asp-for="VoucherRotationType" id="VoucherRotationType" class="form-control">
+                                    <option value="">-Select-</option>
+                                    <option value="Yearly">Yearly</option>
+                                    <option value="DayPrefix">Daily</option>
+                                    <option value="MonthPrefix">Monthly</option>
+                                </select>
+                            </div> *@
+                            @*  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="LedgerName" class="form-label">Ledger Name</label>
+                                <input asp-for="LedgerName" class="form-control" type="text" />
+                                 <select asp-for="LedgerName" class="form-control">
+                                    <option value="">-Select-</option>
+                                </select> 
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <label asp-for="OpeningForYear" class="form-label">Year</label>
+                                <input asp-for="OpeningForYear" class="form-control" value="@Model.OpeningForYear" readonly />
+                                <input type="hidden" asp-for="OpeningForYear" />
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="PreviousAmount" class="form-label">Amount</label>
+                                <input id="PreviousAmount" type="text" asp-for="PreviousAmount" class="form-control" />
+                                <span asp-validation-for="PreviousAmount" class="text-danger"></span>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:150px">
+                                <label asp-for="DrCr" class="form-label">Type</label>
+
+                                <select asp-for="DrCr" class="form-select">
+                                    <option value="">-Select-</option>
+                                    <option value="DR">Dr</option>
+                                    <option value="CR">Cr</option>
+                                </select>
+                            </div> *@
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class=" d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+                                <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="LedgerOpeningEntry" asp-action="LedgerOpeningEntryDashBoard">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pb-0 pt-0">
+                <div class="progress" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body" id="divDashboardGrid">
+                        <partial name="_SubVoucherDashBoardGrid" />
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="OtherGrid">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                    </button>
+                </h2>
+                <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                    <div class="accordion-body">
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="row g-2 gx-3" id="_ItemGrid">
+
+                            @if (Model.Mode != "U" && Model.Mode != "V")
+                            {
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="EntryByEmpName" class="form-label">Created By</label>
+                                    <input type="hidden" asp-for="ActualEntryBy" class="form-control" />
+                                    <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ActualEntryDate" class="form-label">Created On</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
+                            }
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
+                                <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
+                            </div>
+                            @if (Model.Mode == "U" || Model.Mode == "V")
+                            {
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="EntryByEmpName" class="form-label">Created By</label>
+                                    <input type="hidden" asp-for="ActualEntryBy" class="form-control" />
+                                    <input asp-for="EntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ActualEntryDate" class="form-label">Created On</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="UpdateByEmpName" class="form-label" style="width:150px">Updated By</label>
+                                    <input type="hidden" asp-for="UpdatedBy" class="form-control" readonly />
+                                    <input type="hidden" asp-for="UpdationDate" class="form-control" readonly />
+                                    <input asp-for="UpdateByEmpName" class="form-control" readonly />
+                                    @if (Model.UpdationDate.HasValue)
+                                    {
+                                        <div>Last Updated: @Model.UpdationDate.Value.ToString("yyyy-MM-dd HH:mm")</div>
+                                    }
+                                    else
+                                    {
+                                        <div>No Update Date Available</div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+       
+
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            GetDetailData();
+        });
+        $('.submitBTN').click(function (e) {
+             
+            e.preventDefault();
+            $('form').submit();
+        });
+        $('#updateSubVoucherPrefixForm').submit(function (e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: '@Url.Action("UpdateSubVoucherPrefixSetting", "YourController")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.status === "Updated Successfully") {
+                        alert("Data updated successfully!");
+                        // Refresh grid or perform any UI action needed after update
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function (error) {
+                    alert("An error occurred: " + error.responseText);
+                }
+            });
+        });
+        $(document).ready(function () {
+
+            var date = $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            console.log(date);
+
+            AutoComplete('Item_Master_Type', 'Type_Item', 'Main_Category_Type', null);
+
+            $('#MainVoucherName').rules("remove", "required");
+            $('#SubVoucherName').rules("remove", "required");
+            $('#StartSubVouchDiffSeries').rules("remove", "required");
+            $('#VoucherRotationType').rules("remove", "required");
+            $('#FromYearPrefix').rules("remove", "required");
+            $('#FromYearPrefix').rules("remove", "required");
+            $('#MainVoucherName').select2();
+            $('#StartSubVouchDiffSeries').select2();
+            $('#VoucherRotationType').select2();
+            $('#Separator').select2();
+            $('#SeparatorApplicable').select2();
+            $('#FromYearPrefix').select2();
+            $('#ToYearPreFix').select2();
+            $('#MonthPrefix').select2();
+            $('#DayPrefix').select2();
+            getMainVoucherNames();
+            //getPrefixEntryId();
+          
+            $('#MainVoucherName').change(function () {
+                var MainVoucherName = $(this).val();
+            });
+            $('#ToYearPreFix').change(function () {
+                var ToYearPreFix = $(this).val();
+            });
+            $('#StartSubVouchDiffSeries').change(function () {
+                var StartSubVouchDiffSeries = $(this).val();
+            });
+            $('#FromYearPrefix').change(function () {
+                var FromYearPrefix = $(this).val();
+            });
+            $('#ToYearPreFix').change(function () {
+                var ToYearPreFix = $(this).val();
+            });
+            $('#MonthPrefix').change(function () {
+                var MonthPrefix = $(this).val();
+            });
+            $('#DayPrefix').change(function () {
+                var DayPrefix = $(this).val();
+            });
+            $('#SeparatorApplicable').change(function () {
+                var SeparatorApplicable = $(this).val();
+            });
+            $('#VoucherRotationType').change(function () {
+                var VoucherRotationType = $(this).val();
+            });
+            $('#ActualEntryBy').change(function () {
+                var ActualEntryBy = $(this).val();
+            });
+
+        });
+        $(function () {
+
+            if ($('#gateDashboardtable tr').length < 1) {
+                var dashGrid = 0;
+                $('#totalRows').text(dashGrid);
+            } else {
+                var dashGrid = $('#gateDashboardtable tr').length;
+                $('#totalRows').text(dashGrid);
+            }
+
+            var currentDate = new Date();
+
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            function formatDate(date) {
+                var day = ("0" + date.getDate()).slice(-2);
+                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                var dateString = day + "/" + month + "/" + year;
+                return dateString;
+
+            }
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            // AutoComplete('gateDashboardtable', 'SrNO', 'SrNO', null);
+            // AutoComplete('VAccLedgerOpening', 'LedgerName', 'LedgerName', null);
+            // AutoComplete('VAccLedgerOpening', 'ClosingYearCode', 'ClosingYearCode', null);
+            // AutoComplete('VAccLedgerOpening', 'DrCr', 'DrCr', null);
+            // AutoComplete('VAccLedgerOpening', 'EntryByEmployee', 'EntryByEmployee', null);
+            // AutoComplete('VAccLedgerOpening', 'ActualEntryDate', 'ActualEntryDate', null);
+            // AutoComplete('VAccLedgerOpening', 'UpdatedByEmployee', 'UpdatedByEmployee', null);
+            // AutoComplete('VAccLedgerOpening', 'Updationdate', 'Updationdate', null);
+            // AutoComplete('VAccLedgerOpening', 'EntryByMachine', 'EntryByMachine', null);
+
+            if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
+
+                var inputFromDateString = $('#FromDate1').val().split(" ")[0];
+                var inputToDateString = $('#ToDate1').val().split(" ")[0];
+
+                var originalFromDate = new Date(inputFromDateString);
+                var originalToDate = new Date(inputToDateString);
+
+
+                //fromdate
+                var day = originalFromDate.getDate();
+                var month = originalFromDate.getMonth() + 1;
+                var year = originalFromDate.getFullYear();
+
+                var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+                //todate
+                var day = originalToDate.getDate();
+                var month = originalToDate.getMonth() + 1; // Months are zero-based
+                var year = originalToDate.getFullYear();
+
+                var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+
+                $('#FromDate').val(convertedFromDateText);
+                $('#ToDate').val(convertedToDateText);
+
+            }
+        });
+        function GetDetailData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetDetailData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    if ($('#gateDashboardtable').val() == '') {
+                        var dashGrid = 0;
+                        $('#totalRows').text(dashGrid);
+                    } else {
+                        var dashGrid = $('#gateDashboardtable tr').length;
+                        $('#totalRows').text(dashGrid);
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function getPrefixEntryId(mainVoucherName) {
+             
+            $.ajax({
+                url: '@Url.Action("GetPrefixId", "SubVoucher")',
+                type: 'POST',
+                data: { mainVoucherName: mainVoucherName },
+                success: function (data) {
+                    $('#PrefixEntryId').val(data); // Set the value dynamically
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+        function getMainVoucherNames() {
+            $.ajax({
+                url: '@Url.Action("GetMainVoucherNames", "SubVoucher")',
+                type: 'GET',
+                success: function (response) {
+                     ;
+                    var dropdown = $('#MainVoucherName');
+                    var obj = $.parseJSON(response);
+                    dropdown.empty();
+                    dropdown.append('<option value="">-Select-</option>');
+                     
+                    $.each(obj.Result, function (index, value) {
+                        dropdown.append('<option value="' + value.MainVoucherName + '">' + value.MainVoucherName + '</option>');
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('AJAX error: ', textStatus, errorThrown);
+                    alert('Error loading voucher names: ' + textStatus);
+                }
+            });
+        }
+        $('#MainVoucherName').change(function () {
+            var mainVoucherName = $('#MainVoucherName').val();
+            getPrefixEntryId(mainVoucherName);
+        });
+
+        $('#MainVoucherName').change(function () {
+            var selectedVoucher = $(this).val(); // Get selected voucher name
+            if (selectedVoucher) {
+                $.ajax({
+                    url: '@Url.Action("GetTableName", "SubVoucher")',
+                    type: 'GET',
+                    data: { MainVoucherName: selectedVoucher }, // Send selected voucher to the backend
+                    success: function (response) {
+                        // Parse the response
+                        var parsedResponse = JSON.parse(response);
+
+                        // Check if the Result array exists and has the TABLENAME
+                        if (parsedResponse.Result && parsedResponse.Result.length > 0) {
+                            var tableName = parsedResponse.Result[0].TABLENAME;
+
+                            // Set the returned table name to the input field
+                            $('#MainVoucherTableName').val(tableName);
+                        } else {
+                            console.error('Invalid response format or no TABLENAME found');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX error: ', textStatus, errorThrown);
+                        alert('Error fetching table name: ' + textStatus);
+                    }
+                });
+            } else {
+                // Clear the table name if no voucher is selected
+                $('#MainVoucherTableName').val('');
+            }
+        });
+
+        @*
+        function GetTableName() {
+         ;
+        $.ajax({
+        url: '@Url.Action("GetTableName", "SubVoucher")',
+        type: 'GET',
+        success: function (response) {
+         ;
+        var dropdown = $('#MainVoucherTableName');
+        var obj = $.parseJSON(response);
+        dropdown.empty();
+        dropdown.append('<option value="">-Select-</option>');
+         
+        $.each(obj.Result, function (index, value) {
+        dropdown.append('<option value="' + value.MainVoucherTableName + '">' + value.MainVoucherTableName + '</option>');
+        });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+        console.error('AJAX error: ', textStatus, errorThrown);
+        alert('Error loading voucher names: ' + textStatus);
+        }
+        });
+        }
+
+        *@
+
+                var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#gateDashboardtable tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        $('#sendToExcel').click(function () {
+            $("#GateDataTable").table2excel({
+                filename: "WorkOrderProcessDetailData.xls"
+            });
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('GateDataTable', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('GateDataTable', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+            function TotalNoOfRows() {
+                var Row = $('#divStockGrid tr').length;
+                var tdCount = $('#divStockGrid tr td').length;
+                if (tdCount >= 1) {
+                    $('#lblTotalNoOfBelowItems').text(Row);
+                } else {
+                    $('#lblTotalNoOfBelowItems').text(0);
+                }
+            }
+        function confirmEdit(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to Edit this entry?")) {
+                // Extract the automatically generated href
+                var linkUrl = $(event.currentTarget).attr("href");
+
+                // Extract additional parameters from your input fields
+                var fromDate = $('#FromDate').val();
+                var toDate = $('#ToDate').val();
+                var groupName = $('#GroupName').val();
+                var ledgerName = $('#LedgerName').val();
+                var searchBox = $('#search-box').val();
+
+                // Build the query string with additional parameters
+                linkUrl += "?FromDate=" + encodeURIComponent(fromDate)
+                    + "&ToDate=" + encodeURIComponent(toDate)
+                    + "&GroupName=" + encodeURIComponent(groupName)
+                    + "&LedgerName=" + encodeURIComponent(ledgerName)
+                    + "&Searchbox=" + encodeURIComponent(searchBox);
+
+                // Extract data from the `data-*` attributes using .attr() instead of .data()
+                var selection = $(event.currentTarget);
+                var mode = selection.attr("data-mode");  // Using attr() to fetch data-mode
+                var prefixEntryId = selection.attr("data-id");
+                var mainVoucherName = selection.attr("data-main-voucher-name");
+                var mainVoucherTableName = selection.attr("data-main-voucher-table-name");
+                var subVoucherName = selection.attr("data-sub-voucher-name");
+                var voucherRotationType = selection.attr("data-voucher-rotation-type");
+                var startSubVouchDiffSeries = selection.attr("data-start-sub-vouch-diff-series");
+                var subVouchPrefix = selection.attr("data-sub-vouch-prefix");
+                var fromYearPrefix = selection.attr("data-from-year-prefix");
+                var toYearPrefix = selection.attr("data-to-year-prefix");
+                var monthPrefix = selection.attr("data-month-prefix");
+                var dayPrefix = selection.attr("data-day-prefix");
+                var separatorApplicable = selection.attr("data-separator-applicable");
+                var separator = selection.attr("data-separator");
+                var totalLength = selection.attr("data-total-length");
+                var actualEntryBy = selection.attr("data-actual-entry-by");
+                var actualEntryDate = selection.attr("data-actual-entry-date");
+                var updatedBy = selection.attr("data-updated-by");
+                var updationDate = selection.attr("data-updation-date");
+                var entryByMachine = selection.attr("data-entry-by-machine");
+
+                // Build the full query string with data-* attributes
+                linkUrl += "&Mode=" + encodeURIComponent(mode)
+                    + "&PrefixEntryId=" + encodeURIComponent(prefixEntryId)
+                    + "&MainVoucherName=" + encodeURIComponent(mainVoucherName)
+                    + "&MainVoucherTableName=" + encodeURIComponent(mainVoucherTableName)
+                    + "&SubVoucherName=" + encodeURIComponent(subVoucherName)
+                    + "&VoucherRotationType=" + encodeURIComponent(voucherRotationType)
+                    + "&StartSubVouchDiffSeries=" + encodeURIComponent(startSubVouchDiffSeries)
+                    + "&SubVouchPrefix=" + encodeURIComponent(subVouchPrefix)
+                    + "&FromYearPrefix=" + encodeURIComponent(fromYearPrefix)
+                    + "&ToYearPrefix=" + encodeURIComponent(toYearPrefix)
+                    + "&MonthPrefix=" + encodeURIComponent(monthPrefix)
+                    + "&DayPrefix=" + encodeURIComponent(dayPrefix)
+                    + "&SeparatorApplicable=" + encodeURIComponent(separatorApplicable)
+                    + "&Separator=" + encodeURIComponent(separator)
+                    + "&TotalLength=" + encodeURIComponent(totalLength)
+                    + "&ActualEntryBy=" + encodeURIComponent(actualEntryBy)
+                    + "&ActualEntryDate=" + encodeURIComponent(actualEntryDate)
+                    + "&UpdatedBy=" + encodeURIComponent(updatedBy)
+                    + "&UpdationDate=" + encodeURIComponent(updationDate)
+                    + "&EntryByMachine=" + encodeURIComponent(entryByMachine);
+
+                // Redirect to the new URL with GET request
+                window.location.href = linkUrl;
+            }
+        }
+
+
+
+        function confirmDelete(event) {
+             
+            event.preventDefault();
+            if (confirm("Are you sure you want to delete this entry?")) {
+                var urlHref = $(event.currentTarget).attr("href");
+                var linkUrl = urlHref;
+                linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() +
+                    "&ToDate=" + $('#ToDate').val() +
+                    "&GroupName=" + $('#GroupName').val() +
+                    "&LedgerName=" + $('#LedgerName').val() +
+                    "&ClosingYearCode=" + $('#ClosingYearCode').val() +
+                    "&Searchbox=" + $('#search-box').val() +
+                    "&DrCr=" + $('#DrCr').val() +
+                    "&Amount=" + $('#Amount').val() +
+                    "&CC=" + $('#CC').val() +
+                    "&EntryByEmployee=" + $('#EntryByEmployee').val() +
+                    "&ActualEntryDate=" + $('#ActualEntryDate').val() +
+                    "&UpdatedByEmployee=" + $('#UpdatedByEmployee').val() +
+                    "&Updationdate=" + $('#Updationdate').val() +
+                    "&EntryByMachine=" + $('#EntryByMachine').val();
+                window.location.href = linkUrl;
+            }
+        }
+
+
+
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+}
+

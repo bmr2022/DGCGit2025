@@ -1,0 +1,88 @@
+﻿@model eTactWeb.DOM.Models.MaterialReceiptModel
+@{
+    int Cntr = 0;
+}
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid" class="small @Cntr" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    @*<a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>*@
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    @*<a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>*@
+                }
+
+            </td>
+            <td id="PONO-@Cntr">@item.PONO<input type="hidden" id="VendorBatchMand-@Cntr" value="@item.VendorBatchMand" /></td>
+            <td id="POYear-@Cntr">@item.PoYearCode</td>
+            <td id="SchNo-@Cntr">@item.SchNo</td>
+            <td id="SchYear-@Cntr">@item.SchYearCode</td>
+            <td>@item.PoType</td>
+            <td>@item.PODate</td>
+            <td id="ItemName-@Cntr">@item.ItemName<input type="hidden" id="ItemCode-@Cntr" value="@item.ItemCode" /></td>
+            <td id="PartCode-@Cntr">@item.PartCode</td>
+            <td>@item.Unit</td>
+            <td id="Qty-@Cntr">@item.Qty</td>
+            <td>@item.AltQty</td>
+            <td>@item.RateUnit</td>
+            <td>@item.AltUnit</td>
+            <td>@item.NoOfCase</td>
+            <td id="BillQty-@Cntr">@item.BillQty</td>
+            <td id="RecQty-@Cntr">@item.RecQty</td>
+            <td>@item.AltRecQty</td>
+            <td>@item.ShortExcessQty</td>
+            <td>@item.Rate</td>
+            <td>@item.RateinOther</td>
+            <td>@item.Amount</td>
+            <td>@item.PendPOQty</td>
+            <td>@item.QCCompleted</td>
+            <td>@item.RetChallanPendQty</td>
+            <td>@item.BatchWise</td>
+            <td>@item.SaleBillNo</td>
+            <td>@item.SaleBillYearCode</td>
+            <td>@item.AgainstChallanNo</td>
+            <td>@item.BatchNo</td>
+            <td>@item.UniqueBatchNo</td>
+            <td>@item.SupplierBatchNo</td>
+            <td>@item.ShelfLife</td>
+            <td>@item.ItemSize</td>
+            <td>@item.ItemColor</td>
+
+        </tr>
+    }
+}

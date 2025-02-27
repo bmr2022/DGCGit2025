@@ -1,0 +1,185 @@
+﻿@model eTactWeb.DOM.Models.LedgerPartyWiseOpeningDashBoardModel;
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ledger Id</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ledger Year</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccBook TransId</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccBook TransYear</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Code</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Opening Amt</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice Date</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv Net Amt</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inv Pend Amt</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DrCr Type</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Trans Type</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Due Date</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry By</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LastUpdated Date</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByMachine</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccNarration</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Save/Update</th>
+
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.LedgerPartyWiseOpeningDashBoardDetail == null || Model.LedgerPartyWiseOpeningDashBoardDetail.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.LedgerPartyWiseOpeningDashBoardDetail)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="LedgerPartyWiseOpening" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary"
+                                           asp-route-ID="@Cntr"
+                                           asp-action="LedgerPartyWiseOpening"
+                                           asp-controller="LedgerPartyWiseOpening"
+                                           asp-route-Mode="U"
+                                           asp-route-LedgerOpnEntryId="@item.EntryId"
+                                           asp-route-OpeningYearCode="@item.OpeningYearCode"
+                                           asp-route-AccBookTransEntryId="@item.AccBookTransEntryId"
+                                           asp-route-AccBookTransYearCode="@item.AccBookTransYearCode"
+                                           asp-route-AccountCode="@item.AccountCode"
+                                           asp-route-OpeningAmt="@item.OpeningAmt"
+                                           asp-route-BillNo="@item.BillNo"
+                                           asp-route-BillDate="@item.BillDate"
+                                           asp-route-BillNetAmt="@item.BillNetAmt"
+                                           asp-route-PendAmt="@item.PendAmt"
+                                           asp-route-Type="@item.Type"
+                                           asp-route-TransactionType="@item.TransactionType"
+                                           asp-route-DueDate="@item.DueDate"
+                                           asp-route-CC="@item.CC"
+                                           asp-route-ActualEntryBy="@item.ActualEntryBy"
+                                           asp-route-ActualEntryDate="@item.ActualEntryDate"
+                                           asp-route-UpdatedBy="@item.UpdatedBy"
+                                           asp-route-LastUpdatedDate="@item.LastUpdatedDate"
+                                           asp-route-EntryByMachine="@item.EntryByMachine"
+                                           asp-route-AccountNarration="@item.AccountNarration"
+                                           asp-route-Unit="@item.Unit"
+                                           onclick="confirmEdit(event)">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID"
+                                           asp-route-EntryByMachine="@item.EntryByMachine"
+                                           asp-route-OpeningYearCode="@item.OpeningYearCode"
+                                           asp-route-LedgerOpnEntryId="@item.EntryId"
+                                           asp-route-AccountCode="@item.AccountCode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.EntryId</td>
+                            <td>@item.OpeningYearCode</td>
+                            <td>@item.AccBookTransEntryId</td>
+                            <td>@item.AccBookTransYearCode</td>
+                            <td>@item.AccountCode</td>
+                            <td>@item.LedgerName</td>
+                            <td>@item.OpeningAmt</td>
+                            <td>@item.BillNo</td>
+                            <td>@item.BillDate</td>
+                            <td>@item.BillNetAmt</td>
+                            <td>@item.PendAmt</td>
+                            <td>@item.Type</td>
+                            <td>@item.TransactionType</td>
+                            <td>@item.DueDate</td>
+                            <td>@item.CC</td>
+                            <td>@item.ActualEntryBy</td>
+                            <td>@item.ActualEntryDate</td>
+                            <td>@item.UpdatedBy</td>
+                            <td>@item.LastUpdatedDate</td>
+                            <td>@item.EntryByMachine</td>
+                            <td>@item.AccountNarration</td>
+                            <td>@item.Unit</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+</style>

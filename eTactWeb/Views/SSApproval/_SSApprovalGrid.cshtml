@@ -1,0 +1,184 @@
+﻿@model eTactWeb.DOM.Models.SSApprovalModel
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="PSDashboard">
+        <thead class="bg-gradient card-headerBG text-light " id="dashPOThead">
+            <tr>
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry ID</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> SONO</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> SO Date</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Customer Name</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sch No</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sch Date</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sch Year</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Delivery Address</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sch Eff From Date</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sch Eff Till Date</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> SO Year</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Created On</th>
+            </tr>
+        </thead>
+        <tbody id="divDashboardGrid1">
+            @{
+                var @Cntr = 0;
+                if (Model.SSApprovalGrid == null || Model.SSApprovalGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.SSApprovalGrid)
+                    {
+
+                        Cntr = Cntr + 1;
+                        <tr>
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container" style="display: flex;">
+                                    <div>
+                                        <a asp-action="SaleSchedule" asp-controller="SaleSchedule" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear" asp-route-Mode="V" class="tooltip-linkSS" style="height:30px !important;">
+                                            <span class="fa-stack"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a asp-action="ShowSSDetail" asp-controller="SSApproval" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear" asp-route-SchNo="@item.SchNo" class="tooltip-linkSS1 redirectToApproval" style="height:30px !important;">
+                                            <span class="fa-stack"><i style="color:red;font-size:15px; !important;" class="fa-regular fa-floppy-disk" aria-hidden="true"></i></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>@item.EntryID</td>
+                            <td>@item.SONO</td>
+                            @if (item.SODate != null)
+                            {
+                                <td>@item.SODate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.SODate</td>
+                            }
+                            <td>@item.CustomerName</td>
+                            <td>@item.SchNo</td>
+                            @if (item.SchDate != null)
+                            {
+                                <td>@item.SchDate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.SchDate</td>
+                            }
+                            <td>@item.SchYear</td>
+                            <td>@item.DeliveryAddress</td>
+                            @if (item.SchEffFromDate != null)
+                            {
+                                <td>@item.SchEffFromDate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.SchEffFromDate</td>
+                            }
+                            @if (item.SchEffTillDate != null)
+                            {
+                                <td>@item.SchEffTillDate.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.SchEffTillDate</td>
+                            }
+                            <td>@item.SOYearCode</td>
+                            @if (item.CreatedOn != null)
+                            {
+                                <td>@item.CreatedOn.Split(" ")[0]</td>
+                            }
+                            else
+                            {
+                                <td>@item.CreatedOn</td>
+                            }
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+           
+        }
+
+    #PSDashboard {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashPOThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        
+    }
+
+
+    .tooltip-linkSS {
+        position: relative;
+    }
+
+        .tooltip-linkSS::after {
+            content: "SHOW SS";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-linkSS:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    .tooltip-linkSS1 {
+        position: relative;
+    }
+
+        .tooltip-linkSS1::after {
+            content: "SHOW DETAIL";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-linkSS1:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+</style>

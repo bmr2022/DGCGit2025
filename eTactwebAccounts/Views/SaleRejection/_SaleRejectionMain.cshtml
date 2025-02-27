@@ -1,0 +1,151 @@
+﻿@model eTactWeb.DOM.Models.SaleRejectionModel
+
+
+<div class="accordion-body">
+    <div class="row g-2 gx-3">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <input type="hidden" asp-for="FinFromDate" />
+            <input type="hidden" asp-for="FinToDate" />
+            <input type="hidden" id="GSTRegistered" value="" />
+            <label asp-for="SaleRejEntryId" class="form-label" style="color: blue;">Entry ID*</label>
+            <input asp-for="SaleRejEntryId" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="SaleRejYearCode" class="form-label" style="color: blue;">YearCode</label>
+            <input asp-for="SaleRejYearCode" class="form-control" readonly value="@Model.SaleRejYearCode" />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="SaleRejEntryDate" class="form-label" style="color: blue;">EntryDate</label>
+            <input asp-for="SaleRejEntryDate" class="form-control" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="CC" class="form-label" style="color: blue;">Branch</label>
+            <input asp-for="CC" class="form-control" readonly />
+        </div>
+
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:140px">
+            <label asp-for="GateNo" class="form-label" style="color: red;">Gate No*</label>
+            <input asp-for="GateNo" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:80px">
+            <label asp-for="Gateyearcode" class="form-label" style="color: red;">Gate Year*</label>
+            <input asp-for="Gateyearcode" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GateDate" class="form-label" style="color: red;">Gate Date</label>
+            <input asp-for="GateDate" tabindex="7" class="form-control" readonly />
+        </div>
+
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="MrnNo" class="form-label" style="color: red;">MRN No</label>
+            <input asp-for="MrnNo" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="MRNEntryId" class="form-label" style="color: red;">MRN EntryId</label>
+            <input asp-for="MRNEntryId" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="MRNDate" class="form-label" style="color: red;">MRN Date</label>
+            <input asp-for="MRNDate" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="Mrnyearcode" class="form-label" style="color: red;">MRN YC</label>
+            <input asp-for="Mrnyearcode" class="form-control" readonly />
+        </div>
+        @*   <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="AccountCode" class="form-label" style="color: red;">Customer Name*</label>
+            <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
+            </div>
+            <select asp-for="AccountCode" class="form-control">
+                <option value="">-Select-</option>
+            </select>
+            @if (Model.Mode == "U" || Model.Mode == "V")
+            {
+                <input type="hidden" asp-for="AccountCode" id="hiddenAccountCode" />
+            }
+        </div> *@
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="GSTNO" class="form-label">GST No</label>
+            <input asp-for="GSTNO" class="form-control" />
+        </div>
+
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="AccountCode" class="form-label" style="color: red;">Customer Name</label>
+            <input asp-for="AccountCode" class="form-control" readonly type="hidden" />
+            <input asp-for="Account_Name" class="form-control" readonly />
+        </div>
+
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="DocTypeAccountCode" class="form-label" style="color: red;">Doc Type Name</label>
+            <select asp-for="DocTypeAccountCode" class="form-control">
+                <option value="">-Select-</option>
+            </select>
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="VoucherNo" class="form-label" style="color: red;">Voucher No*</label>
+            <input asp-for="VoucherNo" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="CustInvoiceNo" class="form-label" style="color: red;">Cust InvNo*</label>
+            <input asp-for="CustInvoiceNo" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="CustInvoiceDate" class="form-label" style="color: red;">Cust InvDate*</label>
+            <input asp-for="CustInvoiceDate" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="CustInvoiceTime" class="form-label">Cust InvTime</label>
+            <input asp-for="CustInvoiceTime" class="form-control" type="time" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="PaymentTerm" class="form-label">Payment Term</label>
+            <input asp-for="PaymentTerm" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="Vehicleno" class="form-label">Vehicle No</label>
+            <input asp-for="Vehicleno" class="form-control" />
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="Transporter" class="form-label">Transport Name</label>
+            <input asp-for="Transporter" class="form-control" />
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="CurrencyId" class="form-label">Currency Id</label>
+            <input asp-for="CurrencyId" class="form-control" />
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="DomesticExportNEPZ" class="form-label">Dom/Exp*</label>
+            <select asp-for="DomesticExportNEPZ" class="form-control">
+                <option value="DOMESTIC">Domestic</option>
+                <option value="EXPORT">Export</option>
+            </select>
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="ToatlDiscountPercent" class="form-label">Total Dis Per</label>
+            <input asp-for="ToatlDiscountPercent" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="TotalDiscountAmount" class="form-label">Total Dis Amt</label>
+            <input asp-for="TotalDiscountAmount" class="form-control" />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="SalerejCreditNoteVoucherNo" class="form-label">Sale rej CreditNote VoucherNo</label>
+            <input asp-for="SalerejCreditNoteVoucherNo" class="form-control" />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="DomesticExportNEPZ" class="form-label">Domestic/Export NEPZ</label>
+            <select asp-for="DomesticExportNEPZ" class="form-control">
+                <option value="Domestic">Domestic</option>
+                <option value="Export">Export</option>
+            </select>
+        </div>
+
+    </div>
+</div>
+

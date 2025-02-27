@@ -1,0 +1,56 @@
+﻿@model eTactWeb.DOM.Models.ProductionScheduleModel
+
+@{
+    var Cntr = 0;
+}
+@if (Model.ProductionScheduleDetails == null || !Model.ProductionScheduleDetails.Any())
+{
+    <tr class="text-center">
+        <td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+    </tr>
+}
+else
+{
+    @foreach (var item in Model.ProductionScheduleDetails)
+    {
+        Cntr++;
+        <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+            <td>
+                <input type="hidden" value="@Model.ProductionScheduleDetails" id="prodSchDetailList" />
+                <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr,@item.ItemCode);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <input type="hidden" value="@Cntr" id="hiddenSeqNo-@Cntr" />
+            </td>
+            <td id="GridPartCode-@Cntr" class="fixed-column partCode">@item.PartCode<input type="hidden" value="@item.ItemCode" id="GridItemCode-@Cntr" /></td>
+            <td class="ItemName fixed-column">@item.ItemName</td>
+            <td class="Bomno">@item.BOMNO <button onclick="DisplayProdPlanBomDetail(@Cntr,event)" class="formateBtn"><i class="fa-solid fa-plus"></i></button></td>
+            <td class="BomEffDate">@item.BomEffDate?.Split(" ")[0]</td>
+            <td class="d-none SchDate">@item.SchDate</td>
+            <td class="ProdPendQty">@item.ProdPendQty</td>
+            <td class="OriginalQty d-none">@item.Originalqty</td>
+            <td class="TotalWOQty">@item.TotalWOQty</td>
+            <td class="WorkCenter"><select id="WorkCenter-@Cntr" style="background-color:#a2e8f6" onchange="workCenterChange(@Cntr)"></select></td>
+            <td id="GridAcName-@Cntr" class="d-none">@item.AccountName</td>
+            <td class="Machine1"><select id="Machine1-@Cntr"></select></td>
+            <td class="Machine2"><select id="Machine2-@Cntr"></select></td>
+            <td class="Machine3"><select id="Machine3-@Cntr"></select></td>
+            <td class="d-none StartFromTime">@item.StartFromTime</td>
+            <td class="d-none ToTime">@item.ToTime</td>
+            <td class="d-none WONo">@item.WONo</td>
+            <td class="d-none WOEntryId">@item.WOEntryId</td>
+            <td class="d-none WOYC">@item.WOYearCode</td>
+            <td class="d-none WODate">@item.WODate</td>
+            <td class="d-none SOEntryId">@item.SOEntryId</td>
+            <td class="d-none SONo">@item.SONo</td>
+            <td class="d-none CustOrderNo">@item.CustOrderNo</td>
+            <td class="SOYC">@item.SOYearCode</td>
+            <td class="d-none SODate">@item.SODate</td>
+            <td class="d-none SubBom">@item.SubBOM</td>
+        </tr>
+
+    }
+}

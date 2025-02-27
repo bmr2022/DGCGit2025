@@ -1,0 +1,396 @@
+﻿@model eTactWeb.DOM.Models.DepartmentMasterModel;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="DepartmentMaster" asp-controller="DepartmentMaster" method="post" autocomplete="on" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h5>
+                    <strong>Department Master </strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-controller="DepartmentMaster" asp-action="DepartmentMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    Model.Mode = "U";
+                                    <div class="col-auto">
+                                        <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionItemCategory">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Department Master</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="DeptId" class="form-label">  Department Id</label>
+                                        <input asp-for="DeptId" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="departmentcode" class="form-label" style="color:red;">Department Code*</label>
+                                        <input asp-for="departmentcode" class="form-control" required />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="DeptType" class="form-label" style="color:red;">department Type*</label>
+                                        <select class="form-control" asp-for="DeptType" required>
+                                            <option value="@Model.DeptType">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.DeptType" selected>@Model.DeptType</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="DeptName" class="form-label" style="color:red;">Department Name*</label>
+                                        <input asp-for="DeptName" class="form-control" required />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;display:none">
+                                        <label asp-for="Entry_Date" class="form-label">Entry Date</label>
+                                        <input asp-for="Entry_Date" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="display:none">
+                                        <label asp-for="CC" class="form-label">CC</label>
+                                        <input asp-for="CC" class="form-control" value="GI" readonly />
+                                    </div>
+                                    
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress my-3 mb-3" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <div class="card-footer p-3">
+                    <div class="row justify-content-between g-2">
+                        <div class="card-header card-headerBG text-light bg-gradient">
+                            <h5>
+                                <strong>Department Master</strong>
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                    <a asp-controller="DepartmentMaster" asp-action="DepartmentMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                            <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
+                                            <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
+                                            <input asp-for="OpeningForYearBack" type="hidden" value="@Model.OpeningForYearBack" />
+                                            <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
+                                            <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
+                                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U")
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <script>
+
+        $('.submitBTN').click(function (e) {
+            e.preventDefault();
+            $('form').submit();
+        });
+
+
+        $(document).ready(function () {
+
+            $('#DeptType').rules("remove", "required");
+            $('#DeptType').select2();
+            // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name
+            //     $.notify("SaleBill Nunmber is required.", "warn");
+            // }
+
+
+            FillDeptType();
+            if ($("#DeptName").val() == "") {
+                $.notify("Department Name Can not be Blanck", "error");
+            }
+            var Entry_Date = parseDateToFormat($('#Entry_Date').val().split(" ")[0]);
+            $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", Entry_Date);
+
+            //     FillStoreType();
+            // if ($("#Store_Name").val() == "") {
+            //     $.notify("StoreName Can not be Blanck", "error");
+            // }
+
+        });
+
+
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            FillDeptID();
+        }
+
+        // if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+        //     $('#Store_Name').change(function () {
+        //         ChkForDuplicate();
+        //     });
+        //     $('#StoreType').change(function () {
+        //         ChkForDuplicateStoreType();
+        //     });
+        // }
+
+
+        function FillDeptType() {
+            $.ajax({
+                url: '@Url.Action("FillDeptType", "DepartmentMaster")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var DeptTypeDropdown = $('#DeptType');
+                    var obj = $.parseJSON(response);
+                    DeptTypeDropdown.empty();
+                    DeptTypeDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, DeptName) {
+                        DeptTypeDropdown.append('<option value="' + DeptName.DepartmentType + '">' + DeptName.DepartmentType + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var DeptType = '@Model.DeptType';
+                        $('#DeptType').val(DeptType).trigger("change");
+                        $('#DeptType').val(DeptType);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillDeptID() {
+            $.ajax({
+                url: '@Url.Action("FillDeptID", "DepartmentMaster")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#DeptId').val(0);
+                        $('#DeptId').val(obj.Result[0].DeptId);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+
+        function TotalNoOfRows() {
+            var Row = $('#divStockGrid tr').length;
+            var tdCount = $('#divStockGrid tr td').length;
+            if (tdCount >= 1) {
+                $('#lblTotalNoOfBelowItems').text(Row);
+            } else {
+                $('#lblTotalNoOfBelowItems').text(0);
+            }
+        }
+
+        function CheckBeforeUpdate() {
+            $.ajax({
+                url: '@Url.Action("CheckBeforeUpdate")',
+                type: "POST",
+                data: { "Type": $('#Entry_id').val() },
+                success: function (data) {
+                    console.log("success");
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result != null) {
+                            if (obj.Result.Table[0].Column1 > 0) {
+                                $.notify("You cannot update this Category as Item with this category already exists", "error");
+                            }
+                            else {
+                                $('form').submit();
+                            }
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+
+
+        var isEditAllowed = "false";
+
+
+        var editingNow = false;
+        function EditItemRow(SrNO) {
+
+            if (editingNow == false) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditItemRow")',
+                        type: "POST",
+                        data: { "SrNO": SrNO, "Mode": $('#Mode').val() },
+                    })
+                        .done(function (data, status, xhr) {
+                            editingNow = true;
+                            var obj = $.parseJSON(data);
+                            DeleteItemRow(SeqNo)
+                                .then(() => {
+                                    $('#MainPartCode').val(obj[0].MainPartCode).trigger('change');
+                                    $('#MainItemName').val(obj[0].MainItemName).trigger('change');
+                                    $('#AltPartCode').val(obj[0].AltPartCode).trigger('change');
+                                    $('#AltItemName').val(obj[0].AltItemName).trigger('change');
+                                    var currentSrNo = $('#SrNO').val();
+                                    var newSrNo = obj[0].SrNO;
+                                    if (currentSrNo !== newSrNo) {
+                                        $('#SrNO').val(newSrNo).trigger('change');
+                                    }
+
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                    $.notify("Item Updated from Grid", "info");
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+            sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
+            sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+            sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+
+
+    </script>
+
+
+}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+

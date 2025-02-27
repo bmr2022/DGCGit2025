@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/21/2023 15:31:16" ReportInfo.Modified="10/13/2023 11:04:25" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHwzMSgwTFaHpjtG3vsOj8bA1W/Z45T0rGIBF6sPicjezfAPZSdc7IzzK/TyKTp7nVOn8hLqqJJRnvuIDyaKuNCZ9qAWEZCdiFaLOk3Cqh93Bid7F6fTMikv0d+slvQ1zyxf4WoasxTiwcTph/uFBg4BCQgwFLMPCkNDJJAp6dSsps8NT4NLDkbNohJbSD64rZwJOeavQ3bndZgIVIAxe/WRhhuJsvRQ5ogQ5+zut53I=">
+      <TableDataSource Name="Table" Alias="RepRequ" DataType="System.Int32" Enabled="true" SelectCommand="exec ReportRequsition  @ENTRYID = 10, @YEARCODE = 2023 ">
+        <Column Name="REQNo" DataType="System.String"/>
+        <Column Name="ReqDate" DataType="System.DateTime"/>
+        <Column Name="WONo" DataType="System.String"/>
+        <Column Name="WOYearcode" DataType="System.DateTime"/>
+        <Column Name="EntryId" DataType="System.Int64"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="MachineName" DataType="System.String"/>
+        <Column Name="MachineId" DataType="System.Int64"/>
+        <Column Name="WorkcenterId" DataType="System.Int64"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="ReqReason" DataType="System.String"/>
+        <Column Name="UID" DataType="System.Int64"/>
+        <Column Name="Completed" DataType="System.String"/>
+        <Column Name="WorkCenter" DataType="System.String"/>
+        <Column Name="Cancel" DataType="System.String"/>
+        <Column Name="Approved" DataType="System.String"/>
+        <Column Name="LineRejEntryId" DataType="System.Int64"/>
+        <Column Name="LineRejYearCode" DataType="System.Int64"/>
+        <Column Name="LastUpdatedBy" DataType="System.Int64"/>
+        <Column Name="DeptName" DataType="System.String"/>
+        <Column Name="LastUpdationdate" DataType="System.DateTime"/>
+        <Column Name="ApproveBy" DataType="System.Int64"/>
+        <Column Name="NeedApproval" DataType="System.String"/>
+        <Column Name="ApproveDate" DataType="System.DateTime"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="ItemPartCode" DataType="System.String"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="AltQty" DataType="System.Decimal"/>
+        <Column Name="Qty" DataType="System.Decimal"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="Column1" DataType="System.String"/>
+        <Column Name="TotalStock" DataType="System.Decimal"/>
+        <Column Name="ExpectedDate" DataType="System.DateTime"/>
+        <Column Name="PendAltQty" DataType="System.Decimal"/>
+        <Column Name="PendQty" DataType="System.Decimal"/>
+        <Column Name="ItemModel" DataType="System.String"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="ItemCancel" DataType="System.String"/>
+        <Column Name="ProjectNo" DataType="System.String"/>
+        <Column Name="ProjectYearCode" DataType="System.Int64"/>
+        <Column Name="ItemLocation" DataType="System.String"/>
+        <Column Name="ItemBinRackNo" DataType="System.String"/>
+        <Column Name="CostCenterId" DataType="System.Int64"/>
+        <Column Name="StoreId" DataType="System.Int64"/>
+        <Column Name="Store_Name" DataType="System.String"/>
+        <Column Name="CostCenterName" DataType="System.String"/>
+        <Column Name="BranchName" DataType="System.String"/>
+        <Column Name="CancelDate" DataType="System.DateTime"/>
+        <Column Name="CancelReason" DataType="System.String"/>
+        <Column Name="EneterdBy" DataType="System.Int64"/>
+        <Column Name="RequByEmpId" DataType="System.Int64"/>
+        <Column Name="SeqNo" DataType="System.Int64"/>
+        <Column Name="ItemSize" DataType="System.String"/>
+        <Column Name="Com_Name" DataType="System.String"/>
+        <Column Name="CompAddress" DataType="System.String"/>
+        <Column Name="Stock" DataType="System.Double"/>
+        <Column Name="Storename" DataType="System.Int64"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" RawPaperSize="9" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="85.05">
+      <TextObject Name="Text1" Left="255.15" Top="56.7" Width="217.35" Height="18.9" Text="REQUISITION" HorzAlign="Center" Font="Arial, 12pt, style=Bold, Underline"/>
+      <TextObject Name="Text2" Left="-9.45" Top="66.15" Width="103.95" Height="18.9" Text="Branch Name" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text178" Left="75.6" Top="66.15" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text243" Left="189" Width="349.65" Height="18.9" Text="[RepRequ.Com_Name]" HorzAlign="Center" Font="Arial, 16pt, style=Bold"/>
+      <TextObject Name="Text244" Left="274.05" Top="28.35" Width="170.1" Height="18.9" Text="[RepRequ.CompAddress]" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text245" Left="94.5" Top="66.15" Width="94.5" Height="18.9" Text="[RepRequ.BranchName]" Font="Arial, 10pt"/>
+      <LineObject Name="Line3" Left="718.2" Top="-28.35" Width="18.9"/>
+      <LineObject Name="Line4" Left="737.1" Top="-9.45"/>
+      <ShapeObject Name="Shape6" Left="-9.45" Top="47.25" Width="737.1" Height="37.8"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="89.05" Width="718.2" Height="113.4" Guides="0">
+      <ShapeObject Name="Shape2" Left="-9.45" Width="737.1" Height="113.4"/>
+      <TextObject Name="Text3" Left="-9.45" Top="9.45" Width="122.85" Height="18.9" Text="Requsition No" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text4" Left="-9.45" Top="28.35" Width="160.65" Height="18.9" Text="From Department" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text7" Left="406.35" Top="9.45" Width="122.85" Height="18.9" Text="Requsition Date" Font="Arial, 10pt, style=Bold"/>
+      <ShapeObject Name="Shape3" Left="-9.45" Top="75.6" Width="737.1" Height="37.8"/>
+      <TextObject Name="Text11" Left="-9.45" Top="85.05" Width="47.25" Height="18.9" Text="Sr.No" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text12" Left="37.8" Top="85.05" Width="75.6" Height="18.9" Text="Part Code" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text13" Left="311.85" Top="85.05" Width="37.8" Height="18.9" Text="Unit" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text14" Left="113.4" Top="85.05" Width="94.5" Height="18.9" Text="Item Name" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text155" Left="113.4" Top="9.45" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text156" Left="113.4" Top="28.35" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text159" Left="519.75" Top="9.45" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text198" Left="406.35" Top="28.35" Width="122.85" Height="18.9" Text="Work Order No" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text199" Left="519.75" Top="28.35" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text202" Left="113.4" Top="47.25" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text204" Left="406.35" Top="47.25" Width="122.85" Height="18.9" Text="Work Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text205" Left="519.75" Top="47.25" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text201" Left="-9.45" Top="47.25" Width="122.85" Height="18.9" Text="Machine Name" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text207" Left="359.1" Top="85.05" Width="66.15" Height="18.9" Text="Qty" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text208" Left="415.8" Top="85.05" Width="75.6" Height="18.9" Text="Exp Date" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text211" Left="576.45" Top="85.05" Width="66.15" Height="18.9" Text="Location" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text212" Left="661.5" Top="85.05" Width="56.7" Height="18.9" Text="Bin no" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text222" Left="132.3" Top="9.45" Width="94.5" Height="18.9" Text="[RepRequ.REQNo]" Font="Arial, 9pt"/>
+      <TextObject Name="Text223" Left="132.3" Top="28.35" Width="198.45" Height="18.9" Text="[RepRequ.DeptName]" Font="Arial, 9pt"/>
+      <TextObject Name="Text224" Left="132.3" Top="47.25" Width="207.9" Height="18.9" Text="[RepRequ.MachineName]" Font="Arial, 9pt"/>
+      <TextObject Name="Text226" Left="538.65" Top="28.35" Width="122.85" Height="18.9" Text="[RepRequ.WONo]" Font="Arial, 9pt"/>
+      <TextObject Name="Text227" Left="538.65" Top="47.25" Width="151.2" Height="18.9" Text="[RepRequ.WorkCenter]" Font="Arial, 9pt"/>
+      <TextObject Name="Text240" Left="538.65" Top="9.45" Width="132.3" Height="18.9" Text="[RepRequ.EntryDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+      <TextObject Name="Text246" Left="510.3" Top="85.05" Width="75.6" Height="18.9" Text="Stock" Font="Arial, 10pt, style=Bold"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="206.45" Width="718.2" Height="47.25" Guides="28.35,28.35,0,28.35,28.35,37.8,28.35,28.35,28.35,0" DataSource="Table">
+      <TextObject Name="Text228" Top="9.45" Width="37.8" Height="18.9" Text="[RepRequ.SeqNo]" Font="Arial, 9pt"/>
+      <TextObject Name="Text229" Left="37.8" Top="9.45" Width="75.6" Height="18.9" Text="[RepRequ.PartCode]" Font="Arial, 9pt"/>
+      <TextObject Name="Text230" Left="113.4" Top="9.45" Width="189" Height="18.9" Text="[RepRequ.Item_Name]" Font="Arial, 9pt"/>
+      <TextObject Name="Text231" Left="311.85" Top="9.45" Width="47.25" Height="18.9" Text="[RepRequ.Unit]" Font="Arial, 9pt"/>
+      <TextObject Name="Text232" Left="406.35" Top="9.45" Width="85.05" Height="18.9" Text="[RepRequ.ExpectedDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+      <TextObject Name="Text234" Left="567" Top="9.45" Width="66.15" Height="18.9" Text="[RepRequ.ItemLocation]" Font="Arial, 9pt"/>
+      <TextObject Name="Text235" Left="652.05" Top="9.45" Width="56.7" Height="18.9" Text="[RepRequ.ItemBinRackNo]" Font="Arial, 9pt"/>
+      <TextObject Name="Text242" Left="321.3" Top="9.45" Width="66.15" Height="18.9" Text="[RepRequ.Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="0" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text247" Left="481.95" Top="9.45" Width="66.15" Height="18.9" Text="[RepRequ.Stock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <LineObject Name="Line1" Left="-9.45" Height="37.8"/>
+      <LineObject Name="Line5" Left="-9.45" Top="37.8" Width="737.1"/>
+      <LineObject Name="Line6" Left="725.76" Height="37.8" Border.Width="1.5"/>
+    </DataBand>
+    <ColumnFooterBand Name="ColumnFooter1" Top="257.7" Width="718.2" Height="66.15">
+      <ShapeObject Name="Shape5" Left="-9.45" Width="737.1" Height="66.15"/>
+      <TextObject Name="Text165" Left="-9.45" Top="9.45" Width="94.5" Height="18.9" Text="Rermark" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text169" Left="396.9" Top="18.9" Width="94.5" Height="18.9" Text="Req Reason" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text173" Left="66.15" Top="9.45" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text176" Left="491.4" Top="18.9" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text220" Left="-9.45" Top="37.8" Width="94.5" Height="18.9" Text="Req by Emp" Font="Arial, 9pt, style=Bold"/>
+      <TextObject Name="Text221" Left="66.15" Top="37.8" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text237" Left="103.95" Top="9.45" Width="160.65" Height="18.9" Text="[RepRequ.Remarks]" Font="Arial, 9pt"/>
+      <TextObject Name="Text238" Left="510.3" Top="18.9" Width="151.2" Height="18.9" Text="[RepRequ.ReqReason]" Font="Arial, 9pt"/>
+    </ColumnFooterBand>
+    <PageFooterBand Name="PageFooter1" Top="327.85" Width="718.2" Height="28.35">
+      <TextObject Name="Text177" Left="321.3" Width="94.5" Height="18.9" Text="[PageN]" Font="Arial, 10pt, style=Bold"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

@@ -1,0 +1,974 @@
+﻿@model eTactWeb.DOM.Models.LedgerPartyWiseOpeningModel;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="LedgerPartyWiseOpening" asp-controller="LedgerPartyWiseOpening" method="post" autocomplete="on" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h5>
+                    <strong>Ledger PartyWise Opening </strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-controller="LedgerPartyWiseOpening" asp-action="LedgerPartyWiseOpeningDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U"  )
+                                {
+                                    Model.Mode = "U";
+                                    <div class="col-auto">
+                                        <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionItemCategory">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Ledger PartyWise Opening</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <input type="hidden" value="@Model.ActualEntryBy" asp-for="ActualEntryBy" />
+                                    <input type="hidden" value="@Model.ActualEntryByEmp" asp-for="ActualEntryByEmp" />
+                                    <input type="hidden" value="@Model.ActualEntryDate" asp-for="ActualEntryDate" />
+                                    <input type="hidden" value="@Model.CC" asp-for="CC" />
+                                    <input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
+                                    <input type="hidden" asp-for="SrNO" />
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                        <label asp-for="EntryId" class="form-label">Entry Id</label>
+                                        <input asp-for="EntryId" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                        <input asp-for="EntryDate" class="form-control" readonly value="@Model.EntryDate" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="OpeningYearCode" class="form-label">YearCode</label>
+                                        <input asp-for="OpeningYearCode" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:380px;">
+                                        <label asp-for="ShowAllParty" class="form-label col-sm-6">
+                                               <input asp-for="ShowAllParty" type="checkbox" />Show AllParty
+                                          </label>
+                                        <label asp-for="LedgerName" class="form-label">Ledger Name</label>
+                                        <input type="hidden" asp-for="AccountCode" class="form-control" />@* onchange="GetAllDataAccountCodeWise();" *@
+                                        <select class="form-control" asp-for="LedgerName" required >
+                                            <option value="">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+
+                                                <option value="@Model.AccountCode" selected>@Model.LedgerName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                   
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
+                                        <label asp-for="Balance" class="form-label"> Balance</label>
+                                        <input asp-for="Balance" class="form-control" type="text" readonly/>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
+                                        @* <label asp-for="DRCR" class="form-label" style="width:60px;">DR/CR</label>
+                                        <input asp-for="DRCR" class="form-control" style="width:60px;" readonly /> *@
+                                    </div>
+                                </div>
+
+                                <div class="accordion-item" style="margin-top: 5px;">
+                                    <h2 class="accordion-header" id="H_SAGrid">
+                                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Ledger PartyWise Opening Grid</strong>
+                                        </button>
+                                    </h2>
+
+                                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                                        <div class="accordion-body">
+                                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                                <input asp-for="SrNO" class="form-control" type="hidden"/>
+                                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                    <label asp-for="BillNo" class="form-label"> Bill No</label>
+                                                    <input asp-for="BillNo" class="form-control" data-val="false" data-val-required="false" />
+                                                </div>
+                                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                    <label asp-for="BillDate" class="form-label"> Bill Date</label>
+                                                    <input asp-for="BillDate" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                    <label asp-for="BillYear" class="form-label"> Bill Year</label>
+                                                    <input asp-for="BillYear" class="form-control" readonly data-value="false"/>
+                                                </div>
+                                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                    <label asp-for="BillNetAmt" class="form-label"> Bill NetAmt</label>
+                                                    <input asp-for="BillNetAmt" class="form-control" data-value="false" />
+                                                </div>
+                                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                    <label asp-for="PendAmt" class="form-label"> PendAmt</label>
+                                                    <input asp-for="PendAmt" class="form-control" readonly data-value="false" />
+                                                </div>
+                                               @*  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                    <label asp-for="Type" class="form-label">Type</label>
+                                                    <select class="form-control" asp-for="Type" >
+                                                        <option value="">-Select-</option>
+                                                        
+                                                    </select>
+                                                </div> *@
+                                                <div class="col-xl-1 col-lg-4 col-md-4 col-sm-6 col-xs-12" style="width:120px;">
+                                                    <label asp-for="Type" class="form-label">Type</label>
+                                                    <select class="form-control" id="Type" asp-for="Type" style="width:100px;">
+                                                        <option value="">-Select-</option>
+                                                        <option value="DR">DR</option>
+                                                        <option value="CR">CR</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                    <label asp-for="TransactionType" class="form-label"> Trans. Type</label>
+                                                    <input asp-for="TransactionType" class="form-control" readonly/>
+                                                </div>
+                                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                    <label asp-for="DueDate" class=" form-label"> DueDate</label>
+                                                    <input asp-for="DueDate" class=" form-control" readonly/>
+                                                </div>
+                                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                    <label asp-for="Unit" class="form-label"> Save/Update</label>
+                                                    <input asp-for="Unit" class="form-control" value="S" />
+                                                  
+                                                </div>
+
+                                                
+                                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-top:24px;">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger " id="GridButton">
+                                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                                    </button>
+                                                </div>
+                                            </div>
+                                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-body overflow-auto pb-0">
+                                                        <table class="table table-hover table-bordered table-striped" id="GateMainTable">
+                                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                                <tr>
+                                                                <th>Action</th>
+                                                                <th>Sr No</th>
+                                                                <th>Bill No</th>
+                                                                <th>Bill Date</th>
+                                                                <th>Bill Year</th>
+                                                                <th>Bill Net Amt</th>
+                                                                <th>Bill Pending Amt</th>
+                                                                <th>Type</th>
+                                                                <th>Trans. Type</th>
+                                                                <th>Due Date</th>
+                                                                <th>Entry Id</th>
+                                                                <th>U_S</th>
+                                                                <th>Adjustment</th>
+                                                                </tr>
+                                                            </thead>
+                                                        <tbody id="divStockGrid">
+                                                                 <partial name="_LedgerPartyWiseOpeningGrid" />
+                                                            </tbody>
+                                                        </table>
+                                                        <div class="d-flex justify-content-end mt-2" style="margin-right:350px;">
+
+                                                            <div class="d-flex justify-content-end mt-2">
+                                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;margin-left:10px;">
+                                                                    <label class="form-label">Total Adjustment Amt</label>
+                                                                    <input id="TotNetAmt" class="form-control" readonly />
+                                                                </div>
+                                                            </div>
+                                                           <div class="d-flex justify-content-end mt-2">
+                                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;margin-left:10px;">
+                                                                    <label class="form-label">Total Dr Amt</label>
+                                                                    <input id="TotDrAmt" class="form-control" readonly />
+                                                                </div>
+                                                            </div>
+                                                           <div class="d-flex justify-content-end mt-2">
+                                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;margin-left:10px;">
+                                                                    <label class="form-label">Total Cr Amt</label>
+                                                                    <input id="TotCrAmt" class="form-control" readonly />
+                                                                </div>
+                                                            </div>
+                                                       
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <div class="row g-2 gx-3">
+                                                <div class="col-12 text-center">
+                                                    <strong>Total No Of Items : <span id="lblTotalNoOfBelowItems"></span></strong>
+                                                </div>
+                                            </div>
+
+                                                <div class="progress my-3 mb-3" style="height: 4px;">
+                                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                               
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               
+                <div class="card-footer p-3">
+                    <div class="row justify-content-between g-2">
+                        <div class="card-header card-headerBG text-light bg-gradient">
+                            <h5>
+                                <strong>Ledger PartyWise Opening</strong>
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                    <a asp-controller="LedgerPartyWiseOpening" asp-action="LedgerPartyWiseOpeningDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                            <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
+                                            <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
+                                            <input asp-for="OpeningYearCodeBack" type="hidden" value="@Model.OpeningYearCodeBack" />
+                                            <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
+                                            <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
+                                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U"  )
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if ($('#Mode').val() === "U") {
+                $('#AccountCode').val($('#LedgerName').val());
+                GetOpeningAmt();
+                countAllTotal();
+                ClearItems();
+
+            }
+          
+            $('#LedgerName').select2();
+            $('#Type').select2();
+        
+            $('#totalRows').text($('#divStockRegisterBody tr').length);
+            FillLedgerName();
+         
+
+            var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+           
+            $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
+
+            if ($('#Mode').val() == "U") {
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+
+                $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            }
+
+            var previousValue = $("#LedgerName").val(); // Store initial value
+
+            $("#LedgerName").change(function () {
+                GetAllDataAccountCodeWise();
+            });
+            
+            $('.submitBTN').click(function (e) {
+                validateBalance();
+                if (!validateBalance()) {
+                    e.preventDefault();
+                }
+                $('form').submit();
+            });
+            
+        });
+        
+        function validateBalance() {
+             
+            if ($("#LedgerName").val() == "") {
+                $.notify("LedgerName Can not be Blanck", "error");
+            }
+             
+            var balance = parseFloat($('#Balance').val().replace(/,/g, ''));  // Get Balance value
+            var totNetAmt = parseFloat($('#TotNetAmt').val().replace(/,/g, ''));  // Get Total Adjustment Amt
+
+            
+            if (isNaN(balance) || isNaN(totNetAmt)) {
+                $.notify("Please make sure both Balance and Total Adjustment Amt are valid numbers.","error");
+                return false;  
+            }
+
+            if (balance !== totNetAmt) {
+                $.notify("Balance must be equal to Total Adjustment Amt.","error");
+                return false;  
+            }
+
+            return true; 
+        }
+       
+        const today = new Date(); 
+
+        $('#BillDate').datepicker({
+            dateFormat: 'dd/mm/yy',
+            maxDate: today, 
+            onSelect: function (dateText) {
+                const billDate = $.datepicker.parseDate('dd/mm/yy', dateText);
+                let billYear = "";
+                FillDueDate();
+               
+                if (billDate.getMonth() >= 3) { 
+                    billYear = billDate.getFullYear();
+                } else { 
+                    billYear = billDate.getFullYear() - 1;
+                }
+
+                $('#BillYear').val(billYear);
+            }
+        });
+
+        
+        const initialDate = $('#BillDate').val();
+        if (initialDate) {
+            const billDate = $.datepicker.parseDate('dd/mm/yy', initialDate);
+            let billYear = "";
+
+            if (billDate.getMonth() >= 3) {
+                billYear = billDate.getFullYear();
+            } else {
+                billYear = billDate.getFullYear() - 1;
+            }
+
+            $('#BillYear').val(billYear);
+           
+        }
+        $(document).on('change', '#BillDate', function () {
+            FillDueDate();
+        });
+        $('#Type').on('input', function () {
+            const typeValue = $(this).val().toUpperCase(); 
+            let transactionType = "";
+
+            if (typeValue === "DR") {
+                transactionType = "Sale";
+            } else {
+                transactionType = "Purchase";
+            }
+            $('#TransactionType').val(transactionType);
+        });
+
+
+        $('#BillNetAmt').on('input', function () {
+            let billNetAmt = $(this).val();
+            let isValid = true;
+           
+            if (!/^\d*\.?\d+$/.test(billNetAmt) || parseFloat(billNetAmt) < 0) {
+                isValid = false;
+            }
+            if (!isValid) {
+                $.notify("Please enter a valid amount", "error");
+                $(this).val("");
+            } else {
+                $('#PendAmt').val(parseFloat(billNetAmt));
+            }
+        });
+        $('#PendAmt').on('input', function () {
+            const billNetAmt = parseFloat($('#BillNetAmt').val()) || 0; // Get BillNetAmt value
+            const pendAmt = parseFloat($(this).val()) || 0; // Get PendAmt value
+
+            if (pendAmt > billNetAmt) {
+                alert("PendAmt cannot be greater than BillNetAmt.");
+                $(this).val(billNetAmt); // Reset to BillNetAmt
+            } else if (pendAmt === 0) {
+                alert("PendAmt cannot be zero.");
+                $(this).val(billNetAmt); // Reset to BillNetAmt
+            }
+        });
+            $('#LedgerName').change(function () {
+                $('#AccountCode').val($('#LedgerName').val());
+                if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                    ClearGrid();
+                }
+                GetOpeningAmt();
+            GetOpeningAmtDRCR();
+            });
+              
+            $('#BillDate').change(function () {
+              
+            });
+           
+               
+           
+            //  $('#LedgerName').change(function () {
+            //      GetOpeningAmt();
+            //     // GetDrCrType();
+            // });
+
+        function GetOpeningAmt() {
+             
+            var OpeningYearCode = $('#OpeningYearCode').val();
+            var AccountCode = $('#AccountCode').val();
+            $.ajax({
+                url: '@Url.Action("GetOpeningAmt", "LedgerPartyWiseOpening")',
+                type: 'POST',
+                data: {
+                    OpeningYearCode: OpeningYearCode,
+                    AccountCode: AccountCode
+                },
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                      
+                        
+                        $('#Balance').val(obj.Result[0].Amount || 0);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load opening amount.');
+                }
+            });
+        }
+        function GetOpeningAmtDRCR() {
+            var OpeningYearCode = $('#OpeningYearCode').val();
+            var AccountCode = $('#AccountCode').val();
+            $.ajax({
+                url: '@Url.Action("GetOpeningAmt", "LedgerPartyWiseOpening")',
+                type: 'POST',
+                data: {
+                    OpeningYearCode: OpeningYearCode,
+                    AccountCode: AccountCode
+                },
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+
+                        $('#DRCR').val(obj.Result[0].DrCr || 0);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load opening amount.');
+                }
+            });
+        }
+        function FillDueDate() {
+            var AccountCode = $('#AccountCode').val();
+            $.ajax({
+                url: '@Url.Action("FillDueDate", "LedgerPartyWiseOpening")',
+                type: 'POST',
+                data: {
+                    AccountCode: AccountCode
+                },
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                         
+                        //$('#DueDate').val(obj.Result[0].GetCreditDays || 0);
+                        //var creditDays = obj.Result[0]?.GetCreditDays || 0;
+                         
+
+                        var creditDays = obj.Result[0]?.GetCreditDays || 0;
+
+                        // Calculate the future date
+                        var currentDate = new Date();
+                        var futureDate = new Date();
+                        futureDate.setDate(currentDate.getDate() + parseInt(creditDays));
+
+                        // Format the future date as MM/DD/YYYY
+                        var day = futureDate.getDate().toString().padStart(2, '0');
+                        var month = (futureDate.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based
+                        var year = futureDate.getFullYear();
+                        var formattedDate = `${day}/${month}/${year}`;
+
+                        // Set the future date value in the #DueDate field
+                        $('#DueDate').val(formattedDate);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load opening amount.');
+                }
+            });
+        }
+        
+        function FillLedgerName() {
+            var OpeningYearCode = $('#OpeningYearCode').val();
+            var Mode = $('#Mode').val();
+            $.ajax({
+                url: '@Url.Action("FillLedgerName", "LedgerPartyWiseOpening")',
+                type: 'POST',
+                data: { OpeningYearCode: OpeningYearCode },
+                async: false,
+                success: function (response, status, error) {
+                    var StoreTypeDropdown = $('#LedgerName');
+                    var obj = $.parseJSON(response);
+                    StoreTypeDropdown.empty();
+                    StoreTypeDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, LedgerName) {
+                        StoreTypeDropdown.append('<option value="' + LedgerName.Account_Code + '">' + LedgerName.Account_Name + '</option>');
+                    });
+                     
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                         
+                        var LedgerName = '@Model.AccountCode';
+                        $('#LedgerName').val(LedgerName).trigger("change");
+                        //$('#LedgerName').val(LedgerName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function GetAllDataAccountCodeWise() {
+            var OpeningYearCode = $('#OpeningYearCode').val();
+            var AccountCode = $('#AccountCode').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetAllDataAccountCodeWise", "LedgerPartyWiseOpening")",
+                data: {
+                    OpeningYearCode: OpeningYearCode,
+                    AccountCode: AccountCode
+                },
+                dataType: "json",
+                success: function (result, status, error) {
+                     
+                    if (result > 0) {
+                        var EntryId = result;
+                        var currentLocation = window.location.href;
+                        var currentLocation = "https://localhost:44399/LedgerPartyWiseOpening/Index";
+                        currentLocation = currentLocation.replace('/Index', '');
+
+                        var extraParams = {
+                            Mode: "U",
+                            ID: EntryId,
+                            OpeningYearCode: OpeningYearCode,
+                            //AccBookTransEntryId: AccBookTransEntryId,
+                            //AccBookTransYearCode: AccBookTransYearCode,
+                            AccountCode: AccountCode,
+                            LedgerName: LedgerName,
+                            //OpeningAmt: OpeningAmt,
+                            //InvoiceNo: InvoiceNo,
+                            //InvoiceDate: InvoiceDate,
+                           // InvNetAmt: InvNetAmt,
+                            //InvPendAmt: InvPendAmt,
+                            //DrCrType: DrCrType,
+                            //TransactionType: TransactionType,
+                            //DueDate: DueDate,
+                            //CC: CC,
+                           // ActualEntryBy: ActualEntryBy,
+                            //ActualEntryDate: ActualEntryDate,
+                            //UpdatedBy: UpdatedBy,
+                            //LastUpdatedDate: LastUpdatedDate,
+                            //EntryByMachine: EntryByMachine,
+                            //AccountNarration: AccountNarration,
+                            //Unit: Unit
+                        };
+
+                        var queryString = new URLSearchParams(extraParams).toString();
+                        window.location.href = currentLocation + "/Index?" + queryString;
+                        //currentLocation = currentLocation.match(/(.*?\/Index)/);
+                        //currentLocation = currentLocation + "/Index" + "?Mode=" + "U" + "&ID=" + EntryId;
+                        //window.location.href = currentLocation;
+                    } else {
+                        window.location.href;
+                    }
+                }
+            });
+        }
+        function ClearItems() {
+            $('#BillYear,#BillNetAmt,#PendAmt').val(0);
+            $('#BillNo,#BillDate,#Type,#TransactionType,#DueDate,#Unit').val('');
+        }
+
+        $(document).on('click', '#GridButton', function (e) {
+             
+            alert("Button clicked!");
+            $('#BillNo').removeClass('Valid');
+            e.preventDefault();
+            console.log('Add to Grid button clicked');
+            var BillNo = $('#BillNo').val().trim();
+            var BillDate = $('#BillDate').val().trim();
+            var BillYear = $('#BillYear').val().trim();
+            var BillNetAmt = $('#BillNetAmt').val().trim();
+            var PendAmt = $('#PendAmt').val().trim();
+            var Type = $('#Type').val().trim();
+            var TransactionType = $('#TransactionType').val().trim();
+            var DueDate = $('#DueDate').val().trim();
+            var Unit = $('#Unit').val().trim();
+
+            // Validation: Check if any required field is empty, null, or zero
+            if (!BillNo || !BillDate || !BillYear || !BillNetAmt || !PendAmt || !Type || !TransactionType || !DueDate || !Unit ||
+                BillNetAmt == "0" || PendAmt == "0") {
+                $.notify('Fill All Data For Add in Grid', "error");
+                return;
+            }
+            var seqnoarray = [];
+            var rowsCounting = parseInt($('#divStockGrid tr').length);
+            $('#divStockGrid tr').each(function (index, element) {
+
+                var currentRow = $(element);
+                var seqnoText = currentRow.find('td[id^=SrNO]').text();
+
+                seqnoarray.push(parseInt(seqnoText));
+
+            });
+            var highestValue = 0;
+            if (seqnoarray.length == 0) {
+                highestValue = 0;
+            }
+            else {
+
+                highestValue = Math.max(...seqnoarray);
+            }
+            var SchData = {
+                "BillNo": BillNo,
+                "BillDate": BillDate,
+                "BillYear": BillYear,
+                "BillNetAmt": BillNetAmt,
+                "PendAmt": PendAmt,
+                "Type": Type,
+                "TransactionType": TransactionType,
+                "DueDate": DueDate,
+                "Unit": Unit,
+               // "EntryDate": $('#EntryDate').val(),
+                "U_S": $('#U_S').val(),
+                "Adjustment": $('#Adjustment').val(),
+                "CC": $('#CC').val(),
+                "ActualEntryDate": $('#ActualEntryDate').val(),
+                "EntryByMachine": $('#EntryByMachine').val(),
+                "ActualEntryBy": $('#ActualEntryBY').val(),
+                "SrNO": parseInt($('#SrNO').val()) == 0 ? (highestValue + 1) : parseInt($('#SrNO').val())
+            };
+
+            console.log(SchData);
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddLedgerPartWiseOpeningDetail", "LedgerPartyWiseOpening")',
+                data: { model: SchData },
+                success: function (result, status, xhr) {
+                     
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        $('#divStockGrid').html(result);
+                        $.notify('Process Added To Grid', "success");
+                        TotalNoOfRows();
+                        countAllTotal();
+                        //ClearItems();
+                    } else if (xhr.status == 207) {
+                        $.notify('Duplicate Item...!', "info");
+                    }
+                   
+                },
+                error: function () {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
+
+        function countAllTotal() {
+            var rowCount = $('#divStockGrid tr').length;
+            var TotNetAmt = 0;
+            var TotDrAmt = 0;
+            var TotCrAmt = 0;
+
+            for (var i = 1; i <= rowCount; i++) {
+                var netAmtText = $('#totNetAmtG-' + i).text().trim();
+                var netAmt = netAmtText === '' ? 0 : parseFloat(netAmtText.replace(/,/g, ''));
+
+                var typeText = $('#typeG-' + i).text().trim().toLowerCase();
+
+                if (typeText === 'cr') {
+                    TotNetAmt -= netAmt;  // Subtract CR from total
+                    TotCrAmt += netAmt;   // Add to Total Cr Amount
+                } else if (typeText === 'dr') {
+                    TotNetAmt += netAmt;  // Add DR to total
+                    TotDrAmt += netAmt;   // Add to Total Dr Amount
+                }
+            }
+
+            // Update the total fields with formatted values
+            $('#TotNetAmt').val(isNaN(TotNetAmt) ? '0.00' : TotNetAmt.toFixed(2));
+            $('#TotDrAmt').val(isNaN(TotDrAmt) ? '0.00' : TotDrAmt.toFixed(2));
+            $('#TotCrAmt').val(isNaN(TotCrAmt) ? '0.00' : TotCrAmt.toFixed(2));
+        }
+
+
+        function TotalNoOfRows() {
+            var Row = $('#divStockGrid tr').length;
+            var tdCount = $('#divStockGrid tr td').length;
+            $('#lblTotalNoOfBelowItems').text(tdCount >= 1 ? Row : 0);
+        }
+        function ClearGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearGrid")",
+                success: function (result, status, error) {
+                    $('#divStockGrid').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divStockGrid').html(NoData);
+                   // BasicTotal();
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+        function CheckBeforeUpdate() {
+            $.ajax({
+                url: '@Url.Action("CheckBeforeUpdate")',
+                type: "POST",
+                data: { Type: $('#Entry_id').val() },
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    if (obj.Result?.Table[0]?.Column1 > 0) {
+                        $.notify("You cannot update this Category as Item with this category already exists", "error");
+                    } else {
+                        $('form').submit();
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        var EditEachItem = false;
+
+        function EditItemRow(SrNO) {
+             
+            if (EditEachItem) {
+                $.notify('Cannot edit item while another item is being added to the grid!', "error");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("EditItemRow")',
+                type: "POST",
+                data: { SrNO: SrNO, Mode: "U" },
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    if (obj != null) {
+                        EditEachItem = true;
+
+                        $('#BillNo').val(obj[0].BillNo).trigger("change");
+                        $('#BillDate').val(obj[0].BillDate).trigger("change");
+                        $('#BillYear').val(obj[0].BillYear).trigger("change");
+                        $('#BillNetAmt').val(obj[0].BillNetAmt).trigger("change");
+                        $('#PendAmt').val(obj[0].PendAmt).trigger("change");
+                        $('#Type').val(obj[0].Type).trigger("change");
+                        $('#TransactionType').val(obj[0].TransactionType).trigger("change");
+                        $('#DueDate').val(obj[0].DueDate).trigger("change");
+                        $('#Unit').val(obj[0].Unit).trigger("change");
+                        //$('#EntryDate').val(obj[0].EntryDate).trigger("change");
+                        $('#U_S').val(obj[0].U_S).trigger("change");
+                        $('#Adjustment').val(obj[0].Adjustment).trigger("change");
+                        //$('#SrNO').val(obj[0].SrNO).trigger("change");
+                        // var currentSrNo = $('#SrNO').val();
+                        // var newSrNo = obj[0].SrNO;
+                        // if (currentSrNo !== newSrNo) {
+                        //     $('#SrNO').val(newSrNo).trigger("change");
+                        // }
+                        var rowCount = $('#divStockGrid tr').length;
+                        for (var i = 1; i <= rowCount + 1; i++) {
+                            $('#editItemGrid-' + i).css("pointer-events", "none");
+                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                        }
+
+                        DeleteItemRow(SrNO);
+                    }
+                },
+                error: function (response) {
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+        async function DeleteItemRow(SrNO) {
+             
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { SrNO: SrNO, Mode: "U" },
+                success:  function (data, status, xhr) {
+                    $('#divStockGrid').html(data);
+                    $.notify("Process deleted from Grid", "info");
+                    // EditEachItem = false;
+                    // $('[id^=editItemGrid-]').css("pointer-events", "auto");
+                    // $('[id^=editItemGrid-]').css("cursor", "pointer");
+
+                    // setTimeout(function () {
+                    //     $('[id^=editItemGrid-]').css("pointer-events", "auto").css("cursor", "pointer");
+                    // }, 100);
+
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+        //var editingNow = false;
+
+        // function EditItemRow(SrNO) {
+        //      
+        //     if (!editingNow) {
+        //         return new Promise((resolve, reject) => {
+        //             $.ajax({
+        //                 url: '@Url.Action("EditItemRow")',
+        //                 type: "POST",
+        //                 data: { SeqNo: SrNO, Mode: "U" }
+        //             })
+        //                 .done(function (data) {
+        //                     editingNow = true;
+        //                     var obj = $.parseJSON(data);
+        //                     DeleteItemRow(SrNO)
+        //                         .then(() => {
+        //                             $('#BillNo').val(obj[0].BillNo).trigger('change');
+        //                             $('#BillDate').val(obj[0].BillDate).trigger('change');
+        //                             $('#BillYear').val(obj[0].BillYear).trigger('change');
+        //                             $('#BillNetAmt').val(obj[0].BillNetAmt).trigger('change');
+        //                             $('#PendAmt').val(obj[0].PendAmt).trigger('change');
+        //                             $('#Type').val(obj[0].Type).trigger('change');
+        //                             $('#TransactionType').val(obj[0].TransactionType).trigger('change');
+        //                             $('#DueDate').val(obj[0].DueDate).trigger('change');
+        //                             $('#Unit').val(obj[0].Unit).trigger('change');
+        //                             $('#EntryDate').val(obj[0].EntryDate).trigger('change');
+        //                             $('#U_S').val(obj[0].U_S).trigger('change');
+        //                             $('#Adjustment').val(obj[0].Adjustment).trigger('change');
+
+        //                             var currentSrNo = $('#SrNO').val();
+        //                             var newSrNo = obj[0].SrNO;
+        //                             if (currentSrNo !== newSrNo) {
+        //                                 $('#SrNO').val(newSrNo).trigger('change');
+        //                             }
+        //                         })
+        //                         .catch(reject);
+        //                 })
+        //                 .fail(reject);
+        //             $.notify("Item Updated from Grid", "info");
+        //         });
+        //     } else {
+        //         $.notify("Cannot edit as one item is already on above edit grid", "error");
+        //     }
+        // }
+
+        function PressBack() {
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+            sessionStorage.setItem('OpeningYearCodeBack', $('#OpeningYearCodeBack').val());
+            sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+            sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+    </script>
+}
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+
+

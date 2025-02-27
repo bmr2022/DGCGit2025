@@ -1,0 +1,42 @@
+﻿@model eTactWeb.DOM.Models.StockAdjustmentModel
+
+@{
+    var Cntr = 0;
+    var ErrorCntr = 0;
+}
+
+@if (Model.ExcelDataList == null)
+{
+    <tr class="text-center">
+        <td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ExcelDataList)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small @Cntr" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+
+                <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+            <td id="storeworkcenter-@Cntr"></td>
+            <td id="partcode-@Cntr"> <input type="hidden" value="@item.ItemCode" id="ItemCode-@Cntr" /></td>
+            <td id="storename-@Cntr"><input type="hidden" value="@item.ItemName" id="ItemName-@Cntr" /></td>
+            <td id="wcname-@Cntr"></td>
+            <td id="actualstock-@Cntr"></td>
+            <td id="unit-@Cntr"></td>
+            <td id="altunit-@Cntr"></td>
+            <td id="batchno-@Cntr"></td>
+            <td id="uniqbatchno-@Cntr"></td>
+            <td id="reason-@Cntr"></td>
+            <td id="stdpkg-@Cntr" style="display:none"><input type="hidden" id="ErrorCntr-@Cntr" value="@ErrorCntr" /></td>
+        </tr>
+    }
+}

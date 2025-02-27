@@ -1,0 +1,182 @@
+﻿@model eTactWeb.DOM.Models.RetFromDepMainDashboard
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Return From Department Main - <strong>Dashboard</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="ReturnFromDepartmentMain" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                        Add New
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+                            <div class="col-lg">
+                                <label asp-for="ItemName" class="form-label">Item Name</label>
+                                <input asp-for="ItemName" class="form-control" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="PartCode" class="form-label">Part Code</label>
+                                <input asp-for="PartCode" class="form-control" />
+                            </div>
+                            <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="CC" class="form-label">Branch</label>
+                                <input asp-for="CC" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-1 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label class="form-label">Type</label>
+                                <select id="DashboardType" class="form-select">
+                                    <option value="" disabled>-Select-</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
+                                </select>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate1" id="FromDate" maxlength="10" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate1" id="ToDate" maxlength="10" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3" width="inherit">
+                                <!-- Global search -->
+                                <div>
+                                    <label class="form-label">Global search</label>
+                                    <input type="text" class="form-control" asp-for="SearchBox" id="search-box" style="background-color:#FFFACD" placeholder="Search..." fdprocessedid="pr7n9">
+                                </div>
+                                <!-- Buttons -->
+                                <div class="d-flex">
+                                    <button class="btn btn-sm btn-outline-info" style="padding:0px;height:30px;width:100px;" type="button" onclick="GetSearchData();" fdprocessedid="1jbn8">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel" fdprocessedid="h6tj29">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" href="/ReturnFromDepartmentMain/Dashboard?FromDate=01%2F01%2F2025&Todate=10%2F01%2F2025&Flag=True">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0 pt-0">
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body" id="divDashboardGrid">
+                    <partial name="_ReturnFromDepartmentMainDashboardGrid" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(function () {
+            var dashGrid = $('#RetFromDepMainTbody tr').length;
+            $('#totalRows').text(dashGrid);
+            GetSearchData();
+            $("#search-box").val($('#search-box').val()).trigger('keyup');
+
+            var currentDate = new Date();
+
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            function formatDate(date) {
+                var day = ("0" + date.getDate()).slice(-2);
+                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                var dateString = day + "/" + month + "/" + year;
+                return dateString;
+            }
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
+                var inputFromDateString = $('#FromDate1').val().split(" ")[0];
+                var inputToDateString = $('#ToDate1').val().split(" ")[0];
+
+                var originalFromDate = new Date(inputFromDateString);
+                var originalToDate = new Date(inputToDateString);
+
+
+                //fromdate
+                var day = originalFromDate.getDate();
+                var month = originalFromDate.getMonth() + 1;
+                var year = originalFromDate.getFullYear();
+
+                var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+                //todate
+                var day = originalToDate.getDate();
+                var month = originalToDate.getMonth() + 1;
+                var year = originalToDate.getFullYear();
+
+                var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+
+                $('#FromDate').val(convertedFromDateText);
+                $('#ToDate').val(convertedToDateText);
+
+            }
+        });
+
+        function GetSearchData() {
+
+            if ($('#DashboardType').val() == "Summary") {
+                SummaryData();
+            } else {
+                DetailData();
+            }
+        }
+
+        $('#DashboardType').change(function () {
+            if ($(this).val() == "Summary") {
+                SummaryData();
+            } else {
+                DetailData();
+            }
+
+        });
+
+
+        $('#sendToExcel').click(function () {
+            $("#ReqBomTable").table2excel({
+                filename: "ReturnFromDepartment.xls"
+            });
+        });
+
+        function confirmDelete(event) {
+            event.preventDefault();
+            if (confirm("Are you sure you want to delete this entry?")) {
+
+                var linkUrl = $(event.currentTarget).attr("href");
+                linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#REQNo').val() + "&WCName=" + $('#WorkCenter').val() + "&WONo=" + $('#WONo').val() + "&DepName=" + $('#DeptName').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val();
+                window.location.href = linkUrl;
+            }
+        }
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+}

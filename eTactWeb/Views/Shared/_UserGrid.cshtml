@@ -1,0 +1,202 @@
+﻿@model eTactWeb.DOM.Models.UserMasterModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    string UID = HttpContextAccessor.HttpContext.Session.GetString("UID");
+    string UserType = HttpContextAccessor.HttpContext.Session.GetString("UserType");
+}
+
+<style>
+    i.fa.fa-user-times:hover {
+        color: #ff9800 !important;
+    }
+
+    i.fa.fa-search:hover {
+        color: #e91e63 !important;
+    }
+
+    i.fa.fa-pencil-square:hover {
+        color: #4caf50 !important;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-hover table-bordered table-striped TbCss" id='UserData'>
+            <thead class="bg-gradient card-headerBG text-light">
+                <tr>
+                    <th style="width:3%">Action</th>
+                    <th>Sr#</th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserType)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EmpID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EmpCode)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EmpName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EmailID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MobileNo)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.UserMasterList.Count == 0)
+                {
+                    <tr class="text-center">
+                        <td colspan="11" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                    </tr>
+                }
+                else
+                {
+                    var @Cntr = 0;
+                    foreach (var item in Model.UserMasterList)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr>
+                            <td style="white-space:nowrap;display: flex;">
+                                @if (item.EmpID == UID)
+                                {
+                                    <a class="table-link link-success" asp-controller="Admin" asp-action="UserMaster" asp-route-ID="@item.ID" asp-route-Mode="V">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    @if (UserType == "Admin")
+                                    {
+                                        <a class="table-link link-success" asp-controller="Admin" asp-action="UserMaster" asp-route-ID="@item.ID" asp-route-Mode="V">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a class="table-link link-success noCursor">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                }
+                                @if (item.EmpID == UID)
+                                {
+                                    <a class="table-link link-primary" asp-controller="Admin" asp-action="UserMaster" asp-route-ID="@item.ID" asp-route-Mode="U">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    @if (UserType == "Admin")
+                                    {
+                                        <a class="table-link link-primary" asp-controller="Admin" asp-action="UserMaster" asp-route-ID="@item.ID" asp-route-Mode="U">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a class="table-link link-primary noCursor">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                }
+                                @if (item.EmpID == UID)
+                                {
+                                    <a class="table-link link-danger" asp-controller="Admin" asp-action="DeleteUserByID" asp-route-ID="@item.ID">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    @if (UserType == "Admin")
+                                    {
+                                        <a class="table-link link-danger" asp-controller="Admin" asp-action="DeleteUserByID" asp-route-ID="@item.ID">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a class="table-link link-danger noCursor">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    }
+                                }
+                            </td>
+                            <th>@Cntr</th>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EmpID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EmpCode)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EmpName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EmailID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MobileNo)
+                            </td>
+                            @*<td>
+                    <div class="form-check form-switch">
+                    @if (item.All == "true")
+                    {
+                    <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                    }
+                    else
+                    {
+                    <input class="form-check-input" type="checkbox" role="switch" style="pointer-events: none;">
+                    }
+                    </div>
+                    </td>*@
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+﻿@model eTactWeb.DOM.Models.ReceiveItemModel
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+            <td><input value="@Cntr" style="width:50px;" readonly/></td>
+            <td><input id="MaterialType-@Cntr" readonly type="text" style="width:80px;" value="@item.MaterialType" /></td>
+            <td><input id="FromDepWorkCenter-@Cntr" readonly type="text" style="width:80px;" value="@item.FromDepWorkCenter" /></td>
+            <td><input id="FromWorkcenter-@Cntr" readonly" type="text" style="width:100px;" value="@item.FromWorkcenter" /><input id="WCID-@Cntr" type="hidden" value="@item.WCID" /></td>
+            <td><input id="PartCode-@Cntr" readonly type="text" style="width:150px;" value="@item.PartCode" /></td>
+            <td><input id="ItemName-@Cntr" readonly type="text" style="width:150px;" value="@item.ItemName" /><input id="ItemCode-@Cntr" type="hidden" value="@item.ItemCode" /></td>
+            <td><input id="Qty-@Cntr" readonly type="number" style="width:50px;" value="@item.Qty"/></td>
+            <td><input id="Unit-@Cntr" readonly type="text" style="width:80px;" value="@item.Unit" /></td>
+            <td><input id="AltTransferQty-@Cntr" readonly type="number" style="width:50px;" value="@item.AltTransferQty" /></td>
+            <td><input id="AltUnit-@Cntr" readonly type="text" style="width:80px;" value="@item.AltUnit" /></td>
+            <td><input id="Itemremark-@Cntr" readonly type="text" style="width:150px;" value="@item.Itemremark" /></td>
+            <td><input id="RecInStore-@Cntr" readonly type="text" style="width:100px;" value="@item.RecInStore" /><input id="RecStoreId-@Cntr" type="hidden" value="@item.RecStoreId" /></td>
+            <td><input id="ProdEntryId-@Cntr" readonly type="number" style="width:50px;" value="@item.ProdEntryId" /></td>
+            <td><input id="ProdYearCode-@Cntr" readonly type="number" style="width:80px;" value="@item.ProdYearCode" /></td>
+            <td><input id="ProdEntryDate-@Cntr" readonly type="text" style="width:80px;" value="@item.ProdEntryDate.Split(" ")[0]" /></td>
+            <td><input id="ProdPlanNo-@Cntr" readonly type="text" style="width:80px;" value="@item.ProdPlanNo" /></td>
+            <td><input id="ProdPlanYearCode-@Cntr" readonly type="number" style="width:50px;" value="@item.ProdPlanYearCode" /></td>
+            <td><input id="ProdSchNo-@Cntr" readonly type="text" style="width:80px;" value="@item.ProdSchNo" /></td>
+            <td><input id="ProdSchYearCode-@Cntr" readonly type="number" style="width:80px;" value="@item.ProdSchYearCode" /></td>
+            <td><input id="InProcQCSlipNo-@Cntr" readonly type="text" style="width:80px;" value="@item.InProcQCSlipNo" /></td>
+            <td><input id="InProcQCYearCode-@Cntr" readonly type="number" style="width:80px;" value="@item.InProcQCYearCode" /></td>
+            <td><input id="ProdQty-@Cntr" readonly type="number" style="width:50px;" value="@item.ProdQty" /></td>
+            <td><input id="QCOkQty-@Cntr" readonly type="number" style="width:50px;" value="@item.QCOkQty" /></td>
+            <td><input id="RejQty-@Cntr" readonly type="number" style="width:50px;" value="@item.RejQty" /></td>
+            <td><input id="BatchNo-@Cntr" readonly type="text" style="width:150px;" value="@item.BatchNo" /></td>
+            <td><input id="uniquebatchno-@Cntr" type="text" style="width:200px;" value="@item.uniquebatchno" /></td>
+            <td><input id="TransferMatEntryId-@Cntr" type="number" style="width:50px;" value="@item.TransferMatEntryId" /></td>
+            <td><input id="TransferMatYearCode-@Cntr" type="number" style="width:50px;" value="@item.TransferMatYearCode" /></td>
+            <td><input id="TransferMatSlipNo-@Cntr" readonly type="text" style="width:50px;" value="@item.TransferMatSlipNo" /></td>
+        </tr>
+    }
+}

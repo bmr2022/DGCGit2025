@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Master\**" />
+    <EmbeddedResource Remove="Models\Master\**" />
+    <None Remove="Models\Master\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+    <PackageReference Include="Moment.js" Version="2.29.4" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.AspNetCore.Http" />
+    <Using Include="Microsoft.AspNetCore.Mvc.Rendering" />
+    <Using Include="System.Data" />
+    <Using Include="System.Net" />
+  </ItemGroup>
+
+</Project>

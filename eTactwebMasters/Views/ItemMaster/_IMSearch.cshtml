@@ -1,0 +1,61 @@
+﻿@model eTactWeb.DOM.Models.ItemMasterModel
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <form id="SParam">
+            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                <label for="state" class="control-label">Item Name</label>
+                <input asp-for="Item_Name" class="form-control form-control-sm" data-val="false" />
+            </div>
+            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                <label for="state" class="control-label">Part Code</label>
+                <input asp-for="PartCode" class="form-control form-control-sm" data-val="false" />
+            </div>
+            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                <label for="state" class="control-label">Universal Part Code</label>
+                <input asp-for="UniversalPartCode" class="form-control form-control-sm" data-val="false" />
+            </div>
+            <div class="col col-md-2 col-sm-6 col-xs-6">
+                <label for="state" class="control-label">Item Group</label>
+                <input class="form-control" asp-for="ParentName" />
+            </div>
+            @*<div class="col col-md-2 col-sm-6 col-xs-6">
+                <label for="state" class="control-label">Item Category</label>
+                <input class="form-control" asp-for="ItemTypeName" />
+            </div>*@
+            <div class="col-md-2 col-sm-6 col-xs-6">
+                <label for="state" class="control-label">Hsn No</label>
+                <input asp-for="HSNNO" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-2 col-sm-6 col-xs-6">
+                <label for="state" class="control-label">Type</label>
+                <select asp-for="POServType" class="form-control form-control-sm">
+                    <option selected disabled>-Select-</option>
+                    <option value="Item">Item</option>
+                    <option value="Services">Service</option>
+                    <option value="Assets">Asset</option>
+                </select>
+            </div>
+                <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                    <label class="form-label">Global search</label>
+                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                </div>
+                <div class=" d-flex justify-content-center mt-3" width="inherit">
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="GetSearchData();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                    </button>
+                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                    </button>
+                    <button type="reset" class="btn btn-sm btn-outline-danger" onclick="Reload();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                    </button>
+                    <div class="form-check form-switch d-flex justify-content-center mt-2" style="padding:3px;margin-left:50px;">
+                        <input id="ShowAllSwitch" class="form-check-input" type="checkbox" role="switch" />&nbsp;&nbsp;&nbsp;&nbsp;<label class="form-label">Show/Hide All Columns</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

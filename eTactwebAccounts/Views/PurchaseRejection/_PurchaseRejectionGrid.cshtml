@@ -1,0 +1,69 @@
+﻿@model eTactWeb.DOM.Models.AccPurchaseRejectionModel
+
+<input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+@if (Model.AccPurchaseRejectionDetails == null)
+{
+    <tr class="text-center" style="font-size: 14px;">
+        <td colspan="40" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.AccPurchaseRejectionDetails)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small @Cntr" id="PurchaseRejectionRow-@Cntr" style="white-space:nowrap;font-size: 14px;">
+            <td style="width:4%">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@item.ItemCode);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.ItemCode);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.PartCode<input type="hidden" id="GridIC-@Cntr" value="@item.ItemCode" /></td>
+            <td>@item.ItemName</td>
+            <td>@item.HSNNo</td>
+            <td id="billQty-@Cntr">@item.BillQty</td>
+            <td>@item.RejectedQty</td>
+            <td>@item.Unit</td>
+            <td>@item.AltQty</td>
+            <td>@item.AltUnit</td>
+            <td>@item.PRRate</td>
+            <td id="billRate-@Cntr">@item.BillRate</td>
+            <td>@item.UnitRate</td>
+            <td>@item.AltRate</td>
+            <td>@item.NoOfCase</td>
+            <td>@item.CostCenterId</td>
+            <td>@item.DocAccountName<input type="hidden" value="@item.DocAccountCode" /></td>
+            <td id="gridAmount-@Cntr">@item.ItemAmount</td>
+            <td id="discPer-@Cntr">@item.DiscountPer</td>
+            <td id="discAmt-@Cntr">@item.DiscountAmt</td>
+            <td>@item.StoreName<input type="hidden" value="@item.StoreId" /></td>
+            <td>@item.ItemSize</td>
+            <td>@item.ItemDescription</td>
+            <td>@item.Remark</td>
+        </tr>
+
+    }
+}
+

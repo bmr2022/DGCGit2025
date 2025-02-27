@@ -1,0 +1,84 @@
+﻿@model eTactWeb.DOM.Models.SaleRejectionModel
+
+<div class="accordion-body">
+    <!-- Decimal properties -->
+    <div class="row g-2 gx-3">
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="BalanceSheetClosed" class="form-label">Balance Sheet closed</label>
+            <select asp-for="BalanceSheetClosed" class="form-control">
+                <option value="">-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="SaleBillQty" class="form-label" style="color: red;">Bill Qty*</label>
+            <input asp-for="SaleBillQty" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="BillAmt" class="form-label" style="color: red;">Bill Amt*</label>
+            <input asp-for="BillAmt" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="InvNetAmt" class="form-label" style="color: red;">Inv Net Amt*</label>
+            <input asp-for="InvNetAmt" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="Taxableamt" class="form-label">Taxable Amt</label>
+            <input asp-for="Taxableamt" class="form-control" readonly />
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="RoundoffType" class="form-label">Round Off Type</label>
+            <input asp-for="RoundoffType" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="RoundOffAmt" class="form-label">Round Off Amt</label>
+            <input asp-for="RoundOffAmt" class="form-control" />
+        </div>
+
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="EntryByempId" class="form-label">Entry By EmpID</label>
+            <input asp-for="EntryByempId" class="form-control" readonly />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date</label>
+            <input asp-for="ActualEntryDate" class="form-control" readonly />
+        </div>
+
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="ActualEnteredByName" class="form-label">Actual Entered By</label>
+            <input asp-for="ActualEnteredByName" class="form-control" readonly />
+            <input type="hidden" asp-for="ActualEnteredBy" class="form-control" />
+        </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="Uid" class="form-label">UID</label>
+            <input asp-for="Uid" class="form-control" readonly />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="LastUpdatedBy" class="form-label">Last Updated By</label>
+            <input type="hidden" asp-for="LastUpdatedBy" class="form-control" />
+            <input asp-for="LastUpdatedByName" class="form-control" readonly />
+        </div>
+
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="LastUpdationDate" class="form-label">Last Updation Date</label>
+            <input asp-for="LastUpdationDate" class="form-control" readonly />
+        </div>
+
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="MachineName" class="form-label">Machine Name</label>
+            <input asp-for="MachineName" class="form-control" value="@Environment.MachineName" readonly />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="SaleBillremark" class="form-label">SaleBill Remark</label>
+            <input asp-for="SaleBillremark" class="form-control" readonly />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="SaleorderRemark" class="form-label">SaleOrder Remark</label>
+            <input asp-for="SaleorderRemark" class="form-control" readonly />
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="SalerejRemark" class="form-label">SaleRej Remark</label>
+            <input asp-for="SalerejRemark" class="form-control" readonly />
+        </div>
+    </div>
+</div>

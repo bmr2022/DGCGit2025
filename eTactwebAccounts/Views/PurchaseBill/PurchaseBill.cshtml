@@ -1,0 +1,2454 @@
+﻿@using static eTactWeb.DOM.Models.Common
+@model eTactWeb.DOM.Models.PurchaseBillModel
+
+@{
+    ViewData["Title"] = "Purchase Bill";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+    ViewData["PageName"] = "PurchaseBill";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <partial name="_AllowDocNameChangeBox" />
+    <partial name="_AllowInvoiceNoChangeBox" />
+    <partial name="_AllowVouchDateChangeBox" />
+    <partial name="_PBConfirmationBox" />
+    <form asp-action="SavePurchaseBILL" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+        <input type="hidden" asp-for="EID" />
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>@ViewData["Title"] - @Model.YearCode</strong>
+                <input type="hidden" id="YearCode" value=""/>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
+                       asp-controller="PurchaseBill" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PurchVouchNo="@Model.PurchVouchNo">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT VOUCHER
+                    </a>
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
+                       asp-controller="PurchaseBill" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PurchVouchNo="@Model.PurchVouchNo">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT INVOICE
+                    </a>
+                    <a asp-action="PurchaseBillList" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Pend Purchase Bill
+                    </a>
+                    <a asp-action="Dashboard" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    @* <partial name="_FormsButton" /> *@
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="MRNTypeBack" type="hidden" value="@Model.MRNTypeBack" />
+                            <input asp-for="DocumentNameBack" type="hidden" value="@Model.DocumentNameBack" />
+                            <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                            <input asp-for="VoucherNoBack" type="hidden" value="@Model.VoucherNoBack" />
+                            <input asp-for="InvoiceNoBack" type="hidden" value="@Model.InvoiceNoBack" />
+                            <input asp-for="MRNNoBack" type="hidden" value="@Model.MRNNoBack" />
+                            <input asp-for="GateNoBack" type="hidden" value="@Model.GateNoBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="HSNNoBack" type="hidden" value="@Model.HSNNoBack" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel1">
+                        <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel1" aria-expanded="true" aria-controls="BPanel1">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="BPanel1" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="HPanel1">
+                      
+                        @await Html.PartialAsync("_PBMain", Model)
+                        <input type="hidden" asp-for="TypeOfSave" value="" />
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                        </button>
+                        <button onclick="GridButtontoUnlockDoc()" class="GridButtontoUnlockDoc btn btn-sm btn-outline-danger" style="width:150px; text-wrap-mode: nowrap;" type="button">
+                            <i class="fa-solid fa-lock fa-fw fa-lg "></i>Allow DocChange
+                        </button>
+                        <button class="GridButton btn btn-sm btn-outline-danger" style="width:150px; text-wrap-mode: nowrap;" type="button">
+                            <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
+                        </button>
+                    </h2>
+                    <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
+                        <div class="accordion-body">
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="margin-left: +18.5rem !important;">
+                                    <input class="form-check-input" type="checkbox" role="switch" data-val="true" data-val-required="The IN1 field is required." id="IN1" name="IN1" value="true">Show All
+                                </div>
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="table-responsive" id="PBPendingItemDetail" style="max-height:150px;">
+                                        <partial name="_PBItemDetail" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="table-responsive" id="PBItemTable" style="max-height:150px;">
+                                        <partial name="_PBItemGrid" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-2 gx-3">
+                                <div class="col-12 text-center">
+                                    <strong>BILL AMOUNT TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
+                                    <strong style="padding-left:7px;">PO AMOUNT TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemPOAmount"></span></strong>
+                                    <strong style="padding-left:7px;">TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+                                    <strong style="padding-left:7px;">TOTAL AS PER MRP : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemBillAmount"></span></strong>
+                                    @* <strong style="padding-left:7px;">AMOUNT IN OTHER CURRENCY TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemAmtInOtherCurr"></span></strong> *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_TaxDetail">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="B_TaxDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_TaxDetail">
+                        <div class="accordion-body">
+                            <partial name="_TaxDetail" />
+                            <div class="progress my-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="row g-2 gx-3 justify-content-around">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
+                                    <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
+                                    <input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
+                                    <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalRoundOffAmt" class="form-label">(+/-) RoundOff Amount</label>
+                                    <input asp-for="TotalRoundOffAmt" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="NetTotal" class="form-label">Net Total</label>
+                                    <input asp-for="NetTotal" class="form-control" onchange="onNetTotalChange()" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_TDSDetail">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TDSDetail" aria-expanded="true" aria-controls="B_TDSDetail">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>TDS Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="B_TDSDetail" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="H_TDSDetail">
+                        <div class="accordion-body">
+                            @await Html.PartialAsync("_TDSDetail", Model.TDSModel)
+                            <div class="progress my-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <partial name="_DrCrTable" />
+                </div>
+                <div class="accordion-item">
+                    @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel)
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel4">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="BPanel4" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="HPanel4">
+                        <partial name="_PBOtherDetail" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer p-3">
+            <div class="card-header card-headerBG text-light bg-gradient">
+                <h5>
+                    <strong>@ViewData["Title"] - @Model.YearCode</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="PurchaseBillList" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                            Pend Purchase Bill
+                        </a>
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                            <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                                <input asp-for="MRNTypeBack" type="hidden" value="@Model.MRNTypeBack" />
+                                <input asp-for="DocumentNameBack" type="hidden" value="@Model.DocumentNameBack" />
+                                <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                                <input asp-for="VoucherNoBack" type="hidden" value="@Model.VoucherNoBack" />
+                                <input asp-for="InvoiceNoBack" type="hidden" value="@Model.InvoiceNoBack" />
+                                <input asp-for="MRNNoBack" type="hidden" value="@Model.MRNNoBack" />
+                                <input asp-for="GateNoBack" type="hidden" value="@Model.GateNoBack" />
+                                <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                                <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                                <input asp-for="HSNNoBack" type="hidden" value="@Model.HSNNoBack" />
+                                <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h5>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        var actualRate = 0;
+
+        $(function () {
+            $('#EntryByMachineName').val($('#machineName').text());
+            $('.DH').fadeOut();
+            if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
+                GetTaxPartItem();
+                $('#lblItemNetAmount').text($('#ItemNetAmount').val());
+                if ($('#POType').val() == "OPEN") {
+                    $('#Qty,#AltQty').val('0').prop('disabled', true).attr('readonly', 'readonly');
+                }
+            }
+            else {
+                window.setInterval(function () {
+                    Dat = new Date();
+                    let am_pm = (Dat.getHours() >= 12) ? "PM" : "AM";
+                    var time = Dat.getHours() + ":" + Dat.getMinutes() + ":" + Dat.getSeconds() + " - " + am_pm;
+                    //console.log(time);
+                    $('#EntryTime').val(time);
+                }, 1000);
+            }
+
+            // AutoComplete('VPurchaseBillMain', 'ModeOFTransport', 'ModeOFTransport', null);
+            // AutoComplete('VPurchaseBillMain', 'DeliverySch', 'DeliverySch', null);
+            // AutoComplete('VPurchaseBillMain', 'PackingChg', 'PackingChg', null);
+            // AutoComplete('VPurchaseBillMain', 'DeliveryTerms', 'DeliveryTerms', null);
+            // AutoComplete('VPurchaseBillMain', 'PackingTYpe', 'PackingTYpe', null);
+            // AutoComplete('VPurchaseBillMain', 'PaymentTerms', 'PaymentTerms', null);
+        });
+
+        $(document).on('keyup', '.form-control', function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode == 9) {
+                if ($(this).parent("#BPanel1").length > 0) {
+                    if ($(this).is(":focus")) {
+                        var fControl = $(this).parent().next().find('.datePickerControl');
+                        if (fControl.length > 0 && fControl.is(":focus")) {
+                            $(this).parent().next().find('.datePickerControl').focus();
+                        }
+                        else {
+                            $(this).parent().next().find(":focusable").focus();
+                        }
+                    }
+                }
+            }
+        });
+
+        var tabIndx = 0;
+        $(":focusable").each(function () {
+            $(this).attr("tabindex", ++tabIndx);
+        });
+        $(document).ready(function () {
+            $('#YearCode').val($('#sessionYC').text());
+            if ($('#PBType').val() == 'Import') {
+                $('#Rate').prop("disabled", true);
+                $('#OtherRateCurr').prop("disabled", false);
+
+            } else {
+                $('#Rate').prop("disabled", false);
+                $('#OtherRateCurr').prop("disabled", true);
+            }
+            const myInput = document.getElementById("TotalDiscountPercentage");
+
+            myInput.addEventListener("input", function (event) {
+                const inputValue = parseInt(event.target.value);
+                if (isNaN(inputValue) || inputValue > 100) {
+                    event.target.value = ""; // Clear the input value if it's not a valid number or greater than 100
+                }
+            });
+            // $('#AccountCode').select2();
+            GetFormRights();
+            LockedFinancialYear();
+            GetExchnageRate();
+            FillTDSTaxType();
+            FillCurrency();
+            var rowCounter = $('#PBPendingItemDetail tr').length;
+            for (var i = 1; i <= rowCounter; i++) {
+                 BillRateChange(i);
+            }
+
+            var finFromDate = $('#FinFromDate').val();
+            var finToDate = $('#FinToDate').val();
+
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+            if ($('#Mode').val() != "INSERT") {
+                CalculateAdjAmt('NetTotal');
+            }
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "INSERT") {
+                setInterval(checkNetTotalChange, 500);
+            }
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "PBI") {
+                var InvDate = $('#InvDate').val()?.split("-").join("/");
+                InvDate = ValidateNull(InvDate) ? parseDateToFormat(InvDate.split(" ")[0]) : 'now';
+                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2 , minDate: formattedDate1 }).datepicker("setDate", InvDate);
+
+                // var StrMRNEntryDate = $('#StrMRNEntryDate').val();//?.split("-").join("/");
+                // StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? parseDateToFormat(StrMRNEntryDate.split(" ")[0]) : 'now';
+                // $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: new (Date) }).datepicker("setDate", StrMRNEntryDate);
+
+                var StrMRNEntryDate = $('#StrMRNEntryDate').val()?.split("-").join("/");
+                StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? parseDateToFormat(StrMRNEntryDate.split(" ")[0]) : 'now';
+                $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2 , minDate: formattedDate1 }).datepicker("setDate", StrMRNEntryDate);
+
+                var StrGateDate = $('#StrGateDate').val()?.split("-").join("/");
+                StrGateDate = ValidateNull(StrGateDate) ? parseDateToFormat(StrGateDate.split(" ")[0]) : 'now';
+                $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2 , minDate: formattedDate1 }).datepicker("setDate", StrGateDate);
+
+                var StrVouchDate = $('#VouchDate').val()?.split("-").join("/");
+                StrVouchDate = ValidateNull(StrVouchDate) ? parseDateToFormat(StrVouchDate.split(" ")[0]) : 'now';
+                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2 , minDate: formattedDate1 }).datepicker("setDate", StrVouchDate);
+
+                var AdjDueDate = $('#AdjDueDate').val()?.split("-").join("/");
+                AdjDueDate = ValidateNull(AdjDueDate) ? parseDateToFormat(AdjDueDate.split(" ")[0]) : 'now';
+                $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjDueDate);
+
+                var AdjAgnstVouchDate = ($('#AdjAgnstVouchDate').val() != null && $('#AdjAgnstVouchDate').val() != undefined) ? $('#AdjAgnstVouchDate').val().split("-").join("/") : 'now';
+                AdjAgnstVouchDate = ValidateNull(AdjAgnstVouchDate) ? parseDateToFormat(AdjAgnstVouchDate.split(" ")[0]) : 'now';
+                $('#AdjAgnstVouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjAgnstVouchDate);
+
+                var AdjPODate = $('#AdjPODate').val()?.split("-").join("/");
+                AdjPODate = ValidateNull(AdjPODate) ? parseDateToFormat(AdjPODate.split(" ")[0]) : 'now';
+                $('#AdjPODate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjPODate);
+            }
+            else {
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#WEF').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#RefDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#AdjAgnstVouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#AdjPODate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+
+                $('#EntryDate').datepicker("option", "minDate", formattedDate1);
+                $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
+
+                var today = new (Date);
+                  $("#VouchDate, #PODate, #ScheduleDate, #POCloseDate, #AmmDate, #AmendmentDate, #AdjDueDate, #AdjAgnstVouchDate").datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    minDate: today,
+                });
+
+                $("#RefDate").datepicker({ dateFormat: 'dd/mm/yy', maxDate: today });
+                $('#InvDate').datepicker("option", "minDate", formattedDate1);
+                $('#InvDate').datepicker("option", "maxDate", (formattedDate2 > today) ? today : formattedDate2);
+                $('#StrMRNEntryDate').datepicker("option", "minDate", formattedDate1);
+                $('#StrMRNEntryDate').datepicker("option", "maxDate", (formattedDate2 > today) ? today : formattedDate2);
+                $('#StrGateDate').datepicker("option", "minDate", formattedDate1);
+                $('#StrGateDate').datepicker("option", "maxDate", (formattedDate2 > today) ? today : formattedDate2);
+                $('#PODate').datepicker("option", "maxDate", formattedDate2);
+                $('#ScheduleDate').datepicker("option", "maxDate", formattedDate2);
+                $('#VouchDate').datepicker("option", "maxDate", formattedDate2);
+                $('#AdjDueDate').datepicker("option", "minDate", formattedDate1);
+                $('#AdjAgnstVouchDate').datepicker("option", "minDate", formattedDate1);
+                $('#AdjPODate').datepicker("option", "minDate", formattedDate1);
+
+                $('.AF').fadeOut();
+
+                $('#WEF').on("change", function () {
+                    $('#AmmDate').val('').datepicker("option", { "minDate": $(this).val() });
+                });
+
+                var currentDate1 = new Date();
+
+                // Calculate the date one year from now
+                var oneYearFromNow = new Date();
+                oneYearFromNow.setFullYear(currentDate1.getFullYear() + 1);
+
+                // Format the date as dd/mm/yy
+                var formattedDate11 = $.datepicker.formatDate('dd/mm/yy', oneYearFromNow);
+
+                // Set the date in the datepicker
+                $('#POCloseDate').datepicker({
+                    dateFormat: 'dd/mm/yy'
+                }).datepicker("setDate", formattedDate11);
+            }
+
+            $('#EntryDate').datepicker("option", "minDate", formattedDate1);
+            $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
+            var today = new (Date);
+
+
+            $('.AF').fadeOut();
+            //$('.Schedule').fadeOut();
+
+            $('#WEF').on("change", function () {
+                $('#AmmDate').val('').datepicker("option", { "minDate": $(this).val() });
+            });
+
+            $('.hasDatepicker').datepicker("option", "showAnim", "clip");
+            $('.hasDatepicker').on('keydown', function (e) { return false });
+            //$('#divPBItemList tr td:first-child').text() == 'NO DATA ADDED' ? $('.Schedule').fadeOut() : $('.Schedule').fadeIn();
+
+            if ($('#Mode').val() == "PAU" || $('#Mode').val() == "POA") {
+                if ($('#POType').val() == 'Open') {
+                    $('#POQty').prop("disabled", true);
+                }
+                if ($('#PBType').val() == 'Import') {
+                    $('#Rate').prop("disabled", true);
+                    $('#OtherRateCurr').prop("disabled", false);
+
+                }
+                // var hiddenCurrency = $('#hiddenCurrency').val();
+                // $('#Currency').val(hiddenCurrency);
+            } else {
+                //donothing
+            }
+            if ('@Model.Mode' != "U" && '@Model.Mode' != "V") {
+                fillPurchaseBillItemGridFromMemoryCache().then(() => {
+                    selectDocNamesForAllRows();
+                });
+            }
+            if ($('#Mode').val() != "U" && $('#Mode').val() != 'PBI' && $('#Mode').val() != 'POA' && $('#Mode').val() != 'POA' && $('#Mode').val() != 'PAU') {
+                if ($('#Mode').val() == "V") {
+                    refreshitemcountandnetamt(true);
+                    // var hiddenCurrency = $('#hiddenCurrency').val();
+                    // $('#Currency').val(hiddenCurrency);
+                }
+                else if ($('#Mode').val() == "C") {
+                    fillEntryandVouchNo();
+                    // var hiddenCurrency = $('#hiddenCurrency').val();
+                    // $('#Currency').val(hiddenCurrency);
+                    var rowCount = $('#divPBItemList tr').length;
+                    var columnCount = $('#divPBItemList tr td').length;
+                    refreshitemcountandnetamt(true);
+                }
+                else if ($('#Mode').val() == "POC") {
+                    //do nothing
+                }
+                else {
+                    fillEntryandVouchNo();
+                    btnClearTax();
+                    btnClearTDS();
+                    $('#lblItemNetAmount').text(0.00);
+                    $('#lblItemCount').text(0);
+                }
+            }
+            else {
+                // var hiddenCurrency = $('#hiddenCurrency').val();
+                // $('#Currency').val(hiddenCurrency);
+                var rowCount = $('#divPBItemList tr').length;
+                var columnCount = $('#divPBItemList tr td').length;
+                if ($('#Mode').val() == "U") {
+                    refreshitemcountandnetamt(true);
+                }
+                else {
+                    refreshitemcountandnetamt();
+                }
+                if ($('#Mode').val() == 'PBI') {
+                    fillEntryandVouchNo();
+                }
+            }
+
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "INSERT" || $('#Mode').val() == "PBI") {
+                onInvoiceChange('InvNo');
+            }
+            if ($('#Mode').val() == "V" || $('#Mode').val() == "U" || $('#Mode').val() == "PBI") {
+                GetDbCrDetail();
+                if ($('#Mode').val() != 'PBI') {
+                    TDP();
+                    $('#TotalRoundOff').trigger('change');
+                }
+                CalculateAdjAmt('NetTotal');
+            }
+            const currentYear = $('#YearCode').val();
+
+            // Set the datepicker options
+            $("#WEF").datepicker({
+                minDate: new Date(currentYear, 4 - 1, 1) // 3 - 1 represents April (January is 0, so April is 3)
+            });
+            $('#POFor').trigger("change");
+        });
+
+        function selectDocNamesForAllRows() {
+            var rowCounter = $('#PBPendingItemDetail tr').length;
+            for (var i = 1; i <= rowCounter; i++) {
+                var docTypeId = $('#MainItemGrid-DocTypeID-' + i).val();
+                if (docTypeId) {
+                    $('#MainItemGrid-DocName-' + i).val(docTypeId);
+                    if ($('#MainItemGrid-DocName-' + i).val() !== docTypeId) {
+                        console.log(`No matching option found for DocTypeID: ${docTypeId} in row: ${i}`);
+                    }
+                } else {
+                    console.log(`DocTypeID is not available for row: ${i}`);
+                }
+            }
+        }
+
+        function FillCurrency() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FillCurrency")",
+                async: false,
+                dataType: "json",
+                data: { AccountCode: $('#AccountCode').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $.each(obj.Result.Table, function (index, val) {
+                            $('#Currency').val(val.Currency);
+                            $('#CurrencyId').val(val.entry_id);
+                        });
+                    }
+                }
+            });
+        }
+
+        // Function to format Date object to dd/mm/yy
+        function formatDateToDDMMYY(date) {
+            var day = date.getDate();
+            var month = date.getMonth() + 1; // Months are zero-based
+            var year = date.getFullYear();
+
+            // Add leading zeros to day and month if needed
+            if (day < 10) day = '0' + day;
+            if (month < 10) month = '0' + month;
+
+            return day + '/' + month + '/' + year;
+        }
+
+        $('#sendToExcel').click(function () {
+            let table = $("#poTable");
+            console.log(table);
+            TableToExcel.convert(table[0], {
+                name: `PurchaseOrderTableAmm.xlsx`,
+                sheet: {
+                    name: 'PurchaseOrderTableAmm'
+                }
+            });
+        });
+
+        function UploadExcel() {
+            var fileInput = $('#ExcelFile');
+            var file = fileInput.prop("files")[0];
+
+            var formData = new FormData();
+            formData.append("PoNo", $('#PONo').val());
+            formData.append("POYearcode", $('#YearCode').val());
+            formData.append("AccountCode", $('#AccountCode').val());
+            formData.append("SchNo", "");
+            formData.append("SchYearCode", 0);
+            formData.append("Flag", "PurchaseBill");
+            formData.append("Currency", $('#Currency').val());
+            formData.append("excelFile", fileInput.prop("files")[0]);
+
+
+            var Err = 0;
+
+            if ($('#ExcelFile').val() == '') {
+                AddErrorCls('ExcelFile');
+                Err = 1;
+                return;
+            }
+            else {
+                RemoveErrorCls('ExcelFile');
+            }
+
+            $.ajax({
+                url: "@Url.Action("UploadExcel")",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result == "Not Done") {
+                        $.notify("Pend Qty cannot be less than 0!Please Try again!", "error");
+                    }
+                    else if (result == "Duplicate") {
+                        $.notify("Duplicate Item Not allowed", "error");
+                    }
+                    else if (result == "Partcode not available") {
+                        $.notify("Imported Partcode is not available, Please check!!!", "error");
+                    }
+                    else {
+                        $('#divPBItemList').empty();
+                        $('#divPBItemList').html(result);
+                    }
+                }
+            });
+        }
+
+        function DeleteFromMemoryGrid(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("DeleteFromMemoryGrid")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                async: false,
+                success: function (data, status, xhr) {
+
+                    $('#PBPendingItemDetail').html(data);
+                    $.notify("Item deleted from Grid", "info");
+                    refreshitemcountandnetamt();
+                    fillPurchaseBillItemGridFromMemoryCache();
+                },
+                error: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        function EditItemRow(SeqNo) {
+            $.ajax({
+                url: '/PurchaseBill/EditItemRow',
+                type: "POST",
+                data: { SeqNo: SeqNo },
+                success: function (data) {
+                    // Replace the content of the first partial view
+                    $('#PBItemTable').html(data.partialView1);
+
+                    // Replace the content of the second partial view
+                    $('#PBPendingItemDetail').html(data.partialView2);
+
+                    // Optional: Notify the user
+                    $.notify('Item deleted from main grid and added to pending grid.', "success");
+                    refreshitemcountandnetamt();
+                    fillPurchaseBillItemGridFromMemoryCache();
+                    $('#MainItemGrid-DocName-1').prop('disabled', false).css('pointer-events', 'auto');
+
+                    var interval = setInterval(function () {
+                        var dropdown = $('#MainItemGrid-DocName-1');
+                        if (dropdown.find('option').length > 1) {  // Check if options are loaded
+                            clearInterval(interval);  // Stop the interval once the dropdown is populated
+                            var selectedValue = data.docId ?? 0; // The value to select
+                            dropdown.val(selectedValue).change();
+                        }
+                    }, 500);
+                },
+                error: function (xhr, status, error) {
+                    alert('Error: ' + xhr.responseText);
+                    $.notify('Error occurred while refreshing views.', "error");
+                }
+            });
+        }
+
+        $('.GridButton').click(function () {
+            var rowCount = $('#divPBItemListToAddInGrid tr').length;
+            $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
+             
+            var Err = 0;
+            for (let i = 1; i <= rowCount; i++) {
+
+                if ($('#MainItemGrid-DocName-' + i).val() == null || $('#MainItemGrid-DocName-' + i).text() == null || $('#MainItemGrid-DocName-' + i).text() == '' || $('#MainItemGrid-DocName-' + i).text() == '-Select-') {
+                    $('MainItemGrid-DocName-' + i).css("border", "1px solid red");
+                    $.notify("Doc Name is required for " + $('#MainItemGrid-PartCode-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                    Err = 1;
+                }
+                if ($('#MainItemGrid-ItemName-' + i).val() == null || $('#MainItemGrid-ItemName-' + i).text() == null) {
+                    $('MainItemGrid-ItemName-' + i).css("border", "1px solid red");
+                    document.getElementById("MainItemGrid-ItemName-" + i).removeAttribute("readonly");
+                    $.notify("Item Name is required for " + $('#MainItemGrid-PartCode-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                    Err = 1;
+                }
+                if ($('#MainItemGrid-PartCode-' + i).val() == null || $('#MainItemGrid-PartCode-' + i).text() == null) {
+                    $('MainItemGrid-PartCode-' + i).css("border", "1px solid red");
+                    document.getElementById("MainItemGrid-PartCode-" + i).removeAttribute("readonly");
+                    $.notify("Item Name is required for Seq no" + $('#MainItemGrid-SeqNo-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                    Err = 1;
+                }
+                if ($('#MainItemGrid-BillQty-' + i).val() == null || $('#MainItemGrid-BillQty-' + i).text() == null || $('#MainItemGrid-BillQty-' + i).text() == '0' || $('#MainItemGrid-BillQty-' + i).text() == '0.00' || $('#MainItemGrid-BillQty-' + i).text() == '.00' || parseFloat($('#MainItemGrid-BillQty-' + i).val()) == 0) {
+                    $('MainItemGrid-BillQty-' + i).css("border", "1px solid red");
+                    document.getElementById("MainItemGrid-BillQty-" + i).removeAttribute("readonly");
+                    $.notify("Bill Qty is required for " + $('#MainItemGrid-PartCode-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                    Err = 1;
+                }
+                if ($('#MainItemGrid-BillRate-' + i).val() == null || $('#MainItemGrid-BillRate-' + i).text() == null || $('#MainItemGrid-BillRate-' + i).text() == '0' || $('#MainItemGrid-BillRate-' + i).text() == '0.00' || $('#MainItemGrid-BillRate-' + i).text() == '.00' || parseFloat($('#MainItemGrid-BillRate-' + i).val()) == 0) {
+                    $('MainItemGrid-BillRate-' + i).css("border", "1px solid red");
+                    document.getElementById("MainItemGrid-BillRate-" + i).removeAttribute("readonly");
+                    $.notify("Bill Rate is required for " + $('#MainItemGrid-PartCode-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                    Err = 1;
+                }
+                if ($('#MainItemGrid-pono-' + i).val() != null && $('#MainItemGrid-pono-' + i).val() != '') {
+                    if ($('#MainItemGrid-poyearcode-' + i).val() == null || $('#MainItemGrid-poyearcode-' + i).text() == null || parseFloat($('#MainItemGrid-poyearcode-' + i).val()) == 0) {
+                        $('MainItemGrid-poyearcode-' + i).css("border", "1px solid red");
+                        document.getElementById("MainItemGrid-poyearcode-" + i).removeAttribute("readonly");
+                        $.notify("PO Year is required for " + $('#MainItemGrid-pono-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                        Err = 1;
+                    }
+                    if ($('#MainItemGrid-PODate-' + i).val() == null || $('#MainItemGrid-PODate-' + i).text() == null) {
+                        $('MainItemGrid-PODate-' + i).css("border", "1px solid red");
+                        document.getElementById("MainItemGrid-PODate-" + i).removeAttribute("readonly");
+                        $.notify("PO Date is required for " + $('#MainItemGrid-pono-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                        Err = 1;
+                    }
+                    if ($('#MainItemGrid-PORate-' + i).val() == null || $('#MainItemGrid-PORate-' + i).text() == null || parseFloat($('#MainItemGrid-PORate-' + i).val()) == 0) {
+                        $('MainItemGrid-PORate-' + i).css("border", "1px solid red");
+                        //document.getElementById("MainItemGrid-PORate-" + i).removeAttribute("readonly");
+                        $.notify("PO Rate is required for " + $('#MainItemGrid-pono-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                        Err = 1;
+                    }
+                    // if ($('#MainItemGrid-NewPoRate-' + i).val() == null || $('#MainItemGrid-NewPoRate-' + i).text() == null || parseFloat($('#MainItemGrid-NewPoRate-' + i).val()) == 0) {
+                    //     $('MainItemGrid-NewPoRate-' + i).css("border", "1px solid red");
+                    //     document.getElementById("MainItemGrid-NewPoRate-" + i).removeAttribute("readonly");
+                    //     $.notify("New PO Rate is required for " + $('#MainItemGrid-pono-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                    //     Err = 1;
+                    // }
+                    // else {
+                    //     document.getElementById("MainItemGrid-NewPoRate-" + i).setAttribute("readonly", "readonly");
+                    // }
+                }
+                if ($('#MainItemGrid-schno-' + i).val() != null && $('#MainItemGrid-schno-' + i).val() != '') {
+                    if ($('#MainItemGrid-schyearcode-' + i).val() == null || $('#MainItemGrid-schyearcode-' + i).text() == null || parseFloat($('#MainItemGrid-schyearcode-' + i).val()) == 0) {
+                        $('MainItemGrid-schyearcode-' + i).css("border", "1px solid red");
+                        document.getElementById("MainItemGrid-schyearcode-" + i).removeAttribute("readonly");
+                        $.notify("Sch Year is required for " + $('#MainItemGrid-schno-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                        Err = 1;
+                    }
+                    if ($('#MainItemGrid-SchDate-' + i).val() == null || $('#MainItemGrid-SchDate-' + i).text() == null) {
+                        $('MainItemGrid-SchDate-' + i).css("border", "1px solid red");
+                        document.getElementById("MainItemGrid-SchDate-" + i).removeAttribute("readonly");
+                        $.notify("PO Date is required for " + $('#MainItemGrid-schno-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                        Err = 1;
+                    }
+                }
+                if ($('#MainItemGrid-MIRNO-' + i).val() != null && $('#MainItemGrid-MIRNO-' + i).val() != '' && $('#MainItemGrid-MIRNO-' + i).val() != '0' && $('#MainItemGrid-MIRNO-' + i).val() != '0.00' && $('#MainItemGrid-MIRNO-' + i).val() != '.00') {
+                    var recQty = ($('#MainItemGrid-RecQty-' + i).val() != null && $('#MainItemGrid-RecQty-' + i).text() != null) ? parseFloat($('#MainItemGrid-RecQty-' + i).val()) : 0;
+                    var AcceptedQty = ($('#MainItemGrid-AcceptedQty-' + i).val() != null && $('#MainItemGrid-AcceptedQty-' + i).text() != null) ? parseFloat($('#MainItemGrid-AcceptedQty-' + i).val()) : 0;
+                    var rejectedQty = ($('#MainItemGrid-rejectedQty-' + i).val() != null && $('#MainItemGrid-rejectedQty-' + i).text() != null) ? parseFloat($('#MainItemGrid-rejectedQty-' + i).val()) : 0;
+                    var reworkQty = ($('#MainItemGrid-ReworkQty-' + i).val() != null && $('#MainItemGrid-ReworkQty-' + i).text() != null) ? parseFloat($('#MainItemGrid-ReworkQty-' + i).val()) : 0;
+                    var holdQty = ($('#MainItemGrid-HoldQty-' + i).val() != null && $('#MainItemGrid-HoldQty-' + i).text() != null) ? parseFloat($('#MainItemGrid-HoldQty-' + i).val()) : 0;
+                    var sumqty = AcceptedQty + rejectedQty + reworkQty + holdQty;
+                    if (sumqty != recQty) {
+                        $.notify("Accp Qty + Rej Qty + Rew Qty + Hold Qty Should be equal to rec Qty for " + $('#MainItemGrid-schno-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                        Err = 1;
+                    }
+                }
+                var vouchDate = $('#VouchDate').val();
+                var mirDate = $('#MainItemGrid-MIRDATE-' + i).val();
+
+                if (vouchDate && mirDate && mirDate != '') {
+                    var vouchDateObj = new parseISTDate(vouchDate);
+                    var mirDateObj = new parseISTDate(mirDate);
+                    if (mirDateObj > vouchDateObj) {
+                        $.notify("MIR Date should less than Vouch Date for " + $('#MainItemGrid-schno-' + i).val() + " Seq" + $('#MainItemGrid-SeqNo-' + i).val(), "error");
+                        Err = 1;
+                    }
+                }
+            }
+            //verifyStock();
+            var ItemData = [];
+
+            if (Err == 1) {
+                $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                return;
+            }
+            else {
+                CalculateAmount();
+                var idsuffix = "MainItemGrid-";
+                for (let i = 1; i <= rowCount; i++) {
+                    ItemData.push({
+                        "SeqNo": $('#' + idsuffix + 'SeqNo' + '-' + i).val(),
+                        "ParentCode": $('#' + idsuffix + 'ParentCode' + '-' + i).val(),
+                        "DocTypeID": $('#' + idsuffix + 'DocName' + '-' + i).val(),
+                        "DocumentName": $('#' + idsuffix + 'DocName' + '-' + i + ' :selected').text(),
+                        "ItemCode": $('#' + idsuffix + 'ItemCode' + '-' + i).val(),
+                        "Item_Name": $('#' + idsuffix + 'ItemName' + '-' + i).val(),
+                        "PartCode": $('#' + idsuffix + 'PartCode' + '-' + i).val(),
+                        "HSNNO": $('#' + idsuffix + 'HSNNO' + '-' + i).val(),
+                        "BillQty": $('#' + idsuffix + 'BillQty' + '-' + i).val(),
+                        "RecQty": $('#' + idsuffix + 'RecQty' + '-' + i).val(),
+                        "AcceptedQty": $('#' + idsuffix + 'AcceptedQty' + '-' + i).val(),
+                        "rejectedQty": $('#' + idsuffix + 'rejectedQty' + '-' + i).val(),
+                        "ReworkQty": $('#' + idsuffix + 'ReworkQty' + '-' + i).val(),
+                        "HoldQty": $('#' + idsuffix + 'HoldQty' + '-' + i).val(),
+                        "unit": $('#' + idsuffix + 'unit' + '-' + i).val(),
+                        "AltRecQty": $('#' + idsuffix + 'AltRecQty' + '-' + i).val(),
+                        "AltUnit": $('#' + idsuffix + 'AltUnit' + '-' + i).val(),
+                        "BillRate": $('#' + idsuffix + 'BillRate' + '-' + i).val(),
+                        "MRP": $('#' + idsuffix + 'MRP' + '-' + i).val(),
+                        "Amount": $('#' + idsuffix + 'Amount' + '-' + i).val(),
+                        "RateIncludingTax": $('#' + idsuffix + 'RateIncludingTax' + '-' + i).val(),
+                        "AmtInOtherCurrency": $('#' + idsuffix + 'AmtInOtherCurrency' + '-' + i).val(),
+                        "RateOfConvFactor": $('#' + idsuffix + 'RateOfConvFactor' + '-' + i).val(),
+                        "AssessRate": $('#' + idsuffix + 'AssessRate' + '-' + i).val(),
+                        "DisPer": $('#' + idsuffix + 'DisPer' + '-' + i).val(),
+                        "DisAmt": $('#' + idsuffix + 'DisAmt' + '-' + i).val(),
+                        "ItemSize": $('#' + idsuffix + 'ItemSize' + '-' + i).val(),
+                        "ItemColor": $('#' + idsuffix + 'ItemColor' + '-' + i).val(),
+                        "ItemModel": $('#' + idsuffix + 'ItemModel' + '-' + i).val(),
+                        "ForDepartment": $('#' + idsuffix + 'ForDepartment' + '-' + i).val(),
+                        "ProcessName": $('#' + idsuffix + 'ProcessName' + '-' + i).val(),
+                        "NewPoRate": $('#' + idsuffix + 'NewPoRate' + '-' + i).val(),
+                        "pono": $('#' + idsuffix + 'pono' + '-' + i).val(),
+                        "poyearcode": $('#' + idsuffix + 'poyearcode' + '-' + i).val(),
+                        "PODate": $('#' + idsuffix + 'PODate' + '-' + i).val(),
+                        "schno": $('#' + idsuffix + 'schno' + '-' + i).val(),
+                        "schyearcode": $('#' + idsuffix + 'schyearcode' + '-' + i).val(),
+                        "SchDate": $('#' + idsuffix + 'SchDate' + '-' + i).val(),
+                        "PoAmendNo": $('#' + idsuffix + 'PoAmendNo' + '-' + i).val(),
+                        "PORate": $('#' + idsuffix + 'PORate' + '-' + i).val(),
+                        "MIRNO": $('#' + idsuffix + 'MIRNO' + '-' + i).val(),
+                        "MIRYEARCODE": $('#' + idsuffix + 'MIRYEARCODE' + '-' + i).val(),
+                        "MIRDATE": $('#' + idsuffix + 'MIRDATE' + '-' + i).val(),
+                        "ProjectNo": $('#' + idsuffix + 'ProjectNo' + '-' + i).val(),
+                        "ProjectDate": $('#' + idsuffix + 'ProjectDate' + '-' + i).val(),
+                        "ProjectyearCode": $('#' + idsuffix + 'ProjectyearCode' + '-' + i).val(),
+                        "AgainstImportAccountCode": $('#' + idsuffix + 'AgainstImportAccountCode' + '-' + i).val(),
+                        "AgainstImportInvoiceNo": $('#' + idsuffix + 'AgainstImportInvoiceNo' + '-' + i).val(),
+                        "AgainstImportYearCode": $('#' + idsuffix + 'AgainstImportYearCode' + '-' + i).val(),
+                        "AgainstImportInvDate": $('#' + idsuffix + 'AgainstImportInvDate' + '-' + i).val(),
+                    });
+                }
+                $.ajax({
+                    url: "@Url.Action("AddtoItemGrid")",
+                    type: "POST",
+                    data: { gridList: ItemData },
+                    success: function (data, status, xhr) {
+                        if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                            $.notify('Duplicate Item Not Allowed.', "info");
+                            $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                        }
+                        else if (xhr.status === 208 && xhr.responseText === 'Duplicate Item') {
+                            $.notify('Duplicate Item Not Allowed.', "info");
+                            $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                        }
+                        else if (xhr.status == 205 && xhr.responseText == 'Reset Tax Detail') {
+                            $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                        }
+                        else {
+                            $('#PBItemTable').html(data);
+                            $('#divPBItemListToAddInGrid').empty();
+                            $.notify("Item Added to Grid", "success");
+                        }
+                        $('#TotalRoundOff').prop('selectedIndex', 0);
+
+                        refreshitemcountandnetamt();
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify(result.responseText, "error");
+                        console.log(result.responseText);
+                    },
+                    failure: function (result, status, xhr) {
+                        alert(response.responseText);
+                    },
+                    complete: function () {
+                        //$('.Schedule').fadeIn();
+                        $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                }).done(function () {
+                    GetTaxPartItem();
+                    GetDbCrDetail();
+                }).fail(function () {
+                    alert("error");
+                }).always(function () {
+                });
+            }
+        });
+
+        function CalculateAmount() {
+            var rowCount = $('#divPBItemList tr').length;
+            if (rowCount > 1) {
+                for (var i = 1; i <= rowCount; i++) {
+                    var billrate = parseFloat(($('#MainItemGrid-BillRate-' + i).val() == '.00' || $('#MainItemGrid-BillRate-' + i).val() == '' || $('#MainItemGrid-BillRate-' + i).val() == '0') ? 0 : $('#MainItemGrid-BillRate-' + i).val());
+
+                    var billQty = parseFloat(($('#MainItemGrid-BillQty-' + i).val() == '.00' || $('#MainItemGrid-BillQty-' + i).val() == '' || $('#MainItemGrid-BillQty-' + i).val() == '0') ? 0 : $('#MainItemGrid-BillQty-' + i).val());
+
+                    var DiscountPer = parseFloat(($('#MainItemGrid-DisPer-' + i).val() == '.00' || $('#MainItemGrid-DisPer-' + i).val() == '' || $('#MainItemGrid-DisPer-' + i).val() == '0') ? 0 : $('#MainItemGrid-DisPer-' + i).val());
+
+                    var billDiscountSum = DiscountPer / 100;
+                    var DiscountAmt = billDiscountSum.toFixed(2);
+                    $('#MainItemGrid-DisAmt-' + i).val(DiscountAmt);
+
+                    var billAmtsum = (billrate * billQty) - DiscountAmt;
+                    $('#MainItemGrid-Amount-' + i).val(billAmtsum.toFixed(2));
+                }
+            }
+        }
+        function BasicTotal() {
+            refreshitemcountandnetamt();
+        }
+
+        function refreshitemcountandnetamt(isrefreshatload) {
+            var rowCount = $('#divPBItemList tr').length;
+            var columnCount = $('#divPBItemList tr td').length;
+            var sum = 0;
+            var billAmtsum = 0;
+            var poAmtsum = 0;
+            var amtinothercurrsum = 0;
+            var mrpsum = 0;
+            if (rowCount > 0) {
+                for (var i = 1; i <= rowCount; i++) {
+                    sum += parseFloat(($('#GridAmount-' + i).text() == '.00' || $('#GridAmount-' + i).text() == '' || $('#GridAmount-' + i).text() == '0') ? 0 : $('#GridAmount-' + i).text());
+
+                    var billrate = parseFloat(($('#MainItemGridd-BillRate-' + i).text() == '.00' || $('#MainItemGridd-BillRate-' + i).text() == '' || $('#MainItemGridd-BillRate-' + i).text() == '0') ? 0 : $('#MainItemGridd-BillRate-' + i).text());
+                    
+                    var mrprate = parseFloat(($('#MainItemGridd-MRP-' + i).text() == '.00' || $('#MainItemGridd-MRP-' + i).text() == '' || $('#MainItemGridd-MRP-' + i).text() == '0') ? 0 : $('#MainItemGridd-MRP-' + i).text());
+
+                    var POrate = parseFloat(($('#MainItemGridd-PORate-' + i).text() == '.00' || $('#MainItemGridd-PORate-' + i).text() == '' || $('#MainItemGridd-PORate-' + i).text() == '0') ? 0 : $('#MainItemGridd-PORate-' + i).text());
+
+                    var billQty = parseFloat(($('#MainItemGridd-BillQty-' + i).text() == '.00' || $('#MainItemGridd-BillQty-' + i).text() == '' || $('#MainItemGridd-BillQty-' + i).text() == '0') ? 0 : $('#MainItemGridd-BillQty-' + i).text());
+
+                    var DiscountAmt = parseFloat(($('#MainItemGridd-DisAmt-' + i).text() == '.00' || $('#MainItemGridd-DisAmt-' + i).text() == '' || $('#MainItemGridd-DisAmt-' + i).text() == '0') ? 0 : $('#MainItemGridd-DisAmt-' + i).text());
+
+                    billAmtsum += (billrate * billQty) - DiscountAmt;
+                    mrpsum += (mrprate * billQty) - DiscountAmt;
+                    poAmtsum += (POrate * billQty) - DiscountAmt;
+
+                    amtinothercurrsum += parseFloat(($('#MainItemGridd-AmtInOtherCurrency-' + i).text() == '.00' || $('#MainItemGridd-AmtInOtherCurrency-' + i).text() == '' || $('#MainItemGridd-AmtInOtherCurrency-' + i).text() == '0') ? 0 : $('#MainItemGridd-AmtInOtherCurrency' + i).text());
+                }
+            }
+            else {
+                sum = 0;
+            }
+            $('#lblItemBillAmount').text(mrpsum.toFixed(2));
+            $('#ItemNetAmount').text(sum.toFixed(2));
+            $('#ItemNetAmount').val(sum.toFixed(2));
+            $('#lblItemNetAmount').text(billAmtsum.toFixed(2));
+            $('#lblItemPOAmount').text(poAmtsum.toFixed(2));
+            $('#lblItemAmtInOtherCurr').text(amtinothercurrsum.toFixed(2));
+
+            //for tax
+            var taxRowCount = $('#divTaxGrid tr').length;
+            var txSum = 0;
+            if ($('#divTaxGrid tr td').length > 1) {
+                for (var i = 1; i <= taxRowCount; i++) {
+                    txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                }
+            }
+            var txTotal = sum + txSum;
+            $('#NetTotal').val(txTotal.toFixed(2));
+            if (isrefreshatload != null && isrefreshatload != undefined && isrefreshatload == true) {
+            }
+            else{
+                $('#TotalDiscountPercentage').val(0);
+                $('#TotalAmtAftrDiscount').val(0);
+                $('#TotalRoundOffAmt').val(0.00);
+            }
+
+            //noofitems
+            if (columnCount > 1)
+                $('#lblItemCount').text(rowCount);
+            else
+                $('#lblItemCount').text(0);
+        }
+
+        function BillRateChange(i) {
+            var billrate = parseFloat(($('#MainItemGrid-BillRate-' + i).val() == '.00' || $('#MainItemGrid-BillRate-' + i).val() == '' || $('#MainItemGrid-BillRate-' + i).val() == '0') ? 0 : $('#MainItemGrid-BillRate-' + i).val());
+
+            var billQty = parseFloat(($('#MainItemGrid-BillQty-' + i).val() == '.00' || $('#MainItemGrid-BillQty-' + i).val() == '' || $('#MainItemGrid-BillQty-' + i).val() == '0') ? 0 : $('#MainItemGrid-BillQty-' + i).val());
+
+            var DiscountPer = parseFloat(($('#MainItemGrid-DisPer-' + i).val() == '.00' || $('#MainItemGrid-DisPer-' + i).val() == '' || $('#MainItemGrid-DisPer-' + i).val() == '0') ? 0 : $('#MainItemGrid-DisPer-' + i).val());
+
+            var billDiscountSum = DiscountPer / 100;
+            var DiscountAmt = billDiscountSum.toFixed(2);
+            $('#MainItemGrid-DisAmt-' + i).val(DiscountAmt);
+
+            var billAmtsum = (billrate * billQty) - DiscountAmt;
+            $('#MainItemGrid-Amount-' + i).val(billAmtsum.toFixed(2));
+        }
+
+        $('#DDays').change(function () {
+
+            var newDate = addDays(new Date($('#DDate').val()), parseInt($(this).val()) + 1);
+            var newDDate = formatDATEDate(newDate);
+            $('#DDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", newDDate);
+            $('#DDate').datepicker("option", "minDate", formattedDate2);
+        });
+        $('#DDate').change(function () {
+            var tDate = parseDDate($(this).val());
+            var today = new Date();
+            var timeDifference = tDate.getTime() - today.getTime();
+            var daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+            $('#DDays').val(daysDifference);
+        });
+        function parseDDate(dateString) {
+            var parts = dateString.split('/');
+            var day = parseInt(parts[0]);
+            var month = parseInt(parts[1]) - 1;
+            var year = parseInt(parts[2]);
+            return new Date(year, month, day);
+        }
+        function formatDATEDate(inputDate) {
+            var parts = inputDate.split('-');
+            var year = parts[0];
+            var month = parts[1];
+            var day = parts[2];
+            return day + '/' + month + '/' + year;
+        }
+
+        function fillEntryandVouchNo() {
+            //ENTRYID & VOUCHERNO
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("fillEntryandVouchNo")",
+                dataType: "json",
+                data: { "YearCode": $('#MRNYearCode').val(), "VODate": $('#VouchDate').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (ValidateNull(obj.Result) && obj.Result.Table != null && ValidateNull(obj.Result.Table[0])) {
+                            $('#EntryID').val(obj.Result.Table[0].EntryId);
+                            $('#PurchVouchNo').val(obj.Result.Table[0].PurchVoucherNo);
+                        }
+                    }
+                }
+            });
+        }
+        var AllowedInv = false;
+
+        function AllowInvoiceNoChange() {
+            if (AllowedInv == true) {
+                //do nothing
+                return;
+            } else {
+
+                GetAllowInvoiceNo();
+                if ($('#AllowInvoiceNoChange').val() == "N" || $('#AllowInvoiceNoChange').val() == "" || $('#AllowInvoiceNoChange').val() == null) {
+                    $('#errormessage1').hide();
+                    $('#AllowInvoiceNoChangeBox').modal("show");
+                } else if ($('#AllowInvoiceNoChange').val() == "Y") {
+                    AllowedInv = true;
+                    ['InvNo', 'InvDate'].forEach(function (id) {
+                        var element = document.getElementById(id);
+                        if (element) {
+                            element.readOnly = false;
+                            element.disabled = false;
+                        }
+                    });
+                    $('#errormessage1').hide();
+                } else {
+                    $.notify("Batch Change is not allowed");
+                }
+
+            }
+        }
+        function GetAllowInvoiceNo() {
+            $.ajax({
+                url: "@Url.Action("GetAllowInvoiceNo")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#AllowInvoiceNoChange').val(obj.Result[0].AllowUpdateInvoiceNo);
+                            $('#AllowInvoiceNoChangePassWord').val(obj.Result[0].InvPassword);
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        $('#confirmCheck1').click(function () {
+            if ($('#InvoiceNoPassCode').val() == $('#AllowInvoiceNoChangePassWord').val()) {
+                AllowedInv = true;
+                ['InvNo', 'InvDate'].forEach(function (id) {
+                    var element = document.getElementById(id);
+                    if (element) {
+                        element.readOnly = false;
+                        element.disabled = false;
+                    }
+                });
+                onInvoiceChange('InvNo');
+                $('#AllowInvoiceNoChangeBox').modal("hide");
+                $('#errormessage1').hide();
+            } else {
+                $('#errormessage1').show();
+            }
+        });
+
+
+        function GetAllowVouchDate() {
+            $.ajax({
+                url: "@Url.Action("GetAllowInvoiceNo")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#AllowVouchDateChangePassWord').val(obj.Result[0].InvPassword);
+                            $('#AllowVouchDateChange').val(obj.Result[0].AccAllowTochangeVoucherDateInPurchBill);
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+        var AllowedVouchDate = false;
+
+        function AllowVouchDateChange() {
+            if (AllowedVouchDate == true) {
+                //do nothing
+                return;
+            } else {
+                GetAllowVouchDate();
+                if ($('#AllowVouchDateChange').val() == "N" || $('#AllowVouchDateChange').val() == "" || $('#AllowVouchDateChange').val() == null) {
+                    $('#errormessage2').hide();
+                    $('#AllowVouchDateChangeBox').modal("show");
+                } else if ($('#AllowVouchDateChange').val() == "Y") {
+                    AllowedVouchDate = true; 
+                    var element = document.getElementById('VouchDate');
+                    if (element) {
+                        element.readOnly = false;
+                        element.disabled = false;
+                    }
+                    const mrnDate = parseISTDate($("#StrMRNEntryDate").val());
+                    const maxMIRDate = getMaxMIRDate();
+                    const currentDate = new (Date);
+                    let minDate = mrnDate;
+                    if (mrnDate || maxMIRDate) {
+                        minDate = (maxMIRDate != null && maxMIRDate != undefined && maxMIRDate > mrnDate) ? maxMIRDate : mrnDate;
+                        console.log("MinDate:", minDate);
+                    }
+                    const minDateFormatted = formatDateToDDMMYY(minDate);
+                    const maxDateFormatted = formatDateToDDMMYY(currentDate);
+                    //$("#VouchDate").datepicker("option", "minDate", minDateFormatted);
+                    //$("#VouchDate").datepicker("option", "maxDate", maxDateFormatted);
+                    $('#errormessage2').hide();
+                } else {
+                    $.notify("Voucher Date Change is not allowed");
+                }
+
+            }
+        }
+
+        function getMaxMIRDate() {
+            let maxDate = null;
+            $("[id^='MainItemGrid-MIRDATE-']").each(function () {
+                const dateValue = $(this).val(); 
+                if (dateValue) {
+                    const mirDate = parseISTDate(dateValue);
+                    if (!maxDate || mirDate > maxDate) {
+                        maxDate = mirDate;
+                    }
+                }
+            });
+            return maxDate;
+        }
+
+        $('#confirmCheck2').click(function () {
+            if ($('#VouchDatePassCode').val() == $('#AllowVouchDateChangePassWord').val()) {
+                AllowedVouchDate = true;
+                var element = document.getElementById('VouchDate');
+                if (element) {
+                    element.readOnly = false;
+                    element.disabled = false;
+                }
+                $('#AllowVouchDateChangeBox').modal("hide");
+                const mrnDate = parseISTDate($("#StrMRNEntryDate").val());
+                const maxMIRDate = getMaxMIRDate();
+                const currentDate = new (Date);
+                let minDate = mrnDate;
+                if (mrnDate || maxMIRDate) {
+                    minDate = (maxMIRDate != null && maxMIRDate != undefined && maxMIRDate > mrnDate) ? maxMIRDate : mrnDate;
+                    console.log("MinDate:", minDate);
+                }
+                const minDateFormatted = formatDateToDDMMYY(minDate);
+                const maxDateFormatted = formatDateToDDMMYY(currentDate);
+                $("#VouchDate").datepicker("option", "minDate", minDateFormatted);
+                $("#VouchDate").datepicker("option", "maxDate", maxDateFormatted);
+                $('#errormessage2').hide();
+            } else {
+                $('#errormessage2').show();
+            }
+        });
+
+        var Allowed = false;
+        function GridButtontoUnlockDoc() {
+            AllowDocNameChange();
+        }
+
+        function AllowDocNameChange() {
+            if (Allowed == true) {
+                let counter = 1; // Start counter for ID
+                let selectElement;
+                while ((selectElement = document.getElementById(`MainItemGrid-DocName-${counter}`)) !== null) {
+                    if (selectElement.disabled || selectElement.readOnly) {
+                        selectElement.disabled = false;
+                        selectElement.readOnly = false;
+                    }
+                    if (selectElement.style.pointerEvents === "none") {
+                        selectElement.style.pointerEvents = "auto";
+                    }
+                    counter++;
+                }
+                return;
+            } else {
+
+                GetAllowDocName();
+                if ($('#AllowDocNameChange').val() == "N" || $('#AllowDocNameChange').val() == "" || $('#AllowDocNameChange').val() == null) {
+                    $('#errormessage').hide();
+                    $('#AllowDocNameChangeBox').modal("show");
+                } else if ($('#AllowInvoiceNoChange').val() == "Y") {
+                    let counter = 1; // Start counter for ID
+                    let selectElement;
+                    while ((selectElement = document.getElementById(`MainItemGrid-DocName-${counter}`)) !== null) {
+                        if (selectElement.disabled || selectElement.readOnly) {
+                            selectElement.disabled = false;
+                            selectElement.readOnly = false;
+                        }
+                        if (selectElement.style.pointerEvents === "none") {
+                            selectElement.style.pointerEvents = "auto";
+                        }
+                        counter++;
+                    }
+                    $('#errormessage1').hide();
+                } else {
+                    $.notify("Doc Name Change is not allowed");
+                }
+
+            }
+        }
+
+        function GetAllowDocName() {
+            $.ajax({
+                url: "@Url.Action("GetAllowDocName")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#AllowDocNameChange').val(obj.Result[0].AllowUpdateDocument);
+                            $('#AllowDocNameChangePassWord').val(obj.Result[0].DocumentPassword);
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        $('#confirmCheck').click(function () {
+            if ($('#docNamePassCode').val() == $('#AllowDocNameChangePassWord').val()) {
+                var rowCounter = $('#PBPendingItemDetail tr').length;
+                Allowed = true;
+                let counter = 1; // Start counter for ID
+                let selectElement;
+                while ((selectElement = document.getElementById(`MainItemGrid-DocName-${counter}`)) !== null) {
+                    if (selectElement.disabled || selectElement.readOnly) {
+                        selectElement.disabled = false;
+                        selectElement.readOnly = false;
+                    }
+                    if (selectElement.style.pointerEvents === "none") {
+                        selectElement.style.pointerEvents = "auto";
+                    }
+                    counter++;
+                }
+                $('#AllowDocNameChangeBox').modal("hide");
+                $('#errormessage').hide();
+            } else {
+                $('#errormessage').show();
+            }
+        });
+
+        function fillPurchaseBillItemGridFromMemoryCache() {
+            var rowCounter = $('#PBPendingItemDetail tr').length;
+            var promises = [];
+            for (var i = 1; i <= rowCounter; i++) {
+                promises.push(fillDocName(i));
+            }
+            return Promise.all(promises);
+        }
+
+        function fillDocName(i) {
+            $.ajax({
+                url: "@Url.Action("FillDocName")",
+                type: "POST",
+                async: false,
+                dataType: "json",
+                data: { ShowAll: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MainItemGrid-DocName-' + i).empty();
+                            $('#MainItemGrid-DocName-' + i).append('<option value=0 selected disabled>-Select-</option>');
+                            $.each(obj.Result.Table, function (index, val) {
+                                $('#MainItemGrid-DocName-' + i).append('<option value=' + val.AccountCode + ' data-AccountCode=' + val.AccountCode + '>' + val.DocName + '</option>');
+                            });
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        $('#IN1').change(function () {
+             ;
+            fillPurchaseBillItemGridFromMemoryCache();
+        });
+
+        var SameDoc = false;
+        $('#SHADoc').change(function () {
+            if ($('#SHADoc').prop("checked") == true) {
+                SameDoc = true;
+            } else {
+                SameDoc = false;
+            }
+        });
+
+        function OnChangeDocName(i) {
+
+            var DocVal = $('#MainItemGrid-DocName-' + i).val();
+            if (SameDoc) {
+                var RowCount = $('#PBPendingItemDetail tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    //$('#MainItemGrid-DocName-' + j).val(DocName);
+                    $('#MainItemGrid-DocName-' + j).val(DocVal);
+                }
+            }
+        }
+
+        function LockedFinancialYear() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("CheckLockYear")",
+                dataType: "json",
+                data: { "YearCode": $('#YearCode').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null && obj.Result.Table[0] != undefined) {
+                            if (obj.Result.Table[0].ClosedForAllusers == 'Y') {
+                                $('#submitBTN').prop("disabled", true);
+                                $('.card-footer #submitBTN').prop("disabled", true);
+                                $('.PartialSave').prop("disabled", true);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        var currentSearchColumn = null;
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divPBItemList tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        var currentSearchColumndbCr = null;
+        $("#dbCrsearch-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divdbCrItemList tr").filter(function () {
+                if (currentSearchColumndbCr !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumndbCr).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+            $("#dbCrsearch-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+            var tableId = $(this).closest("table").attr("id");
+            var bodyId = $(this).closest("table").find("tbody").attr("id");
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false, tableId, bodyId);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true, tableId, bodyId);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+        function sortTable(columnIndex, ascending, tableId, bodyId) {
+
+            var table = $('#' + tableId);
+            var rows = table.find('#' + bodyId + ' > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#' + bodyId).append(row);
+            });
+        }
+
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
+        
+        function ValidateForm() {
+            var Err = 0;
+            if ($('#AccountCode').prop('selectedIndex') <= 0) {
+                AddErrorCls('AccountCode');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('AccountCode');
+            }
+
+            Err == 1 ? ShowErrorFld('HPanel1') : HideErrorFld('HPanel1');
+
+            if (Err == 1) return false;
+
+
+            if ($('#PreparedBy').val == '' || $('#PreparedBy').val == null || $('#PreparedBy').val == undefined) {
+                AddErrorCls('PreparedBy');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('PreparedBy');
+            }
+
+            Err == 1 ? ShowErrorFld('HPanel4') : HideErrorFld('HPanel4');
+
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        $('form').submit(function (event) {
+             ;
+            $('#PartCode').prop('selectedIndex', 1).trigger("change");
+
+            $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+            if (!ValidateForm()) {
+                event.preventDefault(); // Prevent the form from submitting via the browser
+                $('.btn-outline-primary').prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i> SUBMIT');
+            }
+            else {
+                //event.stopPropagation(); // Prevent calling function inside this function.
+                var form = $(this);
+                var url = form.attr('action'); //get submit url [replace url here if desired]
+                $("form :input").prop("disabled", false);
+            }
+        });
+
+
+        $('#PODate,#InvDate,#StrMRNEntryDate,#StrGateDate,#ScheduleDate,#AmmEffDate,#AdjDueDate,#AdjAgnstVouchDate,#AdjPODate').on('keydown', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        $(document).on('select2:select', '#ItemCode,#PartCode', function (e) {
+            var cntId = e.target.id;
+
+            if (cntId == 'ItemCode') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+
+        });
+
+        function copyToClipboardForDropdown(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            ;
+            $temp.val($(element).find(":selected").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemCode").val(v).trigger("change");
+                }
+
+                if (ID == "ItemCode") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+        // function PartCodeChange(ID) {
+
+        //     $('#POQty,#AltPOQty').val(0);
+        //     $('#PBQty,#BillPOQty').val(0);
+        //     copyToClipboardForDropdown("#PartCode");
+        //     $.when(SetPartCodeItemName(ID)).done(function () { GetItemPartCode(ID) });
+        //     $('#HSNNo').focus();
+        // }
+
+
+        // function ItemNameChange(ID) {
+        //     $('#POQty,#AltPOQty').val(0);
+        //     $('#PBQty,#BillPOQty').val(0);
+        //     $('#UniversalPartCode').val($('#ItemCode').find(":selected").data('unipartcode'));
+        //     $('#UniversalDescription').val($('#ItemCode').find(":selected").data('unidesc'));
+        //     copyToClipboardForDropdown("#ItemCode");
+
+        //     SetPartCodeItemName(ID);
+        //     GetItemPartCode(ID);
+        //     $('#HSNNo').focus();
+
+        // }
+
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            if ($('#Mode').val() == "POA") {
+                                $('.AmendButton').prop("disabled", true);
+                            }
+                            $('#submitBTN').prop("disabled", true);
+                            $('.card-footer #submitBTN').prop("disabled", true);
+                        } else {
+
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    if ($('#Mode').val() == "POA") {
+                                        $('.AmendButton').prop("disabled", true);
+                                    }
+                                    $('#submitBTN').prop("disabled", true);
+                                    $('.card-footer #submitBTN').prop("disabled", true);
+                                    $('#UpdateButton').prop("disabled", true);
+                                    $('.card-footer #UpdateButton').prop("disabled", true);
+                                    $('.PartialSave').prop("disabled", true);
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        // async function GetItemPartCode(ID) {
+        //     $.getJSON({
+        //         url: '@Url.Action("GetItemPartCode", "SaleOrder")',
+        //         data: { Code: $('#' + ID).val() },
+        //         success: function (result, status, xhr) {
+        //             if (result) {
+        //                 var obj = JSON.parse(result);
+        //                 if (!obj) {
+        //                     $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+        //                 }
+        //                 else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+        //                     $('#Unit').val(obj.Result[0].Unit);
+        //                     $('#HSNNo').val(obj.Result[0].HSNNo);
+        //                     $('#PkgStd').val(obj.Result[0].StdPacking);
+        //                     $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
+        //                     !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
+        //                 }
+        //             }
+        //         },
+        //         error: function (result, status, xhr) {
+        //             $.notify(result.responseText, "error");
+        //         }
+        //     });
+        // }
+
+        async function ClearItemTax() {
+            $.ajax({
+                url: "@Url.Action("ResetGridItems")",
+                type: "GET",
+                success: await function (result, status, xhr) {
+                    if (result == 200) {
+                        ClearItem();
+                        var NoData = '<tr class="text-center"><td colspan="28" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                        $('#divPBItemList').html(NoData);
+                        $('#divPBItemListToAddInGrid').html(NoData);
+                        $('#ItemNetAmount').val('0.00'), $('#TotalTaxAmt').val('0.00'), $('#lblItemNetAmount').text('0.00'), $('#NetTotal').val('0.00'), $('#TotalRoundOff').prop('selectedIndex', 0), $('#TotalDiscountAmt').val('0'), $('#TotalRoundOffAmt').val('0.00');
+                    }
+                    $('#ItemNetAmount').val('0.00'), $('#TotalTaxAmt').val('0.00'), $('#lblItemNetAmount').text('0.00'), $('#NetTotal').val('0.00'),
+                        $('#TotalRoundOff').prop('selectedIndex', 0), $('#TotalDiscountAmt').val('0'), $('#TotalAmtAftrDiscount').val('0.00'), $('#TotalRoundOffAmt').val('0.00');
+                }
+            }).done(function (data) {
+
+                $('#divTaxGrid').empty();
+                $('#TxPartCode,TxItemCode').empty();
+                $('#TxPartCode,TxItemCode').append("<option value='' selected disabled>-Select-</option>");
+                $('#TxPartCode').prop('selectedIndex', 0).prop('disabled', false).removeClass('is-invalid').change(), $('#TxItemCode').prop('selectedIndex', 0).prop('disabled', false).removeClass('is-invalid'),
+                    $('#TxTaxType').prop('selectedIndex', 0).removeClass('is-invalid'), $('#TxAccountCode').prop('selectedIndex', 0).removeClass('is-invalid'), $('#TxPercentg').val(0).removeAttr('readonly').removeClass('is-invalid'),
+                    $('#TxAdInTxable').prop('selectedIndex', 0).removeClass('is-invalid'), $('#TxRoundOff').prop('selectedIndex', 0).removeClass('is-invalid'), $('#TxRefundable').prop('selectedIndex', 0).removeClass('is-invalid'),
+                    $('#TxOnExp').val('0.00'), $('#TxRemark').val(''), $('#TxAmount').val("0.00").removeClass('is-invalid');
+
+            }).fail(function (data) {
+            }).always(function (data) {
+            });
+        }
+        function copyToClipboardForDropdown(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            ;
+            $temp.val($(element).find(":selected").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        function GetExchnageRate() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetExchangeRate")",
+                data: { Currency: $('#Currency').val() },
+                async: false,
+                dataType: "json",
+                success: function (data, status, error) {
+                    var obj = $.parseJSON(data);
+                    if (obj.Result != null && obj.Result.length > 0) {
+                        var rate = obj.Result[0].IndianValue;
+                        rate = rate != null && rate != undefined ? rate : 1;
+                        $('#ExchangeRate').val(rate);
+                        // otherratecurr = $('#OtherRateCurr').val() != null && $('#OtherRateCurr').val() != undefined ? $('#OtherRateCurr').val() : 1;
+                        // var rateinOther = parseFloat($(otherratecurr);
+                        // $('#Rate').val(rate * rateinOther);
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        let DelSeqNo = 0;
+
+        async function GetTaxPartItem() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetTaxPartItem", "Tax")',
+                data: { SessionName: '@ViewData["PageName"]' },
+                dataType: "json",
+                success: await function (data, status, error) {
+                    $('#TxPartCode').empty();
+                    $('#TxPartCode').append('<option>-Select-</option>');
+                    $.each(data.partCode, function (key, val) {
+                        $('#TxPartCode').append('<option value="' + val.value + '">' + val.text + '</option>');
+                    });
+
+                    $("[id='TxItemCode']").empty();
+                    $("[id='TxItemCode']").append('<option>-Select-</option>');
+                    $.each(data.itemCode, function (key, val) {
+                        $("[id='TxItemCode']").append('<option value="' + val.value + '">' + val.text + '</option>');
+                    });
+
+                    $("[id='POItemCode']*").empty();
+                    $("[id='POItemCode']*").append('<option>-Select-</option>');
+                    $.each(data.itemCode, function (key, val) {
+                        $("[id='POItemCode']*").append('<option value="' + val.value + '">' + val.text + '</option>');
+                    });
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        function checkPartCodeMusthaveAtLeastOneTax() {
+            var errorPartCode = [];
+            $('.divPBItemListPartCode').each(function (i, data) {
+                var partcode = $(data).text().trim();
+                var taxes = $("td[data-txPartCode='" + partcode + "']");
+                if ((!taxes || taxes.length == 0) && (partcode != taxes.text()) && ($('#GSTType').val() != undefined && $('#GSTType').val() != null && $('#GSTType').val() != '')) {
+                    errorPartCode.push(partcode)
+                }
+            });
+            if (errorPartCode.length > 0 && ($('#GSTType').val() != undefined && $('#GSTType').val() != null && $('#GSTType').val() != '')) {
+                $.notify("No tax available for " + errorPartCode.join(", ") + " part code(s).", "error");
+            }
+            return errorPartCode.length == 0;
+        }
+        const financialYearStartMonth = 3; // April (0-indexed: 3 = April)
+        const financialYearStartDay = 1;
+
+        // Function to get first and last date of the financial year
+        function getFinancialYearRange(year) {
+            const startYear = parseInt(year); // Convert stored year to integer
+            const endYear = startYear + 1;
+
+            // Create first and last dates of the financial year
+            const firstDate = new Date(startYear, financialYearStartMonth, financialYearStartDay); // April 1st
+            const lastDate = new Date(endYear, financialYearStartMonth - 1, 31); // March 31st of next year
+
+            return { firstDate, lastDate };
+        }
+        $('button[type="submit"]').click(function (e) {
+            e.preventDefault();
+            $('#TypeOfSave').val("NS");
+
+            let isError = false;
+            var poGrid = $('#divPBItemList tr td').length;
+            var taxGrid = $('#divTaxGrid tr td').length;
+            var txRowCount = $('#divTaxGrid tr').length;
+            var drCrGrid = $('#divdbCrItemList tr').length;
+
+            //if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
+            var AdjPendAmt = $('#AdjPendAmt').val();
+            AdjPendAmt = (AdjPendAmt != null && AdjPendAmt != '' && AdjPendAmt != undefined) ? parseFloat(AdjPendAmt) : 0;
+            const mrnDate = parseISTDate($("#StrMRNEntryDate").val());
+            const maxMIRDate = getMaxMIRDate();
+            const currentDate = new (Date);
+            var vouchDate = $('#VouchDate').val();
+            let minDate = mrnDate;
+            if (mrnDate || maxMIRDate) {
+                minDate = (maxMIRDate != null && maxMIRDate != undefined && maxMIRDate > mrnDate) ? maxMIRDate : mrnDate;
+            }
+            const minDateFormatted = formatDateToDDMMYY(minDate);
+            const maxDateFormatted = formatDateToDDMMYY(currentDate);
+
+            var resultforadj = CheckAndValidateAdjAmtAtTimeofAdd('NetTotal', AdjPendAmt);
+            if (!checkPartCodeMusthaveAtLeastOneTax()) {
+                isError = true;
+                return false;
+            }
+            else if (resultforadj.toString().toLowerCase() == "true") {
+                $.notify("Please add Adjust amount properly, And total should be less then or equal to Net Total.", "error");
+                isError = true;
+                return false;
+            }
+            else if (poGrid <= 1) {
+                $.notify("PB Grid should at least have one item", "error");
+                return;
+            }
+            else if (drCrGrid <= 1) {
+                $.notify("Debit And Credid Amount Status Grid should at least have one item", "error");
+                return;
+            }
+            else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
+                $.notify("Total Debit And Total Credit Amount should be same", "error");
+                return;
+            }
+            else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
+                $.notify("Tax Grid should at least have one item", "error");
+                return;
+            }
+            else if ($('#AccountCode').val() == '0') {
+                $.notify("Vendor Name is required", "error");
+            }
+            else {
+                const year = $('#YearCode').val();
+                if(vouchDate && year){
+                    if(vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
+                        $.notify("vouchDate must be in logged in financial year");
+                        isError = true;
+                    }
+                }
+                if (minDate && vouchDate) {
+                    var minDateObj = new Date(minDate);
+                    var vouchDateObj = new Date(vouchDate);
+
+                    if (minDateObj > vouchDateObj) {
+                        $.notify("Vouch Date should be grater than MRN/MIR Date", "error");
+                        isError = true;
+                    }
+                }
+
+                let cont = 1;
+                for (var i = 1; i <= txRowCount; i++) {
+                    var txType = $('#txGridType-' + i).text();
+                    var txname = $('#txGridName-' + i).text();
+                    if ((txType == '' || txname == '')) {
+                        $.notify("TaxType Or TaxName cannot be null", "error");
+                        isError = true;
+                        return;
+                    }
+                    else {
+                        if (cont == txRowCount && isError != 'true' && (txType != '' || txname != '')) {
+                            $("form").submit();
+                        }
+                    }
+                    cont++
+                }
+                if (txRowCount == 0 && isError != 'true' && ($('#GstType').val() == undefined || $('#GstType').val() == null || $('#GstType').val() == '')) {
+                    $("form").submit();
+                }
+
+            }
+            // }
+            // else {
+            //     if (poGrid <= 1) {
+            //         $.notify("PB Grid should at least have one item", "error");
+            //         return;
+            //     }
+            //     else if ($('#AccountCode').val() == '0') {
+            //         $.notify("Vendor Name is required", "error");
+            //     }
+            //     else {
+            //         $("form").submit();
+            //     }
+            // }
+        });
+
+
+        function checkTAX() {
+
+        }
+
+        $('.ItemBtn').click(function () {
+            let IsError = 0;
+
+            $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
+
+            if ($('#AccountCode').prop('selectedIndex') <= 0) {
+                $.notify("Vendor Name is required", "error");
+                AddErrorCls('AccountCode');
+                IsError = 1;
+            }
+            else {
+                RemoveErrorCls('AccountCode');
+            }
+
+            if (parseInt($('#DiscPer').val()) < 0 || parseInt($('#DiscPer').val()) > 100) {
+                AddErrorCls('DiscPer');
+                IsError = 1;
+            }
+            else {
+                RemoveErrorCls('DiscPer');
+            }
+            if ($('#PBType').val() === 'Domestic') {
+                if (($('#Rate').val() == "" || parseFloat($('#Rate').val()) <= 0) && $('#Amount').val() <= 0) {
+                    AddErrorCls('Rate');
+                    IsError = 1;
+                }
+                else {
+                    RemoveErrorCls('Rate');
+                }
+            }
+            if ($('#PBType').val() === 'Import') {
+                if (($('#OtherRateCurr').val() == "" || parseFloat($('#OtherRateCurr').val()) <= 0) && $('#Amount').val() <= 0) {
+                    AddErrorCls('OtherRateCurr');
+                    IsError = 1;
+                }
+                else {
+                    RemoveErrorCls('OtherRateCurr');
+                }
+            }
+            if ($('#docTypeId').prop('selectedIndex') <= 0) {
+                $.notify("Document Type is required", "error");
+                AddErrorCls('docTypeId');
+                IsError = 1;
+            }
+            else {
+                RemoveErrorCls('docTypeId');
+            }
+
+            if ($('#PartCode').prop('selectedIndex') <= 0) {
+                $.notify("Part Code is required", "error");
+                AddErrorCls('PartCode');
+                IsError = 1;
+            }
+            else {
+                RemoveErrorCls('PartCode');
+            }
+
+            if ($('#ItemCode').prop('selectedIndex') <= 0) {
+                $.notify("Item Code is required", "error");
+                AddErrorCls('ItemCode');
+                IsError = 1;
+            }
+            else {
+                RemoveErrorCls('ItemCode');
+            }
+
+            if ($('#PONo').prop('selectedIndex') > 0) {
+                if ($('#POYear').val() == undefined || $('#POYear').val() == null || $('#POYear').val() == '') {
+                    $.notify("PO Year is required", "error");
+                    AddErrorCls('POYear');
+                    IsError = 1;
+                }
+                else if ($('#PODate').val() == undefined || $('#PODate').val() == null || $('#PODate').val() == '') {
+                    $.notify("PO Date is required", "error");
+                    AddErrorCls('PODate');
+                    IsError = 1;
+                }
+                else {
+                    RemoveErrorCls('PONo');
+                    RemoveErrorCls('POYear');
+                    RemoveErrorCls('PODate');
+                }
+            }
+            else {
+                RemoveErrorCls('PONo');
+                RemoveErrorCls('POYear');
+                RemoveErrorCls('PODate');
+                $('#POYear').val('');
+                $('#PODate').val('');
+            }
+
+            if ($('#ScheduleNo').prop('selectedIndex') > 0) {
+                if ($('#ScheduleYear').val() == undefined || $('#ScheduleYear').val() == null || $('#ScheduleYear').val() == '') {
+                    $.notify("Schedule Year is required", "error");
+                    AddErrorCls('ScheduleYear');
+                    IsError = 1;
+                }
+                else if ($('#ScheduleDate').val() == undefined || $('#ScheduleDate').val() == null || $('#ScheduleDate').val() == '') {
+                    $.notify("Schedule Date is required", "error");
+                    AddErrorCls('ScheduleDate');
+                    IsError = 1;
+                }
+                else {
+                    RemoveErrorCls('ScheduleNo');
+                    RemoveErrorCls('ScheduleYear');
+                    RemoveErrorCls('ScheduleDate');
+                }
+            }
+            else {
+                RemoveErrorCls('ScheduleNo');
+                RemoveErrorCls('ScheduleYear');
+                RemoveErrorCls('ScheduleDate');
+                $('#ScheduleYear').val('');
+                $('#ScheduleDate').val('');
+            }
+
+            if ($('#Amount').val() <= 0) {
+                $.notify("Amount is required", "error");
+                AddErrorCls('Amount');
+                IsError = 1;
+            }
+            else {
+                RemoveErrorCls('Amount');
+            }
+
+            if ($('#Description').val() == null || $('#Description').val() == undefined || $('#Description').val() == '') {
+                $.notify("Description is required", "error");
+                AddErrorCls('Description');
+                IsError = 1;
+            }
+            else {
+                RemoveErrorCls('Description');
+            }
+
+            if (IsError == 1) {
+                $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                return;
+            }
+            else {
+                var ItemData = {
+                    'docTypeId': $('#docTypeId').val(),
+                    'DocTypeText': $('#docTypeId option:selected').text(),
+                    'PartCode': $('#PartCode').val(),
+                    'PartText': $('#PartCode option:selected').text(),
+                    'ItemCode': $('#ItemCode').val(),
+                    'ItemText': $('#ItemCode option:selected').text(),
+                    'PONo': $('#PONo').val(),
+                    'POYear': $('#POYear').val(),
+                    'PODate': $('#PODate').val(),
+                    'ScheduleNo': $('#ScheduleNo').val(),
+                    'ScheduleYear': $('#ScheduleYear').val(),
+                    'ScheduleDate': $('#ScheduleDate').val(),
+                    'HSNNo': $('#HSNNo').val(),
+                    'Unit': $('#Unit').val(),
+                    'BillQty': $('#BillQty').val(),
+                    'Rate': $('#Rate').val(),
+                    'OtherRateCurr': $('#OtherRateCurr').val(),
+                    'DiscPer': $('#DiscPer').val(),
+                    'DiscRs': $('#DiscRs').val(),
+                    'Amount': $('#Amount').val(),
+                    'Process': $('#Process').val(),
+                    'ProcessName': $('#Process option:selected').text(),
+                    'Description': $('#Description').val(),
+                    'CostCenter': $('#CostCenter').val(),
+                    'CostCenterName': $('#CostCenter option:selected').text(),
+                    'Mode': $('#Mode').val() == "U" ? "U" : "INSERT"
+                }
+
+                $.ajax({
+                    url: '@Url.Action("AddItem2Grid")',
+                    type: "POST",
+                    data: ItemData,
+                    beforeSend: function (xhr) {
+                        //xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+                    },
+                    success: function (data, status, xhr) {
+                        if (xhr.status === 208 && xhr.responseText === 'Duplicate Item') {
+                            $.notify('Duplicate Item Not Allowed.', "info");
+                            $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                        }
+                        else if (xhr.status == 205 && xhr.responseText == 'Reset Tax Detail') {
+                            $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                        }
+                        else {
+                            if (!DelSeqNo && DelSeqNo != 0) {
+                                $('#divPBItemList ."' + DelSeqNo + "'").remove();
+                            }
+                            $('#divPBItemList').html(data);
+                            $.notify('Item Added To Grid.', "success");
+                            ClearItem();
+                        }
+                        $('#TotalRoundOff').prop('selectedIndex', 0);
+                        var INA = parseFloat($('#ItemNetAmount').val());
+                        var rowCount = $('#divPBItemList tr').length;
+                        var columnCount = $('#divPBItemList tr td').length;
+                        var taxRowCount = $('#divTaxGrid tr').length;
+                        var sum = 0;
+
+                        refreshitemcountandnetamt();
+
+                        for (var i = 1; i <= rowCount; i++) {
+
+                            sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                        }
+                        $('#ItemNetAmount').val(sum.toFixed(2));
+                        var txSum = 0;
+                        if ($('#divTaxGrid tr td').length > 1) {
+                            for (var i = 1; i <= taxRowCount; i++) {
+                                txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                            }
+                        }
+                        $('#lblItemNetAmount').text(sum.toFixed(2));
+
+
+                        var txTotal = sum + txSum;
+                        $('#NetTotal').val(txTotal.toFixed(2));
+                        $('#TotalDiscountPercentage').val(0);
+                        $('#TotalAmtAftrDiscount').val(0);
+                        $('#TotalRoundOffAmt').val(0.00);
+                        $('#PartCode').select2('open').select2('focus');
+                        CalculateRate();
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify(result.responseText, "error");
+                    },
+                    failure: function (result, status, xhr) {
+                        alert(response.responseText);
+                    },
+                    complete: function () {
+                        //$('.Schedule').fadeIn();
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                }).done(function () {
+                    GetTaxPartItem();
+                    GetDbCrDetail();
+                }).fail(function () {
+                    alert("error");
+                }).always(function () {
+                });
+            }
+        });
+
+        $('.btnClearTax').click(function () {
+            btnClearTax();
+        });
+        function btnClearTax() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearTaxGrid")",
+                data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    $('#divTaxGrid').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divTaxGrid').html(NoData);
+                    var txAmt = $('#lblItemNetAmount').text();
+                    $('#NetTotal').val(txAmt);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        $('.btnClearTDS').click(function () {
+            btnClearTDS();
+
+        });
+        function btnClearTDS() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearTDSGrid")",
+                data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    $('#divTDSGrid').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divTDSGrid').html(NoData);
+                    var txAmt = $('#lblItemNetAmount').text();
+                    //$('#TDSAmount').val(txAmt);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        function DeleteItemRow(SeqNo) {
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                async: false,
+                success: function (data, status, xhr) {
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify("If Tax Exists, Item Cannot Be Deleted/Edited...!", "warning");
+                        isEditAllowed = "false";
+                    }
+                    else {
+
+                        $('#divPBItemList').html(data);
+                        if ($('#divPBItemList').children('tr').length === 0) {
+                            //$('.Schedule').fadeOut();
+                            var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                            $('#lblItemNetAmount').text("0.00");
+                            $('#divPBItemList').html(NoData);
+                        }
+                        GetTaxPartItem();
+                        $('#lblItemNetAmount').text($('#ItemNetAmount').val());
+                        $('#TotalRoundOff').prop('selectedIndex', 0);
+                        $('#TotalRoundOffAmt').val(0.00);
+                        //var INA = parseFloat($('#ItemNetAmount').val());
+                        var rowCount = $('#divPBItemList tr').length;
+                        var rowCountGrid = $('#divPBItemList tr td').length;
+                        var taxRowCount = $('#divTaxGrid tr').length;
+                        var taxRowCountGrid = $('#divTaxGrid tr td').length;
+                        var sum = 0;
+                        var txSum = 0;
+                        var columnCount = $('#divPBItemList tr td').length;
+
+                        //noofitems
+                        if (columnCount > 1)
+                            $('#lblItemCount').text(rowCount);
+                        else
+                            $('#lblItemCount').text(0);
+
+                        if (rowCountGrid > 1) {
+                            for (var i = 1; i <= rowCount; i++) {
+                                sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                            }
+
+                        }
+                        else {
+                            sum = 0;
+                        }
+                        if (taxRowCountGrid > 1) {
+
+                            if ($('#divTaxGrid tr td').length > 1) {
+                                for (var i = 1; i <= taxRowCount; i++) {
+                                    txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                                }
+                            }
+                        }
+                        else {
+                            txSum = 0;
+                        }
+                        $('#ItemNetAmount').val(sum.toFixed(2));
+                        $('#lblItemNetAmount').text(sum.toFixed(2));
+                        var txTotal = sum + txSum;
+                        $('#NetTotal').val(txTotal.toFixed(2));
+                        $('#TotalDiscountPercentage').val(0);
+                        $('#TotalAmtAftrDiscount').val(0);
+                        btnClearTDS();
+                        $.notify('Item Deleted From Grid.', "success");
+                        isEditAllowed = "true";
+                    }
+                },
+                error: function (response, status, xhr) {
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response, status, xhr) {
+                    $.notify(response.responseText, "error");
+                }
+            }).done(function () {
+                GetTaxPartItem();
+                GetDbCrDetail();
+            });
+        }
+
+
+        function ClearItem() {
+            $('#PartCode').prop('selectedIndex', 0).removeClass('is-invalid').change(), $('#ItemCode').prop('selectedIndex', 0).removeClass('is-invalid').change(), $('#HSNNo').val('0'), $('#POQty').val('0'), $('#PBQty').val('0'), $('#BillQty').val('0'), $('#Rate').val('0.00'), $('#Unit').val('0.00'),
+                $('#PONo').prop('selectedIndex', 0).removeClass('is-invalid').change(),
+                $('#ScheduleNo').prop('selectedIndex', 0).removeClass('is-invalid').change(),
+                $('#AltPOQty').val(0), $('#AltUnit').val('NA'), $('#OtherRateCurr').val('0'), $('#UnitRate').val('Unit'), $('#DiscPer').val('0'), $('#DiscRs').val('0.00'), $('#Amount').val('0.00'), $('#TolLimit').val(0),
+                $('#Remark').val(''), $('#Description').val(''), $('#StoreName').prop('selectedIndex', 0), $('#SizeDetail').val('0'), $('#AmendmentNo').val('0'), $('#AmendmentDate').val(''),
+                $('#AmendmentReason').val(''), $('#Color').val(''), $('#Process').prop('selectedIndex', 0).removeClass('is-invalid'), $('#TolLimitQty').val('0.00'), $('#TolLimitPercent').val('0.00'),
+                $('#OldRate').val('0.00'), $('#AdditionalRate').val('0.00'), $('#FirstMonthTentQty').val('0.00'), $('#SecMonthTentQty').val('0.00'), $('#CostCenter').prop('selectedIndex', 0);
+        }
+
+
+        $('#Rate').keyup(function () {
+            $('#OtherRateCurr').val($(this).val());
+        });
+
+        $(document).keyup(function (e) {
+            if (e.altKey && e.keyCode === 83) {
+                e.preventDefault();
+                $('.PartialSave').trigger("click");
+            }
+        });
+        
+        function addDays(date, days) {
+            var NewDate = new Date(date);
+            NewDate.setDate(NewDate.getDate() + days);
+            return NewDate.toISOString().substring(0, 10);
+        }
+
+        $('.pnl1BG').on("keydown", function (event) {
+            if (event.key === "Tab") {
+                if ($('.pnl1BG').attr('aria-expanded')) {
+                    $('#PartCode').select2('open').select2('focus');
+                    event.preventDefault();
+                }
+            }
+        });
+
+        let previousValue = document.getElementById('NetTotal').value;
+
+        function checkNetTotalChange() {
+            const netTotalInput = document.getElementById('NetTotal');
+            const currentValue = netTotalInput.value;
+
+            if (currentValue !== previousValue) {
+                previousValue = currentValue;
+
+                const netTotalValue = parseFloat(currentValue);
+                onNetTotalChange();
+            }
+        }
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('MRNTypeBack', $('#MRNTypeBack').val());
+            sessionStorage.setItem('DocumentNameBack', $('#DocumentNameBack').val());
+            sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNoBack').val());
+            sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNoBack').val());
+            sessionStorage.setItem('MRNNoBack', $('#MRNNoBack').val());
+            sessionStorage.setItem('GateNoBack', $('#GateNoBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('HSNNoBack', $('#HSNNoBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+        $(document).on('keypress', ':input:not(textarea):not([type=button])', function (e) {
+            if (e.which == 13) e.preventDefault();
+        });
+    </script>
+                // New script started
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+}
+
+<style>
+    #poTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #poThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .select2-search__field {
+        z-index: 10000 !important; /* Adjust the value as needed */
+    }
+</style>

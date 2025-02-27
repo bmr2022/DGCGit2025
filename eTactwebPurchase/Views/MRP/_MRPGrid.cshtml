@@ -1,0 +1,43 @@
+﻿@model eTactWeb.DOM.Models.MRPMain
+
+
+@if (Model.MRPGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="19" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.MRPGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small @item.SeqNo" style="white-space:nowrap">
+            <th>@Cntr</th>
+            <td>@item.FGPartCode<input type="hidden" value="@item.MRPNo" id="hiddenMRPNo-@Cntr" /><input type="hidden" value="@item.MRPEntryId" id="hiddenMRPEntryID-@Cntr" /></td>
+            <td>@item.FGItemName<input type="hidden" value="@item.Month" id="hiddenMonth-@Cntr" /><input type="hidden" value="@item.ForMonthYear" id="hiddenForMonthYear-@Cntr" /></td>
+            <td>@item.RMPartCode</td>
+            <td>@item.RMItemName</td>
+            <td>@item.Unit</td>
+            <td class="text-danger fw-bold">@item.ReqQty</td>
+            <td class="text-danger fw-bold">@item.CurrMonthQty</td>
+            <td class="text-danger fw-bold">@item.WIPStock</td>
+            <td class="text-danger fw-bold">@item.TotalStock</td>
+            <td class="text-danger fw-bold">@item.ReqQty</td>
+            <td class="text-danger fw-bold">@item.OrderQtyInclPrevPOQty</td>
+            <td>@item.RecorderLvl</td>
+            <td>@item.PORate</td>
+            <td class="text-danger fw-bold">@item.AllocatedQty</td>
+            <td class="text-danger fw-bold">@item.ConsumedQty</td>
+            <td>@item.AccountName</td>
+            <td class="text-danger fw-bold">@item.PrevOrderQty</td>
+            <td>@item.IIndMonthQty</td>
+            <td>@item.IIrdMonthQty</td>
+            <td>@item.IIndMonthActualReqQty</td>
+            <td>@item.IIrdMonthActualReqQty</td>
+        </tr>
+
+    }
+}
+

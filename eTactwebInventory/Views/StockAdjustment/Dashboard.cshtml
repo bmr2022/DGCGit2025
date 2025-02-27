@@ -1,0 +1,405 @@
+﻿@model eTactWeb.DOM.Models.SADashborad
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Stock Adjustment - <strong>Dashboard</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="StockAdjustment" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                        Add New
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" />
+                                        <input type="hidden" asp-for="FromDate1" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" />
+                                        <input type="hidden" asp-for="ToDate1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-1 col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="SummaryDetail" class="form-label">Summary/Detail</label>
+                                <select asp-for="SummaryDetail" class="form-select" onchange="GetSummaryDetail();">
+                                    <option value="">-Select-</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
+                                </select>
+                            </div>
+                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                                <label asp-for="PartCode" class="form-label">Part Code</label>
+                                <input asp-for="PartCode" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                <label asp-for="ItemName" class="form-label">Item Name</label>
+                                <input asp-for="ItemName" class="form-control" />
+                            </div>
+                            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="StoreWorkcenter" class="form-label">Store/WorkCenter</label>
+                                <input asp-for="StoreWorkcenter" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="StoreName" class="form-label">Store Name</label>
+                                <input asp-for="StoreName" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="WCName" class="form-label">WrokCenter Name</label>
+                                <input asp-for="WCName" class="form-control" />
+                            </div>
+                         
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
+                                <button class="btn btn-sm btn-outline-info me-3" type="button" onclick="GetSummaryDetail();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnSAExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="StockAdjustment" asp-action="Dashboard">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                                <div class="ms-auto d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <label class="form-label me-2">Global search</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search..." fdprocessedid="pr7n9">
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="col-xxl-2 col-xl-6 col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-left:50px;margin-top:10px;">
+                            <label class="color-box" style="background-color: #FF0000;"></label><label style="margin-left:5px;margin-top:-5px;">UNAPPROVED</label>
+                            <label class="color-box" style="background-color: green;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">APPROVED</label>
+                            <label class="color-box" style="background-color: blue;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Amendment Approved</label>
+                            </div>*@
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0 pt-0">
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body" id="divStockDashboardGrid">
+                    <partial name="_SADashboardGrid" />
+                </div>
+
+            </div>
+            <div class="row g-2 gx-3">
+                <div class="col-12 text-center mb-1">
+                    <strong>Total No Of Rows : <span id="lblStockTotalNoOfDashRows"></span></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>
+
+@section Scripts
+{
+    <script>
+        $(function () {
+
+            var FromDateBack = sessionStorage.getItem('FromDateBack');
+            var ToDateBack = sessionStorage.getItem('ToDateBack');
+            var PartCodeBack = sessionStorage.getItem('PartCodeBack');
+            var ItemNameBack = sessionStorage.getItem('ItemNameBack');
+            var StoreWorkcenterBack = sessionStorage.getItem('StoreWorkcenter');
+            var StoreNameBack = sessionStorage.getItem('StoreNameBack');
+            var WorkCenterBack = sessionStorage.getItem('WorkCenterBack');
+            var SummaryDetailBack = sessionStorage.getItem('SummaryDetailBack');
+            var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
+
+            var date = new Date();
+            date.setMonth(date.getMonth());
+            date.setDate(1);
+
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            function formatDate(date) {
+                var day = ("0" + date.getDate()).slice(-2);
+                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                var dateString = day + "/" + month + "/" + year;
+                return dateString;
+
+                GetSearchData();
+            }
+            //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+
+
+            AutoComplete('VStockAdjustment', 'PartCode', 'PartCode', null);
+            AutoComplete('VStockAdjustment', 'ItemName', 'ItemName', null);
+            AutoComplete('VStockAdjustment', 'StoreWorkcenter', 'StoreWorkcenter', null);
+            AutoComplete('VStockAdjustment', 'StoreName', 'Store_Name', null);
+            AutoComplete('VStockAdjustment', 'WCName', 'WorkCenter', null);
+
+            if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
+                var inputFromDateString = $('#FromDate1').val().split(" ")[0];
+                var inputToDateString = $('#ToDate1').val().split(" ")[0];
+
+
+                var originalFromDate = new Date(inputFromDateString);
+
+
+
+                var day = originalFromDate.getDate();
+                var month = originalFromDate.getMonth() + 1; // Months are zero-based
+                var year = originalFromDate.getFullYear();
+                var formattedDate1 = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+
+
+                var originalToDate = new Date(inputToDateString);
+
+
+
+                var day = originalToDate.getDate();
+                var month = originalToDate.getMonth() + 1; // Months are zero-based
+                var year = originalToDate.getFullYear();
+                var formattedDate2 = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+
+
+
+                //var monthMapping = {
+                //    "Jan": "01",
+                //    "Feb": "02",
+                //    "Mar": "03",
+                //    "Apr": "04",
+                //    "May": "05",
+                //    "Jun": "06",
+                //    "Jul": "07",
+                //    "Aug": "08",
+                //    "Sep": "09",
+                //    "Oct": "10",
+                //    "Nov": "11",
+                //    "Dec": "12"
+                //};
+                //
+                //// Parse and format the date
+                //var parsedDate1 = inputFromDateString.split('/');
+                //var monthAbbreviation1 = parsedDate1[1];
+                //var formattedDate1 = parsedDate1[0] + '/' + monthMapping[monthAbbreviation1] + '/' + parsedDate1[2];
+
+                //var parsedDate2 = inputToDateString.split('/');
+                //var monthAbbreviation2 = parsedDate2[1];
+                //var formattedDate2 = parsedDate2[0] + '/' + monthMapping[monthAbbreviation2] + '/' + parsedDate2[2];
+
+                // Set the formatted date in the datetimepicker
+                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
+                $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+
+            }
+
+            RowCount();
+
+            if (FromDateBack != null && FromDateBack != '') {
+
+                $('#FromDate').val(FromDateBack);
+                $('#ToDate').val(ToDateBack);
+                $('#PartCode').val(PartCodeBack);
+                $('#ItemName').val(ItemNameBack);
+                $('#StoreWorkcenter').val(StoreWorkcenterBack);
+                $('#StoreName').val(StoreNameBack);
+                $('#WCName').val(WorkCenterBack);
+                $('#SummaryDetail').val(SummaryDetailBack);
+                $('#search-box').val(GlobalSearchBack);
+
+            }
+
+            GetSummaryDetail();
+            $("#search-box").val($('#search-box').val()).trigger('keyup');
+
+            sessionStorage.removeItem('FromDateBack');
+            sessionStorage.removeItem('ToDateBack');
+            sessionStorage.removeItem('PartCodeBack');
+            sessionStorage.removeItem('ItemNameBack');
+            sessionStorage.removeItem('StoreWorkcenterBack');
+            sessionStorage.removeItem('StoreNameBack');
+            sessionStorage.removeItem('WorkCenterBack');
+            sessionStorage.removeItem('SummaryDetailBack');
+            sessionStorage.removeItem('GlobalSearchBack');
+
+        });
+
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#divSAGrid tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+        function GetSummaryDetail() {
+
+            if ($('#SummaryDetail').val() == 'Detail') {
+                GetDetailDashboardData();
+            } else {
+                GetSearchData();
+            }
+        }
+
+        function GetDetailDashboardData() {
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("DetailDashboard")',
+                type: "POST",
+                async: false,
+                data: $('#SParam').serializeArray(),
+                success: function (data) {
+                    $('#divStockDashboardGrid').empty().append(data);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetSearchData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                async: false,
+                data: $('#SParam').serializeArray(),
+                success: function (data) {
+
+                    $('#divStockDashboardGrid').empty().append(data);
+                    RowCount();
+
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        var currentSearchColumn = null;
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divSAGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable('SAGrid', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('SAGrid', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function confirmdelete(event) {
+            event.preventDefault();
+            if (confirm("are you sure you want to delete this entry?")) {
+                var linkurl = $(event.currentTarget).attr("href");
+                linkurl = linkurl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&StoreWorkcenter=" + $('#StoreWorkcenter').val() + "&StoreName=" + $('#StoreName').val() + "&WCName=" + $('#WCName').val() + "&SummaryDetail=" + $('#SummaryDetail').val() + "&Searchbox=" + $('#search-box').val();
+                window.location.href = linkurl;
+            }
+        }
+
+        function back(event) {
+
+            event.preventDefault();
+            var linkurl = $(event.currentTarget).attr("href");
+            linkurl = linkurl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&StoreWorkcenter=" + $('#StoreWorkcenter').val() + "&StoreName=" + $('#StoreName').val() + "&WCName=" + $('#WCName').val() + "&SummaryDetail=" + $('#SummaryDetail').val() + "&Searchbox=" + $('#search-box').val();
+            window.location.href = linkurl;
+
+        }
+
+
+        function RowCount() {
+            var StockRowCount = $('#divStockDashboardGrid tbody tr').length;
+            var StockColumnCount = $('#divStockDashboardGrid tbody tr td').length;
+            if (StockColumnCount > 1) {
+                $('#lblStockTotalNoOfDashRows').text(StockRowCount);
+            } else {
+                $('#lblStockTotalNoOfDashRows').text(0);
+            }
+        }
+
+        $("#btnSAExcel").click(function () {
+
+            var table = $(".SAGrid");
+            if (table.length === 0) {
+                console.error("Table element with ID 'SAGrid' not found.");
+                return;
+            }
+
+            try {
+                table.table2excel({
+                    filename: "StockAdjustTable.xls"
+                });
+            } catch (error) {
+                console.error("An error occurred while exporting to Excel:", error);
+            }
+        });
+
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+}

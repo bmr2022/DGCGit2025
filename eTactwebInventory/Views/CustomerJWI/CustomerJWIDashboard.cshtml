@@ -1,0 +1,275 @@
+﻿@model eTactWeb.DOM.Models.CustJWIssQDashboard
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+</head>
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                CUSTOMER JOBWORK ISSUE - <strong>Dashboard</strong>
+                <div class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="CustomerJWI" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                        Add New
+                    </a>
+                </div>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div>
+                            <input asp-for="YearCode"  type="hidden"  />
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" style="width:100px;" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" style="width:100px;" class="form-control" />
+                                    </div>
+                                   
+
+                                    <div class="col">
+                                        <label class="form-label">Type</label>
+                                        <select asp-for="Reporttype" class="form-select">
+                                            <option value="SUMMARY" selected>Summary</option>
+                                            <option value="DETAIL">Detail</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="CustomerName" class="form-label">Customer Name</label>
+                                <input asp-for="CustomerName" class="form-control" />
+                            </div>
+                            <div class="col-sm-1 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ChallanNo" class="form-label">Challan No</label>
+                                <input asp-for="ChallanNo" class="form-control" />
+
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ItemName" class="form-label">Item Name</label>
+                                <input asp-for="ItemName" class="form-control" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="PartCode" class="form-label">Part Code</label>
+                                <input asp-for="PartCode" class="form-control" />
+                            </div>
+                            <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+
+
+
+                            <div class="col-sm-2 col-md-6 col-lg-2 col-xl-4">
+                                <div class=" d-flex justify-content-center mt-3" width="inherit">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="CustomerJWI" asp-action="CustomerJWIDashboard"
+                                     asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day).ToString("dd/MM/yyyy")"
+                                   asp-route-Todate="@DateTime.Today.ToString("dd/MM/yyyy")"
+                                   asp-route-Flag="True">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0 pt-0">
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body" id="divDashboardGrid">
+                    @* <partial name="_CustJobworkDashboardSummaryGrid" /> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script>
+        $(function () {
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+             
+            function formatDate(date) {
+                var day = ("0" + date.getDate()).slice(-2);
+                var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                var month = monthNames[date.getMonth()];
+                var year = date.getFullYear();
+                return day + "/" + month + "/" + year;
+            }
+
+            // Initialize datepickers
+            $('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", firstDayOfMonth); // Pass the Date object directly
+            $('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", currentDate); // Pass the Date object directly
+
+
+            var currentSearchColumn = null;
+
+            $(document).on("click", "th[data-columnno]", function () {
+                currentSearchColumn = $(this).data('columnno');
+                $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+            });
+
+            //var currentSearchColumn = null;
+
+            $("#search-box").on("keyup", function () {
+
+                var value = $(this).val().toLowerCase();
+                $("#gateDashboardtable tr").filter(function () {
+                    if (currentSearchColumn !== null) {
+                        var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                        $(this).toggle(columnText.indexOf(value) > -1);
+                    } else {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    }
+                });
+            });
+
+            $('#sendToExcel').click(function () {
+                $("#GateDataTable").table2excel({
+                    filename: "ProductionDetailData.xls"
+                });
+            });
+
+            $(document).on("click", ".sortCol", function () {
+                var $column = $(this).parent().closest("th");
+                var colno = $(this).data('columnno');
+                var currentOrder = $(this).data('sortorder');
+
+                $('.sortCol').css('color', 'white');
+                if (currentOrder === 'asc') {
+                    sortTable('GateDataTable', colno, false);
+                    $(this).data('sortorder', 'desc');
+                    $(this).css('color', 'yellow');
+                    //$(this).css('font-size', 'larger');
+                    $(this).find('i:first').removeClass('fa-arrow-up');
+                    $(this).find('i:first').addClass('fa-arrow-down');
+                } else {
+                    sortTable('GateDataTable', colno, true);
+                    $(this).data('sortorder', 'asc');
+                    $(this).css('color', 'yellow');
+                    // $(this).css('font-size', 'larger');
+                    $(this).find('i:first').removeClass('fa-arrow-down');
+                    $(this).find('i:first').addClass('fa-arrow-up');
+                }
+            });
+            
+        });
+        $(document).ready(function () {
+            GetSummaryData();
+        });
+        $('#Reporttype, #FromDate, #ToDate').on('change', function () {
+            GetSummaryData();
+        });
+
+        function selection(CurrentRow) {
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#gateDashboardtable tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+
+        function BackButtonData(event, EntryId) {
+             
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&ReportType=" + $('#ReportType').val();
+            window.location.href = linkUrl;
+        }
+        function GetSearchData() {
+             
+            if ($('#Reporttype').val() == "SUMMARY") {
+                GetSummaryData();
+            } if ($('#Reporttype').val() == "DETAIL") {
+                GetDetailData();
+            }
+        }
+
+        function GetSummaryData() {
+             
+            var data = $('#SParam').serialize();
+            console.log(data);
+            $.ajax({
+                url: '@Url.Action("GetSummaryDetailData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    var dashGrid = $('#gateDashboardtable tr').length;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetDetailData() {
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetSummaryDetailData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    var dashGrid = $('#gateDashboardtable tr').length;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+            function confirmDelete(event) {
+                event.preventDefault();
+
+                if (confirm("Are you sure you want to Delete this entry?")) {
+                    var linkUrl = $(event.currentTarget).attr("href");
+
+                    // Redirect without appending additional parameters manually
+                    window.location.href = linkUrl;
+                }
+            }
+           
+           
+
+        }
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+
+
+}
+@* CustomerJWIDashboard *@

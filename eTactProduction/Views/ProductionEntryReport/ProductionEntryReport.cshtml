@@ -1,0 +1,776 @@
+﻿@model eTactWeb.DOM.Models.ProductionEntryReportModel
+
+@{
+    ViewData["Title"] = "Production Entry Report";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>Production Entry Report</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="FGPartCode" class="form-label">FG PartCode</label>
+                                    <select asp-for="FGPartCode" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="FGItemName" class="form-label">FG ItemName</label>
+                                    <select asp-for="FGItemName" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="RMPartCode" class="form-label">RM PartCode</label>
+                                    <select asp-for="RMPartCode" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="RMItemName" class="form-label">RM ItemName</label>
+                                    <select asp-for="RMItemName" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ProdSlipNo" class="form-label">Prod SlipNo</label>
+                                    <select asp-for="ProdSlipNo" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ProdPlanNo" class="form-label">Prod PlanNo</label>
+                                    <select asp-for="ProdPlanNo" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ProdSchNo" class="form-label">Prod SchNo</label>
+                                    <select asp-for="ProdSchNo" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ReqNo" class="form-label">ReqNo</label>
+                                    <select asp-for="ReqNo" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="WorkCenter" class="form-label">Work Center</label>
+                                    <select asp-for="WorkCenter" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="MachineName" class="form-label">Machine Name</label>
+                                    <select asp-for="MachineName" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="OperatorName" class="form-label">Operator Name</label>
+                                    <select asp-for="OperatorName" class="form-select"></select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="Process" class="form-label">Process</label>
+                                    <select asp-for="Process" class="form-select"></select>
+                                </div>
+                                <div class="row">
+                                    <div class="col d-flex align-items-center">
+                                        <div class="me-2">
+                                            <label asp-for="ReportType" class="form-label">Report Type</label>
+                                            <div>
+                                                <select asp-for="ReportType" class="form-select" onchange="GetProductionReport()">
+                                                    <option disabled value="">-Select-</option>
+                                                    <option selected value="DETAIL">Detail</option>
+                                                    <option value="Date Wise FG Consolidated">Date Wise FG Consolidated</option>
+                                                    <option value="Machine Wise FG Production SUmmary">Machine Wise FG Production Summary</option>
+                                                    <option value="RM Wise Consumption Summary">RM Wise Consumption Summary</option>
+                                                    <option value="RM Wise Consumption Detail">RM Wise Consumption Detail</option>
+                                                    <option value="RM Total Consumption">RM Total Consumption</option>
+                                                    <option value="BreakDown Detail">BreakDown Detail</option>
+                                                    <option value="Machine Wise BreakDown Summary">Machine Wise BreakDown Summary</option>
+                                                    <option value="Operator Detail Report">Operator Detail Report</option>
+                                                    <option value="Operator Summary Report">Operator Summary Report</option>
+                                                    <option value="Production QC Deatil">Production QC Detail</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="me-2">
+                                            <label class="form-label">Global search</label>
+                                            <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-info me-2" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetProductionReport();">
+                                            <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success me-2" style="padding:3px;height:30px;width:100px;" type="button" id="sendToExcel">
+                                            <i class="fa-solid fa-upload fa-fw fa-lg"></i>EXCEL
+                                        </button>
+                                        <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;" asp-controller="WIPStockRegister" asp-action="WIPStockRegister">
+                                            <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                                    </button>
+                                </h2>
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12" id="divproductionReportGrid">
+                                                    <partial name="_ProductionReportDetailGrid" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <center>
+                                            <div class="row">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="prodschDiv">
+                                                    <label class="form-label">Prod Sch Qty</label>
+                                                    <input id="TotalProdSchQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="prodqtyDiv">
+                                                    <label class="form-label">Prod Qty</label>
+                                                    <input id="TotalProdQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="okqtyDiv">
+                                                    <label class="form-label">Ok Qty</label>
+                                                    <input id="TotalOkQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="rejqtyDiv">
+                                                    <label class="form-label">Rej Qty</label>
+                                                    <input id="TotalRejQty" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="rmconsqty">
+                                                    <label class="form-label">RM ConsQty</label>
+                                                    <input id="TotalRMConsQty" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </center>   
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            GetServerDate();
+            FillFGPartCode();
+            FillFGItemName();
+            FillRMPartCode();
+            FillRMItemName();
+            FillProdSlipNo();
+            FillProdPlanNo();
+            FillProdSchNo();
+            FillReqNo();
+            FillWorkCenter();
+            FillMachinName();
+            FillOperatorName();
+            FillProcess();
+            GetProductionReport();
+            $('#FGPartCode').select2();
+            $('#FGItemName').select2();
+            $('#RMPartCode').select2();
+            $('#RMItemName').select2();
+            $('#ProdSlipNo').select2();
+            $('#ProdPlanNo').select2();
+            $('#ProdSchNo').select2();
+            $('#ReqNo').select2();
+            $('#WorkCenter').select2();
+            $('#MachineName').select2();
+            $('#OperatorName').select2();
+            $('#Process').select2();
+            $('#ReportType').select2();
+        });
+
+        $('#FromDate').change(function(){
+            FillFGPartCode();
+            FillFGItemName();
+            FillRMPartCode();
+            FillRMItemName();
+            FillProdSlipNo();
+            FillProdPlanNo();
+            FillProdSchNo();
+            FillReqNo();
+            FillWorkCenter();
+            FillMachinName();
+            FillOperatorName();
+            FillProcess();
+        })
+
+        $('#ToDate').change(function () {
+            FillFGPartCode();
+            FillFGItemName();
+            FillRMPartCode();
+            FillRMItemName();
+            FillProdSlipNo();
+            FillProdPlanNo();
+            FillProdSchNo();
+            FillReqNo();
+            FillWorkCenter();
+            FillMachinName();
+            FillOperatorName();
+            FillProcess();
+        })
+
+        function HideShow(){
+             
+            if ($('#ReportType').val() == 'DETAIL') {
+                $('#prodschDiv').show();
+                $('#prodqtyDiv').show();
+                $('#okqtyDiv').show();
+                $('#rejqtyDiv').show();
+                $('#rmconsqty').hide();
+            }
+            if ($('#ReportType').val() == 'Date Wise FG Consolidated' || $('#ReportType').val() == 'Machine Wise FG Production SUmmary' || $('#ReportType').val() == 'RM Wise Consumption Summary' || $('#ReportType').val() == 'RM Wise Consumption Detail') {
+                $('#prodschDiv').hide();
+                $('#rmconsqty').hide();
+                $('#prodqtyDiv').show();
+                $('#okqtyDiv').show();
+                $('#rejqtyDiv').show();
+            }
+            if ($('#ReportType').val() == 'RM Total Consumption') {
+                $('#prodschDiv').show();
+                $('#prodqtyDiv').hide();
+                $('#okqtyDiv').hide();
+                $('#rejqtyDiv').hide();
+                $('#rmconsqty').show();
+            }
+            if ($('#ReportType').val() == 'BreakDown Detail' || $('#ReportType').val() == 'Machine Wise BreakDown Summary' || $('#ReportType').val() == 'Operator Detail Report' || $('#ReportType').val() == 'Operator Summary Report') {
+                $('#prodschDiv').hide();
+                $('#prodqtyDiv').hide();
+                $('#okqtyDiv').hide();
+                $('#rejqtyDiv').hide();
+                $('#rmconsqty').hide();
+            }
+            if ($('#ReportType').val() == 'Production QC Deatil') {
+                $('#prodschDiv').hide();
+                $('#prodqtyDiv').show();
+                $('#okqtyDiv').show();
+                $('#rejqtyDiv').show();
+                $('#rmconsqty').hide();
+            }
+        }
+
+        function GetProductionReport() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetProductionEntryReport")",
+                async: false,
+                data: { "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "FGPartCode": $('#FGPartCode').val(), "FGItemName": $('#FGItemName').val(), "RMPartCode": $('#RMPartCode').val(), "RMItemName": $('#RMItemName').val(), "ProdSlipNo": $('#ProdSlipNo').val(), "ProdPlanNo": $('#ProdPlanNo').val(), "ProdSchNo": $('#ProdSchNo').val(), "ReqNo": $('#ReqNo').val(), "WorkCenter": $('#WorkCenter').val(), "MachineName": $('#MachineName').val(), "OperatorName": $('#OperatorName').val(), "Process": $('#Process').val() },
+                success: function (result, status, error) {
+                    $('#divproductionReportGrid').empty();
+                    $('#divproductionReportGrid').html(result);
+                    $('#totalRows').text($('#divproductionReportGrid tr').length - 1);
+                    countAllTotal();
+                    HideShow();
+                }
+            });
+        }
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var firstDayOfMonth = getFirstDayOfMonth(result);
+                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                    }
+                }
+            });
+        }
+
+        function countAllTotal() {
+             
+            var rowCount = $('#divStockRegisterBody tr').length;
+            var ProdSchQty = 0;
+            var ProdQty = 0;
+            var OkQty = 0;
+            var RejQty = 0;
+            var RmConsQty = 0;
+            for (var i = 1; i <= rowCount; i++) {
+                ProdSchQty += $('#ProdSchQty-' + i).text() == '' ? 0 : parseFloat($('#ProdSchQty-' + i).text());
+                ProdQty += $('#ProdQty-' + i).text() == '' ? 0 : parseFloat($('#ProdQty-' + i).text());
+                OkQty += $('#OkQty-' + i).text() == '' ? 0 : parseFloat($('#OkQty-' + i).text());
+                RejQty += $('#RejQty-' + i).text() == '' ? 0 : parseFloat($('#RejQty-' + i).text());
+                RmConsQty += $('#RMConsQty-' + i).text() == '' ? 0 : parseFloat($('#RMConsQty-' + i).text());
+            }
+
+            $('#TotalProdSchQty').val(isNaN(ProdSchQty) ? 0 : ProdSchQty);
+            $('#TotalProdQty').val(isNaN(ProdQty) ? 0 : ProdQty);
+            $('#TotalOkQty').val(isNaN(OkQty) ? 0 : OkQty);
+            $('#TotalRejQty').val(isNaN(RejQty) ? 0 : RejQty);
+            $('#TotalRMConsQty').val(isNaN(RmConsQty) ? 0 : RmConsQty);
+        }
+
+        function getFirstDayOfMonth(dateString) {
+
+            const [day, month, year] = dateString.split('/');
+            const currentDate = new Date(year, month - 1, day);
+            currentDate.setDate(1);
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+            return firstDayOfMonth;
+        }
+
+        $('#sendToExcel').click(function () {
+            let table = $("#ReportTable");
+            console.log(table);
+            TableToExcel.convert(table[0], {
+                name: `ReportTable.xlsx`,
+                sheet: {
+                    name: 'ReportTable'
+                }
+            });
+        });
+
+        var currentSearchColumn = null;
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#ReportTable');
+            var rows = table.find('#divStockRegisterBody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divStockRegisterBody').append(row);
+            });
+        }
+
+        function formatDate(dateStr) {
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const [day, month, year] = dateStr.split('/');
+            const monthName = months[parseInt(month) - 1];
+
+            return `${day}/${monthName}/${year}`;
+        }
+
+        function FillFGPartCode() {
+             
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillFGPartCode")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                     
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#FGPartCode').empty();
+                            $('#FGPartCode').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#FGPartCode').append('<option value="' + val.FGPartCode +
+                                    '">' + val.FGPartCode + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function DeleteRow(i) {
+
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+                $(this).find('td[id^="opnStk-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'opnStk-' + (index + 1));
+                });
+                $(this).find('td[id^="totStk-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'totStk-' + (index + 1));
+                });
+                $(this).find('td[id^="recQty-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'recQty-' + (index + 1));
+                });
+                $(this).find('td[id^="issQty-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'issQty-' + (index + 1));
+                });
+                $(this).find('td[id^="rate-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'rate-' + (index + 1));
+                });
+                $(this).find('td[id^="amount-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'amount-' + (index + 1));
+                });
+
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            countAllTotal();
+            $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
+        }
+
+        function FillFGItemName() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillFGItemName")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#FGItemName').empty();
+                            $('#FGItemName').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#FGItemName').append('<option value="' + val.FGItemName +
+                                    '">' + val.FGItemName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillRMPartCode() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillRMPartCode")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RMPartCode').empty();
+                            $('#RMPartCode').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#RMPartCode').append('<option value="' + val.FGPartCode +
+                                    '">' + val.FGPartCode + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillRMItemName() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillRMItemName")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RMItemName').empty();
+                            $('#RMItemName').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#RMItemName').append('<option value="' + val.FGItemName +
+                                    '">' + val.FGItemName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillProdSlipNo() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillProdSlipNo")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProdSlipNo').empty();
+                            $('#ProdSlipNo').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProdSlipNo').append('<option value="' + val.ProdSlipNo +
+                                    '">' + val.ProdSlipNo + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillProdPlanNo() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillProdPlanNo")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProdPlanNo').empty();
+                            $('#ProdPlanNo').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProdPlanNo').append('<option value="' + val.ProdPlanNo +
+                                    '">' + val.ProdPlanNo + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillProdSchNo() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillProdSchNo")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProdSchNo').empty();
+                            $('#ProdSchNo').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProdSchNo').append('<option value="' + val.ProdPlanSchNo +
+                                    '">' + val.ProdPlanSchNo + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillReqNo() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillReqNo")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ReqNo').empty();
+                            $('#ReqNo').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ReqNo').append('<option value="' + val.ReqNo +
+                                    '">' + val.ReqNo + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillWorkCenter() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillWorkCenter")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#WorkCenter').empty();
+                            $('#WorkCenter').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#WorkCenter').append('<option value="' + val.WorkCenter +
+                                    '">' + val.WorkCenter + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillMachinName() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillMachinName")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MachineName').empty();
+                            $('#MachineName').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#MachineName').append('<option value="' + val.MachineName +
+                                    '">' + val.MachineName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillOperatorName() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillOperatorName")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#OperatorName').empty();
+                            $('#OperatorName').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#OperatorName').append('<option value="' + val.operatorName +
+                                    '">' + val.operatorName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillProcess() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillProcess")",
+                dataType: "JSON",
+                data: { "FromDate": formatDate($('#FromDate').val()), "ToDate": formatDate($('#ToDate').val()) },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#Process').empty();
+                            $('#Process').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#Process').append('<option value="' + val.Process +
+                                    '">' + val.Process + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+}
+
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+</style>

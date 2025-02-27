@@ -1,0 +1,47 @@
+﻿@model eTactWeb.DOM.Models.ProductionScheduleModel
+
+@{
+    var Cntr = 0;
+}
+@if (Model != null)
+{
+    @if (Model.BomDatamodel != null)
+    {
+        @if (Model.BomDatamodel.BomSummaries == null || !Model.BomDatamodel.BomSummaries.Any())
+        {
+            <tr class="text-center">
+                <td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in Model.BomDatamodel.BomSummaries)
+            {
+                Cntr++;
+                <tr id="itemGrid-@Cntr" class="small bomSummaryRow" style="white-space:nowrap">
+                    <td>@item.RMPartCode <input type="hidden" value="@item.RMItemCode"></td>
+                    <td>@item.RMItemName</td>
+                    <td>@item.Unit</td>
+                    <td>@item.TotalReqQty</td>
+                    <td>@item.PendQty</td>
+                    <td>@item.MainStoreStock</td>
+                    <td>@item.QcStoreStock</td>
+                    <td>@item.WIPStock</td>
+                </tr>
+            }
+        }
+    }
+    else
+    {
+        <tr class="text-center">
+            <td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+        </tr>
+    }
+
+}
+else
+{
+    <tr class="text-center">
+        <td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+    </tr>
+}

@@ -1,0 +1,633 @@
+﻿@model eTactWeb.DOM.Models.EmployeeMasterModel;
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="EmployeeMaster" autocomplete="on" class="form-horizontal">
+     @*    @Html.AntiForgeryToken() *@
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Employee Master</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-controller="EmployeeMaster" asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                    </a>
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                Model.Mode = "U";
+                                <div class="col-auto">
+                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+               
+            </h5>
+        </div>
+        <div>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Employee Detail
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3 align-items-center">
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                <div class="col-lg-2">
+                                    <label asp-for="Branch" class="form-label">Branch</label>
+                                    <input asp-for="Branch" class="form-control" readonly />
+                                    <input asp-for="Mode" class="form-control" type="hidden" />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="EntryDate" class="form-label" style="color: blue;">Entry Date</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="EmpId" class="form-label">EmpId</label>
+                                    <input asp-for="EmpId" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="EmpCode" class="form-label">EmpCode</label>
+                                    <input asp-for="EmpCode" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-4">
+                                    <label asp-for="Name" class="form-label">Name</label>
+                                    <input asp-for="Name" class="form-control" required />
+                                </div>
+                                <div class="col-lg-4">
+                                    <label asp-for="Designation" class="form-label"></label>
+                                    <select asp-for="Designation" class="form-select" asp-items="@(new SelectList(Model.DesignationList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label asp-for="Department" class="form-label"></label>
+                                    <select asp-for="Department" class="form-select" asp-items="@(new SelectList(Model.DepartmentList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label asp-for="Category" class="form-label"></label>
+                                    <select asp-for="Category" class="form-select" asp-items="@(new SelectList(Model.CategoryList,"Value", "Text"))" required>
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="DateOfJoining" class="form-label">DOJ</label>
+                                    <input asp-for="DateOfJoining" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="DOB" class="form-label">DOB</label>
+                                    <input asp-for="DOB" class="form-control" readonly />
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="Shift" class="form-label"></label>
+                                    <select asp-for="Shift" class="form-select" asp-items="@(new SelectList(Model.ShiftList,"Value", "Text"))">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-2">
+                                    <label asp-for="Active" class="form-label">Active</label>
+                                    <select asp-for="Active" class="form-control" disabled>
+                                        <option value="Y">Yes</option>
+                                        <option value="N">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <label asp-for="DateOfResignation" class="form-label">Date Of Resignation</label>
+                                    <input asp-for="DateOfResignation" class="form-control" disabled />
+                                    <input type="hidden" asp-for="DateOfResignation" value="@Model.DateOfResignation" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                    <label asp-for="NatureOfDuties" class="form-label">Nature Of Duties</label>
+                                    <input asp-for="NatureOfDuties" class="form-control" />
+                                </div>
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="Gender" class="form-label">Gender</label>
+                                    <select asp-for="Gender" class="form-control" >
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>     
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="Nationality" class="form-label">Nationality</label>
+                                    <select asp-for="Nationality" class="form-control" >
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="MaritalStatus" class="form-label">MaritalStatus</label>
+                                    <select asp-for="MaritalStatus" class="form-control" >
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="BloodGroup" class="form-label">BloodGroup</label>
+                                    <select asp-for="BloodGroup" class="form-control" >
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Contact Information</strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="MobileNo" class="form-label">Mobile No</label>
+                                    <input asp-for="MobileNo" class="form-control"  />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="MobileNo2" class="form-label">Mobile2 No</label>
+                                    <input asp-for="MobileNo2" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="EmailId" class="form-label">Email Id</label>
+                                    <input asp-for="EmailId" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="CurrentAddress" class="form-label">Current Address</label>
+                                    <input asp-for="CurrentAddress" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="permanentAddress" class="form-label">Permanent Address</label>
+                                    <input asp-for="permanentAddress" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                    <label asp-for="EmergencyContact" class="form-label">Emergency Contact</label>
+                                    <input asp-for="EmergencyContact" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="EmergencyContactRelation" class="form-label">EmergencyContact Relation</label>
+                                    <input asp-for="EmergencyContactRelation" class="form-control" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Salary Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="BankName" class="form-label">Bank Name</label>
+                                    <input asp-for="BankName" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="AccountNo" class="form-label">Account No</label>
+                                    <input asp-for="AccountNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="PANNo" class="form-label">PAN No</label>
+                                    <input asp-for="PANNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="AdharNo" class="form-label">Adhar No</label>
+                                    <input asp-for="AdharNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="SwiftCode" class="form-label">Swift Code</label>
+                                    <input asp-for="SwiftCode" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="PaymentMode" class="form-label">Payment Mode</label>
+                                    <select asp-for="PaymentMode" class="form-control">
+                                        <option value="RTGS">RTGS</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Cheque">Cheque</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="PFNo" class="form-label">PFNo</label>
+                                    <select asp-for="PFNo" class="form-control">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="ESINo" class="form-label">ESI No</label>
+                                    <select asp-for="ESINo" class="form-control">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="GrossSalary" class="form-label">Gross Salary</label>
+                                    <input asp-for="GrossSalary" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="BasicSalary" class="form-label">Basic Salary</label>
+                                    <input asp-for="BasicSalary" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="CalculatePfOn" class="form-label">Calculate Pf On</label>
+                                    <select asp-for="CalculatePfOn" class="form-control">
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="SalaryCalculation" class="form-label">Salary Calculation</label>
+                                    <select asp-for="SalaryCalculation" class="form-control">
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="SalaryBasis" class="form-label">Salary Basis(Hrs) </label>
+                                    <input asp-for="SalaryBasis" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="PFApplicable" class="form-label">PF Applicable</label>
+                                    <select asp-for="PFApplicable" class="form-control">
+                                        <option value="Standard">Standard</option>
+                                        <option value="Basic">Basic</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="ApplyPFFonmAmt" class="form-label">Apply PFF on mAmt </label>
+                                    <input asp-for="ApplyPFFonmAmt" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="ApplyESIFonmAmt" class="form-label">Apply ESI on mAmt </label>
+                                    <input asp-for="ApplyESIFonmAmt" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="OTApplicable" class="form-label">OT Applicable</label>
+                                    <select asp-for="OTApplicable" class="form-control">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="LeaveApplicable" class="form-label">Leave Applicable</label>
+                                    <select asp-for="LeaveApplicable" class="form-control">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="ESIApplicable" class="form-label">ESI Applicable</label>
+                                    <select asp-for="ESIApplicable" class="form-control">
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                    <label asp-for="LateMarkingCalculationApplicable" class="form-label">Late Marking CalculationApplicable</label>
+                                    <select asp-for="LateMarkingCalculationApplicable" class="form-control">
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                    <label asp-for="FixSalaryAmt" class="form-label">Fix SalaryAmt </label>
+                                    <input asp-for="FixSalaryAmt" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                <h2 class="accordion-header" id="H_SAGrid">
+                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Allowance/Deduction</strong>
+                    </button>
+                </h2>
+
+                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div class="accordion-body">
+                        <div class="row g-2 gx-3" id="_ItemGrid">
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                <label asp-for="SalaryHead" class="form-label">Salary Head</label>
+                                <select asp-for="SalaryHead" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                <label asp-for="AllowanceMode" class="form-label">Mode</label>
+                                <select asp-for="AllowanceMode" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                <label asp-for="Percent" class="form-label">Percent</label>
+                                <input asp-for="Percent" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="AllowanceAmount" class="form-label">Amount </label>
+                                <input asp-for="AllowanceAmount" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="AllowanceType" class="form-label">Type</label>
+                                <select asp-for="AllowanceType" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                <label asp-for="PartyPay" class="form-label">PartyPay...?</label>
+                                <select asp-for="PartyPay" class="form-control">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2 mb-3" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body overflow-auto pb-0">
+                            <table class="table table-hover table-bordered table-striped" id="GateMainTable">
+                                <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Sr No</th>
+                                        <th>Salary Head</th>
+                                        <th>Mode</th>
+                                        <th>Percent</th>
+                                        <th>Amount</th>
+                                        <th>Types</th>
+                                        <th>Party Pay..?</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="divStockGrid">
+                                    <partial name="_EmployeeAllowanceGrid" />
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <div class="accordion-item">
+                <h2 class="accordion-header" id="HPanel2">
+                    <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Job & Work Detail</strong>
+                    </button>
+                </h2>
+                <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                    <div class="accordion-body">
+                        <div class="row g-2 gx-3" id="_ItemGrid">
+                            
+                           @*  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="JoiningDate" class="form-label">Joining Date</label>
+                                <input asp-for="JoiningDate" class="form-control" />
+                            </div>
+                           <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="JobDepartment" class="form-label">Job Department </label>
+                                <select asp-for="JobDepartment" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                           </div>
+                           <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="JobDesignation" class="form-label">Job Designation</label>
+                                <select asp-for="JobDesignation" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                           </div>
+                           <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="ReportingMg" class="form-label">Reporting Mg</label>
+                                <select asp-for="ReportingMg" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                           </div>
+                           <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="EmployeeType" class="form-label">Employee Type </label>
+                                <select asp-for="EmployeeType" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                           </div>
+                           <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="WorkLocation" class="form-label">WorkLocation/Branch  </label>
+                                <select asp-for="WorkLocation" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                           </div>
+                           <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="JObShift" class="form-label">Job Shift  </label>
+                                <select asp-for="JObShift" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                           </div>
+                           <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="EmpGrade" class="form-label">Emp Grade</label>
+                                <select asp-for="EmpGrade" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                           </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="JobProbationPeriod" class="form-label">JobProbationPeriod(Months)</label>
+                                <input asp-for="JobProbationPeriod" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="ProbationStartDate" class="form-label">Probation StartDate</label>
+                                <input asp-for="ProbationStartDate" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="ProbationEndDate" class="form-label">Probation EndDate </label>
+                                <input asp-for="ProbationEndDate" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="DateOfConfirmation" class="form-label">Date Of Confirmation  </label>
+                                <input asp-for="DateOfConfirmation" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="JobReference1" class="form-label">JobReference1</label>
+                                <input asp-for="JobReference1" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="JobReference2" class="form-label">JobReference2 </label>
+                                <input asp-for="JobReference2" class="form-control" />
+                            </div>
+
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="JoiningThrough" class="form-label">Joining Through</label>
+                                <select asp-for="JoiningThrough" class="form-control">
+                                    <option value="">Select</option>
+                                </select>
+                            </div> *@
+                           
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            </div>
+
+            <div class="card-footer card-headerBG text-light bg-gradient">
+                <div class="row justify-content-between g-2">
+                    <h5>
+                        <strong>Employee Master</strong>
+                        <span class="d-flex float-end" style="margin-top:-2px;">
+                            <a asp-controller="EmployeeMaster" asp-action="DashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                Dashboard
+                            </a>
+                            <div class="row justify-content-between g-2">
+                                <div class="col-auto">
+                                    <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                        <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                        BACK
+                                    </a>
+                                </div>
+                                @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                {
+                                    <div class="col-auto">
+                                        <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                            <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                            REFRESH
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode == "U")
+                                    {
+                                        Model.Mode = "U";
+                                        <div class="col-auto">
+                                            <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                UPDATE
+                                            </button>
+                                        </div>
+                                    }
+
+                                    else
+                                    {
+                                        <div class="col-auto">
+                                            <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                <i class="fa-solid fa-chevron-circle-right"></i>
+                                                SUBMIT
+                                            </button>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var mode = '@Model.Mode';
+            $('#Nationality').select2();
+            $('#MaritalStatus').select2();
+            $('#BloodGroup').select2();
+            $('#Gender').select2();
+            $('#PaymentMode').select2();
+            // Set current date for new entries
+            if (mode === "U" || mode === "V") {
+                $('#EntryDate').val('@Model.EntryDate');
+                $('#DateOfJoining').val('@Model.DateOfJoining');
+                $('#DOB').val('@Model.DOB');
+                $('#DateOfResignation').val('@Model.DateOfResignation');
+                $('#DOB').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#DateOfJoining, #DateOfResignation').datepicker({ dateFormat: 'dd/mm/yy' });
+            } else {
+                // For new entries set current date
+                $('#EntryDate, #DateOfJoining, #DOB').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            }
+
+            // Restrict DOB to 18 years ago for new entry
+            var eighteenYearsAgo = new Date();
+            eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+            $('#DOB').datepicker("option", "maxDate", eighteenYearsAgo);
+
+            // Disable Date of Resignation for new entries
+            if (mode === "U") {
+                $('#Active').prop("disabled", false);
+                $('#DateOfResignation').prop("disabled", false);
+            } else {
+                $('#DateOfResignation').prop("disabled", true);
+                $('#Active').val('Y').prop("disabled", true);
+            }
+        });
+
+        function GetEmpIdandEmpCode() {
+            var mode = '@Model.Mode';
+            if (mode === "U" || mode === "V") {
+                return;
+            }
+
+            var designation = $('#Designation').val();
+            var department = $('#Department').val();
+
+            $.ajax({
+                type: "POST",
+                data: { "designation": designation, "department": department },
+                url: "@Url.Action("GetEmpIdandEmpCode")",
+                dataType: "json",
+                success: function (result) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#EmpId').val(obj.Result[0].EmpId);
+                        $('#EmpCode').val(obj.Result[0].EmpCode);
+                    }
+                }
+            });
+        }
+    </script>
+}

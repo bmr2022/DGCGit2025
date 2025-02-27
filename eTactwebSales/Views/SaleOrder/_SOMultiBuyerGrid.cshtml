@@ -1,0 +1,51 @@
+﻿@model eTactWeb.DOM.Models.SaleOrderModel
+
+
+<table class="table table-hover table-bordered table-striped mb-0">
+    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+        <tr>
+            <th>Sr#</th>
+            <th>BillTo PartyName</th>
+            <th>BuyerAddress</th>
+            <th>ShipTo PartyName</th>
+            <th>ShipTo Address</th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @{
+            var model = Model.SaleOrderBillToShipTo;
+
+            if (Model.SaleOrderBillToShipTo == null)
+            {
+                <tr class="text-center">
+                    <td colspan="5" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                </tr>
+            }
+            else
+            {
+
+                var @Cntr = 0;
+                foreach (var item in Model.SaleOrderBillToShipTo)
+                {
+                    Cntr = Cntr + 1;
+                    <tr class="@item.SeqNo">
+                        <td>
+                            @Cntr &nbsp;
+                            <a onclick="DeleteBillToShipToRow(@item.SeqNo);">
+                                <i class="fa-solid fa-hexagon-xmark fa-fw fa-lg" style="--fa-secondary-opacity: 1.0; --fa-primary-color: white; --fa-secondary-color: red;"></i>
+                            </a>
+                        </td>
+                        <td>@item.BillToAccountName</td>
+                        <td>@item.BuyerAddress</td>
+                        <td>@item.ShiptoAccountName</td>
+                        <td>@item.ShipToAddress</td>
+                    </tr>
+                }
+
+            }
+
+        }
+    </tbody>
+</table>

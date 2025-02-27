@@ -1,0 +1,2324 @@
+﻿@model eTactWeb.DOM.Models.WorkOrderModel
+
+@{
+    ViewData["Title"] = "Production Plan";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="WorkOrder" asp-controller="WorkOrder" method="post" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Production Plan - Financial Year: @Model.YearCode</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                    @if (Model.Mode == "U" || Model.Mode == "V")
+                    {
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient me-2" asp-action="PrintReport" asp-controller="WorkOrder" asp-route-EntryId="@Model.Entryid" asp-route-YearCode="@Model.YearCode">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            PRINT
+                        </a>
+                    }
+                    <a asp-action="WorkOrderDashboard" asp-route-ID="0" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    <partial name="_FormsButton" />
+                </span>
+            </h5>
+        </div>
+
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3 align-items-center">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                    <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <input type="hidden" asp-for="SeqNo" id="hiddenSequenceNo" />
+                                    <label asp-for="Entryid" class="form-label" style="color: blue;">Entry ID</label>
+                                    <input asp-for="Entryid" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Entrydate" class="form-label" style="color: blue;">Entry Date</label>
+                                    <input asp-for="Entrydate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="YearCode" class="form-label" style="color: blue;">Year Code</label>
+                                    <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EffectiveFrom" class="form-label" style="color: blue;">SO Eff From</label>
+                                    <input asp-for="EffectiveFrom" class="form-control" />
+                                    @*@if (Model.Mode == "U" || Model.Mode == "V") {
+                                    <input id="hiddenEffFrom" value="Model.EffectiveFrom" class="form-control" />
+                                    }*@
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EffectiveTill" class="form-label" style="color: blue;">SO Eff Till</label>
+                                    <input asp-for="EffectiveTill" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ForMonth" class="form-label" style="color: red;">For Month</label>
+                                    <input asp-for="ForMonth" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="WONO" class="form-label" style="color: red;">WO/Prod Plan NO</label>
+                                    <input asp-for="WONO" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="WODate" class="form-label" style="color: red;">WO/Prod Plan Date</label>
+                                    <input asp-for="WODate" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="workcenterId" class="form-label">WC Name</label>
+                                    <select class="form-select" asp-for="workcenterId">
+                                        <option>-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="StartDate" class="form-label" style="color: red;"> Plan  Start Dt</label>
+                                    <input asp-for="StartDate" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EndDate" class="form-label" style="color: red;">Plan End Dt.</label>
+                                    <input asp-for="EndDate" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="SOType" class="form-label" style="color: deepskyblue;font-weight: bold;">SO Type</label>
+                                    <input asp-for="SOType" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CustomerOrderNo" class="form-label" style="color: deepskyblue;font-weight: bold;">Cust Order #</label>
+                                    <input asp-for="CustomerOrderNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="SONO" class="form-label" style="color: deepskyblue;font-weight: bold;">SO NO</label>
+                                    <input asp-for="SONO" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="SchNo" class="form-label" style="color: deepskyblue;font-weight: bold;">Schedule No</label>
+                                    <input asp-for="SchNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="COLOR" class="form-label" style="color: deepskyblue;font-weight: bold;">Color</label>
+                                    <input asp-for="COLOR" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label" style="color: deepskyblue;font-weight: bold;">PartCode</label>
+                                    <input asp-for="PartCode" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label" style="color: deepskyblue;font-weight: bold;">ItemName</label>
+                                    <input asp-for="ItemName" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width: 10%">
+                                    <label asp-for="AccountName" class="form-label" style="color: deepskyblue;font-weight: bold;">Customer Name</label>
+                                    <input asp-for="AccountName" class="form-control" />
+                                </div>
+                                @*<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="WOQty" class="form-label">WO Qty</label>
+                                <input asp-for="WOQty" class="form-control" type="number" />
+                                </div>*@
+
+                                @* <div class="col-sm-3 col-md-6 col-lg-2 col-xl-3 d-flex justify-content-end mt-3"> *@
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width: 5%">
+
+                                    <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData()">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>
+                                    </button>
+                                  
+                                </div>
+
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Order Detail Grid</strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+
+                             
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="d-flex">
+                                <button class="btn btn-sm btn-outline-warning me-3 mb-2" type="button" id="CheckAll">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i> Ch/UnCh All
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger me-3 mb-2" type="button" id="ResetFields">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i> Reset Fields
+                                </button>
+                                <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="SendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="WorkOrder" asp-action="WorkOrder">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                                <div class="d-flex">
+                                    <label class="form-label" style="color: blue; font:bolder">                      Select Sale Order From list then click on Addto Grid Button bottom of the Sale Order grid</label>
+                                </div>
+                                <div class="ms-auto d-flex align-items-center">
+                                    <div class="col-md-5">
+                                        <label class="form-label me-2">Global search</label>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" id="search-box" placeholder="Search..." onkeyup="GlobalSearch($(this));" style="background-color:#FFFACD;" "">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped divSOTable">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Action</th>
+                                                <th data-columnno="1" data-sortorder="asc" class="sortCol" style="color:  yellow;">
+                                                    <span style="padding:5px;margin:5px" class="sort-icon">
+                                                        <i class="fa" aria-hidden="true"></i>
+                                                    </span>Customer Name <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i>
+                                                </th>
+                                                <th data-columnno="2" data-sortorder="asc" class="sortCol" style="color:  yellow;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONo<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="3" data-sortorder="asc" class="sortCol" style="color:  yellow;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO YearCode<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch YearCode<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="8" data-sortorder="asc" class="sortCol" style="color:  yellow;"><span style="padding:5px;margin:5px" class="sort-icon">
+                                                    <i class="fa" aria-hidden="true"></i></span>PartCode <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="9" data-sortorder="asc" class="sortCol" style="color:  yellow;"><span style="padding:5px;margin:5px" class="sort-icon">
+                                                    <i class="fa" aria-hidden="true"></i></span>ItemName <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="10" data-sortorder="asc" class="sortCol" style="color:  yellowgreen;"><span style="padding:5px;margin:5px" class="sort-icon">
+                                                    <i class="fa" aria-hidden="true"></i></span>WC<label style="float:right;"> <input id="SHAWIP" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />Same WC</label><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WIPStk <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store <label style="float:right;">  <input id="SHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />Same Store</label><i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Stk <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="14" data-sortorder="asc" class="sortCol" style="color:  yellow;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WO Qty <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="15" data-sortorder="asc" class="sortCol" style="color:  yellow;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Qty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt OrderQty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend SOQty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend WOQty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Qty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="20" data-sortorder="asc" class="sortCol" style="color:  yellow;"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom No<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Name<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom EffDate<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MainSubBom<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Group<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pref MachName1<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pref MachName2<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pref MachName3<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approx StartDate<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approx EndDate<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Drawing No<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Inst1<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Inst2<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Instruction<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pkg Instruction<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Type<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Wef<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AmmNo<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AmmEffDate<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltQty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltUnit<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                @* <th>WorkCenter</th>
+                                                <th>WIP Store</th>
+                                                <th>WIP Stock</th>*@
+                                                <th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Wo RevNo<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Wo RevDate<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="45" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prev WOQty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="46" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Prod Qty<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="47" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="48" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Custmer Order No<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="49" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Close Date<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="50" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Effective Till Date<i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="51" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG StoreName <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+                                                <th data-columnno="52" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Stk <i class="fa fa-eye-slash toggle-icon" aria-hidden="true"></i></th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divSaleOrderGrid">
+                                            @*<partial name="_RoutingGrid" />*@
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class=" col-4 col-auto">
+                                <div class="row justify-content-around">
+                                    <div class="col-12 d-flex">
+                                        <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-2 me-2" id="AddToGrid">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                        </button>
+                                        <div class="divClearGrid mb-2">
+                                            <button id="clearGridBtn" type="button" class="btn btn-sm btn-outline-danger" onclick="ClearGrid()" style="margin-top:10px;">
+                                                <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
+                                                CLEAR GRID
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped WOGrid">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Action</th>
+                                                @*<th>SR#</th>*@
+                                                <th>Account_Name</th>
+                                                <th>PartCode</th>
+                                                <th>ItemName</th>
+                                                <th>FG StoreName</th>
+                                                <th>FG Stock</th>
+                                                <th>WIPStore</th>
+                                                <th>WIPStock</th>
+                                                <th>Store</th>
+                                                <th>Stock</th>
+                                                <th>WO Qty</th>
+                                                <th>Order Qty</th>
+                                                <th>Alt OrderQty</th>
+                                                <th>Pend SOQty</th>
+                                                <th>Pend WOQty</th>
+                                                <th>Prod Qty</th>
+                                                <th>Order Type</th>
+                                                <th>Wef</th>
+                                                <th>AmmNo</th>
+                                                <th>AmmEffDate</th>
+                                                <th>Unit</th>
+                                                <th>AltQty</th>
+                                                <th>AltUnit</th>
+                                                <th>Drawing No</th>
+                                                <th>Prod Inst1</th>
+                                                <th>Prod Inst2</th>
+                                                <th>SO Instruction</th>
+                                                <th>Pkg Instruction</th>
+                                                <th>Color</th>
+                                                @* <th>WorkCenter</th>
+                                                <th>WIP Store</th>
+                                                <th>WIP Stock</th>*@
+                                                <th>Bom No</th>
+                                                <th>Bom Name</th>
+                                                <th>Bom EffDate</th>
+                                                <th>MainSubBom</th>
+                                                <th>Machine Group</th>
+                                                <th>Pref MachName1</th>
+                                                <th>Pref MachName2</th>
+                                                <th>Pref MachName3</th>
+                                                <th>Approx StartDate</th>
+                                                <th>Approx EndDate</th>
+                                                <th>Wo RevNo</th>
+                                                <th>Wo RevDate</th>
+                                                <th>Prev WOQty</th>
+                                                <th>Pend Prod Qty</th>
+                                                <th>Description</th>
+                                                <th>Custmer Order No</th>
+                                                <th>SONo</th>
+                                                <th>SO Date</th>
+                                                <th>SO YearCode</th>
+                                                <th>Sch No</th>
+                                                <th>Sch Date</th>
+                                                <th>Sch YearCode</th>
+                                                <th>SO Close Date</th>
+                                                <th>Schedule Effective Till Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divWorkOrderGrid">
+                                            <partial name="_WorkOrderGrid" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3 align-items-center">
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Remarkproductsupplystage" class="form-label">Remark product supply stage</label>
+                                    <input asp-for="Remarkproductsupplystage" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="RemarkForProduction" class="form-label">Remark For Production</label>
+                                    <input asp-for="RemarkForProduction" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="RemarkForRouting" class="form-label">Remark For Routing</label>
+                                    <input asp-for="RemarkForRouting" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="RemarkForPacking" class="form-label">Remark For Packing</label>
+                                    <input asp-for="RemarkForPacking" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="otherInstruction" class="form-label">Other Instruction</label>
+                                    <input asp-for="otherInstruction" class="form-control" />
+                                </div>
+                                @*<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="Approved" class="form-label">Approved</label>
+                                <input asp-for="Approved" class="form-control" readonly />
+                                </div>*@
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MachineName" class="form-label">Machine Name</label>
+                                    <input asp-for="MachineName" class="form-control" value="@Environment.MachineName" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ApprovedBy" class="form-label">Approved By</label>
+                                    <input asp-for="ApprovedBy" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Uid" class="form-label">UID</label>
+                                    <input asp-for="Uid" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ApprovedDate" class="form-label">Approved Date</label>
+                                    <input asp-for="ApprovedDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryByEmpName" class="form-label">Actual Entry By</label>
+                                    <input asp-for="ActualEntryByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdateByEmpName" class="form-label">Last UpdatedBy</label>
+                                    <input asp-for="LastUpdateByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdateDate" class="form-label">Last Updated Date</label>
+                                    <input asp-for="LastUpdateDate" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <partial name="_DisplayBomDetail" />
+            <div class="card-footer card-headerBG text-light bg-gradient">
+                <div class="row justify-content-between g-2">
+                    <h5>
+                        <strong>Production Plan - Financial Year: @Model.YearCode</strong>
+                        <span class="d-flex float-end" style="margin-top:-2px;">
+                            @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                            <div class="row justify-content-between g-2">
+                                <div class="col-auto">
+                                    @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient me-2" asp-action="PrintReport" asp-controller="WorkOrder" asp-route-EntryId="@Model.Entryid" asp-route-YearCode="@Model.YearCode">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            PRINT
+                                        </a>
+                                    }
+                                    <a asp-action="WorkOrderDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                        Dashboard
+                                    </a>
+                                    <a href="#" class=" btn btn-primary btn-sm" onclick="BackButtonData();">
+                                        <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                        BACK
+                                    </a>
+                                </div>
+                                @if (Model.Mode != "V")
+                                {
+                                    <div class="col-auto">
+                                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                        <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                            <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                            REFRESH
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode == "U")
+                                    {
+                                        @*Model.Mode = "U";*@
+                                        <div class="col-auto">
+                                            @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                            <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                UPDATE
+                                            </button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-auto">
+                                            @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                            <button type="submit" class="btn btn-primary btn-sm" id="submitBTNfooter">
+                                                <i class="fa-solid fa-chevron-circle-right"></i>
+                                                SUBMIT
+                                            </button>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+<style>
+    .fa-eye-slash {
+        color: yellow;
+    }
+
+    .toggle-icon {
+        z-index: 10;
+    }
+
+    .formateBtn {
+        border-radius: 7px;
+        background-color: #ffd6dd;
+        border: none;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>
+
+@section Scripts
+{
+    <script>
+
+        $('#submitBTN').click(function (e) {
+
+            e.preventDefault();
+            var notValidBomno = ValidateBomNo();
+             
+            if ($('#divWorkOrderGrid tr td').length <= 1) {
+                $.notify('WorkOrder Grid Should Have Atleast 1 Item...!', "error");
+            }
+            else if (notValidBomno != "Success") {
+                $.notify(notValidBomno + 'Bom No should not 0...!', "error");
+            }
+            else {
+                $("form").submit();
+            }
+        });
+
+        $('#submitBTNfooter').click(function (e) {
+
+            e.preventDefault();
+            var notValidBomno = ValidateBomNo();
+            if ($('#divWorkOrderGrid tr td').length <= 1) {
+                $.notify('WorkOrder Grid Should Have Atleast 1 Item...!', "error");
+            }
+            else if (notValidBomno != "Success") {
+                $.notify(notValidBomno + 'Bom No should not 0...!', "error");
+            }
+            else {
+                $("form").submit();
+            }
+        });
+
+        function ValidateBomNo() {
+             
+            var rowCount = $('#divWorkOrderGrid tr').length;
+            for (var i = 1; i <= rowCount; i++) {
+                if ($('#itemGrid-' + rowCount).find('.BomNo').text() == '0') {
+                    var partCode = $('#itemGrid-' + rowCount).find('.PartCode').text();
+                    return partCode;
+                }
+            }
+            return "Success";
+        }
+
+        $(document).ready(function () {
+            var date = new Date();
+            //$('#YearCode').val(date.getFullYear());
+            $('#ForMonth').val(date.getMonth() + 1);
+
+            FillWorkCenter();
+            GetServerDate();
+            GetSaleOrderData();
+            GetBomNo();
+            GetMachineGroupName();
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                NewEntryId();
+
+            } else {
+                var EffFrom = $('#EffectiveFrom').val().split(" ")[0].replace(/-/g, "/");
+                var EffTill = $('#EffectiveTill').val().split(" ")[0].replace(/-/g, "/");
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EffFrom);
+                $('#EffectiveTill').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EffTill);
+
+            }
+            function BackButtonData() {
+                window.history.back();
+            }
+
+            $('#Reset').on('click', function () {
+                ResetFileds();
+            });
+
+            AutoComplete("SONO", "SONo");
+            AutoComplete("SchNo", "SchNO");
+            AutoComplete("COLOR", "Color");
+            AutoComplete("PartCode", "PartCode");
+            AutoComplete("ItemName", "ItemName");
+            AutoComplete("CustomerOrderNo", "CustOrderNo");
+            AutoComplete("SOType", "SOType");
+            AutoComplete("AccountName", "Account_Name");
+
+            $('#Remarkproductsupplystage').rules('remove', 'required');
+            $('#RemarkForProduction').rules('remove', 'required');
+            $('#RemarkForRouting').rules('remove', 'required');
+            $('#RemarkForPacking').rules('remove', 'required');
+            $('#otherInstruction').rules('remove', 'required');
+            $('#SONO').rules('remove', 'required');
+            $('#CustomerOrderNo').rules('remove', 'required');
+            $('#SchNo').rules('remove', 'required');
+            $('#COLOR').rules('remove', 'required');
+            $('#PartCode').rules('remove', 'required');
+            $('#ItemName').rules('remove', 'required');
+            $('#Approved').rules('remove', 'required');
+            $('#ActualEntryByEmpName').rules('remove', 'required');
+            $('#LastUpdateByEmpName').rules('remove', 'required');
+            $('#LastUpdateDate').rules('remove', 'required');
+            $('#SOType').rules('remove', 'required');
+            $('#AccountName').rules('remove', 'required');
+
+            var finFromDate = $('#FinFromDate').val();
+            var finToDate = $('#FinToDate').val();
+
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+
+
+            $('.textbox').keydown(function (e) {
+
+                if (e.which === 40) {
+                    e.preventDefault();
+                    var currentIndex = $('.textbox').index(this);
+                    var totalColumns = $('#divSaleOrderGrid tr:first td').length;
+                    var totalRows = $('.textbox').length / totalColumns;
+
+                    var currentColumn = currentIndex % totalColumns;
+                    var nextIndex = (currentIndex + totalColumns) % $('.textbox').length;
+
+                    $('.textbox').eq(nextIndex).focus();
+                }
+            });
+
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+            console.log(formattedDate1);
+            console.log(formattedDate2);
+
+            //$('#Entrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+
+            $('#Entrydate').datepicker("option", "minDate", formattedDate1);
+            $('#Entrydate').datepicker("option", "maxDate", formattedDate2);
+
+
+        });
+
+
+        //$(document).on("click", ".sortCol", function (e) {
+        //
+        //    var $column = $(this).parent().closest("th");
+        //    var colno = $(this).data('columnno');
+        //    var currentOrder = $(this).data('sortorder');
+
+        //    $('.sortCol').css('color', 'white');
+
+        //    if (currentOrder === 'asc') {
+        //        sortTable(colno, false);
+        //        $(this).data('sortorder', 'desc');
+        //        $(this).css('color', 'yellow');
+        //        //$(this).css('font-size', 'larger');
+        //        $(this).find('i:first').removeClass('fa-arrow-up');
+        //        $(this).find('i:first').addClass('fa-arrow-down');
+        //    } else {
+        //        sortTable(colno, true);
+        //        $(this).data('sortorder', 'asc');
+        //        $(this).css('color', 'yellow');
+        //        // $(this).css('font-size', 'larger');
+        //        $(this).find('i:first').removeClass('fa-arrow-down');
+        //        $(this).find('i:first').addClass('fa-arrow-up');
+        //    }
+        //});
+
+        $(document).on('click', '.sortCol', function (event) {
+
+            if ($(event.target).hasClass('toggle-icon')) {
+                var columnNo = $(this).data('columnno');
+                var table = $('.divSOTable');
+                var columns = table.find('td, th').filter(':nth-child(' + (columnNo + 1) + ')');
+
+                columns.toggle();
+            }
+            else {
+                var $column = $(this).parent().closest("th");
+                var colno = $(this).data('columnno');
+                var currentOrder = $(this).data('sortorder');
+
+                $('.sortCol').css('color', 'white');
+
+                if (currentOrder === 'asc') {
+                    sortTable(colno, false);
+                    $(this).data('sortorder', 'desc');
+                    $(this).css('color', 'yellow');
+                    //$(this).css('font-size', 'larger');
+                    $(this).find('i:first').removeClass('fa-arrow-up');
+                    $(this).find('i:first').addClass('fa-arrow-down');
+                } else {
+                    sortTable(colno, true);
+                    $(this).data('sortorder', 'asc');
+                    $(this).css('color', 'yellow');
+                    // $(this).css('font-size', 'larger');
+                    $(this).find('i:first').removeClass('fa-arrow-down');
+                    $(this).find('i:first').addClass('fa-arrow-up');
+                }
+            }
+        });
+
+        var ExistingRow = false;
+        function AddEditRow(SeqNo) {
+            var existingRowFound = false;
+            $('#divSaleOrderGrid tr').each(function (index) {
+                var $row = $(this);
+                if (EditRowArr[0].AcName == $row.find('.acName').val() &&
+                    EditRowArr[0].ItemCode == $row.find('.itemCode').val() &&
+                    EditRowArr[0].SONO == $row.find('.soNo').val() &&
+                    EditRowArr[0].SOYearCode == $row.find('.soYearCode').val() &&
+                    EditRowArr[0].SchNo == $row.find('.schNo').val()) {
+                    existingRowFound = true;
+                    return false;
+                }
+            });
+
+            if (!existingRowFound) {
+                var newRowNumber = $('#divSaleOrderGrid tr').length + 1;
+                CreateNewRow(SeqNo, newRowNumber);
+            }
+        }
+
+
+        function CreateNewRow(SeqNo, i) {
+            var html = '';
+            html += '<tr id="SaleOrderRow-' + i + '">' +
+                '<td>' +
+                '<input id="Checkbox' + i + '" type="checkbox" class="textbox" checked>' +
+                '<input type="hidden" value="' + $('#GridAC-' + SeqNo).val() + '" id="Accountcode' + i + '"/>' +
+                '<input type="hidden" value="' + $('#GridItemCode-' + SeqNo).val() + '" id="Itemcode' + i + '"/>' +
+                '</td>' +
+                '<td><input id="AcName' + i + '" value="' + $('#GridAcName-' + SeqNo).text() + '" class="textbox" readonly></td>' +
+                '<td class="SONo' + i + '"><input id="SONo' + i + '" value=' + $('#GridSONO-' + SeqNo).text() + ' readonly style="width:40px;" class="textbox"></td>' +
+                '<td><input id="SODate' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.SODate').text() + ' readonly style="width:90px;" class="textbox"></td>' +
+                '<td><input id="SOYearCode' + i + '" value=' + $('#GridSOYearCode-' + SeqNo).text() + ' readonly style="width:90px;" class="textbox"></td>' +
+                '<td class="SchNo' + i + '" ><input readonly class="textbox" style="width:60px;" id="SchNO' + i + '" value=' + $('#GridSchNo-' + SeqNo).text() + '></td>' +
+                '<td><input id="Schdate' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.SchDate').text() + ' readonly style="width:90px;" class="textbox"></td>' +
+                '<td><input id="SchYearCode' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.SchYC').text() + ' readonly style="width:90px;" class="textbox"></td>' +
+                '<td><input id="PartCode' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.PartCode').text() + ' readonly style="width:90px;" class="textbox"></td>' +
+                '<td><input id="ItemName' + i + '" value=' + JSON.stringify($('#itemGrid-' + SeqNo).find('.ItemName').text()) + ' class="textbox" readonly></td>' +
+                '<td><select id="WIPStore' + i + '" onchange="WIPStoreChange(' + i + ')" class="textbox" style="background-color:#ffd6dd;width:120px;"></select></td>' +
+                '<td><input id="WIPStock' + i + '" value="" readonly value=' + $('#itemGrid-' + SeqNo).find('.WIPStock').text() + ' class="textbox" style="width: 60px;"></td>' +
+                '<td><select id="Store' + i + '" onchange="StoreChange(' + i + ')" style="background-color:#ffd6dd;" class="textbox"></select></td>' +
+                '<td><input id="Stock' + i + '" class="textbox" style="width: 60px;" value=' + $('#itemGrid-' + SeqNo).find('.StoreStock').text() + ' readonly></td>' +
+                '<td><input id="WOQty' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.WOQty').text() + ' style="width:60px;background-color:#ffd6dd" class="textbox"></td>' +
+                '<td><input id="OrderQty' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.OrderQty').text() + ' readonly style="width:60px;" class="textbox"></td>' +
+                '<td><input id="AltOrderQty' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.AltOrderQty').text() + ' readonly style="width:60px;" class="textbox"></td>' +
+                '<td><input id="PendSOQty' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.PendSOQty').text() + ' readonly style="width:60px;" class="textbox"></td>' +
+                '<td><input id="PendWOQty' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.PendWOQty').text() + ' readonly style="width:60px;" class="textbox"></td>' +
+                '<td><input id="ProdQty' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.ProdQty').text() + ' readonly style="width:60px;" class="textbox"></td>' +
+                '<td><div class="d-flex"><select id="BomNo' + i + '" style="background-color:#ffd6dd;" onchange="GetBomName(' + i + '); GetEffDate(' + i + ')" class="textbox me-2"></select><input id="BomRevNo' + i + '" type="hidden" value=' + $('#itemGrid-' + SeqNo).find('.BomNo').text() + ' ><button onclick="DisplayBomDetail(' + i + ')" class="formateBtn"><i class="fa-solid fa-plus"></i></button><div></td>' +
+                '<td><input id="BomName' + i + '" readonly style="width:100px;background-color:#ffd6dd;" class="textbox" value=' + $('#itemGrid-' + SeqNo).find('.BomName').text() + '></td>' +
+                //'<td><select id="BomName' + i + '" style="background-color:#ffd6dd;width:140px;" class="textbox" onchange="GetEffDate(' + i + ');"><option value="0">-Select-</option></select></td>' +
+                '<td><input id="BomEffDate' + i + '" readonly style="width:90px;background-color:#ffd6dd;" value=' + $('#itemGrid-' + SeqNo).find('.BomEffDate').text() + ' class="textbox"></td>' +
+                '<td><input id="MainSubBom' + i + '" readonly style="width:70px;" value= "' + $('#itemGrid-' + SeqNo).find('.MainBomSubBom').text() + ' " class="textbox"></td>' +
+                '<td><select id="MachineGroup' + i + '" style="background-color:#ffd6dd;" onchange="GetMachineName(' + i + ');" class="textbox"></select></td>' +
+                '<td><select id="PrefMachineName1' + i + '" style="background-color:#ffd6dd;width: 90px;" class="textbox"><option value="0">-Select-</option></select></td>' +
+                '<td><select id="PrefMachineName2' + i + '" style="background-color:#ffd6dd;width: 90px;" class="textbox"><option value="0">-Select-</option></select></td>' +
+                '<td><select id="PrefMachineName3' + i + '" style="background-color:#ffd6dd;width: 90px;" class="textbox"><option value="0">-Select-</option></select></td>' +
+                '<td><input id="ApproxStartDate' + i + '" readonly style="width:80px;background-color:#ffd6dd;" value= ' + $('#itemGrid-' + SeqNo).find('.ApproxStartDate').text() + ' class="textbox"></td>' +
+                '<td><input id="ApproxEndDate' + i + '" readonly style="width:80px;background-color:#ffd6dd;" value= ' + $('#itemGrid-' + SeqNo).find('.ApproxEndDate').text() + ' class="textbox"></td>' +
+                '<td><input id="DrawingNo' + i + '" style="width:70px;background-color:#ffd6dd;" value="' + $('#itemGrid-' + SeqNo).find('.drawingNo').text() + '" class="textbox"></td>' +
+                '<td><input id="ProdInst1' + i + '" style="width:70px;background-color:#ffd6dd;" value= "' + $('#itemGrid-' + SeqNo).find('.ProdInst1').text() + '" class="textbox"></td>' +
+                '<td><input id="ProdInst2' + i + '" style="width:70px;background-color:#ffd6dd;" value= "' + $('#itemGrid-' + SeqNo).find('.ProdInst2').text() + '" class="textbox"></td>' +
+                '<td><input id="SOInstruction' + i + '" style="width:110px;background-color:#ffd6dd;" value="' + $('#itemGrid-' + SeqNo).find('.SOInstruction').text() + '" class="textbox"></td>' +
+                '<td><input id="PkgInstruction' + i + '" style="width:110px;background-color:#ffd6dd;" value= "' + $('#itemGrid-' + SeqNo).find('.PkgInstruction').text() + '" class="textbox"></td>' +
+                '<td><input id="OrderType' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.OrderType').text() + ' readonly style="width:90px;" class="textbox"></td>' +
+                '<td><input id="wef' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.OrderWEF').text() + ' readonly style="width:90px;" class="textbox"></td>' +
+                '<td><input type="hidden" id="SOType' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.SODate').text() + '><input id="AmmNo' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.AmendNo').text() + ' readonly class="textbox" style="width:40px;"></td>' +
+                '<td><input id="AmmEffDate' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.AmendEffDate').text() + ' readonly style="width:90px;" class="textbox"></td>' +
+                '<td><input id="unit' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.Unit').text() + ' readonly style="width:40px;" class="textbox"></td>' +
+                '<td><input id="AltQty' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.AltQty').text() + ' readonly style="width:30px;" class="textbox"></td>' +
+                '<td><input id="AltUnit' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.AltUnit').text() + ' readonly style="width:50px;" class="textbox"></td>' +
+                '<td><input id="Color' + i + '" readonly style="width:70px;" value= "' + $('#itemGrid-' + SeqNo).find('.COLOR').text() + ' " class="textbox"></td>' +
+                '<td><input id="WORevNo' + i + '" readonly style="width:70px;" value= "' + $('#itemGrid-' + SeqNo).find('.WorevNo').text() + ' " class="textbox"></td>' +
+                '<td><input id="WORevDate' + i + '" readonly style="width:70px;" value= "' + $('#itemGrid-' + SeqNo).find('.WoRevDate').text() + ' " class="textbox"></td>' +
+                '<td><input id="PrevWOQty' + i + '" readonly style="width:70px;" value= "' + $('#itemGrid-' + SeqNo).find('.PrevWOQty').text() + ' " class="textbox"></td>' +
+                '<td><input id="PendProdQty' + i + '" readonly style="width:70px;" value= "' + $('#itemGrid-' + SeqNo).find('.PendProdQty').text() + ' " class="textbox"></td>' +
+                '<td><input class="textbox" id="Description' + i + '" readonly value=' + $('#itemGrid-' + SeqNo).find('.ItemDes').text() + '></td>' +
+                '<td><input id="CustOrderNo' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.CustOrderNo').text() + ' readonly style="width:80px;" class="textbox"></td>' +
+                '<td><input id="SOCloseDate' + i + '" value="' + $('#itemGrid-' + SeqNo).find('.SOCloseDate').text() + '" readonly style="width:90px;" class="textbox"></td>' +
+                '<td><input id="SchEffTillDate' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.SchEffTillDate').text() + ' readonly style="width:90px;" class="textbox"></td>' +
+                '<td><input id="FGStoreName' + i + '" value="' + $('#itemGrid-' + SeqNo).find('.FGStore').text() + '" readonly class="textbox" style="width:90px;"></td>' +
+                '<td><input id="FGStock' + i + '" value=' + $('#itemGrid-' + SeqNo).find('.FGStock').text() + ' style="width: 60px;" readonly class="textbox"></td>' +
+                '</tr>';
+            $('#divSaleOrderGrid').append(html);
+
+            //var fragment = document.createDocumentFragment();
+            //fragment.innerHTML = html;
+            //$('#divSaleOrderGrid').append(fragment);
+            //  GetMachineName(i);
+
+            var newRow = $('#SaleOrderRow-' + i);
+            var itemGridSeqNo = $('#itemGrid-' + SeqNo);
+            $('#WIPStock' + i).val() == '' ? $('#WIPStock' + i).val(0) : $('#WIPStock' + i).val();
+            newRow.css({ 'background-color': '#00bcd4' });
+
+            if (ClearGridAddEditRow) {
+                newRow.removeAttr('style');
+                $('#Checkbox' + i).prop('checked', false).prop('disabled', false);
+            } else {
+                fillAllStore();
+                fillWIPAllStore();
+                GetBomNo();
+                GetMachineGroupName();
+                $('#WIPStore' + i).val(itemGridSeqNo.find('.WIPStore').text());
+                $('#Store' + i).val(itemGridSeqNo.find('.StoreName').text());
+                $('#BomNo' + i).val(itemGridSeqNo.find('.BomNo').text());
+                $('#MachineGroup' + i).val(itemGridSeqNo.find('.MachGroupName').text());
+                itemGridSeqNo.find('.PrefMachName1').text() == '' ? $('#PrefMachineName1' + SeqNo).val(0) : $('#PrefMachineName1' + i).val(itemGridSeqNo.find('.PrefMachName1').text());
+                itemGridSeqNo.find('.PrefMachName2').text() == '' ? $('#PrefMachineName2' + SeqNo).val(0) : $('#PrefMachineName2' + i).val(itemGridSeqNo.find('.PrefMachName2').text());
+                itemGridSeqNo.find('.PrefMachName3').text() == '' ? $('#PrefMachineName3' + SeqNo).val(0) : $('#PrefMachineName3' + i).val(itemGridSeqNo.find('.PrefMachName3').text());
+            }
+        }
+
+        function SaleOrderGridMethodCall() {
+            fillAllStore();
+            fillWIPAllStore();
+            GetBomNo();
+            GetMachineGroupName();
+        }
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('.divSOTable');
+            var rows = table.find('#divSaleOrderGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).find('input').val();
+                var bValue = $(b).find('td').eq(columnIndex).find('input').val();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divSaleOrderGrid').append(row);
+            });
+        }
+
+        var SameStore = false;
+        $('#SHA').change(function () {
+
+            var RowCount = $('#divSaleOrderGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#Store' + i).val(0);
+            }
+            if ($('#SHA').prop("checked") == true) {
+                SameStore = true;
+            } else {
+                SameStore = false;
+            }
+        });
+
+        var WIPSameStore = false;
+        $('#SHAWIP').change(function () {
+            var RowCount = $('#divSaleOrderGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#WIPStore' + i).val(0);
+            }
+            if ($('#SHAWIP').prop("checked") == true) {
+                WIPSameStore = true;
+            } else {
+                WIPSameStore = false;
+            }
+        });
+
+
+        var currentSearchColumn = null;
+
+        function GlobalSearch(Search) {
+
+            var value = Search.val().toLowerCase();
+            $("#divSaleOrderGrid tr").filter(function () {
+                if (currentSearchColumn != null) {
+
+                    var rowContainsValue = false;
+                    $(this).find('td').eq(currentSearchColumn).each(function () {
+                        var columnInput = $(this).find('input, select');
+                        var columnInputValue = "";
+
+                        if (columnInput.is('input')) {
+                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+                        } else if (columnInput.is('select')) {
+                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+                        }
+
+                        if (columnInputValue.indexOf(value) > -1) {
+                            rowContainsValue = true;
+                            return false;
+                        }
+                    });
+
+                    $(this).toggle(rowContainsValue);
+
+                } else {
+                    var rowContainsValue = false;
+
+                    $(this).find('td').each(function () {
+
+                        var columnInput = $(this).find('input, select');
+                        var columnInputValue = "";
+
+                        if (columnInput.is('input')) {
+                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+                        } else if (columnInput.is('select')) {
+                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+                        }
+
+                        if (columnInputValue.indexOf(value) > -1) {
+                            rowContainsValue = true;
+                            return false;
+                        }
+
+                    });
+
+                    $(this).toggle(rowContainsValue);
+                }
+            });
+        }
+
+        $(document).on("click", "th[data-columnno]", function () {
+
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        var DateResult = "";
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+
+                    console.log(result);
+                    //DateResult = result;
+                    //console.log(DateResult);
+                    $('#Entrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#StartDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#StartDate').datepicker("option", "minDate", result);
+                    $('#ForMonth').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ApprovedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#WODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#WODate').datepicker("option", "minDate", $('#StartDate').val());
+                    if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+
+                        var dateComponents = result.split('/');
+                        var currentDate = new Date(dateComponents[2], dateComponents[1] - 1, dateComponents[0]);
+                        var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDate();
+                        var lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+                        $('#EffectiveFrom').datepicker({
+                            dateFormat: 'dd/mm/yy',
+                            defaultDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), firstDayOfMonth)
+                        }).datepicker("setDate", new Date(currentDate.getFullYear(), currentDate.getMonth(), firstDayOfMonth));
+
+                        $('#EffectiveTill').datepicker({
+                            dateFormat: 'dd/mm/yy',
+                            defaultDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), lastDayOfMonth)
+                        }).datepicker("setDate", new Date(currentDate.getFullYear(), currentDate.getMonth(), lastDayOfMonth));
+
+                    }
+
+                    var currentDate = parseDateString(result);
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                    var day = currentDate.getDate();
+                    var month = currentDate.getMonth() + 1;
+                    var year = currentDate.getFullYear();
+                    var date = padNumber(day) + "/" + padNumber(month) + "/" + year;
+                    $('#EndDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", date);
+                }
+            });
+        }
+
+        $('#EffectiveFrom').change(function () {
+            GetSaleOrderData();
+            GetBomNo();
+            GetMachineGroupName();
+            ClearGrid();
+        });
+
+        $('#EffectiveTill').change(function () {
+            GetSaleOrderData();
+            GetBomNo();
+            GetMachineGroupName();
+            ClearGrid();
+        });
+
+        function parseDateString(dateString) {
+            var parts = dateString.split('/');
+            var day = parseInt(parts[0], 10);
+            var month = parseInt(parts[1] - 1, 10);
+            var year = parseInt(parts[2], 10);
+            return new Date(year, month, day);
+        }
+
+        function padNumber(number) {
+            return (number < 10 ? '0' : '') + number;
+        }
+
+        $('#StartDate').change(function () {
+            var currentDate = parseDateString($(this).val());
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            var day = currentDate.getDate();
+            var month = currentDate.getMonth() + 1;
+            var year = currentDate.getFullYear();
+            var date = padNumber(day) + "/" + padNumber(month) + "/" + year;
+            $('#EndDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", date);
+        })
+
+        function GetSaleOrderData() {
+            $.ajax({
+                url: "@Url.Action("GetSaleOrderData")",
+                data: { YearCode: $('#YearCode').val(), "WODate": $('#WODate').val(), "EffFrom": $('#EffectiveFrom').val(), "EffTill": $('#EffectiveTill').val() },
+                async: false,
+                success: function (result, status, xhr) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divSaleOrderGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result, function (index, val) {
+                                //html += '<tr><td><input id="Checkbox' + i + '"  type="checkbox"><input type="hidden" value="' + val.AccountCode + '" id="Accountcode' + i + '"/><input type="hidden" value="' + val.itemcode + '" id="Itemcode' + i + '"/></td><td><input id="AcName' + i + '" value=' + JSON.stringify(val.Account_Name) + ' readonly></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly style="width:90px;"></td><td><input id="ItemName' + i + '" value=' + JSON.stringify(val.ItemName) + ' readonly></td><td><select id="Store' + i + '" onchange = "StoreChange(' + i + ')"></select></td><td><input id="Stock' + i + '" style="width:70px;" readonly></td> <td><input id="WOQty' + i + '" value=' + val.OrderQty + ' style="width:60px;background-color:#ffd6dd"><td><input id="OrderQty' + i + '" value=' + val.OrderQty + ' readonly style="width:60px;"></td><td><input id="OrderType' + i + '" value=' + val.OrderType + ' readonly style="width:90px;"></td><td><input id="wef' + i + '" value=' + val.wef.split("T")[0] + ' readonly style="width:90px;"></td><td><input type="hidden" id="SOType' + i + '" value=' + val.SOType + '><input id="AmmNo' + i + '" value=' + val.AmmNo + ' readonly style="width:40px;"></td><td><input id="AmmEffDate' + i + '" value=' + val.AmmEffDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="unit' + i + '" value=' + val.unit + ' readonly style="width:40px;"></td><td><input id="AltQty' + i + '" value=' + val.AltQty + ' readonly style="width:30px;"></td><td><input id="AltUnit' + i + '" value=' + val.AltUnit + ' readonly style="width:50px;"></td><td><input id="Color' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " ></td><td><input id="Description' + i + ' " readonly  value=' + val.Description + '></td><td><input id="CustOrderNo' + i + '" value=' + JSON.stringify(val.CustOrderNo) + ' readonly style="width:80px;"></td><td class="SONo' + i + '"><input id="SONo' + i + '" value=' + val.SONo + ' readonly style="width:40px;"></td><td><input id="SODate' + i + '" value=' + val.SODate.split("T")[0] + '  readonly style="width:90px;"></td><td class="SchNo' + i + '" ><input readonly  style="width:60px;" id="SchNO' + i + '" value=' + val.SchNO + ' ></td><td><input id="Schdate' + i + '" value=' + val.Schdate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="FGStoreName' + i + '" value=' + JSON.stringify(val.FGStoreName) + ' readonly style="width:90px;"></td><td><input id="FGStock' + i + '" value=' + val.FGStock + ' readonly style="width:90px;"></td><td><input id="ItemAmendmentNo' + i + '" value=' + val.ItemAmendmentNo + ' readonly style="width:100px;"></td><td><input id="SOCloseDate' + i + '" value=' + val.SOCloseDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="SchEffTillDate' + i + '" value=' + val.ScheduleEffectiveTillDate.split("T")[0] + ' readonly style="width:90px;"></td>';
+                                html += '<tr id="SaleOrderRow-' + i + '">' +
+                                    '<td>' +
+                                    '<input id="Checkbox' + i + '" type="checkbox" class="textbox">' +
+                                    '<input type="hidden" value="' + val.AccountCode + '" id="Accountcode' + i + '"/>' +
+                                    '<input type="hidden" value="' + val.itemcode + '" id="Itemcode' + i + '"/>' +
+                                    '</td>' +
+                                    '<td><input id="AcName' + i + '" value=' + JSON.stringify(val.Account_Name) + ' class="textbox" readonly></td>' +
+                                    '<td class="SONo' + i + '"><input id="SONo' + i + '" value=' + val.SONo + ' readonly style="width:40px;" class="textbox"></td>' +
+                                    '<td><input id="SODate' + i + '" value=' + val.SODate.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="SOYearCode' + i + '" value=' + val.soyearcode + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td class="SchNo' + i + '" ><input readonly class="textbox" style="width:60px;" id="SchNO' + i + '" value=' + val.SchNO + '></td>' +
+                                    '<td><input id="Schdate' + i + '" value=' + val.Schdate.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="SchYearCode' + i + '" value=' + val.schyearcode + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.ItemName) + ' class="textbox" readonly></td>' +
+                                    '<td><select id="WIPStore' + i + '" onchange="WIPStoreChange(' + i + ')" class="textbox" style="background-color:#ffd6dd;width:120px;"></select></td>' +
+                                    '<td><input id="WIPStock' + i + '" readonly value=' + val.WIPStock + ' class="textbox" style="width: 60px;"></td>' +
+                                    '<td><select id="Store' + i + '" onchange="StoreChange(' + i + ')" style="background-color:#ffd6dd;" class="textbox"></select></td>' +
+                                    '<td><input id="Stock' + i + '" class="textbox" style="width: 60px;" readonly></td>' +
+                                    '<td><input id="WOQty' + i + '" value=' + val.OrderQty + ' style="width:60px;background-color:#ffd6dd" class="textbox"></td>' +
+                                    '<td><input id="OrderQty' + i + '" value=' + val.OrderQty + ' readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><input id="AltOrderQty' + i + '" value=' + 0 + ' readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><input id="PendSOQty' + i + '" value=' + val.SOPendQty + ' readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><input id="PendWOQty' + i + '" value=' + val.OrderQty + ' readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><input id="ProdQty' + i + '" value=' + val.ProdQty + ' readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><div class="d-flex"><select id="BomNo' + i + '" style="background-color:#ffd6dd;" onchange="GetBomName(' + i + '); GetEffDate(' + i + ')" class="textbox me-2"></select><input id="BomRevNo' + i + '" type="hidden" value=' + val.RevNo + ' ><button onclick="DisplayBomDetail(' + i + ',event)" class="formateBtn"><i class="fa-solid fa-plus"></i></button><div></td>' +
+                                    '<td><input id="BomName' + i + '" readonly style="width:100px;background-color:#ffd6dd;" class="textbox"></td>' +
+                                    //'<td><select id="BomName' + i + '" style="background-color:#ffd6dd;width:140px;" class="textbox" onchange="GetEffDate(' + i + ');"><option value="0">-Select-</option></select></td>' +
+                                    '<td><input id="BomEffDate' + i + '" readonly style="width:90px;background-color:#ffd6dd;" value= "" class="textbox"></td>' +
+                                    '<td><input id="MainSubBom' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
+                                    '<td><select id="MachineGroup' + i + '" style="background-color:#ffd6dd;" onchange="GetMachineName(' + i + ');" class="textbox"></select></td>' +
+                                    '<td><select id="PrefMachineName1' + i + '" style="background-color:#ffd6dd;width: 90px;" class="textbox"><option value="0">-Select-</option></select></td>' +
+                                    '<td><select id="PrefMachineName2' + i + '" style="background-color:#ffd6dd;width: 90px;" class="textbox"><option value="0">-Select-</option></select></td>' +
+                                    '<td><select id="PrefMachineName3' + i + '" style="background-color:#ffd6dd;width: 90px;" class="textbox"><option value="0">-Select-</option></select></td>' +
+                                    '<td><input id="ApproxStartDate' + i + '" readonly style="width:80px;background-color:#ffd6dd;" value= "" class="textbox"></td>' +
+                                    '<td><input id="ApproxEndDate' + i + '" readonly style="width:80px;background-color:#ffd6dd;" value= "" class="textbox"></td>' +
+                                    '<td><input id="DrawingNo' + i + '" style="width:70px;background-color:#ffd6dd;" value="" class="textbox"></td>' +
+                                    '<td><input id="ProdInst1' + i + '" style="width:70px;background-color:#ffd6dd;" value= "" class="textbox"></td>' +
+                                    '<td><input id="ProdInst2' + i + '" style="width:70px;background-color:#ffd6dd;" value= "" class="textbox"></td>' +
+                                    '<td><input id="SOInstruction' + i + '" style="width:110px;background-color:#ffd6dd;" value="" class="textbox"></td>' +
+                                    '<td><input id="PkgInstruction' + i + '" style="width:110px;background-color:#ffd6dd;" value= "" class="textbox"></td>' +
+                                    '<td><input id="OrderType' + i + '" value=' + val.OrderType + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="wef' + i + '" value=' + val.wef.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input type="hidden" id="SOType' + i + '" value=' + val.SOType + '><input id="AmmNo' + i + '" value=' + val.AmmNo + ' readonly class="textbox" style="width:40px;"></td>' +
+                                    '<td><input id="AmmEffDate' + i + '" value=' + val.AmmEffDate.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="unit' + i + '" value=' + val.unit + ' readonly style="width:40px;" class="textbox"></td>' +
+                                    '<td><input id="AltQty' + i + '" value=' + val.AltQty + ' readonly style="width:30px;" class="textbox"></td>' +
+                                    '<td><input id="AltUnit' + i + '" value=' + val.AltUnit + ' readonly style="width:50px;" class="textbox"></td>' +
+                                    '<td><input id="Color' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
+                                    '<td><input id="WORevNo' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
+                                    '<td><input id="WORevDate' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
+                                    '<td><input id="PrevWOQty' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
+                                    '<td><input id="PendProdQty' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
+                                    '<td><input class="textbox" id="Description' + i + '" readonly value=' + val.Description + '></td>' +
+                                    '<td><input id="CustOrderNo' + i + '" value=' + JSON.stringify(val.CustOrderNo) + ' readonly style="width:80px;" class="textbox"></td>' +
+                                    '<td><input id="SOCloseDate' + i + '" value=' + val.SOCloseDate.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="SchEffTillDate' + i + '" value=' + val.ScheduleEffectiveTillDate.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
+                                    '<td><input id="FGStoreName' + i + '" value=' + JSON.stringify(val.FGStoreName) + ' readonly class="textbox" style="width:90px;"></td>' +
+                                    '<td><input id="FGStock' + i + '" value=' + val.FGStock + ' style="width: 60px;" readonly class="textbox"></td>' +
+                                    '</tr>';
+                                i++;
+                            });
+                            $('#divSaleOrderGrid').append(html);
+                            fillAllStore();
+                            fillWIPAllStore();
+                            var RowCount = $('#divSaleOrderGrid tr').length;
+                            for (var i = 1; i <= RowCount; i++) {
+                                $('#ApproxStartDate' + i).datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", DateResult);
+                                $('#ApproxEndDate' + i).datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", DateResult);
+                                $('#ApproxStartDate' + i).datepicker("option", "minDate", $('#StartDate').val());
+                                $('#ApproxStartDate' + i).datepicker("option", "maxDate", $('#EndDate').val());
+                                $('#ApproxEndDate' + i).datepicker("option", "minDate", $('#StartDate').val());
+                                $('#ApproxEndDate' + i).datepicker("option", "maxDate", $('#EndDate').val());
+                            }
+                        }
+                    }
+
+                },
+            });
+        }
+
+        async function AutoComplete(CtrlID, ColName) {
+
+            $("#" + CtrlID).autocomplete({
+                source: await function (request, response) {
+                    $.ajax({
+                        url: '/WorkOrder/GetSaleOrderData',
+                        type: "POST",
+                        //data: { "Schema": Schema, "ColName": ColName, "prefix": request.term },
+                        data: { YearCode: $('#YearCode').val(), "WODate": $('#WODate').val(), "EffFrom": $('#EffectiveFrom').val(), "EffTill": $('#EffectiveTill').val() },
+                        success: function (data) {
+
+                            //response($.map(data, function (key, value) {
+                            //    return key.text;
+                            //}));
+                            var obj = JSON.parse(data);
+                            //const filteredData = obj.Result.map(item => item[ColName]);
+                            const distinctValues = new Set();
+
+                            obj.Result.forEach(item => {
+                                const colValue = item[ColName];
+                                if (!distinctValues.has(colValue)) {
+                                    distinctValues.add(colValue);
+                                }
+                            });
+
+                            const distinctData = Array.from(distinctValues);
+                            response(distinctData.map(text => ({ label: text, value: text })));
+                        },
+                        error: function (response) {
+                            $.notify(response.responseText, { position: "top center", className: "error" });
+                        },
+                        failure: function (response) {
+                            $.notify(response.responseText, { position: "top center", className: "error" });
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    //$("#" + SelectFunc).val(i.item.value);
+                },
+                minLength: 1
+            });
+        }
+
+
+
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+            var cntId = e.target.id;
+
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+
+        });
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+                GetItemPartCode(ID)
+            });
+            copyToClipboardForDropdown('#PartCode');
+            $('#ItemCode').next('.select2-container').find('.select2-selection').css('border', '1px solid black');
+            $('#ItemName').next('.select2-container').find('.select2-selection').css('border', '1px solid black');
+            // EmptyGridFields();
+        }
+
+        function ItemNameChange(ID) {
+
+            SetPartCodeItemName(ID);
+            GetItemPartCode(ID);
+            copyToClipboardForDropdown('#ItemName');
+            $('#ItemName').next('.select2-container').find('.select2-selection').css('border', '1px solid black');
+
+            //EmptyGridFields();
+        }
+        function SetPartCodeItemName(ID) {
+
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+        function copyToClipboardForDropdown(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            ;
+            $temp.val($(element).find(":selected").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        async function GetItemPartCode(ID) {
+            $.getJSON({
+                url: '@Url.Action("GetItemPartCode", "SaleOrder")',
+                data: { Code: $('#' + ID).val() },
+                success: function (result, status, xhr) {
+                    if (result) {
+                        var obj = JSON.parse(result);
+                        if (!obj) {
+                            $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+                        }
+                        else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                            $('#Unit').val(obj.Result[0].Unit);
+                            $('#HSNNo').val(obj.Result[0].HSNNo);
+                            $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
+                            !$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+
+        function DisplayBomDetail(i, event) {
+            event.preventDefault();
+            $('#DisplaybomDetailModal').modal('show');
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("DisplayBomDetail")",
+                dataType: "json",
+                data: { "ItemCode": $('#Itemcode' + i).val(), "WOQty": $('#WOQty' + i).val(), "BomRevNo": $('#BomRevNo' + i).val() },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html = '';
+                            $('#divDisplayBomDetail').empty();
+                            var i = 1;
+                            $.each(obj.Result, function (index, val) {
+                                //html += '<tr><td><input id="Checkbox' + i + '"  type="checkbox"><input type="hidden" value="' + val.AccountCode + '" id="Accountcode' + i + '"/><input type="hidden" value="' + val.itemcode + '" id="Itemcode' + i + '"/></td><td><input id="AcName' + i + '" value=' + JSON.stringify(val.Account_Name) + ' readonly></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly style="width:90px;"></td><td><input id="ItemName' + i + '" value=' + JSON.stringify(val.ItemName) + ' readonly></td><td><select id="Store' + i + '" onchange = "StoreChange(' + i + ')"></select></td><td><input id="Stock' + i + '" style="width:70px;" readonly></td> <td><input id="WOQty' + i + '" value=' + val.OrderQty + ' style="width:60px;background-color:#ffd6dd"><td><input id="OrderQty' + i + '" value=' + val.OrderQty + ' readonly style="width:60px;"></td><td><input id="OrderType' + i + '" value=' + val.OrderType + ' readonly style="width:90px;"></td><td><input id="wef' + i + '" value=' + val.wef.split("T")[0] + ' readonly style="width:90px;"></td><td><input type="hidden" id="SOType' + i + '" value=' + val.SOType + '><input id="AmmNo' + i + '" value=' + val.AmmNo + ' readonly style="width:40px;"></td><td><input id="AmmEffDate' + i + '" value=' + val.AmmEffDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="unit' + i + '" value=' + val.unit + ' readonly style="width:40px;"></td><td><input id="AltQty' + i + '" value=' + val.AltQty + ' readonly style="width:30px;"></td><td><input id="AltUnit' + i + '" value=' + val.AltUnit + ' readonly style="width:50px;"></td><td><input id="Color' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " ></td><td><input id="Description' + i + ' " readonly  value=' + val.Description + '></td><td><input id="CustOrderNo' + i + '" value=' + JSON.stringify(val.CustOrderNo) + ' readonly style="width:80px;"></td><td class="SONo' + i + '"><input id="SONo' + i + '" value=' + val.SONo + ' readonly style="width:40px;"></td><td><input id="SODate' + i + '" value=' + val.SODate.split("T")[0] + '  readonly style="width:90px;"></td><td class="SchNo' + i + '" ><input readonly  style="width:60px;" id="SchNO' + i + '" value=' + val.SchNO + ' ></td><td><input id="Schdate' + i + '" value=' + val.Schdate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="FGStoreName' + i + '" value=' + JSON.stringify(val.FGStoreName) + ' readonly style="width:90px;"></td><td><input id="FGStock' + i + '" value=' + val.FGStock + ' readonly style="width:90px;"></td><td><input id="ItemAmendmentNo' + i + '" value=' + val.ItemAmendmentNo + ' readonly style="width:100px;"></td><td><input id="SOCloseDate' + i + '" value=' + val.SOCloseDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="SchEffTillDate' + i + '" value=' + val.ScheduleEffectiveTillDate.split("T")[0] + ' readonly style="width:90px;"></td>';
+                                html += '<tr id="DisplayBomRow-' + i + '">' +
+                                    '<td>' + i + '</td>' +
+                                    '<td>' + val.MainPartCode + '</td>' +
+                                    '<td>' + val.MainItemName + '</td>' +
+                                    '<td>' + val.SUBBOMPartCode + '</td>' +
+                                    '<td>' + val.SubBOMITEMNAME + '</td>' +
+                                    '<td>' + val.PartCode + '</td>' +
+                                    '<td>' + val.Item_Name + '</td>' +
+                                    '<td>' + val.RMQty + '</td>' +
+                                    '<td>' + val.RMTotalReq + '</td>' +
+                                    '<td>' + val.ReqQtyForWO + '</td>' +
+                                    '<td id="SubBom-' + i + '">' + val.SUBBOM + '</td>' +
+                                    '<td>' + val.levelNo + '</td>' +
+                                    '</tr>';
+                                i++;
+                            });
+                            $('#divDisplayBomDetail').append(html);
+
+                            var RowCount = $('#divDisplayBomDetail tr').length;
+                            var TdRow = $('#divDisplayBomDetail tr td').length;
+
+                            if (TdRow > 1) {
+                                $('#lblTotalNoOfItems').text(RowCount);
+                            }
+                            ColorRows();
+                        }
+
+                    }
+                }
+            });
+        }
+
+        function ColorRows() {
+            var row = $('#divDisplayBomDetail tr').length;
+            for (var i = 1; i <= row; i++) {
+                if ($('#SubBom-' + i).text() == 'NO') {
+                    $('#DisplayBomRow-' + i).css({ 'background-color': '#94d6df' });
+                } else {
+                    $('#DisplayBomRow-' + i).css({ 'background-color': '#ffddbf' });
+                }
+            }
+        }
+
+        function fillAllStore() {
+            var rowCount = $('#divSaleOrderGrid tr').length;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStoreList")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            for (let j = 1; j <= rowCount; j++) {
+                                $('#Store' + j).empty();
+                                $('#Store' + j).append('<option disabled value="0" selected>-Select-</option>');
+                                $.each(obj.Result, function (index, val) {
+                                    $('#Store' + j).append('<option value="' + val.EntryID +
+                                        '">' + val.Store_Name + '</option>');
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function fillWIPAllStore() {
+            var rowCount = $('#divSaleOrderGrid tr').length;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillWorkCenter")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            for (let j = 1; j <= rowCount; j++) {
+                                $('#WIPStore' + j).empty();
+                                $('#WIPStore' + j).append('<option disabled value="0" selected>-Select-</option>');
+                                $.each(obj.Result, function (index, val) {
+                                    $('#WIPStore' + j).append('<option value="' + val.EntryID +
+                                        '">' + val.WorkCenterDescription + '</option>');
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function GetBomNo() {
+            var RowCount = $('#divSaleOrderGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetBomNo")",
+                    dataType: "json",
+                    data: { "ItemCode": $('#Itemcode' + i).val() },
+                    async: false,
+                    success: function (result, status, error) {
+                        $('#BomNo' + i).empty();
+                        $('#BomNo' + i).append('<option disabled value="0" selected>-Select-</option>');
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                //var RowCount = $('#divSaleOrderGrid tr').length;
+                                //for (var i = 1; i <= RowCount; i++) {
+
+                                $.each(obj.Result, function (index, val) {
+                                    $('#BomNo' + i).append('<option value="' + val.BomNo +
+                                        '">' + val.BomNo + '</option>');
+                                });
+
+                                $('#BomNo' + i).val($('#BomRevNo' + i).val());
+                                //}
+                            }
+                        }
+                    }
+                });
+                GetBomName(i);
+                GetEffDate(i);
+            }
+        }
+
+        function GetBomName(i) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetBomName")",
+                dataType: "json",
+                data: { "BomNo": $('#BomNo' + i).val(), "FinishedItemCode": $('#Itemcode' + i).val() },
+                async: false,
+                success: function (result, status, error) {
+
+                    //$('#BomName' + i).empty();
+                    //$('#BomName' + i).append('<option disabled value="0" selected>-Select-</option>');
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            //$.each(obj.Result, function (index, val) {
+                            //    $('#BomName' + i).append('<option value="' + val.BOMName +
+                            //        '">' + val.BOMName + '</option>');
+                            //});
+                            $('#BomName' + i).val('');
+                            $('#BomName' + i).val(obj.Result[0].BOMName);
+                        }
+                    }
+                }
+            });
+        }
+
+        function GetEffDate(i) {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetEffDate")",
+                dataType: "json",
+                data: { "BomNo": $('#BomNo' + i).val(), "FinishedItemCode": $('#Itemcode' + i).val() },
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#BomEffDate' + i).val('');
+                            var BomEffDate = obj.Result[0].EffectiveDate;
+                            $('#BomEffDate' + i).val(BomEffDate.split("T")[0]);
+                        }
+                    }
+                }
+            });
+        }
+
+        function GetMachineGroupName() {
+            var RowCount = $('#divSaleOrderGrid tr').length;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMachineGroupName")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    for (var i = 1; i <= RowCount; i++) {
+                        $('#MachineGroup' + i).empty();
+                        $('#MachineGroup' + i).append('<option disabled value="0" selected>-Select-</option>');
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                $.each(obj.Result, function (index, val) {
+                                    $('#MachineGroup' + i).append('<option value="' + val.EntryId +
+                                        '">' + val.MachGroup + '</option>');
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function GetMachineName(i) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetMachineName")",
+                dataType: "json",
+                data: { "MachGroupId": $('#MachineGroup' + i).val() },
+                async: false,
+                success: function (result, status, error) {
+
+                    $('#PrefMachineName1' + i).empty();
+                    $('#PrefMachineName1' + i).append('<option disabled value="0" selected>-Select-</option>');
+                    $('#PrefMachineName2' + i).empty();
+                    $('#PrefMachineName2' + i).append('<option disabled value="0" selected>-Select-</option>');
+                    $('#PrefMachineName3' + i).empty();
+                    $('#PrefMachineName3' + i).append('<option disabled value="0" selected>-Select-</option>');
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                $('#PrefMachineName1' + i).append('<option value="' + val.EntryId +
+                                    '">' + val.MachineName + '</option>');
+                                $('#PrefMachineName2' + i).append('<option value="' + val.EntryId +
+                                    '">' + val.MachineName + '</option>');
+                                $('#PrefMachineName3' + i).append('<option value="' + val.EntryId +
+                                    '">' + val.MachineName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function StoreChange(i) {
+            var storeValue = parseInt($('#Store' + i).val());
+            var ItemCode = parseInt($('#Itemcode' + i).val());
+            var RowCount = $('#divSaleOrderGrid tr').length;
+            var ResultArr = [];
+            var AllItemCode = "";
+            if (SameStore) {
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#Store' + j).val(storeValue);
+                    AllItemCode = $('#Itemcode' + j).val();
+                    $.ajax({
+                        type: "POST",
+                        data: { "store": storeValue, "Itemcode": AllItemCode },
+                        url: "@Url.Action("GetTotalStock")",
+                        dataType: "json",
+                        async: false,
+                        success: function (result, status, error) {
+
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                $('#Stock' + j).val("");
+                                $('#Stock' + j).val(obj.Result[0].STOCK);
+                            }
+                        }
+                    });
+
+                }
+            } else {
+                $.ajax({
+                    type: "POST",
+                    data: { "store": storeValue, "Itemcode": ItemCode },
+                    url: "@Url.Action("GetTotalStock")",
+                    dataType: "json",
+                    success: function (result, status, error) {
+
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            $('#Stock' + i).val("");
+                            $('#Stock' + i).val(obj.Result[0].STOCK);
+                        }
+                    }
+                });
+            }
+
+        }
+
+        function WIPStoreChange(i) {
+            var storeValue = parseInt($('#WIPStore' + i).val());
+            var ItemCode = parseInt($('#Itemcode' + i).val());
+            var RowCount = $('#divSaleOrderGrid tr').length;
+            var ResultArr = [];
+            var AllItemCode = "";
+            if (WIPSameStore) {
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#WIPStore' + j).val(storeValue);
+                    AllItemCode = $('#Itemcode' + j).val();
+                    $.ajax({
+                        type: "POST",
+                        data: { "Itemcode": AllItemCode, "WCID": storeValue },
+                        url: "@Url.Action("GETWIPotalSTOCK", "StockAdjustment")",
+                        dataType: "json",
+                        async: false,
+                        success: function (result, status, error) {
+
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                $('#WIPStock' + j).val("");
+                                $('#WIPStock' + j).val(obj.Result[0].STOCK);
+                            }
+                        }
+                    });
+
+                }
+            } else {
+                $.ajax({
+                    type: "POST",
+                    data: { "Itemcode": ItemCode, "WCID": storeValue },
+                    url: "@Url.Action("GETWIPotalSTOCK", "StockAdjustment")",
+                    dataType: "json",
+                    success: function (result, status, error) {
+
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
+                            $('#WIPStock' + i).val("");
+                            $('#WIPStock' + i).val(obj.Result[0].STOCK);
+                        }
+                    }
+                });
+            }
+
+        }
+
+        function NewEntryId() {
+            var YearCode = $('#YearCode').val();
+            $.ajax({
+                type: "POST",
+                data: { "YearCode": YearCode },
+                url: "@Url.Action("NewEntryId")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    console.log(result);
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#Entryid').val("");
+                        $('#Entryid').val(obj.Result[0].EntryId);
+                        $('#WONO').val("");
+                        $('#WONO').val(obj.Result[0].WONO);
+                    }
+                }
+            });
+        }
+
+        function FillWorkCenter() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillWorkCenter")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $.each(obj.Result, function (index, val) {
+                            $('#workcenterId').append('<option value="' + val.EntryID +
+                                '">' + val.WorkCenterDescription + '</option>');
+                        });
+
+                    }
+                }
+            });
+        }
+
+        //function GetSearchData() {
+        //
+        //    var StartDate = $('#StartDate').val();
+        //    var EndDate = $('#EndDate').val();
+        //    var SONO = $('#SONO').val();
+        //    var CustomerOrderNo = $('#CustomerOrderNo').val();
+        //    var SchNo = $('#SchNo').val();
+        //    var COLOR = $('#COLOR').val();
+        //    var PartCode = $('#PartCode').val();
+        //    var ItemName = $('#ItemName').val();
+        //    var i = 1;
+        //
+        //    $('#divSaleOrderGrid tr').each(function () {
+        //        var $row = $(this);
+        //        var matchFoundSONO = true;
+        //        var matchFoundCustOrderNo = true;
+        //        var matchFoundSchNo = true;
+        //        var matchFoundCOLOR = true;
+        //        var matchFoundPartCode = true;
+        //        var matchFoundItemName = true;
+
+        //        var isSONO = false;
+        //        var isScheduledefine = false;
+        //        var isCustOrderNo = false;
+        //        var isSchNo = false;
+        //        var isColor = false;
+        //        var isPartCode = false;
+        //        var isItemName = false;
+
+        //        if (SONO) { isSONO = true; }
+        //        if (SchNo) { isScheduledefine = true; }
+        //        if (CustomerOrderNo) { isCustOrderNo = true; }
+        //        if (PartCode) { isPartCode = true; }
+        //        if (ItemName) { isItemName = true; }
+        //        if (COLOR) { isColor = true; }
+
+
+        //        //if (!($('#SONo' + i).val()).includes(SONO)) {
+        //        //    matchFoundSONO = false;
+        //        //}
+        //        //if (!($('#CustOrderNo' + i).val()).includes(CustomerOrderNo)) {
+        //        //    matchFoundCustOrderNo = false;
+        //        //}
+        //        ////if (!($('#SchNo' + i).val()).includes(SchNo)) {
+        //        ////    matchFoundSchNo = false;
+        //        ////}
+        //        //if (!($('#Color' + i).val()).includes(COLOR)) {
+        //        //    matchFoundCOLOR = false;
+        //        //}
+        //        ////if (PartCode !== $('#Itemcode' + i).val()) {
+        //        ////    matchFoundPartCode = false;
+        //        ////}
+        //        //if (!($('#PartCode' + i).val()).includes(PartCode)) {
+        //        //    matchFoundPartCode = false;
+        //        //}
+        //        //if (!($('#ItemName' + i).val()).includes(ItemName)) {
+        //        //    matchFoundItemName = false;
+        //        //}
+        //        var SONOGrid = $('#SONo' + i).val().trim();
+        //        var CustOrderNoGrid = $('#CustOrderNo' + i).val().trim();
+        //        var ColorGrid = $('#Color' + i).val().trim();
+        //        var ParCodeGrid = $('#PartCode' + i).val().trim();
+        //        var ItemNamegrid = $('#ItemName' + i).val().trim();
+        //        if (!(SONOGrid.includes(SONO.trim()))) {
+        //            matchFoundSONO = false;
+        //        }
+
+        //        if (!(CustOrderNoGrid.includes(CustomerOrderNo.trim()))) {
+        //            matchFoundCustOrderNo = false;
+        //        }
+
+        //        if (!(ColorGrid.includes(COLOR.trim()))) {
+        //            matchFoundCOLOR = false;
+        //        }
+
+        //        if (!(ParCodeGrid.includes(PartCode.trim()))) {
+        //            matchFoundPartCode = false;
+        //        }
+
+        //        if (!(ItemNamegrid.includes(ItemName.trim()))) {
+        //            matchFoundItemName = false;
+        //        }
+        //
+
+        //        if (
+        //            (isSONO ? !$('#SONo' + i).val().includes(SONO) : true) &&
+        //            (isCustOrderNo ? !$('#CustOrderNo' + i).val().includes(CustomerOrderNo) : true) &&
+        //            (isScheduledefine ? !$('#SchNo' + i).val().includes(SchNo) : true) &&
+        //            (isPartCode ? !$('#PartCode' + i).val().includes(PartCode) : true) &&
+        //            (isItemName ? !$('#ItemName' + i).val().includes(ItemName) : true) &&
+        //            (isColor ? !$('#Color' + i).val().includes(COLOR) : true)
+        //        ) {
+        //            $row.show();
+        //        } else {
+        //            $row.hide();
+        //        }
+
+
+        //        i++;
+        //    });
+
+        //}
+
+        function GetSearchData() {
+            var StartDate = $('#StartDate').val();
+            var EndDate = $('#EndDate').val();
+            var SONO = $('#SONO').val().trim();
+            var CustomerOrderNo = $('#CustomerOrderNo').val().trim();
+            var SchNo = $('#SchNo').val().trim();
+            var COLOR = $('#COLOR').val().trim();
+            var PartCode = $('#PartCode').val().trim();
+            var ItemName = $('#ItemName').val().trim();
+            var SOType = $('#SOType').val().trim();
+            var AccountName = $('#AccountName').val().trim();
+
+            var i = 1;
+            $('#divSaleOrderGrid tr').each(function () {
+                var $row = $(this);
+
+                var SONOGrid = $('#SONo' + i).val().trim();
+                var CustOrderNoGrid = $('#CustOrderNo' + i).val().trim();
+                var ColorGrid = $('#Color' + i).val().trim();
+                var SchGrid = $('#SchNO' + i).val().trim();
+                var PartCodeGrid = $('#PartCode' + i).val().trim();
+                var ItemNamegrid = $('#ItemName' + i).val().trim();
+                var SOtypeGrid = $('#SOType' + i).val().trim();
+                var ACtypeGrid = $('#AcName' + i).val().trim();
+
+                var matchFoundSONO = !SONO || SONOGrid.toLowerCase().includes(SONO.toLowerCase());
+                var matchFoundCustOrderNo = !CustomerOrderNo || CustOrderNoGrid.toLowerCase().includes(CustomerOrderNo.toLowerCase());
+                var matchFoundSchNo = !SchNo || SchGrid.toLowerCase().includes(SchNo.toLowerCase());
+                var matchFoundPartCode = !PartCode || PartCodeGrid.toLowerCase().includes(PartCode.toLowerCase());
+                var matchFoundItemName = !ItemName || ItemNamegrid.toLowerCase().includes(ItemName.toLowerCase());
+                var matchFoundCOLOR = !COLOR || ColorGrid.toLowerCase().includes(COLOR.toLowerCase());
+                var matchFoundSOtype = !SOType || SOtypeGrid.toLowerCase().includes(SOType.toLowerCase());
+                var matchFoundAcName = !AccountName || ACtypeGrid.toLowerCase().includes(AccountName.toLowerCase());
+
+                if (matchFoundSONO && matchFoundCustOrderNo && matchFoundSchNo && matchFoundPartCode && matchFoundItemName && matchFoundCOLOR && matchFoundSOtype && matchFoundAcName) {
+                    $row.show();
+                } else {
+                    $row.hide();
+                }
+
+                i++;
+            });
+        }
+
+        function ValidateWO_Grid() {
+            var RowCount = $('#divSaleOrderGrid tr').length;
+            var Err = 0;
+            for (var i = 1; i < RowCount; i++) {
+                if ($('#Checkbox' + i).is(":checked")) {
+                    if (parseInt($('#WOQty' + i).val()) <= 0 || $('#WOQty' + i).val() == '') {
+                        $.notify('Please Enter WO Qty more than 0.', "error");
+                        AddErrorCls('WOQty' + i);
+                        Err = 1;
+                    }
+                    else {
+                        RemoveErrorCls('WOQty' + i);
+                    }
+                }
+            }
+
+
+            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            if (Err == 1) return false;
+
+            return true;
+        }
+
+        $('#CheckAll').click(function () {
+
+            $('#divSaleOrderGrid tr:visible').each(function () {
+                var checkbox = $(this).find('input[type="checkbox"]');
+                checkbox.prop("checked", !checkbox.prop("checked"));
+            });
+        });
+
+        $('#ResetFields').click(function () {
+
+            $('.divSOTable th').show();
+            GetSaleOrderData();
+            GlobalSearch($('#search-box'));
+            var CheckArrLength = disabledCheckboxIds.length;
+            if (CheckArrLength > 0) {
+                for (var i = 0; i < CheckArrLength; i++) {
+                    $('#' + disabledCheckboxIds[i]).prop('checked', false).prop('disabled', true);
+                }
+            }
+        });
+
+        var EditRowArr = [];
+        var EditEachItem = false;
+
+        function EditItemRows(SeqNo) {
+
+            var RowCount = $('#divWorkOrderGrid tr').length;
+            //if (EditEachItem) {
+            //    $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+            //    $('#editButton-' + RowCount).prop("disabled", true);
+            //}
+            //else {
+            $.ajax({
+                url: '/WorkOrder/EditItemRows',
+                type: "POST",
+                data: { SeqNo: SeqNo },
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    if (obj != null) {
+                        EditEachItem = true;
+                        EditRowArr = [];
+                        EditRowArr.push({
+                            SeqNo: parseInt($('#hiddenSeqNo-' + SeqNo).val()),
+                            AcName: $('#GridAcName-' + SeqNo).text(),
+                            ItemCode: $('#GridItemCode-' + SeqNo).val(),
+                            SONO: $('#GridSONO-' + SeqNo).text(),
+                            SOYearCode: $('#GridSOYearCode-' + SeqNo).text(),
+                            SchNo: $('#GridSchNo-' + SeqNo).text()
+                        });
+
+                        AddEditRow(SeqNo);
+                        if (ExistingRow) {
+                            $('#AcName' + SeqNo).val(obj[0].AccountName);
+                            $('#SONo' + SeqNo).val(obj[0].SONO);
+                            $('#SODate' + SeqNo).val(obj[0].SODATE);
+                            //$('#ItemCode').text(obj[0].ItemName);
+                            $('#SOYearCode' + SeqNo).val(obj[0].SOYearCode);
+                            $('#SchNO' + SeqNo).val(obj[0].SchNo);
+                            $('#Schdate' + SeqNo).val(obj[0].SCHDATE);
+                            $('#SchYearCode' + SeqNo).val(obj[0].SchYearcode);
+                            $('#PartCode' + SeqNo).val(obj[0].PartCode);
+                            $('#ItemName' + SeqNo).val(obj[0].ItemName);
+                            $('#WIPStore' + SeqNo).val(obj[0].WIPStore);
+                            $('#WIPStock' + SeqNo).val(obj[0].WIPStock);
+                            $('#Store' + SeqNo).val(obj[0].StoreId);
+                            $('#Stock' + SeqNo).val(obj[0].StoreStock);
+                            $('#WOQty' + SeqNo).val(obj[0].WOQty);
+                            $('#OrderQty' + SeqNo).val(obj[0].OrderQty);
+                            $('#AltOrderQty' + SeqNo).val(obj[0].AltOrderQty);
+                            $('#PendSOQty' + SeqNo).val(obj[0].PendSOQty);
+                            $('#PendWOQty' + SeqNo).val(obj[0].PendWOQty);
+                            $('#ProdQty' + SeqNo).val(obj[0].ProdQty);
+                            $('#BomNo' + SeqNo).val(obj[0].Bomno);
+                            $('#BomName' + SeqNo).val(obj[0].BomName);
+                            $('#BomEffDate' + SeqNo).val(obj[0].BomEffectiveDate);
+                            $('#MainSubBom' + SeqNo).val(obj[0].ProdCost);
+                            $('#PrefMachineName1' + SeqNo).val(obj[0].PrefMachineId1);
+                            $('#PrefMachineName2' + SeqNo).val(obj[0].PrefMachineId2);
+                            $('#PrefMachineName3' + SeqNo).val(obj[0].PrefMachineId3);
+                            $('#ApproxStartDate' + SeqNo).val(obj[0].ApproxStartDate);
+                            $('#ApproxEndDate' + SeqNo).val(obj[0].ApproxEndDate);
+                            $('#DrawingNo' + SeqNo).val(obj[0].drawingNo);
+                            $('#ProdInst1' + SeqNo).val(obj[0].ProdInst1);
+                            $('#ProdInst2' + SeqNo).val(obj[0].ProdInst2);
+                            $('#SOInstruction' + SeqNo).val(obj[0].SOInstruction);
+                            $('#PkgInstruction' + SeqNo).val(obj[0].PkgInstruction);
+                            $('#OrderType' + SeqNo).val(obj[0].OrderType);
+                            $('#wef' + SeqNo).val(obj[0].OrderWEF);
+                            $('#AmmNo' + SeqNo).val(obj[0].AmendNo);
+                            $('#AmmEffDate' + SeqNo).val(obj[0].AmendEffDate);
+                            $('#unit' + SeqNo).val(obj[0].Unit);
+                            $('#AltQty' + SeqNo).val(obj[0].AltQty);
+                            $('#AltUnit' + SeqNo).val(obj[0].AltUnit);
+                            $('#Color' + SeqNo).val(obj[0].COLOR);
+                            $('#WORevNo' + SeqNo).val(obj[0].WorevNo);
+                            $('#WORevDate' + SeqNo).val(obj[0].WORevDate);
+                            $('#PrevWOQty' + SeqNo).val(obj[0].PrevWOQty);
+                            $('#PendProdQty' + SeqNo).val(obj[0].PendProdQty);
+                            $('#Description' + SeqNo).val(obj[0].ItemDescription);
+                            $('#CustOrderNo' + SeqNo).val(obj[0].CustomerOrderNo);
+                            $('#SOCloseDate' + SeqNo).val(obj[0].SOCloseDate);
+                            $('#SchEffTillDate' + SeqNo).val(obj[0].SchEffTillDate);
+                            $('#FGStoreName' + SeqNo).val(obj[0].FGStore);
+                            $('#FGStock' + SeqNo).val(obj[0].FGStock);
+                            //   $('#divRoutingGrid tr#' + SeqNo).remove();
+                        }
+                        var rowCount = $('#divWorkOrderGrid tr').length;
+                        for (var i = 1; i <= rowCount + 1; i++) {
+                            $('#editItemGrid-' + i).css("pointer-events", "none");
+                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                        }
+
+                        DeleteItemRow(SeqNo);
+                    }
+                },
+                error: function (response) {
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response) {
+                    $.notify(response.responseText, "error");
+                }
+            });
+            //}
+        }
+
+        var disabledCheckboxIds = [];
+
+        $('#AddToGrid').click(function () {
+
+            var seqnoarray = [];
+            $('#divWorkOrderGrid tr').each(function (index, element) {
+                var currentRow = $(element);
+                var seqnoText = currentRow.find('th').data('seqno') == undefined ? 0 : currentRow.find('th').data('seqno');
+                if (seqnoText != 0) {
+                    seqnoarray.push(parseInt(seqnoText));
+                }
+            });
+            var highestValue = 0;
+            if (seqnoarray.length == 0) {
+                highestValue = 0;
+            }
+            else {
+                highestValue = Math.max(...seqnoarray);
+            }
+
+            EditEachItem = false;
+            if (!ValidateWO_Grid()) return;
+            var rowCount = $('#divSaleOrderGrid tr').length;
+            var ItemData = [];
+            var checkboxArr = [];
+            for (var i = 1; i <= rowCount; i++) {
+                if ($('#Checkbox' + i).is(":checked")) {
+                    ItemData.push({
+                        //"Entryid": parseInt($('#IssEntryId' + i).val()),
+                        "AccountName": $('#AcName' + i).val(),
+                        "WOQty": $('#WOQty' + i).val(),
+                        "OrderQty": $('#OrderQty' + i).val(),
+                        "AltOrderQty": $('#AltOrderQty' + i).val(),
+                        "OrderType": $('#OrderType' + i).val(),
+                        "OrderWEF": $('#wef' + i).val(),
+                        "AmendNo": $('#AmmNo' + i).val(),
+                        "AmendEffDate": $('#AmmEffDate' + i).val(),
+                        "Unit": $('#unit' + i).val(),
+                        "AltUnit": $('#AltUnit' + i).val(),
+                        "AltQty": $('#AltQty' + i).val(),
+                        "drawingNo": $('#DrawingNo' + i).val(),
+                        "ProdInst1": $('#ProdInst1' + i).val(),
+                        "ProdInst2": $('#ProdInst2' + i).val(),
+                        "ProdInst3": $('#ProdInst3' + i).val(),
+                        "SOInstruction": $('#SOInstruction' + i).val(),
+                        "PkgInstruction": $('#PkgInstruction' + i).val(),
+                        "Bomno": $('#BomNo' + i).val(),
+                        "BomName": $('#BomName' + i).val(),
+                        "BomEffectiveDate": $('#BomEffDate' + i).val(),
+                        "MainBomSubBom": $('#MainSubBom' + i).val(),
+                        "MachineGroupId": parseInt($('#MachineGroup' + i).val()),
+                        "MachineGroupName": $('#MachineGroup' + i).find(':selected').text() == "-Select-" ? "" : $('#MachineGroup' + i).find(':selected').text(),
+                        "PrefMachineId1": parseInt($('#PrefMachineName1' + i).val()),
+                        "PrefMachineName1": $('#PrefMachineName1' + i).find(':selected').text() == "-Select-" ? "" : $('#PrefMachineName1' + i).find(':selected').text(),
+                        "PrefMachineId2": parseInt($('#PrefMachineName2' + i).val()),
+                        "PrefMachineName2": $('#PrefMachineName2' + i).find(':selected').text() == "-Select-" ? "" : $('#PrefMachineName2' + i).find(':selected').text(),
+                        "PrefMachineId3": parseInt($('#PrefMachineName3' + i).val()),
+                        "PrefMachineName3": $('#PrefMachineName3' + i).find(':selected').text() == "-Select-" ? "" : $('#PrefMachineName3' + i).find(':selected').text(),
+                        "ApproxStartDate": $('#ApproxStartDate' + i).val(),
+                        "ApproxEndDate": $('#ApproxEndDate' + i).val(),
+                        "ItemDescription": $('#Description' + i).val(),
+                        "WoRevNo": $('#WORevNo' + i).val(),
+                        "WORevDate": $('#WORevDate' + i).val(),
+                        "PrevWOQty": $('#PrevWOQty' + i).val(),
+                        "PendProdQty": $('#PendProdQty' + i).val(),
+                        "SOCloseDate": $('#SOCloseDate' + i).val(),
+                        "SchEffTillDate": $('#SchEffTillDate' + i).val(),
+                        "SONO": $('#SONo' + i).val(),
+                        "CustomerOrderNo": $('#CustOrderNo' + i).val(),
+                        "SODATE": $('#SODate' + i).val(),
+                        "SchNo": $('#SchNO' + i).val(),
+                        "SCHDATE": $('#Schdate' + i).val(),
+                        "PartCode": $('#PartCode' + i).val(),
+                        "ItemName": $('#ItemName' + i).val(),
+                        "COLOR": $('#Color' + i).val(),
+                        "Sequence": i,
+                        "Accountcode": $('#Accountcode' + i).val(),
+                        "Itemcode": $('#Itemcode' + i).val(),
+                        "FGStoreId": $('#Store' + i).val(),
+                        "FGStore": $('#FGStoreName' + i).val(),
+                        "FGStock": $('#FGStock' + i).val(),
+                        "WIPStoreId": $('#WIPStock' + i).val(),
+                        "WIPStore": $('#WIPStock' + i).val(),
+                        "WIPStock": $('#WIPStock' + i).val(),
+                        "StoreId": $('#Store' + i).val(),
+                        "StoreName": $('#Store' + i).find(':selected').text() == "-Select-" ? "" : $('#Store' + i).find(':selected').text(),
+                        "StoreStock": $('#Stock' + i).val(),
+                        "PendWOQty": $('#PendWOQty' + i).val(),
+                        "PendSOQty": $('#PendSOQty' + i).val(),
+                        "ProdQty": $('#ProdQty' + i).val(),
+                        "SOYearCode": $('#SOYearCode' + i).val(),
+                        "SchYearCode": $('#SchYearCode' + i).val(),
+                        "SeqNo": parseInt($('#hiddenSequenceNo').val()) == 0 ? (highestValue + 1) : parseInt($('#hiddenSequenceNo').val())
+                    });
+                    checkboxArr.push($('#Checkbox' + i).val());
+                    $('#SaleOrderRow-' + i).removeAttr('style');
+                }
+            }
+            if (checkboxArr.length == 0) {
+                $.notify('Please select any WorkOrder Item.', "error");
+            } else {
+                $.ajax({
+                    url: "@Url.Action("AddWorkOrderGrid")",
+                    type: "POST",
+                    data: { model: ItemData },
+                    beforeSend: function (xhr) {
+                    },
+                    success: function (data, status, xhr) {
+
+                        if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                            $.notify('Duplicate Item Not Allowed.', "info");
+                            $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                        }
+                        else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                            $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                        }
+                        else {
+                            $('#divWorkOrderGrid').html(data);
+                            $.notify('WorkOrder Added To Grid.', "success");
+                            $('input[type="checkbox"]:checked').prop('checked', false).prop('disabled', true);
+                            disabledCheckboxIds = [];
+                            disabledCheckboxIds = $('input[type="checkbox"]:disabled').map(function () {
+                                return this.id;
+                            }).get();
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify(result.responseText, "error");
+                    },
+                    failure: function (result, status, xhr) {
+                        alert(response.responseText);
+                    },
+                    complete: function () {
+                        $('.Schedule').fadeIn();
+                        //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                }).done(function () {
+                }).fail(function () {
+                    alert("error");;
+                }).always(function () {
+
+                });
+            }
+        });
+
+        async function DeleteItemRow(SeqNo) {
+
+            var RowCount = $('#divWorkOrderGrid tr').length;
+
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                success: await function (data, status, xhr) {
+
+                    var i = $('#hiddenSeqNo-' + SeqNo).val();
+                    //if (!EditEachItem) {
+                    //    $('#Checkbox' + i).prop('checked', false).prop('disabled', false);
+                    //    EditRowArr = [];
+                    //    EditRowArr.push({
+                    //        AcName: $('#GridAcName-' + SeqNo).text(),
+                    //        ItemCode: $('#GridItemCode-' + SeqNo).val(),
+                    //        SONO: $('#GridSONO-' + SeqNo).text(),
+                    //        SOYearCode: $('#GridSOYearCode-' + SeqNo).text(),
+                    //        SchNo: $('#GridSchNo-' + SeqNo).text()
+                    //    });
+                    //    AddEditRow(SeqNo);
+                    //} else {
+                    //$('#Checkbox' + SeqNo).prop('checked', true).prop('disabled', false);
+                    //$('#SaleOrderRow-' + i).css({ 'background-color': '#00bcd4' });
+                    //}
+
+                    var indexToRemove = disabledCheckboxIds.indexOf('Checkbox' + i);
+
+                    if (indexToRemove !== -1) {
+                        disabledCheckboxIds.splice(indexToRemove, 1);
+                    }
+                    $('#divWorkOrderGrid').html(data);
+                    $.notify("Production plan deleted from Grid", "info");
+
+                },
+                error: function (response, status, xhr) {
+                    $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+
+        }
+
+        var ClearGridAddEditRow = false;
+
+        function ClearGrid() {
+
+            $('.divClearGrid').empty();
+            $('.divClearGrid').append('<button id="clearGridBtn" type="button" class="btn btn-sm btn-outline-danger" onclick="ClearGrid()" style="margin-top:10px;"><i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>Loading....</button>');
+            //<i class="fa-solid fa-spinner"></i>
+            ClearGridAddEditRow = true;
+            GetSaleOrderData();
+            if ($('#divWorkOrderGrid tr td').length > 1) {
+                EditRowArr = [];
+                var Row = $('#divWorkOrderGrid tr').length;
+                for (var j = 1; j <= Row; j++) {
+                    EditRowArr.push({
+                        SeqNo: parseInt($('#hiddenSeqNo-' + j).val()),
+                        AcName: $('#GridAcName-' + j).text(),
+                        ItemCode: $('#GridItemCode-' + j).val(),
+                        SONO: $('#GridSONO-' + j).text(),
+                        SOYearCode: $('#GridSOYearCode-' + j).text(),
+                        SchNo: $('#GridSchNo-' + j).text()
+                    });
+                }
+
+                for (var k = 0; k < EditRowArr.length; k++) {
+                    var existingRow = false;
+                    $('#divSaleOrderGrid tr').each(function (i) {
+                        if (i > 0) {
+                            if (EditRowArr[k].AcName == $('#AcName' + i).val() &&
+                                EditRowArr[k].ItemCode == $('#Itemcode' + i).val() &&
+                                EditRowArr[k].SONO == $('#SONo' + i).val() &&
+                                EditRowArr[k].SOYearCode == $('#SOYearCode' + i).val() &&
+                                EditRowArr[k].SchNo == $('#SchNO' + i).val()) {
+                                existingRow = true;
+                                return false;
+                            }
+                        }
+                    });
+
+                    if (!existingRow) {
+                        CreateNewRow(EditRowArr[k].SeqNo, $('#divSaleOrderGrid tr').length + 1);
+                    }
+
+                }
+            }
+            SaleOrderGridMethodCall();
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearGrid")",
+                success: function (result, status, xhr) {
+                    $('#divWorkOrderGrid').html(result.trim());
+                    if (result == "") {
+                        $('#divWorkOrderGrid').append("<tr class='text-center'><td colspan='17' class='text-black-50'><strong class='text-danger'>NO DATA ADDED</strong></td></tr>");
+                    }
+                    var RowCount = $('#divSaleOrderGrid tr').length;
+                    for (var i = 1; i < RowCount; i++) {
+                        $('#Checkbox' + i).prop('disabled', false);
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }, complete: function () {
+
+                    $('.divClearGrid').empty();
+                    $('.divClearGrid').append('<button id="clearGridBtn" type="button" class="btn btn-sm btn-outline-danger" onclick="ClearGrid()" style="margin-top:10px;"><i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>CLEAR GRID</button>');
+
+                }
+            });
+
+        }
+
+        function ResetFileds() {
+            $('#SONO').prop('selectedIndex', 0).trigger("change");
+            $('#CustomerOrderNo').prop('selectedIndex', 0).trigger("change");
+            $('#SchNo').prop('selectedIndex', 0).trigger("change");
+            $('#COLOR').prop('selectedIndex', 0).trigger("change");
+            $('#PartCode').prop('selectedIndex', 0).trigger("change");
+            $('#ItemName').prop('selectedIndex', 0).trigger("change");
+
+            GetSearchData();
+        }
+
+        $("#SendToExcel").click(function () {
+
+            const table = document.querySelector(".WOGrid");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell) => {
+                // cell.style.backgroundColor = "#fcba03";
+                headerData.push(cell.textContent);
+            });
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                rows[i].querySelectorAll("td").forEach((cell) => {
+                    rowData.push(cell.textContent);
+                });
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "WorkOrderGrid.xlsx");
+        });
+
+        $("#btnBomExcel").click(function () {
+
+            const table = document.querySelector(".BomDetailtable");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell) => {
+                // cell.style.backgroundColor = "#fcba03";
+                headerData.push(cell.textContent);
+            });
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                rows[i].querySelectorAll("td").forEach((cell) => {
+                    rowData.push(cell.textContent);
+                });
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "BomDetail.xlsx");
+        });
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+
+}

@@ -1,0 +1,143 @@
+﻿@model eTactWeb.DOM.Models.ItemGroupModel
+<div class="card">
+    <div class="card-body table-responsive" style="max-height:350px;">
+        <table class="table table-hover table-bordered table-striped TbCss" id="example">
+            <thead class="bg-gradient card-headerBG text-light header" style="position:static;" id="dashThead">
+                <tr>
+                    <th>Action</th>
+                    <th>Sr#</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Code</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Name</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Prefix</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Category</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Main Category</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="divDashboardGrid" class="content">
+                @if (Model.ItemGroupList.Count == 0)
+                {
+                    <tr class="text-center">
+                        <td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                    </tr>
+                }
+                else
+                {
+                    var @Cntr = 0;
+                    foreach (var item in Model.ItemGroupList)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-action="Form" asp-route-ID="@item.Group_Code" asp-route-Mode="V">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary" asp-action="Form" asp-route-ID="@item.Group_Code" asp-route-Mode="U">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" onclick="confirmDelete(event,@item.Group_Code)" asp-action="DeleteByID" asp-controller="ItemGroup">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="FWB">@Cntr</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Group_Code)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Group_name)
+                            </td>
+                            @if (item.Entry_date != null)
+                            {
+                                <td>
+                                    @item.Entry_date.ToString().Split(" ")[0]
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Entry_date)
+                                </td>
+                            }
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GroupPrefix)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ItemCategory)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Main_Category_Type)
+                            </td>
+
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #example {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -17px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+</style>

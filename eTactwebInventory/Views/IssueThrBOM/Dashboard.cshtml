@@ -1,0 +1,431 @@
+﻿@model eTactWeb.DOM.Models.IssueThrBomDashboard
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Issue With BOM - <strong>Dashboard</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="PendingMaterialToIssueThrBOM" asp-controller="PendingMaterialToIssueThrBOM" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                        Add New
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ReqNo" class="form-label">Req Number</label>
+                                <input asp-for="ReqNo" class="form-control" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="FGItemName" class="form-label">Item Name</label>
+                                <input asp-for="FGItemName" class="form-control" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="FGPartCode" class="form-label">Part Code</label>
+                                <input asp-for="FGPartCode" class="form-control" />
+                            </div> 
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="IssueSlipNo" class="form-label">IssueSlip No</label>
+                                <input asp-for="IssueSlipNo" class="form-control" />
+                            </div> 
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="WCName" class="form-label">WC Name</label>
+                                <input asp-for="WCName" class="form-control" />
+                            </div> 
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Type</label>
+                                <select id="DataType" class="form-select">
+                                    <option value="RMDETAIL">RM Detail</option>
+                                    <option value="FGSUMM">FG Detail</option>
+                                    <option value="SUMM" selected>Summary</option>
+                                </select>
+                            </div>
+                            @*
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="WorkCenterDescription" class="form-label">Work Center</label>
+                                <input asp-for="WorkCenterDescription" class="form-control" />
+                            </div>*@
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input id="FromDate" maxlength="10" class="form-control" />
+                                        <input asp-for="FromDate1" type="hidden" maxlength="10" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input id="ToDate" maxlength="10" class="form-control" />
+                                        <input asp-for="ToDate1" type="hidden" maxlength="10" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>        
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" asp-for="SearchBox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+
+                            <div class=" d-flex justify-content-end mt-3" width="inherit">
+                                <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetSearchData();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="IssueThrBOM" asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0 pt-0">
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body" id="divDashboardGrid">
+                    <partial name="_IssueWithBomDashboardGrid" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+             
+            var FromDateBack = sessionStorage.getItem('FromDateBack');
+            var ToDateBack = sessionStorage.getItem('ToDateBack');
+            var REQNoBack = sessionStorage.getItem('REQNoBack');
+            var PartCodeBack = sessionStorage.getItem('PartCodeBack');
+            var ItemNameBack = sessionStorage.getItem('ItemNameBack');
+            var WorkCenterBack = sessionStorage.getItem('WorkCenterBack');
+            var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
+
+            GetServerDate();
+            
+             
+           
+            
+            var dashGrid = $('#divDashboardGrid tr').length - 1;
+            $('#totalRows').text(dashGrid);
+            //$("#FromDate").datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' });
+            //$("#FromDate").on('keydown', function (e) { e.preventDefault(); return false; });
+            //$("#ToDate").datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' });
+            //$("#ToDate").on('keydown', function (e) { e.preventDefault(); return false; });
+            //GetFormRights();
+             
+            var fromDate;
+            var toDate;
+            var currentDate = new Date();
+
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            //$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            $('#FromDate').change(function () {
+                 
+                fromDate = $(this).datepicker('getDate');
+                $('#ToDate').datepicker("option", "minDate", fromDate);
+            });
+            $('#ToDate').change(function () {
+                toDate = $(this).datepicker('getDate');
+                $('#FromDate').datepicker("option", "maxDate", toDate);
+            });
+
+           
+
+            $('#ToDate').change(function () {
+                if ($('#DataType').val() == "RMDetail") {
+                    RMDetailData();
+                }                 
+                else if ($('#DataType').val() == "FGDetail") {
+                    FGDetailData();
+                }
+                else {
+                    SummaryData();
+                }              
+            });
+
+            AutoComplete('VIssueWithBom', 'ReqNo', 'ReqNo', null);
+            AutoComplete('VIssueWithBom', 'FGItemName', 'FGITEMNAME', null);
+            AutoComplete('VIssueWithBom', 'FGPartCode', 'FGPARTCODE', null);
+
+            if (FromDateBack != null && FromDateBack != '') {
+                 
+                $('#ReqNo').val(REQNoBack);
+                $('#FGItemName').val(ItemNameBack);
+                $('#FGPartCode').val(PartCodeBack);
+                $('#WCName').val(WorkCenterBack);
+                $('#DataType').val(DashboardTypeBack);
+                $('#FromDate').val(FromDateBack);
+                $('#ToDate').val(ToDateBack);
+                $('#search-box').val(GlobalSearchBack);
+            }
+
+            GetSearchData();
+            $("#search-box").val($('#search-box').val()).trigger('keyup');
+
+
+            sessionStorage.removeItem('FromDateBack');
+            sessionStorage.removeItem('ToDateBack');
+            sessionStorage.removeItem('REQNoBack');
+            sessionStorage.removeItem('PartCodeBack');
+            sessionStorage.removeItem('ItemNameBack');
+            sessionStorage.removeItem('WorkCenterBack');
+            sessionStorage.removeItem('DashboardTypeBack');
+            sessionStorage.removeItem('GlobalSearchBack');
+        });
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#IssueWOBomTbody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $(document).on("click", ".sortCol", function () {
+
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#IssueWOBomTable');
+            var rows = table.find('#IssueWOBomTbody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text().trim();
+                var bValue = $(b).find('td').eq(columnIndex).text().trim();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                }
+                else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+
+                }
+
+            });
+            //if (!ascending) {
+            //    rows.reverse();
+            //}
+
+            $.each(rows, function (index, row) {
+                table.children('#IssueWOBomTbody').append(row);
+            });
+        }
+
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+
+            $("#IssueWOBomTbody tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+        function BackButtonData(event,YearCode) {
+             
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&REQNo=" + $('#ReqNo').val() + "&ItemName=" + $('#FGItemName').val() + "&PartCode=" + $('#FGPartCode').val() + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $("#ToDate").val() + "&DashboardType=" + $("#DataType").val() + "&SearchBox=" + $('#search-box').val();
+            window.location.href = linkUrl;
+        }
+
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
+       
+
+
+        function confirmDelete(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to delete this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+                linkUrl = linkUrl + "&REQNo=" + $('#ReqNo').val() + "&FGItemName=" + $('#FGItemName').val() + "&FGPartCode=" + $('#FGPartCode').val() + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $("#ToDate").val() + "&IssueSlipNo=" + $("#IssueSlipNo").val() + "&DashboardType=" + $("#DataType").val() + "&GlobalSearch=" + $('#search-box').val();
+                window.location.href = linkUrl;
+            }
+        }
+
+        function GetSearchData() {
+             
+            if ($('#DataType').val() == "RMDetail") {
+                RMDetailData();
+            } else {
+                FGDetailData();
+            }
+        }
+
+         function GetServerDate() {
+             
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                  $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                }
+            });
+        }
+
+        $('#DataType').change(function () {
+             
+            if ($('#DataType').val() == "RMDetail") {
+                    RMDetailData();
+                }                 
+                else if ($('#DataType').val() == "FGDetail") {
+                    FGDetailData();
+                }
+                else {
+                    SummaryData();
+                }  
+        });
+
+        function FGDetailData() {
+            $.ajax({
+                url: '@Url.Action("FGDetailData","IssueThrBOM")',
+                type: "POST",
+                data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "", DashboardType: "", IssueSlipNo: $('#IssueSlipNo').val(), ReqNo: $('#ReqNo').val(), FGPartCode: $('#FGPartCode').val(), GlobalSearch: $('#search-box').val(), FGItemName: $('#FGItemName').val() },
+                async:false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    var dashGrid = $('#divDashboardGrid tr').length - 1;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        
+        function SummaryData() {
+            $.ajax({
+                url: '@Url.Action("SummaryData","IssueThrBOM")',
+                type: "POST",
+                data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "", DashboardType: "", IssueSlipNo: $('#IssueSlipNo').val(),ReqNo: $('#ReqNo').val() },
+                async:false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    var dashGrid = $('#divDashboardGrid tr').length - 1;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+        function RMDetailData() {
+             
+            $.ajax({
+                url: '@Url.Action("RMDetailData","IssueThrBOM")',
+                type: "POST",
+                data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), WCName: $("#WCName").val(), PartCode: $("#FGPartCode").val(), ItemName: $("#FGItemName").val(), Flag: "", DashboardType: $('#DataType').val(), IssueSlipNo: $('#IssueSlipNo').val(), ReqNo: $('#ReqNo').val(), GlobalSearch: $('#search-box').val(), FGPartCode: $('#FGPartCode').val(), FGItemName: $('#FGItemName').val() },
+                async:false,
+                success: function (data) {
+                     
+                    $('#divDashboardGrid').empty().append(data);
+                    var dashGrid = $('#divDashboardGrid tr').length - 1;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+
+        //function confirmDelete(event) {
+        //        event.preventDefault();
+
+        //        if (confirm("Are you sure you want to delete this entry?")) {
+        //            var linkUrl = $(event.currentTarget).attr("href");
+        //            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#ReqNo').val() + "&WCName=" + $('#WorkCenterDescription').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#Item_Name').val();
+        //            window.location.href = linkUrl;
+        //        }
+        //    }
+    </script>
+}

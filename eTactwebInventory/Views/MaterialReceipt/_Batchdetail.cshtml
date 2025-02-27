@@ -1,0 +1,142 @@
+﻿@model eTactWeb.DOM.Models.MaterialReceiptModel
+
+<div class="modal fade" id="BatchDetailModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Batch Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="row g-2 gx-3">
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> PartCode  </label>
+                                        <input type="hidden" id="batchItemCode" />
+                                        <select class="form-select" id="batchPartCode">
+                                            <option value="" disabled selected>-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> ItemName  </label>
+                                        <select class="form-select" id="batchItemName">
+                                            <option value="" disabled selected>-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> PONO  </label>
+                                            <select class="form-select" id="batchPONO">
+                                                <option value="" disabled selected>-Select-</option>
+                                            </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Po Year  </label>
+                                            <select class="form-select" id="batchpoYear">
+                                                <option value="" disabled selected>-Select-</option>
+                                            </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Sch No  </label>
+                                            <select class="form-select" id="batchSchNo">
+                                                <option value="" disabled selected>-Select-</option>
+                                            </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Sch Year  </label>
+                                            <select class="form-select" id="batchSchYear">
+                                                <option value="" disabled selected>-Select-</option>
+                                            </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Total Qty  </label>
+                                        <input class="form-control" id="batchTotQty" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Tot Rec Qty  </label>
+                                        <input id="batchTotRecQty" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Vendor Batch Qty  </label>
+                                        <input class="form-control" type="number" min="0" id="vendorBatchQty" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Vendor Batch No  </label>
+                                        <input id="vendorBatchNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Unique Batch No  </label>
+                                        <input id="uniqueBatchNum" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Manufacture Date  </label>
+                                        <input id="manufactureDate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label class="form-label"> Expiry Date  </label>
+                                        <input id="ExpiryDate" class="form-control" readonly />
+                                    </div>
+                                        <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12 mt-4">
+
+                                        <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="AddBatchDetail">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>ADD
+                                        </button>
+                                        </div>
+                                    </div>
+                                    <center><p id="ErrorBox" style="color:red;font-weight:bolder">Vendor Qty Exceeded Total Qty</p></center>
+                                    <center><p id="ErrorBox1" style="color:red;font-weight:bolder">Cannot Add duplicate Vendor batch Number</p></center>
+                                    <hr/>
+                                    <div class="table-responsive" style="max-height:250px;">
+                                        <table class="table table-hover table-bordered table-striped" id="poPopUpData">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>Sr #</th>
+                                                    <th>Item Name</th>
+                                                    <th>Part Code</th>
+                                                    <th>Total Qty</th>
+                                                    <th>Total Rec Qty</th>
+                                                    <th>Vendor Batch Qty</th>
+                                                    <th>Batch No</th>
+                                                    <th>Unique Batch No</th>
+                                                    <th>Manufacture date</th>
+                                                    <th>Expiry Date</th>
+                                                    <th>PONO</th>
+                                                    <th>PO Year</th>
+                                                    <th>Sch No</th>
+                                                    <th>Sch Year</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divDisplayGrid">
+                                                <partial name="_BatchDetailAdd" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <center><h6>Vendor Rec Qty: <span id="TotvendRecQty"></span></h6></center>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class=" d-flex justify-content-center mt-3" width="inherit">
+
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" id="clearBTN">
+                                            CLEAR
+                                    </button>
+                                            
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-dismiss="modal" style="padding:3px;height:30px;width:100px;margin-left:20px;" onclick="RefreshSchedule('');">Close</button>
+
+                                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

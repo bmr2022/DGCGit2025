@@ -1,0 +1,93 @@
+﻿@model eTactWeb.DOM.Models.InProcessQc
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+            <td><input value="@Cntr" style="width:50px;" /></td>
+            <td><input readonly id="ProdSlipNo-@Cntr" type="text" style="width:120px;" value="@item.ProdSlipNo" /></td>
+            <td><input readonly id="ProdDate-@Cntr" type="text" style="width:80px;" value="@item.ProdDate.Split(" ")[0]" /></td>
+            <td><input readonly id="PartCode-@Cntr" type="text" style="width:100px;" value="@item.PartCode" /></td>
+            <td><input onmouseover="ShowToolTip(this)" onmouseout="hideTooltip()" readonly id="ItemName-@Cntr" type="text" style="width:100px;" value="@item.ItemName" /><input type="hidden" id="ItemCode-@Cntr" value="@item.ItemCode" /></td>
+            <td><input readonly id="TotProdQty-@Cntr" type="number" style="width:50px;" value="@item.TotProdQty" /></td>
+            <td><input readonly id="OKProdQty-@Cntr" type="number" style="width:50px;" value="@item.OKProdQty" /></td>
+            <td><input id="QCOKQty-@Cntr" type="number" style="width:50px;background-color:#98ffa0" value="@item.QCOKQty" onchange="CheckQcQty(@Cntr)" onkeydown="BlockNegative(@Cntr)" min="0" /></td>
+            <td><input id="QCRejQty-@Cntr" type="number" style="width:50px;background-color:#98ffa0" value="@item.QCRejQty" onchange="CheckQcRejQty(@Cntr)" onkeydown="BlockNegative(@Cntr)" min="0" /></td>
+            <td><input id="RewQty-@Cntr" asp-for="RewQty" style="width:50px;background-color:#98ffa0" value="@item.RewQty" onchange="CheckRewQty(@Cntr)" onkeydown="BlockNegative(@Cntr)" min="0" /></td>
+            <td>
+                <input type="hidden" value="@item.WcId" id="WcId-@Cntr" />
+                <input onmouseover="ShowToolTip(this)" onmouseout="hideTooltip()" readonly id="WorkCenter-@Cntr" type="text" style="width:80px;" value="@item.WorkCenter" />
+            </td>
+            <td>
+                <select class="form-select" id="ToStoreOrWc-@Cntr" style="width:110px" onchange="SelectStoreOrWc(@Cntr)">
+                    @if (item.ToStoreOrWc == "W")
+                    {
+                        <option value="W" selected>WorkCenter</option>
+                        <option value="S">Store</option>
+                    }
+                    else
+                    {
+                        <option value="W">WorkCenter</option>
+                        <option value="S" selected>Store</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <input type="hidden" value="@item.ToStoreId" id="ToStoreId-@Cntr" />
+                <select class="form-select" id="ToStoreName-@Cntr" style="width:120px;background-color:#98ffa0;" onchange="StoreChange(@Cntr)">
+                    <option>@item.ToStoreName</option>
+                </select>
+            </td>
+            <td>
+                <input type="hidden" value="@item.ToWcId" id="ToWcId-@Cntr" />
+                <select class="form-select" id="ToWorkCenter-@Cntr" style="width:120px;background-color:#98ffa0;" onchange="WorkCenterChange(@Cntr)">
+                    <option>@item.ToWorkCenter</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-select" id="RejReason-@Cntr" style="width:120px;background-color:#98ffa0;">
+                    <option>-Select-</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-select" id="RewRemark-@Cntr" style="width:120px;background-color:#98ffa0;">
+                    <option>-Select-</option>
+                </select>
+            </td>
+            <td><input onmouseover="ShowToolTip(this)" onmouseout="hideTooltip()" readonly id="BatchNo-@Cntr" type="text" style="width:100px;" value="@item.BatchNo" /></td>
+            <td><input onmouseover="ShowToolTip(this)" onmouseout="hideTooltip()" readonly id="UniqueBatchNo-@Cntr" type="text" style="width:100px;" value="@item.UniqueBatchNo" /></td>
+            <td><input onmouseover="ShowToolTip(this)" onmouseout="hideTooltip()" readonly id="OperatorName-@Cntr" type="text" style="width:80px;" value="@item.OperatorName" /></td>
+           
+            <td><input id="otherdetail-@Cntr" type="text" style="width:200px;background-color:#98ffa0" value="@item.otherdetail" /></td>
+            <td><input readonly id="ShiftName-@Cntr" type="text" style="width:100px;" value="@item.ShiftName" /></td>
+            <td><input readonly id="MachineName-@Cntr" type="text" style="width:150px;" value="@item.MachineName" /></td>
+            <td><input readonly id="ProdPlanSchNo-@Cntr" type="text" style="width:150px;" value="@item.ProdPlanSchNo " /></td>
+            <td><input readonly id="ProdPlanSchYearCode-@Cntr" type="text" style="width:50px;" value="@item.ProdPlanSchYearCode" /></td>
+            <td><input readonly id="ProdPlanSchDate-@Cntr" type="text" style="width:150px;" value="@item.ProdPlanSchDate" /></td>
+            <td><input readonly id="ProdPlanNo-@Cntr" type="text" style="width:100px;" value="@item.ProdPlanNo" /></td>
+            <td><input readonly id="ProdPlanYearCode-@Cntr" type="text" style="width:50px;" value="@item.ProdPlanYearCode" /></td>
+            <td><input readonly id="ProdPlanDate-@Cntr" type="text" style="width:150px;" value="@item.ProdPlanDate" /></td>
+            <td><input readonly id="Reqno-@Cntr" type="text" style="width:150px;" value="@item.Reqno" /></td>
+            <td><input readonly id="ReqDate-@Cntr" type="text" style="width:150px;" value="@item.ReqDate" /></td>
+            <td><input readonly id="ReqYearCode-@Cntr" type="text" style="width:50px;" value="@item.ReqYearCode" /></td>
+            <td><input readonly id="NewProdRework-@Cntr" type="text" style="width:100px;" value="@item.NewProdRework" /></td>
+            <td><input readonly id="SchQty-@Cntr" type="number" style="width:50px;" value="@item.SchQty" /></td>
+            <td><input readonly id="ProdRejQty-@Cntr" type="number" style="width:50px;" value="@item.ProdRejQty" /></td>
+            <td><input readonly id="ProdEntryId-@Cntr" type="text" style="width:50px;" value="@item.ProdEntryId" /></td>
+            <td><input readonly id="ProdYearcode-@Cntr" type="number" style="width:50px;" value="@item.ProdYearcode" /></td>
+            <td><input readonly id="TransferedQty-@Cntr" type="number" style="width:50px;" value="@item.TransferedQty" /></td>
+            <td><input readonly id="PendForTransfQty-@Cntr" type="number" style="width:50px;" value="@item.PendForTransfQty" /></td>
+            <td><input readonly id="MaterialIstransfered-@Cntr" type="text" style="width:200px;" value="@item.MaterialIstransfered" /></td>
+            <td><input readonly id="Sampleqtytested-@Cntr" type="text" style="width:200px;" value="@item.Sampleqtytested" /></td>
+            <td><input id="TestingMethod-@Cntr" type="text" style="width:200px;" value="@item.TestingMethod" /></td>
+        </tr>
+    }
+}

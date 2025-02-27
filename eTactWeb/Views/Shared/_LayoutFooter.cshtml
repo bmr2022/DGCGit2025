@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
+    string empName = HttpContextAccessor.HttpContext.Session.GetString("EmpName");
+    string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
+    string FinFromDate = HttpContextAccessor.HttpContext.Session.GetString("FromDate");
+    // .Split(" ")[0];
+    string FinToDate = HttpContextAccessor.HttpContext.Session.GetString("ToDate");
+    //.Split(" ")[0];
+}
+<footer class="footer mt-auto py-3 text-light" style="background: radial-gradient(#168096, #04414a);">
+    <div class="container-fluid">
+        <section class="row">
+            <div class="col d-flex justify-content-evenly align-self-center">
+                <span>&copy; @System.DateTime.Now.Year. All rights are reserved to XON Cybernatics (P) Ltd - <a asp-area="" asp-controller="Home" tabindex="-1" asp-action="Privacy"></a></span>
+            </div>
+            <div class="col text-center align-self-center">
+                <i class="fa-solid fa-location-crosshairs fa-fw fa-beat-fade" style="--fa-secondary-opacity: 1.0; --fa-secondary-color: red;"></i> : <label>@Context?.Connection.LocalIpAddress <span id="machineName">@Environment.MachineName</span> @Environment.UserName</label>
+            </div>
+            @*<div class="col d-flex justify-content-evenly align-self-center">
+                <label>@Context?.Request?.Headers?.FirstOrDefault(s => s.Key.ToLower() == "user-agent").Value</label>
+            </div>*@
+            <div class="col d-flex justify-content-evenly align-self-center">
+                <label>
+                    WELCOME: @empName<br/>
+                    Branch: @branchName,
+                    FinancialYear: <b id="sessionYC" style="color:yellow">@yearCode</b>,<br />
+                    Fin From Date: @FinFromDate,
+                    Fin To Date: @FinToDate
+                </label>
+            </div>
+        </section>
+    </div>
+</footer>

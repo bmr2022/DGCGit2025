@@ -1,0 +1,341 @@
+﻿@model eTactWeb.DOM.Models.DPBDashBoard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@using System.Globalization
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-bordered TbCss text-nowrap mb-0" id="DPBDashboardGrid">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashDPBThead">
+            @if (Model.DashboardType != null && Model.DashboardType.ToLower() == "taxdetail")
+            {
+                <tr>
+                    <th>Sr#</th>
+                    @* <th>Action</th> *@
+                    @* <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th> *@
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice Date</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Amount</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxableamt</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Expense Head</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Expense Amt</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CGST Head</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CGST Per</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CGST Amt</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SGST Head</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SGST Per</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SGST Amt</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IGST Head</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IGST Per</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IGST Amt</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Amount</th>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <th>Sr#</th>
+                    <th>Action</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Document Type</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule No</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Year</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Date</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Qty</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate in other Currency</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc %</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Rs.</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
+                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Amount</th>
+                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entered By</th>
+                    <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
+                    <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Year Code</th>
+                </tr>
+            }
+        </thead>
+        <tbody id="divDashboardGrid1">
+            @{
+                var @Cntr = 0;
+                if (Model.DPBDashboard == null || Model.DPBDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="18" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    if (Model.DashboardType != null && Model.DashboardType.ToLower() == "taxdetail")
+                    {
+                        foreach (var item in Model.DPBDashboard)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr id="approvedRow-@Cntr">
+                                <td class="FWB">
+                                    @Cntr
+                                    <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
+                                </td>
+                                @*<td style="text-align:center;white-space: nowrap;">
+                                    <div id="container">
+                                        <div id="viewCursorDiv-@Cntr">
+                                            <a class="table-link link-success" asp-action="DirectPurchaseBill" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        @if (item.YearCode != yearCode)
+                                        {
+                                            <div>
+                                                <a class="table-link link-primary noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="editCursorDiv-@Cntr">
+                                                <a class="table-link link-primary" asp-action="DirectPurchaseBill" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        @if (item.YearCode != yearCode)
+                                        {
+                                            <div>
+                                                <a class="table-link link-danger noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="deleteCursorDiv-@Cntr">
+                                                <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode" asp-route-PurchVoucherNo="@item.PurchVouchNo" asp-route-InvNo="@item.InvoiceNo" asp-route-IsDetail="true">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>*@
+                                @*<td>@item.EntryID</td>*@
+                                <td>@item.VendorName</td>
+                                <td>@item.PurchVouchNo</td>
+                                <td>@item.InvoiceNo</td>
+                                <td>
+                                    @(item.InvoiceDate.HasValue
+                                    ? item.InvoiceDate.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                                    : string.Empty)
+                                </td>
+                                <td>@item.PartCode</td>
+                                <td>@item.ItemName</td>
+                                <td>@item.BasicAmount</td>
+                                <td>@item.GSTAmount</td>
+                                <td>@item.TaxableAmount</td>
+                                <td>@item.ExpenseHead</td>
+                                <td>@item.ExpenseAmt</td>
+                                <td>@item.CGSTHead</td>
+                                <td>@item.CGSTper</td>
+                                <td>@item.CGSTAmt</td>
+                                <td>@item.SGSTHead</td>
+                                <td>@item.SGSTper</td>
+                                <td>@item.SGSTAmt</td>
+                                <td>@item.IGSTHead</td>
+                                <td>@item.IGSTper</td>
+                                <td>@item.IGSTAmt</td>
+                                <td>@item.NetAmount</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in Model.DPBDashboard)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr id="approvedRow-@Cntr">
+                                <td class="FWB">
+                                    @Cntr
+                                    <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
+                                </td>
+                                <td style="text-align:center;white-space: nowrap;">
+                                    <div id="container">
+                                        <div id="viewCursorDiv-@Cntr">
+                                            <a class="table-link link-success" asp-action="DirectPurchaseBill" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        @if ((!string.IsNullOrEmpty(item.AgainstInvNo) || !string.IsNullOrEmpty(item.AgainstVoucherNo) || item.AgainstVoucherDate != null) || (item.BalanceSheetClosed != "Y") || (item.YearCode != yearCode))
+                                        {
+                                            <div>
+                                                <a class="table-link link-primary noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="editCursorDiv-@Cntr">
+                                                <a class="table-link link-primary" asp-action="DirectPurchaseBill" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        @*@if (item.YearCode != yearCode)
+                                        {
+                                            <div>
+                                                <a class="table-link link-danger noCursor">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="deleteCursorDiv-@Cntr">
+                                                <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode" asp-route-PurchVoucherNo="@item.PurchVouchNo" asp-route-InvNo="@item.InvoiceNo" asp-route-IsDetail="true">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        }*@
+                                    </div>
+                                </td>
+                                <td>@item.EntryID</td>
+                                <td>@item.VendorName</td>
+                                <td>@item.PurchVouchNo</td>
+                                <td>@item.InvoiceNo</td>
+                                <td>@item.DocumentType</td>
+                                <td>@item.PartCode</td>
+                                <td>@item.ItemName</td>
+                                <td>@item.PONo</td>
+                                <td>@item.POYearCode</td>
+                                <td>
+                                    @{
+                                        DateTime parsedDate;
+                                        string formattedDate = DateTime.TryParse(item.PODate, out parsedDate)
+                                        ? parsedDate.ToString("dd/MM/yyyy")
+                                        : string.Empty;
+                                    }
+                                    @formattedDate
+                                </td>
+                                <td>@item.SchNo</td>
+                                <td>@item.SchYearCode</td>
+                                <td>
+                                    @{
+                                        DateTime parsedDate1;
+                                        string formattedDate1 = DateTime.TryParse(item.SchDate, out parsedDate1)
+                                        ? parsedDate1.ToString("dd/MM/yyyy")
+                                        : string.Empty;
+                                    }
+                                    @formattedDate1
+                                </td>
+                                <td>@item.HsnNo</td>
+                                <td>@item.DPBQty</td>
+                                <td>@item.Unit</td>
+                                <td>@item.BillQty</td>
+                                <td>@item.Rate</td>
+                                <td>@item.RateInOtherCurr</td>
+                                <td>@item.DiscPer</td>
+                                <td>@item.DiscRs</td>
+                                <td>@item.Amount</td>
+                                <td>@item.Remark</td>
+                                <td>@item.NetAmount</td>
+                                <td>@item.EnteredBy</td>
+                                <td>@item.UpdatedByName</td>
+                                <td>@item.YearCode</td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </tbody>
+    </table>
+
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #DPBDashboardGrid {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashDPBThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

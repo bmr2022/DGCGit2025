@@ -1,0 +1,1241 @@
+﻿@model eTactWeb.DOM.Models.ProductionDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+@{
+    ViewData["Title"] = "ProductionEntryDashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <form id="SParam" method="post" asp-controller="ProductionEntry" asp-action="ProductionEntryDashboard" autocomplete="off">
+        <div class="card rounded border-light bg-gradient">
+            <div class="card-header card-headerBG text-light bg-gradient">
+                <h5>
+                    Production Entry - <strong>Dashboard</strong> : @yearCode
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="ProductionEntry" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                            <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                            Add New
+                        </a>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" class="form-control" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" class="form-control" />
+                                    </div>
+                                    <input asp-for="FromDate1" type="hidden" />
+                                    <input asp-for="ToDate1" type="hidden" />
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="SlipNo" class="form-label">Slip No</label>
+                                <input asp-for="SlipNo" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="ItemName" class="form-label">Item Name</label>
+                                <input asp-for="ItemName" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="PartCode" class="form-label">Part Code</label>
+                                <input asp-for="PartCode" class="form-control" />
+                            </div>
+                            <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="ProdPlanNo" class="form-label">Prod Plan No</label>
+                                <input asp-for="ProdPlanNo" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="ProdSchNo" class="form-label">Prod Sch No</label>
+                                <input asp-for="ProdSchNo" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="ReqNo" class="form-label">Req No</label>
+                                <input asp-for="ReqNo" class="form-control" />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
+                                <select asp-for="DashboardType" class="form-select" onchange="GetSearchData();">
+                                    <option value="" disabled>-Select-</option>
+                                    <option value="Summary" selected>Summary</option>
+                                    <option value="Detail">Detail</option>
+                                    <option value="DetailWithBatchwise">Detail With Batchwise</option>
+                                    <option value="Breakdown">Breakdown</option>
+                                    <option value="Operation">Operator</option>
+                                    <option value="Scrap">Scrap</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class=" d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+                                <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="GateInward" asp-action="Dashboard">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pb-0 pt-0">
+                <div class="progress" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body" id="divDashboardGrid">
+                        <partial name="_ProductionEntryDashboardGrid" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(function () {
+             
+            var FromDateBack = sessionStorage.getItem('FromDateBack');
+            var ToDateBack = sessionStorage.getItem('ToDateBack');
+            var SlipNoBack = sessionStorage.getItem('SlipNoBack');
+            var PartCodeBack = sessionStorage.getItem('PartCodeBack');
+            var ItemNameBack = sessionStorage.getItem('ItemNameBack');
+            var ProdPlanNoBack = sessionStorage.getItem('ProdPlanNoBack');
+            var ProdSchNoBack = sessionStorage.getItem('ProdSchNoBack');
+            var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
+            var ReqNoBack = sessionStorage.getItem('ReqNoBack');
+            var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+             
+            GetServerDate();
+            if ($('#gateDashboardtable tr').length < 1) {
+                var dashGrid = 0;
+                $('#totalRows').text(dashGrid);
+            } else {
+                var dashGrid = $('#gateDashboardtable tr').length;
+                $('#totalRows').text(dashGrid);
+            }
+
+            var currentDate = new Date();
+
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            function formatDate(date) {
+                var day = ("0" + date.getDate()).slice(-2);
+                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                var year = date.getFullYear();
+                var dateString = day + "/" + month + "/" + year;
+                return dateString;
+            }
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            AutoComplete('VProductionEntryMainDetail', 'SlipNo', 'ProdSlipNo', null);
+            AutoComplete('VProductionEntryMainDetail', 'ItemName', 'FGItemName', null);
+            AutoComplete('VProductionEntryMainDetail', 'PartCode', 'FGPartCode', null);
+            AutoComplete('VProductionEntryMainDetail', 'ProdPlanNo', 'ProdPlanNo', null);
+            AutoComplete('VProductionEntryMainDetail', 'ProdSchNo', 'ProdPlanSchNo', null);
+            AutoComplete('VProductionEntryMainDetail', 'ReqNo', 'Reqno', null);
+
+            if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
+
+                var inputFromDateString = $('#FromDate1').val().split(" ")[0];
+                var inputToDateString = $('#ToDate1').val().split(" ")[0];
+
+                var originalFromDate = new Date(inputFromDateString);
+                var originalToDate = new Date(inputToDateString);
+
+                var day = originalFromDate.getDate();
+                var month = originalFromDate.getMonth() + 1; // Months are zero-based
+                var year = originalFromDate.getFullYear();
+
+                var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+                var day = originalToDate.getDate();
+                var month = originalToDate.getMonth() + 1; // Months are zero-based
+                var year = originalToDate.getFullYear();
+
+                var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+                $('#FromDate').val(convertedFromDateText);
+                $('#ToDate').val(convertedToDateText);
+            }
+
+            if (FromDateBack != null && FromDateBack != '') {
+                 
+                $('#FromDate').val(FromDateBack);
+                $('#ToDate').val(ToDateBack);
+                $('#SlipNo').val(SlipNoBack);
+                $('#ItemName').val(ItemNameBack);
+                $('#PartCode').val(PartCodeBack);
+                $('#ProdPlanNo').val(ProdPlanNoBack);
+                $('#ProdSchNo').val(ProdSchNoBack);
+                $('#search-box').val(GlobalSearchBack);
+                $('#DashboardType').val(DashboardTypeBack);
+                $('#ReqNo').val(ReqNoBack);
+            }
+
+            GetSearchData();
+            $("#search-box").val($('#search-box').val()).trigger('keyup');
+
+            sessionStorage.removeItem('FromDateBack');
+            sessionStorage.removeItem('ToDateBack');
+            sessionStorage.removeItem('SlipNoBack');
+            sessionStorage.removeItem('PartCodeBack');
+            sessionStorage.removeItem('ItemNameBack');
+            sessionStorage.removeItem('ProdPlanNoBack');
+            sessionStorage.removeItem('GlobalSearchBack');
+            sessionStorage.removeItem('DashboardTypeBack');
+            sessionStorage.removeItem('ProdSchNoBack');
+            sessionStorage.removeItem('ReqNoBack');
+        });
+
+        $('#FromDate').change(function () {
+            GetSearchData();
+        })
+
+        $('#ToDate').change(function () {
+            GetSearchData();
+        })
+
+        $('#SlipNo').change(function () {
+            GetSearchData();
+        })
+
+        $('#ItemName').change(function () {
+            GetSearchData();
+        })
+
+        $('#PartCode').change(function () {
+            GetSearchData();
+        })
+
+        $('#ProdPlanNo').change(function () {
+            GetSearchData();
+        })
+
+        $('#ProdSchNo').change(function () {
+            GetSearchData();
+        })
+
+        $('#ReqNo').change(function () {
+            GetSearchData();
+        })
+
+        $('#DashboardType').change(function () {
+            GetSearchData();
+        })
+
+        function GetSearchData() {
+
+            if ($('#DashboardType').val() == "Summary") {
+                GetSummaryData();
+            }
+            else if ($('#DashboardType').val() == "Breakdown") {
+                GetBreakdownData();
+            }
+            else if ($('#DashboardType').val() == "DetailWithBatchwise") {
+                GetBatchwiseDetail();
+            }
+            else if ($('#DashboardType').val() == "Operation") {
+                GetOperationData();
+            }
+            else if ($('#DashboardType').val() == "Scrap") {
+                GetScrapData();
+            }
+            else {
+                GetDetailData();
+            }
+        }
+
+        function CheckApprovedOrNot() {
+             
+            var columnLength = $('#gateDashboardtable tr').length;
+            var rowLength = $('#gateDashboardtable tr').length;
+            if (columnLength > 1) {
+                for (var i = 1; i <= rowLength; i++) {
+                    var QcMandatory = $('#QcMandatory-' + i).text();
+                    var PendQtyForQc = parseInt($('#PendQtyForQc-' + i).text());
+                    if (QcMandatory == "Y" && PendQtyForQc > 0) 
+                    {
+                        $('.seqno-' + i).css("color", "red");
+                        $('.partcode-' + i).css("color", "red");
+                        $('.itemname-' + i).css("color", "red");
+                        $('.proddate-' + i).css("color", "red");
+                        $('.prodslipno-' + i).css("color", "red");
+                        $('.prodagainst-' + i).css("color", "red");
+                        $('.newprod-' + i).css("color", "red");
+                        $('.prodinwc-' + i).css("color", "red");
+                        $('.stagedescription-' + i).css("color", "red");
+                        $('.prodschqty-' + i).css("color", "red");
+                        $('.fgprodqty-' + i).css("color", "red");
+                        $('.fgokqty-' + i).css("color", "red");
+                        $('.fgrej-' + i).css("color", "red");
+                        $('.nexttostore-' + i).css("color", "red");
+                        $('.nexttoworkcenter-' + i).css("color", "red");
+                        $('.transferwcorstore-' + i).css("color", "red");
+                        $('.rejqtyinwc-' + i).css("color", "red");
+                        $('.rejqty-' + i).css("color", "red");
+                        $('.stratuprejqty-' + i).css("color", "red");
+                        $('.transfertoqc-' + i).css("color", "red");
+                        $('.storewc-' + i).css("color", "red");
+                        $('.bomno-' + i).css("color", "red");
+                        $('.bomdate-' + i).css("color", "red");
+                        $('.machinename-' + i).css("color", "red");
+                        $('.qcchecked-' + i).css("color", "red");
+                        $('.prodplanno-' + i).css("color", "red");
+                        $('.prodplanyearcode-' + i).css("color", "red");
+                        $('.prodplandate-' + i).css("color", "red");
+                        $('.prodplanschno-' + i).css("color", "red");
+                        $('.prodplanschyear-' + i).css("color", "red");
+                        $('.prodplanschdate-' + i).css("color", "red");
+                        $('.reqno-' + i).css("color", "red");
+                        $('.reqyearcode-' + i).css("color", "red");
+                        $('.reqdate-' + i).css("color", "red");
+                        $('.batchno-' + i).css("color", "red");
+                        $('.uniquebatchno-' + i).css("color", "red");
+                        $('.strattime-' + i).css("color", "red");
+                        $('.totime-' + i).css("color", "red");
+                        $('.setuptime-' + i).css("color", "red");
+                        $('.prevwc-' + i).css("color", "red");
+                        $('.prodentryid-' + i).css("color", "red");
+                        $('.proddate-' + i).css("color", "red");
+                        $('.proddate-' + i).css("color", "red");
+                        $('.entrydate-' + i).css("color", "red");
+                        $('.prodyearcode-' + i).css("color", "red");
+                        $('.woqty-' + i).css("color", "red");
+                        $('.pendingqtytoissue-' + i).css("color", "red");
+                        $('.rejqtyduetotrail-' + i).css("color", "red");
+                        $('.pendqtyforprod-' + i).css("color", "red");
+                        $('.pendqtyforqc-' + i).css("color", "red");
+                        $('.rejstore-' + i).css("color", "red");
+                        $('.qcmandatory-' + i).css("color", "red");
+                        $('.producelineno-' + i).css("color", "red");
+                        $('.qcchecked-' + i).css("color", "red");
+                        $('.initialreading-' + i).css("color", "red");
+                        $('.finalreading-' + i).css("color", "red");
+                        $('.shots-' + i).css("color", "red");
+                        $('.completed-' + i).css("color", "red");
+                        $('.utilisedhr-' + i).css("color", "red");
+                        $('.prodline-' + i).css("color", "red");
+                        $('.stdshots-' + i).css("color", "red");
+                        $('.stdcycletime-' + i).css("color", "red");
+                        $('.remark-' + i).css("color", "red");
+                        $('.cyclictime-' + i).css("color", "red");
+                        $('.productionhour-' + i).css("color", "red");
+                        $('.itemmodel-' + i).css("color", "red");
+                        $('.cavity-' + i).css("color", "red");
+                        $('.efficiency-' + i).css("color", "red");
+                        $('.actualtimerequired-' + i).css("color", "red");
+                        $('.parentprodschno-' + i).css("color", "red");
+                        $('.parentprodschdate-' + i).css("color", "red");
+                        $('.parentprodschyearcode-' + i).css("color", "red");
+                        $('.sono-' + i).css("color", "red");
+                        $('.soyearcode-' + i).css("color", "red");
+                        $('.sodate-' + i).css("color", "red");
+                        $('.sotype-' + i).css("color", "red");
+                        $('.qcofferdate-' + i).css("color", "red");
+                        $('.qcqty-' + i).css("color", "red");
+                        $('.okqty-' + i).css("color", "red");
+                        $('.stockqty-' + i).css("color", "red");
+                        $('.mattransfer-' + i).css("color", "red");
+                        $('.rewqcyearcode-' + i).css("color", "red");
+                        $('.rewqcdate-' + i).css("color", "red");
+                        $('.shiftclose-' + i).css("color", "red");
+                        $('.complprod-' + i).css("color", "red");
+                        $('.cc-' + i).css("color", "red");
+                        $('.entrybymachine-' + i).css("color", "red");
+                        $('.actualentrybyname-' + i).css("color", "red");
+                        $('.actualentrydate-' + i).css("color", "red");
+                        $('.lastupdateby-' + i).css("color", "red");
+                        $('.lastupdationdate-' + i).css("color", "red");
+                        $('.entrydesignation-' + i).css("color", "red");
+                        $('.operatorname-' + i).css("color", "red");
+                        $('.supervisior-' + i).css("color", "red");
+                    }
+                    if (QcMandatory == "Y" && PendQtyForQc == 0) {
+                        $('.seqno-' + i).css("color", "green");
+                        $('.partcode-' + i).css("color", "green");
+                        $('.itemname-' + i).css("color", "green");
+                        $('.proddate-' + i).css("color", "green");
+                        $('.prodslipno-' + i).css("color", "green");
+                        $('.prodagainst-' + i).css("color", "green");
+                        $('.newprod-' + i).css("color", "green");
+                        $('.prodinwc-' + i).css("color", "green");
+                        $('.stagedescription-' + i).css("color", "green");
+                        $('.prodschqty-' + i).css("color", "green");
+                        $('.fgprodqty-' + i).css("color", "green");
+                        $('.fgokqty-' + i).css("color", "green");
+                        $('.fgrej-' + i).css("color", "green");
+                        $('.nexttostore-' + i).css("color", "green");
+                        $('.nexttoworkcenter-' + i).css("color", "green");
+                        $('.transferwcorstore-' + i).css("color", "green");
+                        $('.rejqtyinwc-' + i).css("color", "green");
+                        $('.rejqty-' + i).css("color", "green");
+                        $('.stratuprejqty-' + i).css("color", "green");
+                        $('.transfertoqc-' + i).css("color", "green");
+                        $('.storewc-' + i).css("color", "green");
+                        $('.bomno-' + i).css("color", "green");
+                        $('.bomdate-' + i).css("color", "green");
+                        $('.machinename-' + i).css("color", "green");
+                        $('.qcchecked-' + i).css("color", "green");
+                        $('.prodplanno-' + i).css("color", "green");
+                        $('.prodplanyearcode-' + i).css("color", "green");
+                        $('.prodplandate-' + i).css("color", "green");
+                        $('.prodplanschno-' + i).css("color", "green");
+                        $('.prodplanschyear-' + i).css("color", "green");
+                        $('.prodplanschdate-' + i).css("color", "green");
+                        $('.reqno-' + i).css("color", "green");
+                        $('.reqyearcode-' + i).css("color", "green");
+                        $('.reqdate-' + i).css("color", "green");
+                        $('.batchno-' + i).css("color", "green");
+                        $('.uniquebatchno-' + i).css("color", "green");
+                        $('.strattime-' + i).css("color", "green");
+                        $('.totime-' + i).css("color", "green");
+                        $('.setuptime-' + i).css("color", "green");
+                        $('.prevwc-' + i).css("color", "green");
+                        $('.prodentryid-' + i).css("color", "green");
+                        $('.proddate-' + i).css("color", "green");
+                        $('.entrydate-' + i).css("color", "green");
+                        $('.prodyearcode-' + i).css("color", "green");
+                        $('.woqty-' + i).css("color", "green");
+                        $('.pendingqtytoissue-' + i).css("color", "green");
+                        $('.rejqtyduetotrail-' + i).css("color", "green");
+                        $('.pendqtyforprod-' + i).css("color", "green");
+                        $('.pendqtyforqc-' + i).css("color", "green");
+                        $('.rejstore-' + i).css("color", "green");
+                        $('.qcmandatory-' + i).css("color", "green");
+                        $('.producelineno-' + i).css("color", "green");
+                        $('.qcchecked-' + i).css("color", "green");
+                        $('.initialreading-' + i).css("color", "green");
+                        $('.finalreading-' + i).css("color", "green");
+                        $('.shots-' + i).css("color", "green");
+                        $('.completed-' + i).css("color", "green");
+                        $('.utilisedhr-' + i).css("color", "green");
+                        $('.prodline-' + i).css("color", "green");
+                        $('.stdshots-' + i).css("color", "green");
+                        $('.stdcycletime-' + i).css("color", "green");
+                        $('.remark-' + i).css("color", "green");
+                        $('.cyclictime-' + i).css("color", "green");
+                        $('.productionhour-' + i).css("color", "green");
+                        $('.itemmodel-' + i).css("color", "green");
+                        $('.cavity-' + i).css("color", "green");
+                        $('.efficiency-' + i).css("color", "green");
+                        $('.actualtimerequired-' + i).css("color", "green");
+                        $('.parentprodschno-' + i).css("color", "green");
+                        $('.parentprodschdate-' + i).css("color", "green");
+                        $('.parentprodschyearcode-' + i).css("color", "green");
+                        $('.sono-' + i).css("color", "green");
+                        $('.soyearcode-' + i).css("color", "green");
+                        $('.sodate-' + i).css("color", "green");
+                        $('.sotype-' + i).css("color", "green");
+                        $('.qcofferdate-' + i).css("color", "green");
+                        $('.qcqty-' + i).css("color", "green");
+                        $('.okqty-' + i).css("color", "green");
+                        $('.stockqty-' + i).css("color", "green");
+                        $('.mattransfer-' + i).css("color", "green");
+                        $('.rewqcyearcode-' + i).css("color", "green");
+                        $('.rewqcdate-' + i).css("color", "green");
+                        $('.shiftclose-' + i).css("color", "green");
+                        $('.complprod-' + i).css("color", "green");
+                        $('.cc-' + i).css("color", "green");
+                        $('.entrybymachine-' + i).css("color", "green");
+                        $('.actualentrybyname-' + i).css("color", "green");
+                        $('.actualentrydate-' + i).css("color", "green");
+                        $('.lastupdateby-' + i).css("color", "green");
+                        $('.lastupdationdate-' + i).css("color", "green");
+                        $('.entrydesignation-' + i).css("color", "green");
+                        $('.operatorname-' + i).css("color", "green");
+                        $('.supervisior-' + i).css("color", "green");
+                    }
+                    if (QcMandatory == "N" || QcMandatory == "") {
+                        $('.seqno-' + i).css("color", "blue");
+                        $('.partcode-' + i).css("color", "blue");
+                        $('.itemname-' + i).css("color", "blue");
+                        $('.proddate-' + i).css("color", "blue");
+                        $('.prodslipno-' + i).css("color", "blue");
+                        $('.prodagainst-' + i).css("color", "blue");
+                        $('.newprod-' + i).css("color", "blue");
+                        $('.prodinwc-' + i).css("color", "blue");
+                        $('.stagedescription-' + i).css("color", "blue");
+                        $('.prodschqty-' + i).css("color", "blue");
+                        $('.fgprodqty-' + i).css("color", "blue");
+                        $('.fgokqty-' + i).css("color", "blue");
+                        $('.fgrej-' + i).css("color", "blue");
+                        $('.nexttostore-' + i).css("color", "blue");
+                        $('.nexttoworkcenter-' + i).css("color", "blue");
+                        $('.transferwcorstore-' + i).css("color", "blue");
+                        $('.rejqtyinwc-' + i).css("color", "blue");
+                        $('.rejqty-' + i).css("color", "blue");
+                        $('.stratuprejqty-' + i).css("color", "blue");
+                        $('.transfertoqc-' + i).css("color", "blue");
+                        $('.storewc-' + i).css("color", "blue");
+                        $('.bomno-' + i).css("color", "blue");
+                        $('.bomdate-' + i).css("color", "blue");
+                        $('.machinename-' + i).css("color", "blue");
+                        $('.qcchecked-' + i).css("color", "blue");
+                        $('.prodplanno-' + i).css("color", "blue");
+                        $('.prodplanyearcode-' + i).css("color", "blue");
+                        $('.prodplandate-' + i).css("color", "blue");
+                        $('.prodplanschno-' + i).css("color", "blue");
+                        $('.prodplanschyear-' + i).css("color", "blue");
+                        $('.prodplanschdate-' + i).css("color", "blue");
+                        $('.reqno-' + i).css("color", "blue");
+                        $('.reqyearcode-' + i).css("color", "blue");
+                        $('.reqdate-' + i).css("color", "blue");
+                        $('.batchno-' + i).css("color", "blue");
+                        $('.uniquebatchno-' + i).css("color", "blue");
+                        $('.strattime-' + i).css("color", "blue");
+                        $('.totime-' + i).css("color", "blue");
+                        $('.setuptime-' + i).css("color", "blue");
+                        $('.prevwc-' + i).css("color", "blue");
+                        $('.prodentryid-' + i).css("color", "blue");
+                        $('.proddate-' + i).css("color", "blue");
+                        $('.entrydate-' + i).css("color", "blue");
+                        $('.prodyearcode-' + i).css("color", "blue");
+                        $('.woqty-' + i).css("color", "blue");
+                        $('.pendingqtytoissue-' + i).css("color", "blue");
+                        $('.rejqtyduetotrail-' + i).css("color", "blue");
+                        $('.pendqtyforprod-' + i).css("color", "blue");
+                        $('.pendqtyforqc-' + i).css("color", "blue");
+                        $('.rejstore-' + i).css("color", "blue");
+                        $('.qcmandatory-' + i).css("color", "blue");
+                        $('.producelineno-' + i).css("color", "blue");
+                        $('.qcchecked-' + i).css("color", "blue");
+                        $('.initialreading-' + i).css("color", "blue");
+                        $('.finalreading-' + i).css("color", "blue");
+                        $('.shots-' + i).css("color", "blue");
+                        $('.completed-' + i).css("color", "blue");
+                        $('.utilisedhr-' + i).css("color", "blue");
+                        $('.prodline-' + i).css("color", "blue");
+                        $('.stdshots-' + i).css("color", "blue");
+                        $('.stdcycletime-' + i).css("color", "blue");
+                        $('.remark-' + i).css("color", "blue");
+                        $('.cyclictime-' + i).css("color", "blue");
+                        $('.productionhour-' + i).css("color", "blue");
+                        $('.itemmodel-' + i).css("color", "blue");
+                        $('.cavity-' + i).css("color", "blue");
+                        $('.efficiency-' + i).css("color", "blue");
+                        $('.actualtimerequired-' + i).css("color", "blue");
+                        $('.parentprodschno-' + i).css("color", "blue");
+                        $('.parentprodschdate-' + i).css("color", "blue");
+                        $('.parentprodschyearcode-' + i).css("color", "blue");
+                        $('.sono-' + i).css("color", "blue");
+                        $('.soyearcode-' + i).css("color", "blue");
+                        $('.sodate-' + i).css("color", "blue");
+                        $('.sotype-' + i).css("color", "blue");
+                        $('.qcofferdate-' + i).css("color", "blue");
+                        $('.qcqty-' + i).css("color", "blue");
+                        $('.okqty-' + i).css("color", "blue");
+                        $('.stockqty-' + i).css("color", "blue");
+                        $('.mattransfer-' + i).css("color", "blue");
+                        $('.rewqcyearcode-' + i).css("color", "blue");
+                        $('.rewqcdate-' + i).css("color", "blue");
+                        $('.shiftclose-' + i).css("color", "blue");
+                        $('.complprod-' + i).css("color", "blue");
+                        $('.cc-' + i).css("color", "blue");
+                        $('.entrybymachine-' + i).css("color", "blue");
+                        $('.actualentrybyname-' + i).css("color", "blue");
+                        $('.actualentrydate-' + i).css("color", "blue");
+                        $('.lastupdateby-' + i).css("color", "blue");
+                        $('.lastupdationdate-' + i).css("color", "blue");
+                        $('.entrydesignation-' + i).css("color", "blue");
+                        $('.operatorname-' + i).css("color", "blue");
+                        $('.supervisior-' + i).css("color", "blue");
+                    }
+                }
+            }
+        }
+
+        function CheckApprovedOrNotDetail() {
+            var columnLength = $('#gateDashboardtable tr').length;
+            var rowLength = $('#gateDashboardtable tr').length;
+            if (columnLength > 1) {
+                for (var i = 1; i <= rowLength; i++) {
+                    var QcMandatory = $('#QcMandatory-' + i).text();
+                    var PendQtyForQc = parseInt($('#PendQtyForQc-' + i).text());
+                    if (QcMandatory == "Y" && PendQtyForQc > 0) {
+                        $('.newprodrework-' + i).css("color", "red");
+                        $('.prodslipno-' + i).css("color", "red");
+                        $('.proddate-' + i).css("color", "red");
+                        $('.fgpartcode-' + i).css("color", "red");
+                        $('.fgitemname-' + i).css("color", "red");
+                        $('.workcenter-' + i).css("color", "red");
+                        $('.prodqty-' + i).css("color", "red");
+                        $('.unit-' + i).css("color", "red");
+                        $('.rmpartcode-' + i).css("color", "red");
+                        $('.rmitemname-' + i).css("color", "red");
+                        $('.consumedrmqty-' + i).css("color", "red");
+                        $('.consumedrmunit-' + i).css("color", "red");
+                        $('.mainrmqty-' + i).css("color", "red");
+                        $('.mainrmunit-' + i).css("color", "red");
+                        $('.totalreqrmqty-' + i).css("color", "red");
+                        $('.totalstock-' + i).css("color", "red");
+                        $('.altrmqty-' + i).css("color", "red");
+                        $('.altrmunit-' + i).css("color", "red");
+                        $('.rmnetwt-' + i).css("color", "red");
+                        $('.grosswt-' + i).css("color", "red");
+                        $('.bomno-' + i).css("color", "red");
+                        $('.bomrevdate-' + i).css("color", "red");
+                        $('.manualautoentry-' + i).css("color", "red");
+                        $('.entryid-' + i).css("color", "red");
+                        $('.yearcode-' + i).css("color", "red");
+                        $('.qcmandatory-' + i).css("color", "red");
+                        $('.pendqtyforqc-' + i).css("color", "red");
+                    }
+                    if (QcMandatory == "Y" && PendQtyForQc == 0) {
+                        $('.newprodrework-' + i).css("color", "green");
+                        $('.prodslipno-' + i).css("color", "green");
+                        $('.proddate-' + i).css("color", "green");
+                        $('.fgpartcode-' + i).css("color", "green");
+                        $('.fgitemname-' + i).css("color", "green");
+                        $('.workcenter-' + i).css("color", "green");
+                        $('.prodqty-' + i).css("color", "green");
+                        $('.unit-' + i).css("color", "green");
+                        $('.rmpartcode-' + i).css("color", "green");
+                        $('.rmitemname-' + i).css("color", "green");
+                        $('.consumedrmqty-' + i).css("color", "green");
+                        $('.consumedrmunit-' + i).css("color", "green");
+                        $('.mainrmqty-' + i).css("color", "green");
+                        $('.mainrmunit-' + i).css("color", "green");
+                        $('.totalreqrmqty-' + i).css("color", "green");
+                        $('.totalstock-' + i).css("color", "green");
+                        $('.altrmqty-' + i).css("color", "green");
+                        $('.altrmunit-' + i).css("color", "green");
+                        $('.rmnetwt-' + i).css("color", "green");
+                        $('.grosswt-' + i).css("color", "green");
+                        $('.bomno-' + i).css("color", "green");
+                        $('.bomrevdate-' + i).css("color", "green");
+                        $('.manualautoentry-' + i).css("color", "green");
+                        $('.entryid-' + i).css("color", "green");
+                        $('.yearcode-' + i).css("color", "green");
+                        $('.qcmandatory-' + i).css("color", "green");
+                        $('.pendqtyforqc-' + i).css("color", "green");
+                    }
+                    if (QcMandatory == "N" || QcMandatory == "") {
+                        $('.newprodrework-' + i).css("color", "blue");
+                        $('.prodslipno-' + i).css("color", "blue");
+                        $('.proddate-' + i).css("color", "blue");
+                        $('.fgpartcode-' + i).css("color", "blue");
+                        $('.fgitemname-' + i).css("color", "blue");
+                        $('.workcenter-' + i).css("color", "blue");
+                        $('.prodqty-' + i).css("color", "blue");
+                        $('.unit-' + i).css("color", "blue");
+                        $('.rmpartcode-' + i).css("color", "blue");
+                        $('.rmitemname-' + i).css("color", "blue");
+                        $('.consumedrmqty-' + i).css("color", "blue");
+                        $('.consumedrmunit-' + i).css("color", "blue");
+                        $('.mainrmqty-' + i).css("color", "blue");
+                        $('.mainrmunit-' + i).css("color", "blue");
+                        $('.totalreqrmqty-' + i).css("color", "blue");
+                        $('.totalstock-' + i).css("color", "blue");
+                        $('.altrmqty-' + i).css("color", "blue");
+                        $('.altrmunit-' + i).css("color", "blue");
+                        $('.rmnetwt-' + i).css("color", "blue");
+                        $('.grosswt-' + i).css("color", "blue");
+                        $('.bomno-' + i).css("color", "blue");
+                        $('.bomrevdate-' + i).css("color", "blue");
+                        $('.manualautoentry-' + i).css("color", "blue");
+                        $('.entryid-' + i).css("color", "blue");
+                        $('.yearcode-' + i).css("color", "blue");
+                        $('.qcmandatory-' + i).css("color", "blue");
+                        $('.pendqtyforqc-' + i).css("color", "blue");
+                    }
+                }
+            }
+        }
+
+        function CheckApprovedOrNotBatchWiseDetail() {
+            var columnLength = $('#gateDashboardtable tr').length;
+            var rowLength = $('#gateDashboardtable tr').length;
+            if (columnLength > 1) {
+                for (var i = 1; i <= rowLength; i++) {
+                    var QcMandatory = $('#QcMandatory-' + i).text();
+                    var PendQtyForQc = parseInt($('#PendQtyForQc-' + i).text());
+                    if (QcMandatory == "Y" && PendQtyForQc > 0) {
+                        $('.newprodrework-' + i).css("color", "red");
+                        $('.prodslipno-' + i).css("color", "red");
+                        $('.proddate-' + i).css("color", "red");
+                        $('.fgpartcode-' + i).css("color", "red");
+                        $('.fgitemname-' + i).css("color", "red");
+                        $('.workcenter-' + i).css("color", "red");
+                        $('.prodqty-' + i).css("color", "red");
+                        $('.unit-' + i).css("color", "red");
+                        $('.rmpartcode-' + i).css("color", "red");
+                        $('.rmitemname-' + i).css("color", "red");
+                        $('.consumedrmqty-' + i).css("color", "red");
+                        $('.consumedrmunit-' + i).css("color", "red");
+                        $('.mainrmqty-' + i).css("color", "red");
+                        $('.mainrmunit-' + i).css("color", "red");
+                        $('.fgprodqty-' + i).css("color", "red");
+                        $('.totalreqrmqty-' + i).css("color", "red");
+                        $('.totalstock-' + i).css("color", "red");
+                        $('.batchstock-' + i).css("color", "red");
+                        $('.altrmqty-' + i).css("color", "red");
+                        $('.altrmunit-' + i).css("color", "red");
+                        $('.rmnetwt-' + i).css("color", "red");
+                        $('.grosswt-' + i).css("color", "red");
+                        $('.batchwise-' + i).css("color", "red");
+                        $('.batchno-' + i).css("color", "red");
+                        $('.uniquebatchno-' + i).css("color", "red");
+                        $('.bomno-' + i).css("color", "red");
+                        $('.bomrevdate-' + i).css("color", "red");
+                        $('.manualautoentry-' + i).css("color", "red");
+                        $('.entryid-' + i).css("color", "red");
+                        $('.yearcode-' + i).css("color", "red");
+                        $('.qcmandatory-' + i).css("color", "red");
+                        $('.pendqtyforqc-' + i).css("color", "red");
+                    }
+                    if (QcMandatory == "Y" && PendQtyForQc == 0) {
+                        $('.newprodrework-' + i).css("color", "green");
+                        $('.prodslipno-' + i).css("color", "green");
+                        $('.proddate-' + i).css("color", "green");
+                        $('.fgpartcode-' + i).css("color", "green");
+                        $('.fgitemname-' + i).css("color", "green");
+                        $('.workcenter-' + i).css("color", "green");
+                        $('.prodqty-' + i).css("color", "green");
+                        $('.unit-' + i).css("color", "green");
+                        $('.rmpartcode-' + i).css("color", "green");
+                        $('.rmitemname-' + i).css("color", "green");
+                        $('.consumedrmqty-' + i).css("color", "green");
+                        $('.consumedrmunit-' + i).css("color", "green");
+                        $('.mainrmqty-' + i).css("color", "green");
+                        $('.mainrmunit-' + i).css("color", "green");
+                        $('.fgprodqty-' + i).css("color", "green");
+                        $('.totalreqrmqty-' + i).css("color", "green");
+                        $('.totalstock-' + i).css("color", "green");
+                        $('.batchstock-' + i).css("color", "green");
+                        $('.altrmqty-' + i).css("color", "green");
+                        $('.altrmunit-' + i).css("color", "green");
+                        $('.rmnetwt-' + i).css("color", "green");
+                        $('.grosswt-' + i).css("color", "green");
+                        $('.batchwise-' + i).css("color", "green");
+                        $('.batchno-' + i).css("color", "green");
+                        $('.uniquebatchno-' + i).css("color", "green");
+                        $('.bomno-' + i).css("color", "green");
+                        $('.bomrevdate-' + i).css("color", "green");
+                        $('.manualautoentry-' + i).css("color", "green");
+                        $('.entryid-' + i).css("color", "green");
+                        $('.yearcode-' + i).css("color", "green");
+                        $('.qcmandatory-' + i).css("color", "green");
+                        $('.pendqtyforqc-' + i).css("color", "green");
+                    }
+                    if (QcMandatory == "N" || QcMandatory == "") {
+                        $('.newprodrework-' + i).css("color", "blue");
+                        $('.prodslipno-' + i).css("color", "blue");
+                        $('.proddate-' + i).css("color", "blue");
+                        $('.fgpartcode-' + i).css("color", "blue");
+                        $('.fgitemname-' + i).css("color", "blue");
+                        $('.workcenter-' + i).css("color", "blue");
+                        $('.prodqty-' + i).css("color", "blue");
+                        $('.unit-' + i).css("color", "blue");
+                        $('.rmpartcode-' + i).css("color", "blue");
+                        $('.rmitemname-' + i).css("color", "blue");
+                        $('.consumedrmqty-' + i).css("color", "blue");
+                        $('.consumedrmunit-' + i).css("color", "blue");
+                        $('.mainrmqty-' + i).css("color", "blue");
+                        $('.mainrmunit-' + i).css("color", "blue");
+                        $('.fgprodqty-' + i).css("color", "blue");
+                        $('.totalreqrmqty-' + i).css("color", "blue");
+                        $('.totalstock-' + i).css("color", "blue");
+                        $('.batchstock-' + i).css("color", "blue");
+                        $('.altrmqty-' + i).css("color", "blue");
+                        $('.altrmunit-' + i).css("color", "blue");
+                        $('.rmnetwt-' + i).css("color", "blue");
+                        $('.grosswt-' + i).css("color", "blue");
+                        $('.batchwise-' + i).css("color", "blue");
+                        $('.batchno-' + i).css("color", "blue");
+                        $('.uniquebatchno-' + i).css("color", "blue");
+                        $('.bomno-' + i).css("color", "blue");
+                        $('.bomrevdate-' + i).css("color", "blue");
+                        $('.manualautoentry-' + i).css("color", "blue");
+                        $('.entryid-' + i).css("color", "blue");
+                        $('.yearcode-' + i).css("color", "blue");
+                        $('.qcmandatory-' + i).css("color", "blue");
+                        $('.pendqtyforqc-' + i).css("color", "blue");
+                    }
+                }
+            }
+        }
+
+        function CheckApprovedOrNotBreakdown() {
+            var columnLength = $('#gateDashboardtable tr').length;
+            var rowLength = $('#gateDashboardtable tr').length;
+            if (columnLength > 1) {
+                for (var i = 1; i <= rowLength; i++) {
+                    var QcMandatory = $('#QcMandatory-' + i).text();
+                    var PendQtyForQc = parseInt($('#PendQtyForQc-' + i).text());
+                    if (QcMandatory == "Y" && PendQtyForQc > 0) {
+                        $('.entryid-' + i).css("color", "red");
+                        $('.yearcode-' + i).css("color", "red");
+                        $('.proddate-' + i).css("color", "red");
+                        $('.breakfromtime-' + i).css("color", "red");
+                        $('.breaktotime-' + i).css("color", "red");
+                        $('.reasondetail-' + i).css("color", "red");
+                        $('.breaktimemin-' + i).css("color", "red");
+                        $('.resempname-' + i).css("color", "red");
+                        $('.resfactor-' + i).css("color", "red");
+                        $('.qcmandatory-' + i).css("color", "red");
+                        $('.pendqtyforqc-' + i).css("color", "red");
+                    }
+                    if (QcMandatory == "Y" && PendQtyForQc == 0) {
+                        $('.entryid-' + i).css("color", "green");
+                        $('.yearcode-' + i).css("color", "green");
+                        $('.proddate-' + i).css("color", "green");
+                        $('.breakfromtime-' + i).css("color", "green");
+                        $('.breaktotime-' + i).css("color", "green");
+                        $('.reasondetail-' + i).css("color", "green");
+                        $('.breaktimemin-' + i).css("color", "green");
+                        $('.resempname-' + i).css("color", "green");
+                        $('.resfactor-' + i).css("color", "green");
+                        $('.qcmandatory-' + i).css("color", "green");
+                        $('.pendqtyforqc-' + i).css("color", "green");
+                    }
+                    if (QcMandatory == "N" || QcMandatory == "") {
+                        $('.entryid-' + i).css("color", "blue");
+                        $('.yearcode-' + i).css("color", "blue");
+                        $('.proddate-' + i).css("color", "blue");
+                        $('.breakfromtime-' + i).css("color", "blue");
+                        $('.breaktotime-' + i).css("color", "blue");
+                        $('.reasondetail-' + i).css("color", "blue");
+                        $('.breaktimemin-' + i).css("color", "blue");
+                        $('.resempname-' + i).css("color", "blue");
+                        $('.resfactor-' + i).css("color", "blue");
+                        $('.qcmandatory-' + i).css("color", "blue");
+                        $('.pendqtyforqc-' + i).css("color", "blue");
+                    }
+                }
+            }
+        }
+
+        function CheckApprovedOrNotOperator() {
+            var columnLength = $('#gateDashboardtable tr').length;
+            var rowLength = $('#gateDashboardtable tr').length;
+            if (columnLength > 1) {
+                for (var i = 1; i <= rowLength; i++) {
+                    var QcMandatory = $('#QcMandatory-' + i).text();
+                    var PendQtyForQc = parseInt($('#PendQtyForQc-' + i).text());
+                    if (QcMandatory == "Y" && PendQtyForQc > 0) {
+                        $('.entryid-' + i).css("color", "red");
+                        $('.yearcode-' + i).css("color", "red");
+                        $('.newprodrework-' + i).css("color", "red");
+                        $('.prodslipno-' + i).css("color", "red");
+                        $('.proddate-' + i).css("color", "red");
+                        $('.fgpartcode-' + i).css("color", "red");
+                        $('.fgitemname-' + i).css("color", "red");
+                        $('.workcenter-' + i).css("color", "red");
+                        $('.machinename-' + i).css("color", "red");
+                        $('.operatorname-' + i).css("color", "red");
+                        $('.fromtime-' + i).css("color", "red");
+                        $('.totime-' + i).css("color", "red");
+                        $('.totalhrs-' + i).css("color", "red");
+                        $('.overtimehrs-' + i).css("color", "red");
+                        $('.machinecharges-' + i).css("color", "red");
+                        $('.qcmandatory-' + i).css("color", "red");
+                        $('.pendqtyforqc-' + i).css("color", "red");
+                    }
+                    if (QcMandatory == "Y" && PendQtyForQc == 0) {
+                        $('.entryid-' + i).css("color", "green");
+                        $('.yearcode-' + i).css("color", "green");
+                        $('.newprodrework-' + i).css("color", "green");
+                        $('.prodslipno-' + i).css("color", "green");
+                        $('.proddate-' + i).css("color", "green");
+                        $('.fgpartcode-' + i).css("color", "green");
+                        $('.fgitemname-' + i).css("color", "green");
+                        $('.workcenter-' + i).css("color", "green");
+                        $('.machinename-' + i).css("color", "green");
+                        $('.operatorname-' + i).css("color", "green");
+                        $('.fromtime-' + i).css("color", "green");
+                        $('.totime-' + i).css("color", "green");
+                        $('.totalhrs-' + i).css("color", "green");
+                        $('.overtimehrs-' + i).css("color", "green");
+                        $('.machinecharges-' + i).css("color", "green");
+                        $('.qcmandatory-' + i).css("color", "green");
+                        $('.pendqtyforqc-' + i).css("color", "green");
+                    }
+                    if (QcMandatory == "N" || QcMandatory == "") {
+                        $('.entryid-' + i).css("color", "blue");
+                        $('.yearcode-' + i).css("color", "blue");
+                        $('.newprodrework-' + i).css("color", "blue");
+                        $('.prodslipno-' + i).css("color", "blue");
+                        $('.proddate-' + i).css("color", "blue");
+                        $('.fgpartcode-' + i).css("color", "blue");
+                        $('.fgitemname-' + i).css("color", "blue");
+                        $('.workcenter-' + i).css("color", "blue");
+                        $('.machinename-' + i).css("color", "blue");
+                        $('.operatorname-' + i).css("color", "blue");
+                        $('.fromtime-' + i).css("color", "blue");
+                        $('.totime-' + i).css("color", "blue");
+                        $('.totalhrs-' + i).css("color", "blue");
+                        $('.overtimehrs-' + i).css("color", "blue");
+                        $('.machinecharges-' + i).css("color", "blue");
+                        $('.qcmandatory-' + i).css("color", "blue");
+                        $('.pendqtyforqc-' + i).css("color", "blue");
+                    }
+                }
+            }
+        }
+
+        function CheckApprovedOrNotScrapDetail() {
+            var columnLength = $('#gateDashboardtable tr').length;
+            var rowLength = $('#gateDashboardtable tr').length;
+            if (columnLength > 1) {
+                for (var i = 1; i <= rowLength; i++) {
+                    var QcMandatory = $('#QcMandatory-' + i).text();
+                    var PendQtyForQc = parseInt($('#PendQtyForQc-' + i).text());
+                    if (QcMandatory == "Y" && PendQtyForQc > 0) {
+                        $('.entryid-' + i).css("color", "red");
+                        $('.yearcode-' + i).css("color", "red");
+                        $('.newprodrework-' + i).css("color", "red");
+                        $('.prodslipno-' + i).css("color", "red");
+                        $('.proddate-' + i).css("color", "red");
+                        $('.fgpartcode-' + i).css("color", "red");
+                        $('.fgitemname-' + i).css("color", "red");
+                        $('.workcenter-' + i).css("color", "red");
+                        $('.machinename-' + i).css("color", "red");
+                        $('.scraptype-' + i).css("color", "red");
+                        $('.scrapqty-' + i).css("color", "red");
+                        $('.scrapunit-' + i).css("color", "red");
+                        $('.qcmandatory-' + i).css("color", "red");
+                        $('.pendqtyforqc-' + i).css("color", "red");
+                    }
+                    if (QcMandatory == "Y" && PendQtyForQc == 0) {
+                        $('.entryid-' + i).css("color", "green");
+                        $('.yearcode-' + i).css("color", "green");
+                        $('.newprodrework-' + i).css("color", "green");
+                        $('.prodslipno-' + i).css("color", "green");
+                        $('.proddate-' + i).css("color", "green");
+                        $('.fgpartcode-' + i).css("color", "green");
+                        $('.fgitemname-' + i).css("color", "green");
+                        $('.workcenter-' + i).css("color", "green");
+                        $('.machinename-' + i).css("color", "green");
+                        $('.scraptype-' + i).css("color", "green");
+                        $('.scrapqty-' + i).css("color", "green");
+                        $('.scrapunit-' + i).css("color", "green");
+                        $('.qcmandatory-' + i).css("color", "green");
+                        $('.pendqtyforqc-' + i).css("color", "green");
+                    }
+                    if (QcMandatory == "N" || QcMandatory == "") {
+                        $('.entryid-' + i).css("color", "blue");
+                        $('.yearcode-' + i).css("color", "blue");
+                        $('.newprodrework-' + i).css("color", "blue");
+                        $('.prodslipno-' + i).css("color", "blue");
+                        $('.proddate-' + i).css("color", "blue");
+                        $('.fgpartcode-' + i).css("color", "blue");
+                        $('.fgitemname-' + i).css("color", "blue");
+                        $('.workcenter-' + i).css("color", "blue");
+                        $('.machinename-' + i).css("color", "blue");
+                        $('.scraptype-' + i).css("color", "blue");
+                        $('.scrapqty-' + i).css("color", "blue");
+                        $('.scrapunit-' + i).css("color", "blue");
+                        $('.qcmandatory-' + i).css("color", "blue");
+                        $('.pendqtyforqc-' + i).css("color", "blue");
+                    }
+                }
+            }
+        }
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    }
+                }
+            });
+        }
+        function GetSummaryData() {
+              
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                     
+                    $('#divDashboardGrid').empty().append(data);
+                    CheckApprovedOrNot();
+                    var dashGrid = $('#gateDashboardtable tr').length
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetBatchwiseDetail() {
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetBatchwiseDetail")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty().append(data);
+                    CheckApprovedOrNotBatchWiseDetail();
+                    var dashGrid = $('#gateDashboardtable tr').length
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        // function confirmDelete(event, ProdEntryId, ProdEntryYearCode) {
+        //     event.preventDefault();
+        //     var urlHref = $(event.currentTarget).attr("href");
+
+        //     if (confirm("Are you sure you want to delete this entry?")) {
+        //         CheckEditOrDelete(urlHref, Gateno, YearCode);
+        //     }
+        // }
+
+        function GetBreakdownData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetBreakdownData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty().append(data);
+                    CheckApprovedOrNotBreakdown();
+                    var dashGrid = $('#gateDashboardtable tr').length
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetOperationData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetOperationData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    CheckApprovedOrNotOperator();
+                    var dashGrid = $('#gateDashboardtable tr').length
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetScrapData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetScrapData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    CheckApprovedOrNotScrapDetail();
+                    var dashGrid = $('#gateDashboardtable tr').length
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetDetailData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetDetailData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty().append(data);
+                    CheckApprovedOrNotDetail();
+                    var dashGrid = $('#gateDashboardtable tr').length
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#gateDashboardtable tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        $('#sendToExcel').click(function () {
+            $("#GateDataTable").table2excel({
+                filename: "ProductionDetailData.xls"
+            });
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('GateDataTable', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('GateDataTable', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function CheckEditOrDelete(urlHref , ProdSlipNo, ProdYearCode) {
+              
+            event.preventDefault();
+            $.ajax({
+                url: '@Url.Action("CheckEditOrDelete")',
+                type: "POST",
+                data: { "ProdSlipNo": ProdSlipNo, "ProdYearCode": ProdYearCode },
+                async: false,
+                success: function (data) {
+                     
+                    var obj = $.parseJSON(data);
+                    if(obj.Result[0] != undefined){
+                        if (obj.Result[0].InProcQCSlipNo != null || obj.Result[0].QCClearingDate != null) {
+                            var dateString = obj.Result[0].QCClearingDate;
+                            var date = new Date(dateString);
+                            var day = String(date.getDate()).padStart(2, '0');
+                            var month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+                            var year = date.getFullYear();
+                            var formattedDate = `${day}/${month}/${year}`;
+                            $.notify(" QC Completed, InProcQCSlipNo: " + obj.Result[0].InProcQCSlipNo + " and QC date: " + formattedDate + "", "error");
+                            return false;
+                        }
+                    }
+                    else{
+                        var linkUrl = urlHref;
+                        linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&SlipNo=" + $('#SlipNo').val() + "&ItemName=" + $('#ItemName').val() + "&PartCode=" + $('#PartCode').val() + "&ProdPlanNo=" + $('#ProdPlanNo').val() + "&ReqNo=" + $('#ReqNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+                        window.location.href = linkUrl;
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function confirmDelete(event,ProdSlipNo,ProdYearCode) {
+             
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            if (confirm("Are you sure you want to delete this entry?")) {
+                CheckEditOrDelete(urlHref, ProdSlipNo, ProdYearCode);
+            }
+        }
+
+        function BackButtonData(event) {
+
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&SlipNo=" + $('#SlipNo').val() + "&ItemName=" + $('#ItemName').val() + "&PartCode=" + $('#PartCode').val() + "&ProdPlanNo=" + $('#ProdPlanNo').val() + "&ReqNo=" + $('#ReqNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+            window.location.href = linkUrl;
+        }
+
+        function confirmEdit(event, ProdSlipNo, ProdYearCode) {
+
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            CheckEditOrDelete(urlHref, ProdSlipNo, ProdYearCode);
+        }
+
+        function selection(CurrentRow) {
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#gateDashboardtable tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+}

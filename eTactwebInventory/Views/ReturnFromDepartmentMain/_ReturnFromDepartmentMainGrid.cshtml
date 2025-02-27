@@ -1,0 +1,87 @@
+﻿@model eTactWeb.DOM.Models.ReturnFromDepartmentMainModel
+
+@if (Model.ReturnDetailGrid == null || !Model.ReturnDetailGrid.Any())
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ReturnDetailGrid)
+    {
+        <tr id="itemGrid" class="small" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" id="editButton-@item.SeqNo" onclick="EditItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.PartCode</td>
+            <td>@item.ItemName</td>
+            <td>@item.Qty</td>
+            <td>@item.ReturnnDate</td>
+            <td>@item.BatchNo</td>
+            <td>@item.UniqueBatchNo</td>
+            <td>@item.ProdValue</td>
+            <td>@item.IDMark</td>
+            <td>@item.ReasonOfReturn</td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Pic1))
+                {
+                    <a href="@item.Pic1" target="_blank">View Image 1</a>
+                }
+                else
+                {
+                    <span>No Image</span>
+                }
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Pic2))
+                {
+                    <a href="@item.Pic2" target="_blank">View Image 2</a>
+                }
+                else
+                {
+                    <span>No Image</span>
+                }
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Pic3))
+                {
+                    <a href="@item.Pic3" target="_blank">View Image 3</a>
+                }
+                else
+                {
+                    <span>No Image</span>
+                }
+            </td>
+        </tr>
+    }
+}

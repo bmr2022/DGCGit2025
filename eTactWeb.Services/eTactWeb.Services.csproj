@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Interface\BLL\**" />
+    <EmbeddedResource Remove="Interface\BLL\**" />
+    <None Remove="Interface\BLL\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moment.js" Version="2.29.4" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\eTactWeb.DOM\eTactWeb.DOM.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Data" />
+  </ItemGroup>
+
+</Project>

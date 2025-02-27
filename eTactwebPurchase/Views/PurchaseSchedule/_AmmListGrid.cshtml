@@ -1,0 +1,131 @@
+﻿@model eTactWeb.DOM.Models.PurchaseScheduleDashboard
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="PSDashboard">
+        <thead class="bg-gradient card-headerBG text-light " id="dashPOThead">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry ID</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONO</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Address</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Eff From Date</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Eff Till Date</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Approved</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created By</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Created On</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved By</th>
+            </tr>
+        </thead>
+        <tbody id="divDashboardGrid">
+            @{
+                var @Cntr = 0;
+                if (Model.PSDashboard == null || Model.PSDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.PSDashboard)
+                    {
+
+                        Cntr = Cntr + 1;
+                        <tr>
+                            <th>@Cntr</th>
+                            @{
+                                if (Model.Mode == "Pending")
+                                {
+                                    <td style="text-align:center;">
+                                        <a class="table-link link-primary"  onclick="location.href='@Url.Action("PurchaseSchedule",new{Mode="PSA",ID = item.EntryID,YC=item.SchYear})'">
+                                            <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        </a>
+                                    </td>
+                                }
+                                if (Model.Mode == "U")
+                                {
+                                    <td style="text-align:center;">
+                                        <a class="table-link link-primary" onclick="location.href='@Url.Action("PurchaseSchedule",new{Mode="PSU",ID = item.EntryID,YC=item.SchYear})'">
+                                            <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        </a>
+                                    </td>
+                                }
+                                if (Model.Mode == "Completed")
+                                {
+                                    <td style="text-align:center;">
+                                        <a class="table-link link-primary" onclick="location.href='@Url.Action("ViewPSCompleted",new{Mode="PSC",ID = item.EntryID,YC=item.SchYear})'">
+                                            <i class="fa-regular fa-eye" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        </a>
+                                    </td>
+                                }
+                            }
+
+                            <td>@item.EntryID</td>
+                            <td>@item.SchNo</td>
+                            <td>@item.Schdate</td>
+                            <td>@item.PONO</td>
+                            <td>@item.PODate</td>
+                            <td>@item.VendorName</td>
+                            <td>@item.DeliveryAddress</td>
+
+                            <td>@item.SchEffFromDate</td>
+                            <td>@item.SchEffTillDate</td>
+                            <td>@item.SchApproved</td>
+
+                            <td>@item.SchYear</td>
+                            <td>@item.POYearCode</td> 
+                            <td>@item.CreatedOn</td>
+                            <td>@item.ApprovedBy</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #PSDashboard {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashPOThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>

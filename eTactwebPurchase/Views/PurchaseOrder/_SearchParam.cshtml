@@ -1,0 +1,99 @@
+﻿@model eTactWeb.DOM.Models.PODashBoard
+
+<div class="row">
+    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="OrderType" class="form-label">Order Type</label>
+        <select class="form-select" asp-for="OrderType">
+            <option value=0>-Select-</option>
+            <option value="Export">Export</option>
+            <option value="Domestic">Domestic</option>
+        </select>
+    </div>
+    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="POFor" class="form-label">PO For</label>
+        <select class="form-select" asp-for="POFor">
+            <option value="" selected disabled>-Select-</option>
+            <option value="For JobWork">For JobWork</option>
+            <option value="For Purchase">For Purchase</option>
+            <option value="For Purchase(Sample)">For Purchase(Sample)</option>
+            <option value="For Service">For Service</option>
+        </select>
+    </div>
+    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="POType" class="form-label">PO type</label>
+        <select class="form-select" asp-for="POType">
+            <option value="" selected disabled>-Select-</option>
+            <option value="OPEN">OPEN</option>
+            <option value="CLOSE">CLOSE</option>
+        </select>
+    </div>
+    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="CC" class="form-label">Branch Name</label>
+        <input asp-for="CC" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+        <label asp-for="VendorName" class="form-label">Vendor Name</label>
+        <input asp-for="VendorName" class="form-control" />
+    </div>
+    <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="PONo" class="form-label">PO No</label>
+        <input class="form-control" asp-for="PONo" />
+    </div>
+    <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
+        <label asp-for="PartCode" class="form-label">Part Code</label>
+        <input asp-for="PartCode" class="form-control" />
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+        <label asp-for="ItemName" class="form-label">Item Name</label>
+        <input asp-for="ItemName" class="form-control" />
+    </div>
+    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col">
+                <label class="form-label">PO From Date</label>
+                <input asp-for="FromDate" maxlength="10" class="form-control" />
+            </div>
+            <div class="col">
+                <label class="form-label">PO To Date</label>
+                <input asp-for="ToDate" maxlength="10" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
+        <select class="form-select" asp-for="DashboardType">
+            <option value="" disabled>-Select-</option>
+            <option value="Summary" selected>Summary</option>
+            <option value="Detail">Detail</option>
+        </select>
+    </div>
+    <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+        <label class="form-label">Global search</label>
+        <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+    </div>
+    <div class=" d-flex justify-content-center mt-3" width="inherit">
+        <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetSearchData();">
+            <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+        </button>
+        <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+            <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+        </button>
+        <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="PurchaseOrder" asp-action="DashBoard">
+            <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+        </a>
+        <div class="d-flex" style="margin-left:50px;margin-top:10px;">
+            <label class="color-box" style="background-color: #FF0000;"></label><label style="margin-left:5px;margin-top:-5px;">UNAPPROVED</label>
+            <label class="color-box" style="background-color: green;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">APPROVED</label>
+            <label class="color-box" style="background-color: purple;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">1st Level Approved</label>
+            <label class="color-box" style="background-color: blue;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Amendment PENDING</label>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>

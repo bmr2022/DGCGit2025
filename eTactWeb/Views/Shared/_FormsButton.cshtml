@@ -1,0 +1,52 @@
+﻿@model eTactWeb.DOM.Models.Common.TimeStamp
+
+<div class="row justify-content-between g-2">
+    <div class="col-auto">
+        @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+        <a href="#" class=" btn btn-primary btn-sm" onclick="BackButtonData();">
+            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+            BACK
+        </a>
+    </div>
+    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+    {
+        <div class="col-auto">
+            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                REFRESH
+            </a>
+        </div>
+        @if (Model.Mode == "U" || Model.Mode == "SAU" || Model.Mode == "PAU" || Model.Mode == "PSU")
+        {
+            @*Model.Mode = "U";*@
+            <div class="col-auto">
+                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                    UPDATE
+                </button>
+            </div>
+        }
+        else if (Model.Mode == "SOA" || Model.Mode == "POA" || Model.Mode == "PSA" || Model.Mode == "SSA")
+        {
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient AmendButton">
+                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                    AMEND
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="col-auto">
+                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                    <i class="fa-solid fa-chevron-circle-right"></i>
+                    SUBMIT
+                </button>
+            </div>
+        }
+    }
+</div>

@@ -1,0 +1,281 @@
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Services.Interface;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
+using eTactWeb.DOM.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Data;
+using Microsoft.AspNetCore.Authorization;
+
+namespace eTactWeb.Controllers
+{
+    [Authorize]
+    public class TaxMasterController : Controller
+    {
+        private static readonly Action<ILogger, string, Exception> _loggerMessage = LoggerMessage.Define<string>(LogLevel.Error, eventId: new EventId(id: 0, name: "ERROR"), formatString: "{Message}");
+        private readonly EncryptDecrypt EncryptDecrypt;
+        private readonly IDataLogic IDataLogic;
+        private readonly IMemoryCache IMemoryCache;
+        private readonly ITaxMaster ITaxMaster;
+        private readonly ILogger<TaxMasterController> Logger;
+
+        public TaxMasterController(ITaxMaster iTaxMaster, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<TaxMasterController> logger, EncryptDecrypt encryptDecrypt)
+        {
+            IDataLogic = iDataLogic;
+            ITaxMaster = iTaxMaster;
+            IMemoryCache = iMemoryCache;
+            Logger = logger;
+            EncryptDecrypt = encryptDecrypt;
+        }
+
+        [HttpGet]
+        // GET: TaxMasterController/Dashboard
+        [Route("{controller}/Dashboard")]
+        public async Task<ActionResult> DashBoard()
+        {
+            Logger.LogInformation("\n \n ********** Dashboard Page Tax Master ********** \n \n");
+
+            var model = new TaxMasterDashboard();
+
+            try
+            {
+                model.TMDashboard = await ITaxMaster.GetDashBoardData();
+            }
+            catch (Exception ex)
+            {
+                var ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Something Went Wrong....Please Try Again Later....!",
+                    Result = ex
+                };
+
+                return View("Error", ResponseResult);
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteByID(int ID)
+        {
+            var IsDelete = IDataLogic.IsDelete(ID, "ACCOUNT");
+
+            if (IsDelete == 0)
+            {
+                var Result = await ITaxMaster.DeleteByID(ID).ConfigureAwait(false);
+
+                if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
+                {
+                    ViewBag.isSuccess = true;
+                    TempData["410"] = "410";
+                }
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["423"] = "423";
+            }
+
+            return RedirectToAction(nameof(DashBoard));
+        }
+        public async Task<IActionResult> GetSearchData(string TaxName,string TaxType,string HSNNo)
+        {
+            TaxMasterDashboard model=new TaxMasterDashboard();
+            TaxName = string.IsNullOrEmpty(TaxName) ? "" : TaxName.Trim();
+            TaxType = string.IsNullOrEmpty(TaxType) ? "" : TaxType.Trim();
+            HSNNo = string.IsNullOrEmpty(HSNNo) ? "" : HSNNo.Trim();
+            model.TMDashboard = await ITaxMaster.GetSearchData(TaxName, TaxType,HSNNo);
+            return PartialView("_TMDashboardGrid", model);
+        }
+
+
+        [HttpGet]
+        // GET: TaxMasterController/TaxMaster
+        //[Route("{controller}/Index")]
+        public async Task<ActionResult> TaxMaster(int ID, string Mode, int YC)
+        {
+            Logger.LogInformation("\n \n ********** Page Tax Master ********** \n \n");
+
+            var model = new TaxMasterModel();
+
+            if (ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                model = await ITaxMaster.ViewByID(ID);
+            }
+
+            model.ID = ID;
+            model.Mode = Mode;
+            if (Mode != "U")
+            {
+                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.CreatedByName = HttpContext.Session.GetString("EmpName");
+                model.CreatedOn = DateTime.Now;
+            }
+            else if (Mode == "U")
+            {
+                //model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                //model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                //model.UpdatedOn = DateTime.Now;
+            }
+
+            model = await BindModel(model).ConfigureAwait(false);
+
+            return View(model);
+        }
+
+        // POST: TaxMasterController/TaxMaster
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> TaxMaster(TaxMasterModel model)
+        {
+            Logger.LogInformation("\n \n ********** Save Tax Master ********** \n \n");
+
+            try
+            {
+                if (model != null)
+                {
+                    model.Mode = model.Mode == "U" ? "UPDATE" : "INSERT";
+                    //model.CreatedBy = Constants.UserID;
+
+                    var TaxMasterDT = new DataTable();
+                    var _HSNDetail = new List<HSNDetail>();
+                    if (model.HSN != null)
+                    {
+                        foreach (var item in model.HSN)
+                        {
+                            var _HSN = new HSNDetail()
+                            {
+                                AccountCode = model.EntryID,
+                                HSNNO = item,
+                                TaxCategory = model.TaxCategory,
+                                TaxPercent = model.TaxPercent
+                            };
+                            _HSNDetail.Add(_HSN);
+                        }
+                    }
+                    TaxMasterDT = CommonFunc.ConvertListToTable<HSNDetail>(_HSNDetail);
+                    if (model.Mode == "UPDATE")
+                    {
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                    }
+                    else
+                    {
+                        model.UpdatedBy = 0;
+
+                    }
+                    var Result = await ITaxMaster.SaveTaxMaster(model, TaxMasterDT).ConfigureAwait(false);
+
+                    if (Result != null)
+                    {
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                        }
+                        if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["202"] = "202";
+                        }
+                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            ViewBag.isSuccess = false;
+                            TempData["500"] = "500";
+                            Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                            return View("Error", Result);
+                        }
+                    }
+                }
+                return RedirectToAction(nameof(DashBoard));
+            }
+            catch (Exception ex)
+            {
+                LogException<TaxMasterModel>.WriteException((ILogger<TaxMasterModel>)Logger, ex);
+
+                var ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+
+                return View("Error", ResponseResult);
+            }
+
+            return View(model);
+        }
+
+        private async Task<TaxMasterModel> BindModel(TaxMasterModel model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await ITaxMaster.BindAllDropDown().ConfigureAwait(true);
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["TaxID"].ToString(),
+                        Text = row["TaxType"].ToString()
+                    });
+                }
+                model.TaxTypeList = _List;
+                _List = new List<TextValue>();
+
+                foreach (DataRow row in oDataSet.Tables[1].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["HsnNo"].ToString(),
+                        Text = row["HsnNo"].ToString()
+                    });
+                }
+                model.HSNList = _List;
+                _List = new List<TextValue>();
+
+                foreach (DataRow row in oDataSet.Tables[2].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["Account_Code"].ToString(),
+                        Text = row["Account_Name"].ToString()
+                    });
+                }
+                model.ParentGroupList = _List;
+                _List = new List<TextValue>();
+
+                foreach (DataRow row in oDataSet.Tables[3].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["Account_Code"].ToString(),
+                        Text = row["Tax_Name"].ToString()
+                    });
+                }
+                model.SGSTHeadList = _List;
+                _List = new List<TextValue>();
+            }
+
+            if (string.IsNullOrEmpty(model.Mode) && model.ID == 0)
+            {
+                model.EntryID = IDataLogic.GetEntryID("Account_Head_Master", Constants.FinincialYear, "EntryID","yearcode");
+                model.EffectiveDate = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString().Replace("-", "/");
+            }
+            return model;
+        }
+
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await ITaxMaster.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+    }
+}

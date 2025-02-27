@@ -1,0 +1,172 @@
+﻿@model eTactWeb.DOM.Models.PSApprovalModel
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="PSDashboard">
+        <thead class="bg-gradient card-headerBG text-light " id="dashPOThead">
+            <tr>
+                <th>Sr#</th>
+                <th>Action</th>
+                <th data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Entry ID</th>
+                <th data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Sch No</th>
+                <th data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Sch Date</th>
+                <th data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>PONO</th>
+                <th data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>PO Date</th>
+                <th data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Vendor Name</th>
+                <th data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Delivery Address</th>
+                <th data-columnno="9"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Sch Eff From Date</th>
+                <th data-columnno="10"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Sch Eff Till Date</th>
+                <th data-columnno="11"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Sch Approved</th>
+                <th data-columnno="12"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Sch Year</th>
+                <th data-columnno="13"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>PO Year</th>
+                <th data-columnno="14"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Created By</th>
+                <th data-columnno="15"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Created On</th>
+                <th data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span>Approved By</th>
+            </tr>
+        </thead>
+        <tbody id="divDashboardGrid1">
+            @{
+                var @Cntr = 0;
+                if (Model.PSAppDetailGrid == null || Model.PSAppDetailGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.PSAppDetailGrid)
+                    {
+
+                        Cntr = Cntr + 1;
+                        <tr>
+                            <th>@Cntr</th>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container" style="display: flex;">
+                                    <div>
+                                        <a asp-action="PurchaseSchedule" asp-controller="PurchaseSchedule" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear" asp-route-Mode="V" class="tooltip-link " style="height:30px !important;">
+                                            <span class="fa-stack"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a asp-action="ShowPSDetail" asp-controller="PSApproval" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear" asp-route-SchNo="@item.SchNo" class="tooltip-link1 redirectToApproval" style="height:30px !important;">
+                                            <span class="fa-stack"><i style="color:red !important;" class="fa-solid fa-pencil" aria-hidden="true"></i>
+
+                        </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>@item.EntryID</td>
+                            <td>@item.SchNo</td>
+                            <td>@item.Schdate</td>
+                            <td>@item.PONO</td>
+                            <td>@item.PODate</td>
+                            <td>@item.VendorName</td>
+                            <td>@item.DeliveryAddress</td>
+
+                            <td>@item.SchEffFromDate</td>
+                            <td>@item.SchEffTillDate</td>
+                            <td>@item.SchApproved</td>
+
+                            <td>@item.SchYear</td>
+                            <td>@item.POYearCode</td>
+                            <td>@item.CreatedBy</td>
+                            <td>@item.CreatedOn</td>
+                            <td>@item.ApprovedBy</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #PSDashboard {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashPOThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    .tooltip-link {
+        position: relative;
+    }
+
+        .tooltip-link::after {
+            content: "SHOW PS";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-link:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    .tooltip-link1 {
+        position: relative;
+    }
+
+        .tooltip-link1::after {
+            content: "SHOW DETAIL";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .tooltip-link1:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+</style>

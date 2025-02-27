@@ -1,0 +1,319 @@
+﻿@model eTactWeb.DOM.Models.Master.MachineMasterModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<form asp-action="MachineMaster" asp-controller="MachineMaster" autocomplete="on" class="form-horizontal">
+    <div class="card rounded shadow-lg">
+        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+            <h5>
+                <strong>Machine Master</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <div class="col-auto">
+                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                        <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                            <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                            RESET
+                        </a>
+                    </div>
+
+                    <a asp-action="MachineMasterDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                    </a>
+                    <a class="btn btn-sm btn-secondary" href="#" onclick="back();"><i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK</a>
+                    @if (Model.Mode == "U")
+                    {
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                <i class="fa-solid fa-chevron-circle-right"></i> UPDATE
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-auto">
+                            @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                            <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                <i class="fa-solid fa-chevron-circle-right"></i>
+                                SUBMIT
+                            </button>
+                        </div>
+                    }
+
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light">
+            <div class="accordion shadow-lg" id="accordionItemCategory">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Machine Master Detail</strong>
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <input asp-for="Mode" class="form-control" type="hidden" />
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MachineId" class="form-label">Machine Id</label>
+                                    <input asp-for="MachineId" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryDate" class="form-label"> Entry Date</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MachineCode" class="form-label"> Machine Code</label>
+                                    <input asp-for="MachineCode" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MachineName" class="form-label" style="color:red;"> Machine Name*</label>
+                                    <input asp-for="MachineName" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MachineGroup" class="form-label" style="color:red;">Machine Group*</label>
+                                    <input asp-for="MachGroupId" class="form-control" type="hidden" />
+                                    <select class="form-control" asp-for="MachineGroup" required>
+                                        <option value="@Model.MachineGroup">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.MachineGroup" selected>@Model.MachineGroup</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="LabourCost" class="form-label"> Labour Cost</label>
+                                    <input asp-for="LabourCost" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="NeedHelper" class="form-label">Need Helper</label>
+                                    <select class="form-control" asp-for="NeedHelper" data-val="false">
+                                        <option value="">-Select-</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalHelper" class="form-label"> Total Helper</label>
+                                    <input asp-for="TotalHelper" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="HelperCost" class="form-label"> Helper Cost</label>
+                                    <input asp-for="HelperCost" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ElectricityCost" class="form-label"> Electricity Cost</label>
+                                    <input asp-for="ElectricityCost" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="OtherCost" class="form-label"> Other Cost</label>
+                                    <input asp-for="OtherCost" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalCost" class="form-label"> Total Cost</label>
+                                    <input asp-for="TotalCost" class="form-control" data-val="false" />
+                                </div>
+
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Location" class="form-label"> Location</label>
+                                    <input asp-for="Location" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="TechSpecification" class="form-label"> Tech Specification</label>
+                                    <input asp-for="TechSpecification" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="LastCalibraDate" class="form-label"> LastCalibraDate</label>
+                                    <input asp-for="LastCalibraDate" class="form-control" readonly id="LastcalibraDate" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="CalibraDur" class="form-label">CalibraDur</label>
+                                    <input asp-for="CalibraDur" class="form-control" data-val="false" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="UId" class="form-label">UId</label>
+                                    <input asp-for="UId" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label"> CC</label>
+                                    <input asp-for="CC" class="form-control" value="@Model.CC" readonly data-val="false" />
+                                    @*  @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
+                                    } *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress my-3 mb-3" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer p-3">
+            <div class="row justify-content-between g-2">
+                <div class="card-header card-headerBG text-light bg-gradient">
+                    <h5>
+                        <strong>Machine Master</strong>
+                        <span class="d-flex float-end" style="margin-top:-2px;">
+
+                            @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                            <a asp-controller="MachineMaster" asp-action="MachineMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                Dashboard
+                            </a>
+                            <div class="row justify-content-between g-2">
+                                <div class="col-auto">
+                                    @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                    <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                    <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
+                                    <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
+                                    <input asp-for="OpeningForYearBack" type="hidden" value="@Model.OpeningForYearBack" />
+                                    <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
+                                    <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
+                                    <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+
+                                    @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+
+                                    <a class="btn btn-sm btn-primary" href="#" onclick="back();">
+                                        <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                        BACK
+                                    </a>
+                                </div>
+                                @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                {
+                                    <div class="col-auto">
+                                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                        <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                            <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                            REFRESH
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode == "U")
+                                    {
+                                        @*Model.Mode = "U";*@
+                                        <div class="col-auto">
+                                            @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                            <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                UPDATE
+                                            </button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-auto">
+                                            <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                <i class="fa-solid fa-chevron-circle-right"></i>
+                                                SUBMIT
+                                            </button>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </span>
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+             // $('#LastcalibraDate').datepicker({ dateFormat: 'dd/mm/yy' });
+             // var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+            const today = new Date();
+            const formattedToday = `${today.getDate().toString().padStart(2, '0')}/${monthNames[today.getMonth()]}/${today.getFullYear()}`;
+            $('#EntryDate').val(formattedToday);
+            $('#LastcalibraDate').val(formattedToday);
+
+
+
+
+
+            $('#MachineGroup').select2();
+             FillMachineGroup();
+        });
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+           // FillMachineGroupID();
+        }
+
+        $('#MachineGroup').change(function () {
+            if ($('#Mode').val() !== "U") {
+                $('#MachGroupId').val($('#MachineGroup').val());
+            }
+        });
+        $('#MachineGroup').change(function () {
+           // FillMachineGroupID();
+        });
+        function FillMachineGroup() {
+            $.ajax({
+                url: '@Url.Action("FillMachineGroup", "MachineMaster")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var MachineGroupDropdown = $('#MachineGroup');
+                    var obj = $.parseJSON(response);
+                    MachineGroupDropdown.empty();
+                    MachineGroupDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, MachineGroup) {
+                        MachineGroupDropdown.append('<option value="' + MachineGroup.EntryId + '">' + MachineGroup.MachGroup + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var MachineGroup = '@Model.MachGroupId';
+                        $('#MachineGroup').val(MachineGroup).trigger("change");
+                        $('#MachineGroup').val(MachineGroup);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        // function CheckBeforeUpdate() {
+        //     $.ajax({
+        //         url: '@Url.Action("CheckBeforeUpdate")',
+        //         type: "POST",
+        //         data: { "Type": $('#MachineId').val() },
+        //         success: function (data) {
+        //             console.log("success");
+        //             if (data != null) {
+        //                 var obj = $.parseJSON(data);
+        //                 if (obj.Result != null) {
+        //                     if (obj.Result.Table[0].Column1 > 0) {
+        //                         $.notify("You cannot update this process; it already exists", "error");
+        //                     } else {
+        //                         $('form').submit();
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         error: function (response) {
+        //             alert(response.responseText);
+        //         },
+        //         failure: function (response) {
+        //             alert(response.responseText);
+        //         }
+        //     });
+        //}
+    </script>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+}

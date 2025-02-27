@@ -1,0 +1,56 @@
+﻿@model eTactWeb.DOM.Models.MaterialReceiptModel
+
+@{
+    var Cntr = 0;
+}
+@if (Model.ItemDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid" class="small" style="white-space:nowrap">
+            
+            <td><input id="PONo--@Cntr" value="@item.PONO" />  </td>
+            <td><input style="width:50px" id="POYearCode--@Cntr" value="@item.PoYearCode" /></td>
+            <td><input style="width:80px" id="SchNo--@Cntr" value="@item.SchNo" /></td>
+            <td><input style="width:50px" id="SchYearCode--@Cntr" value="@item.SchYearCode" /></td>
+            <td><input style="width:70px" id="POType--@Cntr" value="@item.PoType" /></td>
+            <td><input style="width:80px" id="PODate--@Cntr" value="@item.PODate" /></td>
+            <td><input id="Item_Name--@Cntr" value="@item.ItemName" /></td>
+            <td><input style="width:100px !important;" id="PartCode--@Cntr" value="@item.PartCode" /></td>
+            <td><input style="width:50px" id="unit--@Cntr" value="@item.Unit" /></td>
+            <td><input style="width:50px" id="Qty--@Cntr" value="@item.Qty" /></td>
+            <td><input style="width:50px" id="BillQty--@Cntr" value="@item.BillQty" /></td>
+            <td><input style="width:50px" id="RecQty--@Cntr" value="@item.RecQty"/></td>
+            <td><input style="width:70px" id="altqty--@Cntr" value="@item.AltQty" /></td>
+            <td><input style="width:50px" id="RateUnit--@Cntr" value="@item.RateUnit" /></td>
+            <td><input style="width:50px" id="altunit--@Cntr" value="@item.AltUnit" /></td>
+            <td><input style="width:50px" id="NoofCase--@Cntr" value="@item.NoOfCase" /></td>
+            <td><input id="AltRecQty--@Cntr" value="@item.AltRecQty" /></td>
+            <td><input id="ShortExcessQty--@Cntr" value="@item.ShortExcessQty" /></td>
+            <td><input id="Rate--@Cntr" value="@item.Rate" /></td>
+            <td><input id="RateInOtherCurr--@Cntr" value="@item.RateinOther" /></td>
+            <td><input id="Amount--@Cntr" value="@item.Amount" /></td>
+            <td><input id="PendPOQty--@Cntr" value="@item.PendPOQty" /></td>
+            <td><input id="QCCompleted--@Cntr" value="@item.QCCompleted" /></td>
+            <td><input id="RetChallanPendQty--@Cntr" value="@item.RetChallanPendQty" /></td>
+            <td><input id="BatchWise--@Cntr" value="@item.BatchWise" /></td>
+            <td><input id="SaleBillNo--@Cntr" value="@item.SaleBillNo" /></td>
+            <td><input id="SaleBillYearCode--@Cntr" value="@item.SaleBillYearCode" /></td>
+            <td><input id="AgainstChallanNo-@Cntr" value="@item.AgainstChallanNo" /></td>
+            <td><input id="BatchNo--@Cntr" value="@item.BatchNo" /></td>
+            <td><input id="Uniquebatchno--@Cntr" value="@item.UniqueBatchNo" /></td>
+            <td><input id="SupplierBatchNo--@Cntr" value="@item.SupplierBatchNo" /></td>
+            <td><input id="ShelfLife--@Cntr" value="@item.ShelfLife" /></td>
+            <td><input id="ItemSize--@Cntr" value="@item.ItemSize" /></td>
+            <td><input id="ItemColor--@Cntr" value="@item.ItemColor" /><input id="ItemCode--@Cntr"  value="@item.ItemCode" type="hidden" /></td>
+
+        </tr>
+    }
+}

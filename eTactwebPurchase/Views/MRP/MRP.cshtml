@@ -1,0 +1,838 @@
+﻿@model eTactWeb.DOM.Models.MRPMain
+
+@{
+    ViewData["Title"] = "Pending MRP Detail";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="MRP" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>MRP</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    <partial name="_FormsButton" />
+                    <div class="col-auto">
+                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButtonForMRP">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            UPDATE
+                        </button>
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3 align-items-center">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    @* <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                    <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />*@
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <label asp-for="EntryID" class="form-label">Entry ID</label>
+                                    <input asp-for="EntryID" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Entry_Date" class="form-label">Entry Date</label>
+                                    <input asp-for="Entry_Date" class="form-control" readonly />
+                                    <input type="hidden" asp-for="FinFromDate" class="form-control" />
+                                    <input type="hidden" asp-for="FinToDate" class="form-control" />
+
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                    <label asp-for="YearCode" class="form-label">Year Code</label>
+                                    <input asp-for="YearCode" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" value="@Model.CC" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="MRPNo" class="form-label">MRP No</label>
+                                    <input asp-for="MRPNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MRPDate" class="form-label">MRP Date</label>
+                                    <input asp-for="MRPDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="MRPRevNo" class="form-label">MRP RevNo</label>
+                                    <input asp-for="MRPRevNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MRPREvDate" class="form-label">MRP Rev Date</label>
+                                    <input asp-for="MRPREvDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="FirstMonth" class="form-label">First Month</label>
+                                    <input asp-for="FirstMonth" class="form-control" readonly />
+                                    <input type="hidden" asp-for="ForMonthYear" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EffectiveFromDate" class="form-label">Eff FromDate</label>
+                                    <input asp-for="EffectiveFromDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MrpFirstDate" class="form-label">MRP First Date</label>
+                                    <input asp-for="MrpFirstDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MrpComplete" class="form-label">MRP Complete</label>
+                                    <input asp-for="MrpComplete" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Raw Material Grid</strong>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnMRPExcel" onclick="createStyledExcelFile();">
+                            <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                        </button>
+                        @*<span class="d-flex float-end bg-gradient" style="margin-top:-2px;">
+
+                        </span>*@
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                @* <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                <table class="table table-hover table-bordered table-striped">
+                                <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                <tr>
+                                <th>SR#</th>
+                                <th>FG PartCode</th>
+                                <th>FG ItemName</th>
+                                <th>RM PartCode</th>
+                                <th>RM ItemName</th>
+                                <th>Req Qty</th>
+                                <th>Unit</th>
+                                <th>CurrMonthQty</th>
+                                <th>WIP Stock</th>
+                                <th>Total Stock</th>
+                                <th>RecorderLvl</th>
+                                <th>PO Rate</th>
+                                <th>Allocated Qty</th>
+                                <th>Consumed Qty</th>
+                                <th>AccountName</th>
+                                <th>Prev OrderQty</th>
+                                <th>IIndMonthQty</th>
+                                <th>IIrdMonthQty</th>
+                                <th>IIndMonthActualReqQty</th>
+                                <th>IIrdMonthActualReqQty</th>
+                                </tr>
+                                </thead>
+                                <tbody id="divLoadMRPGrid">
+                                <partial name="_LoadMRPGrid" />
+                                </tbody>
+                                </table>
+                                </div>
+                                </div>*@
+
+
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
+                                <div class="card">
+
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered MRPTableGrid table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>SR#</th>
+                                                    <th>FG PartCode</th>
+                                                    <th>FG ItemName</th>
+                                                    <th>RM PartCode</th>
+                                                    <th>RM ItemName</th>
+                                                    <th>Unit</th>
+                                                    <th>Req Qty</th>
+                                                    <th>Current Stock</th>
+                                                    <th>WIP Stock</th>
+                                                    <th>Total Stock</th>
+                                                    <th>Order Qty</th>
+                                                    <th>Order Qty(Including PrevOrderQty)</th>
+                                                    <th>RecorderLvl</th>
+                                                    <th>PO Rate</th>
+                                                    <th>Allocated Qty</th>
+                                                    <th>Consumed Qty</th>
+                                                    <th>AccountName</th>
+                                                    <th>Prev OrderQty</th>
+                                                    <th>IIndMonthQty</th>
+                                                    <th>IIrdMonthQty</th>
+                                                    <th>IIndMonthActualReqQty</th>
+                                                    <th>IIrdMonthActualReqQty</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divAddMRPGrid">
+                                                <partial name="_MRPGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="progress my-3 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>FG + RM Grid</strong>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-3 mb-1" style="padding:3px;height:30px;width:100px;float:right;" type="button" id="btnFGMRPExcel">
+                            <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+
+                                        <table class="table table-hover table-bordered FGMRPTable table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>SR#</th>
+                                                    <th>FG PartCode</th>
+                                                    <th>FG ItemName</th>
+                                                    <th>FG Qty</th>
+                                                    <th>RM PartCode</th>
+                                                    <th>RM ItemName</th>
+                                                    <th>Bom Qty</th>
+                                                    <th>Req Qty</th>
+                                                    <th>Order Qty(include Prev Qty)</th>
+                                                    <th>Alt Unit</th>
+                                                    <th>Bom No</th>
+                                                    <th>Allocated Qty</th>
+                                                    <th>Effective Date</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divAddFGMRPGrid">
+                                                <partial name="_MRPFGGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                                <div class="progress my-3 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Order Ddetail Grid</strong>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-3 mb-1" style="padding:3px;height:30px;width:100px;float:right;" type="button" id="btnSOMRPExcel">
+                            <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+
+                                        <table class="table table-hover table-bordered SOMRPTable table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>SR#</th>
+                                                    <th>So No</th>
+                                                    <th>SO YearCode</th>
+                                                    <th>SO Date</th>
+                                                    <th>Schedule No</th>
+                                                    <th>Schedule YearCode</th>
+                                                    <th>Account Name</th>
+                                                    <th>Months</th>
+                                                    <th>Month Year</th>
+                                                    <th>Bom Exists</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divAddMRPSOGrid">
+                                                <partial name="_MRPSOGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                                <div class="progress my-3 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UID" class="form-label">UID</label>
+                                    <input asp-for="UID" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEnteredByName" class="form-label">Created By Emp</label>
+                                    <input asp-for="ActualEnteredByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdatedByEmpName" class="form-label">Updated By</label>
+                                    <input asp-for="LastUpdatedByEmpName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdatedDate" class="form-label">Updated Date</label>
+                                    <input asp-for="LastUpdatedDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="MachineNo" class="form-label">Machine Name</label>
+                                    <input asp-for="MachineNo " class="form-control" value="@Environment.MachineName" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal fade" id="StockTransactionConfirm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <input type="hidden" id="type" value="" />
+                                <input type="hidden" id="type2" value="" />
+                                <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="CancelButton()" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row g-2 gx-3">
+                                            <div class="card">
+                                                <div class="card-body text-center overflow-auto pb-0">
+                                                    <h5 id="TransactionMsg"></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="progress my-2" style="height: 4px;">
+                                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-primary" id="Detailbtn" data-bs-dismiss="modal">Stock Detail</button>
+                                    <button type="button" class="btn btn-sm btn-danger" id="cancelBtn" data-bs-dismiss="modal" onclick="CancelButton()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            GetServerDate();
+            GetFormRights();
+            //AdjStockOperation();
+            $('#UpdateButtonForMRP').hide();
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                NewEntryId();
+            }
+
+            //  $('#MRPDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            //$('#MRPREvDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            //$('#EffectiveFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            //$('#MrpFirstDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                FillMRPDetailGrid();
+                FillFGMRPDetailGrid();
+                FillSaleOrderMRPGrid();
+            }
+
+            $('#MRPREvDate').rules("remove", "required");
+            $('#EffectiveFromDate').rules("remove", "required");
+            $('#MrpFirstDate').rules("remove", "required");
+            $('#MrpComplete').rules("remove", "required");
+            $('#LastUpdatedByEmpName').rules("remove", "required");
+            $('#LastUpdatedDate').rules("remove", "required");
+
+        });
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                     
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit']").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("button[type='submit']").prop("disabled", true);
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+
+                    $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    var finFromDate = $('#FinFromDate').val();
+                    var finToDate = $('#FinToDate').val();
+
+                    var dateParts1 = finFromDate.split("/");
+                    var monthNames = {
+                        "Jan": "01",
+                        "Feb": "02",
+                        "Mar": "03",
+                        "Apr": "04",
+                        "May": "05",
+                        "Jun": "06",
+                        "Jul": "07",
+                        "Aug": "08",
+                        "Sep": "09",
+                        "Oct": "10",
+                        "Nov": "11",
+                        "Dec": "12"
+                    };
+                    var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                    var dateParts2 = finToDate.split("/");
+
+                    var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+                    $('#Entry_Date').datepicker("option", "minDate", formattedDate1);
+                    $('#Entry_Date').datepicker("option", "maxDate", formattedDate2);
+                     
+                    var currentDate = result;
+                    var Date = currentDate.split("/")[0];
+                    var FirstMonth = currentDate.split("/")[1];
+                    var ForMonthYear = currentDate.split("/")[2];
+                    var MonthFirstDate = '01/' + (parseInt(FirstMonth) < 10 ? '0' + parseInt(FirstMonth) : FirstMonth) + '/' + ForMonthYear;
+
+                     
+                    $('#MRPDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", MonthFirstDate);
+                    $('#MRPREvDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", MonthFirstDate);
+                    $('#EffectiveFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    $('#MrpFirstDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+                    $('#MRPDate').datepicker("option", "minDate", $('#MRPDate').val());
+                    $('#MRPREvDate').datepicker("option", "minDate", $('#MRPREvDate').val());
+                    $('#EffectiveFromDate').datepicker("option", "minDate", $('#EffectiveFromDate').val());
+                    $('#MrpFirstDate').datepicker("option", "minDate", $('#MrpFirstDate').val());
+                }
+            });
+        }
+
+        function FillMRPDetailGrid() {
+            $.ajax({
+                url: "@Url.Action("FillMRPGridDetail")",
+                type: "POST",
+                async: false,
+                success: function (result, status, error) {
+                     
+                    if (result != null) {
+                        //var obj = $.parseJSON(result);
+                        $('#divAddMRPGrid').empty();
+                        $('#divAddMRPGrid').html(result);
+                        if ($('#hiddenMRPEntryID-1').val() == '0' || $('#hiddenMRPEntryID-1').val() == undefined) {
+                            NewEntryId();
+                            $('#FirstMonth').val($('#hiddenMonth-1').val());
+                            $('#ForMonthYear').val($('#hiddenForMonthYear-1').val());
+                        }
+                        else {
+                            $('#EntryID').val($('#hiddenMRPEntryID-1').val());
+                            $('#MRPNo').val($('#hiddenMRPNo-1').val());
+                            $('#FirstMonth').val($('#hiddenMonth-1').val());
+                            $('#ForMonthYear').val($('#hiddenForMonthYear-1').val());
+                            $('#submitBTN').hide();
+                            var MRPRevDate = parseInt($('#MRPREvDate').val().split("/")[0]) + 1;
+                            var Month = $('#MRPREvDate').val().split("/")[1];
+                            var Year = $('#MRPREvDate').val().split("/")[2];
+                            var newMRPRevDate = (MRPRevDate < 10 ? '0' : '') + MRPRevDate + '/' + Month + '/' + Year;
+                            $('#MRPREvDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", newMRPRevDate);
+                            $('#UpdateButtonForMRP').show();
+                            $('#Mode').val("U");
+
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillFGMRPDetailGrid() {
+            $.ajax({
+                url: "@Url.Action("FillFGMRPDetailGrid")",
+                type: "POST",
+                async: false,
+                success: function (result, status, error) {
+                     
+                    if (result != null) {
+                        //var obj = $.parseJSON(result);
+                        $('#divAddFGMRPGrid').empty();
+                        $('#divAddFGMRPGrid').html(result);
+
+                    }
+                }
+            });
+        }
+
+        function FillSaleOrderMRPGrid() {
+
+            var Month = $('#FirstMonth').val();
+            var ForMonthYear = $('#ForMonthYear').val();
+            $.ajax({
+                url: "@Url.Action("FillSaleOrderMRPGrid")",
+                type: "POST",
+                data: { "Month": Month, "ForMonthYear": ForMonthYear },
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
+                        //var obj = $.parseJSON(result);
+                        $('#divAddMRPSOGrid').empty();
+                        $('#divAddMRPSOGrid').html(result);
+
+                        var RowCount = $('#divAddMRPSOGrid tr').length;
+                        for (var i = 1; i <= RowCount; i++) {
+
+                            $('#Months-' + i).text($('#FirstMonth').val());
+                            $('#MonthYear-' + i).text($('#hiddenForMonthYear-' + i).val());
+                            $('#ForMonthYear').val($('#hiddenForMonthYear-' + i).val());
+                        }
+                    }
+                }
+            });
+        }
+
+        function NewEntryId() {
+            var YearCode = $('#YearCode').val();
+            $.ajax({
+                type: "POST",
+                data: { "YearCode": YearCode },
+                url: "@Url.Action("NewEntryId")",
+                async: false,
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#EntryID').val("");
+                        $('#EntryID').val(obj.Result.Table[0].EntryID);
+                        $('#MRPNo').val("");
+                        $('#MRPNo').val(obj.Result.Table[0].MRPNo);
+                    }
+                }
+            });
+        }
+
+        //function DeleteItemRow(SeqNo) {
+        //    $.ajax({
+        //        url: '@Url.Action("DeleteItemRow")',
+        //        type: "POST",
+        //        async: false,
+        //        data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+        //        success: function (data, status, xhr) {
+        //
+        //            $('#divAddMRPGrid').html(data);
+        //        },
+        //        error: function (response, status, xhr) {
+        //            alert(response.responseText);
+        //            $.notify(response.responseText, "error");
+        //        },
+        //        failure: function (response, status, xhr) {
+        //            alert(response.responseText);
+        //            $.notify(response.responseText, "error");
+        //        }
+        //    });
+        //}
+
+        function EditItemRows(SeqNo) {
+
+            $.ajax({
+                url: '/MRP/EditItemRows',
+                type: "POST",
+                data: { SeqNo: SeqNo },
+                success: function (data) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj != null) {
+
+                        parseInt($('#FGItemCode-' + SeqNo).val()),
+                            $('#RMPartCode-' + SeqNo).val(),
+                            $('#RMItemName-' + SeqNo).val(),
+                            $('#ReqQty-' + SeqNo).val(),
+                            $('#Unit-' + SeqNo).val(),
+                            $('#CurrMonthQty-' + SeqNo).val(),
+                            $('#WIPStock-' + SeqNo).val(),
+                            $('#TotalStock-' + SeqNo).val(),
+                            $('#RecorderLvl-' + SeqNo).val(),
+                            $('#PORate-' + SeqNo).val(),
+                            $('#AllocatedQty-' + SeqNo).val(),
+                            $('#ConsumedQty-' + SeqNo).val(),
+                            $('#AccountName-' + SeqNo).val(),
+                            $('#PrevOrderQty-' + SeqNo).val(),
+                            $('#IIndMonthQty-' + SeqNo).val(),
+                            $('#IIrdMonthQty-' + SeqNo).val(),
+                            $('#IIndMonthActualReqQty-' + SeqNo).val(),
+                            $('#IIrdMonthActualReqQty-' + SeqNo).val(),
+
+                            $('#divAddMRPGrid tr#' + SeqNo).remove();
+                        if (obj[0].Storeid == 0) {
+                            $('#Wcid').val(obj[0].Wcid).trigger("change");
+                        } else {
+                            $('#Storeid').val(obj[0].Storeid).trigger("change");
+                        }
+                        var rowCount = $('#divAddMRPGrid tr').length;
+                        for (var i = 1; i <= rowCount + 1; i++) {
+                            $('#editItemGrid-' + i).css("pointer-events", "none");
+                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                        }
+
+                        DeleteItemRow(SeqNo);
+                    }
+                },
+                error: function (response) {
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response) {
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        //function AddToGrid(){
+
+        //     e.preventDefault();
+        //     // if (!ValidateGrid()) return;
+        //     var SchData = [];
+        //     var RowCount = $('#divLoadMRPGrid tr').length;
+        //     for (var i = 1; i <= RowCount; i++) {
+
+        //         SchData.push({
+        //             "FGItemCode": parseInt($('#FGItemCode-' + i).val()),
+        //             "FGPartCode": $('#FGPartCode-' + i).val(),
+        //             "FGItemName": $('#FGItemName-' + i).val(),
+        //             "RMItemCode": parseInt($('#RMItemCode-' + i).val()),
+        //             "RMPartCode": $('#RMPartCode-' + i).val(),
+        //             "RMItemName": $('#RMItemName-' + i).val(),
+        //             "ReqQty": $('#ReqQty-' + i).val(),
+        //             "Unit": $('#Unit-' + i).val(),
+        //             "CurrMonthQty": $('#CurrMonthQty-' + i).val(),
+        //             "WIPStock": $('#WIPStock-' + i).val(),
+        //             "TotalStock": $('#TotalStock-' + i).val(),
+        //             "RecorderLvl": $('#RecorderLvl-' + i).val(),
+        //             "PORate": $('#PORate-' + i).val(),
+        //             "AllocatedQty": $('#AllocatedQty-' + i).val(),
+        //             "ConsumedQty": $('#ConsumedQty-' + i).val(),
+        //             "AccountName": $('#AccountName-' + i).val(),
+        //             "PrevOrderQty": $('#PrevOrderQty-' + i).val(),
+        //             "IIndMonthQty": $('#IIndMonthQty-' + i).val(),
+        //             "IIrdMonthQty": $('#IIrdMonthQty-' + i).val(),
+        //             "IIndMonthActualReqQty": $('#IIndMonthActualReqQty-' + i).val(),
+        //             "IIrdMonthActualReqQty": $('#IIrdMonthActualReqQty-' + i).val(),
+
+        //         });
+        //     }
+
+        //     $.ajax({
+        //         type: "POST",
+        //         url: '@Url.Action("AddMRPDetail")',
+        //         data: { "model": SchData },
+        //         statusCode: {
+        //             207: function () {
+        //                 $.notify('Duplicate Item...!', "info");
+        //             }
+        //         },
+        //         success: function (result, status, xhr) {
+        //             if (xhr.status == 200 && xhr.responseText == result) {
+        //                 $('#divAddMRPGrid').html(result);
+
+        //             }
+        //         },
+        //         error: function (result, status, xhr) {
+        //             $.notify('Something Went Wrong, Please Try Again.', "error");
+        //         }
+        //     });
+        //}
+
+
+        $("#btnMRPExcel").click(function () {
+
+            var table = $(".MRPTableGrid");
+            if (table.length === 0) {
+                console.error("Table element with ID 'MRPGrid' not found.");
+                return;
+            }
+
+            try {
+                table.table2excel({
+                    filename: "MRPTable.xls"
+                });
+            } catch (error) {
+                console.error("An error occurred while exporting to Excel:", error);
+            }
+        });
+
+        //function createStyledExcelFile() {
+        //     ;
+        //    const table = document.querySelector(".MRPTableGrid");
+        //    const rows = table.querySelectorAll("tr");
+        //    const data = [];
+
+        //    // Extract and add the table header with background color
+        //    const headerRow = rows[0];
+        //    const headerData = [];
+        //     ;
+        //    //headerRow.querySelectorAll("th").forEach((cell) => {
+
+        //    //    cell.style.backgroundColor = "#fcba03";
+        //    //    headerData.push(cell.textContent);
+        //    //});
+        //    data.push(headerData);
+
+
+        //    for (let i = 1; i < rows.length; i++) {
+        //        const rowData = [];
+        //        rows[i].querySelectorAll("td").forEach((cell) => {
+        //            rowData.push(cell.textContent);
+        //        });
+        //        data.push(rowData);
+        //    }
+
+        //    const ws = XLSX.utils.aoa_to_sheet(data);
+
+        //    ws["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, /* ... */];
+
+        //    const wb = XLSX.utils.book_new();
+        //    XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+        //    //const headerCellStyle = { fill: { bgColor: { indexed: 64 }, fgColor: { rgb: '0074b0' } } };
+        //    //worksheet['!cols'] = [{ width: 15 }, { width: 15 }, { width: 15 }];
+        //    //worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 2 } }];
+        //    //worksheet['!rows'] = [{ hpt: 20 }];
+
+
+        //    XLSX.writeFile(wb, "StyledExcelFile.xlsx");
+        //}
+
+
+
+        $("#btnFGMRPExcel").click(function () {
+
+            var table = $(".FGMRPTable");
+            if (table.length === 0) {
+                console.error("Table element with ID 'FGMRPTable' not found.");
+                return;
+            }
+
+            try {
+                table.table2excel({
+                    filename: "FGMRPTable.xls"
+                });
+            } catch (error) {
+                console.error("An error occurred while exporting to Excel:", error);
+            }
+        });
+
+        $("#btnSOMRPExcel").click(function () {
+
+            var table = $(".SOMRPTable");
+            if (table.length === 0) {
+                console.error("Table element with ID 'SOMRPTable' not found.");
+                return;
+            }
+
+            try {
+                table.table2excel({
+                    filename: "SOMRPTable.xls"
+                });
+            } catch (error) {
+                console.error("An error occurred while exporting to Excel:", error);
+            }
+        });
+
+    </script>
+
+    <script src="~/Scripts/table2excel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+
+
+
+
+}

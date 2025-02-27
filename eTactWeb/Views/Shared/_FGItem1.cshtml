@@ -1,0 +1,57 @@
+﻿@model eTactWeb.DOM.Models.BomModel
+<div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <label asp-for="FinishItemCode" class="form-label">FG Part Code</label>
+        @if (@Model.Mode != "U")
+        {
+            <select asp-for="FinishItemCode" class="form-select" asp-items="@(new SelectList(Model.FG1CodeList,"Text","Value"))">
+                <option value="">-Select-</option>
+            </select>
+        }
+        else
+        {
+            <select asp-for="FinishItemCode" disabled class="form-select" asp-items="@(new SelectList(Model.FG1CodeList,"Text","Value"))">
+                @if (@Model.Mode == "U")
+                {
+                    <input type="hidden" value="@Model.FinishItemCode" id="hiddenFGItemCode" />
+                }
+                <option value="">-Select-</option>
+            </select>
+        }
+    </div>
+    <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
+        <div class="row">
+            <div class="col-6">
+                <label asp-for="FinishedItemName" class="form-label">FG Item Name</label>
+            </div>
+            <div class="col-6 p-0">
+                @if (@Model.Mode != "U")
+                {
+                    <div class="form-check form-switch">
+                        <input asp-for="FG1" class="form-check-input" type="checkbox" role="switch" onchange="FetchItem(this);" />Show All
+                    </div>
+                }
+                else
+                {
+                    <div class="form-check form-switch">
+                        <input asp-for="FG1" disabled checked class="form-check-input" type="checkbox" role="switch" onchange="FetchItem(this);" />Show All
+                    </div>
+                }
+
+
+            </div>
+        </div>
+        @if (@Model.Mode != "U")
+        {
+            <select asp-for="FinishedItemName" class="form-select" asp-items="@(new SelectList(Model.FG1NameList,"Text","Value"))">
+                <option value="">-Select-</option>
+            </select>
+        }
+        else
+        {
+            <select asp-for="FinishedItemName" disabled class="form-select" asp-items="@(new SelectList(Model.FG1NameList,"Text","Value"))">
+                <option value="">-Select-</option>
+            </select>
+        }
+    </div>
+</div>

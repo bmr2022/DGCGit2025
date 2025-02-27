@@ -1,0 +1,41 @@
+﻿using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
+using eTactWeb.Services.Interface;
+using Microsoft.Extensions.Configuration;
+using static eTactWeb.DOM.Models.Common;
+
+namespace eTactWeb.Data.BLL
+{
+    public class PurchaseRejectionBLL : IPurchaseRejection
+    {
+        private readonly IDataLogic _iDtaLogic;
+        private readonly PurchaseRejectionDAL _purchRejDAL;
+
+        public PurchaseRejectionBLL(IConfiguration configuration, IDataLogic iDtaLogic)
+        {
+            _iDtaLogic = iDtaLogic;
+            _purchRejDAL = new PurchaseRejectionDAL(configuration, iDtaLogic);
+        }
+
+        public async Task<AccPurchaseRejectionModel> GetViewByID(int ID, int YearCode, string mode)
+        {
+            return await _purchRejDAL.GetViewByID(ID, YearCode, mode);
+        }
+        public async Task<ResponseResult> NewEntryId(int YearCode)
+        {
+            return await _purchRejDAL.NewEntryId(YearCode);
+        }
+        public async Task<ResponseResult> FillDocument(string ShowAllDoc)
+        {
+            return await _purchRejDAL.FillDocument(ShowAllDoc);
+        }
+        public async Task<ResponseResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode)
+        {
+            return await _purchRejDAL.FillCustomerName(ShowAllParty, PurchaseRejYearCode);
+        }
+        public async Task<ResponseResult> GetStateGST(int Code)
+        {
+            return await _purchRejDAL.GetStateGST(Code);
+        }
+    }
+}

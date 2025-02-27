@@ -1,0 +1,71 @@
+﻿@model eTactWeb.DOM.Models.SaleSubScheduleModel
+@if (Model.SaleScheduleList.Count == 0)
+{
+    <tr class="text-center">
+        <td colspan="17" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.SaleScheduleList)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small @item.SeqNo" style="white-space:nowrap">
+            <td style="width:4%">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    @*<a class="table-link link-primary noCursor" disabled>
+        <span class="fa-stack">
+        <i class="fa fa-square fa-stack-2x"></i>
+        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+        </span>
+        </a>*@
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    @*<a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+        <span class="fa-stack">
+        <i class="fa fa-square fa-stack-2x"></i>
+        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+        </span>
+        </a>*@       <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <th>@Cntr</th>
+            <td>@item.PartCode <input type="hidden" id="ItemCode-@Cntr" value="@item.ItemCode" data-partCode="@item.PartCode" data-itemName="@item.ItemName" /></td>
+            <td>@item.ItemName</td>
+            <td>@item.Unit</td>
+            <td id="SchQty-@Cntr"></td>
+            <td>@item.PendQty</td>
+            <td>@item.AltUnit</td>
+            <td>@item.AltSchQty</td>
+            <td>@item.AltPendQty</td>
+            <td>@item.Rate.ToString("#.#0")</td>
+            <td>@item.RateInOthCurr.ToString("#.#0")</td>
+            <td id="DelDate-@Cntr">@item.DeliveryDate.Split()[0]</td>
+            <td>@item.ItemSize</td>
+            <td>@item.ItemColor</td>
+            <td>@item.OtherDetail</td>
+            <td>@item.Remarks</td>
+        </tr>
+
+    }
+}

@@ -1,0 +1,173 @@
+﻿@model eTactWeb.DOM.Models.Master.MachineMasterModel;
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine ID</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Group Name</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Code</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Labour Cost</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Need Helper</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Helper</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Helper Cost</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Electricity Cost</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Cost</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Cost</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Make</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Technical Specification</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Calibration Date</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Calibration Duration</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>User ID</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cost Center</th>
+
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.MachineMasterGrid == null || Model.MachineMasterGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="11" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.MachineMasterGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="MachineMaster" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        <a class="table-link link-primary"
+                                           asp-action="MachineMaster"
+                                           asp-controller="MachineMaster"
+                                           asp-route-Mode="U"
+                                           asp-route-ID="@Cntr"
+                                           asp-route-MachineId="@item.MachineId"
+                                           asp-route-MachGroupId="@item.MachGroupId"
+                                           asp-route-MachineCode="@item.MachineCode"
+                                           asp-route-MachineName="@item.MachineName"
+                                           asp-route-LabourCost="@item.LabourCost"
+                                           asp-route-NeedHelper="@item.NeedHelper"
+                                           asp-route-TotalHelper="@item.TotalHelper"
+                                           asp-route-HelperCost="@item.HelperCost"
+                                           asp-route-ElectricityCost="@item.ElectricityCost"
+                                           asp-route-OtherCost="@item.OtherCost"
+                                           asp-route-TotalCost="@item.TotalCost"
+                                           asp-route-EntryDate="@item.EntryDate"
+                                           asp-route-Make="@item.Make"
+                                           asp-route-Location="@item.Location"
+                                           asp-route-TechSpecification="@item.TechSpecification"
+                                           asp-route-LastCalibraDate="@item.LastCalibraDate"
+                                           asp-route-CalibraDur="@item.CalibraDur"
+                                           asp-route-UId="@item.UId"
+                                           asp-route-CC="@item.CC"
+                                           onclick="confirmEdit(event)">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.MachineId">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.MachineId</td>
+                            <td>@item.MachineGroup<input type="hidden" asp-for="@item.MachGroupId" /></td>
+                            <td>@item.MachineName</td>
+                            <td>@item.MachineCode</td>
+                            <td>@item.LabourCost</td>
+                            <td>@item.NeedHelper</td>
+                            <td>@item.TotalHelper</td>
+                            <td>@item.HelperCost</td>
+                            <td>@item.ElectricityCost</td>
+                            <td>@item.OtherCost</td>
+                            <td>@item.TotalCost</td>
+                            <td>@item.EntryDate</td>
+                            <td>@item.Make</td>
+                            <td>@item.Location</td>
+                            <td>@item.TechSpecification</td>
+                            <td>@item.LastCalibraDate</td>
+                            <td>@item.CalibraDur</td>
+                            <td>@item.UId</td>
+                            <td>@item.CC</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%; /* Ensure table fills the container width */
+    }
+
+    th, td {
+        white-space: nowrap; /* Prevent content from wrapping */
+    }
+</style>

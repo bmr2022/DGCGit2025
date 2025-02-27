@@ -1,0 +1,77 @@
+﻿@model eTactWeb.DOM.Models.SaleRejectionModel
+
+<input type="hidden" asp-for="ItemNetAmount" class="form-control" />
+@if (Model.SaleRejectionDetails == null)
+{
+    <tr class="text-center">
+        <td colspan="30" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.SaleRejectionDetails)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small" id="saleBillRow" style="white-space:nowrap">
+            <td style="width:4%">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            @* <th>@Cntr <input type="hidden" id="SeqNo-@Cntr" value="@item.SeqNo" /></th> *@
+            <td>@item.AgainstBillTypeJWSALE<input type="hidden" id="GridIC-@Cntr" value="@item.ItemCode" /></td>
+            <td>@item.AgainstBillNo</td>
+            <td>@item.AgainstBillYearCode</td>
+            <td>@item.AgainstBillEntryId</td>
+            <td>@item.AgainstOpnOrBill</td>
+            <td>@item.PartCode</td>
+            <td>@item.ItemName</td>
+            <td>@item.HSNNo</td>
+            <td>@item.Itemsize</td>
+            <td>@item.NoOfCase</td>
+            <td>@item.RecStoreName</td>
+            <td>@item.RecQty</td>
+            <td>@item.SaleBillQty</td>
+            <td>@item.RejQty</td>
+            <td>@item.RejRate</td>
+            <td>@item.Amount</td>
+            <td>@item.Unit</td>
+            <td>@item.AltQty</td>
+            <td>@item.Rate</td>
+            <td>@item.Amount</td>
+            <td>@item.DiscountPer</td>
+            <td>@item.DiscountAmt</td>
+            <td>@item.SONO</td>
+            <td id="GridBatchNo-@Cntr">@item.SOyearcode</td>
+            <td id="GridUniqueBatchNo-@Cntr">@item.SODate</td>
+            <td>@item.CustOrderNo</td>
+            <td>@item.RecStoreId</td>
+            <td>@item.SaleorderRemark</td>
+            <td id="billQty">@item.SaleBillremark</td>
+        </tr>
+
+    }
+}
+

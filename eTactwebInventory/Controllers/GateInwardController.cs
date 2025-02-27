@@ -1,0 +1,949 @@
+﻿using eTactWeb.Data.Common;
+using FastReport;
+using FastReport.Export.Html;
+using FastReport.Export.Image;
+using FastReport.Web;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
+using eTactWeb.DOM.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using eTactWeb.Services.Interface;
+using System.Net;
+using System.Globalization;
+using System.Data;
+
+namespace eTactWeb.Controllers
+{
+
+    [Authorize]
+    public class GateInwardController : Controller
+    {
+        private readonly IDataLogic _IDataLogic;
+        //private readonly IGateInward _IGateInward;
+        public IGateInward _IGateInward { get; }
+
+        private readonly ILogger<GateInwardController> _logger;
+        private readonly IConfiguration iconfiguration;
+        private readonly IMemoryCache _MemoryCache;
+        public IWebHostEnvironment _IWebHostEnvironment { get; }
+        public GateInwardController(ILogger<GateInwardController> logger, IDataLogic iDataLogic, IGateInward iGateInward, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        {
+            _logger = logger;
+            _IDataLogic = iDataLogic;
+            _IGateInward = iGateInward;
+            _MemoryCache = iMemoryCache;
+            _IWebHostEnvironment = iWebHostEnvironment;
+            this.iconfiguration = iconfiguration;
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
+            var webReport = new WebReport();
+
+            webReport.Report.Load(webRootPath + "\\GateEntry.frx"); // default report
+
+
+            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+
+
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
+            //         ID = web; Password = bmr2401";
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+
+
+            // webReport.Report.SetParameterValue("accountparam", 1731);
+
+
+            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
+            //ViewBag.WebReport = webReport;
+            return View(webReport);
+        }
+        public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
+        {
+            using (Report report = new Report())
+            {
+                string webRootPath = _IWebHostEnvironment.WebRootPath;
+                var webReport = new WebReport();
+
+
+                webReport.Report.Load(webRootPath + "\\GateInwardPrint.frx");
+                //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
+                webReport.Report.SetParameterValue("entryparam", EntryId);
+                webReport.Report.SetParameterValue("yearparam", YearCode);
+                webReport.Report.Prepare();// Preparing a report
+
+                // Creating the HTML export
+                using (HTMLExport html = new HTMLExport())
+                {
+                    using (FileStream st = new FileStream(webRootPath + "\\test.html", FileMode.Create))
+                    {
+                        webReport.Report.Export(html, st);
+                        return File("App_Data/test.html", "application/octet-stream", "Test.html");
+                    }
+                }
+            }
+        }
+
+        public IActionResult GetImage(int EntryId = 0, int YearCode = 0)
+        {
+            // Creatint the Report object
+            using (Report report = new Report())
+            {
+                string webRootPath = _IWebHostEnvironment.WebRootPath;
+                var webReport = new WebReport();
+
+
+                webReport.Report.Load(webRootPath + "\\GateInwardPrint.frx");
+                //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
+                webReport.Report.SetParameterValue("entryparam", EntryId);
+                webReport.Report.SetParameterValue("yearparam", YearCode);
+                webReport.Report.Prepare();// Preparing a report
+
+                // Creating the Image export
+                using (ImageExport image = new ImageExport())
+                {
+                    image.ImageFormat = ImageExportFormat.Jpeg;
+                    image.JpegQuality = 100; // Set up the quality
+                    image.Resolution = 100; // Set up a resolution 
+                    image.SeparateFiles = false; // We need all pages in one big single file
+
+                    using (MemoryStream st = new MemoryStream())// Using stream to save export
+                    {
+                        webReport.Report.Export(image, st);
+                        return base.File(st.ToArray(), "image/jpeg");
+                    }
+                }
+            }
+        }
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
+
+        //[Route("GateInward/Index")]
+        public async Task<IActionResult> GateInward()
+        {
+            ViewData["Title"] = "Inventory Details";
+            TempData.Clear();
+            _MemoryCache.Remove("KeyGateInwardGrid");
+            var model = await BindModels(null);
+            model.FinFromDate = HttpContext.Session.GetString("FromDate");
+            model.FinToDate = HttpContext.Session.GetString("ToDate");
+            model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            model.CC = HttpContext.Session.GetString("Branch");
+            model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+            model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024
+            };
+
+            _MemoryCache.Set("KeyGateInwardGrid", model, cacheEntryOptions);
+            return View(model);
+        }
+        //[Route("GateInward/Index")]
+        [HttpGet]
+        public async Task<ActionResult> GateInward(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")//, ILogger logger)
+        {
+            _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
+            TempData.Clear();
+            var MainModel = new GateInwardModel();
+            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.CC = HttpContext.Session.GetString("Branch");
+            MainModel.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+            //MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+            MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+            _MemoryCache.Remove("KeyGateInwardItemDetail");
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                MainModel = await _IGateInward.GetViewByID(ID, YC).ConfigureAwait(false);
+                MainModel.Mode = Mode;
+                MainModel.ID = ID;
+                MainModel = await BindModels(MainModel).ConfigureAwait(false);
+                MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
+                MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+                _MemoryCache.Set("KeyGateInwardItemDetail", MainModel.ItemDetailGrid, cacheEntryOptions);
+            }
+            else
+            {
+                MainModel = await BindModels(MainModel);
+            }
+            if (Mode != "U")
+            {
+                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                MainModel.ActualEntryDate = DateTime.Now;
+            }
+            else
+            {
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.UpdatedOn = DateTime.Now;
+            }
+            MainModel.FromDateBack = FromDate;
+            MainModel.ToDateBack = ToDate;
+            MainModel.GateNoBack = GateNo;
+            MainModel.PartCodeBack = PartCode;
+            MainModel.ItemNameBack = ItemName;
+            MainModel.DocTypeBack = DocName;
+            MainModel.PoNOBack = PONO;
+            MainModel.SchNoBack = ScheduleNo;
+            MainModel.GlobalSearchBack = Searchbox;
+            MainModel.DashboardTypeBack = DashboardType;
+            MainModel.VendorNameBack = VendorName;
+            return View(MainModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+       // [Route("GateInward/Index")]
+        public async Task<IActionResult> GateInward(GateInwardModel model)
+        {
+            try
+            {
+                var GIGrid = new DataTable();
+
+                _MemoryCache.TryGetValue("KeyGateInwardGrid", out List<GateInwardItemDetail> GateInwardItemDetail);
+                _MemoryCache.TryGetValue("KeyGateInwardItemDetail", out List<GateInwardItemDetail> GateInwardItemDetailEdit);
+
+
+                if (GateInwardItemDetail == null && GateInwardItemDetailEdit == null)
+                {
+                    ModelState.Clear();
+                    ModelState.TryAddModelError("GateInwardItemDetail", "Gate Inward Grid Should Have Atleast 1 Item...!");
+                    model = await BindModels(model);
+                    return View("GateInward", model);
+                }
+
+                else
+                {
+                    model.CC = HttpContext.Session.GetString("Branch");
+                    model.PreparedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                    //model.ActualEnteredBy   = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    if (model.Mode == "U")
+                    {
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.UpdatedByName = HttpContext.Session.GetString("EmpName");
+                        GIGrid = GetDetailTable(GateInwardItemDetailEdit);
+                    }
+                    else
+                    {
+                        GIGrid = GetDetailTable(GateInwardItemDetail);
+                    }
+
+                    var Result = await _IGateInward.SaveGateInward(model, GIGrid);
+
+                    if (Result != null)
+                    {
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                            _MemoryCache.Remove(GIGrid);
+                        }
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["202"] = "202";
+                        }
+                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            var errNum = Result.Result.Message.ToString().Split(":")[1];
+                            if (errNum == " 2627")
+                            {
+                                ViewBag.isSuccess = false;
+                                TempData["2627"] = "2627";
+                                _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                                var model2 = await BindModels(null);
+                                model2.FinFromDate = HttpContext.Session.GetString("FromDate");
+                                model2.FinToDate = HttpContext.Session.GetString("ToDate");
+                                model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                                model2.CC = HttpContext.Session.GetString("Branch");
+                                model2.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+                                model2.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                                model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                return View(model2);
+                            }
+                            else
+                            {
+                                TempData["500"] = "500";
+                                model = await BindModels(model);
+                                model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                                model.FinToDate = HttpContext.Session.GetString("ToDate");
+                                model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                                model.CC = HttpContext.Session.GetString("Branch");
+                                model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+                                model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                                model.ItemDetailGrid = GateInwardItemDetail;
+                                return View(model);
+                            }
+
+                            //ViewBag.isSuccess = false;
+                            //TempData["500"] = "500";
+                            //_logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                            //return View("Error", Result);
+                        }
+                    }
+                    var model1 = await BindModels(null);
+                    model1.FinFromDate = HttpContext.Session.GetString("FromDate");
+                    model1.FinToDate = HttpContext.Session.GetString("ToDate");
+                    model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                    model1.CC = HttpContext.Session.GetString("Branch");
+                    model1.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+                    model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                    model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    //return RedirectToAction(nameof(Dashboard));
+                    // return RedirectToAction("Index", "GateInward", new { ID = 0 });
+                    return View(model1);
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException<GateInwardController>.WriteException(_logger, ex);
+
+
+                var ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+
+                return View("Error", ResponseResult);
+            }
+        }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IGateInward.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public IActionResult ClearGrid()
+        {
+            _MemoryCache.Remove("KeyGateInwardGrid");
+            var MainModel = new GateInwardModel();
+            return PartialView("_GateInwardGrid", MainModel);
+        }
+
+        public async Task<IActionResult> GetSearchData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType)
+        {
+            //model.Mode = "Search";
+            var model = new GateInwardDashboard();
+            model = await _IGateInward.GetDashboardData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate, DashboardType);
+            model.DashboardType = "Summary";
+            return PartialView("_GateInwardDashboardGrid", model);
+        }
+        public async Task<IActionResult> GetDetailData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate)
+        {
+            //model.Mode = "Search";
+            var model = new GateInwardDashboard();
+            model = await _IGateInward.GetDashboardDetailData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate);
+            model.DashboardType = "Detail";
+            return PartialView("_GateInwardDashboardGrid", model);
+        }
+        public async Task<JsonResult> ClearGridAjax(int AccountCode, int docType, int ItemCode)
+        {
+            _MemoryCache.Remove("KeyGateInwardGrid");
+            _MemoryCache.Remove("KeyGateInwardItemDetail");
+            var JSON = await _IGateInward.FillSaleBillChallan(AccountCode, docType, ItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<GateInwardModel> BindModels(GateInwardModel model)
+        {
+            if (model == null)
+            {
+                model = new GateInwardModel();
+
+                model.YearCode = Constants.FinincialYear;
+                model.EntryId = _IDataLogic.GetEntryID("GateDetail", Constants.FinincialYear, "GateEntryID", "Gateyearcode");
+                //model.EntryDate = DateTime.Today;
+                model.EntryTime = DateTime.Now.ToString("hh:mm tt");
+
+            }
+
+            model.AccountList = await _IDataLogic.GetDropDownList("CREDITORDEBTORLIST", "F", "SP_GetDropDownList");
+            model.DocumentList = await _IDataLogic.GetDropDownList("DocumentList", "SP_GetDropDownList");
+            model.ProcessList = await _IDataLogic.GetDropDownList("ProcessList", "SP_GetDropDownList");
+            //model.PONO = await _IDataLogic.GetDropDownList("PENDINGPOLIST","I", "SP_GateMainDetail");
+
+
+            return model;
+        }
+        public async Task<JsonResult> CheckFeatureOption()
+        {
+            var JSON = await _IGateInward.CheckFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetDefaultBranch()
+        {
+            var username = HttpContext.Session.GetString("Branch");
+
+            // Render profile page with username
+            return Json(username);
+        }
+        public async Task<JsonResult> CCEnableDisable()
+        {
+            var JSON = await _IGateInward.CCEnableDisable();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetServerDate()
+        {
+            try
+            {
+                DateTime time = DateTime.Now;
+                string format = "MMM ddd d HH:mm yyyy";
+                string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                var dt = time.ToString(format);
+                return Json(formattedDate);
+                
+            }
+            catch (HttpRequestException ex)
+            {
+                // Log the exception for debugging purposes
+                Console.WriteLine($"HttpRequestException: {ex.Message}");
+                return Json(new { error = "Failed to fetch server date and time: " + ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log any other unexpected exceptions
+                Console.WriteLine($"Unexpected Exception: {ex.Message}");
+                return Json(new { error = "An unexpected error occurred: " + ex.Message });
+            }
+        }
+
+        public async Task<JsonResult> FillSaleBillChallan(int AccountCode, int docType, int ItemCode)
+        {
+            var JSON = await _IGateInward.FillSaleBillChallan(AccountCode, docType, ItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillChallanQty(int AccountCode, int ItemCode, string ChallanNo)
+        {
+            var JSON = await _IGateInward.FillChallanQty(AccountCode, ItemCode, ChallanNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillSaleBillQty(int AccountCode, int ItemCode, string SaleBillNo, int SaleBillYearCode)
+        {
+            var JSON = await _IGateInward.FillSaleBillQty(AccountCode, ItemCode, SaleBillNo, SaleBillYearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> AltUnitConversion(int ItemCode, int AltQty, int UnitQty)
+        {
+            var JSON = await _IGateInward.AltUnitConversion(ItemCode, AltQty, UnitQty);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetAccountList(string Check)
+        {
+            var JSON = await _IDataLogic.GetDropDownList("CREDITORDEBTORLIST", Check, "SP_GetDropDownList");
+            _logger.LogError(JsonConvert.SerializeObject(JSON));
+            return Json(JSON);
+        }
+        public async Task<JsonResult> GetBranchList(string Check)
+        {
+            var JSON = await _IDataLogic.GetDropDownList("BRANCHLIST", Check, "SP_GetDropDownList");
+            _logger.LogError(JsonConvert.SerializeObject(JSON));
+            return Json(JSON);
+        }
+        public async Task<JsonResult> FillEntryandGate(int YearCode)
+        {
+            var JSON = await _IGateInward.FillEntryandGate("NewEntryId", YearCode, "SP_GateMainDetail");
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetPOList(string Code, string Type, int Year, int DocTypeId)
+        {
+            var JSON = await _IGateInward.GetPoNumberDropDownList("PENDINGPOLIST", Type, "SP_GateMainDetail", Code, Year, DocTypeId);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetPOYearList(string accountCode, string yearCode, string poNo)
+        {
+            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PENDINGPOLIST", accountCode, yearCode, poNo);
+            _logger.LogError(JsonConvert.SerializeObject(JSON));
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetItems(int DocType, string Check,int AccountCode)
+        {
+            var JSON = await _IGateInward.GetItems("GETITEMS", DocType, Check, AccountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetPopUpData(int AccountCode, string PONO)
+        {
+            var JSON = await _IGateInward.GetPopUpData("POPUPDATA", AccountCode, PONO);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int DocType)
+        {
+            var JSON = await _IGateInward.CheckDuplicateEntry(YearCode, AccountCode, InvNo, DocType);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillPendQty(int ItemCode, int PartyCode, string PONO, int POYear, int Year, string SchNo, int SchYearCode, int ProcessId, int EntryId, int YearCode)
+        {
+            var JSON = await _IGateInward.FillPendQty(ItemCode, PartyCode, PONO, POYear, Year, SchNo, SchYearCode, ProcessId, EntryId, YearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public IActionResult AddGateInwardDetail(GateInwardItemDetail model)
+        {
+            try
+            {
+                if (model.Mode == "U")
+                {
+                    _MemoryCache.TryGetValue("KeyGateInwardItemDetail", out IList<GateInwardItemDetail> GateInwardItemDetail);
+
+
+                    var MainModel = new GateInwardModel();
+                    var GateInwardGrid = new List<GateInwardItemDetail>();
+                    var GateGrid = new List<GateInwardItemDetail>();
+                    var SSGrid = new List<GateInwardItemDetail>();
+
+                    if (model != null)
+                    {
+                        if (GateInwardItemDetail == null)
+                        {
+                            model.SeqNo = 1;
+                            GateGrid.Add(model);
+                        }
+                        else
+                        {
+                            if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo))
+                            {
+                                return StatusCode(207, "Duplicate");
+                            }
+                            else
+                            {
+                                model.SeqNo = GateInwardItemDetail.Count + 1;
+                                GateGrid = GateInwardItemDetail.Where(x => x != null).ToList();
+                                SSGrid.AddRange(GateGrid);
+                                GateGrid.Add(model);
+                            }
+                        }
+
+                        MainModel.ItemDetailGrid = GateGrid;
+
+                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                            SlidingExpiration = TimeSpan.FromMinutes(55),
+                            Size = 1024,
+                        };
+
+                        _MemoryCache.Set("KeyGateInwardItemDetail", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                    }
+
+                    return PartialView("_GateInwardGrid", MainModel);
+                }
+                else
+                {
+                    _MemoryCache.TryGetValue("KeyGateInwardGrid", out IList<GateInwardItemDetail> GateInwardItemDetail);
+
+                    var MainModel = new GateInwardModel();
+                    var GateInwardGrid = new List<GateInwardItemDetail>();
+                    var GateGrid = new List<GateInwardItemDetail>();
+                    var SSGrid = new List<GateInwardItemDetail>();
+
+                    if (model != null)
+                    {
+                        if (GateInwardItemDetail == null)
+                        {
+                            model.SeqNo = 1;
+                            GateGrid.Add(model);
+                        }
+                        else
+                        {
+                            if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.PoNo == model.PoNo && x.PoYear == model.PoYear && x.SchNo == model.SchNo && x.SchYearCode == model.SchYearCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.PoNo == model.PoNo && x.PoYear == model.PoYear && x.SchNo == model.SchNo && x.SchYearCode == model.SchYearCode && x.AgainstChallanNo == model.AgainstChallanNo))
+                            {
+                                return StatusCode(207, "Duplicate");
+                            }
+                            else
+                            {
+                                model.SeqNo = GateInwardItemDetail.Count + 1;
+                                GateGrid = GateInwardItemDetail.Where(x => x != null).ToList();
+                                SSGrid.AddRange(GateGrid);
+                                GateGrid.Add(model);
+                            }
+
+                        }
+
+                        MainModel.ItemDetailGrid = GateGrid;
+
+                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                            SlidingExpiration = TimeSpan.FromMinutes(55),
+                            Size = 1024,
+                        };
+
+                        _MemoryCache.Set("KeyGateInwardGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                    }
+
+                    return PartialView("_GateInwardGrid", MainModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<JsonResult> GetScheDuleByYearCodeandAccountCode(string accountCode, string Year, string poNo)
+        {
+            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PURCHSCHEDULE", accountCode, Year, poNo);
+            _logger.LogError(JsonConvert.SerializeObject(JSON));
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> CheckEditOrDelete(string GateNo, int YearCode)
+        {
+            var JSON = await _IGateInward.CheckEditOrDelete(GateNo, YearCode);
+            _logger.LogError(JsonConvert.SerializeObject(JSON));
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillItems(string accountCode, string Year, string poNo, string Type, string scheduleNO = "", string scheduleYear = "", string Check = "")
+        {
+            var JSON = await _IGateInward.FillItems("PENDPOITEM", accountCode, Year, poNo, Type, scheduleNO, scheduleYear, Check);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public IActionResult DeleteItemRow(int SeqNo, string Mode)
+        {
+            var MainModel = new GateInwardModel();
+            if (Mode == "U")
+            {
+                _MemoryCache.TryGetValue("KeyGateInwardItemDetail", out List<GateInwardItemDetail> GateInwardItemDetail);
+                int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                if (GateInwardItemDetail != null && GateInwardItemDetail.Count > 0)
+                {
+                    GateInwardItemDetail.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in GateInwardItemDetail)
+                    {
+                        Indx++;
+                        item.SeqNo = Indx;
+                    }
+                    MainModel.ItemDetailGrid = GateInwardItemDetail;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyGateInwardItemDetail", MainModel.ItemDetailGrid, cacheEntryOptions);
+                }
+            }
+            else
+            {
+                _MemoryCache.TryGetValue("KeyGateInwardGrid", out List<GateInwardItemDetail> GateInwardItemDetail);
+                int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                if (GateInwardItemDetail != null && GateInwardItemDetail.Count > 0)
+                {
+                    GateInwardItemDetail.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in GateInwardItemDetail)
+                    {
+                        Indx++;
+                        item.SeqNo = Indx;
+                    }
+                    MainModel.ItemDetailGrid = GateInwardItemDetail;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyGateInwardGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                }
+            }
+
+            return PartialView("_GateInwardGrid", MainModel);
+        }
+        public IActionResult EditItemRow(int SeqNo, string Mode)
+        {
+            IList<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
+            if (Mode == "U")
+            {
+                _MemoryCache.TryGetValue("KeyGateInwardItemDetail", out GateInwardItemDetail);
+            }
+            else
+            {
+                _MemoryCache.TryGetValue("KeyGateInwardGrid", out GateInwardItemDetail);
+            }
+            IEnumerable<GateInwardItemDetail> SSGrid = GateInwardItemDetail;
+            if (GateInwardItemDetail != null)
+            {
+                SSGrid = GateInwardItemDetail.Where(x => x.SeqNo == SeqNo);
+            }
+            string JsonString = JsonConvert.SerializeObject(SSGrid);
+            return Json(JsonString);
+        }
+
+        public async Task<IActionResult> Dashboard(string FromDate = "", string ToDate = "", string Flag = "True", string VendorName = "", string GateNo = "", string PartCode = "", string DocName = "", string ItemName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")
+        {
+            try
+            {
+                _MemoryCache.Remove("KeyGateInwardGrid");
+                //                var model = new PSDashboard();
+                //var Result = await IPurchaseSchedule.GetDashboardData().ConfigureAwait(true);
+
+                var model = new GateDashboard();
+                var Result = await _IGateInward.GetDashboardData().ConfigureAwait(true);
+
+
+                if (Result != null)
+                {
+                    var _List = new List<TextValue>();
+                    DataSet DS = Result.Result;
+                    if (DS != null)
+                    {
+                        var DT = DS.Tables[0].DefaultView.ToTable(true, "GateNo", "GDATE", "VendorName", "address",
+  "Invoiceno", "InvoiceDate", "DocName", "CompGateNo", "POTypeServItem", "entryId", "yearcode",
+   "MRNNO", "MRNYEARCODE", "MRNDate", "EnteredBy", "UpdatedBy");
+                        //                      var DT = DS.Tables[0].DefaultView.ToTable(true, "GateNo", "GDATE", "VendorName", "address",
+                        //"Invoiceno", "InvoiceDate", "DocName", "CompGateNo", "POTypeServItem", "entryId", "yearcode", "SaleBillNo", "SaleBillQty", "SaleBillYearCode",
+                        //"AgainstChallanNo", "ChallanQty", "SupplierBatchNo", "ShelfLife", "Remarks", "ProcessName",
+                        // "MRNNO", "MRNYEARCODE", "MRNDate", "EnteredBy", "UpdatedBy");
+                        model.GateDashboard = CommonFunc.DataTableToList<GateInwardDashboard>(DT, "GateInward");
+                        foreach (var row in DS.Tables[0].AsEnumerable())
+                        {
+                            _List.Add(new TextValue()
+                            {
+                                Text = row["Gateno"].ToString(),
+                                Value = row["Gateno"].ToString()
+                            });
+                        }
+                        //var dd = _List.Select(x => x.Value).Distinct();
+                        model.SessionYearCode = HttpContext.Session.GetString("FromDate");
+                        var _PONOList = _List.DistinctBy(x => x.Value).ToList();
+                        model.GateNOList = _PONOList;
+                        _List = new List<TextValue>();
+                    }
+                    if (Flag != "True")
+                    {
+                        model.FromDate1 = FromDate;
+                        model.ToDate1 = ToDate;
+                        //model.Dashboardtype = DashboardType;
+                        model.VendorName = VendorName;
+                        model.PartCode = PartCode;
+                        model.ItemName = ItemName;
+                        model.DocName = DocName;
+                        model.Gateno = GateNo;
+                        model.PONO = PONO;
+                        model.ScheduleNo = ScheduleNo;
+                        model.Searchbox = Searchbox;
+                        model.DashboardType = DashboardType;
+                        return View(model);
+
+
+                    }
+                    //model.FromDate = new DateTime(DateTime.Today.Year, 4, 1); // 1st Feb this year
+
+                    //  model.FromDate = new DateTime(DateTime.Today.Year, 4, 1).ToString("dd/MM/yyyy").Replace("-", "/"); // 1st Feb this year
+                    //  model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");//.AddDays(-1); // Last day in January next year
+                    //model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31);//.AddDays(-1); // Last day in January next year
+
+                }
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")
+        {
+            var Result = await _IGateInward.DeleteByID(ID, YC);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
+            string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
+            DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
+            string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
+
+            return RedirectToAction("Dashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, Flag = "False", VendorName = VendorName, GateNo = GateNo, PartCode = PartCode, ItemName = ItemName, DocName = DocName, PONO = PONO, ScheduleNo = ScheduleNo, Searchbox = Searchbox, DashboardType = DashboardType });
+        }
+        private static DataTable GetDetailTable(IList<GateInwardItemDetail> DetailList)
+        {
+            var GIGrid = new DataTable();
+
+            GIGrid.Columns.Add("SeqNo", typeof(int));
+            GIGrid.Columns.Add("PONo", typeof(string));
+            GIGrid.Columns.Add("POYearCode", typeof(int));
+            GIGrid.Columns.Add("PODate", typeof(string));
+            GIGrid.Columns.Add("POEntryId", typeof(int));
+            GIGrid.Columns.Add("SchNo", typeof(string));
+            GIGrid.Columns.Add("SchYearCode", typeof(int));
+            GIGrid.Columns.Add("SchDate", typeof(string));
+            GIGrid.Columns.Add("SchEntryId", typeof(int));
+            GIGrid.Columns.Add("ItemCode", typeof(int));
+            GIGrid.Columns.Add("Unit", typeof(string));
+            GIGrid.Columns.Add("Qty", typeof(decimal));
+            GIGrid.Columns.Add("Rate", typeof(decimal));
+            GIGrid.Columns.Add("altqty", typeof(decimal));
+            GIGrid.Columns.Add("altunit", typeof(string));
+            GIGrid.Columns.Add("SaleBillNo", typeof(string));
+            GIGrid.Columns.Add("SaleBillYearCode", typeof(int));
+            GIGrid.Columns.Add("SaleBillQty", typeof(float));
+            GIGrid.Columns.Add("Remarks", typeof(string));
+            GIGrid.Columns.Add("AgainstChallanNo", typeof(string));
+            GIGrid.Columns.Add("AgainstChallanYearcode", typeof(int));
+            GIGrid.Columns.Add("ChallanQty", typeof(float));
+            GIGrid.Columns.Add("processid", typeof(int));
+            GIGrid.Columns.Add("Size", typeof(string));
+            GIGrid.Columns.Add("Color", typeof(string));
+            GIGrid.Columns.Add("SupplierBatchNo", typeof(string));
+            GIGrid.Columns.Add("ShelfLife", typeof(decimal));
+            GIGrid.Columns.Add("potype", typeof(string));
+            GIGrid.Columns.Add("PendPOQty", typeof(decimal));
+            GIGrid.Columns.Add("AltPendQty", typeof(float));
+            GIGrid.Columns.Add("NoOfBoxes", typeof(int));
+            foreach (var Item in DetailList)
+            {
+                if (Item.PoNo == null || Item.PoNo == "null" || Item.PoNo == "")
+                {
+                    Item.PoNo = "";
+                }
+                if (Item.PoYear == null || Item.PoYear == 0)
+                {
+                    Item.PoYear = 0;
+                }
+                if (Item.PoEntryId == null || Item.PoEntryId == 0)
+                {
+                    Item.PoEntryId = 0;
+                }
+                if (Item.SchYearCode == null || Item.SchYearCode == 0)
+                {
+                    Item.SchYearCode = 0;
+                }
+                if (Item.SchEntryId == null || Item.SchEntryId == 0)
+                {
+                    Item.SchEntryId = 0;
+                }
+                if (Item.Qty == null || Item.Qty == 0)
+                {
+                    Item.Qty = 0;
+                }
+                if (Item.SchNo == null || Item.SchNo == "null" || Item.SchNo == "")
+                {
+                    Item.SchNo = "";
+                }
+                if (Item.Unit == null || Item.Unit == "null" || Item.Unit == "")
+                {
+                    Item.Unit = "";
+                }
+                GIGrid.Rows.Add(
+                    new object[]
+                    {
+                    Item.SeqNo,
+                    Item.PoNo??"",
+                    Item.PoYear,
+                    Item.PoDate == null ? string.Empty : ParseFormattedDate(Item.PoDate.Split(" ")[0]),
+                    Item.PoEntryId,
+                    Item.SchNo??"",
+                    Item.SchYearCode,
+                    Item.SchDate == null ? string.Empty : ParseFormattedDate(Item.SchDate.Split(" ")[0]),
+                    Item.SchEntryId,
+                    Item.ItemCode,
+                    Item.Unit??"",
+                    Item.Qty,
+                    Item.Rate,
+                    Item.AltQty,
+                    Item.AltUnit??"",
+                    Item.SaleBillNo??"",
+                    Item.SaleBillYearCode==null?0:Item.SaleBillYearCode,
+                    Item.SaleBillQty ==null?0.0:Item.SaleBillQty,
+                    Item.Remarks??"",
+                    Item.AgainstChallanNo??"",
+                    Item.AgainstChallanYearcode==null?0:Item.AgainstChallanYearcode,
+                    Item.ChallanQty==null?0.0:Item.ChallanQty,
+                    Item.ProcessId==null?0:Item.ProcessId,
+                    Item.ItemSize??"",
+                    Item.ItemColor??"",
+                    Item.SupplierBatchNo??"",
+                    Item.ShelfLife == null ? 0.0 : Item.ShelfLife,
+                    Item.POType ?? "",
+                    Item.PendQty == null ? 0.0 : Item.PendQty,
+                    Item.AltPendQty == null ? 0.0 : Item.AltPendQty,
+                    Item.NoOfBoxes== null ? 0.0 : Item.NoOfBoxes,
+                    });
+            }
+            GIGrid.Dispose();
+            return GIGrid;
+        }
+        public async Task<JsonResult> FillSaleBillRate(int AccountCode, int ItemCode,string SaleBillNo,int SaleBillYearCode)
+        {
+            var JSON = await _IGateInward.FillSaleBillRate(AccountCode, ItemCode,SaleBillNo,SaleBillYearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+    }
+}

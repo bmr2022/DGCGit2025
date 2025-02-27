@@ -1,0 +1,850 @@
+﻿@model eTactWeb.DOM.Models.PendingProductionSchedule
+
+@{
+    ViewData["Title"] = "Pending Production Schedule";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Pending Production Schedule To Issue
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="ReqWithoutBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                    Add New
+                    </a>*@
+                    <a asp-action="IssueAgainstProdScheduleDashboard" asp-controller="IssueAgainstProdSchedule" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input type="hidden" value="@Model.FromDate" id="finFromDate" />
+                                        <input type="hidden" value="@Model.ToDate" id="finToDate" />
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="IssueDate" class="form-label" style="color:red;">Issue Date*</label>
+                                <input asp-for="IssueDate" class="form-control" style="background-color:#f8aa86;" />
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="StoreName" class="form-label" style="color:red;">Store Name*</label>
+                                <select class="form-select" asp-for="StoreName" style="background-color:#f8aa86;">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ToWorkCenter" class="form-label" style="color:red;">Work Center*</label>
+                                <select class="form-select" asp-for="ToWorkCenter" style="background-color:#f8aa86;">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ItemName" class="form-label">Item Name</label>
+                                <select class="form-select" asp-for="ItemName">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="PartCode" class="form-label">Part Code</label>
+                                <select class="form-select" asp-for="PartCode">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="PendingProdPlan" class="form-label">Pending Prod Plan</label>
+                                <select class="form-select" asp-for="PendingProdPlan">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="PendingProdPlanYearCode" class="form-label">Pending Prod Plan YearCode</label>
+                                <select class="form-select" asp-for="PendingProdPlanYearCode">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label asp-for="ProdScheduleNo" class="form-label">Prod ScheduleNo</label>
+                                <select class="form-select" asp-for="ProdScheduleNo">
+                                    <option value="" selected disabled>-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class="d-flex" style="margin-left:50px;margin-top:10px;">
+                                
+                            </div>
+                            <div class=" d-flex justify-content-center mt-3" width="inherit">
+                                <label style="margin-left:5px;margin-top:5px;color:green;font-weight:bold">Click on Prod PlanNo to Issue ProdSchedule </label>
+                                <button class="btn btn-sm btn-outline-primary" type="button" onclick="showDetail();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingInProcesstoQc" asp-action="PendingInProcesstoQc" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                                <div class="d-flex" style="margin-left:50px;margin-top:10px;">
+                                    <label class="color-box" style="background-color: #FF0000;"></label><label style="margin-left:5px;margin-top:-5px;">STOCK not available</label>
+                                    <label class="color-box" style="background-color: green;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Transfer valid</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="progress my-3 mb-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="card">
+            <div class="card-body overflow-auto pb-0">
+                <div class="table-responsive" style="max-height:350px;">
+                    <table class="table table-hover table-bordered table-striped" id="GateDataTable">
+                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" style="background-color:#CEAFCE;">
+                            <tr>
+                                <th data-columnno="0" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod PlanNo</th>
+                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod PlanDate</th>
+                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod SchNo</th>
+                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod SchDate</th>
+                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM PartCode</th>
+                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM ItemName</th>
+                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center</th>
+                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod SchQty</th>
+                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Qty</th>
+                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Toatl Stock</th>
+                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch Stock</th>
+                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Qty</th>
+                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
+                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique BatchNo</th>
+                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend After Issue</th>
+                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
+                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG PartCode</th>
+                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG ItemName</th>
+                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Std Packing</th>
+                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch Date</th>
+                                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod SchYearcode</th>
+                                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemSize</th>
+                                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemColor</th>
+                                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remaining Stock</th>
+                                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Plan EntryId</th>
+                                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Plan YearCode</th>
+                                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch EntryId</th>
+                            </tr>
+                        </thead>
+                        <tbody id="divPendMRNGrid">
+                            <tr class="text-center">
+                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+
+    <script>
+
+        $(function () {
+            $('#ItemName').select2();
+            $('#PartCode').select2();
+            $('#PendingProdPlan').select2();
+            $('#ProdScheduleNo').select2();
+            $('#PendingProdPlanYearCode').select2();
+            FillStoreName();
+            FillWorkCenter();
+            FillItemName();
+            FillPartCode();
+            FillPendingProdPlanNo();
+            var fromDate;
+            var toDate;
+            var today = new Date();
+            var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
+            var finFromDate = $('#finFromDate').val();
+            var finToDate = $('#finToDate').val();
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+            var day = String(today.getDate()).padStart(2, '0'); // Ensure two digits
+            var month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+            var year = today.getFullYear();
+            var formattedDate = day + '/' + month + '/' + year;
+
+            $("#FromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+            $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#IssueDate').datepicker("option", "minDate", formattedDate1);
+            $('#IssueDate').datepicker("option", "maxDate", formattedDate);
+            showDetail();
+        })
+
+        $('#ToWorkCenter').change(function () {
+            showDetail();
+        })
+
+        $('#StoreName').change(function () {
+            showDetail();
+        })
+
+        function FillStoreName() {
+             
+            $.ajax({
+                url: "@Url.Action("FillStore")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+                         
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#StoreName').empty();
+                            $('#StoreName').append('<option value=0 selected disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#StoreName').append('<option selected value=' + val.StoreId + '>' + val.StoreName + '</option>');
+                            });
+                            $('#StoreName option').filter(function () {
+                                return $(this).val() === "1";
+                            }).prop('selected', true);
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        function FillWorkCenter() {
+            $.ajax({
+                url: "@Url.Action("FillWorkCenter")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ToWorkCenter').empty();
+                            $('#ToWorkCenter').append('<option disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ToWorkCenter').append('<option selected value=' + val.WCID + '>' + val.WorkCenterDescription + '</option>');
+                            });
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        function FillPendingProdPlanNo() {
+            $.ajax({
+                url: "@Url.Action("FillPendingProdPlanNo")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PendingProdPlan').empty();
+                            $('#PendingProdPlan').append('<option value=0 selected disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#PendingProdPlan').append('<option value=' + val.PlanNo + '>' + val.PlanNo + '</option>');
+                            });
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        $('#PendingProdPlan').change(function () {
+            FillPendingProdPlanYearCode();
+        })
+
+        function FillPendingProdPlanYearCode() {
+            $.ajax({
+                url: "@Url.Action("FillPendingProdPlanYearCode")",
+                type: "POST",
+                async: false,
+                data: { "ProdPlanNo": $('#PendingProdPlan').val() },
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PendingProdPlanYearCode').empty();
+                            $('#PendingProdPlanYearCode').append('<option value=0 selected disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#PendingProdPlanYearCode').append('<option value=' + val.PlanNoYearCode + '>' + val.PlanNoYearCode + '</option>');
+                            });
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        $('#PendingProdPlanYearCode').change(function () {
+            FillProdScheduleNo();
+        })
+
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+        function FillProdScheduleNo() {
+            $.ajax({
+                url: "@Url.Action("FillProdScheduleNo")",
+                type: "POST",
+                async: false,
+                data: { "ProdPlanNo": $('#PendingProdPlan').val(), "ProdPlanYearCode": $('#PendingProdPlanYearCode').val() },
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProdScheduleNo').empty();
+                            $('#ProdScheduleNo').append('<option value=0 selected disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProdScheduleNo').append('<option value=' + val.ProdSchEntryId + '>' + val.ProdSchNo + '</option>');
+                            });
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        function FillItemName() {
+            $.ajax({
+                url: "@Url.Action("FillItemName")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ItemName').empty();
+                            $('#ItemName').append('<option value=0 selected disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemName').append('<option value=' + val.Item_Code + '>' + val.Item_Name + '</option>');
+                            });
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        function FillPartCode() {
+            $.ajax({
+                url: "@Url.Action("FillPartCode")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option value=0 selected disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#PartCode').append('<option value=' + val.Item_Code + '>' + val.PartCode + '</option>');
+                            });
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        function formatDate(inputDate) {
+            const date = new Date(inputDate); // Parse the input date string
+            const day = String(date.getDate()).padStart(2, '0'); // Get day with leading zero
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month with leading zero
+            const year = date.getFullYear(); // Get full year
+
+            return `${day}/${month}/${year}`; // Return formatted date
+        }
+
+        function showDetail() {
+               
+            var FillWorkCenter;
+            var FillWcId;
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var StoreId = $('#StoreName').val();
+            var parts = fromDate.split('/');
+            var YearCode = parts[2];
+            var GlobalSearch = $('#search-box').val();
+            var ProdPlanNo = $('#ProdSchNo').find(':selected').text() == '-Select-' ? null : $('#ProdSchNo').find(':selected').text();
+            var WorkCenter = $('#ToWorkCenter').find(':selected').text() == '-Select-' ? null : $('#ToWorkCenter').find(':selected').text();
+            var WcId = $('#ToWorkCenter').val();
+            $.ajax({
+                url: '@Url.Action("GetDataForPendingProductionSchedule")',
+                type: "POST",
+                data: { FromDate: fromDate, ToDate: toDate, StoreId: StoreId, YearCode: YearCode, GlobalSearch: GlobalSearch, ProdPlanNo: ProdPlanNo,WcId:WcId },
+                success: function (data) {
+                     
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#divPendMRNGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result.Table, function (index, val) {
+                                 
+                                if(val.WorkCenter == null){
+                                    FillWorkCenter = WorkCenter;
+                                }
+                                else{
+                                    FillWorkCenter = val.WorkCenter;
+                                }
+                                if(val.WCId == null){
+                                    FillWcId = WcId;
+                                }
+                                else {
+                                    FillWcId = val.WCId;
+                                }
+                                var html = '';
+                                html += '<tr id="TableRow' + i + '" >' +
+                                    '<td class="pointer" id="ProdplanNo' + i + '" onclick="CheckDataforIssuePending(' + i + ');">' + val.ProdplanNo + '</td>' +
+                                    '<td>' + formatDate(val.ProdPlanDate) + '</td>' +
+                                    '<td id="ProdSchNo' + i + '">' + val.ProdSchNo + '</td>' +
+                                    '<td>' + formatDate(val.ProdSchDate) + '</td>' +
+                                    '<td><input type="hidden" value="' + val.IssueItemCode + '">' + val.RMPartCode + '</td>' +
+                                    '<td>' + val.RMItemName + '</td>' +
+                                    '<td><input type="hidden" value=' + FillWcId + ' id="WcId' + i + '">' + FillWorkCenter + '</td>' +
+                                    '<td>' + parseFloat(val.ProdSchQty).toFixed(2) + '</td>' +
+                                    '<td>' + parseFloat(val.PendQty).toFixed(2) + '</td>' +
+                                    '<td id="ToatlStock' + i + '">' + val.ToatlStock + '</td>' +
+                                    '<td id="BatchStock' + i + '">' + val.BatchStock + '</td>' +
+                                    '<td id="IssueQty' + i + '">' + parseFloat(val.IssueQty).toFixed(2) + '</td>' +
+                                    '<td>' + val.Unit + '</td>' +
+                                    '<td>' + val.BatchNo + '</td>' +
+                                    '<td>' + val.UniqueBatchNo + '</td>' +
+                                    '<td>' + val.PendAfterIssue + '</td>' +
+                                    '<td><input type="hidden" value="' + val.storeid + '">' + val.StoreName + '</td>' +
+                                    '<td><input type="hidden" value="' + val.ProdPlanFGItemCode + '"><input type="hidden" value="' + val.ProdSchFGItemCode + '">' + val.FGPartCode + '</td>' +
+                                    '<td>' + val.FGItemName + '</td>' +
+                                    '<td>' + val.StdPacking + '</td>' +
+                                    '<td>' + formatDate(val.Batchdate) + '</td>' +
+                                    '<td>' + val.ProdSchYearcode + '</td>' +
+                                    '<td>' + parseFloat(val.AltQty).toFixed(2) + '</td>' +
+                                    '<td>' + val.AltUnit + '</td>' +
+                                    '<td>' + parseFloat(val.Rate).toFixed(2) + '</td>' +
+                                    '<td>' + val.Remark + '</td>' +
+                                    '<td>' + val.ItemSize + '</td>' +
+                                    '<td>' + val.ItemColor + '</td>' +
+                                    '<td>' + parseFloat(val.RemainingStock).toFixed(2) + '</td>' +
+                                    '<td id="ProdEntryId' + i + '">' + val.ProdPlanEntryId + '</td>' +
+                                    '<td>' + val.ProdPlanYearcode + '</td>' +
+                                    '<td id="ProdSchEntryId' + i + '">' + val.ProdSchEntryId + '</td>' +
+                                    '</tr>'
+                                $('#divPendMRNGrid').append(html);
+                                ColorCodingStockandIssue();
+                                var count = $('#divPendMRNGrid tr').length;
+                                $('#totalRows').text(count);
+                                
+                                i++;
+                            });
+
+                        }
+                        else {
+                            $('#divPendMRNGrid').empty();
+                            var count = $('#divPendMRNGrid tr').length;
+                            $('#totalRows').text(count);
+                            $('#divPendMRNGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+
+        }
+
+        function CheckDataforIssuePending(i) {
+             
+            var FillWorkCenter;
+            var FillWcId;
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var StoreId = $('#StoreName').val();
+            var parts = fromDate.split('/');
+            var YearCode = parts[2];
+            var GlobalSearch = $('#search-box').val();
+            var ProdSchNo = $('#ProdSchNo' + i).text();
+            var WorkCenter = $('#ToWorkCenter').find(':selected').text() == '-Select-' ? null : $('#ToWorkCenter').find(':selected').text();
+            var WcId = $('#ToWorkCenter').val();
+            $.ajax({
+                url: '@Url.Action("GetDataForPendingProductionSchedule")',
+                type: "POST",
+                data: { FromDate: fromDate, ToDate: toDate, StoreId: StoreId, YearCode: YearCode, GlobalSearch: GlobalSearch, ProdSchNo: ProdSchNo, WcId: WcId },
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#divPendMRNGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result.Table, function (index, val) {
+                                 
+                                if (val.WorkCenter == null) {
+                                    FillWorkCenter = WorkCenter;
+                                }
+                                else {
+                                    FillWorkCenter = val.WorkCenter;
+                                }
+                                if (val.WCId == null) {
+                                    FillWcId = WcId;
+                                }
+                                else {
+                                    FillWcId = val.WCId;
+                                }
+                                var html = '';
+                                html += '<tr id="TableRow' + i + '" >' +
+                                    '<td id="ProdplanNo' + i + '" onclick="CheckDataforIssuePending(' + i + ');">' + val.ProdplanNo + '</td>' +
+                                    '<td id="ProdPlanDate' + i + '">' + formatDate(val.ProdPlanDate) + '</td>' +
+                                    '<td id="ProdSchNo' + i + '">' + val.ProdSchNo + '</td>' +
+                                    '<td id="ProdSchDate' + i + '">' + formatDate(val.ProdSchDate) + '</td>' +
+                                    '<td id="RMPartCode' + i + '"><input id="IssueItemCode' + i + '" type="hidden" value="' + val.IssueItemCode + '">' + val.RMPartCode + '</td>' +
+                                    '<td id="RMItemName' + i + '">' + val.RMItemName + '</td>' +
+                                    '<td id="WorkCenter' + i + '"><input type="hidden" value=' + FillWcId + ' id="WcId' + i + '">' + FillWorkCenter + '</td>' +
+                                    '<td id="ProdSchQty' + i + '">' + parseFloat(val.ProdSchQty).toFixed(2) + '</td>' +
+                                    '<td id="PendQty' + i + '">' + parseFloat(val.PendQty).toFixed(2) + '</td>' +
+                                    '<td id="ToatlStock' + i + '">' + val.ToatlStock + '</td>' +
+                                    '<td id="BatchStock' + i + '">' + val.BatchStock + '</td>' +
+                                    '<td id="IssueQty' + i + '">' + parseFloat(val.IssueQty).toFixed(2) + '</td>' +
+                                    '<td id="Unit' + i + '">' + val.Unit + '</td>' +
+                                    '<td id="BatchNo' + i + '">' + val.BatchNo + '</td>' +
+                                    '<td id="UniqueBatchNo' + i + '">' + val.UniqueBatchNo + '</td>' +
+                                    '<td id="PendAfterIssue' + i + '">' + val.PendAfterIssue + '</td>' +
+                                    '<td id="StoreName' + i + '"><input id="StoreId' + i + '" type="hidden" value="' + val.storeid + '">' + val.StoreName + '</td>' +
+                                    '<td id="FGPartCode' + i + '"><input id="ProdPlanFGItemCode' + i + '" type="hidden" value="' + val.ProdPlanFGItemCode + '"><input id="ProdSchFGItemCode' + i + '" type="hidden" value="' + val.ProdSchFGItemCode + '">' + val.FGPartCode + '</td>' +
+                                    '<td id="FGItemName' + i + '">' + val.FGItemName + '</td>' +
+                                    '<td id="StdPacking' + i + '">' + val.StdPacking + '</td>' +
+                                    '<td id="Batchdate' + i + '">' + formatDate(val.Batchdate) + '</td>' +
+                                    '<td id="ProdSchYearcode' + i + '">' + val.ProdSchYearcode + '</td>' +
+                                    '<td id="AltQty' + i + '">' + parseFloat(val.AltQty).toFixed(2) + '</td>' +
+                                    '<td id="AltUnit' + i + '">' + val.AltUnit + '</td>' +
+                                    '<td id="Rate' + i + '">' + parseFloat(val.Rate).toFixed(2) + '</td>' +
+                                    '<td id="Remark' + i + '">' + val.Remark + '</td>' +
+                                    '<td id="ItemSize' + i + '">' + val.ItemSize + '</td>' +
+                                    '<td id="ItemColor' + i + '">' + val.ItemColor + '</td>' +
+                                    '<td id="RemainingStock' + i + '">' + parseFloat(val.RemainingStock).toFixed(2) + '</td>' +
+                                    '<td id="ProdEntryId' + i + '">' + val.ProdPlanEntryId + '</td>' +
+                                    '<td id="ProdPlanYearcode' + i + '">' + val.ProdPlanYearcode + '</td>' +
+                                    '<td id="ProdSchEntryId' + i + '">' + val.ProdSchEntryId + '</td>' +
+                                    '</tr>'
+                                $('#divPendMRNGrid').append(html);
+                                var count = $('#divPendMRNGrid tr').length;
+                                $('#totalRows').text(count);
+                                ColorCodingStockandIssue();
+                                TransferToIssueProduction(i);
+                                i++;
+                            });
+                        }
+                        else {
+                            $('#divPendMRNGrid').empty();
+                            var count = $('#divPendMRNGrid tr').length;
+                            $('#totalRows').text(count);
+                            $('#divPendMRNGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function ColorCodingStockandIssue() {
+             
+            var rowCount = $('#divPendMRNGrid tr').length;
+
+            for (var i = 1; i <= rowCount; i++) {
+                if (parseInt($('#ToatlStock' + i).text()) <= 0 || parseInt($('#BatchStock' + i).text()) <= 0) {
+                    $('#TableRow' + i + ' td').css("color", "red");
+                    $('#ToatlStock' + i).css("font-weight", "bolder");
+                    $('#BatchStock' + i).css("font-weight", "bolder");
+                }
+                else {
+                    $('#TableRow' + i + ' td').css("color", "green");
+                    $('#ToatlStock' + i).css("font-weight", "bolder");
+                    $('#BatchStock' + i).css("font-weight", "bolder");
+                }
+            }
+        }
+
+        function TransferToIssueProduction(i) {
+              
+            var rowCount = $('#divPendMRNGrid tr').length;
+            var ItemData = [];
+            for (let i = 1; i <= rowCount; i++) {
+
+                ItemData.push({
+                    "seqno":i,
+                    "ProdplanNo": $('#ProdplanNo' + i).text(),
+                    "ProdPlanYearCode": $('#ProdPlanYearcode' + i).text(),
+                    "ProdPlanDate": $('#ProdPlanDate' + i).text(),
+                    "ProdSchNo": $('#ProdSchNo' + i).text(),
+                    "ProdSchDate": $('#ProdSchDate' + i).text(),
+                    "FGPartCode": $('#FGPartCode' + i).text(),
+                    "ProdPlanFGItemCode": $('#ProdPlanFGItemCode' + i).val(),
+                    "ProdSchFGItemCode": $('#ProdSchFGItemCode' + i).val(),
+                    "FGItemName": $('#FGItemName' + i).text(),
+                    "IssueItemCode": $('#IssueItemCode' + i).val(),
+                    "RMPartCode": $('#RMPartCode' + i).text(),
+                    "RMItemName": $('#RMItemName' + i).text(),
+                    "ProdSchQty": $('#ProdSchQty' + i).text(),
+                    "PendQty": $('#PendQty' + i).text(),
+                    "Unit": $('#Unit' + i).text(),
+                    "StdPacking": $('#StdPacking' + i).text(),
+                    "ToatlStock": $('#ToatlStock' + i).text(),
+                    "BatchStock": $('#BatchStock' + i).text(),
+                    "IssueQty": $('#IssueQty' + i).text(),
+                    "PendAfterIssue": $('#PendAfterIssue' + i).text(),
+                    "StoreId": $('#StoreId' + i).val(),
+                    "StoreName": $('#StoreName' + i).text(),
+                    "BatchNo": $('#BatchNo' + i).text(),
+                    "UniqueBatchNo": $('#UniqueBatchNo' + i).text(),
+                    "Batchdate": $('#Batchdate' + i).text(),
+                    "ProdSchYearcode": $('#ProdSchYearcode' + i).text(),
+                    "AltQty": $('#AltQty' + i).text(),
+                    "AltUnit": $('#AltUnit' + i).text(),
+                    "Rate": $('#Rate' + i).text(),
+                    "Remark": $('#Remark' + i).text(),
+                    "ItemSize": $('#ItemSize' + i).text(),
+                    "ItemColor": $('#ItemColor' + i).text(),
+                    "RemainingStock": $('#RemainingStock' + i).text(),
+                    "ProdPlanEntryId": $('#ProdEntryId' + i).text(),
+                    "ProdSchEntryId": $('#ProdSchEntryId' + i).text(),
+                    "WCId": $('#WcId' + i).val(),
+                    "WorkCenter": $('#WorkCenter' + i).text()
+                });
+            }
+            $.ajax({
+                url: "@Url.Action("AddIssuePendingProduction")",
+                type: "POST",
+                data: { model: ItemData },
+                async: false,
+                success: function (data, status, xhr) {
+                     
+                    if (data != "done") {
+                        // $.notify(data, "error");
+                    }
+                    else {
+                        var FromStoreId = $('#FromStore').val();
+                        var url = '/IssueAgainstProdSchedule/Index/?';
+                        url = url + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#ReqNo').val() + "&ReqYearCode=" + $('#ReqYearCode').val() + "&WCName=" + $('#WorkCenter').val() + "&DeptName=" + $('#DeptName').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&GlobalSearch=" + $('#search-box').val() + "&FromStoreBack=" + FromStoreId
+                        window.location.href = url;
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                    console.log(result.responseText);
+                }
+            });
+        }
+
+        $('#sendToExcel').click(function () {
+            $("#GateDataTable").table2excel({
+                filename: "PendingProductionSchedule.xls"
+            });
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('GateDataTable', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('GateDataTable', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#divPendMRNGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+}
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+        font-size:10px;
+    }
+
+        #GateDataTable thead {
+            position: sticky;
+            top: 0;
+            z-index: 10; /* Ensure the header stays above other elements */
+            background-color: #127387; /* Match the header background color */
+        }
+
+    .pointer {
+        cursor: pointer;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>
