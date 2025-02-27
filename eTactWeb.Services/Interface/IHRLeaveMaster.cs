@@ -14,5 +14,8 @@ namespace eTactWeb.Services.Interface
 
         Task<DataSet> GetEmployeeCategory();
         Task<DataSet> GetDepartment();
+        Task<DataSet> GetLocation();
+
+        Task<ResponseResult> FillLeaveId();
     }
 }

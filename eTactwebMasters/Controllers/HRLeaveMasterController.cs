@@ -83,6 +83,7 @@ namespace eTactwebMasters.Controllers
 
             MainModel = await BindModel(MainModel).ConfigureAwait(false);
             MainModel = await BindModel1(MainModel).ConfigureAwait(false);
+            MainModel = await BindModel2(MainModel).ConfigureAwait(false);
             return View(MainModel);
         }
 
@@ -140,11 +141,32 @@ namespace eTactwebMasters.Controllers
             return model;
         }
 
-        public async Task<JsonResult> GetLeaveCategory()
+        private async Task<HRLeaveMasterModel> BindModel2(HRLeaveMasterModel model)
         {
-            var JSON = await _IHRLeaveMaster.GetLeaveCategory();
-            string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _IHRLeaveMaster.GetLocation().ConfigureAwait(true);
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["emp_id"].ToString(),
+                        Text = row["EmployeeName"].ToString()
+                    });
+                }
+                model.LocationList = _List;
+                _List = new List<TextValue>();
+
+
+
+
+            }
+
+
+            return model;
         }
 
         public async Task<JsonResult> GetleaveType()
@@ -153,8 +175,24 @@ namespace eTactwebMasters.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetLeaveCategory()
+        {
+            var JSON = await _IHRLeaveMaster.GetLeaveCategory();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> FillLeaveId()
+        {
+            var JSON = await _IHRLeaveMaster.FillLeaveId();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+
+
 
 
 
     }
-    }
+}

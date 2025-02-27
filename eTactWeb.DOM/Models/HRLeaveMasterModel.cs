@@ -24,11 +24,11 @@ namespace eTactWeb.DOM.Models
 
         [Required]
         [StringLength(50)]
-        public string LeaveType { get; set; } // Paid, Unpaid, Compensatory	
+        public string? LeaveType { get; set; } // Paid, Unpaid, Compensatory	
 
         [Required]
         [StringLength(50)]
-        public string LeaveCategory { get; set; } // Earned, Maternity, Study, Special	
+        public string? LeaveCategory { get; set; } // Earned, Maternity, Study, Special	
 
         [Required]
         [StringLength(10)]
@@ -74,6 +74,8 @@ namespace eTactWeb.DOM.Models
 
         [StringLength(100)]
         public string RestrictedToLocation { get; set; } // Example: India, GCC	
+        public IList<LeaveLocationDetail>? LocationDetailList { get; set; }
+        public IList<TextValue>? LocationList { get; set; }
 
         public int? MinWorkDaysRequired { get; set; } // Required workdays before applying	
 
@@ -118,3 +120,13 @@ public class LeaveDeptWiseCategDetail
     public string? DeptId { get; set; }
 
 }
+
+[Serializable()]
+public class LeaveLocationDetail
+{
+    // public int DeptId { get; set; }
+    public int SalHeadEntryId { get; set; }
+    public string? DeptId { get; set; }
+
+}
+

@@ -263,6 +263,20 @@
                                         @* <select class="form-select" multiple="multiple" asp-for="EmpCateg" asp-items="@(new SelectList(Model.EmpCategList,"Value","Text"))"></select> *@
                                     </div>
 
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="RestrictedToDepartment" class="control-label">RestrictedToDepartment </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="RestrictedToDepartment" asp-items="@(new SelectList(Model.DeptWiseCategList,"Value","Text"))"></select>
+                                    </div>
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="RestrictedToLocation" class="control-label">RestrictedToLocation </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="RestrictedToLocation" asp-items="@(new SelectList(Model.LocationList,"Value","Text"))"></select>
+                                    </div>
+
 
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -474,6 +488,9 @@
            
         });
 
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            FillLeaveID();
+        }
       
         function simulateBackspace(element) {
             var event = new KeyboardEvent("keydown", {
@@ -533,7 +550,17 @@
 
 
             });
-            $("#RestrictedToDepartments").multiselect({
+            $("#RestrictedToDepartment").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+            });
+            $("#RestrictedToLocation").multiselect({
                 // Bootstrap 5 compatibility
                 templates: {
                     button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
@@ -571,6 +598,25 @@
             FillLeaveCategory();
 
         });
+
+        function FillLeaveID() {
+            $.ajax({
+                url: '@Url.Action("FillLeaveId", "HRLeaveMaster")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#LeaveId').val(0);
+                        $('#LeaveId').val(obj.Result[0].EntryId);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
 
         function FillLeaveType() {
             $.ajax({

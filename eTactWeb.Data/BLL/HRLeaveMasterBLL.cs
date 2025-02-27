@@ -42,5 +42,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRLeaveMasterDAL.GetDepartment();
         }
+        public async Task<DataSet> GetLocation()
+        {
+            return await _HRLeaveMasterDAL.GetLocation();
+        }
+        public async Task<ResponseResult> FillLeaveId()
+        {
+            return await _HRLeaveMasterDAL.FillLeaveId();
+        }
     }
 }
