@@ -209,7 +209,7 @@
                                         </thead>
                                         <tbody id="divCustJobWorkISsueSummary">
                                             @* <partial name="_JOBWORKISSUESUMMARY" /> *@
-                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueModel>());
+                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueAdjustDetail>());
                                         </tbody>
                                     </table>
                                 </div>
@@ -684,6 +684,7 @@
             var EntryDate = $('#ChallanDate').val();
             var ChallanDate = $('#ChallanDate').val();
             var AccountCode = $('#AccountCode').val();
+            var itemCode = $('#ItemCode').val();
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
@@ -711,6 +712,7 @@
 
                 adjustedData.push(rowData);
             });
+            debugger
             console.log("Adustdata:", adjustedData);
             debugger
             $.ajax({
@@ -723,7 +725,8 @@
                     "YearCode": YearCode,
                     "EntryDate": EntryDate,
                     "ChallanDate": ChallanDate,
-                    "AccountCode": AccountCode
+                    "AccountCode": AccountCode,
+                    "ItemCode":itemCode
                 },
                 // dataType: "html",
                 async: false,
