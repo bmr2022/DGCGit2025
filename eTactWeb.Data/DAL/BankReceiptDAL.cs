@@ -363,6 +363,8 @@ namespace eTactWeb.Data.DAL
             var model = new BankReceiptModel();
             try
             {
+                DateTime currentDate = DateTime.Today;
+                DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand oCmd = new SqlCommand("AccSpVoucherEntry", myConnection)
@@ -372,8 +374,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Summary");
                     oCmd.Parameters.AddWithValue("@VoucherType", "BankReceipt");
-                    oCmd.Parameters.AddWithValue("@fromdate", FromDate);
-                    oCmd.Parameters.AddWithValue("@todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@fromdate", firstDateOfMonth.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@todate", currentDate.ToString("yyyy/MM/dd"));
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

@@ -243,26 +243,87 @@
                                 </ul>
                             </li>
 
+                           
+
                             <li>
-                                <a class="dropdown-item" href="#">HR &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-action="HRSalaryHeadMaster" asp-route-ID="0" asp-controller="HRSalaryHeadMaster" id="HRSalaryHeadMaster">
-                                            <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> HR Salary HeadMaster
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-action="DashBoard" asp-controller="HRSalaryHeadMaster">
-                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
-                                        </a>
-                                       
+                                @*//1 *@
+                                <a class="dropdown-item" id="HR" href="#">HR Master &raquo;</a>
+                                @*    <ul class="submenu dropdown-menu"> *@
+                                <ul class="submenu dropdown-menu" data-bs-popper="static">
 
+                                    <li>
+                                        <a class="dropdown-item" href="#">HRSalary Head Master &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRSalaryHeadMaster" asp-route-ID="0" asp-controller="HRSalaryHeadMaster" id="HRSalaryHeadMaster">
+                                                    <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> HR Salary HeadMaster
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-action="DashBoard" asp-controller="HRSalaryHeadMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+
+
+                                            </li>
+
+
+
+                                        </ul>
                                     </li>
 
+                                    <li>
+                                        <a class="dropdown-item" href="#">HR WeekOff Master &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRWeekOffMaster" asp-route-ID="0" asp-controller="HRWeekOffMaster" id="HRWeekOffMaster">
+                                                    <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> HR WeekOff Master
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRWeekOffMasterDashBoard" asp-controller="HRWeekOffMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+
+
+                                            </li>
+
+
+
+                                        </ul>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="#">HR Leave Master &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRLeaveMaster" asp-route-ID="0" asp-controller="HRLeaveMaster" id="HRLeaveMaster">
+                                                    <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> HR Leave Master
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRLeaveMasterDashBoard" asp-controller="HRLeaveMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+
+
+                                            </li>
+
+
+
+                                        </ul>
+                                    </li>
 
                                     
-                                </ul>
-                            </li>
+                                   
+                                   
+                                    
+                                   
+                                </ul>  @*//put menu above it *@
+
+                            </li>  @*//1 *@
+
+
 
                             <li><hr class="dropdown-divider"></li>
 

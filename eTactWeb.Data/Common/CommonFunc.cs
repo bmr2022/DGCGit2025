@@ -389,6 +389,24 @@ public static class CommonFunc
                         typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
                     }
                 }
+                else if (table.TableName == "EmpCategDetail1")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
+                else if (table.TableName == "DeptWiseCategDetail1")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
                 else if (table.TableName == "TAXMASTERDASHBOARD")
                 {
                     if (typeProperty.PropertyInfo.Name != "AddInTaxableList" && typeProperty.PropertyInfo.Name != "RefundableList" && typeProperty.PropertyInfo.Name != "TaxCategoryList"

@@ -5,7 +5,7 @@
 }
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="AlternateItemMaster" asp-controller="AlternateItemMaster" method="post" autocomplete="on" class="form-horizontal">
+    <form asp-action="HRShiftMaster" asp-controller="HRShiftMaster" method="post" autocomplete="on" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h5>
@@ -99,36 +99,36 @@
                                    </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="GraceTimeIn" class="form-label">GraceTimeIn (Minutes)</label>
-                                        <input asp-for="GraceTimeIn" id="GraceTimeIn" class="form-control" type="number" min="1" max="60" />
+                                        <input asp-for="GraceTimeIn" id="GraceTimeIn" class="form-control"  />
                                     </div>
 
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="GraceTimeOut" class="form-label">GraceTimeOut (Minutes)</label>
-                                        <input asp-for="GraceTimeOut" id="GraceTimeOut" class="form-control" type="number" min="1" max="60" />
+                                        <input asp-for="GraceTimeOut" id="GraceTimeOut" class="form-control"  />
                                     </div>
                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Lunchfrom" class="form-label">Lunchfrom</label>
-                                        <input asp-for="Lunchfrom" class="form-control" type="time" step="1" />
+                                        <input asp-for="Lunchfrom" class="form-control" type="time"  />
                                    </div>
                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Lunchto" class="form-label">Lunchto</label>
-                                        <input asp-for="Lunchto" class="form-control" type="time" step="1" />
+                                        <input asp-for="Lunchto" class="form-control" type="time"  />
                                    </div>
                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                         <label asp-for="FirstBreakFrom" class="form-label">First Break From</label>
-                                        <input asp-for="FirstBreakFrom" class="form-control" type="time" step="1" />
+                                        <input asp-for="FirstBreakFrom" class="form-control" type="time"  />
                                    </div>
                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="FirstBreakTo" class="form-label">FirstBreakTo</label>
-                                        <input asp-for="FirstBreakTo" class="form-control" type="time" step="1" />
+                                        <input asp-for="FirstBreakTo" class="form-control" type="time"  />
                                    </div>
                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                         <label asp-for="SecondBreakFrom" class="form-label">SecondBreakFrom</label>
-                                        <input asp-for="SecondBreakFrom" class="form-control" type="time" step="1" />
+                                        <input asp-for="SecondBreakFrom" class="form-control" type="time"  />
                                    </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                         <label asp-for="SecondBreakTo" class="form-label">SecondBreakTo</label>
-                                        <input asp-for="SecondBreakTo" class="form-control" type="time" step="1" />
+                                        <input asp-for="SecondBreakTo" class="form-control" type="time"  />
                                    </div>
                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="CC" class="form-label">CC</label>
@@ -140,11 +140,11 @@
                                    </div>
                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="ThirdBreakFrom" class="form-label">ThirdBreakFrom</label>
-                                        <input asp-for="ThirdBreakFrom" class="form-control" type="time" step="1" />
+                                        <input asp-for="ThirdBreakFrom" class="form-control" type="time" />
                                    </div>
                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="ThirdBreakTo" class="form-label">ThirdBreakTo</label>
-                                        <input asp-for="ThirdBreakTo" class="form-control" type="time" step="1" />
+                                        <input asp-for="ThirdBreakTo" class="form-control" type="time"  />
                                    </div>
                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="duration" class="form-label">Duration</label>
@@ -154,16 +154,16 @@
                                         <label asp-for="ShiftForProdOnly" class="form-label">ShiftForProdOnly</label>
                                         <select asp-for="ShiftForProdOnly" class="form-select" >
                                             <option disabled value="">-Select-</option>
-                                            <option value="Yes" selected>Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y" selected>Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div> 
                                     <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="OutDay" class="form-label">OutDay</label>
                                         <select asp-for="OutDay" class="form-select" >
                                             <option  value="">-Select-</option>
-                                            <option value="Same">Same</option>
-                                            <option value="NextDay">NextDay</option>
+                                            <option value="S">Same</option>
+                                            <option value="N">NextDay</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -367,39 +367,70 @@
                     }
                 }
             }
-            $('.form-control').on('change', function () {
-                validateTime('#FirstBreakFrom', '#FirstBreakTo');
-                validateTime('#SecondBreakFrom', '#SecondBreakTo');
-                validateTime('#Lunchfrom', '#Lunchto');
-                validateTime('#ThirdBreakFrom', '#ThirdBreakTo');
-            });
-            $('.form-control').on('input', function () {
-                let value = $(this).val();
-                let regex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+            console.log("Changes Effect done");
+            // Validate time format for specific fields
+            debugger
+            $('#FirstBreakFrom, #FirstBreakTo, #SecondBreakFrom, #SecondBreakTo, #Lunchfrom, #Lunchto, #ThirdBreakFrom, #ThirdBreakTo')
+                .on('input', function () {
+                    let value = $(this).val();
+                    let regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
-                if (!regex.test(value)) {
-                    $.notify('Invalid time format! Please enter time in HH:mm:ss format.','error');
-                    $(this).val('');
-                }
-            });
+                    if (!regex.test(value)) {
+                        $.notify('Invalid time format! Please enter time in HH:mm format.', 'error');
+                        $(this).val('');
+                    }
+                });
+
+            // Validate time order when values change
+            $('#FirstBreakFrom, #FirstBreakTo, #SecondBreakFrom, #SecondBreakTo, #Lunchfrom, #Lunchto, #ThirdBreakFrom, #ThirdBreakTo')
+                .on('change', function () {
+                    validateTime('#FirstBreakFrom', '#FirstBreakTo');
+                    validateTime('#SecondBreakFrom', '#SecondBreakTo');
+                    validateTime('#Lunchfrom', '#Lunchto');
+                    validateTime('#ThirdBreakFrom', '#ThirdBreakTo');
+                });
+
             //GraceTimein------
-            function validateMinutes(input) {
-                let value = $(input).val();
-                let regex = /^([1-5]?[0-9]|60)$/; // Only allows numbers from 1 to 60
+            // function validateTime(input) {
+            //     let value = $(input).val();
+            //     let regex = /^([01]\d|2[0-3]):([0-5]\d)$/; // HH:mm format validation
 
-                if (!regex.test(value)) {
-                    $.notify('Invalid input! Value should be between 1 and 60 minutes.','error');
-                    $(input).val('');
-                }
-            }
-            $('#GraceTimeIn').on('input', function () {
-                validateMinutes(this);
-            });
+            //     if (!regex.test(value)) {
+            //         $.notify('Invalid time format! Please enter time in HH:mm format.', 'error');
+            //         $(input).val('');
+            //         return false;
+            //     }
+            //     return true;
+            // }
 
-           
-            $('#GraceTimeOut').on('input', function () {
-                validateMinutes(this);
-            });
+            // function validateTimeDifference() {
+            //     let graceTimeIn = $('#GraceTimeIn').val();
+            //     let graceTimeOut = $('#GraceTimeOut').val();
+
+            //     if (graceTimeIn && graceTimeOut) {
+            //         let inMinutes = convertToMinutes(graceTimeIn);
+            //         let outMinutes = convertToMinutes(graceTimeOut);
+            //         let difference = Math.abs(outMinutes - inMinutes);
+
+            //         if (difference > 60) {
+            //             $.notify('Time difference should not exceed 60 minutes.', 'error');
+            //             $('#GraceTimeOut').val(''); // Clear invalid out time
+            //         }
+            //     }
+            // }
+
+            // function convertToMinutes(time) {
+            //     let [hours, minutes] = time.split(':').map(Number);
+            //     return hours * 60 + minutes;
+            // }
+
+            // // Event listeners
+            // $('#GraceTimeIn, #GraceTimeOut').on('change', function () {
+            //     if (validateTime(this)) {
+            //         validateTimeDifference();
+            //     }
+            // });
+
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
