@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eTactWeb.DOM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,10 @@ namespace eTactWeb.Services.Interface
         Task<DataSet> GetLocation();
 
         Task<ResponseResult> FillLeaveId();
+
+        Task<ResponseResult> SaveData(HRLeaveMasterModel model, DataTable HREmpCatDT, DataTable HRDeptCatDT,DataTable HRLocationDT);
+
+        Task<ResponseResult> GetDashboardData();
+        Task<HRLeaveMasterModel> GetDashboardDetailData();
     }
 }

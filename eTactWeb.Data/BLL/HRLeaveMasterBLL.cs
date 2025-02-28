@@ -1,4 +1,5 @@
 ﻿using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -49,6 +50,18 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillLeaveId()
         {
             return await _HRLeaveMasterDAL.FillLeaveId();
+        }
+        public async Task<ResponseResult> SaveData(HRLeaveMasterModel model, DataTable HREmpCatDT, DataTable HRDeptCatDT, DataTable HRLocationDT)
+        {
+            return await _HRLeaveMasterDAL.SaveData(model, HREmpCatDT, HRDeptCatDT, HRLocationDT);
+        }
+        public async Task<ResponseResult> GetDashboardData()
+        {
+            return await _HRLeaveMasterDAL.GetDashboardData();
+        }
+        public async Task<HRLeaveMasterModel> GetDashboardDetailData()
+        {
+            return await _HRLeaveMasterDAL.GetDashboardDetailData();
         }
     }
 }

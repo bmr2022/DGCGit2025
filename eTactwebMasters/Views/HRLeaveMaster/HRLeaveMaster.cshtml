@@ -47,7 +47,7 @@
                                     @*Model.Mode = "U";*@
                                     <div class="col-auto">
                                         @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" onclick="validateAmounts()">
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" >
                                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                             UPDATE
                                         </button>
@@ -58,7 +58,7 @@
                                 {
                                     <div class="col-auto">
                                         @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" onclick="validateAmounts()">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
                                             <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                             SUBMIT
                                         </button>
@@ -310,11 +310,11 @@
                                         <input asp-for="ApprovalLevel1" class="form-control numbers" value="@Model.ApprovalLevel1" />
                                     </div>
                                      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="ApprovalLevel2" class="form-label">AutoApproveLimitDays</label>
+                                        <label asp-for="ApprovalLevel2" class="form-label">ApprovalLevel2</label>
                                         <input asp-for="ApprovalLevel2" class="form-control numbers" value="@Model.ApprovalLevel2" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="ApprovalLevel3" class="form-label">AutoApproveLimitDays</label>
+                                        <label asp-for="ApprovalLevel3" class="form-label">ApprovalLevel3</label>
                                         <input asp-for="ApprovalLevel3" class="form-control numbers" value="@Model.ApprovalLevel3" />
                                     </div>
 
@@ -358,19 +358,19 @@
                                         <input asp-for="CreatedBy" class="form-control " value="@Model.CreatedBy" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="UpdatedBy" class="form-label">EffectiveFrom</label>
+                                        <label asp-for="UpdatedBy" class="form-label">UpdatedBy</label>
                                         <input asp-for="UpdatedBy" class="form-control " value="@Model.UpdatedBy" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="CreatedOn" class="form-label">EffectiveFrom</label>
+                                        <label asp-for="CreatedOn" class="form-label">CreatedOn</label>
                                         <input asp-for="CreatedOn" class="form-control " value="@Model.CreatedOn" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="UpdatedOn" class="form-label">EffectiveFrom</label>
+                                        <label asp-for="UpdatedOn" class="form-label">UpdatedOn</label>
                                         <input asp-for="UpdatedOn" class="form-control " value="@Model.UpdatedOn" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="CC" class="form-label">EffectiveFrom</label>
+                                        <label asp-for="CC" class="form-label">CC</label>
                                         <input asp-for="CC" class="form-control " value="@Model.CC" />
                                     </div>
 
@@ -421,7 +421,7 @@
                                                 @*Model.Mode = "U";*@
                                                 <div class="col-auto">
                                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" onclick="validateAmounts()">
+                                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" >
                                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                                         UPDATE
                                                     </button>
@@ -432,7 +432,7 @@
                                             {
                                                 <div class="col-auto">
                                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" onclick="validateAmounts()">
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
                                                         <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                                         SUBMIT
                                                     </button>
@@ -456,7 +456,7 @@
     <script type="text/javascript">
         $('.submitBTN').click(function (e) {
             e.preventDefault();
-            maxTaxPercentage();
+           
             $('form').submit();
         });
 
@@ -574,16 +574,17 @@
 
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
 
-                $('#SalHeadEntryDate').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
-                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
+                $('#CreatedOn').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
+                $('#EffectiveFrom').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
             }
             else {
-                $('#SalHeadEntryDate').datepicker({ dateFormat: 'yy/mm/dd' });
-                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'yy/mm/dd' });
+                $('#CreatedOn').datepicker({ dateFormat: 'yy/mm/dd' });
+                $('#EffectiveFrom').datepicker({ dateFormat: 'yy/mm/dd' });
             }
 
-            var LastUpdatedOn = parseDateToFormat($('#LastUpdatedOn').val().split(" ")[0]);
-            $('#LastUpdatedOn').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", LastUpdatedOn);
+            var UpdatedOn = parseDateToFormat($('#UpdatedOn').val().split(" ")[0]);
+            $('#UpdatedOn').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", UpdatedOn);
+
 
             GetFormRights();
 
@@ -600,6 +601,7 @@
         });
 
         function FillLeaveID() {
+            
             $.ajax({
                 url: '@Url.Action("FillLeaveId", "HRLeaveMaster")',
                 type: 'POST',
@@ -619,6 +621,7 @@
         }
 
         function FillLeaveType() {
+            debugger
             $.ajax({
                 url: '@Url.Action("GetleaveType", "HRLeaveMaster")',
 
@@ -648,6 +651,7 @@
         }
 
         function FillLeaveCategory() {
+            debugger
             $.ajax({
                 url: '@Url.Action("GetLeaveCategory", "HRLeaveMaster")',
 

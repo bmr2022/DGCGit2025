@@ -90,14 +90,16 @@ namespace eTactWeb.DOM.Models
         [StringLength(3)]
         public string Active { get; set; } // Yes/No	
 
-        public DateTime? EffectiveFrom { get; set; } // Policy start date	
+        public string? EffectiveFrom { get; set; } // Policy start date	
 
         public long? CreatedBy { get; set; } // Created by (User ID)	
 
         public long? UpdatedBy { get; set; } // Last modified by	
-        public DateTime? CreatedOn { get; set; }
-        public DateTime? UpdatedOn { get; set; }
+        public string? CreatedOn { get; set; }
+        public string? UpdatedOn { get; set; }
         public string? CC { get; set; }
+        public IList<HRLeaveMasterModel>? HRLeaveDashboard { get; set; }
+        public string Searchbox { get; set; }
 
     }
 }
@@ -106,8 +108,8 @@ namespace eTactWeb.DOM.Models
 public class LeaveEmpCategDetail
 {
     //public int CategoryId { get; set; }
-    public int SalHeadEntryId { get; set; }
-    public string? CategoryId { get; set; }
+    public long? LeaveId { get; set; }
+    public int CategoryId { get; set; }
 
 
 }
@@ -116,8 +118,8 @@ public class LeaveEmpCategDetail
 public class LeaveDeptWiseCategDetail
 {
     // public int DeptId { get; set; }
-    public int SalHeadEntryId { get; set; }
-    public string? DeptId { get; set; }
+    public long? LeaveId { get; set; }
+    public int DeptId { get; set; }
 
 }
 
@@ -125,8 +127,8 @@ public class LeaveDeptWiseCategDetail
 public class LeaveLocationDetail
 {
     // public int DeptId { get; set; }
-    public int SalHeadEntryId { get; set; }
-    public string? DeptId { get; set; }
+    public long? LeaveId { get; set; }
+    public int LocationId { get; set; }
 
 }
 
