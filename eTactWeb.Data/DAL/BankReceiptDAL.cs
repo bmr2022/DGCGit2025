@@ -230,7 +230,7 @@ namespace eTactWeb.Data.DAL
                 DateTime voucherDate = new DateTime();
 
                 entryDate=ParseDate(model.EntryDate);
-                //actualEntryDate = ParseDate(model.ActualEntryDate);
+                actualEntryDate = ParseDate(model.ActualEntryDate);
                 model.BankRECO = DateTime.Now.ToString();
                 voucherDate = ParseDate(model.VoucherDate);
 
@@ -251,14 +251,14 @@ namespace eTactWeb.Data.DAL
                 {
                     sqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                     //sqlParams.Add(new SqlParameter("@Branch", model.Branch));
-                    sqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.EntryId));
+                    sqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.AccEntryId));
                     sqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
                     sqlParams.Add(new SqlParameter("@EntryDate", entryDate));
                     sqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
                     sqlParams.Add(new SqlParameter("@entrybymachine", model.EntryByMachine));
                     sqlParams.Add(new SqlParameter("@VoucherDate", voucherDate));
                     sqlParams.Add(new SqlParameter("@Subvoucher", "BANK-RECEIPT"));
-                    sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
+                    sqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDate));
 
                     sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
                 }
@@ -399,7 +399,7 @@ namespace eTactWeb.Data.DAL
                                                  UID = dr["uid"] != DBNull.Value ? Convert.ToInt32(dr["uid"]) : 0,
                                                  ActualEntryby = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
                                                  ActualEntryBy = dr["ActualEntryByEmp"] != DBNull.Value ? dr["ActualEntryByEmp"].ToString() : string.Empty,
-                                                 ActualEntryDate = Convert.ToDateTime(dr["ActualEntryDate"]),
+                                                 ActualEntryDate = dr["ActualEntryDate"].ToString(),
                                                  UpdatedBy = dr["UpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedBy"]) : 0,
                                                  UpdatedByEmp = dr["UpdatedByEmp"] != DBNull.Value ? dr["UpdatedByEmp"].ToString() : string.Empty,
                                                  UpdatedOn = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]) : (DateTime?)null,
@@ -553,7 +553,7 @@ namespace eTactWeb.Data.DAL
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
             model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
             model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
-            model.ActualEntryDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
+            model.ActualEntryDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? DateTime.Now.ToString("dd/MM/yy") : DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
 

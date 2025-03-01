@@ -41,7 +41,7 @@ namespace eTactWeb.Controllers
             MainModel.Branch = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
-            MainModel.ActualEntryDate = DateTime.Today;
+            MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
             if (MainModel.Mode == "U")
@@ -104,7 +104,7 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    model.ActualEntryDate = DateTime.Now;
+                    model.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
                     GIGrid = GetDetailTable(BankReceiptGrid);
                 }
                 var Result = await _IBankReceipt.SaveBankReceipt(model, GIGrid);
@@ -318,7 +318,7 @@ namespace eTactWeb.Controllers
                 Item.ProjectYearcode ,
                 Item.ProjectDate = DateTime.Now.ToString("dd/MM/yy"),
                 Item.ActualEntryBy ,
-                Item.ActualEntryDate  ,
+                Item.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy"),
                 Item.UpdatedBy ,
                 Item.UpdatedOn ,
                 Item.EntryByMachine ?? string.Empty,
