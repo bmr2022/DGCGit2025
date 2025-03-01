@@ -628,6 +628,9 @@
                     $("#againstFieldsVoucherEntryId").hide();
                     $("#againstFieldsVoucherBillAmt").hide();
                     $("#againstFieldsVoucherPendAmt").hide();
+                    $('#CustOrderNo').prop('disabled', false);
+                    $('#SoNo').prop('disabled', false);
+                    $('#SOYear').prop('disabled', false);
                 }
                 // Show/Hide Against Fields
                 else if (modeOfAdjustment === "Against Ref") {
@@ -644,6 +647,9 @@
                     $("#advanceFieldsSOYear").hide();
                     $("#advanceFieldsSeqNo").hide();
                     $("#advanceFieldsCustOrderNo").hide();
+                    $('#CustOrderNo').prop('disabled', true);
+                    $('#SoNo').prop('disabled', true);
+                    $('#SOYear').prop('disabled', true);
                     if ($('#LedgerName').prop('selectedIndex') == 0) {
                         $.notify("Please select LedgerName First..!", "error");
                     }
@@ -663,6 +669,9 @@
                     $("#againstFieldsVoucherEntryId").hide();
                     $("#againstFieldsVoucherBillAmt").hide();
                     $("#againstFieldsVoucherPendAmt").hide();
+                    $('#CustOrderNo').prop('disabled', true);
+                    $('#SoNo').prop('disabled', true);
+                    $('#SOYear').prop('disabled', true);
                 }
             }
             $("#ModeOfAdjustment").on("change", function () {
@@ -727,6 +736,7 @@
         }
 
         function FillEntryID() {
+            debugger
             $.ajax({
                 url: '@Url.Action("FillEntryID", "BankReceipt")',
                 type: 'POST',
@@ -1012,7 +1022,7 @@
                 async: false,
                 data: { "AccountCode": $('#AccountCode').val(), },
                 success: function (data, status, xhr) {
-
+                    debugger
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
@@ -1036,6 +1046,9 @@
                                     $('#DisplayRoutingDetailModal').modal('show');
                                     PopUpForPendingVouchers("AddMode");
                                 }
+                                $('#Type option').filter(function () {
+                                    return $(this).val() === "CR";
+                                }).prop('selected', true);
                                 $('#Type').prop('disabled', false);
                                 $('#Type').trigger('change');
                                 var options = [

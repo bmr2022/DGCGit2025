@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using static eTactWeb.DOM.Models.Common;
-
+using Common = eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -483,10 +483,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@partcode", partCode ?? ""));
                 SqlParams.Add(new SqlParameter("@SONO", sono ?? ""));
                 SqlParams.Add(new SqlParameter("@CustOrderNo", custOrderNo ?? ""));
-                SqlParams.Add(new SqlParameter("@SOYearCode", soYearCode ));
+                SqlParams.Add(new SqlParameter("@SOYearCode", soYearCode));
                 SqlParams.Add(new SqlParameter("@SchNo", schNo ?? ""));
                 SqlParams.Add(new SqlParameter("@SchYearCode", schYearCode));
-                SqlParams.Add(new SqlParameter("@CurrenctDate",date));
+                SqlParams.Add(new SqlParameter("@CurrenctDate", date));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpGetPendingSaleOrderForBilling", SqlParams);
             }
             catch (Exception ex)
@@ -672,7 +672,97 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC,string machineName)
+        public async Task<List<CustomerJobWorkIssueAdjustDetail>> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        {
+            var model = new List<CustomerJobWorkIssueAdjustDetail>();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                EntryDate = Common.CommonFunc.ParseFormattedDate(EntryDate);
+                ChallanDate = Common.CommonFunc.ParseFormattedDate(ChallanDate);
+                SqlParams.Add(new SqlParameter("@yearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@FromFinStartDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@billchallandate", ChallanDate));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@DTTItemGrid", adjustedData));
+
+                var ResponseResult = await _IDataLogic.ExecuteDataSet("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
+
+                if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
+                {
+                    PrepareAdjustChallanView(ResponseResult.Result);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+
+        //public List<CustomerJobWorkIssueAdjustDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
+        //{
+        //    List<CustomerJobWorkIssueAdjustDetail> result = new List<CustomerJobWorkIssueAdjustDetail>();
+
+        //    using (SqlConnection conn = new SqlConnection(DBConnectionString))
+        //    {
+        //        conn.Open();
+        //        EntryDate = Common.CommonFunc.ParseFormattedDate(EntryDate);
+        //        ChallanDate = Common.CommonFunc.ParseFormattedDate(ChallanDate);
+
+        //            using (SqlCommand cmd = new SqlCommand("SpCustomerJobworkAdjustedChallanInGrid", conn))
+        //            {
+        //                cmd.CommandType = CommandType.StoredProcedure;
+
+        //                //cmd.Parameters.AddWithValue("@Flag", "JOBWORKISSUESUMMARY");
+        //                cmd.Parameters.AddWithValue("@yearCode", YearCode);
+        //                cmd.Parameters.AddWithValue("@FinYearFromDate", EntryDate);
+        //                cmd.Parameters.AddWithValue("@billchallandate", ChallanDate);
+        //                cmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+        //                cmd.Parameters.AddWithValue("@DTTItemGrid", adjustedData);
+        //                //cmd.Parameters.AddWithValue("@BOMINd", item.BOMInd);
+        //                cmd.Parameters.AddWithValue("@RMItemCode", itemCode);
+        //                //cmd.Parameters.AddWithValue("@RMPartcode", item.PartCode);
+        //                //cmd.Parameters.AddWithValue("@RMItemNAme", item.ItemName);
+
+        //                try
+        //                {
+        //                    using (SqlDataReader reader = cmd.ExecuteReader())
+        //                    {
+        //                        while (reader.Read())
+        //                        {
+        //                            result.Add(new CustomerJobWorkIssueAdjustDetail
+        //                            {
+        //                                //CustomerName = reader["CustomerName"].ToString(),
+        //                                //PartCode = reader["RecPartcode"].ToString(),
+        //                                //ItemName = reader["RecItemName"].ToString(),
+        //                                //BOMInd = reader["BOMIND"].ToString(),
+        //                                //ChallanNo = reader["RecJWChallan"].ToString(),
+        //                                //YearCode = Convert.ToInt32(reader["RecChallanYearCode"]),
+        //                                //ChallanDate = DateTime.Parse(reader["RecChallandate"].ToString()).ToString("dd/MM/yyyy"),
+        //                                //RecQty = Convert.ToInt32(reader["RecQty"]),
+        //                                //IssQty = Convert.ToInt32(reader["IssQty"]),
+        //                                //AccPendQty = Convert.ToInt32(reader["ActualPendQty"]),
+        //                                //PendQty = Convert.ToInt32(reader["PendQty"]),
+        //                            });
+        //                        }
+        //                    }
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    Console.WriteLine($"Error: {ex.Message}");
+        //                    throw; // Rethrow exception to see the detailed error
+        //                }
+        //            }
+
+        //    }
+
+        //    return result;
+        //}
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName)
         {
             var ResponseResult = new ResponseResult();
             try
@@ -1037,6 +1127,40 @@ namespace eTactWeb.Data.DAL
             }
 
             return model;
+        }
+
+        private static List<CustomerJobWorkIssueAdjustDetail> PrepareAdjustChallanView(DataSet DS)
+        {
+            var ItemGrid = new List<CustomerJobWorkIssueAdjustDetail>();
+            DS.Tables[0].TableName = "CustomerJobWorkAdjustDetail";
+            int cnt = 0;
+
+            if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+            {
+                foreach (DataRow row in DS.Tables[1].Rows)
+                {
+                    ItemGrid.AddRange(new List<CustomerJobWorkIssueAdjustDetail>
+                        {
+                            new CustomerJobWorkIssueAdjustDetail
+                            {
+                                CustomerName = row["CustomerName"].ToString(),
+                                PartCode = row["RecPartcode"].ToString(),
+                                ItemName = row["RecItemName"].ToString(),
+                                BOMIND = row["BOMIND"].ToString(),
+                                ChallanNo = row["RecJWChallan"].ToString(),
+                                YearCode = Convert.ToInt32(row["RecChallanYearCode"]),
+                                ChallanDate = row["RecChallandate"].ToString(),
+                                RecQty = row["RecQty"] != DBNull.Value ? Convert.ToSingle(row["RecQty"]) : 0,
+                                IssQty = row["IssQty"] != null ? Convert.ToSingle(row["IssQty"]) : 0,
+                                AccPendQty = row["ActualPendQty"] != DBNull.Value ? Convert.ToSingle(row["ActualPendQty"]) : 0,
+                                PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0
+                            }
+                        });
+                }
+
+            }
+
+            return ItemGrid;
         }
 
     }

@@ -134,7 +134,7 @@ namespace eTactWeb.DOM.Models
         public string ProjectDate { get; set; }
         public string ActualEntryBy { get; set; }
         public int ActualEntryby { get; set; }
-        public DateTime ActualEntryDate { get; set; }
+        public string? ActualEntryDate { get; set; }
         public string? UpdatedByEmp { get; set; }
         public string EntryByMachine { get; set; }
         public string FromDate { get; set; }

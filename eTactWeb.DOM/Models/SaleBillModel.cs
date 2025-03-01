@@ -262,20 +262,33 @@ namespace eTactWeb.DOM.Models
     public class CustomerJobWorkIssueAdjustDetail
     {
         public int ItemCode { get; set; }
-        public string Unit { get; set; }
+        public string? Unit { get; set; }
         public int BillQty { get; set; }
         public int JWRate { get; set; }
         public int ProcessId { get; set; }
-        public string SONO { get; set; }
-        public string CustOrderNo { get; set; }
+        public string? SONO { get; set; }
+        public string? CustOrderNo { get; set; }
         public int SOYearCode { get; set; }
-        public string SchNo { get; set; }
+        public string? SchNo { get; set; }
         public int SchYearcode { get; set; }
-        public int BOMIND { get; set; }
-        public string BOMNO { get; set; }
-        public string BOMEffDate { get; set; }
-        public string Produnprod { get; set; }
-        public string fromChallanOrSalebill { get; set; }
-        public bool ItemAdjustmentRequired { get; set; }
+        public string? BOMIND { get; set; }
+        public int BOMNO { get; set; }
+        public string? BOMEffDate { get; set; }
+        public string? Produnprod { get; set; }
+        public string? fromChallanOrSalebill { get; set; }
+        public string? ItemAdjustmentRequired { get; set; }
+
+        // output
+
+        public string? CustomerName { get; set; }
+        public string? PartCode { get; set; }
+        public string? ItemName { get; set; }
+        public string? ChallanNo { get; set; }
+        public int YearCode { get; set; }
+        public string? ChallanDate { get; set; }
+        public float RecQty { get; set; }
+        public float IssQty { get; set; }
+        public float AccPendQty { get; set; }
+        public float PendQty { get; set; }
     }
 }
