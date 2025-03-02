@@ -15,7 +15,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillIntrument(string VoucherType);
         Task<ResponseResult> FillModeofAdjust(string VoucherType);
         Task<ResponseResult> FillCostCenterName();
-        Task<ResponseResult> FillEntryID();
+        Task<ResponseResult> FillEntryID(int YearCode);
         Task<ResponseResult> FillCurrency();
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode,string VoucherDate);
         Task<ResponseResult> SaveBankReceipt(BankReceiptModel model, DataTable GIGrid);

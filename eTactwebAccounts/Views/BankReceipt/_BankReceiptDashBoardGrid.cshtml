@@ -74,7 +74,9 @@
                             <td>@item.VoucherType</td>
                             <td>@item.Currency</td>
                             <td>@item.ActualEntryBy</td>
-                            <td>@item.ActualEntryDate</td>
+                            <td>
+                                @(DateTime.TryParse(item.ActualEntryDate, out var actualEntryDate) ? actualEntryDate.ToString("dd/MMM/yyyy") : "-")
+                            </td>
                             <td>@item.UpdatedBy</td>
                             <td>@(item.UpdatedOn?.ToString("dd/MMM/yyyy") ?? "-")</td>
                             <td>@item.EntryByMachine</td>

@@ -679,7 +679,7 @@
 
         $('#btnAdjustChallanListGrid').click(function (event) {
             event.preventDefault();
-            debugger
+             
             var YearCode = $('#SaleBillYearCode').val();
             var EntryDate = $('#ChallanDate').val();
             var ChallanDate = $('#ChallanDate').val();
@@ -688,7 +688,7 @@
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-                debugger
+                 
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
@@ -712,9 +712,9 @@
 
                 adjustedData.push(rowData);
             });
-            debugger
+             
             console.log("Adustdata:", adjustedData);
-            debugger
+             
             $.ajax({
                 url: "@Url.Action("GetAdjustedChallanDetailsData")",
                 type: "POST",

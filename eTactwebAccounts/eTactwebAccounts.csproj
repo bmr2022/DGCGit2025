@@ -28,6 +28,10 @@
     <Content Update="Views\SaleBillRegister\_SaleBillRegisterCustomerSalePersonWiseMonthlyTrend.cshtml">
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </Content>
+    <Content Update="Views\Shared\_LayoutMain.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
