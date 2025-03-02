@@ -663,7 +663,7 @@
         }
 
         function AutoComplete(ID) {      
-            debugger
+             
             $("#" + ID).autocomplete({
                 source: function (request, response) {
                     $.ajax({
@@ -697,7 +697,7 @@
                     data: { ID: ID },
                     datatype: JSON,
                     success: function (response, status, error) {
-                         debugger
+                          
                         var obj = $.parseJSON(response);
                         if (obj.StatusCode === 200 || obj.StatusText === "Success") {
                             $('#SubGroup').val(obj.Result.Table[0].SubGroup), $('#AccountType').val(obj.Result.Table[0].AccountType),

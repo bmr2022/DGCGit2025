@@ -38,7 +38,7 @@ namespace eTactWeb.Controllers
 
             TempData.Clear();
             var MainModel = new BankReceiptModel();
-            MainModel.Branch = HttpContext.Session.GetString("Branch");
+            MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
@@ -104,7 +104,6 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    model.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
                     GIGrid = GetDetailTable(BankReceiptGrid);
                 }
                 var Result = await _IBankReceipt.SaveBankReceipt(model, GIGrid);
@@ -114,7 +113,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("KeyLedgerPartyWiseOpeningGrid");
+                        _MemoryCache.Remove("KeyBankReceiptGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
@@ -130,7 +129,7 @@ namespace eTactWeb.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(BankReceipt));
+                return RedirectToAction(nameof(BankReceiptDashBoard));
 
             }
             catch (Exception ex)
@@ -169,7 +168,7 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("VoucherRemark", typeof(string));
                 GIGrid.Columns.Add("DrAmt", typeof(decimal));
                 GIGrid.Columns.Add("CrAmt", typeof(decimal));
-                GIGrid.Columns.Add("entryBankCash", typeof(char));
+                GIGrid.Columns.Add("entryBankCash", typeof(string));
                 GIGrid.Columns.Add("Vouchertype", typeof(string));
                 GIGrid.Columns.Add("chequeDate", typeof(DateTime));
                 GIGrid.Columns.Add("chequeClearDate", typeof(DateTime));
@@ -178,10 +177,11 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("TDSNatureOfPayment", typeof(string));
                 GIGrid.Columns.Add("RoundDr", typeof(decimal));
                 GIGrid.Columns.Add("RoundCr", typeof(decimal));
-                GIGrid.Columns.Add("AgainstVoucherEntryId", typeof(int));
+                GIGrid.Columns.Add("AgainstEntryid", typeof(int));
                 GIGrid.Columns.Add("AgainstVoucheryearcode", typeof(int));
                 GIGrid.Columns.Add("AgainstVoucherType", typeof(string));
                 GIGrid.Columns.Add("againstVoucherRefNo", typeof(string));
+                GIGrid.Columns.Add("AgainstVoucherNo", typeof(string));
                 GIGrid.Columns.Add("AgainstBillno", typeof(string));
                 GIGrid.Columns.Add("PONo", typeof(string));
                 GIGrid.Columns.Add("PoDate", typeof(DateTime));
@@ -192,7 +192,7 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("SOYear", typeof(int));
                 GIGrid.Columns.Add("ApprovedBy", typeof(int));
                 GIGrid.Columns.Add("ApprovedDate", typeof(DateTime));
-                GIGrid.Columns.Add("Approved", typeof(char));
+                GIGrid.Columns.Add("Approved", typeof(string));
                 GIGrid.Columns.Add("AccountNarration", typeof(string));
                 GIGrid.Columns.Add("CurrencyId", typeof(int));
                 GIGrid.Columns.Add("CurrentValue", typeof(decimal));
@@ -203,7 +203,7 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("ChequePrintAC", typeof(string));
                 GIGrid.Columns.Add("EmpCode", typeof(int));
                 GIGrid.Columns.Add("DeptCode", typeof(int));
-                GIGrid.Columns.Add("MRNO", typeof(string));
+                GIGrid.Columns.Add("MRNNO", typeof(string));
                 GIGrid.Columns.Add("MRNDate", typeof(DateTime));
                 GIGrid.Columns.Add("MRNYearCode", typeof(int));
                 GIGrid.Columns.Add("CostCenterId", typeof(int));
@@ -240,7 +240,7 @@ namespace eTactWeb.Controllers
                     GIGrid.Rows.Add(
                         new object[]
                         {
-                       Item.BooktrnsEntryId ,
+                Item.AccEntryId ,
                 Item.YearCode ,
                 Item.EntryDate=DateTime.Now.ToString("dd/MM/yy") ,
                 Item.DocEntryId ,
@@ -270,17 +270,18 @@ namespace eTactWeb.Controllers
                 Item.AgainstVoucherEntryId ,
                 Item.AgainstVoucheryearCode ,
                 Item.AgainstVoucherType ?? string.Empty,
+                Item.AgainstVoucherRefNo ?? string.Empty,
                 Item.AgainstVoucherNo ?? string.Empty,
                 Item.AgainstBillno ?? string.Empty,
                 Item.PONo ?? string.Empty,
-                Item.PoDate =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.PoDate =DateTime.Now.ToString("dd/MM/yy"),
                 Item.POYear ,
                 Item.SONo ,
                 Item.CustOrderNo ?? string.Empty,
                 Item.SoDate  ,
                 Item.SOYear ,
                 Item.ApprovedBy,
-                Item.ApprovedDate = DateTime.Now.ToString("dd/MM/yy") ,
+                Item.ApprovedDate = DateTime.Now.ToString("dd/MM/yy"),
                 Item.Approved ,
                 Item.AccountNarration ?? string.Empty,
                 Item.CurrencyId ,
@@ -376,9 +377,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillEntryID()
+        public async Task<JsonResult> FillEntryID(int YearCode)
         {
-            var JSON = await _IBankReceipt.FillEntryID();
+            var JSON = await _IBankReceipt.FillEntryID(YearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

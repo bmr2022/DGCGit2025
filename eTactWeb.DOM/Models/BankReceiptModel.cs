@@ -29,7 +29,7 @@ namespace eTactWeb.DOM.Models
         public string? ActualDrCr {  get; set; }
         //instrument
         public string Ins { get; set; }
-        public string InsNo { get; set; }
+        public string? InsNo { get; set; }
         public string InsDate { get; set; }
         public string DRCR { get; set; }
         public decimal Balance { get; set; }
@@ -72,7 +72,7 @@ namespace eTactWeb.DOM.Models
         public string AccountGroupType { get; set; }
         public string Description { get; set; }
         public string VoucherRemark { get; set; }
-        public char EntryBankCash { get; set; }
+        public string EntryBankCash { get; set; }
         public string ChequeDate { get; set; }
         public string ChequeClearDate { get; set; }
         public int UID { get; set; }
@@ -99,7 +99,7 @@ namespace eTactWeb.DOM.Models
         public int SOYear { get; set; }
         public int ApprovedBy { get; set; }
         public string ApprovedDate { get; set; }
-        public char Approved { get; set; }
+        public string Approved { get; set; }
         public string AccountNarration { get; set; }
         public int CurrencyId { get; set; }
         public decimal CurrentValue { get; set; }
