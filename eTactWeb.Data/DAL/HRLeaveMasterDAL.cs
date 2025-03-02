@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -200,6 +201,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ApprovalLevel3", model.ApprovalLevel3);
                     oCmd.Parameters.AddWithValue("@EffectiveFrom", string.IsNullOrEmpty(model.EffectiveFrom) ? DBNull.Value : model.EffectiveFrom);
                     oCmd.Parameters.AddWithValue("@CreatedByEmpid", model.CreatedBy);
+                    oCmd.Parameters.AddWithValue("@CatIdList", HREmpCatDT);
+                    oCmd.Parameters.AddWithValue("@DepartIdList", HRDeptCatDT);
                     oCmd.Parameters.AddWithValue("@CreationDate", string.IsNullOrEmpty(model.CreatedOn) ? DBNull.Value : model.CreatedOn);
                    
 
@@ -319,7 +322,7 @@ namespace eTactWeb.Data.DAL
 
                                                    ApprovalLevel2 = Convert.ToInt32(dr["ApprovalLevel2"]),
                                                    ApprovalLevel3 = Convert.ToInt32(dr["ApprovalLevel3"]),
-                                                   CreatedBy = Convert.ToInt32(dr["CreatedByEmpid"]),
+                                                  // CreatedBy = Convert.ToInt32(dr["CreatedByEmpid"]),
                                                    UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
 
                                                    EffectiveFrom = dr["EffectiveFrom"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["EffectiveFrom"]).ToString("dd-MM-yyyy"),
@@ -340,6 +343,87 @@ namespace eTactWeb.Data.DAL
             {
                 oDataSet.Dispose();
             }
+            return model;
+        }
+
+
+        public async Task<HRLeaveMasterModel> GetViewByID(int id)
+        {
+            var model = new HRLeaveMasterModel();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "ViewById"));
+                SqlParams.Add(new SqlParameter("@LeaveEntryId", id));
+
+                var _ResponseResult = await _DataLogicDAL.ExecuteDataSet("HRSPLeaveMaster", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    var oDataSet = new DataSet();
+                    oDataSet = _ResponseResult.Result;
+                    var DTTaxMasterDetail = oDataSet.Tables[0];
+                    var DEmpCategDetail = oDataSet.Tables[1];
+                    var DDeptWiseCategDetail = oDataSet.Tables[2];
+
+                    if (oDataSet.Tables.Count > 0 && DTTaxMasterDetail.Rows.Count > 0)
+                    {
+                        model.LeaveId = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["LeaveEntryId"]);
+                        
+                        model.LeaveCode = DTTaxMasterDetail.Rows[0]["LeaveCode"].ToString();
+                        model.LeaveName = DTTaxMasterDetail.Rows[0]["LeaveName"].ToString();
+                        model.LeaveType = DTTaxMasterDetail.Rows[0]["LeaveType"].ToString();
+                        model.LeaveCategory = DTTaxMasterDetail.Rows[0]["LeaveCategory"].ToString();
+                        model.GenderApplicable = DTTaxMasterDetail.Rows[0]["Gender"].ToString();
+                        model.MaxLeavePerYear = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["MaxleavePerYear"]);
+                        model.MinDaysForApplication = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["MinDayForApplication"]);
+                        model.MaxConsecutiveDaysAllowed = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["MaxConsecutiveDaysAllowed"]);
+                        model.Encashable = DTTaxMasterDetail.Rows[0]["Enachable"].ToString();
+                        model.CarryForward = DTTaxMasterDetail.Rows[0]["CarryForwad"].ToString();
+                        model.MaxCarryForwardLimit = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["MaxCarryForwardLimit"]);
+                        model.HalfDayAllowed = DTTaxMasterDetail.Rows[0]["HalfDayAllowed"].ToString();
+                        model.LeaveApprovalRequired = DTTaxMasterDetail.Rows[0]["LeaveApprovalRequired"].ToString();
+                        model.LeaveDeductionApplicable = DTTaxMasterDetail.Rows[0]["LeaveDeductionApplicable"].ToString();
+                        model.CompensatoryOffRequired = DTTaxMasterDetail.Rows[0]["CompensatoryOffRequired"].ToString();
+                        model.EligibilityAfterMonths = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["EligibilityAfterMonths"]);
+                        model.MinWorkDaysRequired = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["MinWorkDaysRequired"]);
+                        model.AutoApproveLimitDays = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["AutoApproveLimitDays"]);
+                        model.ApprovalLevel1 = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["ApprovalLevel1"]);
+                        model.ApprovalLevel2 = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["ApprovalLevel2"]);
+                        model.ApprovalLevel3 = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["ApprovalLevel3"]);
+                        model.EffectiveFrom = Convert.ToDateTime(DTTaxMasterDetail.Rows[0]["EffectiveFrom"]).ToString("dd/MM/yyyy");
+                        model.CreatedOn = Convert.ToDateTime(DTTaxMasterDetail.Rows[0]["CreationDate"]).ToString("dd/MM/yyyy");
+
+
+
+
+
+
+                        model.CreatedBy = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["CreatedByEmpid"]);
+                       
+
+
+                        //if (!string.IsNullOrEmpty(DTTaxMasterDetail.Rows[0]["UpdatedByName"].ToString()))
+                        //{
+                        //    model.LastUpdatedOn = DTTaxMasterDetail.Rows[0]["UpdatedByName"].ToString();
+
+                        //    model.LastUpdatedBy = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["LastUpdatedBy"]);
+                        //    model.LastUpdatedOn = string.IsNullOrEmpty(DTTaxMasterDetail.Rows[0]["LastUpdatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(DTTaxMasterDetail.Rows[0]["LastUpdatedOn"]);
+                        //}
+                    }
+
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
             return model;
         }
 

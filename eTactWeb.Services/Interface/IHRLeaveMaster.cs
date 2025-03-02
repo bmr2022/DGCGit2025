@@ -23,5 +23,6 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> GetDashboardData();
         Task<HRLeaveMasterModel> GetDashboardDetailData();
+        Task<HRLeaveMasterModel> GetViewByID(int Id);
     }
 }

@@ -55,6 +55,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _SalaryHeadMasterDAL.GetAmountPercentageOfCalculation();
         }
+        public async Task<ResponseResult> GetYesOrNo()
+        {
+            return await _SalaryHeadMasterDAL.GetYesOrNo();
+        }
         public async Task<ResponseResult> GetRoundOff()
         {
             return await _SalaryHeadMasterDAL.GetRoundOff();

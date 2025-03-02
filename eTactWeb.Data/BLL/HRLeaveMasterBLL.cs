@@ -63,5 +63,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRLeaveMasterDAL.GetDashboardDetailData();
         }
+        public async Task<HRLeaveMasterModel> GetViewByID(int id)
+        {
+            return await _HRLeaveMasterDAL.GetViewByID(id);
+        }
     }
 }
