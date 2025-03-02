@@ -47,30 +47,30 @@ namespace eTactwebMasters.Controllers
                 MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
             }
-            //if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
-            //{
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
+            {
 
-            //    //Retrieve the old data by AccountCode and populate the model with existing values
-            //    MainModel = await _ISalaryHeadMaster.GetViewByID(ID).ConfigureAwait(false);
-            //    MainModel.Mode = Mode; // Set Mode to Update
-            //    MainModel.SalHeadEntryId = ID;
+                //    //Retrieve the old data by AccountCode and populate the model with existing values
+                MainModel = await _IHRLeaveMaster.GetViewByID(ID).ConfigureAwait(false);
+                MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.LeaveId = ID;
 
 
-            //    if (Mode == "U")
-            //    {
-            //        MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                //    if (Mode == "U")
+                //    {
+                //        MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-            //        MainModel.LastUpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
+                //        MainModel.LastUpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
 
-            //    }
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                //    }
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024
             };
-            //    _MemoryCache.Set("HRSalaryDashboard", MainModel.HRSalaryDashboard, cacheEntryOptions);
-            //}
+                _MemoryCache.Set("HRLeaveDashboard", MainModel.HRLeaveDashboard, cacheEntryOptions);
+            }
 
             //// If not in "Update" mode, bind new model data
             //else
