@@ -47,6 +47,26 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetApprovalleval()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "EmployeeApproverList"));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("HRSPLeaveMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> GetLeaveCategory()
         {
             var _ResponseResult = new ResponseResult();
@@ -91,6 +111,27 @@ namespace eTactWeb.Data.DAL
             }
 
             return oDataSet;
+        }
+        public async Task<ResponseResult> GetFormRights(int userId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+                SqlParams.Add(new SqlParameter("@EmpId", userId));
+                SqlParams.Add(new SqlParameter("@MainMenu", "Tax"));
+                //SqlParams.Add(new SqlParameter("@SubMenu", "Purchase order"));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemGroup", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
 
         internal async Task<DataSet> GetDepartment()
@@ -163,7 +204,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> SaveData(HRLeaveMasterModel model, DataTable HREmpCatDT, DataTable HRDeptCatDT, DataTable HRLocationDT)
+        public async Task<ResponseResult> SaveData(HRLeaveMasterModel model, List<string> HREmpCatDT, List<string> HRDeptCatDT)
         {
             try
             {
@@ -199,12 +240,21 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ApprovalLevel1", model.ApprovalLevel1);
                     oCmd.Parameters.AddWithValue("@ApprovalLevel2", model.ApprovalLevel2);
                     oCmd.Parameters.AddWithValue("@ApprovalLevel3", model.ApprovalLevel3);
-                    oCmd.Parameters.AddWithValue("@EffectiveFrom", string.IsNullOrEmpty(model.EffectiveFrom) ? DBNull.Value : model.EffectiveFrom);
-                    oCmd.Parameters.AddWithValue("@CreatedByEmpid", model.CreatedBy);
-                    oCmd.Parameters.AddWithValue("@CatIdList", HREmpCatDT);
-                    oCmd.Parameters.AddWithValue("@DepartIdList", HRDeptCatDT);
-                    oCmd.Parameters.AddWithValue("@CreationDate", string.IsNullOrEmpty(model.CreatedOn) ? DBNull.Value : model.CreatedOn);
                    
+                    oCmd.Parameters.AddWithValue("@EffectiveFrom",
+                string.IsNullOrEmpty(model.EffectiveFrom) ? DBNull.Value : DateTime.Parse(model.EffectiveFrom).ToString("dd/MMM/yyyy"));
+                    oCmd.Parameters.AddWithValue("@CreatedByEmpid", model.CreatedBy);
+                   
+                    oCmd.Parameters.AddWithValue("@CreationDate",
+                string.IsNullOrEmpty(model.CreatedOn) ? DBNull.Value : DateTime.Parse(model.CreatedOn).ToString("dd/MMM/yyyy"));
+                    
+                    string empCatCsv = string.Join(",", HREmpCatDT);
+                    string deptCatCsv = string.Join(",", HRDeptCatDT);
+
+                    
+                    oCmd.Parameters.AddWithValue("@CatIdList", empCatCsv);
+                    oCmd.Parameters.AddWithValue("@DepartIdList", deptCatCsv);
+
 
                     if (model.Mode == "UPDATE")
                     {
@@ -318,12 +368,18 @@ namespace eTactWeb.Data.DAL
                                                  
                                                    MinWorkDaysRequired = Convert.ToInt32(dr["MinWorkDaysRequired"]),
                                                    AutoApproveLimitDays = Convert.ToInt32(dr["AutoApproveLimitDays"]),
+                                                   ApplicableDepartment = dr["ApplicableDepartment"].ToString(),
+                                                   ApplicableOnCategory = dr["ApplicableOnCategory"].ToString(),
                                                    ApprovalLevel1 = Convert.ToInt32(dr["ApprovalLevel1"]),
 
                                                    ApprovalLevel2 = Convert.ToInt32(dr["ApprovalLevel2"]),
                                                    ApprovalLevel3 = Convert.ToInt32(dr["ApprovalLevel3"]),
                                                   // CreatedBy = Convert.ToInt32(dr["CreatedByEmpid"]),
                                                    UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
+                                                   EmpApprovalLevel1 = dr["Approve1EmpName"].ToString(),
+                                                   EmpApprovalLevel2 = dr["Approve2EmpName"].ToString(),
+
+                                                   EmpApprovalLevel3 = dr["Approve3EmpName"].ToString(),
 
                                                    EffectiveFrom = dr["EffectiveFrom"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["EffectiveFrom"]).ToString("dd-MM-yyyy"),
                                                    CreatedOn = dr["CreationDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["CreationDate"]).ToString("yyyy-MM-dd"),
@@ -371,7 +427,7 @@ namespace eTactWeb.Data.DAL
                     if (oDataSet.Tables.Count > 0 && DTTaxMasterDetail.Rows.Count > 0)
                     {
                         model.LeaveId = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["LeaveEntryId"]);
-                        
+                      
                         model.LeaveCode = DTTaxMasterDetail.Rows[0]["LeaveCode"].ToString();
                         model.LeaveName = DTTaxMasterDetail.Rows[0]["LeaveName"].ToString();
                         model.LeaveType = DTTaxMasterDetail.Rows[0]["LeaveType"].ToString();
@@ -413,8 +469,22 @@ namespace eTactWeb.Data.DAL
                         //    model.LastUpdatedOn = string.IsNullOrEmpty(DTTaxMasterDetail.Rows[0]["LastUpdatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(DTTaxMasterDetail.Rows[0]["LastUpdatedOn"]);
                         //}
                     }
+                    if (oDataSet.Tables.Count > 0 && DEmpCategDetail.Rows.Count > 0)
+                    {
+                        DEmpCategDetail.TableName = "LeaveEmpCategDetail";
+                        model.EmpCategDetailList = CommonFunc.DataTableToList<LeaveEmpCategDetail>(DEmpCategDetail);
+                        model.RestrictedToEmployeeCategory = model.EmpCategDetailList.Select(x => x.CategoryId).ToList();
+                    }
 
-                   
+                    if (oDataSet.Tables.Count > 0 && DDeptWiseCategDetail.Rows.Count > 0)
+                    {
+                        DDeptWiseCategDetail.TableName = "LeaveDeptWiseCategDetail";
+                        model.DeptWiseCategDetailList = CommonFunc.DataTableToList<LeaveDeptWiseCategDetail>(DDeptWiseCategDetail);
+                       
+                        model.RestrictedToDepartment = model.DeptWiseCategDetailList.Select(x => x.DeptId).ToList();
+                    }
+
+
                 }
             }
             catch (Exception ex)
