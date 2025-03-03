@@ -88,5 +88,10 @@ namespace eTactWeb.Data.BLL
             return await _BankReceiptDAL.GetViewByID(ID, YearCode, VoucherNo);
 
         }
+        public async Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo)
+        {
+            return await _BankReceiptDAL.CheckAmountBeforeSave(VoucherDate, YearCode, AgainstVoucherYearCode,AgainstVoucherEntryId, AgainstVoucherNo);
+
+        }
     }
 }

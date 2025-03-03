@@ -599,5 +599,29 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
+        public async Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate,int YearCode,int AgainstVoucherYearCode,int AgainstVoucherEntryId,string AgainstVoucherNo)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ChkBillAmtVsAgainstrefAmt"));
+                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@AgainstVoucherYearcode", AgainstVoucherYearCode));
+                SqlParams.Add(new SqlParameter("@AgainstVoucherEntryid", AgainstVoucherEntryId));
+                SqlParams.Add(new SqlParameter("@AgainstVoucherNo", AgainstVoucherNo));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }

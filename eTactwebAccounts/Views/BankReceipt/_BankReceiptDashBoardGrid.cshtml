@@ -1,4 +1,11 @@
 ﻿@model eTactWeb.DOM.Models.BankReceiptModel;
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
 <div class="table-responsive" style="max-height:350px;">
     <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
         <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
@@ -45,22 +52,44 @@
                                             </span>
                                         </a>
                                     </div>
-                                    <div id="editCursorDiv-@Cntr">
-                                        <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="BankReceipt" onclick="confirmEdit(event)" asp-controller="BankReceipt" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    <div id="deleteCursorDiv-@Cntr">
-                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
+                                    @if(item.YearCode == yearCode)
+                                    {
+                                        <div id="editCursorDiv-@Cntr">
+                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="BankReceipt" onclick="confirmEdit(event)" asp-controller="BankReceipt" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="deleteCursorDiv-@Cntr">
+                                            <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <a class="table-link link-primary noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a class="table-link link-danger noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
                                 </div>
                             </td>
                             <td>

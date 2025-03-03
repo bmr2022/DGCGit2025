@@ -26,5 +26,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillBankType(int AccountCode);
         Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTable DataTable);
         Task<BankReceiptModel> GetViewByID(int ID, int YearCode, string VoucherNo);
+        Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo);
     }
 }

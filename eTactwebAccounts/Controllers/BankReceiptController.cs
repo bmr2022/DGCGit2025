@@ -389,6 +389,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId,string AgainstVoucherNo)
+        {
+            var JSON = await _IBankReceipt.CheckAmountBeforeSave(VoucherDate,YearCode,AgainstVoucherYearCode,AgainstVoucherEntryId, AgainstVoucherNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public IActionResult AddBankReceiptDetail(BankReceiptModel model)
         { 
             try

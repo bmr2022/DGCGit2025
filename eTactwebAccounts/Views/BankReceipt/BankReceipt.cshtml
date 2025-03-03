@@ -459,7 +459,7 @@
     <script>
 
         function Validate_Submit() {
-
+            debugger
             var Err = 0;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -483,6 +483,13 @@
             if (!hasBank) {
                 $.notify("There should be at least one bank in grid.", "error");
                 Err = 1;
+            }
+
+            for (let i = 1; i <= Row; i++) {
+                var ModeOfAdjust = $('#ModeOfAdjustment-' + i).text();
+                if (ModeOfAdjust == "Against Ref") {
+                    CheckAmountBeforeSave(i);
+                }
             }
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
             if (Err == 1) return false;
@@ -817,6 +824,35 @@
                 async: false,
                 success: function (response, status, error) {
                      
+                    var CurrencyDropdown = $('#Currency');
+                    var obj = $.parseJSON(response);
+                    CurrencyDropdown.empty();
+                    $.each(obj.Result, function (index, Currency) {
+                        CurrencyDropdown.append('<option value="' + Currency.CurrencyId + '">' + Currency.Currency + '</option>');
+                    });
+                    $('#CurrencyId').val(parseInt($('#Currency').val()))
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var Currency = '@Model.CurrencyId';
+                        $('#Currency').val(Currency).trigger("change");
+                        $('#Currency').val(Currency);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function CheckAmountBeforeSave(i) {
+            debugger
+            $.ajax({
+                url: '@Url.Action("CheckAmountBeforeSave", "BankReceipt")',
+                type: 'POST',
+                async: false,
+                data: { "VoucherDate": $('#VoucherDate').val(), "YearCode": $('#YearCode').val(), "AgainstVoucherYearCode": $('#AgainstVoucheryearCode-' + i).text(), "AgainstVoucherEntryId": $('#AgainstVoucherEntryId-' + i).text(), "AgainstVoucherNo": $('#AgainstVoucherNo-' + i).text() },
+                success: function (response, status, error) {
+
                     var CurrencyDropdown = $('#Currency');
                     var obj = $.parseJSON(response);
                     CurrencyDropdown.empty();
