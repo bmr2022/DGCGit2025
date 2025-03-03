@@ -87,7 +87,7 @@
                                         @* <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
                                         <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" /> *@
                                         <label asp-for="LeaveId" class="form-label">Leave Id</label>
-                                        <input asp-for="LeaveId" class="form-control" value="@Model.LeaveId" readonly />
+                                        <input asp-for="LeaveId" class="form-control numbers" value="@Model.LeaveId" readonly />
 
                                     </div>
                                     <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
@@ -125,7 +125,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="GenderApplicable" class="form-label">GenderApplicable</label>
                                         <select asp-for="GenderApplicable" class="form-select" >
                                             <option value="" selected>-Select-</option>
@@ -161,12 +161,12 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="MinDaysForApplication" class="form-label">MinDaysForApplication</label>
-                                        <input asp-for="MinDaysForApplication" class="form-control" />
+                                        <input asp-for="MinDaysForApplication" class="form-control numbers" />
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="MaxConsecutiveDaysAllowed" class="form-label">MaxConsecutiveDaysAllowed</label>
-                                        <input asp-for="MaxConsecutiveDaysAllowed" class="form-control" />
+                                        <input asp-for="MaxConsecutiveDaysAllowed" class="form-control numbers" />
                                     </div>
                                                  
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -180,11 +180,15 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="CarryForward" class="form-label">CarryForward</label>
-                                        <select asp-for="CarryForward" class="form-select">
-                                            <option value="" disabled>-Select-</option>
-                                            <option value="YES" selected>YES</option>
-                                            <option value="NO">NO</option>
+                                       
 
+                                        <select asp-for="CarryForward" class="form-control" onchange="CarryForwerdAmt()">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            @*   <option value="@Model.CalculationType">-Select-</option> *@
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.CarryForward" selected>@Model.CarryForward</option>
+                                            }
                                         </select>
                                     </div>
 
@@ -305,17 +309,41 @@
                                         <label asp-for="AutoApproveLimitDays" class="form-label">AutoApproveLimitDays</label>
                                         <input asp-for="AutoApproveLimitDays" class="form-control numbers" value="@Model.AutoApproveLimitDays"  />
                                     </div>
-                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="ApprovalLevel1" class="form-label">ApprovalLevel1</label>
-                                        <input asp-for="ApprovalLevel1" class="form-control numbers" value="@Model.ApprovalLevel1" />
-                                    </div>
-                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="ApprovalLevel2" class="form-label">ApprovalLevel2</label>
-                                        <input asp-for="ApprovalLevel2" class="form-control numbers" value="@Model.ApprovalLevel2" />
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmpApprovalLevel1" class="form-label">ApprovalLevel1 </label>
+                                        <input asp-for="ApprovalLevel1" class="form-control" type="hidden" value="@Model.ApprovalLevel1" />
+                                        <select asp-for="EmpApprovalLevel1" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.ApprovalLevel1">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ApprovalLevel1" selected>@Model.EmpApprovalLevel1</option>
+                                            }
+                                        </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="ApprovalLevel3" class="form-label">ApprovalLevel3</label>
-                                        <input asp-for="ApprovalLevel3" class="form-control numbers" value="@Model.ApprovalLevel3" />
+                                        <label asp-for="EmpApprovalLevel2" class="form-label">ApprovalLevel2 </label>
+                                        <input asp-for="ApprovalLevel2" class="form-control" type="hidden" value="@Model.ApprovalLevel2" />
+                                        <select asp-for="EmpApprovalLevel2" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.ApprovalLevel2">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ApprovalLevel2" selected>@Model.EmpApprovalLevel2</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmpApprovalLevel3" class="form-label">ApprovalLevel3 </label>
+                                        <input asp-for="ApprovalLevel3" class="form-control" type="hidden" value="@Model.ApprovalLevel3" />
+                                        <select asp-for="EmpApprovalLevel3" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.ApprovalLevel3">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ApprovalLevel3" selected>@Model.EmpApprovalLevel3</option>
+                                            }
+                                        </select>
                                     </div>
 
 
@@ -341,8 +369,17 @@
                                         <label asp-for="Active" class="form-label">Active</label>
                                         <select asp-for="Active" class="form-select">
                                             <option value="" disabled>-Select-</option>
-                                            <option value="YES" selected>YES</option>
-                                            <option value="NO">NO</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO">NO</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO" disabled>NO</option>
+                                            }
+
 
                                         </select>
                                     </div>
@@ -353,21 +390,31 @@
                                         <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom</label>
                                         <input asp-for="EffectiveFrom" class="form-control " value="@Model.EffectiveFrom"  />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none">
                                         <label asp-for="CreatedBy" class="form-label">CreatedBy</label>
                                         <input asp-for="CreatedBy" class="form-control " value="@Model.CreatedBy" />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none" >
                                         <label asp-for="UpdatedBy" class="form-label">UpdatedBy</label>
                                         <input asp-for="UpdatedBy" class="form-control " value="@Model.UpdatedBy" />
                                     </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedByEmpName" class="form-label">CreatedByEmpName</label>
+                                        <input asp-for="CreatedByEmpName" class="form-control " value="@Model.CreatedByEmpName" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedByEmpName" class="form-label">UpdatedBy</label>
+                                        <input asp-for="UpdatedByEmpName" class="form-control " value="@Model.UpdatedByEmpName" readonly />
+                                    </div>
+
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="CreatedOn" class="form-label">CreatedOn</label>
-                                        <input asp-for="CreatedOn" class="form-control " value="@Model.CreatedOn" />
+                                        <input asp-for="CreatedOn" class="form-control " value="@Model.CreatedOn" readonly />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="UpdatedOn" class="form-label">UpdatedOn</label>
-                                        <input asp-for="UpdatedOn" class="form-control " value="@Model.UpdatedOn" />
+                                        <input asp-for="UpdatedOn" class="form-control " value="@Model.UpdatedOn" readonly />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="CC" class="form-label">CC</label>
@@ -485,6 +532,9 @@
             $('#CompensatoryOffRequired').select2();
             $('#LeaveDeductionApplicable').select2();
             $('#Active').select2();
+            $('#EmpApprovalLevel1').select2();
+            $('#EmpApprovalLevel2').select2();
+            $('#EmpApprovalLevel3').select2();
            
         });
 
@@ -535,6 +585,25 @@
             });
         }
 
+        function CarryForwerdAmt() {
+            var dropdown = document.getElementById("CarryForward");
+            var textbox1 = document.getElementById("MaxCarryForwardLimit");
+
+            if (dropdown.value == "YES") {
+                textbox1.disabled = false;
+            }
+
+            else if (dropdown.value == "NO") {
+                textbox1.disabled = true;
+                textbox1.value = "0";
+            }
+            else {
+                textbox1.disabled = true;
+                textbox1.value = "0";
+
+            }
+        }
+
       
       
         $(document).ready(function () {
@@ -574,19 +643,30 @@
 
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
 
-                $('#CreatedOn').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
-                $('#EffectiveFrom').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
+                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
             else {
-                $('#CreatedOn').datepicker({ dateFormat: 'yy/mm/dd' });
-                $('#EffectiveFrom').datepicker({ dateFormat: 'yy/mm/dd' });
+                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
             }
 
-            var UpdatedOn = parseDateToFormat($('#UpdatedOn').val().split(" ")[0]);
-            $('#UpdatedOn').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", UpdatedOn);
-
+            
+                var UpdatedOn = parseDateToFormat($('#UpdatedOn').val().split(" ")[0]);
+                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", UpdatedOn);
+           
 
             GetFormRights();
+
+            $('#EmpApprovalLevel1').change(function () {
+                $('#ApprovalLevel1').val($('#EmpApprovalLevel1').val());
+            });
+            $('#EmpApprovalLevel2').change(function () {
+                $('#ApprovalLevel2').val($('#EmpApprovalLevel2').val());
+            });
+            $('#EmpApprovalLevel3').change(function () {
+                $('#ApprovalLevel3').val($('#EmpApprovalLevel3').val());
+            });
 
             $('.datefield').keyup(function (e) {
                 e.preventDefault();
@@ -597,6 +677,10 @@
 
             FillLeaveType();
             FillLeaveCategory();
+            FillApprovalLeval1();
+            FillApprovalLeval2();
+            FillApprovalLeval3();
+            FillCarryForward();
 
         });
 
@@ -613,6 +697,121 @@
                         $('#LeaveId').val(0);
                         $('#LeaveId').val(obj.Result[0].EntryId);
                     }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillApprovalLeval1() {
+            $.ajax({
+                url: '@Url.Action("GetApprovalleval", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ApprovalDropdown = $('#EmpApprovalLevel1');
+                    var obj = $.parseJSON(response);
+                    ApprovalDropdown.empty();
+                    ApprovalDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ApprovalDropdown.append('<option value="' + item.emp_id + '">' + item.EmployeeName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpApprovalLevel1 = '@Model.ApprovalLevel1';
+                        $('#EmpApprovalLevel1').val(EmpApprovalLevel1).trigger("change");
+                        $('#EmpApprovalLevel1').val(EmpApprovalLevel1);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillCarryForward() {
+            $.ajax({
+                url: '@Url.Action("GetApprovalleval", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ApprovalDropdown = $('#CarryForward');
+                    var obj = $.parseJSON(response);
+                    ApprovalDropdown.empty();
+                     ApprovalDropdown.append('<option value="YES">YES</option>');
+                    ApprovalDropdown.append('<option value="NO">NO</option>');
+
+                    // $.each(obj.Result, function (index, item) {
+                    //     ApprovalDropdown.append('<option value="' + item.emp_id + '">' + item.EmployeeName + '</option>');
+                    // });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var CarryForward = '@Model.CarryForward';
+                        $('#CarryForward').val(CarryForward).trigger("change");
+                        $('#CarryForward').val(CarryForward);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        function FillApprovalLeval2() {
+            $.ajax({
+                url: '@Url.Action("GetApprovalleval", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ApprovalDropdown = $('#EmpApprovalLevel2');
+                    var obj = $.parseJSON(response);
+                    ApprovalDropdown.empty();
+                    ApprovalDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ApprovalDropdown.append('<option value="' + item.emp_id + '">' + item.EmployeeName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpApprovalLevel2 = '@Model.ApprovalLevel2';
+                        $('#EmpApprovalLevel2').val(EmpApprovalLevel2).trigger("change");
+                        $('#EmpApprovalLevel2').val(EmpApprovalLevel2);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        function FillApprovalLeval3() {
+            $.ajax({
+                url: '@Url.Action("GetApprovalleval", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ApprovalDropdown = $('#EmpApprovalLevel3');
+                    var obj = $.parseJSON(response);
+                    ApprovalDropdown.empty();
+                    ApprovalDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ApprovalDropdown.append('<option value="' + item.emp_id + '">' + item.EmployeeName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpApprovalLevel1 = '@Model.ApprovalLevel3';
+                        $('#EmpApprovalLevel3').val(EmpApprovalLevel1).trigger("change");
+                        $('#EmpApprovalLevel3').val(EmpApprovalLevel1);
+                    }
+
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load groups.');

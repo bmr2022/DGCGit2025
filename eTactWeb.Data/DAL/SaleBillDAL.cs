@@ -65,8 +65,8 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetAddress"));
-                SqlParams.Add(new SqlParameter("@ID", Code));
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleOrder", SqlParams);
+                SqlParams.Add(new SqlParameter("@accountcode", Code));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
             {

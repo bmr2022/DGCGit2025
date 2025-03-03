@@ -9,7 +9,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-    public class HRLeaveMasterModel: TimeStamp
+    public class HRLeaveMasterModel : TimeStamp
     {
         [Key]
         public long LeaveId { get; set; } // Primary Key	
@@ -62,13 +62,18 @@ namespace eTactWeb.DOM.Models
 
         public int? EligibilityAfterMonths { get; set; } // New employees eligible after X months	
 
-        [StringLength(100)]
-        public string RestrictedToEmployeeCategory { get; set; } // Example: Managerial, Staff	
+        public string? ApplicableDepartment { get; set; }
+        public string? ApplicableOnCategory {get;set;}
+        // public string RestrictedToEmployeeCategory { get; set; } // Example: Managerial, Staff	
+        public IList<string>? RestrictedToEmployeeCategory { get; set; }
         public IList<LeaveEmpCategDetail>? EmpCategDetailList { get; set; }      
         public IList<TextValue>? EmpCategList { get; set; }
 
-        [StringLength(100)]
-        public string RestrictedToDepartment { get; set; } // Example: IT, HR, Finance	
+        
+        //public string RestrictedToDepartment { get; set; } // Example: IT, HR, Finance
+        public IList<string>? RestrictedToDepartment { get; set; }
+        public IList<string>? EmpCateg { get; set; }
+        public IList<string>? DeptName { get; set; }
         public IList<LeaveDeptWiseCategDetail>? DeptWiseCategDetailList { get; set; }
         public IList<TextValue>? DeptWiseCategList { get; set; }
 
@@ -87,12 +92,20 @@ namespace eTactWeb.DOM.Models
 
         public long? ApprovalLevel3 { get; set; } // Third approver (if any)	
 
+        public string? EmpApprovalLevel1 { get; set; } // First approver (Manager ID)	
+
+        public string? EmpApprovalLevel2 { get; set; } // Second approver (HR ID)	
+
+        public string? EmpApprovalLevel3 { get; set; } // Third approver (if any)
+
         [StringLength(3)]
         public string Active { get; set; } // Yes/No	
 
         public string? EffectiveFrom { get; set; } // Policy start date	
 
         public long? CreatedBy { get; set; } // Created by (User ID)	
+        public string? CreatedByEmpName {  get; set; }
+        public string? UpdatedByEmpName { get; set; }
 
         public long? UpdatedBy { get; set; } // Last modified by	
         public string? CreatedOn { get; set; }
@@ -108,8 +121,9 @@ namespace eTactWeb.DOM.Models
 public class LeaveEmpCategDetail
 {
     //public int CategoryId { get; set; }
-    public long? LeaveId { get; set; }
-    public int CategoryId { get; set; }
+    public long? LeaveEntryId { get; set; }
+    public string? CategoryId { get; set; }
+    public string? EmpCateg { get; set; }
 
 
 }
@@ -118,8 +132,10 @@ public class LeaveEmpCategDetail
 public class LeaveDeptWiseCategDetail
 {
     // public int DeptId { get; set; }
-    public long? LeaveId { get; set; }
-    public int DeptId { get; set; }
+    public long? LeaveEntryId { get; set; }
+    public string DeptId { get; set; }
+
+    public string DeptName {  get; set; }
 
 }
 
@@ -128,7 +144,7 @@ public class LeaveLocationDetail
 {
     // public int DeptId { get; set; }
     public long? LeaveId { get; set; }
-    public int LocationId { get; set; }
+    public string LocationId { get; set; }
 
 }
 

@@ -11,15 +11,17 @@ namespace eTactWeb.Services.Interface
     public interface IHRLeaveMaster
     {
         Task<ResponseResult> GetleaveType();
+        Task<ResponseResult> GetApprovalleval();
         Task<ResponseResult> GetLeaveCategory();
 
         Task<DataSet> GetEmployeeCategory();
         Task<DataSet> GetDepartment();
         Task<DataSet> GetLocation();
+        Task<ResponseResult> GetFormRights(int uId);
 
         Task<ResponseResult> FillLeaveId();
 
-        Task<ResponseResult> SaveData(HRLeaveMasterModel model, DataTable HREmpCatDT, DataTable HRDeptCatDT,DataTable HRLocationDT);
+        Task<ResponseResult> SaveData(HRLeaveMasterModel model, List<string> HREmpCatDT, List<string> HRDeptCatDT);
 
         Task<ResponseResult> GetDashboardData();
         Task<HRLeaveMasterModel> GetDashboardDetailData();

@@ -5,16 +5,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using static eTactWeb.DOM.Models.Common;
 using System.Data;
 using System.Net;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactwebMasters.Controllers
 {
     [Authorize]
     public class HRLeaveMasterController : Controller
     {
-          private readonly EncryptDecrypt _EncryptDecrypt;
+            private readonly EncryptDecrypt _EncryptDecrypt;
             private readonly IDataLogic _IDataLogic;
             private readonly IHRLeaveMaster _IHRLeaveMaster;
             private readonly IWebHostEnvironment _IWebHostEnvironment;
@@ -45,6 +46,7 @@ namespace eTactwebMasters.Controllers
             if (Mode != "U")
             {
                 MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.CreatedByEmpName = HttpContext.Session.GetString("EmpName");
 
             }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
@@ -56,13 +58,14 @@ namespace eTactwebMasters.Controllers
                 MainModel.LeaveId = ID;
 
 
-                //    if (Mode == "U")
-                //    {
-                //        MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                if (Mode == "U")
+                {
+                    MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    MainModel.UpdatedByEmpName = HttpContext.Session.GetString("EmpName");
 
-                //        MainModel.LastUpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
+                    MainModel.UpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
 
-                //    }
+                }
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -94,9 +97,7 @@ namespace eTactwebMasters.Controllers
 
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
-
-
-                foreach (DataRow row in oDataSet.Tables[0].Rows)
+            foreach (DataRow row in oDataSet.Tables[0].Rows)
                 {
                     _List.Add(new TextValue
                     {
@@ -133,7 +134,6 @@ namespace eTactwebMasters.Controllers
 
             }
 
-
             return model;
         }
 
@@ -158,13 +158,19 @@ namespace eTactwebMasters.Controllers
 
             }
 
-
             return model;
         }
 
         public async Task<JsonResult> GetleaveType()
         {
             var JSON = await _IHRLeaveMaster.GetleaveType();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetApprovalleval()
+        {
+            var JSON = await _IHRLeaveMaster.GetApprovalleval();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -181,6 +187,13 @@ namespace eTactwebMasters.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IHRLeaveMaster.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
 
         [HttpPost]
@@ -194,28 +207,29 @@ namespace eTactwebMasters.Controllers
                 if (model != null)
                 {
                     model.Mode = model.Mode == "U" ? "UPDATE" : "INSERT";
-                    model.CreatedBy = Constants.UserID;
+                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-                    var HREmpLeaveMasterTable = new DataTable();
+                    var HREmpLeaveMasterTable = new List<string>();
                     var _EmpCategDetail = new List<LeaveEmpCategDetail>();
-                    if (model.RestrictedToEmployeeCategory != null)
+                    bool v = model.RestrictedToEmployeeCategory != null;
+                    if (v)
                     {
                         foreach (var item in model.RestrictedToEmployeeCategory)
                         {
                             var _EmpCateg = new LeaveEmpCategDetail()
                             {
 
-                                CategoryId = item,
-                                LeaveId = model.LeaveId
+                                CategoryId = item.ToString(),
+                                LeaveEntryId = model.LeaveId
 
 
                             };
                             _EmpCategDetail.Add(_EmpCateg);
                         }
                     }
-                    HREmpLeaveMasterTable = CommonFunc.ConvertListToTable<LeaveEmpCategDetail>(_EmpCategDetail);
+                    HREmpLeaveMasterTable = _EmpCategDetail.Select(x => x.CategoryId).ToList();
 
-                    var HRSalaryMasterDeptWiseDT = new DataTable();
+                    var HRSalaryMasterDeptWiseDT = new List<string>();
                     var _DeptWiseCategDetail = new List<LeaveDeptWiseCategDetail>();
                     if (model.RestrictedToDepartment != null)
                     {
@@ -224,35 +238,18 @@ namespace eTactwebMasters.Controllers
                             var _DeptWiseCateg = new LeaveDeptWiseCategDetail()
                             {
 
-                                DeptId = item,
-                                LeaveId = model.LeaveId
+                                DeptId = item.ToString(),
+                                LeaveEntryId = model.LeaveId
 
 
                             };
                             _DeptWiseCategDetail.Add(_DeptWiseCateg);
                         }
                     }
-                    HRSalaryMasterDeptWiseDT = CommonFunc.ConvertListToTable<LeaveDeptWiseCategDetail>(_DeptWiseCategDetail);
+                    HRSalaryMasterDeptWiseDT = _DeptWiseCategDetail.Select(x => x.DeptId).ToList();
 
 
-                    var HRSalaryMasterLocationWiseDT = new DataTable();
-                    var _LocationWiseCategDetail = new List<LeaveLocationDetail>();
-                    if (model.RestrictedToDepartment != null)
-                    {
-                        foreach (var item in model.RestrictedToDepartment)
-                        {
-                            var _LocationWiseCateg = new LeaveLocationDetail()
-                            {
-
-                                LocationId = item,
-                                LeaveId = model.LeaveId
-
-
-                            };
-                            _LocationWiseCategDetail.Add(_LocationWiseCateg);
-                        }
-                    }
-                    HRSalaryMasterLocationWiseDT = CommonFunc.ConvertListToTable<LeaveLocationDetail>(_LocationWiseCategDetail);
+                   
 
                     if (model.Mode == "UPDATE")
                     {
@@ -264,7 +261,7 @@ namespace eTactwebMasters.Controllers
                         model.UpdatedBy = 0;
 
                     }
-                    var Result = await _IHRLeaveMaster.SaveData(model, HREmpLeaveMasterTable, HRSalaryMasterDeptWiseDT, HRSalaryMasterLocationWiseDT).ConfigureAwait(false);
+                    var Result = await _IHRLeaveMaster.SaveData(model, HREmpLeaveMasterTable, HRSalaryMasterDeptWiseDT).ConfigureAwait(false);
 
                     if (Result != null)
                     {
@@ -316,8 +313,6 @@ namespace eTactwebMasters.Controllers
                 var result = await _IHRLeaveMaster.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;
 
-
-
                 if (result != null && result.Result != null)
                 {
                     DataSet ds = result.Result;
@@ -343,11 +338,6 @@ namespace eTactwebMasters.Controllers
             model = await _IHRLeaveMaster.GetDashboardDetailData();
             return PartialView("_HRLeaveMasterDashBoardGrid", model);
         }
-
-
-
-
-
 
     }
 }

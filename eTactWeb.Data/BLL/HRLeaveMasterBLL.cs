@@ -29,6 +29,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRLeaveMasterDAL.GetleaveType();
         }
+        public async Task<ResponseResult> GetApprovalleval()
+        {
+            return await _HRLeaveMasterDAL.GetApprovalleval();
+        }
 
         public async Task<ResponseResult> GetLeaveCategory()
         {
@@ -51,9 +55,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRLeaveMasterDAL.FillLeaveId();
         }
-        public async Task<ResponseResult> SaveData(HRLeaveMasterModel model, DataTable HREmpCatDT, DataTable HRDeptCatDT, DataTable HRLocationDT)
+        public async Task<ResponseResult> SaveData(HRLeaveMasterModel model, List<string> HREmpCatDT, List<string> HRDeptCatDT)
         {
-            return await _HRLeaveMasterDAL.SaveData(model, HREmpCatDT, HRDeptCatDT, HRLocationDT);
+            return await _HRLeaveMasterDAL.SaveData(model, HREmpCatDT, HRDeptCatDT);
         }
         public async Task<ResponseResult> GetDashboardData()
         {
@@ -66,6 +70,10 @@ namespace eTactWeb.Data.BLL
         public async Task<HRLeaveMasterModel> GetViewByID(int id)
         {
             return await _HRLeaveMasterDAL.GetViewByID(id);
+        }
+        public async Task<ResponseResult> GetFormRights(int uId)
+        {
+            return await _HRLeaveMasterDAL.GetFormRights(uId);
         }
     }
 }
