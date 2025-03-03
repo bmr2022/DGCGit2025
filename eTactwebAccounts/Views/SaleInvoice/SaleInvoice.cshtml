@@ -409,7 +409,7 @@
 
             $('#AdjNewRefNo').val($('#SaleBillNo').val());
             $('#AdjDescription').val($('#SaleBillNo').val());
-
+            
             AllowTaxPassword();
             $('#Unit').prop("readonly", true);
             $('#AltUnit').prop("readonly", true);
@@ -891,9 +891,9 @@
         //     AllowTaxPassword();
         // });
 
-        $('#TxType,#TxTaxType').change(function () {
-            AllowTaxPassword();
-        });
+        // $('#TxType,#TxTaxType').change(function () {
+        //     AllowTaxPassword();
+        // });
 
         var isAllowTaxPass = "";
         var allowManualPassword = "";
@@ -908,7 +908,7 @@
                 url: "@Url.Action("AllowTaxPassword")",
                 dataType: "json",
                 success: function (result, status, error) {
-
+                    
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result.length > 0) {
@@ -1850,6 +1850,9 @@
             }
             else if ($('#divdbCrItemList tr td').length <= 1) {
                 $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
+            }
+            else if ($('#StateCode').val() == 0) {
+                $.notify('StateCode is mandatory...!', "error");
             }
             else if ($('#GSTRegistered').val() == 'Y') {
                 if ($('#divTaxGrid tr td').length <= 1) {
