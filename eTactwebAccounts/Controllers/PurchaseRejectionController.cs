@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Controllers
 {
@@ -87,6 +88,24 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetStateGST(int Code)
         {
             var JSON = await _purchRej.GetStateGST(Code);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillItems(int YearCode, int accountCode, string showAllItems)
+        {
+            var JSON = await _purchRej.FillItems(YearCode, accountCode, showAllItems);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillCurrency(int? AccountCode)
+        {
+            var JSON = await _purchRej.FillCurrency(AccountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetExchangeRate(string Currency)
+        {
+            var JSON = await _purchRej.GetExchangeRate(Currency);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
