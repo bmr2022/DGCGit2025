@@ -104,6 +104,8 @@ namespace eTactWeb.DOM.Models
         public string? EffectiveFrom { get; set; } // Policy start date	
 
         public long? CreatedBy { get; set; } // Created by (User ID)	
+        public string? CreatedByEmpName {  get; set; }
+        public string? UpdatedByEmpName { get; set; }
 
         public long? UpdatedBy { get; set; } // Last modified by	
         public string? CreatedOn { get; set; }

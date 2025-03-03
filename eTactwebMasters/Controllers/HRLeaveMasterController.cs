@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using static eTactWeb.DOM.Models.Common;
 using System.Data;
 using System.Net;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactwebMasters.Controllers
 {
@@ -45,6 +46,7 @@ namespace eTactwebMasters.Controllers
             if (Mode != "U")
             {
                 MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.CreatedByEmpName = HttpContext.Session.GetString("EmpName");
 
             }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
@@ -56,13 +58,14 @@ namespace eTactwebMasters.Controllers
                 MainModel.LeaveId = ID;
 
 
-                //    if (Mode == "U")
-                //    {
-                //        MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                if (Mode == "U")
+                {
+                    MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    MainModel.UpdatedByEmpName = HttpContext.Session.GetString("EmpName");
 
-                //        MainModel.LastUpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
+                    MainModel.UpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
 
-                //    }
+                }
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -204,7 +207,7 @@ namespace eTactwebMasters.Controllers
                 if (model != null)
                 {
                     model.Mode = model.Mode == "U" ? "UPDATE" : "INSERT";
-                    model.CreatedBy = Constants.UserID;
+                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
                     var HREmpLeaveMasterTable = new List<string>();
                     var _EmpCategDetail = new List<LeaveEmpCategDetail>();

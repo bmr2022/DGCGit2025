@@ -374,16 +374,17 @@ namespace eTactWeb.Data.DAL
 
                                                    ApprovalLevel2 = Convert.ToInt32(dr["ApprovalLevel2"]),
                                                    ApprovalLevel3 = Convert.ToInt32(dr["ApprovalLevel3"]),
-                                                  // CreatedBy = Convert.ToInt32(dr["CreatedByEmpid"]),
+                                                  //CreatedBy = Convert.ToInt32(dr["CreatedByEmpid"]),
                                                    UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
                                                    EmpApprovalLevel1 = dr["Approve1EmpName"].ToString(),
                                                    EmpApprovalLevel2 = dr["Approve2EmpName"].ToString(),
+                                                   CreatedByEmpName = dr["CreatedByEmpName"].ToString(),
 
                                                    EmpApprovalLevel3 = dr["Approve3EmpName"].ToString(),
 
                                                    EffectiveFrom = dr["EffectiveFrom"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["EffectiveFrom"]).ToString("dd-MM-yyyy"),
-                                                   CreatedOn = dr["CreationDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["CreationDate"]).ToString("yyyy-MM-dd"),
-                                                   UpdatedOn = dr["UpdatedOnDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["UpdatedOnDate"]).ToString("yyyy-MM-dd"),
+                                                   CreatedOn = dr["CreationDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["CreationDate"]).ToString("dd-MM-yyyy"),
+                                                   UpdatedOn = dr["UpdatedOnDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["UpdatedOnDate"]).ToString("dd-MM-yyyy"),
                                                    
 
                                                }).ToList();
@@ -454,7 +455,7 @@ namespace eTactWeb.Data.DAL
 
 
 
-
+                        model.CreatedByEmpName = DTTaxMasterDetail.Rows[0]["CreatedByEmpName"].ToString();
 
 
                         model.CreatedBy = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["CreatedByEmpid"]);
