@@ -1,0 +1,180 @@
+﻿
+<!doctype html>
+
+<html lang="en-us" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="  Software Developer">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>@ViewData["Title"] - eTactWeb</title>
+
+    <link rel="canonical" href="#">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome CSS -->
+    @*<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.0/css/all.css">*@
+    @*<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0-beta3/css/all.css">*@
+    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
+
+    <!-- JQuery UI & Theme -->
+    <link rel="stylesheet" href="~/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="~/css/themes/start/theme.css">
+    @*<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/start/jquery-ui.css">*@
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+
+
+    @*<link rel="stylesheet" href="https://mdbcdn.b-cdn.net/wp-content/themes/mdbootstrap4/docs-app/css/dist/mdb5/standard/compiled.min.css">
+    <link rel="stylesheet" href="https://mdbcdn.b-cdn.net/wp-content/themes/mdbootstrap4/docs-app/css/dist/mdb5/plugins/all.min.css">*@
+
+    <!-- BootsWatch Theme -->
+    @*<link href="https://bootswatch.com/5/solar/bootstrap.css" type="text/css" rel="stylesheet">*@
+    <!-- BootsWatch Theme -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" type="text/css">
+
+    <link href="~/css/StyleMaster.min.css" rel="stylesheet">
+
+    @*<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">*@
+
+    @*<link rel="stylesheet" href="https://www.codehim.com/demo/bootstrap-multiselect-dropdown/dist/css/bootstrap-multiselect.css" />*@
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/css/bootstrap-multiselect.min.css" />*@
+    @*<link rel="stylesheet" href="https://davidstutz.github.io/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" type="text/css">*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="~/images/bmr-logo-web.png" sizes="180x180">
+    <link rel="icon" href="~/images/bmr-logo-web.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="~/images/bmr-logo-web.png" sizes="16x16" type="image/png">
+    <link rel="icon" href="~/images/bmr-logo-web-small.ico">
+
+    <!--Select2-->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+</head>
+<body class="d-flex flex-column h-100" oncontextmenu='return false' onload="document.body.style.opacity='1'">
+
+    <partial name="_LayoutHeader" />
+
+    <!-- Begin page content -->
+    <main class="flex-shrink-0" role="main">
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+    </main>
+
+    <partial name="_LayoutFooter" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    @*<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables_themeroller.css">*@
+
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    @*<script src="~/js/jquery-1.12.4.min.js"></script>*@
+    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    @* <script src="~/lib/jquery/jquery.min.js"></script> *@
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    @*<script src="/Assets/Js/mdb.min.js"></script>*@
+
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+    @*<script src="https://notifyjs.jpillora.com/js/vendor/prettify.js"></script>
+    <script src="https://use.fortawesome.com/349cfdf6.js"></script>*@
+
+    @*<script src="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/js/jquery.tablesorter.combined.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/js/extras/jquery.tablesorter.pager.min.js"></script>*@
+
+    <script src="~/js/JSMaster.min.js"></script>
+
+    @*<script src="https://www.codehim.com/demo/bootstrap-multiselect-dropdown/dist/js/bootstrap-multiselect.js"></script>*@
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/js/bootstrap-multiselect.min.js"></script>*@
+    @*<script type="text/javascript" src="https://davidstutz.github.io/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        //var header = $('.navBarHeader');
+        //$(window).scroll(function(e){
+        //if(header.offset().top !== 0){
+        //header.removeClass('HeaderShadow');
+        //}else{
+        //header.addClass('HeaderShadow');
+        //}
+        //});
+
+        //$(document).ready(function() {
+        //    $("body").animate({ opacity: 0 }, 0).css("display", "").animate({ opacity: 1 }, 3000);
+        //});
+
+        window.prettyPrint() && prettyPrint();
+
+        if ('@TempData["Message"]' == "Password And Confirm Password aren't same.") {
+            $.notify('@TempData["Message"]', "error");
+        }
+        else if ('@TempData["Message"]' == "Form Validation Error.") {
+            $.notify('@TempData["Message"]', "error");
+        }
+        else if ('@TempData["410"]' == '410') {
+            $.notify('Data Deleted Successfully...!', { position: "top center", className: "success" });
+        }
+        else if ('@TempData["200"]' == '200') {
+            $.notify('Data Saved Successfully...!', { position: "top center", className: "success" });
+        }
+        else if ('@TempData["202"]' == '202') {
+            $.notify('Data Updated Successfully...!', { position: "top center", className: "success" });
+        }
+        else if ('@TempData["300"]' == '300') {
+            $.notify('Duplicate Record Found.', { position: "top center", className: "info" });
+        }
+        else if ('@TempData["Message"]' == 'Something Went Wrong, Please Try Again.') {
+            $.notify('@TempData["Message"]', "error");
+        }
+        else if ('@TempData["500"]' == '500') {
+            $.notify('Something Went Wrong, Please Try Again.', "error");
+        }
+        else if ('@TempData["423"]' == '423') {
+            $.notify('Selected Entity Already Been Used In Other Forms, Delete Not Possible..!', { position: "top center", className: "info" });
+        }
+        else if ('@TempData["2627"]' == '2627') {
+            $.notify('Cannot insert duplicate entry for Year, AccountCode, InvoiceNo and ItemCode', { position: "top center", className: "error" });
+        }
+        else if ('@TempData["301"]' == '301') {
+            $.notify('PO Approved Successfully', { position: "top center", className: "success" });
+        }
+        else if ('@TempData["302"]' != '') {
+            $.notify('@TempData["302"]', { position: "top center", className: "error" });
+        }
+        else if ('@TempData["ErrorMessage"]' != '') {
+            $.notify('@TempData["ErrorMessage"]', { position: "top center", className: "error" });
+        }
+        else if ('@TempData["2628"]' == '2628') {
+            $.notify('Error', { position: "top center", className: "error" });
+        }
+        else if ('@TempData["EmptyError"]' == 'EmptyError') {
+            $.notify('ItemDetail Should have atleast 1 item', { position: "top center", className: "error" });
+        }
+    </script>
+    @*<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+    //   alert("hi main");
+    $('#example').dataTable();
+    });
+    </script>*@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -162,6 +162,26 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetYesOrNo()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "YesOrNo"));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("HRSPSalaryHeadMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> ChkForDuplicateHeadName(string SalaryHead,int SalHeadEntryId)
         {
             var _ResponseResult = new ResponseResult();
@@ -407,7 +427,7 @@ namespace eTactWeb.Data.DAL
                     model.HRSalaryDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
                                                               select new HRSalaryHeadMasterModel
                                                               {
-                                                                  SalHeadEffectiveDate = dr["SalHeadEffectiveDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["SalHeadEffectiveDate"]).ToString("yyyy-MM-dd"),
+                                                                  SalHeadEffectiveDate = dr["SalHeadEffectiveDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["SalHeadEffectiveDate"]).ToString("dd-MM-yyyy"),
                                                                   SalaryHead = dr["SalaryHead"].ToString(),
                                                                 
                                                                   SalaryCode = dr["SalaryCode"].ToString(),
@@ -446,7 +466,7 @@ namespace eTactWeb.Data.DAL
                                                                   DisplayOrder = Convert.ToInt32(dr["DisplayOrder"]),
                                                                   ActualEntryby = Convert.ToInt32(dr["ActualEntryby"]),
                                                                   LastUpdatedOn = dr["LastUpdatedOn"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["LastUpdatedOn"]).ToString("dd-MM-yyyy"),
-                                                                  SalHeadEntryDate = dr["SalHeadEntryDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["SalHeadEntryDate"]).ToString("yyyy-MM-dd"),
+                                                                  SalHeadEntryDate = dr["SalHeadEntryDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["SalHeadEntryDate"]).ToString("dd-MM-yyyy"),
                                                                   PartOfPayslip = dr["PartOfPayslip"].ToString(),
                                                                   EntryByMachine = dr["EntryByMachine"].ToString(),
                                                                   AmountOrPercentage = dr["AmountPercentage"].ToString(),
@@ -497,7 +517,7 @@ namespace eTactWeb.Data.DAL
 
                     if (oDataSet.Tables.Count > 0 && DTTaxMasterDetail.Rows.Count > 0)
                     {
-                        model.SalHeadEffectiveDate = Convert.ToDateTime(DTTaxMasterDetail.Rows[0]["SalHeadEffectiveDate"]).ToString("yyyy/MM/dd");
+                        model.SalHeadEffectiveDate = Convert.ToDateTime(DTTaxMasterDetail.Rows[0]["SalHeadEffectiveDate"]).ToString("dd/MM/yyyy");
                         model.SalaryHead = DTTaxMasterDetail.Rows[0]["SalaryHead"].ToString();
                         model.SalaryCode = DTTaxMasterDetail.Rows[0]["SalaryCode"].ToString();
                         model.ShortForm = DTTaxMasterDetail.Rows[0]["ShortForm"].ToString();
@@ -532,7 +552,7 @@ namespace eTactWeb.Data.DAL
                         model.Remarks = DTTaxMasterDetail.Rows[0]["Remarks"].ToString();
                         model.SalHeadEntryId = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["SalHeadEntryId"]);
                         model.ContributionPerOfSalaryHeadId = Convert.ToInt32(DTTaxMasterDetail.Rows[0]["ContributionPerOfSalaryHeadId"]);
-                        model.SalHeadEntryDate = Convert.ToDateTime(DTTaxMasterDetail.Rows[0]["SalHeadEntryDate"]).ToString("yyyy/MM/dd");
+                        model.SalHeadEntryDate = Convert.ToDateTime(DTTaxMasterDetail.Rows[0]["SalHeadEntryDate"]).ToString("dd/MM/yyyy");
                         model.CurrencyId = DTTaxMasterDetail.Rows[0]["CurrencyId"].ToString();
                         model.AmountOrPercentage = DTTaxMasterDetail.Rows[0]["AmountPercentage"].ToString();
 
@@ -584,9 +604,13 @@ namespace eTactWeb.Data.DAL
 
                     oCmd.Parameters.AddWithValue("@flag", model.Mode);
                     oCmd.Parameters.AddWithValue("@SalHeadEntryId", model.SalHeadEntryId);
-                    oCmd.Parameters.AddWithValue("@SalHeadEntryDate", string.IsNullOrEmpty(model.SalHeadEntryDate) ? DBNull.Value : model.SalHeadEntryDate);
-                   // oCmd.Parameters.AddWithValue("@SalHeadEntryDate", model.SalHeadEntryDate);
-                    oCmd.Parameters.AddWithValue("@SalHeadEffectiveDate", model.SalHeadEffectiveDate);
+                    // oCmd.Parameters.AddWithValue("@SalHeadEntryDate", string.IsNullOrEmpty(model.SalHeadEntryDate) ? DBNull.Value : model.SalHeadEntryDate);
+                    //// oCmd.Parameters.AddWithValue("@SalHeadEntryDate", model.SalHeadEntryDate);
+                    // oCmd.Parameters.AddWithValue("@SalHeadEffectiveDate", model.SalHeadEffectiveDate);
+                    oCmd.Parameters.AddWithValue("@SalHeadEntryDate",
+                 string.IsNullOrEmpty(model.SalHeadEntryDate) ? DBNull.Value : DateTime.Parse(model.SalHeadEntryDate).ToString("dd/MMM/yyyy"));
+                    oCmd.Parameters.AddWithValue("@SalHeadEffectiveDate",
+                        string.IsNullOrEmpty(model.SalHeadEffectiveDate) ? DBNull.Value : DateTime.Parse(model.SalHeadEffectiveDate).ToString("dd/MMM/yyyy"));
                     oCmd.Parameters.AddWithValue("@SalaryHead", model.SalaryHead);
                     oCmd.Parameters.AddWithValue("@SalaryCode", model.SalaryCode);
                     oCmd.Parameters.AddWithValue("@ShortForm", model.ShortForm);

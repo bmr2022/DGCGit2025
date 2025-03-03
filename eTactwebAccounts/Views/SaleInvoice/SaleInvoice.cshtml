@@ -209,7 +209,7 @@
                                         </thead>
                                         <tbody id="divCustJobWorkISsueSummary">
                                             @* <partial name="_JOBWORKISSUESUMMARY" /> *@
-                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueModel>());
+                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueAdjustDetail>());
                                         </tbody>
                                     </table>
                                 </div>
@@ -679,15 +679,16 @@
 
         $('#btnAdjustChallanListGrid').click(function (event) {
             event.preventDefault();
-            debugger
+             
             var YearCode = $('#SaleBillYearCode').val();
             var EntryDate = $('#ChallanDate').val();
             var ChallanDate = $('#ChallanDate').val();
             var AccountCode = $('#AccountCode').val();
+            var itemCode = $('#ItemCode').val();
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-                debugger
+                 
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
@@ -711,8 +712,9 @@
 
                 adjustedData.push(rowData);
             });
+             
             console.log("Adustdata:", adjustedData);
-            debugger
+             
             $.ajax({
                 url: "@Url.Action("GetAdjustedChallanDetailsData")",
                 type: "POST",
@@ -723,7 +725,8 @@
                     "YearCode": YearCode,
                     "EntryDate": EntryDate,
                     "ChallanDate": ChallanDate,
-                    "AccountCode": AccountCode
+                    "AccountCode": AccountCode,
+                    "ItemCode":itemCode
                 },
                 // dataType: "html",
                 async: false,
@@ -850,7 +853,7 @@
         });
 
         function PasswordCheck() {
-
+            debugger
             if ($('#taxPassword').val() != allowManualPassword) {
                 $.notify('please correct password...!', "error");
             } else {

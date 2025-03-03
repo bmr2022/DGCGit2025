@@ -182,7 +182,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillEntryID()
+        public async Task<ResponseResult> FillEntryID(int YearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -190,6 +190,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@yearcode", YearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -230,39 +231,29 @@ namespace eTactWeb.Data.DAL
                 DateTime voucherDate = new DateTime();
 
                 entryDate=ParseDate(model.EntryDate);
-                //actualEntryDate = ParseDate(model.ActualEntryDate);
+                actualEntryDate = ParseDate(model.ActualEntryDate);
                 model.BankRECO = DateTime.Now.ToString();
                 voucherDate = ParseDate(model.VoucherDate);
 
                 var sqlParams = new List<dynamic>();
                 if (model.Mode == "U" || model.Mode == "V")
                 {
-                    //    sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
-                    //    sqlParams.Add(new SqlParameter("@LedgerOpnEntryId", model.EntryId));
-                    //    sqlParams.Add(new SqlParameter("@OpeningYearCode", model.OpeningYearCode));
-                    //    sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
-                    //    sqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
-                    //    sqlParams.Add(new SqlParameter("@LedgerOpnEntryDate", model.ActualEntryDate));
-                    //    sqlParams.Add(new SqlParameter("@OpeningAmt", model.Balance));
-                    //    sqlParams.Add(new SqlParameter("@LastUpdatedDate", DateTime.Now));
-                    //    sqlParams.Add(new SqlParameter("@dt", GIGrid));
+                    sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                 }
                 else
                 {
                     sqlParams.Add(new SqlParameter("@Flag", "INSERT"));
-                    //sqlParams.Add(new SqlParameter("@Branch", model.Branch));
-                    sqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.EntryId));
-                    sqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
-                    sqlParams.Add(new SqlParameter("@EntryDate", entryDate));
-                    sqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
-                    sqlParams.Add(new SqlParameter("@entrybymachine", model.EntryByMachine));
-                    sqlParams.Add(new SqlParameter("@VoucherDate", voucherDate));
-                    sqlParams.Add(new SqlParameter("@Subvoucher", "BANK-RECEIPT"));
-                    sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
-
-                    sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
                 }
-
+                sqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.AccEntryId));
+                sqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
+                sqlParams.Add(new SqlParameter("@EntryDate", entryDate));
+                sqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                sqlParams.Add(new SqlParameter("@entrybymachine", model.EntryByMachine));
+                sqlParams.Add(new SqlParameter("@VoucherDate", voucherDate));
+                sqlParams.Add(new SqlParameter("@Subvoucher", "BANK-RECEIPT"));
+                sqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDate));
+                sqlParams.Add(new SqlParameter("@InstrumentNo", model.InsNo));
+                sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", sqlParams);
 
@@ -372,8 +363,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Summary");
                     oCmd.Parameters.AddWithValue("@VoucherType", "BankReceipt");
-                    oCmd.Parameters.AddWithValue("@fromdate", FromDate);
-                    oCmd.Parameters.AddWithValue("@todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@fromdate", DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
+                    oCmd.Parameters.AddWithValue("@todate", DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -397,7 +388,7 @@ namespace eTactWeb.Data.DAL
                                                  UID = dr["uid"] != DBNull.Value ? Convert.ToInt32(dr["uid"]) : 0,
                                                  ActualEntryby = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
                                                  ActualEntryBy = dr["ActualEntryByEmp"] != DBNull.Value ? dr["ActualEntryByEmp"].ToString() : string.Empty,
-                                                 ActualEntryDate = Convert.ToDateTime(dr["ActualEntryDate"]),
+                                                 ActualEntryDate = dr["ActualEntryDate"].ToString(),
                                                  UpdatedBy = dr["UpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedBy"]) : 0,
                                                  UpdatedByEmp = dr["UpdatedByEmp"] != DBNull.Value ? dr["UpdatedByEmp"].ToString() : string.Empty,
                                                  UpdatedOn = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]) : (DateTime?)null,
@@ -548,10 +539,11 @@ namespace eTactWeb.Data.DAL
             model.VoucherNo = DS.Tables[0].Rows[0]["VoucherNo"].ToString();
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.Currency = DS.Tables[0].Rows[0]["Currency"].ToString();
+            model.CurrencyId =Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
             model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
             model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
-            model.ActualEntryDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
+            model.ActualEntryDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? DateTime.Now.ToString("dd/MM/yy") : DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
 
