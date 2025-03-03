@@ -29,9 +29,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.FillDocument(ShowAllDoc);
         }
-        public async Task<ResponseResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode)
+        public async Task<ResponseResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode, string DebitNotePurchaseRejection)
         {
-            return await _purchRejDAL.FillCustomerName(ShowAllParty, PurchaseRejYearCode);
+            return await _purchRejDAL.FillCustomerName(ShowAllParty, PurchaseRejYearCode, DebitNotePurchaseRejection);
         }
         public async Task<ResponseResult> GetStateGST(int Code)
         {
@@ -48,6 +48,18 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetExchangeRate(string Currency)
         {
             return await _purchRejDAL.GetExchangeRate(Currency);
+        }
+        public async Task<ResponseResult> FillStore()
+        {
+            return await _purchRejDAL.FillStore();
+        }
+        public async Task<ResponseResult> FillSubvoucher(int? PurchaseRejYearCode, string DebitNotePurchaseRejection)
+        {
+            return await _purchRejDAL.FillSubvoucher(PurchaseRejYearCode, DebitNotePurchaseRejection);
+        }
+        public async Task<ResponseResult> GetHSNUNIT(int itemCode)
+        {
+            return await _purchRejDAL.GetHSNUNIT(itemCode);
         }
     }
 }

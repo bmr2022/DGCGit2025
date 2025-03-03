@@ -462,6 +462,7 @@
             FillItems($('#ItemSA').is(':checked'));
             // FillCustomerName();
             FillCustomerName("N");
+            FillSubvoucher();
             FillCurrency();
             GetExchnageRate();
             FillDocument("F");
@@ -469,7 +470,7 @@
             BasicTotal();
             BasicPopUpItemGrid();
             BasicItemGridTotal();
-            GetCostCenter();
+            //GetCostCenter();
             DueDateCalculation();
 
             $('#GstRegUnreg').rules("remove", "required");
@@ -791,7 +792,7 @@
         function FillStore() {
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("FillStore", "SaleInvoice")",
+                url: "@Url.Action("FillStore", "PurchaseRejection")",
                 dataType: "json",
                 success: function (result, status, error) {
                     if (result != null) {
@@ -1500,19 +1501,26 @@
             });
         }
 
-        $('#AgainstSalePurchase').change(function () {
+        // $('#AgainstSalePurchase').change(function () {
+        //     FillCustomerName();
+        // }); by M
+
+        $('#DebitNotePurchaseRejection').change(function () {
             FillCustomerName();
+            FillSubvoucher();
         });
+
         $('#SA').change(function () {
             var showAllParty = document.getElementById('SA').checked ? "Y" : "N";
             FillCustomerName(showAllParty);
         });
         function FillCustomerName(showAllParty) {
             // var againstSalePurchase = $('#AgainstSalePurchase').val();
+            var DebitNotePurchaseRejection = $('#DebitNotePurchaseRejection').val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillCustomerName")",
-                data: { "ShowAllParty": showAllParty, "PurchaseRejYearCode": $('#PurchaseRejYearCode').val() },
+                data: { "ShowAllParty": showAllParty, "PurchaseRejYearCode": $('#PurchaseRejYearCode').val(), "DebitNotePurchaseRejection": DebitNotePurchaseRejection },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -1524,6 +1532,30 @@
                             if (obj.StatusCode != 500) {
                                 $.each(obj.Result.Table, function (index, val) {
                                     $('#AccountCode').append("<option value=" + val.account_code + ">" + val.account_name/* val.CustomerName */ + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function FillSubvoucher() {
+            var DebitNotePurchaseRejection = $('#DebitNotePurchaseRejection').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillSubvoucher")",
+                data: { "PurchaseRejYearCode": $('#PurchaseRejYearCode').val(), "DebitNotePurchaseRejection": DebitNotePurchaseRejection },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#SubVoucherName').empty();
+                            $('#SubVoucherName').append('<option value="0">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#SubVoucherName').append("<option value=" + val.PrefixEntryId + ">" + val.SubVoucherName/* val.CustomerName */ + "</option>");
                                 });
                             }
                         }
@@ -1633,7 +1665,7 @@
                             if (obj.StatusCode != 500) {
                                 if (obj != null && obj.Result != null) {
                                     $.each(obj.Result.Table, function (index, val) {
-                                        $('#PartCode').append("<option value=" + val.ItemCode + ">" + val.PartCode + "</option>");
+                                        $('#PartCode').append("<option value=" + val.Itemcode + ">" + val.PartCode + "</option>");
                                     });
                                 }
                             }
@@ -1642,7 +1674,7 @@
                             if (obj.StatusCode != 500) {
                                 if (obj != null && obj.Result != null) {
                                     $.each(obj.Result.Table, function (index, val) {
-                                        $('#ItemCode').append("<option value=" + val.ItemCode + ">" + val.ItemName + "</option>");
+                                        $('#ItemCode').append("<option value=" + val.Itemcode + ">" + val.ItemName + "</option>");
                                     });
                                 }
                             }

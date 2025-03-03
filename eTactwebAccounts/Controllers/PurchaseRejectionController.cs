@@ -79,9 +79,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode)
+        public async Task<JsonResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode, string DebitNotePurchaseRejection)
         {
-            var JSON = await _purchRej.FillCustomerName(ShowAllParty, PurchaseRejYearCode);
+            var JSON = await _purchRej.FillCustomerName(ShowAllParty, PurchaseRejYearCode, DebitNotePurchaseRejection);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -106,6 +106,24 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetExchangeRate(string Currency)
         {
             var JSON = await _purchRej.GetExchangeRate(Currency);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillStore()
+        {
+            var JSON = await _purchRej.FillStore();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillSubvoucher(int? PurchaseRejYearCode, string DebitNotePurchaseRejection)
+        {
+            var JSON = await _purchRej.FillSubvoucher(PurchaseRejYearCode, DebitNotePurchaseRejection);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetHSNUNIT(int itemCode)
+        {
+            var JSON = await _purchRej.GetHSNUNIT(itemCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
