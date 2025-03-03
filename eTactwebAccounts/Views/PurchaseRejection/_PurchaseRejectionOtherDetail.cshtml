@@ -30,9 +30,13 @@
             <label asp-for="NetAmt" class="form-label">Net Amount</label>
             <input asp-for="NetAmt" class="form-control" />
         </div>
-        <div class="col-md-2">
+        @* <div class="col-md-2">
             <label asp-for="Remark" class="form-label">Remark</label>
             <input asp-for="Remark" class="form-control" />
+        </div> *@
+        <div class="col-md-2">
+            <label asp-for="PurchaserejRemark" class="form-label">Remark</label>
+            <input asp-for="PurchaserejRemark" class="form-control" />
         </div>
         <div class="col-md-2">
             <label asp-for="CC" class="form-label">CC</label>
@@ -60,7 +64,7 @@
         </div>
         <div class="col-md-2">
             <label asp-for="ActualEnteredByName" class="form-label">Actual Entered By Name</label>
-            <input asp-for="ActualEnteredBy" class="form-control" type="hiddeb" />
+            <input asp-for="ActualEnteredBy" class="form-control" type="hidden" />
             <input asp-for="ActualEnteredByName" class="form-control" />
         </div>
         <div class="col-md-2">
@@ -71,6 +75,14 @@
         <div class="col-md-2">
             <label asp-for="LastUpdationDate" class="form-label">Last Updation Date</label>
             <input asp-for="LastUpdationDate" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="ExchangeRate" class="form-label">Exchange Rate</label>
+            <input asp-for="ExchangeRate" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Distance" class="form-label">Distance</label>
+            <input asp-for="Distance" class="form-control" />
         </div>
         @* <div class="col-md-2">
             <label asp-for="EntryFreezToAccounts" class="form-label">Entry Freeze to Accounts</label>

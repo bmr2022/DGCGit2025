@@ -37,5 +37,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.GetStateGST(Code);
         }
+        public async Task<ResponseResult> FillItems(int YearCode, int accountCode, string showAllItems)
+        {
+            return await _purchRejDAL.FillItems(YearCode, accountCode, showAllItems);
+        }
+        public async Task<ResponseResult> FillCurrency(int? AccountCode)
+        {
+            return await _purchRejDAL.FillCurrency(AccountCode);
+        }
+        public async Task<ResponseResult> GetExchangeRate(string Currency)
+        {
+            return await _purchRejDAL.GetExchangeRate(Currency);
+        }
     }
 }

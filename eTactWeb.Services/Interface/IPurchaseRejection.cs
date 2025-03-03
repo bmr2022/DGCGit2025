@@ -10,5 +10,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillDocument(string ShowAllDoc);
         Task<ResponseResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode);
         Task<ResponseResult> GetStateGST(int Code);
+        Task<ResponseResult> FillItems(int YearCode, int accountCode, string showAllItems);
+        Task<ResponseResult> GetExchangeRate(string Currency);
+        Task<ResponseResult> FillCurrency(int? AccountCode);
     }
 }
