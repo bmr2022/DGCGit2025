@@ -9,7 +9,7 @@
         <div class="card-header card-headerBG text-light bg-gradient">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h5>
-                    <strong>HR WeekOff Master </strong>
+                    <strong> WeekOff Master </strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
                         <a asp-controller="HRWeekOffMaster" asp-action="HRWeekOffMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                             <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
@@ -61,7 +61,7 @@
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
                                     aria-expanded="true" aria-controls="B_ItemCategoryDetail">
-                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>HR WeekOff Master</strong>
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> WeekOff Master</strong>
                                 <small class="p-3"></small>
                             </button>
                         </h2>
@@ -75,9 +75,9 @@
                                         <label asp-for="WeekoffEntryId" class="form-label"> WeekoffEntryId</label>
                                         <input asp-for="WeekoffEntryId" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="WeekoffYearCode" class="form-label" >WeekoffYearCode</label>
-                                        <input asp-for="WeekoffYearCode" class="form-control"  />
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                        <label asp-for="WeekoffYearCode" class="form-label" >YearCode</label>
+                                        <input asp-for="WeekoffYearCode" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="WeekoffName" class="form-label" >WeekoffName</label>
@@ -85,12 +85,22 @@
                                     </div>  
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="WeekoffTypefixRot" class="form-label" >WeekoffTypefixRot</label>
-                                        <input asp-for="WeekoffTypefixRot" class="form-control"  />
+                                        <select asp-for="WeekoffTypefixRot" class="form-select">
+                                        <option value="" selected>-Select-</option>
+                                        <option value="Fix" >Fix</option>
+                                        <option value="Rotation">Rotation</option>
+                                        </select>
                                     </div>
                                    
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="WeekoffDays" class="form-label" >WeekoffDays</label>
-                                        <input asp-for="WeekoffDays" class="form-control"  />
+                                        <label asp-for="WeekoffDays" class="form-label">WeekoffDays</label>
+                                        <select asp-for="WeekoffDays" class="form-select">
+                                            <option value="" selected>-Select-</option>
+                                            @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))
+                                            {
+                                                <option value="@day">@day</option>
+                                            }
+                                        </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="MinWorkDaysRequired" class="form-label" >MinWorkDaysRequired</label>
@@ -110,7 +120,12 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="OverrideForHolidays" class="form-label">OverrideForHolidays</label>
-                                        <input asp-for="OverrideForHolidays" class="form-control" />
+                                        <select asp-for="OverrideForHolidays" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="CompensatoryOffApplicable" class="form-label">CompensatoryOffApplicable</label>
@@ -140,8 +155,17 @@
                                         <label asp-for="Active" class="form-label">Active</label>
                                         <select asp-for="Active" class="form-select">
                                             <option value="" disabled>-Select-</option>
-                                            <option value="YES" selected>YES</option>
-                                            <option value="NO">NO</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO">NO</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO" disabled>NO</option>
+                                            }
+
 
                                         </select>
                                     </div>
@@ -207,7 +231,7 @@
                     <div class="row justify-content-between g-2">
                         <div class="card-header card-headerBG text-light bg-gradient">
                             <h5>
-                                <strong>HR WeekOff Master</strong>
+                                <strong> WeekOff Master</strong>
                                 <span class="d-flex float-end" style="margin-top:-2px;">
 
                                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
@@ -287,13 +311,24 @@
         $(document).ready(function () {
 
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-                $('#EffectiveFrom').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
             else {
-                $('#EffectiveFrom').datepicker({ dateFormat: 'yy/mm/dd' });
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
             }
+
+           
+
             $('#EmpCateg').select2();
             $('#DeptName').select2();
+            $('#WeekoffTypefixRot').select2();
+            $('#WeekoffDays').select2();
+            $('#halfdayFulldayOff').select2();
+            $('#OverrideForHolidays').select2();
+            $('#CompensatoryOffApplicable').select2();
+            $('#ExtraPayApplicable').select2();
+            $('#ExtraPayApplicable').select2();
+            $('#Active').select2();
 
             $('#DeptName').change(function () {
                 $('#DeptId').val($('#DeptName').val());
@@ -324,7 +359,7 @@
                     var EmpCategDropdown = $('#EmpCateg');
                     var obj = $.parseJSON(response);
                     EmpCategDropdown.empty();
-                    // CurrencyDropdown.append('<option value="">--Select--</option>');
+                    EmpCategDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, item) {
                         EmpCategDropdown.append('<option value="' + item.CategoryId + '">' + item.EmpCateg + '</option>');
@@ -353,7 +388,7 @@
                     var EmpCategDropdown = $('#DeptName');
                     var obj = $.parseJSON(response);
                     EmpCategDropdown.empty();
-                    // CurrencyDropdown.append('<option value="">--Select--</option>');
+                    EmpCategDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, item) {
                         EmpCategDropdown.append('<option value="' + item.DeptId + '">' + item.DeptName + '</option>');

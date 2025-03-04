@@ -209,7 +209,7 @@
                                         </thead>
                                         <tbody id="divCustJobWorkISsueSummary">
                                             @* <partial name="_JOBWORKISSUESUMMARY" /> *@
-                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueAdjustDetail>());
+                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueAdjustDetail>())
                                         </tbody>
                                     </table>
                                 </div>
@@ -375,7 +375,7 @@
         $(document).ready(function () {
 
             GetServerDate();
-
+            debugger
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();
@@ -384,8 +384,8 @@
                 SetminQty();
                 BasicTotal();
                 $('#DT').prop("checked", true);
-
-
+                $('#PN1').prop("checked", true);
+                FillCustomerList("Y");
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
 
                 var taxRowCount = $('#divTaxGrid tr').length;
@@ -1215,7 +1215,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-
+                            debugger
                             $('#SOPendQty').val("");
                             $('#SOPendQty').val(obj.Result[0].PendQty);
                             $('#Qty').val("");
@@ -1347,11 +1347,12 @@
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divSaleBillList').html(result);
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
+                        debugger
                         $('#Uniquebatchno,#Batchno,#Qty').val(0);
                         $('#LotStock,#TotalStock').val("");
                         //$('#HSNNo').val("");
                         //$('#Unit,#AltUnit').val("");
-                        $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount').val(0);
+                        $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
 
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
@@ -2459,6 +2460,7 @@
         $('#Batchno').change(function (event) {
             event.preventDefault();
             FillUniqueBatchNo();
+            FillTotalStock();
         });
 
         function FillUniqueBatchNo() {

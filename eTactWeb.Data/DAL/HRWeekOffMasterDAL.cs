@@ -72,7 +72,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ExtraPayApplicable", model.ExtraPayApplicable);
                     oCmd.Parameters.AddWithValue("@Remark", model.Remark);
                     oCmd.Parameters.AddWithValue("@Active", model.Active);
-                    oCmd.Parameters.AddWithValue("@EffectiveFrom", model.EffectiveFrom);
+                    
+                    oCmd.Parameters.AddWithValue("@EffectiveFrom",
+               string.IsNullOrEmpty(model.EffectiveFrom) ? DBNull.Value : DateTime.Parse(model.EffectiveFrom).ToString("dd/MMM/yyyy"));
+
                     oCmd.Parameters.AddWithValue("@EntryByEmpId", model.EntryByEmpId);
                     oCmd.Parameters.AddWithValue("@EntryByMachine", model.EntryByMachine);
                     oCmd.Parameters.AddWithValue("@EmpCategoryId", model.EmpCategoryId);
@@ -221,7 +224,7 @@ namespace eTactWeb.Data.DAL
                                                    Remark = dr["Remark"].ToString(),
                                                    ExtraPayApplicable = dr["ExtraPayApplicable"].ToString(),
                                                   
-                                                   EffectiveFrom =  dr["EffectiveFrom"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["EffectiveFrom"]).ToString("yyyy-MM-dd"),
+                                                   EffectiveFrom =  dr["EffectiveFrom"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["EffectiveFrom"]).ToString("dd-MM-yyyy"),
                                                    //EntryByEmpId = Convert.ToInt32(dr["EntryByEmpId"]),
                                                    //UpdatedbyId = Convert.ToInt32(dr["UpdatedbyId"]),
                                                    Active = dr["Active"].ToString(),
@@ -277,13 +280,14 @@ namespace eTactWeb.Data.DAL
                         model.CompensatoryOffApplicable = DTWeekOffMasterDetail.Rows[0]["CompensatoryOffApplicable"].ToString();
                        
                         model.Remark = DTWeekOffMasterDetail.Rows[0]["Remark"].ToString();
+                        model.OverrideForHolidays = DTWeekOffMasterDetail.Rows[0]["OverrideForHolidays"].ToString();
                         model.ExtraPayApplicable = DTWeekOffMasterDetail.Rows[0]["ExtraPayApplicable"].ToString();
                         model.EffectiveFrom = DTWeekOffMasterDetail.Rows[0]["EffectiveFrom"].ToString();
                         model.EntryByEmpId = Convert.ToInt32(DTWeekOffMasterDetail.Rows[0]["EntryByEmpId"]);
                         model.EmpCategoryId = Convert.ToInt32(DTWeekOffMasterDetail.Rows[0]["EmpCategoryId"]);
                         model.DeptId = Convert.ToInt32(DTWeekOffMasterDetail.Rows[0]["DeptId"]);
                         model.EntryByMachine = DTWeekOffMasterDetail.Rows[0]["EntryByMachine"].ToString();
-                        model.EffectiveFrom = Convert.ToDateTime(DTWeekOffMasterDetail.Rows[0]["EffectiveFrom"]).ToString("yyyy/MM/dd");
+                        model.EffectiveFrom = Convert.ToDateTime(DTWeekOffMasterDetail.Rows[0]["EffectiveFrom"]).ToString("dd/MM/yyyy");
 
 
 
@@ -314,7 +318,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@flag", "Delete"));
                 SqlParams.Add(new SqlParameter("@WeekoffEntryId", ID));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPSalaryHeadMaster", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPWeekoffMaster", SqlParams);
             }
             catch (Exception ex)
             {

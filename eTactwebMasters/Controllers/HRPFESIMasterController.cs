@@ -43,37 +43,35 @@ namespace eTactwebMasters.Controllers
             MainModel.EntryId = ID;
             MainModel.Mode = Mode;
 
-            //if (Mode != "U")
-            //{
-            //    MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            //    MainModel.CreatedByEmpName = HttpContext.Session.GetString("EmpName");
+            if (Mode != "U")
+            {
+                MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                //MainModel.CreatedByEmpName = HttpContext.Session.GetString("EmpName");
 
-            //}
-            //if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
-            //{
-
-
-            //    //MainModel = await _IHRPFESIMaster.GetViewByID(ID).ConfigureAwait(false);
-            //    //MainModel.Mode = Mode; 
-            //    //MainModel.LeaveId = ID;
+            }
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
+            {
 
 
-            //    if (Mode == "U")
-            //    {
-            //        MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            //        MainModel.UpdatedByEmpName = HttpContext.Session.GetString("EmpName");
+                MainModel = await _IHRPFESIMaster.GetViewByID(ID).ConfigureAwait(false);
+                MainModel.Mode = Mode;
+                MainModel.EntryId = ID;
+                if (Mode == "U")
+                {
+                    MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    //MainModel.UpdatedByEmpName = HttpContext.Session.GetString("EmpName");
 
-            //        MainModel.UpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
+                    MainModel.UpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
 
-            //    }
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                }
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024
             };
-            //_MemoryCache.Set("HRLeaveDashboard", MainModel.HRLeaveDashboard, cacheEntryOptions);
-            //}
+            _MemoryCache.Set("HRPFESIDashboard", MainModel.HRPFESIDashboard, cacheEntryOptions);
+            }
 
 
 
@@ -122,6 +120,42 @@ namespace eTactwebMasters.Controllers
             return Json(JsonString);
         }
 
+        [HttpGet]
+        [Route("HRPFESIMasterDashBoard")]
+        public async Task<IActionResult> HRPFESIMasterDashBoard()
+        {
+            try
+            {
+                var model = new HRPFESIMasterModel();
+                var result = await _IHRPFESIMaster.GetDashboardData().ConfigureAwait(true);
+                DateTime now = DateTime.Now;
+
+                if (result != null && result.Result != null)
+                {
+                    DataSet ds = result.Result;
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        var dt = ds.Tables[0];
+                        model.HRPFESIDashboard = CommonFunc.DataTableToList<HRPFESIMasterModel>(dt, "HRPFESIMaster");
+                    }
+
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<IActionResult> GetDetailData()
+        {
+            //model.Mode = "Search";
+            var model = new HRPFESIMasterModel();
+            model = await _IHRPFESIMaster.GetDashboardDetailData();
+            return PartialView("_HRPFESIMasterDashBoardGrid", model);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> HRPFESIMaster(HRPFESIMasterModel model)
@@ -132,7 +166,7 @@ namespace eTactwebMasters.Controllers
             {
                 if (model != null)
                 {
-                    model.Mode = model.Mode == "U" ? "UPDATE" : "INSERT";
+                    model.Mode = model.Mode == "U" ? "Update" : "INSERT";
                     model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
                     
@@ -140,7 +174,7 @@ namespace eTactwebMasters.Controllers
 
 
 
-                    if (model.Mode == "UPDATE")
+                    if (model.Mode == "Update")
                     {
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
@@ -173,7 +207,7 @@ namespace eTactwebMasters.Controllers
                         }
                     }
                 }
-                // return RedirectToAction(nameof(HRLeaveMasterDashBoard));
+                 return RedirectToAction(nameof(HRPFESIMasterDashBoard));
                 return View(model);
 
             }
@@ -190,8 +224,42 @@ namespace eTactwebMasters.Controllers
 
                 return View("Error", ResponseResult);
             }
-
-            
+      
         }
+
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IHRPFESIMaster.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<IActionResult> DeleteByID(int ID,string machinename)
+        {
+            var Result = await _IHRPFESIMaster.DeleteByID(ID,machinename);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+                //TempData["Message"] = "Data deleted successfully.";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("HRPFESIMasterDashBoard");
+
+        }
+
+
     }
 }

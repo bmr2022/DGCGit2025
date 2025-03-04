@@ -152,6 +152,24 @@
                                         <label asp-for="PFAccountNumberFormat" class="form-label">PFAccountNumberFormat</label>
                                         <input asp-for="PFAccountNumberFormat" class="form-control " value="@Model.PFAccountNumberFormat" />
                                     </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaxCompanyLimitAmt" class="form-label">MaxCompanyLimitAmt </label>
+                                        <input asp-for="MaxCompanyLimitAmt" class="form-control numbers" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFBankName" class="form-label">PFBankName</label>
+                                        <input asp-for="PFBankName" class="form-control " value="@Model.PFBankName" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFBankAddress" class="form-label">PFBankAddress</label>
+                                        <input asp-for="PFBankAddress" class="form-control " value="@Model.PFBankAddress" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFRegistationNo" class="form-label">PFRegistationNo</label>
+                                        <input asp-for="PFRegistationNo" class="form-control " value="@Model.PFRegistationNo" />
+                                    </div>
                                     
 
                                 </div>
@@ -342,7 +360,7 @@
                             <h4>
 
                                 <span class="d-flex float-end" style="margin-top:-2px;">
-                                    <a asp-action="DashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <a asp-action="HRPFESIMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                                         Dashboard
                                     </a>
@@ -441,7 +459,7 @@
         });
 
         if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-            //FillLeaveID();
+            FillEntryID();
         }
 
         function simulateBackspace(element) {
@@ -522,7 +540,7 @@
 
 
             GetFormRights();
-            FillEntryID();
+           
             FillESIDispensary();
            
 

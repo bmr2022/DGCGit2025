@@ -903,10 +903,11 @@
         function FillPurchaseRejectionPopUp() {
 
             var showAllBill = $('#ShowAllBill').is(':checked') ? 'Y' : 'N';
+            var DebitNotePurchaseRejection = $('#DebitNotePurchaseRejection').val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillPurchaseRejectionPopUp")",
-                data: { "againstSalePurchase": $('#AgainstSalePurchase').val(), "fromBillDate": $('#fromBillDate').val(), "toBillDate": $('#toBillDate').val(), "itemCode": $('#ItemCode').val(), "accountCode": $('#AccountCode').val(), "yearCode": $('#PurchaseRejectionYearCode').val(), "showAllBill": showAllBill },
+                data: { "DebitNotePurchaseRejection": DebitNotePurchaseRejection, "fromBillDate": $('#fromBillDate').val(), "toBillDate": $('#toBillDate').val(), "itemCode": $('#ItemCode').val(), "accountCode": $('#AccountCode').val(), "yearCode": $('#PurchaseRejectionYearCode').val(), "showAllBill": showAllBill },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -917,39 +918,39 @@
                             var html = '';
                             $('#divPurchaseRejectionDataGrid').empty();
                             $.each(obj.Result.Table, function (index, val) {
-                                var saleBillDate = val.SaleBillDate == null ? "" : val.SaleBillDate.split("T")[0];
+                                // var saleBillDate = val.SaleBillDate == null ? "" : val.SaleBillDate.split("T")[0];
                                 var invoiceDate = val.InvoiceDate == null ? "" : val.InvoiceDate.split("T")[0];
-                                var dueDate = val.DueDate == null ? "" : val.DueDate.split("T")[0];
-                                var soDate = val.SOdate == null ? "" : val.SOdate.split("T")[0];
-                                var poDate = val.PODate == null ? "" : val.PODate.split("T")[0];
+                                // var dueDate = val.DueDate == null ? "" : val.DueDate.split("T")[0];
+                                // var soDate = val.SOdate == null ? "" : val.SOdate.split("T")[0];
+                                // var poDate = val.PODate == null ? "" : val.PODate.split("T")[0];
 
                                 html += '<tr id="PRPopUpRow-' + i + '" style="font-size: 12px;">' +
                                     '<td><input type="checkBox" id="chkPurchaseRejection-' + i + '" value="' + i + '" onchange="BasicPopUpItemGrid()"/></td>' +
                                     '<td>' + i + '</td>' +
-                                    '<td id="saleBillEntryId-' + i + '">' + val.SaleBillEntryId + '<input type="hidden" id="itemCode-' + i + '" value="' + val.ItemCode + '"/></td>' +
-                                    '<td id="SaleBillYearCode-' + i + '">' + val.SaleBillYearCode + '</td>' +
-                                    '<td id="SaleBillNo-' + i + '">' + val.SaleBillNo + '</td>' +
-                                    '<td id="SaleBillDate-' + i + '">' + saleBillDate + '</td>' +
-                                    '<td id="PurchBillEntryId-' + i + '">' + val.PurchBillEntryId + '</td>' +
+                                    // '<td id="saleBillEntryId-' + i + '">' + val.SaleBillEntryId + '</td>' +
+                                    // '<td id="SaleBillYearCode-' + i + '">' + val.SaleBillYearCode + '</td>' +
+                                    // '<td id="SaleBillNo-' + i + '">' + val.SaleBillNo + '</td>' +
+                                    // '<td id="SaleBillDate-' + i + '">' + saleBillDate + '</td>' +
+                                    '<td id="PurchBillEntryId-' + i + '">' + val.PurchBillEntryId + ' <input type="hidden" id="itemCode-' + i + '" value="' + val.ItemCode + '"/></td>' +
                                     '<td id="PurchBillYearCode-' + i + '">' + val.PurchBillYearCode + '</td>' +
                                     '<td id="InvoiceNo-' + i + '">' + val.InvoiceNo + '</td>' +
                                     '<td id="InvoiceDate-' + i + '">' + invoiceDate + '</td>' +
                                     '<td id="INVNetAmt-' + i + '">' + val.INVNetAmt + '</td>' +
-                                    '<td id="DueDate-' + i + '">' + dueDate + '</td>' +
+                                    '<td id="DueDate-' + i + '">' + DueDate + '</td>' +
                                     '<td id="PaidAmt-' + i + '">' + val.PaidAmt + '</td>' +
                                     '<td id="RemainingAmt-' + i + '">' + val.RemainingAmt + '</td>' +
-                                    '<td id="BillQty-' + i + '">' + val.BillQty + '</td>' +
-                                    '<td id="BillRate-' + i + '">' + val.BillRate + '</td>' +
-                                    '<td id="ItemAmount-' + i + '">' + val.ItemAmount + '</td>' +
-                                    '<td id="disPer-' + i + '">' + val.disPer + '</td>' +
-                                    '<td id="DisAmt-' + i + '">' + val.DisAmt + '</td>' +
-                                    '<td id="sono-' + i + '" class="hnSOfields">' + val.SONO + '</td>' +
-                                    '<td id="custOrderNo-' + i + '">' + val.CustOrderNo + '</td>' +
-                                    '<td id="soDate-' + i + '" class="hnSOfields">' + soDate + '</td>' +
-                                    '<td id="pono-' + i + '" class="hnPOfields">' + val.PONO + '</td>' +
-                                    '<td id="poDate-' + i + '" class="hnPOfields">' + poDate + '</td>' +
-                                    '<td id="poEntryId-' + i + '" class="hnPOfields">' + val.POEntryId + '</td>' +
-                                    '<td id="poYearCode-' + i + '" class="hnPOfields">' + val.POYearcode + '</td>' +
+                                     '<td id="BillQty-' + i + '">' + val.BillQty + '</td>' +
+                                     '<td id="BillRate-' + i + '">' + val.BillRate + '</td>' +
+                                     '<td id="ItemAmount-' + i + '">' + val.ItemAmount + '</td>' +
+                                     '<td id="disPer-' + i + '">' + val.disPer + '</td>' +
+                                     '<td id="DisAmt-' + i + '">' + val.DisAmt + '</td>' +
+                                    // '<td id="sono-' + i + '" class="hnSOfields">' + val.SONO + '</td>' +
+                                    // '<td id="custOrderNo-' + i + '">' + val.CustOrderNo + '</td>' +
+                                    // '<td id="soDate-' + i + '" class="hnSOfields">' + soDate + '</td>' +
+                                    // '<td id="pono-' + i + '" class="hnPOfields">' + val.PONO + '</td>' +
+                                    // '<td id="poDate-' + i + '" class="hnPOfields">' + poDate + '</td>' +
+                                    // '<td id="poEntryId-' + i + '" class="hnPOfields">' + val.POEntryId + '</td>' +
+                                    // '<td id="poYearCode-' + i + '" class="hnPOfields">' + val.POYearcode + '</td>' +
                                     '</tr>';
                                 i++;
                             });
