@@ -305,6 +305,10 @@ namespace eTactWeb.Data.DAL
                         model.PFWithdrawalLockPeriod = Convert.ToInt32(DTPFESIMasterDetail.Rows[0]["PFWithdrawLockPeriod"]);
                         model.EntryByMachine = DTPFESIMasterDetail.Rows[0]["MachineName"].ToString();
                         model.ESIBenefitsCovered = DTPFESIMasterDetail.Rows[0]["ESIBenifitsCovered"].ToString();
+                        model.MaxCompanyLimitAmt = Convert.ToInt32(DTPFESIMasterDetail.Rows[0]["MaxCompanyLimitAmt"]);
+                        model.PFBankName = DTPFESIMasterDetail.Rows[0]["ESIBenifitsCovered"].ToString();
+                        model.PFBankAddress = DTPFESIMasterDetail.Rows[0]["ESIBenifitsCovered"].ToString();
+                        model.PFRegistationNo = DTPFESIMasterDetail.Rows[0]["ESIBenifitsCovered"].ToString();
                         model.CreatedBy = Convert.ToInt32(DTPFESIMasterDetail.Rows[0]["ActualEntryBy"]);         
                         //model.UpdatedBy = Convert.ToInt32(DTPFESIMasterDetail.Rows[0]["LastupdatedBy"]);
                         //model.UpdatedOn = Convert.ToDateTime(DTPFESIMasterDetail.Rows[0]["UpdatationDate"]).ToString("dd/MM/yyyy");
