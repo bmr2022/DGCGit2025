@@ -61,5 +61,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.GetHSNUNIT(itemCode);
         }
+        public async Task<ResponseResult> FillPurchaseRejectionPopUp(string DebitNotePurchaseRejection, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode, string showAllBill)
+        {
+            return await _purchRejDAL.FillPurchaseRejectionPopUp(DebitNotePurchaseRejection, fromBillDate, toBillDate, itemCode, accountCode, yearCode, showAllBill);
+        }
     }
 }
