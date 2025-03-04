@@ -410,7 +410,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID,int YearCode)
+        public async Task<ResponseResult> DeleteByID(int ID,int YearCode,int ActualEntryBy,string EntryByMachine,string ActualEntryDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -419,6 +419,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DELETEBYID"));
                 SqlParams.Add(new SqlParameter("@AccEntryId", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
+                SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDate));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -599,7 +602,7 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        public async Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate,int YearCode,int AgainstVoucherYearCode,int AgainstVoucherEntryId,string AgainstVoucherNo)
+        public async Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate,int YearCode,int AgainstVoucherYearCode,int AgainstVoucherEntryId,string AgainstVoucherNo, int AccountCode)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -612,6 +615,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@AgainstVoucherYearcode", AgainstVoucherYearCode));
                 SqlParams.Add(new SqlParameter("@AgainstVoucherEntryid", AgainstVoucherEntryId));
                 SqlParams.Add(new SqlParameter("@AgainstVoucherNo", AgainstVoucherNo));
+                SqlParams.Add(new SqlParameter("@Accountcode", AccountCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)

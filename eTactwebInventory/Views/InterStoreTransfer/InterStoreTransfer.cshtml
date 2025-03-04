@@ -365,7 +365,7 @@
 {
     <script>
         $(document).ready(function () {
-
+            debugger
             $('#PartCode').select2();
             $('#ItemCode').select2();
             //$('#Storeid').select2();
@@ -901,7 +901,18 @@
         });
 
         $('#FromStoreId').change(function () {
-            ClearGrid();
+            debugger
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                $('#hiddenFromStoreId').val($('#FromStoreId').val())
+                if ('@Model.FromStoreId' != $('#FromStoreId').val()) {
+                    $('#divISTGrid').empty()
+                }
+                //ClearGrid();
+            }
+            else {
+                //ClearGrid();
+            }
+            //ClearGrid();
             FillTotalStock();
             FillStockBatchNo();
             FillLotStock();
