@@ -1,16 +1,16 @@
-﻿@model eTactWeb.DOM.Models.HRLeaveMasterModel;
+﻿@model eTactWeb.DOM.Models.HRPFESIMasterModel;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <div class="shadow-lg">
-    <form id="SParam" method="post" asp-controller="HRLeaveMaster" asp-action="HRLeaveMasterDashBoard" autocomplete="off">
+    <form id="SParam" method="post" asp-controller="HRPFESIMaster" asp-action="HRPFESIMasterDashBoard" autocomplete="off">
         <div class="card rounded border-light bg-gradient">
             <div class="card-header card-headerBG text-light bg-gradient">
                 <h5>
-                     Leave Master - <strong>Dashboard</strong>
+                    HR PFESI Master - <strong>Dashboard</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="HRLeaveMaster" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <a asp-action="HRPFESIMaster" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
@@ -21,7 +21,7 @@
                 <div class="card overflow-auto">
                     <div class="card-body">
                         <div class="row">
-                            
+
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -33,7 +33,7 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="HRLeaveMaster" asp-action="HRLeaveMasterDashBoard">
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="HRPFESIMaster" asp-action="HRPFESIMasterDashBoard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
@@ -49,7 +49,7 @@
             <div class="card-body">
                 <div class="card overflow-auto">
                     <div class="card-body" id="divDashboardGrid">
-                        <partial name="_HRLeaveMasterDashBoardGrid" />
+                        <partial name="_HRPFESIMasterDashBoardGrid" />
                     </div>
                 </div>
             </div>

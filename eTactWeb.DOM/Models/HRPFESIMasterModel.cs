@@ -20,14 +20,20 @@ namespace eTactWeb.DOM.Models
         public decimal? EmployeePFDeducionPer { get; set; }
         public decimal? EmployerPFContributionPer { get; set; }
         public decimal? EmployerEPSContributionPer { get; set; }
+        
         public decimal? PFWageLimit { get; set; }
+
+        public decimal? MaxCompanyLimitAmt { get; set; }
         public int? MinServicePeriodForPF { get; set; }
        
         public string? PFAccountNumberFormat { get; set; }
+        public string? PFBankName {  get; set; }
+        public string? PFBankAddress {  get; set; } 
+        public string? PFRegistationNo {  get; set; }   
 
-       
+
         /// ////////
-       
+
         public decimal? EmployeeESIContributionPer { get; set; }
         public decimal? EmployerESIContributionPer { get; set; }
         public decimal? ESIWageLimit { get; set; }
@@ -63,6 +69,8 @@ namespace eTactWeb.DOM.Models
         public string? UpdatedOn { get; set; }
         public string? EntryByMachine { get; set; }
 
+        public IList<HRPFESIMasterModel>? HRPFESIDashboard { get; set; }
+        public string Searchbox { get; set; }
 
 
     }

@@ -16,5 +16,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillStore();
         Task<ResponseResult> FillSubvoucher(int? PurchaseRejYearCode, string DebitNotePurchaseRejection);
         Task<ResponseResult> GetHSNUNIT(int itemCode);
+        Task<ResponseResult> FillPurchaseRejectionPopUp(string DebitNotePurchaseRejection, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode, string showAllBill);
     }
 }

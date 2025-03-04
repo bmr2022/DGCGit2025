@@ -40,6 +40,26 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRPFESIMasterDAL.GetExemptedCategories();
         }
+        public async Task<ResponseResult> GetDashboardData()
+        {
+            return await _HRPFESIMasterDAL.GetDashboardData();
+        }
+        public async Task<HRPFESIMasterModel> GetDashboardDetailData()
+        {
+            return await _HRPFESIMasterDAL.GetDashboardDetailData();
+        }
+        public async Task<HRPFESIMasterModel> GetViewByID(int id)
+        {
+            return await _HRPFESIMasterDAL.GetViewByID(id);
+        }
+        public async Task<ResponseResult> GetFormRights(int uId)
+        {
+            return await _HRPFESIMasterDAL.GetFormRights(uId);
+        }
+        public async Task<ResponseResult> DeleteByID(int ID,string machineName)
+        {
+            return await _HRPFESIMasterDAL.DeleteByID(ID,machineName);
+        }
 
     }
 }
