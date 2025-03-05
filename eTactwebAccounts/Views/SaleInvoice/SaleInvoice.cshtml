@@ -375,7 +375,7 @@
         $(document).ready(function () {
 
             GetServerDate();
-            debugger
+             
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();
@@ -853,7 +853,7 @@
         });
 
         function PasswordCheck() {
-            debugger
+             
             if ($('#taxPassword').val() != allowManualPassword) {
                 $.notify('please correct password...!', "error");
             } else {
@@ -1215,7 +1215,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-                            debugger
+                             
                             $('#SOPendQty').val("");
                             $('#SOPendQty').val(obj.Result[0].PendQty);
                             $('#Qty').val("");
@@ -1347,7 +1347,7 @@
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divSaleBillList').html(result);
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
-                        debugger
+                         
                         $('#Uniquebatchno,#Batchno,#Qty').val(0);
                         $('#LotStock,#TotalStock').val("");
                         //$('#HSNNo').val("");

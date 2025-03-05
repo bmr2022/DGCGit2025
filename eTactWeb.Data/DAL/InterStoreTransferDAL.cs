@@ -34,7 +34,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
-                SqlParams.Add(new SqlParameter("@yearCode",yearCode));
+                SqlParams.Add(new SqlParameter("@yearCode", yearCode));
                 SqlParams.Add(new SqlParameter("@EntryDate", DateTime.Now));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_InterStoreTransferMainDetail", SqlParams);
@@ -68,7 +68,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetPrevQty(int EntryId,int YearCode,int ItemCode,string UniqueBatchNo)
+        public async Task<ResponseResult> GetPrevQty(int EntryId, int YearCode, int ItemCode, string UniqueBatchNo)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -171,16 +171,12 @@ namespace eTactWeb.Data.DAL
             model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]);
             model.MachineName = DS.Tables[0].Rows[0]["TransferReason"].ToString();
 
-            if (Mode == "U")
+            if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString()))
             {
-                if (DS.Tables[0].Rows[0]["UpdateddBy"].ToString() != "")
-                {
-                    //model.LastUpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedbyEmp"].ToString());
-                    model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdateddBy"].ToString();
-                    model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdatetionDate"].ToString(); 
-                }
+                model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdateddBy"].ToString();
+                model.LastUpdatedBy = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString()) ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"]);
+                model.UpdatedOn = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatetionDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdatetionDate"]);
             }
-
 
             if (DS.Tables.Count != 0 && DS.Tables[0].Rows.Count > 0)
             {
@@ -258,7 +254,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                
+
                 var Date = DateTime.Now;
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
@@ -396,7 +392,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        
+
         public async Task<ResponseResult> GetAllowBackDate()
         {
             var _ResponseResult = new ResponseResult();
@@ -434,12 +430,12 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> CheckIssuedTransStock(int ItemCode, int YearCode, int EntryId, string TransDate, string TransNo, int Storeid, string batchno, string uniquebatchno,string Flag)
+        public async Task<ResponseResult> CheckIssuedTransStock(int ItemCode, int YearCode, int EntryId, string TransDate, string TransNo, int Storeid, string batchno, string uniquebatchno, string Flag)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
-                var TransDt = ParseDate(TransDate); 
+                var TransDt = ParseDate(TransDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));

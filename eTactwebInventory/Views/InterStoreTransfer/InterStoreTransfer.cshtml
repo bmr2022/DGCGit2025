@@ -256,19 +256,16 @@
                                     <input asp-for="RecStoreStock" class="form-control" readonly />
                                 </div>
 
-                                <div class=" col-6 col-auto">
+                                <div class="col-xl-3sss col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <div class="row justify-content-around">
                                         <div class="col-auto">
                                             <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3 me-3">
                                                 <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
                                             </button>
-
                                             <button type="button" class="btn btn-sm btn-outline-danger" onclick="ClearGrid()" style="margin-top:10px;">
                                                 CLEAR GRID
                                             </button>
-
                                         </div>
-
                                     </div>
                                 </div>
 
@@ -331,6 +328,10 @@
                                     <label asp-for="ActualEntryByName" class="form-label" style="color: blue;">Entry By Emp*</label>
                                     <input asp-for="ActualEntryByName" class="form-control" readonly />
                                 </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryDate" class="form-label" style="color: blue;">Actual Entry Date</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
                                 <div class="col-xl-2  col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="LastUpdatedByName" class="form-label">Updated By</label>
                                     <input asp-for="LastUpdatedByName" class="form-control" readonly />
@@ -365,7 +366,7 @@
 {
     <script>
         $(document).ready(function () {
-            debugger
+             
             $('#PartCode').select2();
             $('#ItemCode').select2();
             //$('#Storeid').select2();
@@ -606,6 +607,7 @@
         }
 
         function ValidateGrid() {
+             
             GetPrevQty();
             var TotalStock = parseFloat($('#TotalStockQty').val());
             var LotStock = parseFloat($('#LotStockQty').val());
@@ -625,6 +627,7 @@
             if ($('#IssueToStoreWC').val() == 'S') {
                 if ($('#FromStoreId').prop('selectedIndex') == 0) {
                     AddErrorCls('FromStoreId');
+                    $.notify('Please select FromStore.', 'error');
                     Err = 1;
                 }
                 else {
@@ -632,6 +635,7 @@
                 }
             } else {
                 if ($('#ToWCID').prop('selectedIndex') == 0) {
+                    $.notify('Please select To WorkCenter.', 'error');
                     AddErrorCls('ToWCID');
                     Err = 1;
                 }
@@ -642,6 +646,7 @@
 
             if ($('#BatchNo').prop('selectedIndex') == 0) {
                 AddErrorCls('BatchNo');
+                $.notify('Please select BatchNo.', 'error');
                 Err = 1;
             }
             else {
@@ -650,6 +655,7 @@
 
             if ($('#UniqueBatchNo').prop('selectedIndex') == 0) {
                 AddErrorCls('UniqueBatchNo');
+                $.notify('Please select UniqueBatchNo.', 'error');
                 Err = 1;
             }
             else {
@@ -658,6 +664,7 @@
 
             if (parseFloat($('#Qty').val()) == 0 || $('#Qty').val() == '') {
                 AddErrorCls('Qty');
+                $.notify('Qty cannot be 0.', 'error');
                 Err = 1;
             }
             else {
@@ -667,6 +674,7 @@
 
             if (parseFloat($('#Qty').val()) > MinValue) {
                 AddErrorCls('Qty');
+                $.notify('Qty cannot be less than Stock.', 'error');
                 Err = 1;
             }
             else {
@@ -901,7 +909,7 @@
         });
 
         $('#FromStoreId').change(function () {
-            debugger
+             
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 $('#hiddenFromStoreId').val($('#FromStoreId').val())
                 if ('@Model.FromStoreId' != $('#FromStoreId').val()) {
