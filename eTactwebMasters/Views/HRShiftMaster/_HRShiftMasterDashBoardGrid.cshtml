@@ -51,7 +51,34 @@
                                 <div id="container">
 
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="CostCenterMaster" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" asp-controller="HRShiftMaster" asp-route-ID="@Cntr" asp-action="HRShiftMaster" asp-route-Mode="V"
+                                           asp-route-ID="@item.ShiftId"
+                                           asp-route-EntryDate="@item.EntryDate"
+                                           asp-route-YearCode="@item.YearCode"
+                                           asp-route-ShiftCode="@item.ShiftCode"
+                                           asp-route-ShiftName="@item.ShiftName"
+                                           asp-route-FromTime="@item.FromTime"
+                                           asp-route-ToTime="@item.ToTime"
+                                           asp-route-GraceTimeIn="@item.GraceTimeIn"
+                                           asp-route-GraceTimeOut="@item.GraceTimeOut"
+                                           asp-route-Lunchfrom="@item.Lunchfrom"
+                                           asp-route-Lunchto="@item.Lunchto"
+                                           asp-route-FirstBreakFrom="@item.FirstBreakFrom"
+                                           asp-route-FirstBreakTo="@item.FirstBreakTo"
+                                           asp-route-SecondBreakFrom="@item.SecondBreakFrom"
+                                           asp-route-SecondBreakTo="@item.SecondBreakTo"
+                                           asp-route-CC="@item.CC"
+                                           asp-route-UID="@item.UID"
+                                           asp-route-ThirdBreakFrom="@item.ThirdBreakFrom"
+                                           asp-route-ThirdBreakTo="@item.ThirdBreakTo"
+                                           asp-route-duration="@item.duration"
+                                           asp-route-ShiftForProdOnly="@item.ShiftForProdOnly"
+                                           asp-route-OutDay="@item.OutDay"
+                                           asp-route-ShiftTypeFixRotFlex="@item.ShiftTypeFixRotFlex"
+                                           asp-route-ApplicableToEmployeeCategory="@item.ApplicableToEmployeeCategory"
+                                           asp-route-AttandanceMode="@item.AttandanceMode"
+                                           asp-route-MinimumHourRequiredForFullDay="@item.MinimumHourRequiredForFullDay"
+                                        onclick="BackButtonData(event);">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -62,11 +89,35 @@
                                     <div id="editCursorDiv-@Cntr">
                                         @* <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="LedgerOpeningEntry" onclick="confirmEdit(event)" asp-controller="LedgerOpeningEntry" asp-route-Mode="U" asp-route-ID="@item.EntryByEmpId" asp-route-YC="@item.ClosingYearCode" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-AccountCode="@item.AccountCode">*@
                                         <a class="table-link link-primary"
-                                           asp-action="CostCenterMaster"
-                                           asp-controller="CostCenterMaster"
+                                           asp-action="HRShiftMaster"
+                                           asp-controller="HRShiftMaster"
                                            asp-route-Mode="U"
                                            asp-route-ID="@item.ShiftId"
                                            asp-route-EntryDate="@item.EntryDate"
+                                           asp-route-YearCode="@item.YearCode"
+                                           asp-route-ShiftCode="@item.ShiftCode"
+                                           asp-route-ShiftName="@item.ShiftName"
+                                           asp-route-FromTime="@item.FromTime"
+                                           asp-route-ToTime="@item.ToTime"
+                                           asp-route-GraceTimeIn="@item.GraceTimeIn"
+                                           asp-route-GraceTimeOut="@item.GraceTimeOut"
+                                           asp-route-Lunchfrom="@item.Lunchfrom"
+                                           asp-route-Lunchto="@item.Lunchto"
+                                           asp-route-FirstBreakFrom="@item.FirstBreakFrom"
+                                           asp-route-FirstBreakTo="@item.FirstBreakTo"
+                                           asp-route-SecondBreakFrom="@item.SecondBreakFrom"
+                                           asp-route-SecondBreakTo="@item.SecondBreakTo"
+                                           asp-route-CC="@item.CC"
+                                           asp-route-UID="@item.UID"
+                                           asp-route-ThirdBreakFrom="@item.ThirdBreakFrom"
+                                           asp-route-ThirdBreakTo="@item.ThirdBreakTo"
+                                           asp-route-duration="@item.duration"
+                                           asp-route-ShiftForProdOnly="@item.ShiftForProdOnly"
+                                           asp-route-OutDay="@item.OutDay"
+                                           asp-route-ShiftTypeFixRotFlex="@item.ShiftTypeFixRotFlex"
+                                           asp-route-ApplicableToEmployeeCategory="@item.ApplicableToEmployeeCategory"
+                                           asp-route-AttandanceMode="@item.AttandanceMode"
+                                           asp-route-MinimumHourRequiredForFullDay="@item.MinimumHourRequiredForFullDay"
                                           
                                            onclick="confirmEdit(event)">
 
@@ -78,7 +129,7 @@
 
                                     </div>
                                     <div id="deleteCursorDiv-@Cntr">
-                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.ShiftId">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="HRShiftMaster" asp-route-ID="@item.ShiftId">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>

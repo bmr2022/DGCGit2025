@@ -514,7 +514,7 @@
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
-            if ($('#Mode').val() != "U" && $('#Mode').val() != "V"){
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 FillEntryID();
             }
             FillCurrency();
@@ -596,7 +596,7 @@
 
             }
             $('#AdjustmentAmt').on('input', function () {
-                 
+
                 let adjustmentAmt = $(this).val();
                 $('#AdjustmentAmtOthCur').val(adjustmentAmt);
             });
@@ -733,7 +733,7 @@
         }
 
         function FillEntryID() {
-             
+
             $.ajax({
                 url: '@Url.Action("FillEntryID", "BankReceipt")',
                 type: 'POST',
@@ -783,7 +783,7 @@
             });
         }
 
-        $('#Type').change(function(){
+        $('#Type').change(function () {
             AdjustAmountForAddToGridForDRCR();
         })
 
@@ -817,13 +817,13 @@
         }
 
         function FillCurrency() {
-             
+
             $.ajax({
                 url: '@Url.Action("FillCurrency", "BankReceipt")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
-                     
+
                     var CurrencyDropdown = $('#Currency');
                     var obj = $.parseJSON(response);
                     CurrencyDropdown.empty();
@@ -850,7 +850,7 @@
                 url: '@Url.Action("CheckAmountBeforeSave", "BankReceipt")',
                 type: 'POST',
                 async: false,
-                data: { "VoucherDate": $('#VoucherDate').val(), "YearCode": $('#YearCode').val(), "AgainstVoucherYearCode": $('#AgainstVoucheryearCode-' + i).text(), "AgainstVoucherEntryId": $('#AgainstVoucherEntryId-' + i).text(), "AgainstVoucherNo": $('#AgainstVoucherNo-' + i).text() },
+                data: { "VoucherDate": $('#VoucherDate').val(), "YearCode": $('#YearCode').val(), "AgainstVoucherYearCode": $('#AgainstVoucheryearCode-' + i).text(), "AgainstVoucherEntryId": $('#AgainstVoucherEntryId-' + i).text(), "AgainstVoucherNo": $('#AgainstVoucherNo-' + i).text(), "AccountCode": $('#AccountCode-' + i).val() },
                 success: function (response, status, error) {
 
                     var CurrencyDropdown = $('#Currency');
@@ -896,7 +896,7 @@
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                         var LedgerName = '@Model.AccountCode';
-                        $('#LedgerName').val(LedgerName).trigger("change"); 
+                        $('#LedgerName').val(LedgerName).trigger("change");
                         $('#LedgerName').val(LedgerName);
                     }
                 },
@@ -1051,7 +1051,7 @@
                 async: false,
                 data: { "AccountCode": $('#AccountCode').val(), },
                 success: function (data, status, xhr) {
-                     
+
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
@@ -1149,7 +1149,7 @@
         }
 
         function AdjustAmount() {
-             
+
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var DRAmt = 0;
             var CRAmt = 0;
@@ -1282,6 +1282,8 @@
                         "DRCR": $('#PopUpType-' + i).text(),
                         "DrAmt": $('#PopDrAmt').val(),
                         "CrAmt": $('#PopCrAmt').val(),
+                        "ActualEntryby": $('#ActualEntryBy').val(),
+                        "EntryByMachine": $('#EntryByMachine').val(),
                         "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),
                         "AgainstVoucheryearCode": $('#PopUpYearCode-' + i).text(),
                         "AgainstVoucherDate": $('#popUpVoucherDate-' + i).text(),
@@ -1366,9 +1368,9 @@
             else {
                 RemoveErrorCls('ModeOfAdjustment');
             }
-            if($('#BankType').val() == "Bank"){
+            if ($('#BankType').val() == "Bank") {
 
-                if ($('#InsNo').val() == null || $('#InsNo').val() == ""){
+                if ($('#InsNo').val() == null || $('#InsNo').val() == "") {
                     AddErrorCls('InsNo');
                     $.notify("InsNo is required.", "error");
                     Err = 1;
@@ -1386,8 +1388,8 @@
                 }
             }
 
-            if ($('#ModeOfAdjustment').val() == "Advance"){
-                if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null){
+            if ($('#ModeOfAdjustment').val() == "Advance") {
+                if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
                     AddErrorCls('CustOrderNo');
                     $.notify("CustOrderNo is required.", "error");
                     Err = 1;
@@ -1447,6 +1449,8 @@
                 "SOYear": $('#SOYear').val(),
                 "DrAmt": $('#DrAmt').val(),
                 "CrAmt": $('#CrAmt').val(),
+                "ActualEntryby": $('#ActualEntryBy').val(),
+                "EntryByMachine": $('#EntryByMachine').val(),
                 "CurrencyId": parseInt($('#CurrencyId').val()),
                 "ActualEntryDate": $('#ActualEntryDate').val(),
                 "Type": $('#Type').find(":selected").text() == '-Select-' ? '' : $('#Type').find(":selected").text(),
@@ -1492,8 +1496,8 @@
             });
         };
 
-        function AdjustAmountForAddToGridForDRCR(){
-              
+        function AdjustAmountForAddToGridForDRCR() {
+
             var RowCount = $('#divBankReceiptDetail tr').length;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -1519,7 +1523,7 @@
             }
             $('#AdjustmentAmt').trigger('input');
         }
-        
+
         var EditEachItem = false;
         function EditItemRows(SrNO) {
 
@@ -1637,9 +1641,9 @@
 
             var RowCount = $('#divBankReceiptDetail tr').length;
             var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-            var selectedRows = 0;  
+            var selectedRows = 0;
 
-            var existingVoucherIds = new Set(); 
+            var existingVoucherIds = new Set();
 
             for (let i = 1; i <= RowCount; i++) {
                 let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();

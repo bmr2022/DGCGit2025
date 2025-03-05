@@ -37,5 +37,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRShiftMasterDAL.GetDashBoardDetailData();
         }
+        public async Task<ResponseResult> DeleteByID(int ID)
+        {
+            return await _HRShiftMasterDAL.DeleteByID(ID);
+        }
+        public async Task<HRShiftMasterModel> GetViewByID(int ID)
+        {
+            return await _HRShiftMasterDAL.GetViewByID(ID);
+        }
     }
 }

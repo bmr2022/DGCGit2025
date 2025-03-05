@@ -84,14 +84,26 @@
                                         <input asp-for="WeekoffName" class="form-control"  />
                                     </div>  
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+<<<<<<< HEAD
+                                        <label asp-for="WeekoffTypefixRot" class="form-label" >Fix/Rotational</label>
+                                        <input asp-for="WeekoffTypefixRot" class="form-control"  />
+=======
                                         <label asp-for="WeekoffTypefixRot" class="form-label" >WeekoffTypefixRot</label>
                                         <select asp-for="WeekoffTypefixRot" class="form-select">
                                         <option value="" selected>-Select-</option>
                                         <option value="Fix" >Fix</option>
                                         <option value="Rotation">Rotation</option>
                                         </select>
+>>>>>>> 63b0e9c80edb2c12f6b2109232ebeebfc8ec80f4
                                     </div>
-                                   
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px">
+                                        <label asp-for="halfdayFulldayOff" class="form-label">Half/Full Day</label>
+                                        <select asp-for="halfdayFulldayOff" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="HARFDAY" selected>HALF DAY</option>
+                                            <option value="FULLDAY">FULL DAY</option>
+                                        </select>
+                                    </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="WeekoffDays" class="form-label">WeekoffDays</label>
                                         <select asp-for="WeekoffDays" class="form-select">
@@ -103,22 +115,19 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="MinWorkDaysRequired" class="form-label" >MinWorkDaysRequired</label>
+                                        <label asp-for="MinWorkDaysRequired" class="form-label" >Min Work Days Requ</label>
                                         <input asp-for="MinWorkDaysRequired" class="form-control"  />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px">
-                                        <label asp-for="halfdayFulldayOff" class="form-label">halfdayFulldayOff</label>
-                                        <select asp-for="halfdayFulldayOff" class="form-select">
-                                            <option value="" disabled>-Select-</option>
-                                            <option value="HARFDAY" selected>HARFDAY</option>
-                                            <option value="FULLDAY">FULLDAY</option>
-                                        </select>
-                                    </div>
+                                 
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="MaxWorkingDaysReqForWeekOff" class="form-label">MaxWorkingDaysReq</label>
+                                        <label asp-for="MaxWorkingDaysReqForWeekOff" class="form-label">Max Working Days Req</label>
                                         <input asp-for="MaxWorkingDaysReqForWeekOff" class="form-control" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+<<<<<<< HEAD
+                                        <label asp-for="OverrideForHolidays" class="form-label">Override For Holidays</label>
+                                        <input asp-for="OverrideForHolidays" class="form-control" />
+=======
                                         <label asp-for="OverrideForHolidays" class="form-label">OverrideForHolidays</label>
                                         <select asp-for="OverrideForHolidays" class="form-select">
                                             <option value="" disabled>-Select-</option>
@@ -126,9 +135,10 @@
                                             <option value="NO">NO</option>
 
                                         </select>
+>>>>>>> 63b0e9c80edb2c12f6b2109232ebeebfc8ec80f4
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="CompensatoryOffApplicable" class="form-label">CompensatoryOffApplicable</label>
+                                        <label asp-for="CompensatoryOffApplicable" class="form-label">Compensatory Off Applicable</label>
                                         <select asp-for="CompensatoryOffApplicable" class="form-select">
                                             <option value="" disabled>-Select-</option>
                                             <option value="YES" selected>YES</option>
@@ -137,7 +147,7 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="ExtraPayApplicable" class="form-label">ExtraPayApplicable</label>
+                                        <label asp-for="ExtraPayApplicable" class="form-label">Extra Pay Applicable</label>
                                         <select asp-for="ExtraPayApplicable" class="form-select">
                                             <option value="" disabled>-Select-</option>
                                             <option value="YES" selected>YES</option>

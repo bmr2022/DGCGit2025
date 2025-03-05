@@ -1,7 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.Common.TaxModel
 
-<input type="hidden" asp-for="TotalTaxAmt" class="form-control" />
-@if (Model.TaxDetailGridd == null)
+<input type="hidden" asp-for="TotalTaxAmt" class="form-control" data-val="false"  value="0"/>
+@if (Model.TaxDetailGridd == null || Model.TaxDetailGridd.Count == 0)
 {
     <tr class="text-center">
         <td colspan="14" class="text-black-50"><strong>NO DATA ADDED</strong></td>

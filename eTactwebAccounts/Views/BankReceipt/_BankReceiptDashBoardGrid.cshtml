@@ -63,7 +63,7 @@
                                             </a>
                                         </div>
                                         <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode">
+                                            <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-ActualEntryBy="@item.ActualEntryby" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-ActualEntryDate="@item.ActualEntryDate">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -102,7 +102,7 @@
                             </td>
                             <td>@item.VoucherType</td>
                             <td>@item.Currency</td>
-                            <td>@item.ActualEntryBy</td>
+                            <td>@item.ActualEntryBy<input type="hidden" value="@item.ActualEntryby" /></td>
                             <td>
                                 @(DateTime.TryParse(item.ActualEntryDate, out var actualEntryDate) ? actualEntryDate.ToString("dd/MMM/yyyy") : "-")
                             </td>

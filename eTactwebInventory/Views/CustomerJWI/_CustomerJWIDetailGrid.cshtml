@@ -1,4 +1,5 @@
-﻿@model eTactWeb.DOM.Models.CustomerJobWorkIssueModel
+﻿
+@model eTactWeb.DOM.Models.CustomerJobWorkIssueModel
 
 @{
     @if (Model.CustJWIDetailGrid == null)
@@ -54,6 +55,7 @@
                 <td>@item.ItemAmount</td>
                 <td>@item.OtherDetail</td>
                 <td>@item.HSNNo</td>
+                <td>@item.Unit</td>
 
             </tr>
         }

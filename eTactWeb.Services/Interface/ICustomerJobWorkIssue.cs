@@ -22,13 +22,13 @@ namespace eTactWeb.Services.Interface
         Task<CustJWIssQDashboard> GetDashboardDetailsData(string FromDate, string ToDate, string ReportType);
    
         //Task<ResponseResult> GetDashboardSummaryData();
-        Task<ResponseResult> SaveCustomerJWI(CustomerJobWorkIssueModel model, DataTable JWIGrid);
+        Task<ResponseResult> SaveCustomerJWI(CustomerJobWorkIssueModel model, DataTable JWIGrid, DataTable ChallanGrid);
         Task<CustomerJobWorkIssueModel> GetViewByID(int ID,int YearCode);
         Task<ResponseResult> DeleteByID(int CustJwIssEntryId, int CustJwIssYearCode, string EntryMachineName, int EntryById, string ActualEntryDate, int Account_Code);
         //Task<ResponseResult> GetAdjustedChallan(int YearCode, string EntryDate, string ChallanDate,DataTable DTTItemGrid);
         Task<ResponseResult> GetPopUpData(int YearCode, string EntryDate, string ChallanDate,int AccountCode, string prodUnProd,string BOMINd, int RMItemCode,string Partcode);
-        List<CustomerJobWorkIssueModel> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueModel> adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
+        //List<CustomerJobWorkIssueModel> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueModel> adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
 
-        //Task<ResponseResult> GetAdjustedChallanDetailsData(int YearCode, string EntryDate, string ChallanDate, DataTable DTTItemGrid);
+        Task<ResponseResult> GetAdjustedChallanDetailsData(int YearCode, string EntryDate, string ChallanDate,int AccountCode, DataTable DTTItemGrid);
     }
 }
