@@ -13,7 +13,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetESIDispensary();
         Task<ResponseResult> FillEntryId();
         Task<DataSet> GetExemptedCategories();
-        Task<ResponseResult> SaveData(HRPFESIMasterModel model);
+        Task<DataSet> GetSalaryHead();
+        Task<ResponseResult> SaveData(HRPFESIMasterModel model, List<string> HRSalaryHeadDT);
         Task<ResponseResult> GetDashboardData();
         Task<HRPFESIMasterModel> GetDashboardDetailData();
         Task<HRPFESIMasterModel> GetViewByID(int Id);
