@@ -389,9 +389,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId,string AgainstVoucherNo)
+        public async Task<JsonResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId,string AgainstVoucherNo, int AccountCode)
         {
-            var JSON = await _IBankReceipt.CheckAmountBeforeSave(VoucherDate,YearCode,AgainstVoucherYearCode,AgainstVoucherEntryId, AgainstVoucherNo);
+            var JSON = await _IBankReceipt.CheckAmountBeforeSave(VoucherDate,YearCode,AgainstVoucherYearCode,AgainstVoucherEntryId, AgainstVoucherNo, AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -731,9 +731,9 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyBankReceiptGridPopUpData", model.BankReceiptGrid, cacheEntryOptions);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
         {
-            var Result = await _IBankReceipt.DeleteByID(ID, YearCode);
+            var Result = await _IBankReceipt.DeleteByID(ID, YearCode,ActualEntryBy,EntryByMachine,ActualEntryDate);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

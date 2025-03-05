@@ -14,5 +14,10 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillEntryId();
         Task<DataSet> GetExemptedCategories();
         Task<ResponseResult> SaveData(HRPFESIMasterModel model);
+        Task<ResponseResult> GetDashboardData();
+        Task<HRPFESIMasterModel> GetDashboardDetailData();
+        Task<HRPFESIMasterModel> GetViewByID(int Id);
+        Task<ResponseResult> GetFormRights(int uId);
+        Task<ResponseResult> DeleteByID(int ID,string machineName);
     }
 }

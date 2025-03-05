@@ -496,5 +496,30 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillPurchaseRejectionPopUp(string DebitNotePurchaseRejection, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode, string showAllBill)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "PopupData"));
+                SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", DebitNotePurchaseRejection));
+                SqlParams.Add(new SqlParameter("@fromBilldate", fromBillDate));
+                SqlParams.Add(new SqlParameter("@ToBilldate", toBillDate));
+                SqlParams.Add(new SqlParameter("@Accountcode", accountCode));
+                SqlParams.Add(new SqlParameter("@itemcode", itemCode));
+                SqlParams.Add(new SqlParameter("@showAllBills", showAllBill));
+                SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", yearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }
