@@ -331,7 +331,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode)
+        public async Task<ResponseResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode, string DebitNotePurchaseRejection)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -340,6 +340,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@flag", "FillAccountName"));
                 SqlParams.Add(new SqlParameter("@ShowAllParty", ShowAllParty));
                 SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", PurchaseRejYearCode ?? 0));
+                SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", DebitNotePurchaseRejection));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -359,6 +360,156 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetStateGST"));
                 SqlParams.Add(new SqlParameter("@accountcode", Code));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillItems(int YearCode, int accountCode, string showAllItems)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FILLItemName"));
+                SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@accountcode", accountCode));
+                SqlParams.Add(new SqlParameter("@ShowAllItem", showAllItems));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
+
+                //if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                //{
+                //    PrepareView(_ResponseResult.Result, ref model, Mode);
+                //}
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillCurrency(int? AccountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "Currency"));
+                SqlParams.Add(new SqlParameter("@accountcode", AccountCode ?? 0));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetExchangeRate(string Currency)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "ExchangeRate"));
+                SqlParams.Add(new SqlParameter("@EntryDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@Currency", Currency));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPPurchaseRejectionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillStore()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillStore"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPPurchaseRejectionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillSubvoucher(int? PurchaseRejYearCode, string DebitNotePurchaseRejection)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "FillSubvoucher"));
+                SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", PurchaseRejYearCode ?? 0));
+                SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", DebitNotePurchaseRejection));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetHSNUNIT(int itemCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetHSNUNIT"));
+                SqlParams.Add(new SqlParameter("@itemcode", itemCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillPurchaseRejectionPopUp(string DebitNotePurchaseRejection, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode, string showAllBill)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "PopupData"));
+                SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", DebitNotePurchaseRejection));
+                SqlParams.Add(new SqlParameter("@fromBilldate", fromBillDate));
+                SqlParams.Add(new SqlParameter("@ToBilldate", toBillDate));
+                SqlParams.Add(new SqlParameter("@Accountcode", accountCode));
+                SqlParams.Add(new SqlParameter("@itemcode", itemCode));
+                SqlParams.Add(new SqlParameter("@showAllBills", showAllBill));
+                SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", yearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
             }
             catch (Exception ex)

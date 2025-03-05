@@ -9,24 +9,24 @@
                     </span>
                     Doc Head
                     <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-                        <input asp-for="DA" class="form-check-input mt-2" type="checkbox" role="switch" />
-                        <label class="form-check-label ms-2">Show All</label>
+                        <input asp-for="DA" class="form-check-input mt-2" style="float:inline-end;" type="checkbox" role="switch" />
+                        <label class="form-check-label ms-2" style="position: inherit;">Show All</label>
                     </div>
                 </th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Part Code
+                    <div class="form-check form-switch mx-3 w-auto  d-inline">
+                        <input asp-for="ItemSA" class="form-check-input mt-2" style="float:inherit;" type="checkbox" role="switch" />
+                        <label class="form-check-label ms-2" style="position: inherit;">Show All</label>
+                    </div>
                 </th>
                 <th data-columnno="3" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Item Name
-                    <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
-                        <input asp-for="ItemSA" class="form-check-input" type="checkbox" role="switch" />Show All
-                    </div>
-
-                </th>
+                    </span>Item Name                
+                 </th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol" style="color:darkblue">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>

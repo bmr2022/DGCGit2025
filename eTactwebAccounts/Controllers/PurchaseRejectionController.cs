@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Controllers
 {
@@ -78,15 +79,59 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode)
+        public async Task<JsonResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode, string DebitNotePurchaseRejection)
         {
-            var JSON = await _purchRej.FillCustomerName(ShowAllParty, PurchaseRejYearCode);
+            var JSON = await _purchRej.FillCustomerName(ShowAllParty, PurchaseRejYearCode, DebitNotePurchaseRejection);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> GetStateGST(int Code)
         {
             var JSON = await _purchRej.GetStateGST(Code);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillItems(int YearCode, int accountCode, string showAllItems)
+        {
+            var JSON = await _purchRej.FillItems(YearCode, accountCode, showAllItems);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillCurrency(int? AccountCode)
+        {
+            var JSON = await _purchRej.FillCurrency(AccountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetExchangeRate(string Currency)
+        {
+            var JSON = await _purchRej.GetExchangeRate(Currency);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillStore()
+        {
+            var JSON = await _purchRej.FillStore();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillSubvoucher(int? PurchaseRejYearCode, string DebitNotePurchaseRejection)
+        {
+            var JSON = await _purchRej.FillSubvoucher(PurchaseRejYearCode, DebitNotePurchaseRejection);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetHSNUNIT(int itemCode)
+        {
+            var JSON = await _purchRej.GetHSNUNIT(itemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillPurchaseRejectionPopUp(string DebitNotePurchaseRejection, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode, string showAllBill)
+        {
+            fromBillDate = ParseFormattedDate(fromBillDate);
+            toBillDate = ParseFormattedDate(toBillDate);
+            var JSON = await _purchRej.FillPurchaseRejectionPopUp(DebitNotePurchaseRejection, fromBillDate, toBillDate, itemCode, accountCode, yearCode, showAllBill);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

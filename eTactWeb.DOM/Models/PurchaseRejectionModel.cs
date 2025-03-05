@@ -7,13 +7,14 @@ namespace eTactWeb.DOM.Models
     {
         public int PurchaseRejEntryId { get; set; }
         public int PurchaseRejYearCode { get; set; }
-        public string PurchaseRejectionInvoiceNo { get; set; } = string.Empty;
-        public string PurchaseRejectionInvoiceDate { get; set; }
         public string SubVoucherName { get; set; } = string.Empty;
-        public string PurchaseRejectionVoucherNo { get; set; } = string.Empty;
         public string DebitNotePurchaseRejection { get; set; } = string.Empty;
         public string PurchaseRejEntryDate { get; set; }
-        public string InvoiceTime { get; set; }
+        public string PurchaseRejectionVoucherNo { get; set; } = string.Empty;
+        public string VoucherNo { get; set; } = string.Empty;
+        public string PurchaseRejectionInvoiceNo { get; set; } = string.Empty;
+        public string PurchaseRejectionInvoiceDate { get; set; }
+        public string PurchaseRejectionInvoiceTime { get; set; }
         public int AccountCode { get; set; }
         public string AccountName { get; set; }
         public string CustVendAddress { get; set; } = string.Empty;
@@ -22,6 +23,8 @@ namespace eTactWeb.DOM.Models
         public string CityofSupply { get; set; } = string.Empty;
         public string CountryOfSupply { get; set; } = string.Empty;
         public int? CurrencyId { get; set; }
+        public string Currency { get; set; }
+        public IList<TextValue>? CurrencyList { get; set; }
         public string ExchangeRate { get; set; } = string.Empty;
         public string PaymentTerm { get; set; } = string.Empty;
         public string GSTNO { get; set; } = string.Empty;
@@ -36,7 +39,7 @@ namespace eTactWeb.DOM.Models
         public float ToatlDiscountPercent { get; set; }
         public float TotalDiscountAmount { get; set; }
         public float NetAmt { get; set; }
-        //public float InvNetAmt { get; set; } //uncomment if needed afterwards
+        //public float InvNetAmt { get; set; } //uncomment if needed afterwards for pr
         public string PurchaserejRemark { get; set; } = string.Empty;
         public string CC { get; set; } = string.Empty;
         public int Uid { get; set; }
@@ -49,8 +52,8 @@ namespace eTactWeb.DOM.Models
         public string LastUpdatedByName { get; set; }
         public string? LastUpdationDate { get; set; }
         public string? BalanceSheetClosed { get; set; }
-        //uncomment below if needed further
 
+        //uncomment below if needed further
         public string PurchaseRejectionVoucherDate { get; set; }
         //public string AgainstSalePurchase { get; set; } = string.Empty;
         public int PaymentCreditDay { get; set; }
@@ -59,6 +62,7 @@ namespace eTactWeb.DOM.Models
         //public string? EntryFreezToAccounts { get; set; }
         //public string? EInvNo { get; set; }
         //public string? EinvGenerated { get; set; }
+        
         //below are newly added
         public string GSTRegistered { get; set; }
         public string GSTType { get; set; }

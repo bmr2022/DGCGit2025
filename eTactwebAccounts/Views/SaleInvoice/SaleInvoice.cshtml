@@ -209,7 +209,7 @@
                                         </thead>
                                         <tbody id="divCustJobWorkISsueSummary">
                                             @* <partial name="_JOBWORKISSUESUMMARY" /> *@
-                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueModel>());
+                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueAdjustDetail>())
                                         </tbody>
                                     </table>
                                 </div>
@@ -375,7 +375,7 @@
         $(document).ready(function () {
 
             GetServerDate();
-
+            debugger
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();
@@ -384,8 +384,8 @@
                 SetminQty();
                 BasicTotal();
                 $('#DT').prop("checked", true);
-
-
+                $('#PN1').prop("checked", true);
+                FillCustomerList("Y");
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
 
                 var taxRowCount = $('#divTaxGrid tr').length;
@@ -409,7 +409,7 @@
 
             $('#AdjNewRefNo').val($('#SaleBillNo').val());
             $('#AdjDescription').val($('#SaleBillNo').val());
-
+            
             AllowTaxPassword();
             $('#Unit').prop("readonly", true);
             $('#AltUnit').prop("readonly", true);
@@ -679,15 +679,16 @@
 
         $('#btnAdjustChallanListGrid').click(function (event) {
             event.preventDefault();
-            debugger
+             
             var YearCode = $('#SaleBillYearCode').val();
             var EntryDate = $('#ChallanDate').val();
             var ChallanDate = $('#ChallanDate').val();
             var AccountCode = $('#AccountCode').val();
+            var itemCode = $('#ItemCode').val();
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-                debugger
+                 
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
@@ -711,8 +712,9 @@
 
                 adjustedData.push(rowData);
             });
+             
             console.log("Adustdata:", adjustedData);
-            debugger
+             
             $.ajax({
                 url: "@Url.Action("GetAdjustedChallanDetailsData")",
                 type: "POST",
@@ -723,7 +725,8 @@
                     "YearCode": YearCode,
                     "EntryDate": EntryDate,
                     "ChallanDate": ChallanDate,
-                    "AccountCode": AccountCode
+                    "AccountCode": AccountCode,
+                    "ItemCode":itemCode
                 },
                 // dataType: "html",
                 async: false,
@@ -850,7 +853,7 @@
         });
 
         function PasswordCheck() {
-
+            debugger
             if ($('#taxPassword').val() != allowManualPassword) {
                 $.notify('please correct password...!', "error");
             } else {
@@ -888,9 +891,9 @@
         //     AllowTaxPassword();
         // });
 
-        $('#TxType,#TxTaxType').change(function () {
-            AllowTaxPassword();
-        });
+        // $('#TxType,#TxTaxType').change(function () {
+        //     AllowTaxPassword();
+        // });
 
         var isAllowTaxPass = "";
         var allowManualPassword = "";
@@ -905,7 +908,7 @@
                 url: "@Url.Action("AllowTaxPassword")",
                 dataType: "json",
                 success: function (result, status, error) {
-
+                    
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result.length > 0) {
@@ -1212,7 +1215,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-
+                            debugger
                             $('#SOPendQty').val("");
                             $('#SOPendQty').val(obj.Result[0].PendQty);
                             $('#Qty').val("");
@@ -1344,11 +1347,12 @@
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divSaleBillList').html(result);
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
+                        debugger
                         $('#Uniquebatchno,#Batchno,#Qty').val(0);
                         $('#LotStock,#TotalStock').val("");
                         //$('#HSNNo').val("");
                         //$('#Unit,#AltUnit').val("");
-                        $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount').val(0);
+                        $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
 
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
@@ -1847,6 +1851,9 @@
             }
             else if ($('#divdbCrItemList tr td').length <= 1) {
                 $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
+            }
+            else if ($('#StateCode').val() == 0) {
+                $.notify('StateCode is mandatory...!', "error");
             }
             else if ($('#GSTRegistered').val() == 'Y') {
                 if ($('#divTaxGrid tr td').length <= 1) {
@@ -2453,6 +2460,7 @@
         $('#Batchno').change(function (event) {
             event.preventDefault();
             FillUniqueBatchNo();
+            FillTotalStock();
         });
 
         function FillUniqueBatchNo() {

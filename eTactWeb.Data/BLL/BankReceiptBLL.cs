@@ -45,9 +45,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.FillCostCenterName();
         } 
-        public async Task<ResponseResult> FillEntryID()
+        public async Task<ResponseResult> FillEntryID(int YearCode)
         {
-            return await _BankReceiptDAL.FillEntryID();
+            return await _BankReceiptDAL.FillEntryID(YearCode);
         }
         public async Task<ResponseResult> FillCurrency()
         {
@@ -75,9 +75,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.GetDashBoardSummaryData(FromDate, ToDate);
         }
-        public async Task<ResponseResult> DeleteByID(int ID,int YearCode)
+        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
         {
-            return await _BankReceiptDAL.DeleteByID(ID,YearCode);
+            return await _BankReceiptDAL.DeleteByID(ID,YearCode,ActualEntryBy,EntryByMachine,ActualEntryDate);
         }
         public async Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTable DataTable)
         {
@@ -86,6 +86,11 @@ namespace eTactWeb.Data.BLL
         public async Task<BankReceiptModel> GetViewByID(int ID, int YearCode,string VoucherNo)
         {
             return await _BankReceiptDAL.GetViewByID(ID, YearCode, VoucherNo);
+
+        }
+        public async Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode)
+        {
+            return await _BankReceiptDAL.CheckAmountBeforeSave(VoucherDate, YearCode, AgainstVoucherYearCode,AgainstVoucherEntryId, AgainstVoucherNo, AccountCode);
 
         }
     }

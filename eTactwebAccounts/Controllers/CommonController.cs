@@ -578,6 +578,7 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
+
         private static DataTable GetSRDbCrDetailTable(SaleRejectionModel MainModel)
         {
             try

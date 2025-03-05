@@ -59,7 +59,6 @@
 	<ItemGroup>
 		<Content Remove="bundleconfig.json" />
 		<Content Remove="Views\Home\Dashboard.cshtml" />
-		<Content Remove="Views\RCRegister\_RCRegisterGrid.cshtml" />
 		
 	</ItemGroup>
 
@@ -87,7 +86,6 @@
 		<None Include="Views\Home\Dashboard.cshtml">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Include="Views\RCRegister\_RCRegisterGrid.cshtml" />
 		<None Include="Views\WorkCenterMaster\Dashboard.cshtml" />
 		<None Include="Views\WorkCenterMaster\WorkCenterMaster.cshtml" />
 		<None Include="Views\WorkCenterMaster\_WorkCenterMasterDashboard.cshtml" />
@@ -154,18 +152,14 @@
 	  <ProjectReference Include="..\eTactwebSales\eTactwebSales.csproj" />
 	</ItemGroup>
 
-	
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Views\RCRegister\_RCRegisterGrid.cshtml" />
-	</ItemGroup>
-
 	<ItemGroup>
 	  <_ContentIncludedByDefault Remove="Views\Home\Dashboard.cshtml" />
-	  <_ContentIncludedByDefault Remove="Views\RCRegister\_RCRegisterGrid.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
 	  <Content Update="Views\PartCodePartyWise\PartCodePartyWise.cshtml">
 	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 	    <CopyToPublishDirectory>Always</CopyToPublishDirectory>

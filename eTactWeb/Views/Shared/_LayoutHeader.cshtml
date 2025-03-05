@@ -243,48 +243,107 @@
                                 </ul>
                             </li>
 
-
-
+                           
 
                             <li>
-                                <a class="dropdown-item" href="#">HR &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-action="HRSalaryHeadMaster" asp-route-ID="0" asp-controller="HRSalaryHeadMaster" id="HRSalaryHeadMaster">
-                                            <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> HR Salary HeadMaster
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-action="DashBoard" asp-controller="HRSalaryHeadMaster">
-                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
-                                        </a>
-                                       
+                                @*//1 *@
+                                <a class="dropdown-item" id="HR" href="#">HR Master &raquo;</a>
+                                @*    <ul class="submenu dropdown-menu"> *@
+                                <ul class="submenu dropdown-menu" data-bs-popper="static">
 
+                                    <li>
+                                        <a class="dropdown-item" href="#">HRSalary Head Master &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRSalaryHeadMaster" asp-route-ID="0" asp-controller="HRSalaryHeadMaster" id="HRSalaryHeadMaster">
+                                                    <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i>  Salary HeadMaster
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-action="DashBoard" asp-controller="HRSalaryHeadMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+
+
+                                            </li>
+
+
+
+                                        </ul>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="#"> WeekOff Master &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRWeekOffMaster" asp-route-ID="0" asp-controller="HRWeekOffMaster" id="HRWeekOffMaster">
+                                                    <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> WeekOff Master
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRWeekOffMasterDashBoard" asp-controller="HRWeekOffMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+
+
+                                            </li>
+
+
+
+                                        </ul>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="#">Leave Master &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRLeaveMaster" asp-route-ID="0" asp-controller="HRLeaveMaster" id="HRLeaveMaster">
+                                                    <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i>Leave Master
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRLeaveMasterDashBoard" asp-controller="HRLeaveMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+
+
+                                            </li>
+
+                                        </ul>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="#"> PFESI Master &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRPFESIMaster" asp-route-ID="0" asp-controller="HRPFESIMaster" id="HRPFESIMaster">
+                                                    <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i>  PFESI Master
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRPFESIMasterDashBoard" asp-controller="HRPFESIMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+
+
+                                            </li>
+
+
+
+                                        </ul>
                                     </li>
 
 
                                     
-                                </ul>
-                                
-                            </li>
-                             <li>
-                                <a class="dropdown-item" href="#">HRShiftMaster &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-action="HRShiftMaster" asp-route-ID="0" asp-controller="HRShiftMaster">
-                                            <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> HR ShiftMaster
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-action="HRShiftMasterDashBoard" asp-controller="HRShiftMaster">
-                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
-                                        </a>
+                                   
+                                   
+                                    
+                                   
+                                </ul>  @*//put menu above it *@
+
+                            </li>  @*//1 *@
 
 
-                                    </li>
-                                </ul>
-                                
-                            </li>
 
                             <li><hr class="dropdown-divider"></li>
 
@@ -1799,11 +1858,6 @@
 
                             <li>
                                 <a class="dropdown-item" href="#">Debit Note &raquo; </a>
-                                <ul class="submenu dropdown-menu">
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">Purchase Rejection &raquo; </a>
                                 <ul class="submenu dropdown-menu">
                                 </ul>
                             </li>

@@ -213,8 +213,57 @@ namespace eTactWeb.Controllers
             }
         }
 
+        public static DataTable GetAdjustChallanDetailTable(List<CustomerJobWorkIssueAdjustDetail> model)
+        {
+            DataTable Table = new();
+            Table.Columns.Add("ItemCode", typeof(int));
+            Table.Columns.Add("Unit", typeof(string));
+            Table.Columns.Add("BillQty", typeof(float));
+            Table.Columns.Add("JWRate", typeof(float));
+            Table.Columns.Add("ProcessId", typeof(int));
+            Table.Columns.Add("SONO", typeof(string));
+            Table.Columns.Add("CustOrderNo", typeof(string));
+            Table.Columns.Add("SOYearCode", typeof(int));
+            Table.Columns.Add("SchNo", typeof(string));
+            Table.Columns.Add("SchYearCode", typeof(int));
+            Table.Columns.Add("BOMIND", typeof(string));
+            Table.Columns.Add("BOMNO", typeof(int));
+            Table.Columns.Add("BOMEffDate", typeof(string));
+            Table.Columns.Add("Produnprod", typeof(string));
+            Table.Columns.Add("fromChallanOrSalebill", typeof(string));
+            Table.Columns.Add("ItemAdjustmentRequired", typeof(string));
+
+            if (model != null && model.Count > 0)
+            {
+                foreach (var Item in model)
+                {
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                        Item.ItemCode,
+                        Item.Unit  ?? string.Empty,
+                        Item.BillQty,
+                        Item.JWRate,
+                        Item.ProcessId,
+                        Item.SONO ?? string.Empty,
+                        Item.CustOrderNo ?? string.Empty,
+                        Item.SOYearCode,
+                        Item.SchNo ?? string.Empty,
+                        Item.SchYearcode,
+                        Item.BOMIND ?? string.Empty,
+                        Item.BOMNO,
+                        Item.BOMEffDate == null ? string.Empty : ParseFormattedDate(Item.BOMEffDate) ,
+                        Item.Produnprod ?? string.Empty,
+                        Item.fromChallanOrSalebill ?? string.Empty,
+                        Item.ItemAdjustmentRequired ?? string.Empty
+                    });
+                }
+            }
+            return Table;
+        }
+
         [HttpPost]
-        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
         {
             try
             {
@@ -223,8 +272,8 @@ namespace eTactWeb.Controllers
                     return Json(new { success = false, message = "No data received." });
                 }
 
-                var result = "";
-                    //_ICustomerJobWorkIssue.GetAdjustedChallanDetailsData(model, YearCode, EntryDate, ChallanDate, AccountCode);
+                var adjustChallanDt = GetAdjustChallanDetailTable(model);
+                var result = await _SaleBill.GetAdjustedChallanDetailsData(adjustChallanDt, YearCode, EntryDate, ChallanDate, AccountCode);
 
                 return PartialView("_CustomerJwisschallanAdjustment", result);
             }
@@ -233,6 +282,8 @@ namespace eTactWeb.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+
         [HttpGet]
         public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YC, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
         {

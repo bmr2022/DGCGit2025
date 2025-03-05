@@ -385,7 +385,7 @@
                                     <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                                     Add New
                                 </a>
-                                <a asp-action="CNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                <a asp-action="PRDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
                                     <i class="fa-solid fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -460,13 +460,17 @@
             $('#ItemCode').select2();
             $('#AccountCode').select2();
             FillItems($('#ItemSA').is(':checked'));
-            FillCustomerName();
+            // FillCustomerName();
+            FillCustomerName("N");
+            FillSubvoucher();
+            FillCurrency();
+            GetExchnageRate();
             FillDocument("F");
             FillStore();
             BasicTotal();
             BasicPopUpItemGrid();
             BasicItemGridTotal();
-            GetCostCenter();
+            //GetCostCenter();
             DueDateCalculation();
 
             $('#GstRegUnreg').rules("remove", "required");
@@ -478,6 +482,7 @@
             $('#ItemSize').rules("remove", "required");
             $('#ItemDescription').rules("remove", "required");
             $('#Remark').rules("remove", "required");
+            $('#PurchaserejRemark').rules("remove", "required");
             $('#RoundoffType').rules("remove", "required");
             $('#ItemService').rules("remove", "required");
             $('#INVOICETYPE').rules("remove", "required");
@@ -579,7 +584,7 @@
         }
 
         function NewEntryId() {
-            var YearCode = $('#PurchaseRejectionYearCode').val();
+            var YearCode = $('#PurchaseRejYearCode').val();
             $.ajax({
                 type: "POST",
                 data: { "YearCode": YearCode },
@@ -619,13 +624,13 @@
                             $('#PurchaseRejEntryId').val("");
                             $('#PurchaseRejEntryId').val(obj.Result.Table[0].EntryId);
                             $('#PurchaseRejectionVoucherNo').val("");
-                            $('#PurchaseRejectionVoucherNo').val(obj.Result.Table[0].creditNoteNo);
+                            $('#PurchaseRejectionVoucherNo').val(obj.Result.Table[0].purchaseRejectionNo);
                         }
                     }
                 }
             });
         }
-        var creditNotePopupGrid = [];
+        var purchaseRejectionPopupGrid = [];
         var EditEachItem = false;
         function EditItemRows(itemCode) {
             var RowCount = $('#divAddPurchaseRejectionList tr').length;
@@ -643,9 +648,10 @@
                         if (obj != null) {
 
                             ClearDRCRGrid();
+                            ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
-                            creditNotePopupGrid = obj.PurchaseRejectionPopupGrid;
+                            purchaseRejectionPopupGrid = obj.PurchaseRejectionPopupGrid;
                             obj = obj.PurchaseRejectionGrid;
                             $('#PartCode').val(obj[0].ItemCode).trigger("change")
                             $('#ItemCode').val(obj[0].ItemCode).trigger("change")
@@ -763,7 +769,7 @@
             $.ajax({
                 type: "POST",
                 data: { "ShowAllDoc": showAllDoc },
-                url: "@Url.Action("FillDocument", "SaleInvoice")",
+                url: "@Url.Action("FillDocument", "PurchaseRejection")",
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -786,7 +792,7 @@
         function FillStore() {
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("FillStore", "SaleInvoice")",
+                url: "@Url.Action("FillStore", "PurchaseRejection")",
                 dataType: "json",
                 success: function (result, status, error) {
                     if (result != null) {
@@ -857,19 +863,23 @@
             $.ajax({
                 type: "POST",
                 data: { "Code": $('#AccountCode').val() },
-                url: "@Url.Action("GetCustomerBasedDetails", "SaleInvoice")",
+                url: "@Url.Action("GetStateGST", "PurchaseRejection")",
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        if (obj.Result != null) {
+                        if (obj.Result != null) {//GSTRegistered, GSTType
                             $('#CustVendAddress').empty();
                             $('#CustVendAddress').val(obj.Result.Table[0].Address);
                             $('#GSTNO').empty();
                             $('#GSTNO').val(obj.Result.Table[0].GSTNO);
+                            $('#GSTType').empty();
+                            $('#GSTType').val(obj.Result.Table[0].GSTType);
+                            $('#GSTRegistered').empty();
+                            $('#GSTRegistered').val(obj.Result.Table[0].GSTRegistered);
                             $('#StateCode').empty();
-                            $('#StateCode').val(obj.Result.Table[0].statecode);
+                            $('#StateCode').val(obj.Result.Table[0].StateCode);
                             $('#StateNameofSupply').empty();
                             $('#StateNameofSupply').val(obj.Result.Table[0].StateName);
                             $('#CityofSupply').empty();
@@ -877,7 +887,7 @@
                             $('#CountryOfSupply').empty();
                             $('#CountryOfSupply').val(obj.Result.Table[0].Country);
                             $('#PaymentCreditDay').empty();
-                            $('#PaymentCreditDay').val(obj.Result.Table[0].CreditDays);
+                            $('#PaymentCreditDay').val(obj.Result.Table[0].PaymentCreditDays);
                         }
                     }
                 }
@@ -887,15 +897,17 @@
         $('#AccountCode').change(function () {
             FillItems($('#ItemSA').is(':checked'));
             FillCustomerDetails();
+            FillCurrency();
         });
 
         function FillPurchaseRejectionPopUp() {
 
             var showAllBill = $('#ShowAllBill').is(':checked') ? 'Y' : 'N';
+            var DebitNotePurchaseRejection = $('#DebitNotePurchaseRejection').val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillPurchaseRejectionPopUp")",
-                data: { "againstSalePurchase": $('#AgainstSalePurchase').val(), "fromBillDate": $('#fromBillDate').val(), "toBillDate": $('#toBillDate').val(), "itemCode": $('#ItemCode').val(), "accountCode": $('#AccountCode').val(), "yearCode": $('#PurchaseRejectionYearCode').val(), "showAllBill": showAllBill },
+                data: { "DebitNotePurchaseRejection": DebitNotePurchaseRejection, "fromBillDate": $('#fromBillDate').val(), "toBillDate": $('#toBillDate').val(), "itemCode": $('#ItemCode').val(), "accountCode": $('#AccountCode').val(), "yearCode": $('#PurchaseRejectionYearCode').val(), "showAllBill": showAllBill },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -906,39 +918,39 @@
                             var html = '';
                             $('#divPurchaseRejectionDataGrid').empty();
                             $.each(obj.Result.Table, function (index, val) {
-                                var saleBillDate = val.SaleBillDate == null ? "" : val.SaleBillDate.split("T")[0];
+                                // var saleBillDate = val.SaleBillDate == null ? "" : val.SaleBillDate.split("T")[0];
                                 var invoiceDate = val.InvoiceDate == null ? "" : val.InvoiceDate.split("T")[0];
-                                var dueDate = val.DueDate == null ? "" : val.DueDate.split("T")[0];
-                                var soDate = val.SOdate == null ? "" : val.SOdate.split("T")[0];
-                                var poDate = val.PODate == null ? "" : val.PODate.split("T")[0];
+                                // var dueDate = val.DueDate == null ? "" : val.DueDate.split("T")[0];
+                                // var soDate = val.SOdate == null ? "" : val.SOdate.split("T")[0];
+                                // var poDate = val.PODate == null ? "" : val.PODate.split("T")[0];
 
-                                html += '<tr id="CNPopUpRow-' + i + '" style="font-size: 12px;">' +
+                                html += '<tr id="PRPopUpRow-' + i + '" style="font-size: 12px;">' +
                                     '<td><input type="checkBox" id="chkPurchaseRejection-' + i + '" value="' + i + '" onchange="BasicPopUpItemGrid()"/></td>' +
                                     '<td>' + i + '</td>' +
-                                    '<td id="saleBillEntryId-' + i + '">' + val.SaleBillEntryId + '<input type="hidden" id="itemCode-' + i + '" value="' + val.ItemCode + '"/></td>' +
-                                    '<td id="SaleBillYearCode-' + i + '">' + val.SaleBillYearCode + '</td>' +
-                                    '<td id="SaleBillNo-' + i + '">' + val.SaleBillNo + '</td>' +
-                                    '<td id="SaleBillDate-' + i + '">' + saleBillDate + '</td>' +
-                                    '<td id="PurchBillEntryId-' + i + '">' + val.PurchBillEntryId + '</td>' +
+                                    // '<td id="saleBillEntryId-' + i + '">' + val.SaleBillEntryId + '</td>' +
+                                    // '<td id="SaleBillYearCode-' + i + '">' + val.SaleBillYearCode + '</td>' +
+                                    // '<td id="SaleBillNo-' + i + '">' + val.SaleBillNo + '</td>' +
+                                    // '<td id="SaleBillDate-' + i + '">' + saleBillDate + '</td>' +
+                                    '<td id="PurchBillEntryId-' + i + '">' + val.PurchBillEntryId + ' <input type="hidden" id="itemCode-' + i + '" value="' + val.ItemCode + '"/></td>' +
                                     '<td id="PurchBillYearCode-' + i + '">' + val.PurchBillYearCode + '</td>' +
                                     '<td id="InvoiceNo-' + i + '">' + val.InvoiceNo + '</td>' +
                                     '<td id="InvoiceDate-' + i + '">' + invoiceDate + '</td>' +
                                     '<td id="INVNetAmt-' + i + '">' + val.INVNetAmt + '</td>' +
-                                    '<td id="DueDate-' + i + '">' + dueDate + '</td>' +
+                                    '<td id="DueDate-' + i + '">' + DueDate + '</td>' +
                                     '<td id="PaidAmt-' + i + '">' + val.PaidAmt + '</td>' +
                                     '<td id="RemainingAmt-' + i + '">' + val.RemainingAmt + '</td>' +
-                                    '<td id="BillQty-' + i + '">' + val.BillQty + '</td>' +
-                                    '<td id="BillRate-' + i + '">' + val.BillRate + '</td>' +
-                                    '<td id="ItemAmount-' + i + '">' + val.ItemAmount + '</td>' +
-                                    '<td id="disPer-' + i + '">' + val.disPer + '</td>' +
-                                    '<td id="DisAmt-' + i + '">' + val.DisAmt + '</td>' +
-                                    '<td id="sono-' + i + '" class="hnSOfields">' + val.SONO + '</td>' +
-                                    '<td id="custOrderNo-' + i + '">' + val.CustOrderNo + '</td>' +
-                                    '<td id="soDate-' + i + '" class="hnSOfields">' + soDate + '</td>' +
-                                    '<td id="pono-' + i + '" class="hnPOfields">' + val.PONO + '</td>' +
-                                    '<td id="poDate-' + i + '" class="hnPOfields">' + poDate + '</td>' +
-                                    '<td id="poEntryId-' + i + '" class="hnPOfields">' + val.POEntryId + '</td>' +
-                                    '<td id="poYearCode-' + i + '" class="hnPOfields">' + val.POYearcode + '</td>' +
+                                     '<td id="BillQty-' + i + '">' + val.BillQty + '</td>' +
+                                     '<td id="BillRate-' + i + '">' + val.BillRate + '</td>' +
+                                     '<td id="ItemAmount-' + i + '">' + val.ItemAmount + '</td>' +
+                                     '<td id="disPer-' + i + '">' + val.disPer + '</td>' +
+                                     '<td id="DisAmt-' + i + '">' + val.DisAmt + '</td>' +
+                                    // '<td id="sono-' + i + '" class="hnSOfields">' + val.SONO + '</td>' +
+                                    // '<td id="custOrderNo-' + i + '">' + val.CustOrderNo + '</td>' +
+                                    // '<td id="soDate-' + i + '" class="hnSOfields">' + soDate + '</td>' +
+                                    // '<td id="pono-' + i + '" class="hnPOfields">' + val.PONO + '</td>' +
+                                    // '<td id="poDate-' + i + '" class="hnPOfields">' + poDate + '</td>' +
+                                    // '<td id="poEntryId-' + i + '" class="hnPOfields">' + val.POEntryId + '</td>' +
+                                    // '<td id="poYearCode-' + i + '" class="hnPOfields">' + val.POYearcode + '</td>' +
                                     '</tr>';
                                 i++;
                             });
@@ -948,11 +960,11 @@
                                 '</tr>';
                         }
                         $('#divPurchaseRejectionDataGrid').append(html);
-                        debugger
+                         
                         if (EditEachItem) {
-                            var popUpGrid = creditNotePopupGrid.length;
+                            var popUpGrid = purchaseRejectionPopupGrid.length;
                             for (var j = 0; j < popUpGrid; j++) {
-                                $('#chkPurchaseRejection-' + creditNotePopupGrid[j].CheckBoxNo).prop("checked", true);
+                                $('#chkPurchaseRejection-' + purchaseRejectionPopupGrid[j].CheckBoxNo).prop("checked", true);
                             }
                         }
 
@@ -1016,7 +1028,7 @@
             e.preventDefault();
             let rowCount = $('#divPurchaseRejectionDataGrid tr').length;
             for (let i = 1; i <= rowCount; i++) {
-                let row = $('#CNPopUpRow-' + i);
+                let row = $('#PRPopUpRow-' + i);
                 if (row.length === 0) continue;
                 if ($('#chkPurchaseRejection-' + i).is(':checked')) {
 
@@ -1092,7 +1104,7 @@
                             for (var i = 1; i <= checkedRowsCount; i++) {
                                 if ($('#chkPurchaseRejection-' + i).is(':checked')) {
                                     popUpItems.push($('#itemCode-' + j).val());
-                                    html += '<tr id="CNPopUpDataRow-' + i + '" style="font-size: 12px;">' +
+                                    html += '<tr id="PRPopUpDataRow-' + i + '" style="font-size: 12px;">' +
                                         '<td>' + i + '</td>' +
                                         '<td id="partCode">' + $('#PartCode').find(':selected').text() + '<input type="hidden" id="popupItemCode-' + j + '" value="' + $('#itemCode-' + j).val() + '"/></td>' +
                                         '<td id="popUpItemName"> ' + $('#ItemCode').find(':selected').text() + '</td>' +
@@ -1248,7 +1260,7 @@
 
             if (!ValidateGrid()) return;
 
-            var creditNoteData = {
+            var purchaseRejectionData = {
                 "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
                 "ItemName": $('#ItemCode').find(':selected').text() == "-Select-" ? "" : $('#ItemCode').find(':selected').text(),
                 "DocAccountCode": $('#DocAccountCode').val(),
@@ -1278,7 +1290,7 @@
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddPurchaseRejectionDetail")',
-                data: creditNoteData,
+                data: purchaseRejectionData,
                 async: false,
                 statusCode: {
                     207: function () {
@@ -1490,16 +1502,26 @@
             });
         }
 
-        $('#AgainstSalePurchase').change(function () {
+        // $('#AgainstSalePurchase').change(function () {
+        //     FillCustomerName();
+        // }); by M
+
+        $('#DebitNotePurchaseRejection').change(function () {
             FillCustomerName();
+            FillSubvoucher();
         });
 
-        function FillCustomerName() {
-            var againstSalePurchase = $('#AgainstSalePurchase').val();
+        $('#SA').change(function () {
+            var showAllParty = document.getElementById('SA').checked ? "Y" : "N";
+            FillCustomerName(showAllParty);
+        });
+        function FillCustomerName(showAllParty) {
+            // var againstSalePurchase = $('#AgainstSalePurchase').val();
+            var DebitNotePurchaseRejection = $('#DebitNotePurchaseRejection').val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillCustomerName")",
-                data: { "againstSalePurchase": againstSalePurchase },
+                data: { "ShowAllParty": showAllParty, "PurchaseRejYearCode": $('#PurchaseRejYearCode').val(), "DebitNotePurchaseRejection": DebitNotePurchaseRejection },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -1510,11 +1532,79 @@
                             $('#AccountCode').append('<option value="0">-Select-</option>');
                             if (obj.StatusCode != 500) {
                                 $.each(obj.Result.Table, function (index, val) {
-                                    $('#AccountCode').append("<option value=" + val.account_code + ">" + val.CustomerName + "</option>");
+                                    $('#AccountCode').append("<option value=" + val.account_code + ">" + val.account_name/* val.CustomerName */ + "</option>");
                                 });
                             }
                         }
                     }
+                }
+            });
+        }
+        function FillSubvoucher() {
+            var DebitNotePurchaseRejection = $('#DebitNotePurchaseRejection').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillSubvoucher")",
+                data: { "PurchaseRejYearCode": $('#PurchaseRejYearCode').val(), "DebitNotePurchaseRejection": DebitNotePurchaseRejection },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#SubVoucherName').empty();
+                            $('#SubVoucherName').append('<option value="0">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#SubVoucherName').append("<option value=" + val.PrefixEntryId + ">" + val.SubVoucherName/* val.CustomerName */ + "</option>");
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillCurrency() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FillCurrency")",
+                async: false,
+                dataType: "json",
+                data: { AccountCode: $('#AccountCode').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $.each(obj.Result.Table, function (index, val) {
+                            $('#Currency').val(val.Currency);
+                            $('#CurrencyId').val(val.entry_id);
+                            $('#DomesticExportNEPZ').val(val.DomExport);
+                            return false;
+                        });
+                    }
+                }
+            });
+        }
+        function GetExchnageRate() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetExchangeRate")",
+                data: { Currency: $('#Currency').val() },
+                async: false,
+                dataType: "json",
+                success: function (data, status, error) {
+                    var obj = $.parseJSON(data);
+                    if (obj != null && obj.Result != null && obj.Result.length > 0) {
+                        var rate = obj.Result[0].IndianValue;
+                        rate = rate != null && rate != undefined ? rate : 1;
+                        $('#ExchangeRate').val(rate);
+                        // otherratecurr = $('#OtherRateCurr').val() != null && $('#OtherRateCurr').val() != undefined ? $('#OtherRateCurr').val() : 1;
+                        // var rateinOther = parseFloat($(otherratecurr);
+                        // $('#Rate').val(rate * rateinOther);
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
                 }
             });
         }
@@ -1558,12 +1648,11 @@
 
         function FillItems(itemType) {
             var showAll = $('#ItemSA').prop('checked') ? 'Y' : 'N';
-            var fromSaleBillDate = $('#FinFromDate').val();
-            var toSaleBillDate = $('#FinToDate').val();
+            var YearCode = $('#PurchaseRejYearCode').val();
             var accountCode = $('#AccountCode').val();
             $.ajax({
                 type: "POST",
-                data: { "fromSaleBillDate": fromSaleBillDate, "toSaleBillDate": toSaleBillDate, "accountCode": accountCode, "showAllItems": showAll },
+                data: { "YearCode": YearCode, "accountCode": accountCode, "showAllItems": showAll },
                 url: "@Url.Action("FillItems")",
                 dataType: "json",
                 async: false,
@@ -1575,16 +1664,20 @@
                             $('#PartCode').empty();
                             $('#PartCode').append('<option value="0">-Select-</option>');
                             if (obj.StatusCode != 500) {
-                                $.each(obj.Result.Table1, function (index, val) {
-                                    $('#PartCode').append("<option value=" + val.ItemCode + ">" + val.PartCode + "</option>");
-                                });
+                                if (obj != null && obj.Result != null) {
+                                    $.each(obj.Result.Table, function (index, val) {
+                                        $('#PartCode').append("<option value=" + val.Itemcode + ">" + val.PartCode + "</option>");
+                                    });
+                                }
                             }
                             $('#ItemCode').empty();
                             $('#ItemCode').append('<option value="0">-Select-</option>');
                             if (obj.StatusCode != 500) {
-                                $.each(obj.Result.Table, function (index, val) {
-                                    $('#ItemCode').append("<option value=" + val.ItemCode + ">" + val.ItemName + "</option>");
-                                });
+                                if (obj != null && obj.Result != null) {
+                                    $.each(obj.Result.Table, function (index, val) {
+                                        $('#ItemCode').append("<option value=" + val.Itemcode + ">" + val.ItemName + "</option>");
+                                    });
+                                }
                             }
                         }
                     }
@@ -1646,6 +1739,11 @@
                     $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", invoiceDate);
                     $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
+                    
+                    $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                    $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#PurchaseRejEntryDate').datepicker("option", "minDate", invoiceDate);
+                    $('#PurchaseRejEntryDate').datepicker("option", "maxDate", finToDate);
 
                     $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finFromDate);
 
