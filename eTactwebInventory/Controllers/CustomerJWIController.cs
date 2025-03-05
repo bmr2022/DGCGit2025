@@ -123,12 +123,15 @@ namespace eTactWeb.Controllers
             try
             {
                 var JWIGrid = new DataTable();
+                var ChallanGrid = new DataTable();
                 var mainmodel2 = model;
                 _MemoryCache.TryGetValue("KeyCustJWIGrid", out List<CustomerJobWorkIssueDetail> CustJWIDetail);
+                _MemoryCache.TryGetValue("KeyCWIAdjustGrid", out List<CustomerJobWorkIssueDetail> CWIAdjustDetail);
+
                 mainmodel2.CustJWIDetailGrid = CustJWIDetail;
                 var GIGrid = new DataTable();
 
-                if (CustJWIDetail == null)
+                if (CustJWIDetail == null&& CWIAdjustDetail==null)
                 {
                     ModelState.Clear();
                     ModelState.TryAddModelError("GateInwardItemDetail", "Gate Inward Grid Should Have Atleast 1 Item...!");
@@ -148,13 +151,15 @@ namespace eTactWeb.Controllers
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         model.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
                         GIGrid = GetDetailTable(CustJWIDetail);
+                        ChallanGrid = GetChallanTable(CWIAdjustDetail);
                     }
                     else
                     {
                         GIGrid = GetDetailTable(CustJWIDetail);
+                        ChallanGrid = GetChallanTable(CWIAdjustDetail);
                     }
 
-                    var Result = await _ICustomerJobWorkIssue.SaveCustomerJWI(model, GIGrid);
+                    var Result = await _ICustomerJobWorkIssue.SaveCustomerJWI(model, GIGrid, ChallanGrid);
 
                     if (Result != null)
                     {
@@ -226,6 +231,103 @@ namespace eTactWeb.Controllers
             {
                 throw;
             }
+        }
+        private static DataTable GetChallanTable(IList<CustomerJobWorkIssueDetail> DetailList)
+        {
+            var ChallanGrid = new DataTable();
+
+            ChallanGrid.Columns.Add("EntryDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("CustJwRecEntryId", typeof(int));
+            ChallanGrid.Columns.Add("CustJwRecYearCode", typeof(int));
+            ChallanGrid.Columns.Add("CustJwRecChallanNo", typeof(string));
+            ChallanGrid.Columns.Add("CustJwRecEntryDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("RecItemCode", typeof(int));
+            ChallanGrid.Columns.Add("CustJwIssEntryid", typeof(int));
+            ChallanGrid.Columns.Add("CustJwIssYearCode", typeof(int));
+            ChallanGrid.Columns.Add("CustJwIssChallanNo", typeof(string));
+            ChallanGrid.Columns.Add("CustJwIssChallanDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("AccountCode", typeof(long));
+            ChallanGrid.Columns.Add("FinishItemCode", typeof(long));
+            ChallanGrid.Columns.Add("AdjQty", typeof(float));
+            ChallanGrid.Columns.Add("CC", typeof(string));
+            ChallanGrid.Columns.Add("UID", typeof(long));
+            ChallanGrid.Columns.Add("AdjFromType", typeof(string));
+            ChallanGrid.Columns.Add("TillDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("TotIssQty", typeof(float));
+            ChallanGrid.Columns.Add("PendQty", typeof(float));
+            ChallanGrid.Columns.Add("BOMQty", typeof(float));
+            ChallanGrid.Columns.Add("BomRevNo", typeof(long));
+            ChallanGrid.Columns.Add("BOMRevDate", typeof(DateTime));
+            ChallanGrid.Columns.Add("ProcessID", typeof(long));
+            ChallanGrid.Columns.Add("BOMInd", typeof(char));
+            ChallanGrid.Columns.Add("IssQty", typeof(float));
+            ChallanGrid.Columns.Add("TotalAdjQty", typeof(float));
+            ChallanGrid.Columns.Add("TotalIssQty", typeof(float));
+            ChallanGrid.Columns.Add("TotalRecQty", typeof(float));
+            ChallanGrid.Columns.Add("RunnerItemCode", typeof(long));
+            ChallanGrid.Columns.Add("ScrapItemCode", typeof(long));
+            ChallanGrid.Columns.Add("IdealScrapQty", typeof(float));
+            ChallanGrid.Columns.Add("IssuedScrapQty", typeof(float));
+            ChallanGrid.Columns.Add("PreRecChallanNo", typeof(string));
+            ChallanGrid.Columns.Add("ScrapAgainstRecQty", typeof(float));
+            ChallanGrid.Columns.Add("Recbatchno", typeof(string));
+            ChallanGrid.Columns.Add("RecuniqueBatchno", typeof(string));
+            ChallanGrid.Columns.Add("Issbatchno", typeof(string));
+            ChallanGrid.Columns.Add("IssueuniqueBatchno", typeof(string));
+            ChallanGrid.Columns.Add("ScrapAdjusted", typeof(string));
+
+          
+            if (DetailList == null || DetailList.Count == 0)
+                return ChallanGrid;
+
+            foreach (var Item in DetailList)
+            {
+                if (Item == null) continue; 
+
+                ChallanGrid.Rows.Add(
+                    DateTime.Now,//Item.EntryDate ,
+                    Item.CustJwRecEntryId ?? 0,
+                    Item.CustJWRecYearCode ?? 0,
+                    Item.CustJWRecChallanNo ?? string.Empty,
+                    DateTime.Now,//Item.CustJWRecEntryDate ?? DateTime.MinValue,
+                    Item.RecItemCode ?? 0,
+                    Item.CustJwIssEntryId ?? 0,
+                    Item.CustJwIssYearCode ?? 0,
+                    Item.CustJWIssChallanNo ?? string.Empty,
+                    DateTime.Now,//Item.CustJWIssChallanDate ?? DateTime.MinValue,
+                    Item.AccountCode ?? 0L,
+                    Item.FinishItemCode ?? 0L,
+                    Item.AdjQty ?? 0.0f,
+                    Item.CC ?? string.Empty,
+                    Item.UID ?? 0L,
+                    Item.AdjFormType ?? string.Empty,
+                    DateTime.Now,//Item.TillDate ?? DateTime.MinValue,
+                    Item.TotalSQty ?? 0.0f,
+                    Item.PendQty ?? 0.0f,
+                    Item.BOMQty ?? 0.0f,
+                    Item.BomRevNo ?? 0L,
+                    Item.Bomdate ?? string.Empty,
+                    Item.ProcessID ?? 0L,
+                    Item.BOMInd == null || Item.BOMInd == '\0' ? ' ' : Item.BOMInd, 
+                    Item.IssQty ?? 0.0f,
+                    Item.TotalAdjQty ?? 0.0f,
+                    Item.TotalIssQty ?? 0.0f,
+                    Item.TotalRecQty ?? 0.0f,
+                    Item.RunnerItemCode ?? 0L,
+                    Item.ScrapItemCode ?? 0L,
+                    Item.IdealScrapQty ?? 0.0f,
+                    Item.IssuedScrapQty ?? 0.0f,
+                    Item.PreRecChallanNo ?? string.Empty,
+                    Item.ScrapQtyAgainstRecQty ?? 0.0f,
+                    Item.Recbatchno ?? string.Empty,
+                    Item.Recuniquebatchno ?? string.Empty,
+                    Item.Issbatchno ?? string.Empty,
+                    Item.Issuniquebatchno ?? string.Empty,
+                    Item.ScrapAdjusted ?? string.Empty
+                );
+            }
+
+            return ChallanGrid;
         }
 
         public async Task<IActionResult> CustomerJWIDashboard(string FromDate, string ToDate, string ReportType)
@@ -333,7 +435,7 @@ namespace eTactWeb.Controllers
             JWIGrid.Columns.Add("PacketsDetail", typeof(string));
             JWIGrid.Columns.Add("OtherDetail", typeof(string));
             JWIGrid.Columns.Add("HSSNO", typeof(string));
-            JWIGrid.Columns.Add("BOMInd", typeof(string));
+            JWIGrid.Columns.Add("BOMInd", typeof(char));
             JWIGrid.Columns.Add("ChallanAdjustRate", typeof(float));
             JWIGrid.Columns.Add("StdPacking", typeof(float));
             JWIGrid.Columns.Add("color", typeof(string));
@@ -349,7 +451,9 @@ namespace eTactWeb.Controllers
                 item.SEQNo == 0 ? (object)0 : (object)item.SEQNo,
                 item.CustJwIssEntryId == 0 ? (object)0 : (object)item.CustJwIssEntryId,
                 item.CustJwIssYearCode == 0 ? (object)0 : (object)item.CustJwIssYearCode,
-                string.IsNullOrEmpty(item.ProduceUnproduce) ? (object)"" : (object)item.ProduceUnproduce,
+                //string.IsNullOrEmpty(item.ProduceUnproduce) ? (object)"" : (object)item.ProduceUnproduce,
+                string.IsNullOrEmpty(item.ProduceUnproduce) ? (object)' ' : (object)item.ProduceUnproduce[0],
+
                 item.SONO == 0 ? (object)"" : (object)item.SONO,  // Fix: SONO is a string
                 string.IsNullOrEmpty(item.CustOrderNo) ? (object)"" : (object)item.CustOrderNo,
                 item.SOYear == 0 ? (object)0 : (object)item.SOYear,
@@ -378,7 +482,9 @@ namespace eTactWeb.Controllers
                 string.IsNullOrEmpty(item.PacketsDetail) ? (object)"" : (object)item.PacketsDetail,
                 string.IsNullOrEmpty(item.OtherDetail) ? (object)"" : (object)item.OtherDetail,
                 string.IsNullOrEmpty(item.HSNNo) ? (object)"" : (object)item.HSNNo,
-                string.IsNullOrEmpty(item.BOMInd) ? (object)"" : (object)item.BOMInd,
+                //string.IsNullOrEmpty(item.BOMInd.ToString()) ? (object)DBNull.Value : (object)item.BOMInd,
+                //item.BOMInd == '\0' ? (object)DBNull.Value : (object)item.BOMInd,
+                item.BOMInd == '\0' ? ' ' : item.BOMInd,
                 item.ChallanAdjustRate == 0 ? (object)0 : (object)item.ChallanAdjustRate,
                 item.StdPacking == 0 ? (object)0 : (object)item.StdPacking,
                 string.IsNullOrEmpty(item.color) ? (object)"" : (object)item.color,
@@ -397,172 +503,193 @@ namespace eTactWeb.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueModel> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        //[HttpPost]
+        //public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueModel> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        //{
+        //    try
+        //    {
+        //        if (model == null || !model.Any())
+        //        {
+        //            return Json(new { success = false, message = "No data received." });
+        //        }
+
+        //        var result = _ICustomerJobWorkIssue.GetAdjustedChallanDetailsData(model, YearCode, EntryDate, ChallanDate, AccountCode);
+
+        //        return PartialView("_CustomerJwisschallanAdjustment", result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = ex.Message });
+        //    }
+        //}
+
+        public async Task<JsonResult> GetAdjustedChallanDetailsData(string model,int AccountCode, int YearCode, string EntryDate, string ChallanDate)
         {
             try
             {
-                if (model == null || !model.Any())
+                var ChallanGrid = new DataTable();
+                List<CustomerJobWorkIssueDetail> Challandetails = JsonConvert.DeserializeObject<List<CustomerJobWorkIssueDetail>>(model);
+                ChallanGrid = GetAdjustedChallanTable(Challandetails);
+                var JSON = await _ICustomerJobWorkIssue.GetAdjustedChallanDetailsData(YearCode, EntryDate, ChallanDate, AccountCode, ChallanGrid);
+                string JsonString = JsonConvert.SerializeObject(JSON);
+                List<CustomerJobWorkIssueDetail> JobWorkReceiveDetail = new List<CustomerJobWorkIssueDetail>();
+
+                foreach (DataRow row in JSON.Result.Rows)
                 {
-                    return Json(new { success = false, message = "No data received." });
+                    CustomerJobWorkIssueDetail jobWorkRec = new CustomerJobWorkIssueDetail
+                    {
+                        CustJwRecEntryId = row["EntryIdRecJw"] != DBNull.Value ? Convert.ToInt32(row["EntryIdRecJw"]) : 0,
+                        CustJWRecChallanNo = row["RecJWChallanNo"]?.ToString(),
+                        CustJWRecYearCode = row["RecYearCode"] != DBNull.Value ? Convert.ToInt32(row["RecYearCode"]) : 0,
+                        ChallanDate = row["ChallanDate"]?.ToString(),
+                        RecPartCode = row["RecPartCode"]?.ToString(),
+                        RecItemName = row["RecItemName"]?.ToString(),
+                        RecItemcode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
+                        BOMNO = row["BomNo"] != DBNull.Value ? Convert.ToInt32(row["BomNo"]) : 0,
+                        Bomdate = row["BOMDate"]?.ToString(),
+                        //BOMInd = row["BomStatus"]?.ToString()?.FirstOrDefault() ?? ' ',
+                        BOMInd = row["BomStatus"] != DBNull.Value && !string.IsNullOrEmpty(row["BomStatus"]?.ToString())
+    ? row["BomStatus"].ToString()[0]
+    : ' ',// Default to space if null or empty
+
+                        PendQty = row["PendQty"] != DBNull.Value ? Convert.ToInt32(row["PendQty"]) : 0,
+                        IssPartCode  = row["IssuePartcode"]?.ToString(),
+                        IssItemName = row["IssueItemName"]?.ToString(),
+                        RecItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
+                        BOMQty = row["bomqty"] != DBNull.Value ? Convert.ToInt16(row["bomqty"]) : 0,
+
+                        //AdjQty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToDecimal(row["ActualAdjQty"]) : 0,
+                        Through = row["through"]?.ToString(),
+                        //TotaladjQty = Convert.ToDecimal(row["QtyToBeRec"]),
+                        
+                        QtyToBeRec = row["QtyToBeRec"] != DBNull.Value ? Convert.ToInt16(row["QtyToBeRec"]) : 0,
+                        TotalAdjQty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToInt16(row["ActualAdjQty"]) : 0,
+                        Recbatchno = row["batchno"]?.ToString(),
+                        Recuniquebatchno = row["uniquebatchno"]?.ToString(),
+                        SEQNo = row["seqno"] != DBNull.Value ? Convert.ToInt32(row["seqno"]) : 0,
+                        IssQty = row["IssueQty"] != DBNull.Value ? Convert.ToInt32(row["IssueQty"]) : 0,
+                        Rate = row["Rate"] != DBNull.Value ? Convert.ToDecimal(row["Rate"]) : 0,
+                        
+                        QriginalRecQty = row["OriginalRecQty"] != DBNull.Value ? Convert.ToDecimal(row["OriginalRecQty"]) : 0,
+                        IdealScrapQty = row["IdealScrap"] != DBNull.Value ? Convert.ToInt32(row["IdealScrap"]) : 0,
+                        IssuedScrapQty = row["IssuedScrap"] != null ? Convert.ToInt32(row["IssuedScrap"]) : 0
+                      
+                    };
+
+                    JobWorkReceiveDetail.Add(jobWorkRec);
                 }
+                var dataresult = AddChallanDetail2Grid(JobWorkReceiveDetail);
 
-                var result = _ICustomerJobWorkIssue.GetAdjustedChallanDetailsData(model, YearCode, EntryDate, ChallanDate, AccountCode);
-
-                return PartialView("_CustomerJwisschallanAdjustment", result);
+                return Json(JsonString);
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                throw;
             }
         }
-
-        //public async Task<JsonResult> GetAdjustedChallanDetailsData(string model,int YearCode, string EntryDate, string ChallanDate)
+        //private static DataTable GetAdjustedChallanTable(List<CustomerJobWorkIssueDetail> DTTItemGrid)
         //{
         //    try
         //    {
         //        var ChallanGrid = new DataTable();
-        //        List<CustomerJobWorkIssueDetail> Challandetails = JsonConvert.DeserializeObject<List<CustomerJobWorkIssueDetail>>(model);
-        //        ChallanGrid = GetAdjustedChallanTable(Challandetails);
-        //        var JSON = await _ICustomerJobWorkIssue.GetAdjustedChallanDetailsData( YearCode,  EntryDate,  ChallanDate, ChallanGrid);
-        //        string JsonString = JsonConvert.SerializeObject(JSON);
-        //        List<CustomerJobWorkIssueDetail> JobWorkReceiveDetail = new List<CustomerJobWorkIssueDetail>();
+        //        //ChallanGrid.Columns.Add("SeqNo", typeof(int));
+        //        ChallanGrid.Columns.Add("ItemCode", typeof(int));
+        //        ChallanGrid.Columns.Add("Unit", typeof(string));
+        //        ChallanGrid.Columns.Add("BillQty", typeof(float));
+        //        ChallanGrid.Columns.Add("JWRate", typeof(float));
+        //        ChallanGrid.Columns.Add("ProcessId", typeof(int));
+        //        ChallanGrid.Columns.Add("SONO", typeof(string));
+        //        ChallanGrid.Columns.Add("CustOrderNo", typeof(string));
+        //        ChallanGrid.Columns.Add("SOYearCode", typeof(int));
+        //        ChallanGrid.Columns.Add("SchNo", typeof(string));
+        //        ChallanGrid.Columns.Add("SchYearcode", typeof(int));
+        //        ChallanGrid.Columns.Add("BOMIND", typeof(string));
+        //        ChallanGrid.Columns.Add("BOMNO", typeof(int));
+        //        ChallanGrid.Columns.Add("BOMEffDate", typeof(DateTime));
+        //        ChallanGrid.Columns.Add("Produnprod", typeof(string));
+        //        ChallanGrid.Columns.Add("fromChallanOrSalebill", typeof(string));
+        //        ChallanGrid.Columns.Add("ItemAdjustmentRequired", typeof(string));
 
-        //        foreach (DataRow row in JSON.Result.Rows)
+        //        foreach (var Item in DTTItemGrid)
         //        {
-        //            CustomerJobWorkIssueDetail jobWorkRec = new CustomerJobWorkIssueDetail
-        //            {
-        //                //EntryIdIssJw = row["EntryIdIssJw"] != DBNull.Value ? Convert.ToInt32(row["EntryIdIssJw"]) : 0,
-        //                //IssChallanNo = row["IssJWChallanNo"]?.ToString(),
-        //                //IssYearCode = row["IssYearCode"] != DBNull.Value ? Convert.ToInt32(row["IssYearCode"]) : 0,
-        //                //IssChallanDate = row["ChallanDate"]?.ToString(),
-        //                //IssPartCode = row["IssPartCode"]?.ToString(),
-        //                //IssItemName = row["IssItemName"]?.ToString(),
-        //                //ItemCode = row["IssItemCode"] != DBNull.Value ? Convert.ToInt32(row["IssItemCode"]) : 0,
-        //                //BOMrevno = row["BomNo"] != DBNull.Value ? Convert.ToInt32(row["BomNo"]) : 0,
-        //                //BOMRevDate = row["BOMDate"]?.ToString(),
-        //                //BOMInd = row["BomStatus"]?.ToString(),
-        //                //PendQty = row["PendQty"] != DBNull.Value ? Convert.ToDecimal(row["PendQty"]) : 0,
-        //                //FinishPartCode = row["FinishPartcode"]?.ToString(),
-        //                //FinishItemName = row["FinishItemName"]?.ToString(),
-        //                //FinishItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
-        //                //BOMQty = row["bomqty"] != DBNull.Value ? Convert.ToDecimal(row["bomqty"]) : 0,
+        //            ChallanGrid.Rows.Add(
+        //                new object[]
+        //                {
+        //            Item.ItemCode,
+        //            Item.Unit,
+        //            Item.Qty,
+        //            Item.Rate,
+        //            Item.ProcessId,
+        //            Item.GridSONO,
+        //            Item.CustOrderNo,
+        //            Item.SOYear,
+        //            Item.SchNo,
+        //            Item.SchYearcode,
+        //            Item.BOMInd,
+        //            Item.BOMNO,
+        //            Item.Bomdate,
+        //            Item.ProduceUnproduce,
+        //            Item.fromChallanOrSalebill,
+        //            Item.ItemAdjustmentRequired
 
-        //                //AdjQty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToDecimal(row["ActualAdjQty"]) : 0,
-        //                //Through = row["through"]?.ToString(),
-        //                ////TotaladjQty = Convert.ToDecimal(row["QtyToBeRec"]),
-        //                //TotaladjQty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToDecimal(row["ActualAdjQty"]) : 0,
-        //                //TotalIssuedQty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToDecimal(row["ActualAdjQty"]) : 0,
-        //                //IssuedBatchNO = row["batchno"]?.ToString(),
-        //                //IssuedUniqueBatchNo = row["uniquebatchno"]?.ToString(),
-        //                //RecQty = row["RecQty"] != DBNull.Value ? Convert.ToDecimal(row["RecQty"]) : 0,
-        //                //TotalRecQty = row["RecQty"] != DBNull.Value ? Convert.ToDecimal(row["RecQty"]) : 0,
-        //                //YearCodeIssJw = row["IssYearCode"] != null ? Convert.ToInt32(row["IssYearCode"]) : 0
-        //            };
-
-        //            JobWorkReceiveDetail.Add(jobWorkRec);
+        //                });
         //        }
-        //        var dataresult = AddChallanDetail2Grid(JobWorkReceiveDetail);
-
-        //        return Json(JsonString);
+        //        ChallanGrid.Dispose();
+        //        return ChallanGrid;
         //    }
         //    catch (Exception ex)
         //    {
         //        throw;
         //    }
         //}
+
         private static DataTable GetAdjustedChallanTable(List<CustomerJobWorkIssueDetail> DTTItemGrid)
         {
             try
             {
                 var ChallanGrid = new DataTable();
-                //ChallanGrid.Columns.Add("SeqNo", typeof(int));
-                ChallanGrid.Columns.Add("EntryDate", typeof(DateTime));
-                ChallanGrid.Columns.Add("CustJwRecEntryId", typeof(long));
-                ChallanGrid.Columns.Add("CustJWRecYearCode", typeof(long));
-                ChallanGrid.Columns.Add("CustJWRecChallanNo", typeof(string));
-                ChallanGrid.Columns.Add("CustJWRecEntryDate", typeof(DateTime));
-                ChallanGrid.Columns.Add("RecItemcode", typeof(long));
-                ChallanGrid.Columns.Add("CustJWIssEntryid", typeof(long));
-                ChallanGrid.Columns.Add("CustJWIssYearCode", typeof(long));
-                ChallanGrid.Columns.Add("CustJWIssChallanNo", typeof(string));
-                ChallanGrid.Columns.Add("CustJWIssChallanDate", typeof(DateTime));
-                ChallanGrid.Columns.Add("AccountCode", typeof(long));
-                ChallanGrid.Columns.Add("FinishItemCode", typeof(long));
-                ChallanGrid.Columns.Add("AdjQty", typeof(float));
-                ChallanGrid.Columns.Add("CC", typeof(string));
-                ChallanGrid.Columns.Add("UID", typeof(long));
-                ChallanGrid.Columns.Add("AdjFormType", typeof(string));
-                ChallanGrid.Columns.Add("TillDate", typeof(DateTime));
-                ChallanGrid.Columns.Add("TotalSQty", typeof(float));
-                ChallanGrid.Columns.Add("PendQty", typeof(float));
-                ChallanGrid.Columns.Add("BOMQty", typeof(float));
-                ChallanGrid.Columns.Add("BOMRecDate", typeof(DateTime));
-                ChallanGrid.Columns.Add("ProcessID", typeof(long));
-                ChallanGrid.Columns.Add("BOMInd", typeof(string));
-                ChallanGrid.Columns.Add("IssQty", typeof(float));
-                ChallanGrid.Columns.Add("TotalAdjQty", typeof(float));
-                ChallanGrid.Columns.Add("TotalIssQty", typeof(float));
-                ChallanGrid.Columns.Add("TotalRecQty", typeof(float));
-                ChallanGrid.Columns.Add("RunnerItemCode", typeof(long));
-                ChallanGrid.Columns.Add("ScrapItemCode", typeof(long));
-                ChallanGrid.Columns.Add("IdealScrapQty", typeof(float));
-                ChallanGrid.Columns.Add("IssuedScrapQty", typeof(float));
-                ChallanGrid.Columns.Add("PreRecChallanNo", typeof(string));
-                ChallanGrid.Columns.Add("ScrapQtyAgainstRecQty", typeof(float));
-                ChallanGrid.Columns.Add("Recbatchno", typeof(string));
-                ChallanGrid.Columns.Add("Recuniquebatchno", typeof(string));
-                ChallanGrid.Columns.Add("Issbatchno", typeof(string));
-                ChallanGrid.Columns.Add("Issuniquebatchno", typeof(string));
-                ChallanGrid.Columns.Add("ScrapAdjusted", typeof(string));
+
+                ChallanGrid.Columns.Add("ItemCode", typeof(long));  // bigint in SQL
+                ChallanGrid.Columns.Add("Unit", typeof(string));
+                ChallanGrid.Columns.Add("BillQty", typeof(long));  // bigint in SQL
+                ChallanGrid.Columns.Add("JWRate", typeof(float));
+                ChallanGrid.Columns.Add("ProcessId", typeof(int));
+                ChallanGrid.Columns.Add("SONO", typeof(string));
+                ChallanGrid.Columns.Add("CustOrderNo", typeof(string));
+                ChallanGrid.Columns.Add("SOYearCode", typeof(long));  // bigint in SQL
+                ChallanGrid.Columns.Add("SchNo", typeof(string));
+                ChallanGrid.Columns.Add("SchYearcode", typeof(long)); // bigint in SQL
+                ChallanGrid.Columns.Add("BOMIND", typeof(string));
+                ChallanGrid.Columns.Add("BOMNO", typeof(long));  // bigint in SQL
+                ChallanGrid.Columns.Add("BOMEffDate", typeof(DateTime));
+                ChallanGrid.Columns.Add("Produnprod", typeof(string));
+                ChallanGrid.Columns.Add("fromChallanOrSalebill", typeof(string));
+                ChallanGrid.Columns.Add("ItemAdjustmentRequired", typeof(string));
 
                 foreach (var Item in DTTItemGrid)
                 {
                     ChallanGrid.Rows.Add(
                         new object[]
                         {
-                    Item.EntryDate,
-                    Item.CustJwRecEntryId,
-                    Item.CustJWRecYearCode,
-                    Item.CustJWRecChallanNo,
-                    Item.CustJWRecEntryDate,
-                    Item.RecItemcode,
-                    Item.CustJWIssEntryid,
-                    Item.CustJWIssYearCode,
-                    Item.CustJWIssChallanNo,
-                    Item.CustJWIssChallanDate,
-                    Item.AccountCode,
-                    Item.FinishItemCode,
-                    Item.AdjQty,
-                    Item.CC,
-                    Item.UID,
-                    Item.AdjFormType,
-                    Item.TillDate,
-                    Item.TotalSQty,
-                    Item.PendQty,
-                    Item.BOMQty,
-                    Item.BOMRecDate,
-                    Item.ProcessID,
-                    Item.BOMInd,
-                    Item.IssQty,
-                    Item.TotalAdjQty,
-                    Item.TotalIssQty,
-                    Item.TotalRecQty,
-                    Item.RunnerItemCode,
-                    Item.ScrapItemCode,
-                    Item.IdealScrapQty,
-                    Item.IssuedScrapQty,
-                    Item.PreRecChallanNo,
-                    Item.ScrapQtyAgainstRecQty,
-                    Item.Recbatchno,
-                    Item.Recuniquebatchno,
-                    Item.Issbatchno,
-                    Item.Issuniquebatchno,
-                    Item.ScrapAdjusted
-
+                    Item.ItemCode,  // Ensure it's long (bigint)
+                    Item.Unit?.Trim().Substring(0, Math.Min(3, Item.Unit.Length)),
+                    Convert.ToInt64(Item.ChallanQty), // Ensure bigint
+                    Item.Rate,
+                    Item.ProcessId,
+                    Item.GridSONO?.Trim().Substring(0, Math.Min(200, Item.GridSONO.Length)),
+                    Item.CustOrderNo?.Trim().Substring(0, Math.Min(200, Item.CustOrderNo.Length)),
+                    Convert.ToInt64(Item.SOYear),  // Ensure bigint
+                    Item.SchNo?.Trim().Substring(0, Math.Min(200, Item.SchNo.Length)),
+                    Convert.ToInt64(Item.SchYearcode), // Ensure bigint
+                    Item.BOMInd, // Ensure nchar(1)
+                    Convert.ToInt64(Item.BOMNO),  // Ensure bigint
+                    Item.Bomdate,
+                    Item.ProduceUnproduce?.Trim().Substring(0, Math.Min(200, Item.ProduceUnproduce.Length)),
+                    Item.fromChallanOrSalebill?.Trim().Substring(0, Math.Min(100, Item.fromChallanOrSalebill.Length)),
+                    Item.ItemAdjustmentRequired?.Trim().Substring(0, Math.Min(3, Item.ItemAdjustmentRequired.Length))
                         });
                 }
-                ChallanGrid.Dispose();
+
                 return ChallanGrid;
             }
             catch (Exception ex)
@@ -570,6 +697,7 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
+
         public async Task<JsonResult> GetPopUpData(int YearCode, string EntryDate, string ChallanDate, int AccountCode, string prodUnProd, string BOMINd, int RMItemCode, string Partcode)
         {
             var JSON = await _ICustomerJobWorkIssue.GetPopUpData( YearCode,  EntryDate,  ChallanDate,  AccountCode,  prodUnProd,  BOMINd,  RMItemCode,  Partcode);
@@ -593,7 +721,7 @@ namespace eTactWeb.Controllers
                 var seqNo = 0;
                 foreach (var item in model)
                 {
-                    _MemoryCache.TryGetValue("KeyCustJWIGrid", out IList<CustomerJobWorkIssueDetail> CustomerJobWorkIssueDetail);
+                    _MemoryCache.TryGetValue("KeyCWIAdjustGrid", out IList<CustomerJobWorkIssueDetail> CustomerJobWorkIssueDetail);
                     if (item != null)
                     {
                         if (CustomerJobWorkIssueDetail == null)
@@ -611,10 +739,10 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.CustJWIDetailGrid = JobWorkReceiveGrid;
 
-                        _MemoryCache.Set("KeyCustJWIGrid", MainModel.CustJWIDetailGrid, cacheEntryOptions);
+                        _MemoryCache.Set("KeyCWIAdjustGrid", MainModel.CustJWIDetailGrid, cacheEntryOptions);
                     }
                 }
-                return PartialView("_CustomerJWIDetailGrid", MainModel);
+                return PartialView("_CustomerJwisschallanAdjustment", MainModel);
             }
             catch (Exception ex)
             {

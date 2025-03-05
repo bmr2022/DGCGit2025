@@ -55,6 +55,11 @@ namespace eTactWeb.DOM.Models
         public IList<TextValue>? ExemptedCategoriesList { get; set; }
 
 
+        public IList<string>? ApplicableOnSalaryHead { get; set; }
+        public IList<ApplicableOnSalaryHeadDetail>? ApplicableOnSalaryHeadDetailList { get; set; }
+        public IList<TextValue>? ApplicableOnSalaryHeadList { get; set; }
+
+
 
 
 
@@ -86,3 +91,17 @@ public class ExemptedCategoriesDetail
 
 
 }
+
+[Serializable()]
+public class ApplicableOnSalaryHeadDetail
+{
+    //public int CategoryId { get; set; }
+    public string? SalHeadEntryId { get; set; }
+    public string? SalaryHead { get; set; }
+    public int? PFESIEntryId { get; set; }
+    public string? SchemeType { get; set; }
+
+
+}
+
+

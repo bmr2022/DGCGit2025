@@ -78,7 +78,7 @@ namespace eTactwebMasters.Controllers
 
 
             MainModel = await BindModel(MainModel).ConfigureAwait(false);
-            //MainModel = await BindModel1(MainModel).ConfigureAwait(false);
+            MainModel = await BindModel1(MainModel).ConfigureAwait(false);
             //MainModel = await BindModel2(MainModel).ConfigureAwait(false);
             return View(MainModel);
         }
@@ -100,6 +100,30 @@ namespace eTactwebMasters.Controllers
                     });
                 }
                 model.ExemptedCategoriesList = _List;
+                _List = new List<TextValue>();
+
+            }
+
+            return model;
+        }
+
+        private async Task<HRPFESIMasterModel> BindModel1(HRPFESIMasterModel model)
+        {
+            var oDataSet = new DataSet();
+            var _List = new List<TextValue>();
+            oDataSet = await _IHRPFESIMaster.GetSalaryHead().ConfigureAwait(true);
+
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                {
+                    _List.Add(new TextValue
+                    {
+                        Value = row["SalHeadEntryId"].ToString(),
+                        Text = row["SalaryHead"].ToString()
+                    });
+                }
+                model.ApplicableOnSalaryHeadList = _List;
                 _List = new List<TextValue>();
 
             }
@@ -169,7 +193,28 @@ namespace eTactwebMasters.Controllers
                     model.Mode = model.Mode == "U" ? "Update" : "INSERT";
                     model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-                    
+                    var HRSalaryHeadTable = new List<string>();
+                    var _SalaryHeadDetail = new List<ApplicableOnSalaryHeadDetail>();
+                    bool v = model.ApplicableOnSalaryHead != null;
+                    if (v)
+                    {
+                        foreach (var item in model.ApplicableOnSalaryHead)
+                        {
+                            var _SalaryHead = new ApplicableOnSalaryHeadDetail()
+                            {
+
+                                SalHeadEntryId = item.ToString(),
+                                PFESIEntryId = model.EntryId,
+                                SchemeType=model.SchemeType,
+
+
+
+                            };
+                            _SalaryHeadDetail.Add(_SalaryHead);
+                        }
+                    }
+                    HRSalaryHeadTable = _SalaryHeadDetail.Select(x => x.SalHeadEntryId).ToList();
+
 
 
 
@@ -184,7 +229,7 @@ namespace eTactwebMasters.Controllers
                         model.UpdatedBy = 0;
 
                     }
-                    var Result = await _IHRPFESIMaster.SaveData(model).ConfigureAwait(false);
+                    var Result = await _IHRPFESIMaster.SaveData(model, HRSalaryHeadTable).ConfigureAwait(false);
 
                     if (Result != null)
                     {

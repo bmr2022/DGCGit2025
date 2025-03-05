@@ -42,6 +42,8 @@ namespace eTactWeb.DOM.Models
 
         public string? ShiftTypeFixRotFlex { get; set; }
         public string? ApplicableToEmployeeCategory { get; set; }
+       // public IList<string>? ApplicableToEmployeeCategory { get; set; }
+        public IList<TextValue>? EmpCategList { get; set; }
         public string? AttandanceMode { get; set; }
         public int? MinimumHourRequiredForFullDay { get; set; }
 

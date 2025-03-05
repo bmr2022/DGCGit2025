@@ -329,19 +329,22 @@
     <script>
         $(document).ready(function () {
             if ($('#Mode').val() === "U") {
+                debugger
                 $('#AccountCode').val($('#LedgerName').val());
-                GetOpeningAmt();
+                
                 countAllTotal();
                 ClearItems();
 
             }
-          
+            $('#BillNo').removeClass('Valid');
             $('#LedgerName').select2();
             $('#Type').select2();
         
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             FillLedgerName();
-         
+            // if ($("#Mode").val() !== "U") {
+            //     FillLedgerName();
+            // }
 
             var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
@@ -493,9 +496,10 @@
             // });
 
         function GetOpeningAmt() {
-             
+             debugger
             var OpeningYearCode = $('#OpeningYearCode').val();
             var AccountCode = $('#AccountCode').val();
+            $('#AccountCode').val(AccountCode);
             $.ajax({
                 url: '@Url.Action("GetOpeningAmt", "LedgerPartyWiseOpening")',
                 type: 'POST',
@@ -598,10 +602,11 @@
                     });
                      
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                         
+                         debugger
                         var LedgerName = '@Model.AccountCode';
-                        $('#LedgerName').val(LedgerName).trigger("change");
-                        //$('#LedgerName').val(LedgerName);
+                        //$('#LedgerName').val(LedgerName).trigger("change");
+                        $('#LedgerName').val(LedgerName);
+                        GetOpeningAmt();
                     }
                 },
                 error: function (xhr, status, error) {
@@ -671,11 +676,10 @@
             $('#BillNo,#BillDate,#Type,#TransactionType,#DueDate,#Unit').val('');
         }
 
-        $(document).on('click', '#GridButton', function (e) {
-             
-            alert("Button clicked!");
-            $('#BillNo').removeClass('Valid');
-            e.preventDefault();
+        $('#GridButton').click(function (){
+            debugger
+            
+            //e.preventDefault();
             console.log('Add to Grid button clicked');
             var BillNo = $('#BillNo').val().trim();
             var BillDate = $('#BillDate').val().trim();
