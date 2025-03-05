@@ -337,33 +337,31 @@ namespace eTactWeb.Data.DAL
                     {
                         ItemList.Add(new LedgerPartyWiseOpeningDetailModel
                         {
-                            EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnEntryId"].ToString()),
-                            BillYear = Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnYearCode"].ToString()),
-                            AccBookTransEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["AccBookTransEntryId"].ToString()),
-                            AccBookTransYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccBookTransYearCode"].ToString()),
-                            AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"].ToString()),
-                            LedgerName = DS.Tables[0].Rows[0]["Account_Name"].ToString(),
-                            OpeningAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["OpeningAmt"].ToString()),
-                            BillNo = DS.Tables[0].Rows[0]["InvoiceNo"].ToString(),
-                            BillDate = DS.Tables[0].Rows[0]["InvoiceDate"] == DBNull.Value? null: Convert.ToDateTime(DS.Tables[0].Rows[0]["InvoiceDate"]).ToString("dd-MM-yyyy"),
-                            BillNetAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["InvNetAmt"].ToString()),
-                            PendAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["InvPendAmt"].ToString()),
-                            Type = DS.Tables[0].Rows[0]["DrCrType"].ToString(),
-                            TransactionType = DS.Tables[0].Rows[0]["TransactionType"].ToString(),
-                            DueDate = DS.Tables[0].Rows[0]["DueDate"] == DBNull.Value? null : Convert.ToDateTime(DS.Tables[0].Rows[0]["DueDate"]).ToString("dd-MM-yyyy"),
-                            // DueDate = DS.Tables[0].Rows[0]["DueDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(DS.Tables[0].Rows[0]["DueDate"]),
-                            CC = DS.Tables[0].Rows[0]["CC"].ToString(),
-                            ActualEntryBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString()),
-                            //ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]),
-                            ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(),
-                            UpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()),
-                            LastUpdatedDate = DS.Tables[0].Rows[0]["LastUpdatedDate"].ToString(),
-                            //LastUpdatedDate = DS.Tables[0].Rows[0]["LastUpdatedDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdatedDate"]),
-                            EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString(),
-                            AccountNarration = DS.Tables[0].Rows[0]["AccountNarration"].ToString(),
-                            Unit = DS.Tables[0].Rows[0]["SaveUpdate"].ToString(),
-                            SrNO = Convert.ToInt32(DS.Tables[0].Rows[0]["SeqNo"].ToString()),
-                           
+                            EntryId = DS.Tables[0].Rows[0]["LedgerOpnEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnEntryId"]),
+                            BillYear = DS.Tables[0].Rows[0]["LedgerOpnYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnYearCode"]),
+                            AccBookTransEntryId = DS.Tables[0].Rows[0]["AccBookTransEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["AccBookTransEntryId"]),
+                            AccBookTransYearCode = DS.Tables[0].Rows[0]["AccBookTransYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["AccBookTransYearCode"]),
+                            AccountCode = DS.Tables[0].Rows[0]["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"]),
+                            LedgerName = DS.Tables[0].Rows[0]["Account_Name"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["Account_Name"].ToString(),
+                            OpeningAmt = DS.Tables[0].Rows[0]["OpeningAmt"] == DBNull.Value ? 0.0 : Convert.ToDouble(DS.Tables[0].Rows[0]["OpeningAmt"]),
+                            BillNo = DS.Tables[0].Rows[0]["InvoiceNo"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["InvoiceNo"].ToString(),
+                            BillDate = DS.Tables[0].Rows[0]["InvoiceDate"] == DBNull.Value ? null : Convert.ToDateTime(DS.Tables[0].Rows[0]["InvoiceDate"]).ToString("dd-MM-yyyy"),
+                            BillNetAmt = DS.Tables[0].Rows[0]["InvNetAmt"] == DBNull.Value ? 0.0 : Convert.ToDouble(DS.Tables[0].Rows[0]["InvNetAmt"]),
+                            PendAmt = DS.Tables[0].Rows[0]["InvPendAmt"] == DBNull.Value ? 0.0 : Convert.ToDouble(DS.Tables[0].Rows[0]["InvPendAmt"]),
+                            Type = DS.Tables[0].Rows[0]["DrCrType"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["DrCrType"].ToString(),
+                            TransactionType = DS.Tables[0].Rows[0]["TransactionType"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["TransactionType"].ToString(),
+                            DueDate = DS.Tables[0].Rows[0]["DueDate"] == DBNull.Value ? null : Convert.ToDateTime(DS.Tables[0].Rows[0]["DueDate"]).ToString("dd-MM-yyyy"),
+                            CC = DS.Tables[0].Rows[0]["CC"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["CC"].ToString(),
+                            ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryBy"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"]),
+                            ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] == DBNull.Value ? null : DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(),
+                            UpdatedBy = DS.Tables[0].Rows[0]["UpdatedBy"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"]),
+                            LastUpdatedDate = DS.Tables[0].Rows[0]["LastUpdatedDate"] == DBNull.Value ? null : DS.Tables[0].Rows[0]["LastUpdatedDate"].ToString(),
+                            EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["EntryByMachine"].ToString(),
+                            AccountNarration = DS.Tables[0].Rows[0]["AccountNarration"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["AccountNarration"].ToString(),
+                            Unit = DS.Tables[0].Rows[0]["SaveUpdate"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["SaveUpdate"].ToString(),
+                            SrNO = DS.Tables[0].Rows[0]["SeqNo"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["SeqNo"])
+
+
                         });
                     }
                     model.LedgerPartyWiseOpeningDetails = ItemList;
