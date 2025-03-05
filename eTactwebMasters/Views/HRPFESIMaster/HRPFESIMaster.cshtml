@@ -266,6 +266,13 @@
                                         <select class="form-select" multiple="multiple" asp-for="ExemptedCategories" asp-items="@(new SelectList(Model.ExemptedCategoriesList,"Value","Text"))"></select>
                                     </div>
 
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ApplicableOnSalaryHead" class="control-label">ApplicableOnSalaryHead </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="ApplicableOnSalaryHead" asp-items="@(new SelectList(Model.ApplicableOnSalaryHeadList,"Value","Text"))"></select>
+                                    </div>
+
 
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -524,19 +531,35 @@
 
             });
 
+            $("#ApplicableOnSalaryHead").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+
+
+            });
+
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
 
                 $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+               
             }
             else {
                 $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                
             }
 
+            
 
-            var UpdatedOn = parseDateToFormat($('#UpdatedOn').val().split(" ")[0]);
-            $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", UpdatedOn);
+            
 
 
             GetFormRights();

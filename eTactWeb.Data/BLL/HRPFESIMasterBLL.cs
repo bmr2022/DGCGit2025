@@ -32,13 +32,18 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRPFESIMasterDAL.FillEntryId();
         }
-        public async Task<ResponseResult> SaveData(HRPFESIMasterModel model)
+        public async Task<ResponseResult> SaveData(HRPFESIMasterModel model, List<string> HRSalaryHeadDT)
         {
-            return await _HRPFESIMasterDAL.SaveData(model);
+            return await _HRPFESIMasterDAL.SaveData(model, HRSalaryHeadDT);
         }
         public async Task<DataSet> GetExemptedCategories()
         {
             return await _HRPFESIMasterDAL.GetExemptedCategories();
+        }
+
+        public async Task<DataSet> GetSalaryHead()
+        {
+            return await _HRPFESIMasterDAL.GetSalaryHead();
         }
         public async Task<ResponseResult> GetDashboardData()
         {
