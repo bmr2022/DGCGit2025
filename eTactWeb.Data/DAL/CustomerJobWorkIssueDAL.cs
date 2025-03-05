@@ -27,30 +27,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
         }
-        //public async Task<ResponseResult> GetAdjustedChallanDetailsData(int YearCode,string EntryDate,string ChallanDate, DataTable DTTItemGrid)
-        //{
-        //    var _ResponseResult = new ResponseResult();
-        //    try
-        //    {
-        //        var SqlParams = new List<dynamic>();
-        //        SqlParams.Add(new SqlParameter("@Flag", "JOBWORKISSUESUMMARY"));
-        //        SqlParams.Add(new SqlParameter("@IssYear", YearCode));
-        //        SqlParams.Add(new SqlParameter("@FinYearFromDate", EntryDate));
-        //        SqlParams.Add(new SqlParameter("@billchallandate", ChallanDate));
-        //        SqlParams.Add(new SqlParameter("@DTTItemGrid", DTTItemGrid));
-
-        //        _ResponseResult = await _IDataLogic.ExecuteDataTable("getPendCustomerJobWorkChallanList", SqlParams);
-              
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        dynamic Error = new ExpandoObject();
-        //        Error.Message = ex.Message;
-        //        Error.Source = ex.Source;
-        //    }
-        //    return _ResponseResult;
-        //}
-
+      
         public async Task<ResponseResult> GetPopUpData(int YearCode, string EntryDate, string ChallanDate, int AccountCode, string prodUnProd, string BOMINd, int RMItemCode, string Partcode)
         {
             var _ResponseResult = new ResponseResult();
@@ -80,91 +57,31 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public List<CustomerJobWorkIssueModel> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueModel> adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+     
+        public async Task<ResponseResult> GetAdjustedChallanDetailsData(int YearCode, string EntryDate, string ChallanDate, int AccountCode, DataTable DTTItemGrid)
         {
-            List<CustomerJobWorkIssueModel> result = new List<CustomerJobWorkIssueModel>();
-
-            using (SqlConnection conn = new SqlConnection(DBConnectionString))
+            var _ResponseResult = new ResponseResult();
+            try
             {
-                conn.Open();
 
-                foreach (var item in adjustedData)
-                {
-                    using (SqlCommand cmd = new SqlCommand("SpCustomerJobworkAdjustedChallanInGrid", conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-
-                        //cmd.Parameters.AddWithValue("@Flag", "JOBWORKISSUESUMMARY");
-                        cmd.Parameters.AddWithValue("@yearCode", YearCode);
-                        cmd.Parameters.AddWithValue("@FinYearFromDate", EntryDate);
-                        cmd.Parameters.AddWithValue("@billchallandate", ChallanDate);
-                        cmd.Parameters.AddWithValue("@AccountCode", AccountCode);
-                        cmd.Parameters.AddWithValue("@AccountCode", AccountCode);
-                        cmd.Parameters.AddWithValue("@DTTItemGrid", adjustedData);
-                        cmd.Parameters.AddWithValue("@BOMINd", item.BOMInd);
-                        cmd.Parameters.AddWithValue("@RMItemCode", item.ItemCode);
-                        cmd.Parameters.AddWithValue("@RMPartcode", item.PartCode);
-                        cmd.Parameters.AddWithValue("@RMItemNAme", item.ItemName);
-
-                        try
-                        {
-                            using (SqlDataReader reader = cmd.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    result.Add(new CustomerJobWorkIssueModel
-                                    {
-                                        CustomerName = reader["CustomerName"].ToString(),
-                                        PartCode = reader["RecPartcode"].ToString(),
-                                        ItemName = reader["RecItemName"].ToString(),
-                                        BOMInd = reader["BOMIND"].ToString(),
-                                        ChallanNo = reader["RecJWChallan"].ToString(),
-                                        YearCode = Convert.ToInt32(reader["RecChallanYearCode"]),
-                                        ChallanDate = DateTime.Parse(reader["RecChallandate"].ToString()).ToString("dd/MM/yyyy"),
-                                        RecQty = Convert.ToInt32(reader["RecQty"]),
-                                        IssQty = Convert.ToInt32(reader["IssQty"]),
-                                        AccPendQty = Convert.ToInt32(reader["ActualPendQty"]),
-                                        PendQty = Convert.ToInt32(reader["PendQty"]),
-                                    });
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}");
-                            throw; // Rethrow exception to see the detailed error
-                        }
-                    }
-                }
+                var SqlParams = new List<dynamic>();
+                //cmd.Parameters.AddWithValue("@Flag", "JOBWORKISSUESUMMARY");
+                SqlParams.Add(new SqlParameter("@yearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@FromFinStartDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@billchallandate", ChallanDate));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@DTTItemGrid", DTTItemGrid));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
             }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
 
-            return result;
         }
-        //public async Task<ResponseResult> GetAdjustedChallanDetailsData(int YearCode, string EntryDate, string ChallanDate, int AccountCode, DataTable DTTItemGrid)
-        //{
-        //    var _ResponseResult = new ResponseResult();
-        //    try
-        //    {
-
-        //        var SqlParams = new List<dynamic>();
-        //        //cmd.Parameters.AddWithValue("@Flag", "JOBWORKISSUESUMMARY");
-        //        SqlParams.Add(new SqlParameter("@yearCode", YearCode));
-        //        SqlParams.Add(new SqlParameter("@FinYearFromDate", EntryDate));
-        //        SqlParams.Add(new SqlParameter("@billchallandate", ChallanDate));
-        //        SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
-        //        SqlParams.Add(new SqlParameter("@DTTItemGrid", DTTItemGrid));
-        //        _ResponseResult = await _IDataLogic.ExecuteDataTable("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        dynamic Error = new ExpandoObject();
-        //        Error.Message = ex.Message;
-        //        Error.Source = ex.Source;
-        //    }
-        //    return _ResponseResult;
-
-
-        //}
 
 
         public async Task<ResponseResult> GetNewEntry(int yearCode)
@@ -543,7 +460,8 @@ namespace eTactWeb.Data.DAL
                                                                           StateCode = dr["CustStateCode"].ToString(),
                                                                           GSTType = dr["GSTType"].ToString(),
                                                                           JWType = dr["JobWorkType"].ToString(),
-                                                                          BOMInd = dr["BOMInd"].ToString(),
+                                                                          BOMInd = string.IsNullOrEmpty(dr["BOMInd"]?.ToString()) ? ' ' : dr["BOMInd"].ToString()[0],
+
                                                                           ProduceUnproduce = dr["producedUnproduced"].ToString(),
                                                                           BOMNO = dr["BOMNO"].ToString(),
                                                                           PartCode = dr["PartCode"].ToString(),
@@ -660,7 +578,7 @@ namespace eTactWeb.Data.DAL
         //    }
         //    return _ResponseResult;
         //}
-        public async Task<ResponseResult> SaveCustomerJWI(CustomerJobWorkIssueModel model, DataTable JWIGrid)
+        public async Task<ResponseResult> SaveCustomerJWI(CustomerJobWorkIssueModel model, DataTable JWIGrid, DataTable ChallanGrid)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -687,9 +605,9 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@CustJwIssEntryid", model.EntryId));
                 SqlParams.Add(new SqlParameter("@CustJwIssYearCode", model.YearCode));
-                SqlParams.Add(new SqlParameter("@CustJwIssEntryDate", entryDt));
+                SqlParams.Add(new SqlParameter("@CustJwIssEntryDate", model.EntryDate));
                 SqlParams.Add(new SqlParameter("@CustJwIssChallanNo", model.ChallanNo));
-                SqlParams.Add(new SqlParameter("@CustJwIssChallanBillDate", challanDt));
+                SqlParams.Add(new SqlParameter("@CustJwIssChallanBillDate", model.ChallanDate));
                 SqlParams.Add(new SqlParameter("@AccountCode", model.Account_Code));
                 SqlParams.Add(new SqlParameter("@CustomerAddress", model.CustomerAddress));
                 SqlParams.Add(new SqlParameter("@CustState", model.State));
@@ -699,10 +617,10 @@ namespace eTactWeb.Data.DAL
                 //SqlParams.Add(new SqlParameter("@BillNo", model.EntryBill));  // Empty BillNo
                 SqlParams.Add(new SqlParameter("@transporter", model.TransporterName));
                 SqlParams.Add(new SqlParameter("@VehicleNo", model.VehicleNo));
-                SqlParams.Add(new SqlParameter("@TimeOfRemoval", RemovalTime));
+                SqlParams.Add(new SqlParameter("@TimeOfRemoval", model.EntryDate));
                 SqlParams.Add(new SqlParameter("@DispatchThrough", model.DispatchFrom));
                 SqlParams.Add(new SqlParameter("@DispatchTo", model.DispatchTo));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", dtEntry));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", model.EntryDate));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.EntryById));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryMachineName));
                 //SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
@@ -717,6 +635,7 @@ namespace eTactWeb.Data.DAL
                 //SqlParams.Add(new SqlParameter("@BillyearCode", model.YearCode)); 
                 SqlParams.Add(new SqlParameter("@NetAmount", model.NetAmount));
                 SqlParams.Add(new SqlParameter("@DTCustJwIss", JWIGrid));
+                SqlParams.Add(new SqlParameter("@DTSSGridAdjust", ChallanGrid));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_CustomerJobworkIssueMainDetail", SqlParams);
             }
@@ -831,7 +750,8 @@ namespace eTactWeb.Data.DAL
                             PacketsDetail = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["PacketsDetail"].ToString()) ? "" : DS.Tables[0].Rows[0]["PacketsDetail"].ToString(),
                             OtherDetail = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["OtherDetail"].ToString()) ? "" : DS.Tables[0].Rows[0]["OtherDetail"].ToString(),
                             HSNNo = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["HSNNo"].ToString()) ? "" : DS.Tables[0].Rows[0]["HSNNo"].ToString(),
-                            BOMInd = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["BOMInd"].ToString()) ? "" : DS.Tables[0].Rows[0]["BOMInd"].ToString(),
+                            BOMInd = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["BOMInd"]?.ToString()) ? ' ' : DS.Tables[0].Rows[0]["BOMInd"].ToString()[0],
+
                             ChallanAdjustRate = DS.Tables[0].Rows[0]["ChallanAdjustRate"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["ChallanAdjustRate"]),
                             StdPacking = DS.Tables[0].Rows[0]["StdPacking"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["StdPacking"]),
                             color = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["color"].ToString()) ? "" : DS.Tables[0].Rows[0]["color"].ToString(),

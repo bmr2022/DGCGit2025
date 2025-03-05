@@ -90,7 +90,33 @@ namespace eTactWeb.Data.DAL
             return oDataSet;
         }
 
-        public async Task<ResponseResult> SaveData(HRPFESIMasterModel model)
+        internal async Task<DataSet> GetSalaryHead()
+        {
+            var oDataSet = new DataSet();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "ApplicableOnSalaryHead"));
+                var _ResponseResult = await _DataLogicDAL.ExecuteDataSet("HRSPPFESIMaster", SqlParams);
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    _ResponseResult.Result.Tables[0].TableName = "ApplicableOnSalaryHeadList";
+
+                    oDataSet = _ResponseResult.Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return oDataSet;
+        }
+
+        public async Task<ResponseResult> SaveData(HRPFESIMasterModel model, List<string> HRSalaryHeadDT)
         {
             try
             {
@@ -131,13 +157,18 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@PFBankName", model.PFBankName);
                     oCmd.Parameters.AddWithValue("@PFBankAddress", model.PFBankAddress);
                     oCmd.Parameters.AddWithValue("@PFRegistationNo", model.PFRegistationNo);
+                    string HRSalaryHead = string.Join(",", HRSalaryHeadDT);
+                    
 
+
+                    oCmd.Parameters.AddWithValue("@SalaryIdList", HRSalaryHead);
+                    
 
                     oCmd.Parameters.AddWithValue("@ActualEntryDate",
                 string.IsNullOrEmpty(model.CreatedOn) ? DBNull.Value : DateTime.Parse(model.CreatedOn).ToString("dd/MMM/yyyy"));
                   
                 
-                    if (model.Mode == "UPDATE")
+                    if (model.Mode == "Update")
                     {
                         oCmd.Parameters.AddWithValue("@LastupdatedBy", model.UpdatedBy);
                         oCmd.Parameters.AddWithValue("@UpdatationDate",
@@ -281,7 +312,7 @@ namespace eTactWeb.Data.DAL
                     var oDataSet = new DataSet();
                     oDataSet = _ResponseResult.Result;
                     var DTPFESIMasterDetail = oDataSet.Tables[0];
-                    //var DEmpCategDetail = oDataSet.Tables[1];
+                    var DSalaryHeadDetail = oDataSet.Tables[1];
                     //var DDeptWiseCategDetail = oDataSet.Tables[2];
 
                     if (oDataSet.Tables.Count > 0 && DTPFESIMasterDetail.Rows.Count > 0)
@@ -310,32 +341,20 @@ namespace eTactWeb.Data.DAL
                         model.PFBankAddress = DTPFESIMasterDetail.Rows[0]["ESIBenifitsCovered"].ToString();
                         model.PFRegistationNo = DTPFESIMasterDetail.Rows[0]["ESIBenifitsCovered"].ToString();
                         model.CreatedBy = Convert.ToInt32(DTPFESIMasterDetail.Rows[0]["ActualEntryBy"]);         
-                        //model.UpdatedBy = Convert.ToInt32(DTPFESIMasterDetail.Rows[0]["LastupdatedBy"]);
-                        //model.UpdatedOn = Convert.ToDateTime(DTPFESIMasterDetail.Rows[0]["UpdatationDate"]).ToString("dd/MM/yyyy");
+                        
                         model.CreatedOn = Convert.ToDateTime(DTPFESIMasterDetail.Rows[0]["ActualEntryDate"]).ToString("dd/MM/yyyy");
 
-
-
-                       
-
-
                         
-
-
-                        //if (!string.IsNullOrEmpty(DTPFESIMasterDetail.Rows[0]["UpdatedByName"].ToString()))
-                        //{
-                        //    model.LastUpdatedOn = DTPFESIMasterDetail.Rows[0]["UpdatedByName"].ToString();
-
-                        //    model.LastUpdatedBy = Convert.ToInt32(DTPFESIMasterDetail.Rows[0]["LastUpdatedBy"]);
-                        //    model.LastUpdatedOn = string.IsNullOrEmpty(DTPFESIMasterDetail.Rows[0]["LastUpdatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(DTPFESIMasterDetail.Rows[0]["LastUpdatedOn"]);
-                        //}
+                            model.UpdatedBy = Convert.ToInt32(DTPFESIMasterDetail.Rows[0]["LastupdatedBy"]);
+                            model.UpdatedOn = Convert.ToDateTime(DTPFESIMasterDetail.Rows[0]["UpdatationDate"]).ToString("dd/MM/yyyy");
+                       
                     }
-                    //if (oDataSet.Tables.Count > 0 && DEmpCategDetail.Rows.Count > 0)
-                    //{
-                    //    DEmpCategDetail.TableName = "LeaveEmpCategDetail";
-                    //    model.EmpCategDetailList = CommonFunc.DataTableToList<LeaveEmpCategDetail>(DEmpCategDetail);
-                    //    model.RestrictedToEmployeeCategory = model.EmpCategDetailList.Select(x => x.CategoryId).ToList();
-                    //}
+                    if (oDataSet.Tables.Count > 0 && DSalaryHeadDetail.Rows.Count > 0)
+                    {
+                        DSalaryHeadDetail.TableName = "LeaveEmpCategDetail";
+                        model.ApplicableOnSalaryHeadDetailList = CommonFunc.DataTableToList<ApplicableOnSalaryHeadDetail>(DSalaryHeadDetail);
+                        model.ApplicableOnSalaryHead = model.ApplicableOnSalaryHeadDetailList.Select(x => x.SalHeadEntryId).ToList();
+                    }
 
                     //if (oDataSet.Tables.Count > 0 && DDeptWiseCategDetail.Rows.Count > 0)
                     //{

@@ -87,11 +87,12 @@ namespace eTactWeb.DOM.Models
 
     public class CustomerJobWorkIssueDetail : TimeStamp
     {
-        public int CustJwIssEntryId { get; set; }
-        public int CustJwIssYearCode { get; set; }
+        public int? CustJwIssEntryId { get; set; }
+        public int? CustJwIssYearCode { get; set; }
         public int SEQNo { get; set; }
         public string ProduceUnproduce { get; set; }
         public int SONO { get; set; }
+        public string GridSONO { get; set; }
         public int SOYear { get; set; }
         public string? SoDate { get; set; }
         public string? SOAmmDate { get; set; }
@@ -100,10 +101,12 @@ namespace eTactWeb.DOM.Models
         public string? SchNo { get; set; }
         public string? SchDate { get; set; }
         public int? SchYearcode { get; set; }
+        public string? fromChallanOrSalebill { get; set; }
+        public string? ItemAdjustmentRequired { get; set; }
 
         public string PartCode { get; set; }
         public string ItemName { get; set; }
-        public string BOMInd { get; set; }
+        public char BOMInd { get; set; }
         public string ChallanNo { get; set; }
         public int ItemCode { get; set; }
         public int StoreId { get; set; }
@@ -115,9 +118,11 @@ namespace eTactWeb.DOM.Models
         public int TotalStock { get; set; }
         public string ItemSize { get; set; }
         public string PacketsDetail { get; set; }
-        public int PendQty { get; set; }
-        public int ChallanQty { get; set; }
+        public int? PendQty { get; set; }
+        public int? ChallanQty { get; set; }
         public decimal Rate { get; set; }
+        public decimal QriginalRecQty { get; set; }
+        public string IdealScrap { get; set; }
         public int ItemAmount { get; set; }
         public int Discountper { get; set; }
         public int DiscountAmt { get; set; }
@@ -148,6 +153,7 @@ namespace eTactWeb.DOM.Models
         public string? CustJWRecChallanNo { get; set; }
         public DateTime? CustJWRecEntryDate { get; set; }
         public long? RecItemcode { get; set; }
+        public string? RecItemName { get; set; }
         public long? CustJWIssEntryid { get; set; }
         public long? CustJWIssYearCode { get; set; }
         public string? CustJWIssChallanNo { get; set; }
@@ -161,7 +167,10 @@ namespace eTactWeb.DOM.Models
         public DateTime? TillDate { get; set; }
         public float? TotalSQty { get; set; }
         public float? BOMQty { get; set; }
+        public string? Through { get; set; }
+        public float? QtyToBeRec { get; set; }
         public DateTime? BOMRecDate { get; set; }
+        public int? BomRevNo { get; set; }
         public long? ProcessID { get; set; }
         public float? IssQty { get; set; }
         public float? TotalAdjQty { get; set; }
@@ -174,8 +183,12 @@ namespace eTactWeb.DOM.Models
         public string? PreRecChallanNo { get; set; }
         public float? ScrapQtyAgainstRecQty { get; set; }
         public string? Recbatchno { get; set; }
+        public int? RecItemCode { get; set; }
+        public string? RecPartCode { get; set; }
         public string? Recuniquebatchno { get; set; }
         public string? Issbatchno { get; set; }
+        public string? IssPartCode { get; set; }
+        public string? IssItemName { get; set; }
         public string? Issuniquebatchno { get; set; }
         public string? ScrapAdjusted { get; set; }
     }

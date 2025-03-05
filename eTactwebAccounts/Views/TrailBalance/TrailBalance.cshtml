@@ -1,0 +1,601 @@
+﻿@model eTactWeb.DOM.Models.TrailBalanceModel;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>Trail Balance</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+                                @* <input type="hidden" value="@Model.YearCode" asp-for="YearCode" />
+                                <input type="hidden" value="@Model.Storeid" asp-for="Storeid" /> *@
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                              
+                                    
+                                    <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" class="form-control" />
+                               
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportType" class="form-label">ReportType</label>
+                                    <select asp-for="ReportType" class="form-select">
+                                        <option value="PRIMARYGROUPSUMMARY" selected>Trail Balance Summary</option>
+                                        <option value="PRIMARYGROUPdetail">Trail Balance Detail</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                    <label class="form-label">Global search</label>
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+
+                                <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetTrailBalanceDetailsData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TrailBalance" asp-action="TrailBalance">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    @* <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Trail Balance Details Grid</strong>
+                                    </button> *@
+                                    <button id="dynamicButton" class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong id="buttonTitle" style="text-transform:uppercase">
+                                            <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
+                                               style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+                                            <span id="dynamicText"></span>
+                                        </strong>
+                                    </button>
+                                </h2>
+
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12 divStockRegister" id="divStockMainRegister">
+                                                    @* <partial name="_TrailBalanceSummaryGrid" /> *@
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end mt-2 " id="reportFields">
+                                               @*  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
+                                                    <label class="form-label">Total Dr Amt</label>
+                                                    <input id="totDr" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                    <label class="form-label">Total Cr Amt</label>
+                                                    <input id="totCr" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                    <label class="form-label">Total Opening</label>
+                                                    <input id="totOpening" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                    <label class="form-label">Total CurrDr</label>
+                                                    <input id="totCurrDr" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                    <label class="form-label">Total CurrCr </label>
+                                                    <input id="totCurrCr" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                    <label class="form-label">Total NetCurr Amt</label>
+                                                    <input id="totNetCurrentAmt" class="form-control" readonly />
+                                                </div>
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                    <label class="form-label">Total Net Amt</label>
+                                                    <input id="totNetAmt" class="form-control" readonly />
+                                                </div>
+                                              
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total GroupOpn Dr</label>
+                                                            <input id="totGroupOpnDr" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total GroupOpn Cr</label>
+                                                            <input id="totGroupOpnCr" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total Group Opening</label>
+                                                            <input id="totGroupOpening" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total GroupCurr Dr</label>
+                                                            <input id="totGroupCurrDrAmt" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total GroupCurr Cr</label>
+                                                            <input id="totGroupCurrCrAmt" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total Group NetAmt</label>
+                                                            <input id="totGroupNetAmt" class="form-control" readonly />
+                                                        </div> *@
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        $(document).ready(function () {
+            console.log("Ready");
+
+            function loadReportFields(reportType) {
+                let html = '';
+                debugger
+                if (reportType === "PRIMARYGROUPdetail") {
+                    html = `
+                              <div class="d-flex flex-wrap">
+                                <!-- First Line (7 Inputs) -->
+                                <div class="col-md-2" style="width:120px;">
+                                    <label class="form-label">Total Dr Amt</label>
+                                    <input id="totDr" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total Cr Amt</label>
+                                    <input id="totCr" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total Opening</label>
+                                    <input id="totOpening" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total CurrDr</label>
+                                    <input id="totCurrDr" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total CurrCr </label>
+                                    <input id="totCurrCr" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total Net Amt</label>
+                                    <input id="totNetAmt" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total GroupOpn Dr</label>
+                                    <input id="totGroupOpnDr" class="form-control" readonly />
+                                </div>
+
+                                 <div class="col-md-2" style="width:120px;margin-left:10px;">
+                                    <label class="form-label">Total GroupOpn Cr</label>
+                                    <input id="totGroupOpnCr" class="form-control" readonly />
+                                </div>
+                                         <div class="col-md-2" style="width:160px; margin-left:10px;">
+                                            <label class="form-label">Total Group Opening</label>
+                                            <input id="totGroupOpening" class="form-control" readonly />
+                                        </div>
+                                <!-- Second Line (Remaining Inputs) -->
+                                <div class="w-100"></div> <!-- Forces next row -->
+
+                               
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total GroupCurr Dr</label>
+                                    <input id="totGroupCurrDrAmt" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total GroupCurr Cr</label>
+                                    <input id="totGroupCurrCrAmt" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total Group NetAmt</label>
+                                    <input id="totGroupNetAmt" class="form-control" readonly />
+                                </div>
+                            </div>
+
+                        `;
+                } else if (reportType === "PRIMARYGROUPSUMMARY") {
+                    html = `
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
+                                <label class="form-label">Total Dr Amt</label>
+                                <input id="totDr" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total Cr Amt</label>
+                                <input id="totCr" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total Opening</label>
+                                <input id="totOpening" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total CurrDr</label>
+                                <input id="totCurrDr" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total CurrCr </label>
+                                <input id="totCurrCr" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total NetCurr Amt</label>
+                                <input id="totNetCurrentAmt" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total Net Amt</label>
+                                <input id="totNetAmt" class="form-control" readonly />
+                            </div>
+                        `;
+                }
+
+                $("#reportFields").html(html);
+            }
+
+            // Trigger when ReportType changes
+            $("#ReportType").change(function () {
+                let reportType = $(this).val();
+                loadReportFields(reportType);
+            });
+
+            // Load initial report type if set
+            loadReportFields($("#ReportType").val());
+
+            // GetServerDate();
+                // $(".bold-row").each(function () {
+                //     debugger
+                //     $(this).css({ "font-weight": "bold", "font-size": "16px" });
+                //     $(this).find("input").css("color", "green");
+                // });
+
+            $(".bold-row").each(function () {
+                debugger;
+                $(this).css({ "font-weight": "bold", "font-size": "16px", "color": "green" });
+
+                // Change text color inside input fields
+                $(this).find("input").css("color", "green");
+            });
+
+            function updateButtonTitle() {
+                debugger
+                let reportType = $("#ReportType").val();
+                let newTitle = (reportType === "PRIMARYGROUPSUMMARY") ? "Trail Balance Summary" : "Trail Balance Detail";
+
+                $("#dynamicText").text(newTitle);
+            }
+
+            // Update title on page load
+            updateButtonTitle();
+
+            // Update title when dropdown selection changes
+            $("#ReportType").change(updateButtonTitle);
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            $('#totalRows').text($('#divStockRegisterBody tr').length);
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#ReportType').select2();
+            //$('#VoucherType').select2();
+
+            GetTrailBalanceDetailsData();
+          
+        });
+
+        function selection(CurrentRow) {
+
+            //$(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#divStockRegisterBody tr").each(function () {
+                $(this).removeAttr("style"); // Remove any inline styles
+            });
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+        $("#ReportType").change(function () {
+            GetTrailBalanceDetailsData();
+        });
+
+
+        function GetTrailBalanceDetailsData() {
+
+            //var reportType = $('#ReportType').val();
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var EntryByMachine = $('#EntryByMachine').val();
+            var ReportType = $('#ReportType').val();
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetTrailBalanceDetailsData", "TrailBalance")",
+                data: {
+                    FromDate: FromDate,
+                    ToDate: ToDate,
+                    EntryByMachine: EntryByMachine,
+                    ReportType: ReportType
+                },
+                success: function (response) {
+                    $('#divStockMainRegister').html(response);
+
+                    var totalRows = $('#divStockMainRegister tr').length;
+                    $('#totalRows').text(totalRows);
+                    countAllTotal();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching BOM tree data:", error);
+                }
+            });
+        }
+
+        function countAllTotal() {
+            debugger
+            var rowCount = $('#divStockRegisterBody tr').length;
+
+            var TotCr = 0;
+            var TotDr = 0;
+            var TotOpening = 0;
+            var TotCurrDr = 0;
+            var TotCurrCr = 0;
+            var TotNetCurr = 0;
+            var TotNet = 0;
+            var TotGroupOpnDr = 0;
+            var TotGroupOpnCr = 0;
+            var TotGroupOpening = 0;
+            var TotGroupCuurDr = 0;
+            var TotGroupCuurCr = 0;
+            var TotGroupNet = 0;
+            for (var i = 1; i <= rowCount; i++) {
+
+                TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
+                TotCr += $('#totCrG-' + i).text() == '' ? 0 : parseFloat($('#totCrG-' + i).text());
+                TotOpening += $('#totOpeningG-' + i).text() == '' ? 0 : parseFloat($('#totOpeningG-' + i).text());
+                TotCurrDr += $('#totCurrDrG-' + i).text() == '' ? 0 : parseFloat($('#totCurrDrG-' + i).text());
+                TotCurrCr += $('#totCurrCrG-' + i).text() == '' ? 0 : parseFloat($('#totCurrCrG-' + i).text());
+                TotNetCurr += $('#totNetCurrAmtG-' + i).text() == '' ? 0 : parseFloat($('#totNetCurrAmtG-' + i).text());
+                TotNet += $('#totNetAmtG-' + i).text() == '' ? 0 : parseFloat($('#totNetAmtG-' + i).text());
+
+                TotGroupOpnDr += $('#totGroupOpnDrG-' + i).text() == '' ? 0 : parseFloat($('#totGroupOpnDrG-' + i).text());
+                TotGroupOpnCr += $('#totGroupOpnCrG-' + i).text() == '' ? 0 : parseFloat($('#totGroupOpnCrG-' + i).text());
+                TotGroupOpening += $('#totGroupOpeningG-' + i).text() == '' ? 0 : parseFloat($('#totGroupOpeningG-' + i).text());
+                TotGroupCuurDr += $('#totGroupCurrDrAmtG-' + i).text() == '' ? 0 : parseFloat($('#totGroupCurrDrAmtG-' + i).text());
+                TotGroupCuurCr += $('#totGroupCurrCrAmtG-' + i).text() == '' ? 0 : parseFloat($('#totGroupCurrCrAmtG-' + i).text());
+                TotGroupNet += $('#totGroupNetAmtG-' + i).text() == '' ? 0 : parseFloat($('#totGroupNetAmtG-' + i).text());
+
+                //if(totAmount < 0){
+                //    $('#SAGridRow-' + i).css('background-color', 'red');
+                //}
+            }
+
+
+            $('#totCr').val(isNaN(TotCr) ? 0 : TotCr.toFixed(2));
+            $('#totDr').val(isNaN(TotDr) ? 0 : TotDr.toFixed(2));
+            $('#totOpening').val(isNaN(TotOpening) ? 0 : TotOpening.toFixed(2));
+            $('#totCurrDr').val(isNaN(TotCurrDr) ? 0 : TotCurrDr.toFixed(2));
+            $('#totCurrCr').val(isNaN(TotCurrCr) ? 0 : TotCurrCr.toFixed(2));
+            $('#totNetCurrentAmt').val(isNaN(TotNetCurr) ? 0 : TotNetCurr.toFixed(2));
+            $('#totNetAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+
+            $('#totGroupOpnDr').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupOpnCr').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupOpening').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupCurrDrAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupCurrCrAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupNetAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+        }
+        function getFirstDayOfMonth(dateString) {
+            const [day, month, year] = dateString.split('/');
+
+            // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
+            const currentDate = new Date(year, month - 1, day);
+
+            // Set the date to the 1st day of the month
+            currentDate.setDate(1);
+
+            // Format the result as dd/mm/YYYY
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
+        }
+
+        $('#sendToExcel').click(function () {
+            let table = $("#ReportTable");
+            console.log(table);
+            TableToExcel.convert(table[0], {
+                name: `ReportTable.xlsx`,
+                sheet: {
+                    name: 'ReportTable'
+                }
+            });
+        });
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#ReportTable');
+            var rows = table.find('#divStockRegisterBody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divStockRegisterBody').append(row);
+            });
+        }
+        
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+
+
+
+        function DeleteRow(i) {
+
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+
+
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+
+                $(this).find('td[id^="amount-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'amount-' + (index + 1));
+                });
+
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            countAllTotal();
+            $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+        }
+
+
+    </script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    <!-- jQuery, Select2, and table-to-excel scripts -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.13/jquery.validate.unobtrusive.min.js"></script>
+
+}
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    .bold-row input {
+        color: green !important;
+    }
+
+</style>

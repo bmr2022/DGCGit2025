@@ -14,5 +14,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveHrShiftMaster(HRShiftMasterModel model);
         Task<ResponseResult> GetDashBoardData();
         Task<HRShiftMasterModel> GetDashBoardDetailData();
+        Task<ResponseResult> DeleteByID(int ID);
+        Task<HRShiftMasterModel> GetViewByID(int ID);
     }
 }
