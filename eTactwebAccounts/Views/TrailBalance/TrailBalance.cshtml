@@ -97,8 +97,8 @@
                                                     @* <partial name="_TrailBalanceSummaryGrid" /> *@
                                                 </div>
                                             </div>
-                                            <div class="d-flex justify-content-end mt-2 ">
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
+                                            <div class="d-flex justify-content-end mt-2 " id="reportFields">
+                                               @*  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
                                                     <label class="form-label">Total Dr Amt</label>
                                                     <input id="totDr" class="form-control" readonly />
                                                 </div>
@@ -126,7 +126,31 @@
                                                     <label class="form-label">Total Net Amt</label>
                                                     <input id="totNetAmt" class="form-control" readonly />
                                                 </div>
-
+                                              
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total GroupOpn Dr</label>
+                                                            <input id="totGroupOpnDr" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total GroupOpn Cr</label>
+                                                            <input id="totGroupOpnCr" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total Group Opening</label>
+                                                            <input id="totGroupOpening" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total GroupCurr Dr</label>
+                                                            <input id="totGroupCurrDrAmt" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total GroupCurr Cr</label>
+                                                            <input id="totGroupCurrCrAmt" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total Group NetAmt</label>
+                                                            <input id="totGroupNetAmt" class="form-control" readonly />
+                                                        </div> *@
                                             </div>
                                         </div>
                                     </div>
@@ -150,10 +174,128 @@
 
         $(document).ready(function () {
             console.log("Ready");
-            // GetServerDate();
-            $(".bold-row").each(function () {
+
+            function loadReportFields(reportType) {
+                let html = '';
                 debugger
-                $(this).css({ "font-weight": "bold", "font-size": "16px" });
+                if (reportType === "PRIMARYGROUPdetail") {
+                    html = `
+                              <div class="d-flex flex-wrap">
+                                <!-- First Line (7 Inputs) -->
+                                <div class="col-md-2" style="width:120px;">
+                                    <label class="form-label">Total Dr Amt</label>
+                                    <input id="totDr" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total Cr Amt</label>
+                                    <input id="totCr" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total Opening</label>
+                                    <input id="totOpening" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total CurrDr</label>
+                                    <input id="totCurrDr" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total CurrCr </label>
+                                    <input id="totCurrCr" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total Net Amt</label>
+                                    <input id="totNetAmt" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total GroupOpn Dr</label>
+                                    <input id="totGroupOpnDr" class="form-control" readonly />
+                                </div>
+
+                                 <div class="col-md-2" style="width:120px;margin-left:10px;">
+                                    <label class="form-label">Total GroupOpn Cr</label>
+                                    <input id="totGroupOpnCr" class="form-control" readonly />
+                                </div>
+                                         <div class="col-md-2" style="width:160px; margin-left:10px;">
+                                            <label class="form-label">Total Group Opening</label>
+                                            <input id="totGroupOpening" class="form-control" readonly />
+                                        </div>
+                                <!-- Second Line (Remaining Inputs) -->
+                                <div class="w-100"></div> <!-- Forces next row -->
+
+                               
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total GroupCurr Dr</label>
+                                    <input id="totGroupCurrDrAmt" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total GroupCurr Cr</label>
+                                    <input id="totGroupCurrCrAmt" class="form-control" readonly />
+                                </div>
+                                <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                    <label class="form-label">Total Group NetAmt</label>
+                                    <input id="totGroupNetAmt" class="form-control" readonly />
+                                </div>
+                            </div>
+
+                        `;
+                } else if (reportType === "PRIMARYGROUPSUMMARY") {
+                    html = `
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
+                                <label class="form-label">Total Dr Amt</label>
+                                <input id="totDr" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total Cr Amt</label>
+                                <input id="totCr" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total Opening</label>
+                                <input id="totOpening" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total CurrDr</label>
+                                <input id="totCurrDr" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total CurrCr </label>
+                                <input id="totCurrCr" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total NetCurr Amt</label>
+                                <input id="totNetCurrentAmt" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total Net Amt</label>
+                                <input id="totNetAmt" class="form-control" readonly />
+                            </div>
+                        `;
+                }
+
+                $("#reportFields").html(html);
+            }
+
+            // Trigger when ReportType changes
+            $("#ReportType").change(function () {
+                let reportType = $(this).val();
+                loadReportFields(reportType);
+            });
+
+            // Load initial report type if set
+            loadReportFields($("#ReportType").val());
+
+            // GetServerDate();
+                // $(".bold-row").each(function () {
+                //     debugger
+                //     $(this).css({ "font-weight": "bold", "font-size": "16px" });
+                //     $(this).find("input").css("color", "green");
+                // });
+
+            $(".bold-row").each(function () {
+                debugger;
+                $(this).css({ "font-weight": "bold", "font-size": "16px", "color": "green" });
+
+                // Change text color inside input fields
+                $(this).find("input").css("color", "green");
             });
 
             function updateButtonTitle() {
@@ -237,6 +379,12 @@
             var TotCurrCr = 0;
             var TotNetCurr = 0;
             var TotNet = 0;
+            var TotGroupOpnDr = 0;
+            var TotGroupOpnCr = 0;
+            var TotGroupOpening = 0;
+            var TotGroupCuurDr = 0;
+            var TotGroupCuurCr = 0;
+            var TotGroupNet = 0;
             for (var i = 1; i <= rowCount; i++) {
 
                 TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
@@ -246,6 +394,14 @@
                 TotCurrCr += $('#totCurrCrG-' + i).text() == '' ? 0 : parseFloat($('#totCurrCrG-' + i).text());
                 TotNetCurr += $('#totNetCurrAmtG-' + i).text() == '' ? 0 : parseFloat($('#totNetCurrAmtG-' + i).text());
                 TotNet += $('#totNetAmtG-' + i).text() == '' ? 0 : parseFloat($('#totNetAmtG-' + i).text());
+
+                TotGroupOpnDr += $('#totGroupOpnDrG-' + i).text() == '' ? 0 : parseFloat($('#totGroupOpnDrG-' + i).text());
+                TotGroupOpnCr += $('#totGroupOpnCrG-' + i).text() == '' ? 0 : parseFloat($('#totGroupOpnCrG-' + i).text());
+                TotGroupOpening += $('#totGroupOpeningG-' + i).text() == '' ? 0 : parseFloat($('#totGroupOpeningG-' + i).text());
+                TotGroupCuurDr += $('#totGroupCurrDrAmtG-' + i).text() == '' ? 0 : parseFloat($('#totGroupCurrDrAmtG-' + i).text());
+                TotGroupCuurCr += $('#totGroupCurrCrAmtG-' + i).text() == '' ? 0 : parseFloat($('#totGroupCurrCrAmtG-' + i).text());
+                TotGroupNet += $('#totGroupNetAmtG-' + i).text() == '' ? 0 : parseFloat($('#totGroupNetAmtG-' + i).text());
+
                 //if(totAmount < 0){
                 //    $('#SAGridRow-' + i).css('background-color', 'red');
                 //}
@@ -259,6 +415,13 @@
             $('#totCurrCr').val(isNaN(TotCurrCr) ? 0 : TotCurrCr.toFixed(2));
             $('#totNetCurrentAmt').val(isNaN(TotNetCurr) ? 0 : TotNetCurr.toFixed(2));
             $('#totNetAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+
+            $('#totGroupOpnDr').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupOpnCr').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupOpening').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupCurrDrAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupCurrCrAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupNetAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
         }
         function getFirstDayOfMonth(dateString) {
             const [day, month, year] = dateString.split('/');
@@ -429,6 +592,10 @@
     .descCol {
         font-size: 15px;
         vertical-align: super;
+    }
+
+    .bold-row input {
+        color: green !important;
     }
 
 </style>
