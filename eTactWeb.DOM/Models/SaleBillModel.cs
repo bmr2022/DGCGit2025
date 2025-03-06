@@ -24,6 +24,8 @@ namespace eTactWeb.DOM.Models
         //public int SaleBillEntryId { get; set; }
         //public int SaleBillYearCode { get; set; }
         public int SeqNo { get; set; }
+        public string BOMInd { get; set; }
+        public string ProducedUnprod { get; set; }
         public string? SONO { get; set; }
         public string? CustOrderNo { get; set; }
         public int SOYearCode { get; set; }
@@ -95,8 +97,6 @@ namespace eTactWeb.DOM.Models
     }
     public class SaleBillModel : SaleBillDetail
     {
-      
-
         public int SaleBillEntryId { get; set; }
         public int SaleBillYearCode { get; set; }
         public string? SaleBillEntryDate { get; set; }
@@ -226,7 +226,7 @@ namespace eTactWeb.DOM.Models
         public string? TotalRoundOff { get; set; }
         [Column(TypeName = "decimal(10, 4)")]
         public decimal TotalRoundOffAmt { get; set; }
-
+        
         public string? DashboardTypeBack { get; set; }
         public string? FromDateBack { get; set; }
         public string? ToDateBack { get; set; }

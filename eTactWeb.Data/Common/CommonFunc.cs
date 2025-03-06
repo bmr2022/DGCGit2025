@@ -1378,7 +1378,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxRoundOff"
                         && typeProperty.PropertyInfo.Name != "TxSeqNo"
                         && typeProperty.PropertyInfo.Name != "TxTaxType"
-                        && typeProperty.PropertyInfo.Name != "TxTaxTypeName"
+                        && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
                         && typeProperty.PropertyInfo.Name != "TxType" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
                         && typeProperty.PropertyInfo.Name != "YesNo" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "CreatedBy" && typeProperty.PropertyInfo.Name != "CreatedOn" && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "Mode"
