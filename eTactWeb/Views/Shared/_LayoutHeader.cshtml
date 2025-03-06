@@ -348,6 +348,24 @@
                                         </ul>
                                     </li>
 
+                                    <li>
+                                        <a class="dropdown-item" href="#">Leave Opening Master &raquo; </a>
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRLeaveOpeningMaster" asp-route-ID="0" asp-controller="HRLeaveOpeningMaster" id="HRLeaveOpeningMaster">
+                                                    <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i>Leave Opening Master
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-action="HRLeaveOpeningMasterDashBoard" asp-controller="HRLeaveOpeningMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+
+                                            </li>
+
+                                        </ul>
+                                    </li>
+
 
                                     
                                    
@@ -2084,6 +2102,16 @@
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
                                     </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                    <a class="dropdown-item ReportsRequsition" asp-action="AccGroupLedger" asp-controller="AccGroupLedger">
+                                            <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                               style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        Group Ledger
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
+                                    </li>
+
                                     <li><hr class="dropdown-divider"></li>
 
                                     <li>

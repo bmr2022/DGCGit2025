@@ -118,6 +118,7 @@ namespace eTactWeb
             services.TryAddScoped<IItemMaster, ItemMasterBLL>();
             services.TryAddScoped<IHRSalaryHeadMaster, HRSalaryHeadMasterBLL>();
             services.TryAddScoped<IHRWeekOffMaster, HRWeekOffMasterBLL>();
+            services.TryAddScoped<IHRLeaveOpeningMaster, HRLeaveOpeningMasterBLL>();
             services.TryAddScoped<IHRLeaveMaster, HRLeaveMasterBLL>();
             services.TryAddScoped<IHRPFESIMaster, HRPFESIMasterBLL>();
             services.TryAddScoped<IHRHolidaysMaster, HRHolidaysMasterBLL>();
@@ -141,6 +142,7 @@ namespace eTactWeb
             services.TryAddScoped<ILedgerPartyWiseOpening, LedgerPartyWiseOpeningBLL>();
             services.TryAddScoped<IBankReceipt, BankReceiptBLL>();
             services.TryAddScoped<ITrailBalance, TrailBalanceBLL>();
+            services.TryAddScoped<IAccGroupLedger, AccGroupLedgerBLL>();
             services.TryAddScoped<IProdPlanStatus, ProdPlanStatusBLL>();
             services.TryAddScoped<IHRShiftMaster, HRShiftMasterBLL>();
             services.TryAddScoped<IIssueAgainstProdSchedule, IssueAgainstProdScheduleBLL>();
