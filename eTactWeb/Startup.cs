@@ -142,6 +142,7 @@ namespace eTactWeb
             services.TryAddScoped<ILedgerPartyWiseOpening, LedgerPartyWiseOpeningBLL>();
             services.TryAddScoped<IBankReceipt, BankReceiptBLL>();
             services.TryAddScoped<ITrailBalance, TrailBalanceBLL>();
+            services.TryAddScoped<IAccGroupLedger, AccGroupLedgerBLL>();
             services.TryAddScoped<IProdPlanStatus, ProdPlanStatusBLL>();
             services.TryAddScoped<IHRShiftMaster, HRShiftMasterBLL>();
             services.TryAddScoped<IIssueAgainstProdSchedule, IssueAgainstProdScheduleBLL>();
