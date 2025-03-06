@@ -129,6 +129,8 @@
                                                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Seq No</th>
                                                     <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom/Ind</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/UnProd</th>
                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
                                                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
@@ -373,7 +375,7 @@
 {
     <script>
         $(document).ready(function () {
-            
+
             GetServerDate();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
@@ -384,7 +386,7 @@
                 BasicTotal();
                 $('#DT').prop("checked", true);
                 $('#PN1').prop("checked", true);
-                FillCustomerList("Y");
+                // FillCustomerList("Y");
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
 
                 var taxRowCount = $('#divTaxGrid tr').length;
@@ -416,8 +418,8 @@
             if ($('#SONO').val() == '') {
                 $('#ItemSA').prop("disabled", false);
             }
-
-            FillCustomerList("");
+            var ischeckedAc = $('#PN1').is(':checked') == true ? 'Y' : 'N';
+            FillCustomerList(ischeckedAc);
             FillConsigneeList("");
             var dtValue = $('#DT').prop("checked") == true ? "T" : "F";
 
@@ -1330,6 +1332,8 @@
                 "ProdSchDate": $('#ProdSchDate').val(),
                 "CustomerPartCode": $('#CustomerPartCode').val(),
                 "SchdeliveryDate": $('#SchdeliveryDate').val(),
+                "BOMInd": $('#BOMInd').val(),
+                "ProducedUnprod": $('#ProducedUnprod').val(),
                 "SeqNo": parseInt($('#SeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#SeqNo').val())
             }
 
@@ -1345,10 +1349,13 @@
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divSaleBillList').html(result);
+                        var rowCount = $('#divSaleBillList tr').length;
+                        debugger
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
-
+                    
                         $('#Uniquebatchno,#Batchno,#Qty').val(0);
                         $('#LotStock,#TotalStock').val("");
+                        $('#BOMInd,#ProducedUnprod').val('');
                         //$('#HSNNo').val("");
                         //$('#Unit,#AltUnit').val("");
                         $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
@@ -1390,7 +1397,6 @@
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
 
-                        var rowCount = $('#divSaleBillList tr').length;
                         var Seqno = $('#SeqNo-' + rowCount).val();
                         itemBatchArray.push({
                             "SeqNo": parseInt(Seqno),
@@ -1399,9 +1405,16 @@
                             "uniquebatchno": uniquebatchnoo,
                             "sono": sono
                         });
-
+                        for (var i = 1; i <= rowCount; i++) {
+                                if ($('#gridBomInd-'+i).text() == 'Bom') {
+                            $('#saleBillRow-' + i).css("background-color", "#f1fab9");
+                        } else {
+                                $('#saleBillRow-' + i).css("background-color", "#fab9e1");
+                        }
+                        }
                         FillCurrentBatchINStore();
                     }
+
                 },
                 error: function (result, status, xhr) {
                     $.notify('Something Went Wrong, Please Try Again.', "error");
@@ -1920,6 +1933,8 @@
 
                             }
                             $('#SeqNo').val(obj[0].SeqNo);
+                            $('#ProducedUnprod').val(obj[0].ProducedUnprod);
+                            $('#BOMInd').val(obj[0].BOMInd);
                             $('#CustOrderNo').val(obj[0].CustOrderNo);
                             $('#SODate').val(obj[0].SODate);
                             $('#SchNo').val(obj[0].SchNo);
@@ -2198,7 +2213,7 @@
                 async: false,
                 success: function (result, status, error) {
                     if (result != null) {
-                         
+                        
                         var obj = $.parseJSON(result);
                         $('#AccountCode').empty();
                         $('#AccountCode').append('<option value="0">-Select-</option>');
@@ -2209,7 +2224,8 @@
                         }
                     }
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        $('#AccountCode').val($('#hiddenAccountCode').val()).trigger("change");
+                        // $('#AccountCode').val($('#hiddenAccountCode').val()).trigger("change");
+                        $('#AccountCode').val($('#hiddenAccountCode').val()).trigger('change.select2');
                     }
                 }
             });
@@ -2458,7 +2474,7 @@
         });
 
         $('#Batchno').change(function (event) {
-            
+
             event.preventDefault();
             FillUniqueBatchNo();
             FillTotalStock();
@@ -2556,7 +2572,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("GetBatchStockQty", "NRGP")",
+                url: "@Url.Action("FillLotStock", "StockAdjustment")",
                 data: { ItemCode: $('#ItemCode').val(), StoreId: $('#StoreId').val(), TillDate: $('#SaleBillDate').val(), BatchNo: $('#Batchno').val(), UniqueBatchNo: $('#Uniquebatchno').val() },
                 dataType: "json",
                 async: false,

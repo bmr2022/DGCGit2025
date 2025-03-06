@@ -1652,14 +1652,36 @@
             var accountCode = $('#AccountCode').val();
             $.ajax({
                 type: "POST",
-                data: { "YearCode": YearCode, "accountCode": accountCode, "showAllItems": showAll },
+                data: { "YearCode": YearCode, "accountCode": accountCode, "showAllItems": showAll, "Flag": "FillItemName" },
                 url: "@Url.Action("FillItems")",
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
-
+                        if (obj.Result != null) {
+                            $('#ItemCode').empty();
+                            $('#ItemCode').append('<option value="0">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                if (obj != null && obj.Result != null) {
+                                    $.each(obj.Result.Table, function (index, val) {
+                                        $('#ItemCode').append("<option value=" + val.Itemcode + ">" + val.ItemName + "</option>");
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            $.ajax({
+                type: "POST",
+                data: { "YearCode": YearCode, "accountCode": accountCode, "showAllItems": showAll, "Flag": "FillPartCode" },
+                url: "@Url.Action("FillItems")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
                         if (obj.Result != null) {
                             $('#PartCode').empty();
                             $('#PartCode').append('<option value="0">-Select-</option>');
@@ -1667,15 +1689,6 @@
                                 if (obj != null && obj.Result != null) {
                                     $.each(obj.Result.Table, function (index, val) {
                                         $('#PartCode').append("<option value=" + val.Itemcode + ">" + val.PartCode + "</option>");
-                                    });
-                                }
-                            }
-                            $('#ItemCode').empty();
-                            $('#ItemCode').append('<option value="0">-Select-</option>');
-                            if (obj.StatusCode != 500) {
-                                if (obj != null && obj.Result != null) {
-                                    $.each(obj.Result.Table, function (index, val) {
-                                        $('#ItemCode').append("<option value=" + val.Itemcode + ">" + val.ItemName + "</option>");
                                     });
                                 }
                             }

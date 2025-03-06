@@ -38,6 +38,14 @@
             <label asp-for="RemovalTime" class="form-label">Removal Time</label>
             <input asp-for="RemovalTime" type="time" class="form-control" />
         </div>
+        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="SaleBillJobwork" class="form-label">SaleBill Jobwork</label>
+            <select asp-for="SaleBillJobwork" class="form-control">
+                <option value="">-select-</option>
+                <option value="S" selected>SaleBill</option>
+                <option value="J">SaleBill JobWork</option>
+            </select>
+        </div>
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="AccountCode" class="form-label" style="color: red;">Customer Name*</label>
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
@@ -167,14 +175,6 @@
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="dispatchLocation" class="form-label">Dispatch Location</label>
             <input asp-for="dispatchLocation" class="form-control" />
-        </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="SaleBillJobwork" class="form-label">SaleBill Jobwork</label>
-            <select asp-for="SaleBillJobwork" class="form-control">
-                <option value="">-select-</option>
-                <option value="S" selected>SaleBill</option>
-                <option value="J">SaleBill JobWork</option>
-            </select>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="ConsigneeAccountcode" class="form-label">Consignee Name</label>

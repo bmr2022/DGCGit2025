@@ -1,0 +1,163 @@
+﻿@model eTactWeb.DOM.Models.HRHolidaysMasterModel;
+
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BranchCC</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HolidayYear</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HolidayName</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HolidayType</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HalfDayFullDay</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HolidayEffFrom</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HolidayEffTill</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Country</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StateName</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OverrideWeekOff</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CompaensatoryofAllowed</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PaidHoliday</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApplicableOnDepartment</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApplicableOnCategory</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CreatedByEmpName</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedByEmpName</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEntryOn</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedOn</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByMachine</th>
+
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Active</th>
+                
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.HRHolidayDashboard == null || Model.HRHolidayDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.HRHolidayDashboard)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-route-ID="@item.HolidayId" asp-action="HRHolidaysMaster" asp-route-year="@Model.HolidayYear" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+
+                                        <a class="table-link link-primary" asp-action="HRHolidaysMaster" asp-route-Mode="U" asp-route-ID="@item.HolidayId" asp-route-year="@item.HolidayYear">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.HolidayId" asp-route-year="@item.HolidayYear">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>@item.Branch</td>
+                            <td>@item.HolidayYear</td>
+                            <td>@item.HolidayName</td>
+                            <td>@item.HolidayType</td>
+                            <td>@item.HalfDayFullDay</td>
+                            <td>@item.EffectiveFrom</td>
+                            <td>@item.HolidayEffTill</td>
+                     
+                            <td>@item.Country</td>
+                            <td>@item.StateName</td>
+
+                            <td>@item.OverrideWeekOff</td>
+                            <td>@item.CompensatoryOffAllowed</td>
+                            <td>@item.PaidHoliday</td>
+
+                            <td>@item.ApplicableOnDepartment</td>
+                            <td>@item.ApplicableOnCategory</td>
+                            <td>@item.CreatedByEmp</td>
+                            <td>@item.UpdatedByEmp</td>
+                            <td>@item.CreatedOn</td>
+                            <td>@item.UpdatedOn</td>
+                            <td>@item.EntryByMachine</td>
+                            <td>@item.Remark</td>
+                            <td>@item.Active</td>
+                           
+
+
+
+
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+</style>

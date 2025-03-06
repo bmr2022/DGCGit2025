@@ -44,6 +44,8 @@ else
             <th>@item.SeqNo <input type="hidden" id="SeqNo-@Cntr" value="@item.SeqNo" /></th>
             <td>@item.PartCode<input type="hidden" id="GridIC-@Cntr" value="@item.ItemCode" /></td>
             <td>@item.ItemName</td>
+            <td id="gridBomInd-@Cntr">@item.BOMInd</td>
+            <td>@item.ProducedUnprod</td>
             <td id="GridSONO-@Cntr">@item.SONO</td>
             <td>@(item.SODate != null ? (item.SODate).Split(" ")[0] : item.SODate)</td>
             <td>@item.CustOrderNo</td>
