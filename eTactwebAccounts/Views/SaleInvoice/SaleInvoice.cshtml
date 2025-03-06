@@ -373,9 +373,8 @@
 {
     <script>
         $(document).ready(function () {
-
+            
             GetServerDate();
-            debugger
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();
@@ -400,7 +399,7 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
-            
+
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
             } else {
@@ -409,7 +408,7 @@
 
             $('#AdjNewRefNo').val($('#SaleBillNo').val());
             $('#AdjDescription').val($('#SaleBillNo').val());
-            
+
             AllowTaxPassword();
             $('#Unit').prop("readonly", true);
             $('#AltUnit').prop("readonly", true);
@@ -642,12 +641,12 @@
                     "AccountCode": $('#AccountCode').val()
                 },
                 success: function (result, status, xhr) {
-                    
+
                     $('#divPendingChallanDisplayGrid').empty();
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            
+
                             var html = '';
                             var i = 1;
                             $.each(obj.Result, function (index, val) {
@@ -679,7 +678,7 @@
 
         $('#btnAdjustChallanListGrid').click(function (event) {
             event.preventDefault();
-             
+
             var YearCode = $('#SaleBillYearCode').val();
             var EntryDate = $('#ChallanDate').val();
             var ChallanDate = $('#ChallanDate').val();
@@ -688,33 +687,33 @@
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-                 
+
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
-	                ItemCode : row.find("td:eq(2)").text().trim() , // ItemCode
-	                Unit : row.find("td:eq(19)").text().trim() ,
-	                BillQty : row.find("td:eq(10)").text().trim() ,
-	                JWRate : row.find("td:eq(11)").text().trim() ,
-	                ProcessId : row.find("td:eq(2)").text().trim() , // ProcoessId
-	                SONO : row.find("td:eq(3)").text().trim() ,
-	                CustOrderNo : row.find("td:eq(5)").text().trim() ,
-	                SOYearCode : row.find("td:eq(17)").text().trim() ,
-	                SchNo : row.find("td:eq(6)").text().trim() ,
-	                SchYearcode : row.find("td:eq(18)").text().trim() ,
-	                BOMIND : "" , // BOMIND
-	                BOMNO : "" , //BomNo
-	                BOMEffDate : "" , //Bom Eff Date
-	                Produnprod : "",
-	                fromChallanOrSalebill : "" ,
-	                ItemAdjustmentRequired : "" 
+                    ItemCode: row.find("td:eq(2)").text().trim(), // ItemCode
+                    Unit: row.find("td:eq(19)").text().trim(),
+                    BillQty: row.find("td:eq(10)").text().trim(),
+                    JWRate: row.find("td:eq(11)").text().trim(),
+                    ProcessId: row.find("td:eq(2)").text().trim(), // ProcoessId
+                    SONO: row.find("td:eq(3)").text().trim(),
+                    CustOrderNo: row.find("td:eq(5)").text().trim(),
+                    SOYearCode: row.find("td:eq(17)").text().trim(),
+                    SchNo: row.find("td:eq(6)").text().trim(),
+                    SchYearcode: row.find("td:eq(18)").text().trim(),
+                    BOMIND: "", // BOMIND
+                    BOMNO: "", //BomNo
+                    BOMEffDate: "", //Bom Eff Date
+                    Produnprod: "",
+                    fromChallanOrSalebill: "",
+                    ItemAdjustmentRequired: ""
                 };
 
                 adjustedData.push(rowData);
             });
-             
+
             console.log("Adustdata:", adjustedData);
-             
+
             $.ajax({
                 url: "@Url.Action("GetAdjustedChallanDetailsData")",
                 type: "POST",
@@ -726,12 +725,12 @@
                     "EntryDate": EntryDate,
                     "ChallanDate": ChallanDate,
                     "AccountCode": AccountCode,
-                    "ItemCode":itemCode
+                    "ItemCode": itemCode
                 },
                 // dataType: "html",
                 async: false,
                 success: function (data) {
-                    
+
                     $('#divCustJobWorkISsueSummary').html(data);
                     var dashGrid = $('#divCustJobWorkISsueSummary').length ? $('#divCustJobWorkISsueSummary').length : 0;
                     $('#totalRows').text(dashGrid);
@@ -853,7 +852,7 @@
         });
 
         function PasswordCheck() {
-            debugger
+
             if ($('#taxPassword').val() != allowManualPassword) {
                 $.notify('please correct password...!', "error");
             } else {
@@ -908,7 +907,7 @@
                 url: "@Url.Action("AllowTaxPassword")",
                 dataType: "json",
                 success: function (result, status, error) {
-                    
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result.length > 0) {
@@ -1215,7 +1214,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-                            debugger
+
                             $('#SOPendQty').val("");
                             $('#SOPendQty').val(obj.Result[0].PendQty);
                             $('#Qty').val("");
@@ -1347,7 +1346,7 @@
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divSaleBillList').html(result);
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
-                        debugger
+
                         $('#Uniquebatchno,#Batchno,#Qty').val(0);
                         $('#LotStock,#TotalStock').val("");
                         //$('#HSNNo').val("");
@@ -1838,7 +1837,7 @@
         })
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-            
+
             e.preventDefault();
 
             if (!ValidateSubmit()) return;
@@ -2199,6 +2198,7 @@
                 async: false,
                 success: function (result, status, error) {
                     if (result != null) {
+                        debugger
                         var obj = $.parseJSON(result);
                         $('#AccountCode').empty();
                         $('#AccountCode').append('<option value="0">-Select-</option>');
@@ -2458,6 +2458,7 @@
         });
 
         $('#Batchno').change(function (event) {
+            
             event.preventDefault();
             FillUniqueBatchNo();
             FillTotalStock();
@@ -2482,7 +2483,6 @@
                                     $('#Uniquebatchno').append('<option value="' + val.UniqueBatchNo + '" data-stock="' + val.stock + '" selected>' + val.UniqueBatchNo + '</option>');
                                 }
                             });
-
                             FillLotStock();
                             // $('#DiscountAmt').val(0);
                             // $('#DiscountPer').val(0);
@@ -2517,6 +2517,7 @@
         }
 
         $('#Uniquebatchno').change(function () {
+
             FillLotStock();
         });
 
@@ -2560,7 +2561,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-
+                    
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#LotStock').val($.parseJSON(result).Result[0].STOCK);
@@ -2682,7 +2683,6 @@
                                         $(this).remove();
                                     }
                                 });
-
 
                                 //}
                                 //if (itemBatchArray.length > 0) {
