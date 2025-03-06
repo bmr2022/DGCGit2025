@@ -366,7 +366,7 @@
 {
     <script>
         $(document).ready(function () {
-             
+
             $('#PartCode').select2();
             $('#ItemCode').select2();
             //$('#Storeid').select2();
@@ -607,7 +607,7 @@
         }
 
         function ValidateGrid() {
-             
+
             GetPrevQty();
             var TotalStock = parseFloat($('#TotalStockQty').val());
             var LotStock = parseFloat($('#LotStockQty').val());
@@ -869,7 +869,7 @@
                         $('#PartCode,#ItemCode,#Storeid,#Wcid').val("").trigger("change");
                         $('#batchno,#uniqbatchno,#AdjType,#reasonOfAdjustment').val("");
                         $('#Unit,#altUnit').val("");
-                        $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount,#Qty').val(0);
+                        $('#TotalStockQty,#LotStockQty,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount,#Qty').val(0);
                         $('#BatchNo,#UniqueBatchNo,#ReasonOfTransfer').val('');
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
@@ -909,18 +909,16 @@
         });
 
         $('#FromStoreId').change(function () {
-             
+            
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 $('#hiddenFromStoreId').val($('#FromStoreId').val())
                 if ('@Model.FromStoreId' != $('#FromStoreId').val()) {
                     $('#divISTGrid').empty()
                 }
-                //ClearGrid();
             }
             else {
-                //ClearGrid();
+                ClearGrid();
             }
-            //ClearGrid();
             FillTotalStock();
             FillStockBatchNo();
             FillLotStock();
@@ -1052,7 +1050,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#TotalStockQty').val("");
+                            $('#TotalStockQty').val(0);
                             $('#TotalStockQty').val(obj.Result[0].STOCK);
                         }
                         //  ChangeAltQty();

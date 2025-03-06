@@ -1001,7 +1001,7 @@
         });
 
         function GetAdjustedChallan() {
-             debugger;
+              ;
             var YearCode = $('#YearCode').val();
             var EntryDate = $('#EntryDate').val();
             var ChallanDate = $('#ChallanDate').val();
@@ -1455,7 +1455,7 @@
         });
 
         function FillUniqueBatchNo() {
-            debugger
+             
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetBatchNumber", "NRGP")',
@@ -1847,7 +1847,7 @@
         }
 
         function ValidateSubmit() {
-            debugger
+             
             var Err = 0;
 
             if ($('#ItemCode').find(':selected').data('stockable') == 'Y') {
@@ -1953,7 +1953,7 @@
 
         $('.GridButton').click(function (e) {
             e.preventDefault();
-            debugger
+             
             var seqnoarray = [];
             $('#divCustJobWorkISsueAdded tr').each(function (index, element) {
                 var currentRow = $(element);

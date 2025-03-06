@@ -329,7 +329,7 @@
     <script>
         $(document).ready(function () {
             if ($('#Mode').val() === "U") {
-                debugger
+                 
                 $('#AccountCode').val($('#LedgerName').val());
                 
                 countAllTotal();
@@ -496,7 +496,7 @@
             // });
 
         function GetOpeningAmt() {
-             debugger
+              
             var OpeningYearCode = $('#OpeningYearCode').val();
             var AccountCode = $('#AccountCode').val();
             $('#AccountCode').val(AccountCode);
@@ -602,7 +602,7 @@
                     });
                      
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                         debugger
+                          
                         var LedgerName = '@Model.AccountCode';
                         //$('#LedgerName').val(LedgerName).trigger("change");
                         $('#LedgerName').val(LedgerName);
@@ -677,7 +677,7 @@
         }
 
         $('#GridButton').click(function (){
-            debugger
+             
             
             //e.preventDefault();
             console.log('Add to Grid button clicked');

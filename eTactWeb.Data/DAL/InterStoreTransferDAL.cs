@@ -93,7 +93,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy,string MachineName)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -102,6 +102,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
+                SqlParams.Add(new SqlParameter("@EntryDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@ActulEntryBy", ActualEntryBy));
+                SqlParams.Add(new SqlParameter("@MAchineName", MachineName));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_InterStoreTransferMainDetail", SqlParams);
             }
             catch (Exception ex)

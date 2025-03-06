@@ -177,7 +177,7 @@
 
             function loadReportFields(reportType) {
                 let html = '';
-                debugger
+                 
                 if (reportType === "PRIMARYGROUPdetail") {
                     html = `
                               <div class="d-flex flex-wrap">
@@ -285,13 +285,13 @@
 
             // GetServerDate();
                 // $(".bold-row").each(function () {
-                //     debugger
+                //      
                 //     $(this).css({ "font-weight": "bold", "font-size": "16px" });
                 //     $(this).find("input").css("color", "green");
                 // });
 
             $(".bold-row").each(function () {
-                debugger;
+                 ;
                 $(this).css({ "font-weight": "bold", "font-size": "16px", "color": "green" });
 
                 // Change text color inside input fields
@@ -299,7 +299,7 @@
             });
 
             function updateButtonTitle() {
-                debugger
+                 
                 let reportType = $("#ReportType").val();
                 let newTitle = (reportType === "PRIMARYGROUPSUMMARY") ? "Trail Balance Summary" : "Trail Balance Detail";
 
@@ -369,7 +369,7 @@
         }
 
         function countAllTotal() {
-            debugger
+             
             var rowCount = $('#divStockRegisterBody tr').length;
 
             var TotCr = 0;
