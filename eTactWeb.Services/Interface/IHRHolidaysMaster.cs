@@ -20,9 +20,10 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> SaveData(HRHolidaysMasterModel model, List<string> HREmployeeDT, List<string> HRDepartmentDT);
         Task<ResponseResult> GetDashboardData();
-        Task<HRHolidaysMasterModel> GetDashboardDetailData();
+        Task<HRHolidaysMasterModel> GetDashboardDetailData(string FromDate, string ToDate);
 
-        Task<HRHolidaysMasterModel> GetViewByID(int ID);
+        Task<HRHolidaysMasterModel> GetViewByID(int ID,int year);
+        Task<ResponseResult> DeleteByID(int ID, int year);
     }
 }
 

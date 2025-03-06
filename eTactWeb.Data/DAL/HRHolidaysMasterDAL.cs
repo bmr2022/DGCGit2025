@@ -173,10 +173,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@HolidayEffFrom",
                 string.IsNullOrEmpty(model.EffectiveFrom) ? DBNull.Value : DateTime.Parse(model.EffectiveFrom).ToString("dd/MMM/yyyy"));
                     oCmd.Parameters.AddWithValue("@HolidayEffTill",
-               string.IsNullOrEmpty(model.HolidayDate) ? DBNull.Value : DateTime.Parse(model.HolidayDate).ToString("dd/MMM/yyyy"));
+               string.IsNullOrEmpty(model.HolidayEffTill) ? DBNull.Value : DateTime.Parse(model.HolidayEffTill).ToString("dd/MMM/yyyy"));
                     oCmd.Parameters.AddWithValue("@Country", model.Country);
                     oCmd.Parameters.AddWithValue("@StateId", model.StateId);
-                    oCmd.Parameters.AddWithValue("@StateName", model.State);
+                    oCmd.Parameters.AddWithValue("@StateName", model.StateName);
                     oCmd.Parameters.AddWithValue("@HolidayYear", model.HolidayYear);
                     oCmd.Parameters.AddWithValue("@HolidayName", model.HolidayName);
                     oCmd.Parameters.AddWithValue("@HolidayType", model.HolidayType);
@@ -199,10 +199,10 @@ namespace eTactWeb.Data.DAL
 
 
 
-                    if (model.Mode == "Update")
+                    if (model.Mode == "update")
                     {
-                        oCmd.Parameters.AddWithValue("@LastupdatedBy", model.UpdatedBy);
-                        oCmd.Parameters.AddWithValue("@UpdatationDate",
+                        oCmd.Parameters.AddWithValue("@UpdatedBy", model.UpdatedBy);
+                        oCmd.Parameters.AddWithValue("@UpdatedOn",
                         string.IsNullOrEmpty(model.UpdatedOn) ? DBNull.Value : DateTime.Parse(model.UpdatedOn).ToString("dd/MMM/yyyy"));
 
                     }
@@ -261,7 +261,7 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<HRHolidaysMasterModel> GetDashboardDetailData()
+        public async Task<HRHolidaysMasterModel> GetDashboardDetailData(string FromDate, string ToDate)
         {
             DataSet? oDataSet = new DataSet();
             var model = new HRHolidaysMasterModel();
@@ -274,7 +274,8 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-
+                    oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
+                    oCmd.Parameters.AddWithValue("@todate", ToDate);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
@@ -286,11 +287,12 @@ namespace eTactWeb.Data.DAL
                     model.HRHolidayDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
                                               select new HRHolidaysMasterModel
                                               {
-                                                 
+
                                                   Branch = dr["BranchCC"].ToString(),
                                                   HolidayYear = Convert.ToInt32(dr["HolidayYear"]),
+                                                  HolidayId = Convert.ToInt32(dr["HolidayEntryId"]),
                                                   EffectiveFrom = dr["HolidayEffFrom"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["HolidayEffFrom"]).ToString("dd-MM-yyyy"),
-                                                  HolidayDate = dr["HolidayEffTill"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["HolidayEffTill"]).ToString("dd-MM-yyyy"),
+                                                  HolidayEffTill = dr["HolidayEffTill"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["HolidayEffTill"]).ToString("dd-MM-yyyy"),
 
                                                   HolidayName = dr["HolidayName"].ToString(),
 
@@ -298,17 +300,19 @@ namespace eTactWeb.Data.DAL
                                                   HolidayType = dr["HolidayType"].ToString(),
                                                   HalfDayFullDay = dr["HalfDayFullDay"].ToString(),
                                                   Country = dr["Country"].ToString(),
-                                                  State = dr["StateName"].ToString(),
+                                                  StateName = dr["StateName"].ToString(),
                                                   OverrideWeekOff = dr["OverrideWeekOff"].ToString(),
                                                   CompensatoryOffAllowed = dr["CompaensatoryofAllowed"].ToString(),
                                                   PaidHoliday = dr["PaidHoliday"].ToString(),
 
                                                   ApplicableOnDepartment = dr["ApplicableOnDepartment"].ToString(),
                                                   ApplicableOnCategory = dr["ApplicableOnCategory"].ToString(),
-                                                  //CreatedBy = Convert.ToInt32(dr["ActualEntryBy"]),
-                                                  //UpdatedBy = Convert.ToInt32(dr["LastupdatedBy"]),
-                                                  //CreatedOn = dr["ActualEntryDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd-MM-yyyy"),
-                                                  //UpdatedOn = dr["UpdatationDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["UpdatationDate"]).ToString("dd-MM-yyyy"),
+                                                  CreatedByEmp = dr["CreatedByEmpName"].ToString(),
+                                                  UpdatedByEmp = dr["UpdatedByEmpName"].ToString(),
+                                                  Remark = dr["Remark"].ToString(),
+                                                  Active = dr["Active"].ToString(),
+                                                  CreatedOn = dr["ActualEntryOn"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["ActualEntryOn"]).ToString("dd-MM-yyyy"),
+                                                  UpdatedOn = dr["UpdatedOn"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["UpdatedOn"]).ToString("dd-MM-yyyy"),
                                                   EntryByMachine = dr["EntryByMachine"].ToString(),
                                               }).ToList();
                 }
@@ -326,7 +330,7 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        public async Task<HRHolidaysMasterModel> GetViewByID(int id)
+        public async Task<HRHolidaysMasterModel> GetViewByID(int id,int year)
         {
             var model = new HRHolidaysMasterModel();
 
@@ -336,7 +340,7 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Flag", "ViewById"));
                 SqlParams.Add(new SqlParameter("@HolidayEntryId", id));
-                SqlParams.Add(new SqlParameter("@HolidayYear", model.HolidayYear));
+                SqlParams.Add(new SqlParameter("@HolidayYear", year));
 
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("HRSPHolidayMaster", SqlParams);
 
@@ -353,8 +357,8 @@ namespace eTactWeb.Data.DAL
                         model.HolidayId = Convert.ToInt32(DTHolidaysMasterDetail.Rows[0]["HolidayEntryId"]);
                         model.Branch = DTHolidaysMasterDetail.Rows[0]["BranchCC"].ToString();
                         model.EffectiveFrom = Convert.ToDateTime(DTHolidaysMasterDetail.Rows[0]["HolidayEffFrom"]).ToString("dd/MM/yyyy");
-                        model.HolidayDate = Convert.ToDateTime(DTHolidaysMasterDetail.Rows[0]["HolidayEffTill"]).ToString("dd/MM/yyyy");
-                        model.EffectiveFrom = Convert.ToDateTime(DTHolidaysMasterDetail.Rows[0]["HolidayEffFrom"]).ToString("dd/MM/yyyy");
+                        model.HolidayEffTill = Convert.ToDateTime(DTHolidaysMasterDetail.Rows[0]["HolidayEffTill"]).ToString("dd/MM/yyyy");
+                        model.CreatedOn = Convert.ToDateTime(DTHolidaysMasterDetail.Rows[0]["ActualEntryOn"]).ToString("dd/MM/yyyy");
 
                         model.StateId = Convert.ToInt32(DTHolidaysMasterDetail.Rows[0]["StateId"]);
                         model.Country = DTHolidaysMasterDetail.Rows[0]["Country"].ToString();
@@ -372,7 +376,7 @@ namespace eTactWeb.Data.DAL
                         model.EntryByMachine = DTHolidaysMasterDetail.Rows[0]["EntryByMachine"].ToString(); 
 
                         model.CreatedBy = Convert.ToInt32(DTHolidaysMasterDetail.Rows[0]["CreatedBy"]);
-                        model.UpdatedBy = Convert.ToInt32(DTHolidaysMasterDetail.Rows[0]["UpdatedBy"]);
+                        //model.UpdatedBy = Convert.ToInt32(DTHolidaysMasterDetail.Rows[0]["UpdatedBy"]);
                         model.Remark = DTHolidaysMasterDetail.Rows[0]["Remark"].ToString();
 
 
@@ -405,6 +409,30 @@ namespace eTactWeb.Data.DAL
             }
 
             return model;
+        }
+
+        internal async Task<ResponseResult> DeleteByID(int ID, int year)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "Delete"));
+                SqlParams.Add(new SqlParameter("@HolidayEntryId", ID));
+                SqlParams.Add(new SqlParameter("@HolidayYear", year));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HRSPHolidayMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
         }
 
     }

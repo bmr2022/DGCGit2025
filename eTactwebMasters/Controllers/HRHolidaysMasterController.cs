@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using static eTactWeb.DOM.Models.Common;
 using System.Data;
 using System.Net;
+using Microsoft.Office.Interop.Excel;
 
 namespace eTactwebMasters.Controllers
 {
@@ -32,17 +33,18 @@ namespace eTactwebMasters.Controllers
 
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> HRHolidaysMaster(int ID, string Mode)
+        public async Task<ActionResult> HRHolidaysMaster(int ID, string Mode,int year)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new HRHolidaysMasterModel();
             MainModel.EffectiveFrom = HttpContext.Session.GetString("EffectiveFrom");
             MainModel.HolidayYear = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.Branch = Convert.ToString(HttpContext.Session.GetString("Branch"));
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
             {
-                MainModel = await _IHRHolidaysMaster.GetViewByID(ID).ConfigureAwait(false);
+                MainModel = await _IHRHolidaysMaster.GetViewByID(ID,year).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.HolidayId = ID;
                 
@@ -163,12 +165,37 @@ namespace eTactwebMasters.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDetailData()
+        public async Task<IActionResult> GetDetailData(string FromDate,string ToDate)
         {
             //model.Mode = "Search";
             var model = new HRHolidaysMasterModel();
-            model = await _IHRHolidaysMaster.GetDashboardDetailData();
+            model = await _IHRHolidaysMaster.GetDashboardDetailData(FromDate,ToDate);
             return PartialView("_HRHolidayMasterDashBoardGrid", model);
+        }
+
+        public async Task<IActionResult> DeleteByID(int ID, int year)
+        {
+            var Result = await _IHRHolidaysMaster.DeleteByID(ID, year);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+                //TempData["Message"] = "Data deleted successfully.";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("HRHolidaysMasterDashBoard");
+
         }
 
 
@@ -185,6 +212,7 @@ namespace eTactwebMasters.Controllers
                 {
                     model.Mode = model.Mode == "U" ? "update" : "INSERT";
                     model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    model.CreatedByEmp = Convert.ToString(HttpContext.Session.GetString("EmpName"));
                     model.Branch = Convert.ToString(HttpContext.Session.GetString("Branch"));
 
                     var HREmployeeTable = new List<string>();
@@ -233,9 +261,10 @@ namespace eTactwebMasters.Controllers
                     }
                     HRDepartmentTable = _DepartmentDetail.Select(x => x.DeptId).ToList();
 
-                    if (model.Mode == "Update")
+                    if (model.Mode == "update")
                     {
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.UpdatedByEmp = Convert.ToString(HttpContext.Session.GetString("EmpName"));
 
                     }
                     else

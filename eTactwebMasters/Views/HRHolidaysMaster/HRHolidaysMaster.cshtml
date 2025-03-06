@@ -80,13 +80,21 @@
                                         <input asp-for="HolidayYear" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="Branch" class="form-label">Branch</label>
+                                        <input asp-for="Branch" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         <label asp-for="HolidayName" class="form-label">HolidayName</label>
                                         <input asp-for="HolidayName" class="form-control" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom</label>
+                                        <input asp-for="EffectiveFrom" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
                                         
-                                        <label asp-for="HolidayDate" class="form-label">HolidayDate</label>
-                                        <input asp-for="HolidayDate" class="form-control" />
+                                        <label asp-for="HolidayEffTill" class="form-label">HolidayEffTill</label>
+                                        <input asp-for="HolidayEffTill" class="form-control" />
                                      </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="HolidayType" class="form-label">HolidayType </label>
@@ -117,6 +125,7 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="State" class="form-label">State</label>
                                         <input asp-for="StateId" class="form-control" type="hidden" value="@Model.StateId" />
+                                        <input asp-for="StateName" class="form-control" type="hidden" value="@Model.StateName" />
                                         <select asp-for="State" class="form-control">
                                             @* <option value="@Model.AccountCode">-Select-</option> *@
                                             <option value="@Model.StateId">-Select-</option>
@@ -127,10 +136,7 @@
                                         </select>
                                     </div>
                                   
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="Branch" class="form-label">Branch</label>
-                                        <input asp-for="Branch" class="form-control" />
-                                    </div>
+                                    
 
                                     <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="EmployeeCategory" class="control-label">EmployeeCategory </label>
@@ -185,10 +191,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom</label>
-                                        <input asp-for="EffectiveFrom" class="form-control" />
-                                    </div>
+                                   
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="Active" class="form-label">Active</label>
                                         <select asp-for="Active" class="form-select">
@@ -204,7 +207,6 @@
                                                 <option value="NO" disabled>NO</option>
                                             }
 
-
                                         </select>
                                     </div>
 
@@ -216,9 +218,20 @@
                                         <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
                                         <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
                                     </div>
+
+                                    <div style="display:none">
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="CreatedOn" class="form-label">CreatedOn</label>
                                         <input asp-for="CreatedOn" class="form-control " value="@Model.CreatedOn" readonly />
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedBy" class="form-label">UpdatedBy</label>
+                                        <input asp-for="UpdatedBy" class="form-control " value="@Model.UpdatedBy" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">CreatedOn</label>
+                                        <input asp-for="UpdatedOn" class="form-control " value="@Model.UpdatedOn" readonly />
+                                    </div>
                                     </div>
 
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -342,13 +355,13 @@
 
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
 
-                $('#HolidayDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#HolidayEffTill').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             }
             else {
-                $('#HolidayDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#HolidayEffTill').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -364,8 +377,12 @@
             $('#HalfDayFullDay').select2();      
             $('#Active').select2();
 
+           debugger
             $('#State').change(function () {
+
                 $('#StateId').val($('#State').val());
+                $('#StateName').val($('#State option:selected').text());
+                
             });
            
             FillHolidatType();

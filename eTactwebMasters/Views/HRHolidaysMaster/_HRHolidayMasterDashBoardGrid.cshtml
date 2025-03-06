@@ -20,6 +20,11 @@
                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PaidHoliday</th>
                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApplicableOnDepartment</th>
                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApplicableOnCategory</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CreatedByEmpName</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedByEmpName</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEntryOn</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedOn</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByMachine</th>
 
                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Active</th>
@@ -43,7 +48,7 @@
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@item.HolidayId" asp-action="HRHolidaysMaster" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" asp-route-ID="@item.HolidayId" asp-action="HRHolidaysMaster" asp-route-year="@Model.HolidayYear" asp-route-Mode="V" onclick="BackButtonData(event);">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -53,7 +58,7 @@
 
                                     <div id="editCursorDiv-@Cntr">
 
-                                        <a class="table-link link-primary" asp-action="HRHolidaysMaster" asp-route-Mode="U" asp-route-ID="@item.HolidayId">
+                                        <a class="table-link link-primary" asp-action="HRHolidaysMaster" asp-route-Mode="U" asp-route-ID="@item.HolidayId" asp-route-year="@item.HolidayYear">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -62,7 +67,7 @@
                                     </div>
 
                                     <div id="deleteCursorDiv-@Cntr">
-                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.HolidayId">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.HolidayId" asp-route-year="@item.HolidayYear">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -78,17 +83,22 @@
                             <td>@item.HolidayType</td>
                             <td>@item.HalfDayFullDay</td>
                             <td>@item.EffectiveFrom</td>
-                            <td>@item.HolidayDate</td>
-                           
-                           
+                            <td>@item.HolidayEffTill</td>
+                     
                             <td>@item.Country</td>
-                            <td>@item.State</td>
+                            <td>@item.StateName</td>
 
                             <td>@item.OverrideWeekOff</td>
                             <td>@item.CompensatoryOffAllowed</td>
-                           
-                            <td>@item.ApplicableOnCategory</td>
+                            <td>@item.PaidHoliday</td>
+
                             <td>@item.ApplicableOnDepartment</td>
+                            <td>@item.ApplicableOnCategory</td>
+                            <td>@item.CreatedByEmp</td>
+                            <td>@item.UpdatedByEmp</td>
+                            <td>@item.CreatedOn</td>
+                            <td>@item.UpdatedOn</td>
+                            <td>@item.EntryByMachine</td>
                             <td>@item.Remark</td>
                             <td>@item.Active</td>
                            

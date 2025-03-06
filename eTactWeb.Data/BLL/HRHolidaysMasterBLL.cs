@@ -58,13 +58,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _HRHolidaysMasterDAL.GetDashboardData();
         }
-        public async Task<HRHolidaysMasterModel> GetDashboardDetailData()
+        public async Task<HRHolidaysMasterModel> GetDashboardDetailData(string FromDate, string ToDate)
         {
-            return await _HRHolidaysMasterDAL.GetDashboardDetailData();
+            return await _HRHolidaysMasterDAL.GetDashboardDetailData( FromDate,  ToDate);
         }
-        public async Task<HRHolidaysMasterModel> GetViewByID(int id)
+        public async Task<HRHolidaysMasterModel> GetViewByID(int id,int year)
         {
-            return await _HRHolidaysMasterDAL.GetViewByID(id);
+            return await _HRHolidaysMasterDAL.GetViewByID(id,year);
+        }
+        public async Task<ResponseResult> DeleteByID(int ID, int year)
+        {
+            return await _HRHolidaysMasterDAL.DeleteByID(ID, year);
         }
     }
 }

@@ -12,11 +12,14 @@ namespace eTactWeb.DOM.Models
         public int HolidayId {  get; set; }
         public int HolidayYear {  get; set; }
         public string HolidayName { get; set; }
-        public string HolidayDate { get; set; }
+
+        public string? EffectiveFrom { get; set; }
+        public string HolidayEffTill { get; set; }
         public string? HolidayType { get; set; }
         public string? Country {  get; set; }
         public int? StateId {  get; set; }
         public string? State {  get; set; }
+        public string? StateName { get; set; }
         public string? Branch { get; set; }
 
         public IList<string>? EmployeeCategory { get; set; }
@@ -37,10 +40,13 @@ namespace eTactWeb.DOM.Models
         public string? CompensatoryOffAllowed { get; set; }
         public string? PaidHoliday { get; set; }
         public string? HalfDayFullDay { get; set; }
-        public string? EffectiveFrom {  get; set; }
+        
         public string? Active { get; set; }
         public string? Remark { get; set; }
         public int? CreatedBy { get; set; }
+
+        public string? CreatedByEmp { get; set; }
+        public string? UpdatedByEmp { get; set; }
         public string? CreatedOn { get; set; }
         public string? UpdatedOn { get; set; }
 
