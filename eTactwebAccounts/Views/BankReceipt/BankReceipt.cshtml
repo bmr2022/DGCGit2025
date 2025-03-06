@@ -459,7 +459,7 @@
     <script>
 
         function Validate_Submit() {
-            debugger
+             
             var Err = 0;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -845,7 +845,7 @@
         }
 
         function CheckAmountBeforeSave(i) {
-            debugger
+             
             $.ajax({
                 url: '@Url.Action("CheckAmountBeforeSave", "BankReceipt")',
                 type: 'POST',

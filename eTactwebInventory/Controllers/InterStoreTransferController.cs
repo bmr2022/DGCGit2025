@@ -46,14 +46,6 @@ namespace eTactWeb.Controllers
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
-            if (Mode != "U")
-            {
-                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
-            }
-
-
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await IInterStore.GetViewByID(ID, Mode, YC);
@@ -65,6 +57,20 @@ namespace eTactWeb.Controllers
             else
             {
                 // MainModel = await BindModel(MainModel);
+            }
+            if (Mode != "U")
+            {
+                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+                MainModel.ActualEntryDate = DateTime.Now.ToString();
+            }
+            else
+            {
+                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.LastUpdationDate = DateTime.Now.ToString();
             }
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
