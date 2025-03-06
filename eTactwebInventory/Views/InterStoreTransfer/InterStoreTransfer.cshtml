@@ -125,7 +125,7 @@
                                 </div>
 
                                 <div class="col-lg-auto">
-                                    <label asp-for="IssueToStoreWC" class="form-label" style="color: red;">Issue To StoreWC*</label>
+                                    <label asp-for="IssueToStoreWC" class="form-label" style="color: red;">Store/WC*</label>
                                     <select class="form-select" asp-for="IssueToStoreWC">
                                         <option value="">-Select-</option>
                                         <option value="S">Store</option>
@@ -153,7 +153,7 @@
                                 </div>
 
                                 <div class="col-lg ToStore">
-                                    <label asp-for="ToStoreId" class="control-label" style="color: red;"> Rec StoreName*</label>
+                                    <label asp-for="ToStoreId" class="control-label" style="color: red;"> Rec In Store*</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
                                         <input type="hidden" value="@Model.ToStoreId" id="hiddenToStoreId" />
