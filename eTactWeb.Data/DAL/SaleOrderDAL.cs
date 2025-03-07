@@ -6,6 +6,7 @@ using Microsoft.SqlServer.Server;
 using System.Globalization;
 using static eTactWeb.DOM.Models.Common;
 
+
 namespace eTactWeb.Data.DAL
 {
     public class SaleOrderDAL

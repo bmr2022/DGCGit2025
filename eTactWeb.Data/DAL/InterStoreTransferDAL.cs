@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -359,7 +360,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@IssuedBy", model.IssuedBy));
                 SqlParams.Add(new SqlParameter("@Remark", model.Remark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@ActulEntryBy", model.ActualEntryBy));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", eTactWeb.Data.Common.CommonFunc.ParseFormattedDate( DateTime.Now.ToString())));
                 SqlParams.Add(new SqlParameter("@TransferReason", model.TransferReason ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
                 SqlParams.Add(new SqlParameter("@Uid", model.Uid));

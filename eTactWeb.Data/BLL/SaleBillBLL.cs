@@ -26,6 +26,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.NewEntryId(YearCode);
         }
+       
         public async Task<ResponseResult> GetBatchInventory()
         {
             return await _SaleBillDAL.GetBatchInventory();
