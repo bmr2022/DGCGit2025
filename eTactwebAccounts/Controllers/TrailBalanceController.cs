@@ -43,11 +43,11 @@ namespace eTactwebAccounts.Controllers
             var model = new TrailBalanceModel();
             model.EntryByMachine = Environment.MachineName;
             model = await _ITrailBalance.GetTrailBalanceDetailsData(FromDate, ToDate, EntryByMachine, ReportType);
-            if(ReportType== "PRIMARYGROUPSUMMARY")
+            if(ReportType== "TRAILSUMMARY")
             {
                 return PartialView("_TrailBalanceSummaryGrid", model);
             } 
-            if(ReportType== "PRIMARYGROUPdetail")
+            if(ReportType== "TRAILDETAIL")
             {
                 return PartialView("_TrailBalanceDetailGrid", model);
             }

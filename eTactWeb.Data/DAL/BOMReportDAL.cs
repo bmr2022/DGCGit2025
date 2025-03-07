@@ -197,7 +197,7 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    if (ReportType == "BOMSTOCK")
+                    if (ReportType == "BOMSTOCK"|| ReportType == "BOMSTOCK(WITH SUB BOM)"|| ReportType == "BOMSTOCK(DIRECT CHILD)")
                     {
                         command.Parameters.AddWithValue("@Flag", ReportType);
                         command.Parameters.AddWithValue("@CurrentDate", DateTime.Now);
@@ -311,6 +311,59 @@ namespace eTactWeb.Data.DAL
                                                         //Yearcode = row["Yearcode"] != DBNull.Value ? Convert.ToInt32(row["Yearcode"]) : 0,
                                                         StoreStock = row["StoreStock"] != DBNull.Value ? Convert.ToDouble(row["StoreStock"]) : 0.0,
                                                         WIPStock = row["WIPStock"] != DBNull.Value ? Convert.ToDouble(row["WIPStock"]) : 0.0,
+                                                        ForTheStore = row["ForTheStore"]?.ToString(),
+                                                        ForWorkCeneter = row["ForWorkCeneter"]?.ToString()
+                                                    }).ToList();
+                    }
+                }
+                 else if (ReportType=="BOMSTOCK(WITH SUB BOM)")
+                 {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        resultList.BOMReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                    select new BOMReportModel
+                                                    {
+                                                        BOMItemName = row["BOMItemName"] != DBNull.Value ? row["BOMItemName"].ToString() : string.Empty,
+                                                        BOMPartCode = row["BOMPartCode"] != DBNull.Value ? row["BOMPartCode"].ToString() : string.Empty,
+                                                        FGPartCode = row["FGPartCode"] != DBNull.Value ? row["FGPartCode"].ToString() : string.Empty,
+                                                        FGItemName = row["FGItemName"] != DBNull.Value ? row["FGItemName"].ToString() : string.Empty,
+                                                        FGUnit = row["FGUnit"] != DBNull.Value ? row["FGUnit"].ToString() : string.Empty,
+                                                        RMUnit = row["RMUnit"] != DBNull.Value ? row["FGUnit"].ToString() : string.Empty,
+                                                        RMPartCode = row["RMPartCode"] != DBNull.Value ? row["RMPartCode"].ToString() : string.Empty,
+                                                        RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
+                                                        NetReqQty = row["NetReqQty"] != DBNull.Value ? Convert.ToInt32(row["NetReqQty"]) : 0,
+                                                        SubBOM = row["SubBOM"]?.ToString(),
+                                                        BomRevNo = row["BomRevNo"] != DBNull.Value ? Convert.ToInt32(row["BomRevNo"]) : 0,
+                                                        StoreStock = row["StoreStock"] != DBNull.Value ? Convert.ToDouble(row["StoreStock"]) : 0.0,
+                                                        WIPStock = row["WIPStock"] != DBNull.Value ? Convert.ToDouble(row["WIPStock"]) : 0.0,
+                                                        Rate = row["Rate"] != DBNull.Value ? Convert.ToDouble(row["Rate"]) : 0.0,
+                                                        Amount = row["Amount"] != DBNull.Value ? Convert.ToDouble(row["Amount"]) : 0.0,
+                                                        ForTheStore = row["ForTheStore"]?.ToString(),
+                                                        ForWorkCeneter = row["ForWorkCeneter"]?.ToString()
+                                                    }).ToList();
+                    }
+                 }
+                 else if (ReportType== "BOMSTOCK(DIRECT CHILD)")
+                 {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        resultList.BOMReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                    select new BOMReportModel
+                                                    {
+                                                       
+                                                        FGPartCode = row["FGPartCode"] != DBNull.Value ? row["FGPartCode"].ToString() : string.Empty,
+                                                        FGItemName = row["FGItemName"] != DBNull.Value ? row["FGItemName"].ToString() : string.Empty,
+                                                        FGUnit = row["FGUnit"] != DBNull.Value ? row["FGUnit"].ToString() : string.Empty,
+                                                        RMUnit = row["RMUnit"] != DBNull.Value ? row["FGUnit"].ToString() : string.Empty,
+                                                        RMPartCode = row["RMPartCode"] != DBNull.Value ? row["RMPartCode"].ToString() : string.Empty,
+                                                        RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
+                                                        StoreStock = row["StoreStock"] != DBNull.Value ? Convert.ToDouble(row["StoreStock"]) : 0.0,
+                                                        WIPStock = row["WIPStock"] != DBNull.Value ? Convert.ToDouble(row["WIPStock"]) : 0.0,
+                                                        TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToDouble(row["TotalStock"]) : 0.0,
+                                                        Rate = row["Rate"] != DBNull.Value ? Convert.ToDouble(row["Rate"]) : 0.0,
+                                                        Amount = row["Amount"] != DBNull.Value ? Convert.ToDouble(row["Amount"]) : 0.0,
+                                                        ReqQty = row["ReqQty"] != DBNull.Value ? Convert.ToInt32(row["ReqQty"]) : 0,
+                                                        BomRevNo = row["BomRevNo"] != DBNull.Value ? Convert.ToInt32(row["BomRevNo"]) : 0,
                                                         ForTheStore = row["ForTheStore"]?.ToString(),
                                                         ForWorkCeneter = row["ForWorkCeneter"]?.ToString()
                                                     }).ToList();

@@ -43,6 +43,8 @@ namespace eTactWeb.DOM.Models
         public string ReportType { get; set; }
         public string GroupName { get; set; }
         public int Account_Code { get; set; }
+        public string ShowOpening { get; set; }
+        public string ZeroBalanceLedger { get; set; }
         public IList<AccGroupLedgerModel> AccGroupLedgerGrid { get; set; }
     }
 }
