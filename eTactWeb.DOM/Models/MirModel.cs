@@ -157,6 +157,9 @@ public class MirDetail : TimeStamp
     public string? PathOfFile { get; set; }
     public IFormFile? PathOfFile1 { get; set; }
     public string? PathOfFileURL { get; set; }
+    public string? MRNNo { get; set; }
+    public int MRNYearCode { get; set; }
+    public string? MRNJwCust { get; set; }
     public IList<MirDetail>? ItemDetail { get; set; }
     public IFormFile? ServerFilePath { get; set; }
 }

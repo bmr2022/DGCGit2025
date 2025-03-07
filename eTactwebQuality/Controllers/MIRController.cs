@@ -350,6 +350,9 @@ namespace eTactWeb.Controllers
             MIRGrid.Columns.Add("PODate", typeof(DateTime));
             MIRGrid.Columns.Add("ItemColor", typeof(string));
             MIRGrid.Columns.Add("FilePath", typeof(string));
+            MIRGrid.Columns.Add("MRNNO", typeof(string));
+            MIRGrid.Columns.Add("MRNYearCode", typeof(int));
+            MIRGrid.Columns.Add("MRNJWCUSTJW", typeof(string));
 
             foreach (var Item in DetailList)
             {
@@ -395,7 +398,10 @@ namespace eTactWeb.Controllers
                     Item.RateInOtherCurr == 0 ? 0 :Item.RateInOtherCurr,
                     DateTime.Today,
                     Item.Itemcolor,
-                    Item.PathOfFileURL??""
+                    Item.PathOfFileURL??"",
+                    Item.MRNNo ?? "",
+                    Item.MRNYearCode == 0 ? 0 : Item.MRNYearCode,
+                    Item.MRNJwCust ?? ""
                     });
             }
             MIRGrid.Dispose();
