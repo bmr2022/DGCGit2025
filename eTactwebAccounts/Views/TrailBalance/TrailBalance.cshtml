@@ -49,8 +49,8 @@
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">ReportType</label>
                                     <select asp-for="ReportType" class="form-select">
-                                        <option value="PRIMARYGROUPSUMMARY" selected>Trail Balance Summary</option>
-                                        <option value="PRIMARYGROUPdetail">Trail Balance Detail</option>
+                                        <option value="TRAILSUMMARY" selected>Trail Balance Summary</option>
+                                        <option value="TRAILDETAIL">Trail Balance Detail</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
@@ -177,8 +177,8 @@
 
             function loadReportFields(reportType) {
                 let html = '';
-                 
-                if (reportType === "PRIMARYGROUPdetail") {
+
+                if (reportType === "TRAILDETAIL") {
                     html = `
                               <div class="d-flex flex-wrap">
                                 <!-- First Line (7 Inputs) -->
@@ -238,7 +238,7 @@
                             </div>
 
                         `;
-                } else if (reportType === "PRIMARYGROUPSUMMARY") {
+                } else if (reportType === "TRAILSUMMARY") {
                     html = `
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
                                 <label class="form-label">Total Dr Amt</label>
@@ -267,6 +267,14 @@
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
                                 <label class="form-label">Total Net Amt</label>
                                 <input id="totNetAmt" class="form-control" readonly />
+                            </div> 
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                <label class="form-label">Total CurrDRTotal </label>
+                                        <input id="totCurrDRTotal" class="form-control" readonly />
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                        <label class="form-label">Total CurrCRTotal</label>
+                                        <input id="totCurrCRTotal" class="form-control" readonly />
                             </div>
                         `;
                 }
@@ -301,7 +309,7 @@
             function updateButtonTitle() {
                  
                 let reportType = $("#ReportType").val();
-                let newTitle = (reportType === "PRIMARYGROUPSUMMARY") ? "Trail Balance Summary" : "Trail Balance Detail";
+                let newTitle = (reportType === "TRAILSUMMARY") ? "Trail Balance Summary" : "Trail Balance Detail";
 
                 $("#dynamicText").text(newTitle);
             }
@@ -385,6 +393,8 @@
             var TotGroupCuurDr = 0;
             var TotGroupCuurCr = 0;
             var TotGroupNet = 0;
+            var TotCurrDRTotal = 0;
+            var TotCurrCRTotal = 0;
             for (var i = 1; i <= rowCount; i++) {
 
                 TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
@@ -401,6 +411,8 @@
                 TotGroupCuurDr += $('#totGroupCurrDrAmtG-' + i).text() == '' ? 0 : parseFloat($('#totGroupCurrDrAmtG-' + i).text());
                 TotGroupCuurCr += $('#totGroupCurrCrAmtG-' + i).text() == '' ? 0 : parseFloat($('#totGroupCurrCrAmtG-' + i).text());
                 TotGroupNet += $('#totGroupNetAmtG-' + i).text() == '' ? 0 : parseFloat($('#totGroupNetAmtG-' + i).text());
+                TotCurrDRTotal += $('#totCurrDrTotalG-' + i).text() == '' ? 0 : parseFloat($('#totCurrDrTotalG-' + i).text());
+                TotCurrCRTotal += $('#totCurrCrTotalG-' + i).text() == '' ? 0 : parseFloat($('#totCurrCrTotalG-' + i).text());
 
                 //if(totAmount < 0){
                 //    $('#SAGridRow-' + i).css('background-color', 'red');
@@ -416,12 +428,14 @@
             $('#totNetCurrentAmt').val(isNaN(TotNetCurr) ? 0 : TotNetCurr.toFixed(2));
             $('#totNetAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
 
-            $('#totGroupOpnDr').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
-            $('#totGroupOpnCr').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
-            $('#totGroupOpening').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
-            $('#totGroupCurrDrAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
-            $('#totGroupCurrCrAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
-            $('#totGroupNetAmt').val(isNaN(TotNet) ? 0 : TotNet.toFixed(2));
+            $('#totGroupOpnDr').val(isNaN(TotGroupOpnDr) ? 0 : TotGroupOpnDr.toFixed(2));
+            $('#totGroupOpnCr').val(isNaN(TotGroupOpnCr) ? 0 : TotGroupOpnCr.toFixed(2));
+            $('#totGroupOpening').val(isNaN(TotGroupOpening) ? 0 : TotGroupOpening.toFixed(2));
+            $('#totGroupCurrDrAmt').val(isNaN(TotGroupCuurDr) ? 0 : TotGroupCuurDr.toFixed(2));
+            $('#totGroupCurrCrAmt').val(isNaN(TotGroupCuurCr) ? 0 : TotGroupCuurCr.toFixed(2));
+            $('#totGroupNetAmt').val(isNaN(TotGroupNet) ? 0 : TotGroupNet.toFixed(2));
+            $('#totCurrDRTotal').val(isNaN(TotCurrDRTotal) ? 0 : TotCurrDRTotal.toFixed(2));
+            $('#totCurrCRTotal').val(isNaN(TotCurrCRTotal) ? 0 : TotCurrCRTotal.toFixed(2));
         }
         function getFirstDayOfMonth(dateString) {
             const [day, month, year] = dateString.split('/');

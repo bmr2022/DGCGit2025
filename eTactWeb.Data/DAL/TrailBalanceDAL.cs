@@ -34,10 +34,10 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
 
-                    command.Parameters.AddWithValue("@flag", "PRIMARYGROUPSUMMARY");
+                    //command.Parameters.AddWithValue("@flag", "PRIMARYGROUPSUMMARY");
                     command.Parameters.AddWithValue("@FromDate", FromDate);
                     command.Parameters.AddWithValue("@ToDate", ToDate);
-                    command.Parameters.AddWithValue("@EntryByMachine", EntryByMachine);
+                    //command.Parameters.AddWithValue("@EntryByMachine", EntryByMachine);
                     command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
                     command.Parameters.AddWithValue("@FromFormName", "TRAIL");
 
@@ -48,7 +48,7 @@ namespace eTactWeb.Data.DAL
                         dataAdapter.Fill(oDataSet);
                     }
                 }
-                if(ReportType== "PRIMARYGROUPSUMMARY")
+                if(ReportType== "TRAILSUMMARY")
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                     {

@@ -36,7 +36,7 @@
                                             <label class="form-label">From Date</label>
                                             <input asp-for="FromDate" class="form-control" />
                                         </div>
-                                        <div class="COL">
+                                        <div class="col">
                                             <label class="form-label">To Date</label>
                                             <input asp-for="ToDate" class="form-control" />
                                         </div>
@@ -49,6 +49,8 @@
                                         <option value="BOMTREE" selected>BOM TREE</option>
                                         <option value="BOMSTOCK">BOM STOCK</option>
                                         <option value="DirectBOM">Direct BOM</option>
+                                        <option value="BOMSTOCK(WITH SUB BOM)">BOMSTOCK(WITH SUB BOM)</option>
+                                        <option value="BOMSTOCK(DIRECT CHILD)">BOMSTOCK(DIRECT CHILD)</option>
                                     </select>
                                 </div>
                               
@@ -205,12 +207,12 @@
         // Function to handle ReportType changes
         function handleReportType() {
             var reportType = $('#ReportType').val();
-
+            debugger
             if (reportType === "BOMTREE" || reportType === "DirectBOM") {
                 GetBomTreeDetailsData(); // Call details function for BOMTREE and DirectBOM
                 $('#BomStokeStoreName').hide(); // Hide BOM STOCK fields
                 $('#bomStokeCenter').hide(); // Hide BOM STOCK fields
-            } else if (reportType === "BOMSTOCK") {
+            } else if (reportType === "BOMSTOCK" || reportType === "BOMSTOCK(WITH SUB BOM)" || reportType === "BOMSTOCK(DIRECT CHILD)") {
                 $('#BomStokeStoreName').show(); // Show BOM STOCK fields
                 $('#bomStokeCenter').show(); // Show BOM STOCK fields
                 if ($('#StoreName').val() === "") { // Assuming an input field for Center Name

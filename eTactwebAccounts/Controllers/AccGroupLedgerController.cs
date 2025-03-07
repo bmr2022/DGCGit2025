@@ -47,11 +47,11 @@ namespace eTactwebAccounts.Controllers
         {
             var model = new AccGroupLedgerModel();
             model = await _IAccGroupLedger.GetGroupLedgerDetailsData(FromDate, ToDate, GroupCode, ReportType);
-            if (ReportType == "PRIMARYGROUPSUMMARY")
+            if (ReportType == "GROUPSUMMARY")
             {
                 return PartialView("_GroupLedgerSummaryGrid", model);
             }
-            if (ReportType == "PRIMARYGROUPdetail")
+            if (ReportType == "GROUPDETAIL")
             {
                 return PartialView("_GroupLedgerDetailGrid", model);
             }
