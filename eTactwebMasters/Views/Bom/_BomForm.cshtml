@@ -22,6 +22,14 @@
                             <label asp-for="Unit" class="form-label"></label>
                             <input asp-for="Unit" class="form-control" />
                         </div>
+                        <div class="col-lg-6 col-md-4 col-sm-6 col-xs-12">
+                            <label asp-for="CustJwAdjustmentMandatory" class="form-label">Cust Jw Adj Mandatory</label>
+                            <select asp-for="CustJwAdjustmentMandatory" class="form-control">
+                                <option value="">-Select-</option>
+                                <option value="Y">Yes</option>
+                                <option value="N">No</option>
+                            </select>
+                        </div>
                         
                     </div>
                 </div>
@@ -186,6 +194,7 @@
                         <th>Runner Item Code</th>
                         <th>Runner Qty</th>
                         <th>Burn Qty</th>
+                        <th>Cust Jw Adjustment Mandatory</th>
                     </tr>
                 </thead>
                 <tbody id="divBomGrid">

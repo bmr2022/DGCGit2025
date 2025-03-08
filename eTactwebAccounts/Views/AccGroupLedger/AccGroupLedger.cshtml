@@ -217,7 +217,7 @@
 
         });
         function checkAndRunFunction() {
-            debugger
+             
             var groupName = $("#GroupName").val();
             if (groupName) {
                 GetGroupLedgerDetailsData();
@@ -265,7 +265,7 @@
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        debugger
+                         
                         var GroupName = '@Model.Account_Code';
                         //$('#LedgerName').val(LedgerName).trigger("change");
                         $('#GroupName').val(GroupName);
@@ -278,7 +278,7 @@
         }
 
         function GetGroupLedgerDetailsData() {
-            debugger
+             
             //var reportType = $('#ReportType').val();
             //var EntryByMachine = $('#EntryByMachine').val();
             var FromDate = $('#FromDate').val();
@@ -308,7 +308,7 @@
         }
 
         function countAllTotal() {
-            debugger
+             
             var rowCount = $('#divStockRegisterBody tr').length;
 
             var TotCr = 0;
