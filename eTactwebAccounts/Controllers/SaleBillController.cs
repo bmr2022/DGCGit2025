@@ -911,9 +911,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillItems(string sono, int soYearCode, int accountCode, string showAll, string TypeItemServAssets)
+        public async Task<JsonResult> FillItems(string sono, int soYearCode, int accountCode, string showAll, string TypeItemServAssets,string bomInd)
         {
-            var JSON = await _SaleBill.FillItems(sono, soYearCode, accountCode, showAll, TypeItemServAssets);
+            var JSON = await _SaleBill.FillItems(sono, soYearCode, accountCode, showAll, TypeItemServAssets, bomInd);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
