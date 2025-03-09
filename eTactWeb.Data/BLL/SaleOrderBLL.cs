@@ -39,9 +39,9 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.NewEntryId(YearCode);
     }
-    public async Task<ResponseResult> NewAmmEntryId()
+    public async Task<ResponseResult> NewAmmEntryId(int YearCode)
     {
-        return await _SaleOrderDAL.NewAmmEntryId();
+        return await _SaleOrderDAL.NewAmmEntryId(YearCode);
     }
     public async Task<SaleOrderDashboard> GetAmmDashboardData()
     {

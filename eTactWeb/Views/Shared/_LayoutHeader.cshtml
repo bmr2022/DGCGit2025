@@ -2094,6 +2094,16 @@
                                         <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item ReportsRequsition" asp-action="AccGroupLedger" asp-controller="AccGroupLedger">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        Group Ledger
+                                    </a>
+                                    <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
+                                </li>
+
+                                <li><hr class="dropdown-divider"></li>
                                     <li>
                                     <a class="dropdown-item ReportsRequsition" asp-action="TrailBalance" asp-controller="TrailBalance">
                                             <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
@@ -2103,16 +2113,7 @@
                                         <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                    <a class="dropdown-item ReportsRequsition" asp-action="AccGroupLedger" asp-controller="AccGroupLedger">
-                                            <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
-                                               style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
-                                        Group Ledger
-                                        </a>
-                                        <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
-                                    </li>
-
-                                    <li><hr class="dropdown-divider"></li>
+                                    
 
                                     <li>
                                         <a class="dropdown-item" asp-action="StockValuation" asp-controller="StockValuation" id="StockRegister">
@@ -2231,6 +2232,21 @@
                             <li>
                         </ul>
                     </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" href="#">MIS Reports &raquo; </a>
+                    <ul class="submenu dropdown-menu">
+                        <li>
+                            <a class="dropdown-item ReportsMRN" asp-action="ConsumptionReport" asp-controller="ConsumptionReport">
+                                <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                   style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                Consumption Report
+                            </a>
+                        </li>
+                        <li>
+                    </ul>
+                </li>
+                            <li><hr class="dropdown-divider"></li>
                 </ul>
                 </li>
 

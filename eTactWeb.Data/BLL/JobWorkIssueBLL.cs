@@ -15,6 +15,10 @@ namespace eTactWeb.Data.BLL
     {
         private readonly IDataLogic _DataLogicDAL;
         private readonly JobWorkIssueDAL _JobWorkIssueDAL;
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _JobWorkIssueDAL.GetReportName();
+        }
         public JobWorkIssueBLL(IConfiguration configuration, IDataLogic iDataLogic)
         {
             _DataLogicDAL = iDataLogic;

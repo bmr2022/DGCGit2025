@@ -202,7 +202,7 @@
             $('#UpdateButton').click(function(){
                 $('#Mode').val("U");
             });
-
+           
             //$('#FinishItemCode').change(function(){
             //    //SetPartCodeItem(this.id);
             //    //GetBomNo(this.id);
@@ -306,7 +306,14 @@
             }
 
         });
-
+        function toggleSection() {
+            debugger
+            if ($("#hideUnhideToggle").is(":checked")) {
+                $("#optionalParameterSection").slideDown();
+            } else {
+                $("#optionalParameterSection").slideUp();
+            }
+        }
         function FGCodeChange(ID) {
             // $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') }).done(function () { GetGridData(ID) });
             $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') });
@@ -760,6 +767,7 @@
 
                 "Scrap": $('#Scrap').val(),
                 "BurnQty": $('#BurnQty').val(),
+                "CustJwAdjustmentMandatory":$('#CustJwAdjustmentMandatory').val()
             }
 
             $.ajax({

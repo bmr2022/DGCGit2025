@@ -21,7 +21,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillConsigneeList(string showAllConsignee);
         Task<ResponseResult> FillSOYearCode(string sono,string accountCode);
         Task<ResponseResult> DisplaySODetail(string accountName, string itemName, string partCode, string sono, int soYearCode, string custOrderNo, string schNo, int schYearCode);
-        Task<ResponseResult> FillItems(string sono,int soYearCode,int accountCode, string showAll, string TypeItemServAssets);
+        Task<ResponseResult> FillItems(string sono,int soYearCode,int accountCode, string showAll, string TypeItemServAssets,string bomInd);
         Task<ResponseResult> FillStore();
         Task<ResponseResult> AllowTaxPassword();
         Task<ResponseResult> FillSOPendQty(int saleBillEntryId, string saleBillNo, int saleBillYearCode,string sono, int soYearcode, string custOrderNo, int itemCode, int accountCode, string schNo, int schYearCode);

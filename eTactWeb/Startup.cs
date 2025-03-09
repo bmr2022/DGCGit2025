@@ -132,6 +132,7 @@ namespace eTactWeb
             services.TryAddScoped<IMinimumMaximaumLevel, MinimumMaximaumLevelBLL>();
             services.TryAddScoped<IUserRightReport, UserRightReportBLL>();
             services.TryAddScoped<IDayBook, DayBookBLL>();
+            services.TryAddScoped<IConsumptionReport, ConsumptionReportBLL>();
             services.TryAddScoped<IStockValuation, StockValuationBLL>();
             services.TryAddScoped<ICancelSaleBillrequisition, CancelSaleBillrequisitionBLL>();
             services.TryAddScoped<IStoreMaster, StoreMasterBLL>();

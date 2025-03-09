@@ -401,7 +401,7 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
-
+            debugger
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
             } else {
@@ -935,7 +935,8 @@
         });
 
         function ResetPendQty() {
-
+            debugger
+            FillSOPendQty();
             var rowCount = $('#divSaleBillList tr').length;
             var totalBillQty = 0;
             // GridIC-1
@@ -1199,7 +1200,7 @@
                     }
                 }
             }
-
+        
             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) return false;
 
@@ -1212,6 +1213,7 @@
                 url: "@Url.Action("FillSOPendQty")",
                 data: { "saleBillEntryId": $('#SaleBillEntryId').val(), "saleBillNo": $('#SaleBillNo').val(), "saleBillYearCode": $('#SaleBillYearCode').val(), "sono": $('#SONO').val(), "soYearcode": $('#SOYearCode').val(), "custOrderNo": $('#CustOrderNo').val(), "itemCode": $('#ItemCode').val(), "accountCode": $('#AccountCode').val(), "schNo": $('#SchNo').val(), "schYearCode": $('#SaleSchYearCode').val() },
                 dataType: "json",
+                async:false,
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -1238,7 +1240,7 @@
                             $('#RateInOtherCurr').val("");
                             $('#RateInOtherCurr').val((obj.Result[0].Rate).toFixed(4));
 
-                            ResetPendQty();
+                            // ResetPendQty();
                         }
                     }
                 }
@@ -1350,9 +1352,9 @@
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divSaleBillList').html(result);
                         var rowCount = $('#divSaleBillList tr').length;
-                        debugger
+                         
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
-                    
+                       
                         $('#Uniquebatchno,#Batchno,#Qty').val(0);
                         $('#LotStock,#TotalStock').val("");
                         $('#BOMInd,#ProducedUnprod').val('');
@@ -1374,12 +1376,13 @@
 
                         BasicTotal();
                         ClearAdjustmentGrid();
+                        ResetPendQty();
                         // var rowCount = $('#divSaleBillList tr').length;
 
-                        for (var i = 1; i <= rowCount; i++) {
+                        // for (var i = 1; i <= rowCount; i++) {
 
-                            sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
-                        }
+                        //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                        // }
                         $('#ItemNetAmount').val(sum);
 
                         // $('#lblItemNetAmount').text(sum.toFixed(2));
@@ -1509,10 +1512,10 @@
             }
         }
 
-        $('#ItemSA').change(function () {
+        $('#ItemSA,#BOMInd').change(function () {
+            debugger
             FillItems($('#TypeItemServAssets').val());
         });
-
 
         // var sonoItems = [];
         function FillItems(itemType) {
@@ -1520,8 +1523,8 @@
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
             $.ajax({
                 type: "POST",
-                data: { "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "showAll": showAll, "TypeItemServAssets": itemType },
-                url: "@Url.Action("FillItems")",
+                data: { "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "showAll": showAll, "TypeItemServAssets": itemType, "bomInd": $('#BOMInd').val() },
+                url: "@Url.Action("FillItems","SaleBill")",
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {

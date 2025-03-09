@@ -221,6 +221,8 @@ namespace eTactWeb.Data.DAL
                                                  BurnQty = Convert.ToDecimal(dr["BurnQty"]),
                                                  Location = dr["Location"].ToString(),
                                                  MPNNo = dr["MPNNo"].ToString(),
+                                                 CustJWmandatory = dr["CustJWmandatory"].ToString(),
+                                                 
                                              }).ToList();
                         }
                     }

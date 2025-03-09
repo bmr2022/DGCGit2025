@@ -72,8 +72,10 @@ namespace eTactWeb.DOM.Models
 
         [Required]
         public string? EntryDate { get; set; }
+        public string? CustJwAdjustmentMandatory { get; set; }
         public string? Location { get; set; }
         public string? MPNNo { get; set; }
+        public string? CustJWmandatory { get; set; }
         public bool FG1 { get; set; }
         public IList<TextValue>? FG1CodeList { get; set; }
         public IList<TextValue>? FG1NameList { get; set; }
@@ -130,6 +132,7 @@ namespace eTactWeb.DOM.Models
         public string? FGPartCode { get; set; }
         public string? FGItemName { get; set; }
         public int FGItemCode { get; set; }
+        public string? CustJwAdjustmentMandatory { get; set; }
         public string? RMPartCode { get; set; }
         public string? RMItemName { get; set; }
         public int RMItemCode { get; set; }

@@ -56,7 +56,7 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
 
-                    command.Parameters.AddWithValue("@flag", "GROUPSUMMARYFORM");
+                   // command.Parameters.AddWithValue("@flag", "GROUPSUMMARYFORM");
                     command.Parameters.AddWithValue("@FromDate", FromDate);
                     command.Parameters.AddWithValue("@ToDate", ToDate);
                     command.Parameters.AddWithValue("@GroupCode", GroupCode);
@@ -70,25 +70,49 @@ namespace eTactWeb.Data.DAL
                         dataAdapter.Fill(oDataSet);
                     }
                 }
-                if (ReportType == "PRIMARYGROUPSUMMARY")
+                if (ReportType == "GROUPSUMMARY")
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                     {
                         resultList.AccGroupLedgerGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                        select new AccGroupLedgerModel
                                                        {
-                                                           TrailBalanceGroupName = row["TrailBalanceGroupName"] == DBNull.Value ? string.Empty : row["TrailBalanceGroupName"].ToString(),
-                                                           OpnDr = row["OpnDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnDr"]),
-                                                           OpnCr = row["OpnCr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnCr"]),
-                                                           TotalOpening = row["TotalOpening"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalOpening"]),
-                                                           CurrDrAmt = row["CurrDrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrDrAmt"]),
-                                                           CurrCrAmt = row["CurrCrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrCrAmt"]),
-                                                           NetCurrentAmt = row["NetCurrentAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["NetCurrentAmt"]),
-                                                           NetAmt = row["NetAmount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["NetAmount"]),
-                                                           CurrDrTotal = row["CurrDrTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrDrTotal"]),
-                                                           CurrCrTotal = row["CurrCrTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrCrTotal"]),
-                                                           TBSeq = row["TBSeq"] == DBNull.Value ? 0 : Convert.ToInt32(row["TBSeq"]),
-                                                           TrailBalanceGroupCode = row["TrailBalanceGroupCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["TrailBalanceGroupCode"]),
+                                                           //TrailBalanceGroupName = row["TrailBalanceGroupName"] == DBNull.Value ? string.Empty : row["TrailBalanceGroupName"].ToString(),
+                                                           //OpnDr = row["OpnDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnDr"]),
+                                                           //OpnCr = row["OpnCr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnCr"]),
+                                                           //TotalOpening = row["TotalOpening"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalOpening"]),
+                                                           //CurrDrAmt = row["CurrDrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrDrAmt"]),
+                                                           //CurrCrAmt = row["CurrCrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrCrAmt"]),
+                                                           //NetCurrentAmt = row["NetCurrentAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["NetCurrentAmt"]),
+                                                           //NetAmt = row["NetAmount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["NetAmount"]),
+                                                           //CurrDrTotal = row["CurrDrTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrDrTotal"]),
+                                                           //CurrCrTotal = row["CurrCrTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrCrTotal"]),
+                                                           //TBSeq = row["TBSeq"] == DBNull.Value ? 0 : Convert.ToInt32(row["TBSeq"]),
+                                                           //TrailBalanceGroupCode = row["TrailBalanceGroupCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["TrailBalanceGroupCode"]),
+
+                                                           ParentGroupName = row.IsNull("ParentGroupName") ? "" : Convert.ToString(row["ParentGroupName"]),
+                                                           //ParentAccountCode = row.IsNull("ParentAccountCode") ? 0 : Convert.ToInt32(row["ParentAccountCode"]),
+                                                           //SubGroupParent = row.IsNull("SubGroupParent") ? "" : Convert.ToString(row["SubGroupParent"]),
+                                                           //UnderGroup = row.IsNull("UnderGroup") ? "" : Convert.ToString(row["UnderGroup"]),
+                                                           AccountName = row.IsNull("AccountName") ? "" : Convert.ToString(row["AccountName"]),
+                                                           //Account_Code = row.IsNull("Accountcode") ? 0 : Convert.ToInt32(row["Accountcode"]),
+                                                           //GroupOpnDr = row.IsNull("GroupOpnDr") ? 0 : Convert.ToDecimal(row["GroupOpnDr"]),
+                                                           //GroupOpnCr = row.IsNull("GroupOpnCr") ? 0 : Convert.ToDecimal(row["GroupOpnCr"]),
+                                                           OpnDr = row.IsNull("OpnDr") ? 0 : Convert.ToDecimal(row["OpnDr"]),
+                                                           OpnCr = row.IsNull("OpnCr") ? 0 : Convert.ToDecimal(row["OpnCr"]),
+                                                           //TotalGroupOpening = row.IsNull("TotalGroupOpening") ? 0 : Convert.ToDecimal(row["TotalGroupOpening"]),
+                                                           TotalOpening = row.IsNull("TotalOpening") ? 0 : Convert.ToDecimal(row["TotalOpening"]),
+                                                           CurrDrAmt = row.IsNull("CurrDrAmt") ? 0 : Convert.ToDecimal(row["CurrDrAmt"]),
+                                                           CurrCrAmt = row.IsNull("CurrCrAmt") ? 0 : Convert.ToDecimal(row["CurrCrAmt"]),
+                                                           //GroupCurrDrAmt = row.IsNull("GroupCurrDrAmt") ? 0 : Convert.ToDecimal(row["GroupCurrDrAmt"]),
+                                                           //GroupCurrCrAmt = row.IsNull("GroupCurrCrAmt") ? 0 : Convert.ToDecimal(row["GroupCurrCrAmt"]),
+                                                           NetAmt = row.IsNull("NetAmount") ? 0 : Convert.ToDecimal(row["NetAmount"]),
+                                                           NetCurrentAmt = row.IsNull("NetCurrentAmt") ? 0 : Convert.ToDecimal(row["NetCurrentAmt"]),
+                                                           //SeqNo = row.IsNull("SeqNo") ? 0 : Convert.ToInt32(row["SeqNo"]),
+                                                           //TrailBalanceGroupId = row.IsNull("trailbalanceGroupid") ? 0 : Convert.ToInt32(row["trailbalanceGroupid"]),
+                                                           TBSeq = row.IsNull("TBSeq") ? 0 : Convert.ToInt32(row["TBSeq"]),
+                                                           //TrailBalanceGroupCode = row.IsNull("TrailBalanceGroupCode") ? 0 : Convert.ToInt32(row["TrailBalanceGroupCode"]),
+                                                           GroupLedger = row.IsNull("GroupLedger") ? "" : Convert.ToString(row["GroupLedger"])
 
 
                                                        }).ToList();
@@ -101,29 +125,29 @@ namespace eTactWeb.Data.DAL
                         resultList.AccGroupLedgerGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                        select new AccGroupLedgerModel
                                                        {
-                                                           TrailBalanceGroupName = row.IsNull("GroupName") ? "" : Convert.ToString(row["GroupName"]),
+                                                           //TrailBalanceGroupName = row.IsNull("GroupName") ? "" : Convert.ToString(row["GroupName"]),
                                                            ParentGroupName = row.IsNull("ParentGroupName") ? "" : Convert.ToString(row["ParentGroupName"]),
-                                                           ParentAccountCode = row.IsNull("ParentAccountCode") ? 0 : Convert.ToInt32(row["ParentAccountCode"]),
-                                                           SubGroupParent = row.IsNull("SubGroupParent") ? "" : Convert.ToString(row["SubGroupParent"]),
-                                                           UnderGroup = row.IsNull("UnderGroup") ? "" : Convert.ToString(row["UnderGroup"]),
+                                                           //ParentAccountCode = row.IsNull("ParentAccountCode") ? 0 : Convert.ToInt32(row["ParentAccountCode"]),
+                                                           //SubGroupParent = row.IsNull("SubGroupParent") ? "" : Convert.ToString(row["SubGroupParent"]),
+                                                           //UnderGroup = row.IsNull("UnderGroup") ? "" : Convert.ToString(row["UnderGroup"]),
                                                            AccountName = row.IsNull("AccountName") ? "" : Convert.ToString(row["AccountName"]),
-                                                           Account_Code = row.IsNull("Accountcode") ? 0 : Convert.ToInt32(row["Accountcode"]),
-                                                           GroupOpnDr = row.IsNull("GroupOpnDr") ? 0 : Convert.ToDecimal(row["GroupOpnDr"]),
-                                                           GroupOpnCr = row.IsNull("GroupOpnCr") ? 0 : Convert.ToDecimal(row["GroupOpnCr"]),
+                                                           //Account_Code = row.IsNull("Accountcode") ? 0 : Convert.ToInt32(row["Accountcode"]),
+                                                           //GroupOpnDr = row.IsNull("GroupOpnDr") ? 0 : Convert.ToDecimal(row["GroupOpnDr"]),
+                                                           //GroupOpnCr = row.IsNull("GroupOpnCr") ? 0 : Convert.ToDecimal(row["GroupOpnCr"]),
                                                            OpnDr = row.IsNull("OpnDr") ? 0 : Convert.ToDecimal(row["OpnDr"]),
                                                            OpnCr = row.IsNull("OpnCr") ? 0 : Convert.ToDecimal(row["OpnCr"]),
-                                                           TotalGroupOpening = row.IsNull("TotalGroupOpening") ? 0 : Convert.ToDecimal(row["TotalGroupOpening"]),
+                                                           //TotalGroupOpening = row.IsNull("TotalGroupOpening") ? 0 : Convert.ToDecimal(row["TotalGroupOpening"]),
                                                            TotalOpening = row.IsNull("TotalOpening") ? 0 : Convert.ToDecimal(row["TotalOpening"]),
                                                            CurrDrAmt = row.IsNull("CurrDrAmt") ? 0 : Convert.ToDecimal(row["CurrDrAmt"]),
                                                            CurrCrAmt = row.IsNull("CurrCrAmt") ? 0 : Convert.ToDecimal(row["CurrCrAmt"]),
-                                                           GroupCurrDrAmt = row.IsNull("GroupCurrDrAmt") ? 0 : Convert.ToDecimal(row["GroupCurrDrAmt"]),
-                                                           GroupCurrCrAmt = row.IsNull("GroupCurrCrAmt") ? 0 : Convert.ToDecimal(row["GroupCurrCrAmt"]),
+                                                           //GroupCurrDrAmt = row.IsNull("GroupCurrDrAmt") ? 0 : Convert.ToDecimal(row["GroupCurrDrAmt"]),
+                                                           //GroupCurrCrAmt = row.IsNull("GroupCurrCrAmt") ? 0 : Convert.ToDecimal(row["GroupCurrCrAmt"]),
                                                            NetAmt = row.IsNull("NetAmount") ? 0 : Convert.ToDecimal(row["NetAmount"]),
-                                                           GroupNetAmt = row.IsNull("GroupNetAmount") ? 0 : Convert.ToDecimal(row["GroupNetAmount"]),
-                                                           SeqNo = row.IsNull("SeqNo") ? 0 : Convert.ToInt32(row["SeqNo"]),
-                                                           TrailBalanceGroupId = row.IsNull("trailbalanceGroupid") ? 0 : Convert.ToInt32(row["trailbalanceGroupid"]),
+                                                           NetCurrentAmt = row.IsNull("NetCurrentAmt") ? 0 : Convert.ToDecimal(row["NetCurrentAmt"]),
+                                                           //SeqNo = row.IsNull("SeqNo") ? 0 : Convert.ToInt32(row["SeqNo"]),
+                                                           //TrailBalanceGroupId = row.IsNull("trailbalanceGroupid") ? 0 : Convert.ToInt32(row["trailbalanceGroupid"]),
                                                            TBSeq = row.IsNull("TBSeq") ? 0 : Convert.ToInt32(row["TBSeq"]),
-                                                           TrailBalanceGroupCode = row.IsNull("TrailBalanceGroupCode") ? 0 : Convert.ToInt32(row["TrailBalanceGroupCode"]),
+                                                           //TrailBalanceGroupCode = row.IsNull("TrailBalanceGroupCode") ? 0 : Convert.ToInt32(row["TrailBalanceGroupCode"]),
                                                            GroupLedger = row.IsNull("GroupLedger") ? "" : Convert.ToString(row["GroupLedger"])
 
                                                        }).ToList();

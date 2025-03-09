@@ -103,11 +103,22 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:150px">
                                     <label asp-for="ProdAgainstPlanManual" class="form-label" style="color: blue;">Prod Against</label>
                                     <input type="hidden" id="hiddenProdAgain" value="@Model.ProdAgainstPlanManual" />
-                                    <select asp-for="ProdAgainstPlanManual" class="form-select">
-                                        <option selected value="PRODSCHEDULE">Against Plan Sch</option>
-                                        <option value="REQUISITION">Against Requisition</option>
-                                        <option value="UNPLANNED">UnPlanned</option>
-                                    </select>
+                                    @if (Model.ReqNo != null)
+                                    {
+                                        <select asp-for="ProdAgainstPlanManual" class="form-select">
+                                            <option value="PRODSCHEDULE">Against Plan Sch</option>
+                                            <option selected value="REQUISITION">Against Requisition</option>
+                                            <option value="UNPLANNED">UnPlanned</option>
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <select asp-for="ProdAgainstPlanManual" class="form-select">
+                                            <option selected value="PRODSCHEDULE">Against Plan Sch</option>
+                                            <option value="REQUISITION">Against Requisition</option>
+                                            <option value="UNPLANNED">UnPlanned</option>
+                                        </select>
+                                    }
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
                                     <label asp-for="ProdType" class="form-label" style="color: blue;">Prod Type</label>
@@ -266,9 +277,9 @@
                                 {
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9">
                                         <label asp-for="SenToQc" class="form-label" style="color: red;">Send To Qc*</label>
-                                        <input asp-for="SenToQc" class="form-control" value="@Model.SenToQc" readonly/>
+                                        <input asp-for="SenToQc" class="form-control" value="@Model.SenToQc" readonly />
                                     </div>
-                                    @if(Model.Store == "W")
+                                    @if (Model.Store == "W")
                                     {
                                         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9">
                                             <label asp-for="Store" class="form-label" style="color: red;">Store/Wc*</label>
@@ -309,10 +320,10 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9" sstyle="width:80px" id="StoreTransferdiv">
                                     <label asp-for="StoreTransfer" class="form-label" style="color: red;">Store/Wc*</label>
                                     <select class="form-select" asp-for="StoreTransfer">
-                                     @*    <option>-Select-</option> *@
+                                        @*    <option>-Select-</option> *@
                                         <option value="W">WorkCenter</option>
                                         <option value="S">Store</option>
-                                      
+
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style=" width:200px" id="Rejtransferdiv">
@@ -1504,7 +1515,7 @@
                 CheckDifference(fromDateStr, toTimeStr);
                 CheckOperatorDifference(fromDateStr, toTimeStr);
                 CheckProdDate();
-                
+
             }
             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
 
@@ -1577,21 +1588,21 @@
                 var desiredValue = $('#hiddenProdAgain').val();
                 if (desiredValue == 'REQUISITION') {
                     $('#ProdAgainstPlanManual').append('<option value="PRODSCHEDULE">Against Plan Sch</option>\
-                                                                                                                                                                                                                                                                                                                                                                            <option selected value="REQUISITION">Against Requisition</option>\
-                                                                                                                                                                                                                                                                                                                                                                            <option value="UNPLANNED">UnPlanned</option>\
-                                                                                                                                                                                                                                                                                                                                                                           ');
+                                                                                                                                                                                                                                                                                                                                                                                            <option selected value="REQUISITION">Against Requisition</option>\
+                                                                                                                                                                                                                                                                                                                                                                                            <option value="UNPLANNED">UnPlanned</option>\
+                                                                                                                                                                                                                                                                                                                                                                                           ');
                 }
                 else if (desiredValue == 'PRODSCHEDULE') {
                     $('#ProdAgainstPlanManual').append('<option selected value="PRODSCHEDULE">Against Plan Sch</option>\
-                                                                                                                                                                                                                                                                                                                                                                                    <option value="REQUISITION">Against Requisition</option>\
-                                                                                                                                                                                                                                                                                                                                                                                    <option value="UNPLANNED">UnPlanned</option>\
-                                                                                                                                                                                                                                                                                                                                                                                   ');
+                                                                                                                                                                                                                                                                                                                                                                                                    <option value="REQUISITION">Against Requisition</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                    <option value="UNPLANNED">UnPlanned</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                   ');
                 }
                 else if (desiredValue == 'UNPLANNED') {
                     $('#ProdAgainstPlanManual').append('<option value="PRODSCHEDULE">Against Plan Sch</option>\
-                                                                                                                                                                                                                                                                                                                                                                                            <option value="REQUISITION">Against Requisition</option>\
-                                                                                                                                                                                                                                                                                                                                                                                            <option selected value="UNPLANNED">UnPlanned</option>\
-                                                                                                                                                                                                                                                                                                                                                                                           ');
+                                                                                                                                                                                                                                                                                                                                                                                                            <option value="REQUISITION">Against Requisition</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                            <option selected value="UNPLANNED">UnPlanned</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                           ');
                 }
                 $('#ProdAgainstPlanManual').change();
                 $('#Store').change();
@@ -2116,7 +2127,7 @@
         }
 
         function FillWorkcenter() {
-
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillWorkcenter")",
@@ -2124,15 +2135,18 @@
                 data: {},
                 success: function (result, status, error) {
                     if (result != null) {
-
+                         
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#WorkCenter').empty();
                             $('#WorkCenter').append('<option disabled>-Select-</option>');
+                            var WcId = "@Model.ProdInWCID";
+                            WcId = WcId ? parseInt(WcId, 10) : 0;
                             $.each(obj.Result, function (index, val) {
-                                $('#WorkCenter').append('<option selected value="' + val.entryid + '">' + val.WorkCenterDescription + '</option>');
-                                $('#ProdInWCID').val($('#WorkCenter').val())
-                            })
+                                var isSelected = (val.entryid == WcId) ? "selected" : "";
+                                $('#WorkCenter').append('<option ' + isSelected + ' value="' + val.entryid + '">' + val.WorkCenterDescription + '</option>');
+                            });
+                            $('#ProdInWCID').val($('#WorkCenter').val());
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var workcenter = $('#ProdInWCID').val();
@@ -2800,7 +2814,7 @@
                         }
                         $('#ProdEntryAllowBackDate').val(obj.Result[0].ProdEntryAllowBackDate);
                         if (obj.Result[0].ProdEntryAllowBackDate == 'Y') {
-                             
+
                             $("#ActualProdDate").datepicker("option", "minDate", result);
                             $("#ActualProdDate").datepicker("option", "maxDate", formattedDate1);
                         }
@@ -3271,6 +3285,7 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#TargetQty').empty();
                             $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
+                            $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
                         }
                     }
                 }
@@ -3291,6 +3306,7 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#TargetQty').empty();
                             $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
+                            $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
                         }
                     }
                 }
@@ -3432,9 +3448,15 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#ProdSch').empty();
                             $('#ProdSch').append('<option selected>-Select-</option>');
+                            var ProdSch = "@Model.ProdSchNo";
+                            ProdSch = ProdSch ? ProdSch.trim() : "";
                             $.each(obj.Result, function (index, val) {
-                                $('#ProdSch').append('<option value="' + val.ProdSchNo + '">' + val.ProdSchNo + '</option>');
+                                var isSelected = (val.ProdSchNo == ProdSch) ? "selected" : "";
+                                $('#ProdSch').append('<option ' + isSelected +' value="' + val.ProdSchNo + '">' + val.ProdSchNo + '</option>');
                             })
+                            if(ProdSch){
+                                $('#ProdSch').change();
+                            }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var schno = '@Model.ProdSch'
@@ -3480,9 +3502,15 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#ProdSchYear').empty();
                             $('#ProdSchYear').append('<option selected>-Select-</option>');
+                            var ProdSchYearCode = "@Model.ProdSchYear";
+                            ProdSchYearCode = ProdSchYearCode ? parseInt(ProdSchYearCode, 10) : 0;
                             $.each(obj.Result, function (index, val) {
-                                $('#ProdSchYear').append('<option value="' + val.YearCode + '">' + val.YearCode + '</option>');
+                                var isSelected = (val.YearCode == ProdSchYearCode) ? "selected" : "";
+                                $('#ProdSchYear').append('<option ' + isSelected +' value="' + val.YearCode + '">' + val.YearCode + '</option>');
                             })
+                            if(ProdSchYearCode){
+                                $('#ProdSchYear').change();
+                            }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var prodyear = '@Model.ProdSchYear'
@@ -3668,7 +3696,7 @@
         }
 
         $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
-
+            debugger
             var cntId = e.target.id;
             if (cntId == 'ItemName') {
                 ItemNameChange(cntId);
@@ -3692,6 +3720,16 @@
             $('#ProdPlanDate').val(0);
         });
 
+        function GetItemNameForPendingProduction(){
+            debugger
+            FillReqNo();
+            FillProdSchNo();
+            FillBomNo();
+            FillOperation();
+            GetProcessDetail();
+            GetTotalStockWorkCenterQty();
+        }
+        
         $(document).on('select2:select', '#RmItemName,#RmPartCode', function (e) {
             var cntId = e.target.id;
             if (cntId == 'RmItemName') {
@@ -3831,7 +3869,7 @@
         }
 
         function GetItem() {
-              
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetItems")",
@@ -3844,9 +3882,15 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#ItemName').empty();
                             $('#ItemName').append('<option>-Select-</option>');
+                            var ItemCode = "@Model.ItemCode";
+                            ItemCode = ItemCode ? parseInt(ItemCode, 10) : 0;
                             $.each(obj.Result, function (index, val) {
-                                $('#ItemName').append('<option value="' + val.Item_Code + '">' + val.Item_Name + '</option>')
-                            })
+                                var isSelected = (val.Item_Code == ItemCode) ? "selected" : "";
+                                $('#ItemName').append('<option ' + isSelected + ' value="' + val.Item_Code + '">' + val.Item_Name + '</option>');
+                            });
+                            if (ItemCode) {
+                                GetItemNameForPendingProduction();
+                            }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var itemname = $('#FGItemCode').val();
                                 $('#ItemName').val(itemname).trigger("change");
@@ -3863,21 +3907,24 @@
         }
 
         function GetPartCode() {
-             
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPartCode")",
                 dataType: "json",
                 data: { ProdAgainst: $('#ProdAgainstPlanManual').val(), YearCode: $('#YearCode').val() },
                 success: function (result, status, error) {
-                     
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#PartCode').empty();
                             $('#PartCode').append('<option>-Select-</option>');
+                            var ItemCode = "@Model.ItemCode";
+                            ItemCode = ItemCode ? parseInt(ItemCode, 10) : 0;
                             $.each(obj.Result, function (index, val) {
-                                $('#PartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>')
+                                var isSelected = (val.Item_Code == ItemCode) ? "selected" : "";
+                                $('#PartCode').append('<option ' + isSelected + ' value="' + val.Item_Code + '">' + val.PartCode + '</option>')
                             })
                             var PartCode = "@Model.PartCode";
                             $('#PartCode option').filter(function () {
@@ -3942,7 +3989,7 @@
         }
 
         $('#SenToQc').change(function () {
-            
+
             var SenToQc = $('#SenToQc').val();
             if (SenToQc == "Y") {
                 $('#Store').prop("disabled", true);
