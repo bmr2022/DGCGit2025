@@ -97,7 +97,7 @@
 
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="SalaryHead" class="form-label">Head Name</label>
+                                        <label asp-for="SalaryHead" class="form-label">Head Name<span><label class="mandatoryField">*</label></span></label>
                                     <input asp-for="SalaryHead" class="form-control" value="@Model.SalaryHead"  />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -109,7 +109,7 @@
                                     <input asp-for="SalHeadEffectiveDate" class="form-control"  />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label id="Types" class="form-label">Type Of Salary Head</label>
+                                        <label id="Types" class="form-label">Type Of Salary Head<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="TypeOfSalary" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                        @*  <option value="@Model.TypeOfSalary">-Select-</option> *@
@@ -135,7 +135,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label id="Types" class="form-label">Part Of GrossBasic</label>
+                                        <label id="Types" class="form-label">Part Of GrossBasic<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="PartOfGrossBasic" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.PartOfGrossBasic">-Select-</option>
@@ -236,7 +236,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="FrequencyOfPayment" class="form-label">Frequency</label>
+                                        <label asp-for="FrequencyOfPayment" class="form-label">Frequency<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="FrequencyOfPayment" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.FrequencyOfPayment">-Select-</option>
@@ -335,7 +335,7 @@
 
                                 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="PFApplicable" class="form-label">Provident Fund Applicable</label>
+                                        <label asp-for="PFApplicable" class="form-label">Provident Fund Applicable<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="PFApplicable" class="form-select">
                                         <option value="" disabled>-Select-</option>
                                         <option value="YES" selected>YES</option>
@@ -1282,3 +1282,10 @@
         
     </script>
 }
+
+<style>
+    .mandatoryField {
+        color: red;
+        font-size: small;
+    }
+</style>

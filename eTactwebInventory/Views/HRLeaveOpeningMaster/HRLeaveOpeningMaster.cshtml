@@ -12,7 +12,7 @@
             <h5>
                 <strong>Leave Opening Master</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="JobworkDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="HRLeaveOpeningMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -100,7 +100,7 @@
                                 <input type="hidden" asp-for="Mode" value="@Model.Mode" />
                                 
                                 <label asp-for="LeaveOpnEntryId" class="form-label" style="color: blue;">Entry Id</label>
-                                <input asp-for="LeaveOpnEntryId " class="form-control" readonly />
+                                <input asp-for="LeaveOpnEntryId " class="form-control"  readonly />
                             </div>
                             @*<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">*@
                             @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"> *@
@@ -117,7 +117,7 @@
                             </div>
 
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                <label asp-for="EmpName" class="form-label">Employee  </label>
+                                    <label asp-for="EmpName" class="form-label">Employee<span><label class="mandatoryField">*</label></span>  </label>
                                 <input asp-for="EmpId" class="form-control" type="hidden" value="@Model.EmpId" />
                                 <select asp-for="EmpName" class="form-control">
                                     @* <option value="@Model.AccountCode">-Select-</option> *@
@@ -130,31 +130,40 @@
                             </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="EmpCode" class="form-label">EmpCode  </label>
+                                    <label asp-for="EmpCode" class="form-label">EmpCode <span><label class="mandatoryField">*</label></span> </label>
                                    
                                     <select asp-for="EmpCode" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
-                                        <option value="@Model.EmpCode">-Select-</option>
+                                        <option value="@Model.EmpId">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
-                                            <option value="@Model.EmpCode" selected>@Model.EmpCode</option>
+                                            <option value="@Model.EmpId" selected>@Model.EmpCode</option>
                                         }
                                     </select>
                                 </div>
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                 <label asp-for="Designation" class="form-label">Designation  </label>
-                                    <input asp-for="Designation" class="form-control" type="text" value="@Model.Designation" />
+                                    <input asp-for="DesignationId" class="form-control" type="hidden" value="@Model.DesignationId" />
+                                    <input asp-for="Designation" class="form-control" type="text" readonly value="@Model.Designation" />
+
                                
                             </div>
 
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                 <label asp-for="Department" class="form-label">Department  </label>
-                                    <input asp-for="Department" class="form-control" type="text" value="@Model.Department" />
+                                    <input asp-for="DeptId" class="form-control" type="hidden" value="@Model.DeptId" />
+                                    <input asp-for="Department" class="form-control" type="text" readonly value="@Model.Department" />
                                 
                             </div>
 
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none">
+                                    <label asp-for="EntryByMachine" class="form-label">Department  </label>
+                                    <input asp-for="EntryByMachine" class="form-control" type="text" value="@Environment.MachineName" />
+
+                                </div>
+
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                <label asp-for="Shift" class="form-label">Shift  </label>
+                                    <label asp-for="Shift" class="form-label">Shift<span><label class="mandatoryField">*</label></span>  </label>
                                 <input asp-for="ShiftId" class="form-control" type="hidden" value="@Model.ShiftId" />
                                 <select asp-for="Shift" class="form-control">
                                     @* <option value="@Model.AccountCode">-Select-</option> *@
@@ -197,13 +206,12 @@
                                 <div class="row g-2 gx-3" id="_ItemGrid">
                                 </div>
                                 
-                                <span class="d-flex ms-auto align-items-center" >
-                                    <div class="col-auto">
-                                        <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
-                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                                        </button>
-                                    </div>
-                                </span>
+                                <div class="d-flex justify-content-end align-items-center mb-1">
+                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
+                                </div>
+
                                 
                                 <div class="card">
                                     <div class="card-body overflow-auto pb-0">
@@ -229,7 +237,7 @@
                                                 <tr>
                                                    
                                                     <td>
-                                                    <select class="form-select" asp-for="LeaveAccrualType">
+                                                    <select class="form-select" asp-for="LeaveAccrualType" required>
                                                         <option value="">-Select-</option>
                                                         <option value="Monthly">Monthly</option>
                                                         <option value="Yearly">Yearly</option>
@@ -237,7 +245,7 @@
                                                     </select>
                                                     </td>
                                                     <td>
-                                                        <select asp-for="LeaveName" class="form-control">
+                                                        <select asp-for="LeaveName" class="form-select" required style="width:70px">
                                                             @* <option value="@Model.AccountCode">-Select-</option> *@
                                                             <option value="@Model.LeaveId">-Select-</option>
                                                             @if (Model.Mode == "U" || Model.Mode == "V")
@@ -247,14 +255,14 @@
                                                         </select>
                                                     </td>
 
-                                                    <td><input asp-for="AccrualRate" style=""  /></td>
-                                                    <td><input asp-for="OpeningBalance" class="form-control"   /></td>
+                                                    <td><input asp-for="AccrualRate" style=""  required /></td>
+                                                    <td><input asp-for="OpeningBalance" class="form-control" oninput="GetTotalLeaves()" /></td>
 
-                                                    <td><input asp-for="CarriedForward"  class="form-control" /></td>
-                                                    <td><input asp-for="TotalLeaves" class="form-control"   /></td>
+                                                    <td><input asp-for="CarriedForward" class="form-control" oninput="GetTotalLeaves()" required /></td>
+                                                    <td><input asp-for="TotalLeaves" class="form-control" readonly  required /></td>
                                                     <td><input asp-for="MaxCarryForward" class="form-control"  /></td>
                                                     <td>
-                                                <select class="form-select" asp-for="LeaveEncashmentAllowed">
+                                                <select class="form-select" asp-for="LeaveEncashmentAllowed" required>
                                                     <option value="">-Select-</option>
                                                     <option value="YES">YES</option>
                                                     <option value="NO">NO</option>
@@ -262,9 +270,9 @@
                                                 </select>
                                                 </td>
 
-                                                    <td><input asp-for="LeaveValidityPeriod" class="form-control"   /></td>
-                                                    <td><input asp-for="MandatoryLeaveAfter" class="form-control"   /></td>
-                                                    <td><input asp-for="MaxAllowedLeaves" class="form-control"   /></td>
+                                                    <td><input asp-for="LeaveValidityPeriod" class="form-control" required  /></td>
+                                                    <td><input asp-for="MandatoryLeaveAfter" class="form-control" required   /></td>
+                                                    <td><input asp-for="MaxAllowedLeaves" class="form-control"  required /></td>
                                                    
                                                 </tr>
                                             </tbody>
@@ -287,6 +295,7 @@
                                                     <th>Action</th>
                                                     <th data-columnno="0" data-sortorder="asc" class="sortCol">SeqNo</th>
                                                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Accrual Type</th>
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px;width:10px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Name</th>
                                                     <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Accrual Rate</th>
                                                     <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Opening Balance</th>
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CarriedForward</th>
@@ -300,7 +309,7 @@
                                                 </tr>
 
                                             </thead>
-                                            <tbody id="divLeaveOpeningGrid">
+                                            <tbody id="divStockGrid">
                                                 <partial name="_HRLeaveOpeningDetailGrid" />
                                             </tbody>
                                         </table>
@@ -361,7 +370,7 @@
                             
                             <span class="d-flex float-end" style="margin-top:-2px;">
                                
-                                <a asp-action="JobworkDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                <a asp-action="HRLeaveOpeningMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -420,73 +429,64 @@
 
         var AccountStateCode = 0;
         $('#submitBTN').click(function (e) {
-
+            debugger;
             e.preventDefault();
-            var txRowCount = $('#divTaxGrid tr').length;
-            
+           
             $("form").submit();
         });
+        $("#EmpName").select2();
+        $("#EmpCode").select2();
+        $("#Shift").select2();
+        $("#LeaveName").select2();
 
 
-        
-
-        $('button[type="submit"]').click(function (e) {
-
-            e.preventDefault();
-            var txRowCount = $('#divTaxGrid tr').length;
-
-            if ($('#divTaxGrid tr td').length <= 1) {
-                $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                return false;
-            }
-
-            else {
-                if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                    return false;
-                }
-                for (var i = 1; i <= txRowCount; i++) {
-                    var txType = $('#txGridType-' + i).text();
-                    var txname = $('#txGridName-' + i).text();
-                    if (txType == '' || txname == '') {
-                        $.notify("TaxType Or TaxName cannot be null", "error");
-                        return false;
-                    }
-                }
-            }
-            $("form").submit();
-        });
-        function GetFormRights() {
-            $.ajax({
-                url: "@Url.Action("GetFormRights")",
-                type: "POST",
-                success: function (data) {
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.Result.Table.length == 0) {
-                            $("#submitBTN").prop("disabled", true);
-                            $('.card-footer #submitBTN').prop("disabled", true);
-                        }
-                        else {
-                            // console.log(obj);
-                            var optAll = obj.Result.Table[0].OptAll;
-                            var optSave = obj.Result.Table[0].OptSave;
-                            var optUpdate = obj.Result.Table[0].OptUpdate;
-                            var optDelete = obj.Result.Table[0].OptDelete;
-                            var optView = obj.Result.Table[0].OptView;
-                            if (!optAll) {
-                                if (!optSave) {
-                                    $("#submitBTN").prop("disabled", true);
-                                    $('.card-footer #submitBTN').prop("disabled", true);
-                                }
-                            }
-                        }
-                    }
-                },
-                error: function (errMsg) {
-                    $.notify(errMsg, { position: "top center", className: "error" });
-                }
-            });
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            FillEntryID();
         }
+        function GetTotalLeaves() {
+            // Get the values from the two textboxes
+            var num1 = parseFloat(document.getElementById("OpeningBalance").value) || 0;
+            var num2 = parseFloat(document.getElementById("CarriedForward").value) || 0;
+
+            // Calculate the sum
+            var sum = num1 + num2;
+
+            // Display the sum in the third textbox
+            document.getElementById("TotalLeaves").value = sum;
+        }
+       
+        // function GetFormRights() {
+        //     $.ajax({
+        //         url: "@Url.Action("GetFormRights")",
+        //         type: "POST",
+        //         success: function (data) {
+        //             if (data != null) {
+        //                 var obj = $.parseJSON(data);
+        //                 if (obj.Result.Table.length == 0) {
+        //                     $("#submitBTN").prop("disabled", true);
+        //                     $('.card-footer #submitBTN').prop("disabled", true);
+        //                 }
+        //                 else {
+        //                     // console.log(obj);
+        //                     var optAll = obj.Result.Table[0].OptAll;
+        //                     var optSave = obj.Result.Table[0].OptSave;
+        //                     var optUpdate = obj.Result.Table[0].OptUpdate;
+        //                     var optDelete = obj.Result.Table[0].OptDelete;
+        //                     var optView = obj.Result.Table[0].OptView;
+        //                     if (!optAll) {
+        //                         if (!optSave) {
+        //                             $("#submitBTN").prop("disabled", true);
+        //                             $('.card-footer #submitBTN').prop("disabled", true);
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         error: function (errMsg) {
+        //             $.notify(errMsg, { position: "top center", className: "error" });
+        //         }
+        //     });
+        // }
 
         function copyToClipboardForDropdown(element) {
             var $temp = $("<input>");
@@ -498,6 +498,17 @@
         AutoComplete('VJobworkIssueMainDetail', 'DispatchTo', 'Dispatchto', null);
         // const moment = require('moment');
 
+        $('#LeaveName').change(function () {
+            $('#LeaveId').val($('#LeaveName').val());
+        });
+
+        // $('#EmpName').change(function () {
+        //     $('#EmpId').val($('#EmpName').val());
+        // });
+
+        $('#Shift').change(function () {
+            $('#ShiftId').val($('#Shift').val());
+        });
 
         function sortTableGridOnEdit(columnIndex1, columnIndex2, ascending) {
 
@@ -527,9 +538,56 @@
         $(document).ready(function () {
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
             else {
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            }
+
+            $(document).on('select2:select', '#EmpName,#EmpCode', function (e) {
+
+                var cntId = e.target.id;
+                if (cntId == 'EmpName') {
+                    EmpNameChange(cntId);
+                }
+                else {
+                    EmpCodeChange(cntId);
+                }
+                $('#EmpId').val($('#EmpName').val())
+                
+                GetEmployeeDepartment();
+                GetEmployeeDesignation();
+
+            });
+
+            function EmpNameChange(ID) {
+                SetEmpCodeEmpName(ID);
+                GetEmployeeDepartment();
+                GetEmployeeDesignation();
+            }
+
+            function EmpCodeChange(ID) {
+
+                $.when(SetEmpCodeEmpName(ID)).done(function () {
+                });
+                GetEmployeeDepartment();
+                GetEmployeeDesignation();
+            }
+
+            function SetEmpCodeEmpName(ID) {
+                if (!ID) return;
+                else {
+                    var v = $('#' + ID).select2('val');
+                    if (ID == "EmpCode") {
+                        $("#EmpName").val(v).trigger("change");
+                    }
+
+                    if (ID == "EmpName") {
+                        $("#EmpCode").val(v).trigger("change");
+                    }
+                }
             }
 
 
@@ -594,10 +652,10 @@
                     EmpCodeDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, item) {
-                        EmpCodeDropdown.append('<option value="' + item.Empcode + '">' + item.Empcode + '</option>');
+                        EmpCodeDropdown.append('<option value="' + item.Emp_Id + '">' + item.Empcode + '</option>');
                     });
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var EmpCode = '@Model.EmpCode';
+                        var EmpCode = '@Model.EmpId';
                         $('#EmpCode').val(EmpCode).trigger("change");
                         $('#EmpCode').val(EmpCode);
                     }
@@ -608,6 +666,94 @@
                 }
             });
         }
+
+        function GetEmployeeDepartment() {
+            debugger;
+            var empId = $("#EmpName").val().trim();
+            if (!empId) return;
+
+           
+
+            $.ajax({
+                url: '@Url.Action("GetDepartment", "HRLeaveOpeningMaster")',
+                type: 'GET',
+                data: { empid: empId },
+                success: function (data) {
+                   
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+                            
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var deptData = data.Result[0]; // Extract first object
+
+                    
+                        $("#Department").prop("disabled", false).val(deptData.DeptName).trigger("input");
+                        $("#DeptId").prop("disabled", false).val(deptData.deptId).trigger("input");
+                    } else {
+                       
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+                   
+                }
+            });
+        }
+
+        function GetEmployeeDesignation() {
+            debugger;
+            var empId = $("#EmpName").val().trim();
+            if (!empId) return;
+
+
+
+            $.ajax({
+                url: '@Url.Action("GetDesignation", "HRLeaveOpeningMaster")',
+                type: 'GET',
+                data: { empid: empId },
+                success: function (data) {
+
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var deptData = data.Result[0]; // Extract first object
+
+
+                        $("#Designation").prop("disabled", false).val(deptData.Designation).trigger("input");
+                        $("#DesignationId").prop("disabled", false).val(deptData.DesigId).trigger("input");
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+
+                }
+            });
+        }
+
+
+
+
 
         function FillShift() {
             $.ajax({
@@ -649,7 +795,7 @@
                     var EmpCategDropdown = $('#LeaveName');
                     var obj = $.parseJSON(response);
                     EmpCategDropdown.empty();
-                    EmpCategDropdown.append('<option value="">--Select--</option>');
+                    EmpCategDropdown.append('<option value=""></option>');
 
                     $.each(obj.Result, function (index, item) {
                         EmpCategDropdown.append('<option value="' + item.LeaveEntryId + '">' + item.LeaveName + '</option>');
@@ -660,6 +806,26 @@
                         $('#LeaveName').val(LeaveName);
                     }
 
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillEntryID() {
+
+            $.ajax({
+                url: '@Url.Action("FillEntryId", "HRLeaveOpeningMaster")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#LeaveOpnEntryId').val(0);
+                        $('#LeaveOpnEntryId').val(obj.Result[0].EntryId);
+                    }
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load groups.');
@@ -838,423 +1004,87 @@
 
             e.preventDefault();
 
-            if (!ValidateJW_Grid()) return;
-
-            var StoreName, ProcessName;
-            if ($('#StoreId').find(':selected').text() == '-Select-') {
-                StoreName = 'NA';
-            } else {
-                StoreName = $('#StoreId').find(':selected').text();
-            }
-            if ($('#ProcessId').find(':selected').text() == '-Select-') {
-                ProcessName = 'NA';
-            } else {
-                ProcessName = $('#ProcessId').find(':selected').text();
-            }
-
-            var lengthGridJob = $('#divJobWorkGrid tr').length;
-            var maxRowCount = 0;
-
-            for (var i = 1; i <= lengthGridJob; i++) {
-
-                var GridItemCode = $('#GridIC-' + i).val();
-                if (GridItemCode == parseInt($('#ItemCode').val())) {
-                    //maxRowCount = Math.max(maxRowCount, rows[i].id);
-                    maxRowCount = Math.max(maxRowCount, i);
-                }
-            }
-            for (var i = 1; i <= lengthGridJob; i++) {
-
-                var GridItemCode = parseInt($('#GridIC-' + i).val());
-                if (GridItemCode == parseInt($('#ItemCode').val())) {
-                    //maxRowCount = Math.max(maxRowCount, rows[i].id);
-                    var NewSeqNo = parseInt($('#SeqForBatch-' + maxRowCount).val());
-                    SeqForBatch = NewSeqNo + 1;
-                    break;
-                }
-                else {
-                    SeqForBatch = 1;
-                }
+            console.log('Add to Grid button clicked');
+            var LeaveAccrualType = $('#LeaveAccrualType').val().trim();
+            var LeaveName = $('#LeaveName option:Selected').text().trim();
+            var LeaveId = $('#LeaveName').val().trim();
+            var AccrualRate = $('#AccrualRate').val().trim();
+            var OpeningBalance = $('#OpeningBalance').val().trim();
+            var CarriedForward = $('#CarriedForward').val().trim();
+            var TotalLeaves = $('#TotalLeaves').val().trim();
+            var MaxCarryForward = $('#MaxCarryForward').val().trim();
+            var LeaveEncashmentAllowed = $('#LeaveEncashmentAllowed').val().trim();
+            var LeaveValidityPeriod = $('#LeaveValidityPeriod').val().trim();
+            var MandatoryLeaveAfter = $('#MandatoryLeaveAfter').val().trim();
+            var MaxAllowedLeaves = $('#MaxAllowedLeaves').val().trim();
+            if (!LeaveAccrualType || !LeaveName || !AccrualRate || !OpeningBalance || !CarriedForward || !TotalLeaves || !MaxCarryForward || !LeaveEncashmentAllowed || !LeaveValidityPeriod ) {
+                $.notify('Fill All Data For Add in Grid', "error");
+                return;
             }
 
-            var editedSeqForBatch = parseInt($('#SeqForBatch').val());
-            if (editedSeqForBatch > 0) {
-                SeqForBatch = editedSeqForBatch;
-            }
+            var SchData = {
+                "LeaveAccrualType": LeaveAccrualType,
+                "LeaveName": LeaveName,
+                "AccrualRate": AccrualRate,
+                "OpeningBalance": OpeningBalance,
+                "LeaveId":LeaveId,
+                "CarriedForward": CarriedForward,
+                "TotalLeaves": TotalLeaves,
+                "MaxCarryForward": MaxCarryForward,
+                "LeaveEncashmentAllowed": LeaveEncashmentAllowed,
+                "LeaveValidityPeriod": LeaveValidityPeriod,
+                // "EntryDate": $('#EntryDate').val(),
+                "MandatoryLeaveAfter": MandatoryLeaveAfter,
+                "MaxAllowedLeaves": MaxAllowedLeaves
+                
+            };
 
-            var ItemData = {
-                "ItemCode": parseInt($('#ItemCode').val()),
-                "PartCode": $('#PartCode').find(':selected').text(),
-                "ItemName": $('#ItemCode').find(':selected').text(),
-                "HSNNo": $('#HSNNo').val(),
-                "IssQty": $('#IssQty').val(),
-                "Unit": $('#Unit').val(),
-                "Rate": $('#Rate').val(),
-                "Amount": $('#Amount').val(),
-                "PurchasePrice": $('#PurchasePrice').val(),
-                "ProcessId": $('#ProcessId').val(),
-                "ProcessName": ProcessName,
-                "StoreId": $('#StoreId').val(),
-                "StoreName": StoreName,
-                "BatchNo": $('#BatchNo').val(),
-                "UniqueBatchNo": $('#UniqueBatchNo').val(),
-                "StockQty": parseInt($('#StockQty').val()),
-                "BatchStockQty": $('#BatchStockQty').val(),
-                "RecScrapPartCode": $('#RecScrapPartCode').find(':selected').text() == '-Select-' ? "NA" : $('#RecScrapPartCode').find(':selected').text(),
-                "RecScrapItemName": $('#RecScrapItemCode').find(':selected').text() == '-Select-' ? "NA" : $('#RecScrapItemCode').find(':selected').text(),
-                "RecScrapCode": parseInt($('#RecScrapPartCode').val()),
-                "RecScrapQty": $('#RecScrapQty').val(),
-                "AltQTy": $('#AltQTy').val(),
-                "AltUnit": $('#AltUnit').val(),
-                "RecPartCode": $('#RecPartCode').find(':selected').text(),
-                "RecItemName": $('#RecItemCode').find(':selected').text(),
-                "RecItemCode": parseInt($('#RecPartCode').val()),
-                "RecQty": $('#RecQty').val(),
-                "ToLimit": $('#ToLimit').val(),
-                "OtherInstruction": $('#OtherInstruction').val(),
-                "RemarkDetail": $('#RemarkDetail').val(),
-                "PONO": $('#PONO').val(),
-                "POYear": $('#POYear').val(),
-                "PODate": $('#PODate').val(),
-                "SchNo": $('#SchNo').val(),
-                "SchYear": $('#SchYear').val(),
-                "SchDate": $('#SchDate').val(),
-                "POAAmmendNo": $('#POAAmmendNo').val(),
-                "AgainstAdaviceNo": $('#AgainstAdaviceNo').val(),
-                "AgainstAdaviceYear": $('#AgainstAdaviceYear').val(),
-                "AgainstAdaviceDate": $('#AgainstAdaviceDate').val(),
-                "ItemSize": $('#ItemSize').val(),
-                "ItemColor": $('#ItemColor').val(),
-                "Mode": $('#Mode').val(),
-                "SeqForBatch": SeqForBatch,
-            }
-
+            console.log(SchData);
 
             $.ajax({
-                url: "@Url.Action("AddJobWorkIssueDetail")",
                 type: "POST",
-                data: ItemData,
-                beforeSend: function (xhr) {
-                    //console.log(1);
-                },
-                success: function (data, status, xhr) {
+                url: '@Url.Action("AddLeaveOpeningDetail", "HRLeaveOpeningMaster")',
+                data: { model: SchData },
+                success: function (result, status, xhr) {
 
-                    itemBatchArray.push({
-                        "itemcode": parseInt($('#ItemCode').val()),
-                        "batchno": $('#BatchNo').val(),
-                        "uniqueBatchNo": $('#UniqueBatchNo').val()
-                    });
-                    BatchUniqueUpd.push({
-                        "itemcode": parseInt($('#ItemCode').val()),
-                        "batchno": $('#BatchNo').val(),
-                        "seqBatch": SeqForBatch
-                    });
-                    //console.log(2);
-                    $('#RoundOff').prop('selectedIndex', 0);
-                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
-                        $.notify('Duplicate Item Not Allowed.', "info");
-                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
-                    }
-                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
-                        $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
-                    }
-                    else {
-                        $('#divJobWorkGrid').html(data);
-                        $.notify('Item Added To Grid', "success");
-                        GetAmtAfterDiscount();
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        $('#divStockGrid').html(result);
+                        $.notify('Process Added To Grid', "success");
                         ClearGrid();
-                        $('#PurchasePrice').prop("readonly", true);
-
-
-                        //var rowCount = $('#divJobWorkGrid tr').length;
-                        //for (var i = 1; i <= rowCount + 1; i++) {
-                        //    $('#editButton-' + i).prop("disabled", false);
-                        //}
-                        //ClearItem();
-
                         editingNow = false;
+                        // TotalNoOfRows();
+                        // countAllTotal();
+                        //ClearItems();
+                    } else if (xhr.status == 207) {
+                        $.notify('Duplicate Item...!', "info");
                     }
-                    var rowCount = $('#divJobWorkGrid tr').length;
-                    var columnCount = $('#divJobWorkGrid tr td').length;
 
-                    if (columnCount > 1) {
-
-                        $('#lblItemCount').text(rowCount);
-                    }
-                    else
-                        $('#lblItemCount').text(0);
-                    sum = 0;
-                    var TotApproxVal = 0;
-
-                    for (var i = 1; i <= rowCount; i++) {
-
-                        sum += parseFloat($('#GridAmount-' + i).text());
-                        TotApproxVal += parseFloat($('#PurchasePrice-' + i).text()) * parseFloat($('#IssQty-' + i).text());
-                    }
-                    $('#TolApprVal').val(TotApproxVal.toFixed(2));
-                    $('#lblItemNetAmount').text(sum.toFixed(2));
-                    var rowCountTax = $('#divTaxGrid tr').length;
-                    var sumTax = 0;
-
-                    for (var i = 1; i <= rowCountTax; i++) {
-
-                        sumTax = parseFloat($('#txGridAmount-' + i).text()) + parseFloat($('#lblItemNetAmount').text());
-                    }
-                    $('#NetTotall').val(sumTax.toFixed(2));
-
-                    if (sumTax == 0) {
-
-                        $('#NetTotall').val(sum.toFixed(2));
-                        $('#AmtAftrDiscount').val(sum.toFixed(2));
-                    }
-                    $('#PartCode').focus();
-                    $('#PartCode').val("").trigger('change');
-                    $('#ItemCode').val("").trigger('change');
                 },
-                error: function (result, status, xhr) {
-                    $.notify(result.responseText, "error");
-                },
-                failure: function (result, status, xhr) {
-                    alert(response.responseText);
-                },
-                complete: function () {
-                    // console.log(5);
-                    $('.Schedule').fadeIn();
-                    //$('#NetTotall').val(0);
-                    $('#DiscountPercentage').val(0);
-                    //$('#AmtAftrDiscount').val(0);
-                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                error: function () {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
                 }
-            }).done(function () {
-                // console.log(3);
-                GetTaxPartItem();
-            }).fail(function () {
-                alert("error");;
-            }).always(function () {
-                //  console.log(4);
             });
         });
 
-       
+
+
 
         function ClearGrid() {
 
-            $('#PartCode,#ItemCode,#BatchNo,#UniqueBatchNo,#ProcessId,#RecScrapPartCode,#RecScrapItemCode,#RecPartCode,#RecItemCode').prop('selectedIndex', 0);
-            $('#PONO,#POYear,#PODate,#SchNo,#SchYear,#AgainstAdaviceNo,#AgainstAdaviceYear,#ItemColor,#ItemSize').prop('selectedIndex', 0);
-            $('#HSNNo,#StockQty,#BatchStockQty,#IssQty,#Rate,#Amount,#PurchasePrice,#RecScrapQty,#AltQTy,#RecQty,#ToLimit').val(0);
-            $('#Unit,#OtherInstruction,#RemarkDetail,#AltUnit,#SchDate,#AgainstAdaviceDate,#POAAmmendNo').val('');
-            $('select[name^="BatchNo"]').val('');
-            $('select[name^="UniqueBatchNo"]').val('');
+            $('#LeaveAccrualType').val(''),
+                $('#LeaveName').val(''),
+               
+                $('#AccrualRate').val(0),
+                $('#OpeningBalance').val(0),
+                $('#CarriedForward').val(0),
+                $('#TotalLeaves').val(0),
+                $('#MaxCarryForward').val(0),
+                $('#LeaveEncashmentAllowed').val(''),
+                $('#LeaveValidityPeriod').val(0),
+                $('#MandatoryLeaveAfter').val(0),
+                $('#MaxAllowedLeaves').val(0)
+
         }
-
-       
-
-        
-
-        function ValidateJW_Grid() {
-
-            var Err = 0;
-            //GetPrevQty();
-            var stockQty = parseFloat($('#StockQty').val());
-            var batchStock = parseFloat($('#BatchStockQty').val());
-            var qty = parseFloat($('#IssQty').val());
-            var recSqty = parseFloat($('#RecScrapQty').val());
-            var recqty = parseFloat($('#RecQty').val());
-            var ValidateQty = parseFloat(PrevQty + BatchStock);
-            var MinQtyVal = batchStock + PrevQty
-
-            if (parseFloat($('#IssQty').val()) == 0 || $('#IssQty').val() == '') {
-                AddErrorCls('IssQty');
-                $.notify("Qty is required", "error");
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('IssQty');
-            }
-
-            if (qty > batchStock) {
-                $.notify("Qty cannot be greater than Batch Stock Qty", "error");
-                AddErrorCls('IssQty');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('IssQty');
-            }
-
-            //if ($('#JobWorkNewRework').val() == 'Rework') {
-
-            //    $('#Rate').rules("remove", "required");
-            //    RemoveErrorCls('Rate');
-            //    //$('#Amount').val(0.00)
-            //} else {
-            //    if (parseInt($('#Rate').val()) == 0 || $('#Rate').val() == '') {
-            //        $('#Rate').val(0);
-            //        $.notify("Rate is required","error");
-            //        Err = 1;
-            //    }
-            //}
-            if (parseInt($('#PurchasePrice').val()) <= 0) {
-                AddErrorCls('PurchasePrice');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('PurchasePrice');
-            }
-
-            if ($('#JobWorkNewRework').val() !== 'Rework') {
-                if (parseInt($('#Rate').val()) <= 0) {
-                    AddErrorCls('Rate');
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('Rate');
-                }
-            }
-            //if (parseInt($('#Amount').val()) <= 0 || $('#Amount').val() == '') {
-            //    AddErrorCls('Amount');
-            //    $.notify("Amount is required", "error");
-            //    Err = 1;
-            //}
-            //else {
-            //    RemoveErrorCls('Amount');
-            //}
-
-
-            if (recSqty > qty) {
-                $.notify("Rec Scrap Qty cannot be greater than Iss Qty", "error");
-                AddErrorCls('RecScrapQty');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('RecScrapQty');
-            }
-            if (recqty > qty) {
-                $.notify("Rec Qty cannot be greater than Iss Qty", "error");
-                AddErrorCls('RecQty');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('RecQty');
-            }
-            //if (qty > batchStock) {
-            //    $.notify("Qty cannot be greater than Batch Stock Qty", "error");
-            //    AddErrorCls('IssQty');
-            //    Err = 1;
-            //}
-            //else {
-            //    RemoveErrorCls('IssQty');
-            //}
-
-            if (qty > stockQty) {
-                $.notify("Qty cannot be greater than Stock Qty", "error");
-                AddErrorCls('IssQty');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('IssQty');
-            }
-            if ($('#PartCode').prop('selectedIndex') == 0 || $('#ItemCode').prop('selectedIndex') == 0) {
-                AddErrorCls('PartCode'), AddErrorCls('ItemCode');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('PartCode'), RemoveErrorCls('ItemCode');
-            }
-            if ($('#Stockable').val() == "Y" && $('#ItemServAssets').val() == 'Item') {
-                if ($('#BatchNo').prop('selectedIndex') == 0) {
-                    AddErrorCls('BatchNo');
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('BatchNo');
-                }
-                if ($('#UniqueBatchNo').prop('selectedIndex') == 0) {
-                    AddErrorCls('UniqueBatchNo');
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('UniqueBatchNo');
-                }
-                if ($('#PurchasePrice').val() == '') {
-                    AddErrorCls('PurchasePrice');
-                    $.notify("PurchasePrice is required", "error");
-                }
-                else {
-                    RemoveErrorCls('PurchasePrice');
-                }
-                if ($('#Rate').val() == '' || $('#Rate').val() == 0) {
-                    AddErrorCls('Rate');
-                    $.notify("Rate is required", "error");
-                }
-                else {
-                    RemoveErrorCls('Rate');
-                }
-            }
-            if ($('#Mode').val() != "U") {
-                if ($('#BomStatus').prop('selectedIndex') == 0) {
-                    AddErrorCls('BomStatus');
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls("BomStatus");
-                }
-            }
-            if ($('#StoreId').prop('selectedIndex') == 0) {
-                AddErrorCls('StoreId');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('StoreId');
-            }
-            if ($('#AccountCode').prop('selectedIndex') == 0) {
-                AddErrorCls('AccountCode');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('AccountCode');
-            }
-            if ($('#DeliveryAdd').val() == null || $('#DeliveryAdd').val() == "") {
-                AddErrorCls('DeliveryAdd');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('DeliveryAdd');
-            }
-            if ($('#VehicleNo').val() === '' || /^.{10}$/.test($('#VehicleNo').val())) {
-                RemoveErrorCls('VehicleNo');
-            } else {
-                AddErrorCls('VehicleNo');
-                $.notify('Vehicle No should have 10 digits', "error");
-                Err = 1;
-                //errorSpan.textContent = 'Please enter 10 digits or leave it empty.';
-            }
-            if ($('#Distance').val() != "") {
-                if (/^\d+(\.\d{0,2})?$/.test(parseFloat($('#Distance').val())) && parseFloat($('#Distance').val()) >= 0) {
-                    RemoveErrorCls('Distance');
-                }
-                else {
-                    AddErrorCls('Distance');
-                    $.notify("Distance should have atmost two decimal points", "error");
-                    Err = 1;
-                }
-                if (parseFloat($('#Distance').val()) <= 3000) {
-                    RemoveErrorCls('Distance');
-                }
-                else {
-                    AddErrorCls('Distance');
-                    $.notify("Distance can only be under 3000 km", "error");
-                    Err = 1;
-                }
-            }
-
-            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
-            if (Err == 1) return false;
-
-            return true;
-        }
-
-       
-       
 
         function formatDate(d) {
             var newDate = new Date(d);
@@ -1301,178 +1131,60 @@
             });
         }
 
-       
-
-       
-        
 
         
-        var isEditAllowed = "false";
 
-        $('#confirmTaxClear').click(function () {
-            $('.btnClearTax').click();
-        });
 
-        function DeleteItemRow(SeqNo, ItemCode, BatchNo, Cntr) {
-
-            var BatchNo = $('#GridBatchNumber-' + SeqNo).val();
-            var IC = parseInt($('#GridItemCode-' + SeqNo).val());
-            var SeqForBatch = parseInt($('#SeqForBatch-' + SeqNo).val());
-            var lengthForBatch = BatchUniqueUpd.length;
-            var Forbatch = true;
-
-            var highestSeqBatch = -1;
-
-            for (var i = 0; i < lengthForBatch; i++) {
-                if (BatchUniqueUpd[i].itemcode === IC) {
-                    highestSeqBatch = Math.max(highestSeqBatch, BatchUniqueUpd[i].seqBatch);
-                }
-            }
-
-            if (highestSeqBatch <= SeqForBatch) {
-                $.ajax({
-                    url: '@Url.Action("DeleteItemRow")',
-                    type: "POST",
-                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(), "ItemCode": ItemCode, "BatchNo": BatchNo, "Index": Cntr },
-                    async: false,
-                    success: function (data, status, xhr) {
-                        if (data === "Duplicate") {
-                            //$.notify('Cannot delete item that exists in Tax Grid!!!', "error");
-                            $('#ClearTaxConfirmation').modal("show");
-
-                        } else {
-
-                            $('#divJobWorkGrid').html(data);
-
-                            BatchUniqueUpd = BatchUniqueUpd.filter(function (batch) {
-                                return !(batch.seqBatch === SeqForBatch && batch.itemcode === IC);
-                            });
-                            $.notify("Item Deleted from Grid", "info");
-                            GetTaxPartItem();
-                            var rowCount = $('#divJobWorkGrid tr').length;
-                            var columnCount = $('#divJobWorkGrid tr td').length;
-
-                            if (columnCount > 1) {
-
-                                $('#lblItemCount').text(rowCount);
-                            }
-                            else
-                                $('#lblItemCount').text(0);
-                            sum = 0;
-                            for (var i = 1; i <= rowCount; i++) {
-
-                                sum += parseFloat($('#GridAmount-' + i).text());
-                            }
-                            $('#lblItemNetAmount').text(sum.toFixed(2));
-                            var rowCountTax = $('#divTaxGrid tr').length;
-                            var sumTax = 0;
-
-                            for (var i = 1; i <= rowCountTax; i++) {
-
-                                sumTax = parseFloat($('#txGridAmount-' + i).text()) + parseFloat($('#lblItemNetAmount').text());
-                            }
-                            $('#NetTotall').val(sumTax);
-                            isEditAllowed = "true";
-                            var itemArrayLength = itemBatchArray.length;
-
-                            for (var i = 0; i < itemArrayLength; i++) {
-                                if (itemBatchArray[i].itemcode == IC && itemBatchArray[i].batchno == BatchNo) {
-                                    itemBatchArray.splice(i, 1);
-                                }
-                            }
-                        }
-                    },
-                    error: function (response, status, xhr) {
-                        // $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
-                        $('#ClearTaxConfirmation').modal("show");
-
-                    },
-                    failure: function (response, status, xhr) {
-                        alert(response.responseText);
-                        $.notify(response.responseText, "error");
-                    }
-                });
-            }
-            else {
-                $.notify("Cannot delete this batch when preceding batch exists", "error");
-
-            }
-        }
 
         var editingNow = false;
-        function EditItemRow(SeqNo, ItemCode, BatchNo, Cntr) {
+        function EditItemRow(SrNO) {
+            debugger;
 
-            if (editingNow == false) {
+            if (editingNow) {
+                $.notify('Cannot edit item while another item is being added to the grid!', "error");
+                return;
+            }
+
+           
                 $.ajax({
                     url: '@Url.Action("EditItemRow")',
                     type: "POST",
-                    data: { "SeqNo": SeqNo, "ItemCode": ItemCode, "BatchNo": BatchNo, "Index": Cntr },
+                    data: { SrNO: SrNO, Mode: "U" },
                     success: function (data) {
 
                         //alert("success!!!!");
                         var obj = $.parseJSON(data);
-                        DeleteItemWhileEditingRow(SeqNo, ItemCode, BatchNo, Cntr);
-                        //s setTimeout(DeleteItemRow, 2000, SeqNo);
-                        if (isEditAllowed == "false") {
-                            return false;
-                        }
-                        else {
+                        
+                        
 
-                            //console.log(obj);
-                            if (obj != null && obj.length == 1) {
-
-                                // QtyVal = obj[0].IssQty;
-                                $('#PartCode').val(obj[0].ItemCode).trigger("change");
-                                $('#ItemCode').val(obj[0].ItemCode).trigger("change");
-                                $('#ItemName').val(obj[0].ItemName);
-                                $('#HSNNo').val(obj[0].HSNNo);
-                                $('#StoreId').val(obj[0].StoreId).trigger("change");
-                                $('#StoreName').val(obj[0].StoreName);
-                                if ($('#Mode').val() == "U") {
-                                    $('#BatchNo').append('<option selected>' + obj[0].BatchNo + '</option>');
-                                    $('#UniqueBatchNo').append('<option selected>' + obj[0].UniqueBatchNo + '</option>');
-                                } else {
-                                    $('#BatchNo').val(obj[0].BatchNo).trigger('change');
-                                    $('#UniqueBatchNo').val(obj[0].UniqueBatchNo);
-                                }
-                                $('#StockQty').val(obj[0].StockQty);
-                                //$('#BatchStockQty').val(obj[0].BatchStockQty);
-                                $('#ProcessId').val(obj[0].ProcessId);
-                                $('#ProcessName').val(obj[0].ProcessName);
-                                $('#IssQty').val(obj[0].IssQty);
-                                $('#Unit').val(obj[0].Unit);
-                                $('#Rate').val(obj[0].Rate);
-                                $('#Amount').val(obj[0].Amount);
-                                $('#PurchasePrice').val(obj[0].PurchasePrice);
-                                $('#RecScrapPartCode').val(obj[0].RecScrapItemCode);
-                                $('#RecScrapItemCode').val(obj[0].RecScrapItemCode);
-                                $('#RecScrapItemName').val(obj[0].RecScrapItemName);
-                                $('#RecScrapQty').val(obj[0].RecScrapQty);
-                                $('#RecScrapQty').val(obj[0].RecScrapQty);
-                                $('#AltQTy').val(obj[0].AltQTy);
-                                $('#AltUnit').val(obj[0].AltUnit);
-                                $('#RecPartCode').val(obj[0].RecItemCode);
-                                $('#RecItemCode').val(obj[0].RecItemCode);
-                                $('#RecItemName').val(obj[0].RecItemName);
-                                $('#RecQty').val(obj[0].RecQty);
-                                $('#ToLimit').val(obj[0].ToLimit);
-                                $('#OtherInstruction').val(obj[0].OtherInstruction);
-                                $('#RemarkDetail').val(obj[0].RemarkDetail);
-                                $('#SeqForBatch').val(obj[0].SeqForBatch);
-                                //$('#divJobWorkGrid tr#' + SeqNo).remove();
-
-                                //var rowCount = $('#divJobWorkGrid tr').length;
-                                //for (var i = 1; i <= rowCount + 1; i++) {
-                                //    $('#editButton-' + i).css("pointer-events", "none");
-                                //    $('#editButton-' + i).css("cursor", "not-allowed");
-                                //}
-
-                                GetBatchStockQty();
-                                GetPrevQty();
-                                $('#BatchStockQty').val(PrevQty + BatchStock);
+                            console.log(obj);
+                            if (obj != null ) {
                                 editingNow = true;
 
-                            }
+                                // QtyVal = obj[0].IssQty;
+                                $('#LeaveAccrualType').val(obj[0].LeaveAccrualType).trigger("change");
+                                $('#LeaveName').val(obj[0].LeaveId).trigger("change");
+                                $('#AccrualRate').val(obj[0].AccrualRate);
+                                $('#OpeningBalance').val(obj[0].OpeningBalance);
+
+
+                                $('#CarriedForward').val(obj[0].CarriedForward);
+                                $('#TotalLeaves').val(obj[0].TotalLeaves);
+                                $('#MaxCarryForward').val(obj[0].MaxCarryForward);
+                            $('#LeaveEncashmentAllowed').val(obj[0].LeaveEncashmentAllowed).trigger("change");
+                                $('#LeaveValidityPeriod').val(obj[0].LeaveValidityPeriod);
+                                $('#MandatoryLeaveAfter').val(obj[0].MandatoryLeaveAfter);
+                                $('#MaxAllowedLeaves').val(obj[0].MaxAllowedLeaves);
+                                var rowCount = $('#divStockGrid tr').length;
+                                for (var i = 1; i <= rowCount + 1; i++) {
+                                    $('#editItemGrid-' + i).css("pointer-events", "none");
+                                    $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                                }
+
+                        DeleteItemFromGrid(SrNO);
+                                
+
+                            
                         }
                     },
                     error: function (response) {
@@ -1482,79 +1194,33 @@
                         $.notify(response.responseText, "error");
                     }
                 });
-            }
-            else {
-                $.notify("Cannot edit as one item is already on above edit grid", "error");
-            }
+            
         }
 
-        function DeleteItemWhileEditingRow(SeqNo, ItemCode, BatchNo, Cntr) {
 
-            var BatchNo = $('#GridBatchNo-' + SeqNo).text();
-            var IC = $('#GridIC-' + SeqNo).val();
-            var SeqForBatch = parseInt($('#SeqForBatch-' + SeqNo).val());
+        isEditOperationAllowed = "false";
+        function DeleteItemFromGrid(SeqNo) {
+            debugger;
 
-            $.ajax({
-                url: '@Url.Action("DeleteItemRow")',
-                type: "POST",
-                data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(), "ItemCode": ItemCode, "BatchNo": BatchNo, "Index": Cntr },
-                async: false,
-                success: function (data, status, xhr) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Action("DeleteItemFromGrid")',
+                    type: "POST",
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val()},
+                    success: function (data) {
 
-                    if (data === "Duplicate") {
-                        //$.notify('Cannot delete item that exists in Tax Grid!!!', "error");
-                        $('#ClearTaxConfirmation').modal("show");
-
-                    } else {
-
-                        $('#divJobWorkGrid').html(data);
+                        $('#divStockGrid').html(data);
                         $.notify("Item Deleted from Grid", "info");
-                        GetTaxPartItem();
-                        var rowCount = $('#divJobWorkGrid tr').length;
-                        var columnCount = $('#divJobWorkGrid tr td').length;
-
-                        if (columnCount > 1) {
-
-                            $('#lblItemCount').text(rowCount);
-                        }
-                        else
-                            $('#lblItemCount').text(0);
-                        sum = 0;
-                        for (var i = 1; i <= rowCount; i++) {
-
-                            sum += parseFloat($('#GridAmount-' + i).text());
-                        }
-                        $('#lblItemNetAmount').text(sum.toFixed(2));
-                        var rowCountTax = $('#divTaxGrid tr').length;
-                        var sumTax = 0;
-
-                        for (var i = 1; i <= rowCountTax; i++) {
-
-                            sumTax = parseFloat($('#txGridAmount-' + i).text()) + parseFloat($('#lblItemNetAmount').text());
-                        }
-                        $('#NetTotall').val(sumTax);
-                        isEditAllowed = "true";
-                        var itemArrayLength = itemBatchArray.length;
-
-                        for (var i = 0; i < itemArrayLength; i++) {
-                            if (itemBatchArray[i].itemcode == IC && itemBatchArray[i].batchno == BatchNo) {
-                                itemBatchArray.splice(i, 1);
-                            }
-                        }
+                        isEditOperationAllowed = "true";
+                        resolve();
+                    },
+                    error: function (response) {
+                        reject(response.responseText);
                     }
-                },
-                error: function (response, status, xhr) {
-                    // $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
-                    $('#ClearTaxConfirmation').modal("show");
-
-                },
-                failure: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
-                }
+                });
             });
         }
-
+       
        
 
        

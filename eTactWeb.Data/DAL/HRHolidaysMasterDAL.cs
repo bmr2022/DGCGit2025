@@ -191,6 +191,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@EntryByMachine", model.EntryByMachine);
                     oCmd.Parameters.AddWithValue("@ActualEntryOn",
                     string.IsNullOrEmpty(model.CreatedOn) ? DBNull.Value : DateTime.Parse(model.CreatedOn).ToString("dd/MMM/yyyy"));
+                    oCmd.Parameters.AddWithValue("@EntryDate",
+                   string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : DateTime.Parse(model.EntryDate).ToString("dd/MMM/yyyy"));
                     string Empcat = string.Join(",", HREmployeeDT);
                     oCmd.Parameters.AddWithValue("@CategoryList", Empcat);
 
