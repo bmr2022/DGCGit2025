@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="01/10/2025 14:48:14" ReportInfo.Modified="03/07/2025 21:53:41" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/10/2025 14:48:14" ReportInfo.Modified="03/09/2025 12:37:01" ReportInfo.CreatorVersion="2023.2.0.0">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -66,7 +66,7 @@ namespace FastReport
 }
 </ScriptText>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSx0vu1pm+eONey0lgWhQ4qQ==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSJzA2TKFcZ0sqSW1g3cx2Ow==">
       <TableDataSource Name="VIndentMainDetail" DataType="System.Int32" Enabled="true" TableName="VIndentMainDetail" SelectCommand="select * from VIndentMainDetail where entryid=@entryparam and yearcode=@yearparam">
         <Column Name="EntryId" DataType="System.Int64"/>
         <Column Name="YearCode" DataType="System.Int64"/>
@@ -183,7 +183,7 @@ namespace FastReport
   </Dictionary>
   <ReportPage Name="Page1" RawPaperSize="9" Watermark.Font="Arial, 60pt">
     <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="207.9">
-      <TextObject Name="Text1" Left="302.4" Top="18.9" Width="141.75" Height="37.8" Text="INDENT" Font="Arial, 22pt, style=Bold" TextFill.Color="165, 42, 42"/>
+      <TextObject Name="Text1" Left="302.4" Top="18.9" Width="141.75" Height="37.8" Text="INDENT" Font="Arial, 22pt, style=Bold" TextFill.Color="Brown"/>
       <TextObject Name="Text4" Left="18.9" Top="151.2" Width="75.6" Height="18.9" Text="Indent No:" Font="Arial, 10pt"/>
       <TextObject Name="Text6" Left="18.9" Top="179.55" Width="122.85" Height="18.9" Text="From Department:" Font="Arial, 10pt"/>
       <TextObject Name="Text40" Left="18.9" Top="94.5" Width="236.25" Height="18.9" Text="[Company_Detail.OfficeAdd1]" Font="Arial, 12pt"/>
@@ -249,25 +249,55 @@ namespace FastReport
         <TableColumn Name="Column11"/>
         <TableRow Name="Row1">
           <TableCell Name="Cell1" Font="Arial, 10pt">
-            <TextObject Name="Text71" Left="18.9" Width="28.35" Height="18.9" Text="[VIndentMainDetail.SeqNo]" Font="Arial, 10pt"/>
-            <TextObject Name="Text70" Left="56.7" Width="66.15" Height="18.9" Text="[VIndentMainDetail.PartCode]" Font="Arial, 10pt"/>
+            <TableObject Name="Table2" Width="803.25" Height="18.9" PrintOnParent="true">
+              <TableColumn Name="Column12" Width="56.7"/>
+              <TableColumn Name="Column13"/>
+              <TableColumn Name="Column14"/>
+              <TableColumn Name="Column15" Width="151.2"/>
+              <TableColumn Name="Column16"/>
+              <TableColumn Name="Column17"/>
+              <TableColumn Name="Column18"/>
+              <TableColumn Name="Column19"/>
+              <TableColumn Name="Column20"/>
+              <TableColumn Name="Column21"/>
+              <TableColumn Name="Column22"/>
+              <TableRow Name="Row2">
+                <TableCell Name="Cell32" Font="Arial, 10pt">
+                  <TextObject Name="Text71" Left="9.45" Width="28.35" Height="18.9" Text="[VIndentMainDetail.SeqNo]" Font="Arial, 10pt"/>
+                </TableCell>
+                <TableCell Name="Cell33" Font="Arial, 10pt">
+                  <TextObject Name="Text70" Left="9.45" Width="66.15" Height="18.9" Text="[VIndentMainDetail.PartCode]" Font="Arial, 10pt"/>
+                </TableCell>
+                <TableCell Name="Cell34" Font="Arial, 10pt"/>
+                <TableCell Name="Cell35" Font="Arial, 10pt">
+                  <TextObject Name="Text65" Left="9.45" Width="113.4" Height="18.9" Text="[VIndentMainDetail.ItemNameOnly]" Font="Arial, 10pt"/>
+                </TableCell>
+                <TableCell Name="Cell36" Font="Arial, 10pt">
+                  <TextObject Name="Text69" Left="9.45" Width="47.25" Height="18.9" Text="[VIndentMainDetail.Unit]" HorzAlign="Center" Font="Arial, 10pt"/>
+                </TableCell>
+                <TableCell Name="Cell57" Font="Arial, 10pt"/>
+                <TableCell Name="Cell58" Font="Arial, 10pt">
+                  <TextObject Name="Text72" Left="18.9" Width="37.8" Height="18.9" Text="[VIndentMainDetail.Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+                </TableCell>
+                <TableCell Name="Cell59" Font="Arial, 10pt">
+                  <TextObject Name="Text66" Width="75.6" Height="18.9" Text="[VIndentMainDetail.ReqDate]" Format="Date" Format.Format="d" HorzAlign="Center" Font="Arial, 10pt"/>
+                </TableCell>
+                <TableCell Name="Cell60" Font="Arial, 10pt"/>
+                <TableCell Name="Cell61" Font="Arial, 10pt">
+                  <TextObject Name="Text68" Width="56.7" Height="18.9" Text="[VIndentMainDetail.ItemRemark]" HorzAlign="Right" Font="Arial, 10pt"/>
+                </TableCell>
+                <TableCell Name="Cell62" Font="Arial, 10pt"/>
+              </TableRow>
+            </TableObject>
           </TableCell>
           <TableCell Name="Cell2" Font="Arial, 10pt"/>
-          <TableCell Name="Cell3" Font="Arial, 10pt">
-            <TextObject Name="Text65" Width="113.4" Height="18.9" Text="[VIndentMainDetail.ItemNameOnly]" Font="Arial, 10pt"/>
-            <TextObject Name="Text69" Left="113.4" Width="47.25" Height="18.9" Text="[VIndentMainDetail.Unit]" HorzAlign="Center" Font="Arial, 10pt"/>
-          </TableCell>
+          <TableCell Name="Cell3" Font="Arial, 10pt"/>
           <TableCell Name="Cell4" Font="Arial, 10pt"/>
-          <TableCell Name="Cell5" Font="Arial, 10pt">
-            <TextObject Name="Text72" Left="9.45" Width="37.8" Height="18.9" Text="[VIndentMainDetail.Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
-            <TextObject Name="Text66" Left="56.7" Width="75.6" Height="18.9" Text="[VIndentMainDetail.ReqDate]" Format="Date" Format.Format="d" HorzAlign="Center" Font="Arial, 10pt"/>
-          </TableCell>
+          <TableCell Name="Cell5" Font="Arial, 10pt"/>
           <TableCell Name="Cell26" Font="Arial, 10pt"/>
           <TableCell Name="Cell27" Font="Arial, 10pt"/>
           <TableCell Name="Cell28" Font="Arial, 10pt"/>
-          <TableCell Name="Cell29" Font="Arial, 10pt">
-            <TextObject Name="Text68" Left="56.7" Width="56.7" Height="18.9" Text="[VIndentMainDetail.ItemRemark]" HorzAlign="Right" Font="Arial, 10pt"/>
-          </TableCell>
+          <TableCell Name="Cell29" Font="Arial, 10pt"/>
           <TableCell Name="Cell30" Font="Arial, 10pt"/>
           <TableCell Name="Cell31" Font="Arial, 10pt"/>
         </TableRow>

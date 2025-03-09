@@ -16,6 +16,8 @@ using static eTactWeb.DOM.Models.JobWorkIssueModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Globalization;
+using FastReport.Data;
+using System.Configuration;
 //using JobWorkGridDetail = eTactWeb.DOM.Models.JobWorkGridDetail;
 
 namespace eTactWeb.Controllers
@@ -26,7 +28,7 @@ namespace eTactWeb.Controllers
         private readonly IJobWorkIssue _IJobWorkIssue;
         private readonly ILogger<JobWorkIssueController> _logger;
         private readonly IMemoryCache _MemoryCache;
-        private readonly IConfiguration iconfiguration;
+        private readonly IConfiguration _iconfiguration;
         private readonly IIssueWithoutBom _IIssueWOBOM;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
@@ -38,38 +40,55 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
             _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
-            this.iconfiguration = iconfiguration;
+            this._iconfiguration = iconfiguration;
             _IIssueWOBOM = IIssueWOBOM;
         }
 
 
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
+            //string my_connection_string;
+            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //var webReport = new WebReport();
+            //webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
+            //webReport.Report.SetParameterValue("entryid", EntryId);
+            //webReport.Report.SetParameterValue("yearcode", YearCode);
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //return View(webReport);
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
-
-            webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
-
-
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
-            webReport.Report.SetParameterValue("entryid", EntryId);
-            webReport.Report.SetParameterValue("yearcode", YearCode);
-
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
-            //         ID = web; Password = bmr2401";
+            webReport.Report.Clear();
+            var ReportName = _IJobWorkIssue.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
+            }
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+    
+         
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Prepare();
+            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+            {
+                if (dataSource is TableDataSource tableDataSource)
+                {
+                    tableDataSource.Enabled = true;
+                    tableDataSource.Init(); // Refresh the data source
+                }
+            }
             return View(webReport);
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)

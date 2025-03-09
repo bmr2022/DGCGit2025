@@ -66,13 +66,14 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> NewAmmEntryId()
+        public async Task<ResponseResult> NewAmmEntryId(int YearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetNewAmmEntry"));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
             }
             catch (Exception ex)

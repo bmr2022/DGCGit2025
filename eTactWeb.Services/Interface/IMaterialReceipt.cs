@@ -12,7 +12,7 @@ namespace eTactWeb.Services.Interface
     public interface IMaterialReceipt
     {
         Task<ResponseResult> GetGateNo(string Flag,string SPName,string FromDate, string ToDate);
-
+        Task<ResponseResult> GetReportName();
         Task<ResponseResult> GetGateMainData(string Flag, string SPName, string GateNo, string GateyearCode, int GateEntryId);
         Task<ResponseResult> GetDeptAndEmp(string Flag, string SPName, int Deptid,  int resEmp);
 

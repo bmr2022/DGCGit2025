@@ -257,9 +257,9 @@ public class SaleOrderController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    public async Task<JsonResult> NewAmmEntryId()
+    public async Task<JsonResult> NewAmmEntryId(int YearCode)
     {
-        var JSON = await _ISaleOrder.NewAmmEntryId();
+        var JSON = await _ISaleOrder.NewAmmEntryId(YearCode);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
@@ -738,8 +738,8 @@ public class SaleOrderController : Controller
 
             model.ItemDetailGrid = _List;
             model.ItemNetAmount = decimal.Parse(_List.Sum(x => x.Amount).ToString("#.#0"));
-            //HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
-            //_MemoryCache.Set("ItemList", model.ItemDetailGrid);
+            HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
+            _MemoryCache.Set("ItemList", model.ItemDetailGrid);
         }
         else
         {
