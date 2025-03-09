@@ -1312,6 +1312,7 @@ public class TaxController : Controller
         {
             MainModel = SN == "DirectPurchaseBill" ? new DirectPurchaseBillModel() : (SN == "ItemList" ? new SaleOrderModel() : (SN == "PurchaseBill" ? new PurchaseBillModel() : new PurchaseOrderModel()));
             MainModel = SN == "JobWorkIssue" ? new JobWorkIssueModel() : "";
+            MainModel = SN == "ItemList" ? new SaleOrderModel() : "";
             _MemoryCache.Remove("KeyTaxGrid");
             return PartialView("_TaxGrid", MainModel);
         }
