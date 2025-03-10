@@ -9,6 +9,7 @@ using static eTactWeb.DOM.Models.Common;
 namespace eTactWeb.Services.Interface
 {
     public interface ISaleBill {
+        Task<ResponseResult> GetReportName();
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> GetBatchInventory();
         Task<ResponseResult> GetCustomerBasedDetails(int Code);
