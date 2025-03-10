@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="01/14/2025 12:05:27" ReportInfo.Modified="01/14/2025 15:42:00" ReportInfo.CreatorVersion="2024.1.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/14/2025 12:05:27" ReportInfo.Modified="03/09/2025 23:44:22" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSzslkkWG8W9dVnjcky/3kDw==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSx4EBS3NzIhFnexRQpqqLHw==">
       <TableDataSource Name="VRequisitionMainDetail" DataType="System.Int32" Enabled="true" TableName="VRequisitionMainDetail" SelectCommand="select * from VRequisitionMainDetail where REQNo=N'SP2024/00002' ">
         <Column Name="REQNo" DataType="System.String"/>
         <Column Name="ReqDate" DataType="System.DateTime"/>
@@ -131,7 +131,7 @@
       <TextObject Name="Text51" Left="37.8" Top="47.25" Width="198.45" Height="18.9" Text="[Company_Detail.Com_Name]" Font="Arial, 12pt"/>
       <TextObject Name="Text52" Left="37.8" Top="75.6" Width="179.55" Height="18.9" Text="[Company_Detail.OfficeAdd1]" Font="Arial, 12pt"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="248.46" Width="718.2" Height="37.8">
+    <PageHeaderBand Name="PageHeader1" Top="250.64" Width="718.2" Height="37.8">
       <LineObject Name="Line1" Left="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
       <LineObject Name="Line3" Left="9.45" Height="37.8" Border.Style="Dot"/>
       <LineObject Name="Line4" Left="708.75" Height="37.8" Border.Style="Dot"/>
@@ -155,7 +155,7 @@
       <TextObject Name="Text46" Left="434.7" Top="9.45" Width="66.15" Height="18.9" Text="Location" Font="Arial, 10pt"/>
       <TextObject Name="Text47" Left="491.4" Top="9.45" Width="66.15" Height="18.9" Text="Rack No" Font="Arial, 10pt"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="289.02" Width="718.2" Height="28.35" DataSource="VRequisitionMainDetail">
+    <DataBand Name="Data1" Top="293.38" Width="718.2" Height="28.35" DataSource="VRequisitionMainDetail">
       <LineObject Name="Line5" Left="9.45" Height="28.35" Border.Style="Dot"/>
       <LineObject Name="Line6" Left="37.8" Height="28.35" Border.Style="Dot"/>
       <LineObject Name="Line9" Left="113.4" Height="28.35" Border.Style="Dot"/>
@@ -165,28 +165,62 @@
       <LineObject Name="Line14" Left="396.9" Height="28.35" Border.Style="Dot"/>
       <LineObject Name="Line15" Left="434.7" Height="28.35" Border.Style="Dot"/>
       <LineObject Name="Line16" Left="633.15" Height="28.35" Border.Style="Dot"/>
-      <TextObject Name="Text27" Left="9.45" Top="9.45" Width="47.25" Height="18.9" Text="[Row#]" Font="Arial, 8pt"/>
-      <TextObject Name="Text29" Left="642.6" Top="9.45" Width="56.7" Height="18.9" Text="[VRequisitionMainDetail.Remarks]" Font="Arial, 8pt"/>
-      <TextObject Name="Text30" Left="37.8" Top="9.45" Width="85.05" Height="18.9" Text="[VRequisitionMainDetail.PartCode]" Font="Arial, 8pt"/>
-      <TextObject Name="Text31" Left="113.4" Top="9.45" Width="170.1" Height="18.9" Text="[VRequisitionMainDetail.Item_Name]" Font="Arial, 8pt"/>
-      <TextObject Name="Text33" Left="330.75" Top="9.45" Width="66.15" Height="18.9" Text="[VRequisitionMainDetail.TotalStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text43" Left="274.05" Top="9.45" Width="56.7" Height="18.9" Text="[VRequisitionMainDetail.Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text32" Left="396.9" Top="9.45" Width="47.25" Height="18.9" Text="[VRequisitionMainDetail.Unit]" Font="Arial, 8pt"/>
       <LineObject Name="Line24" Left="557.55" Height="28.35" Border.Style="Dot"/>
       <LineObject Name="Line26" Left="493.29" Height="28.35" Border.Style="Dot"/>
-      <TextObject Name="Text48" Left="444.15" Top="9.45" Width="47.25" Height="18.9" Text="[VRequisitionMainDetail.ItemLocation]" Font="Arial, 8pt"/>
-      <TextObject Name="Text49" Left="500.85" Top="9.45" Width="56.7" Height="18.9" Text="[VRequisitionMainDetail.ItemBinRackNo]" Font="Arial, 8pt"/>
       <LineObject Name="Line2" Left="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
-      <TextObject Name="Text50" Left="557.55" Top="9.45" Width="94.5" Height="18.9" Text="[VRequisitionMainDetail.ExpectedDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+      <TableObject Name="Table1" Left="9.45" Width="689.85" Height="18.9">
+        <TableColumn Name="Column1" Width="28.35"/>
+        <TableColumn Name="Column2" Width="75.6"/>
+        <TableColumn Name="Column3" Width="160.65"/>
+        <TableColumn Name="Column4" Width="56.7"/>
+        <TableColumn Name="Column5"/>
+        <TableColumn Name="Column6" Width="37.8"/>
+        <TableColumn Name="Column7" Width="56.7"/>
+        <TableColumn Name="Column8"/>
+        <TableColumn Name="Column9" Width="75.6"/>
+        <TableColumn Name="Column10"/>
+        <TableRow Name="Row1">
+          <TableCell Name="Cell1" Font="Arial, 10pt">
+            <TextObject Name="Text27" Width="47.25" Height="18.9" Text="[Row#]" Font="Arial, 8pt"/>
+          </TableCell>
+          <TableCell Name="Cell2" Font="Arial, 10pt">
+            <TextObject Name="Text30" Width="85.05" Height="18.9" Text="[VRequisitionMainDetail.PartCode]" Font="Arial, 8pt"/>
+          </TableCell>
+          <TableCell Name="Cell3" Font="Arial, 10pt">
+            <TextObject Name="Text31" Width="170.1" Height="18.9" Text="[VRequisitionMainDetail.Item_Name]" Font="Arial, 8pt"/>
+          </TableCell>
+          <TableCell Name="Cell4" Font="Arial, 10pt">
+            <TextObject Name="Text43" Width="56.7" Height="18.9" Text="[VRequisitionMainDetail.Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+          </TableCell>
+          <TableCell Name="Cell5" Font="Arial, 10pt">
+            <TextObject Name="Text33" Width="66.15" Height="18.9" Text="[VRequisitionMainDetail.TotalStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+          </TableCell>
+          <TableCell Name="Cell26" Font="Arial, 10pt">
+            <TextObject Name="Text32" Width="47.25" Height="18.9" Text="[VRequisitionMainDetail.Unit]" Font="Arial, 8pt"/>
+          </TableCell>
+          <TableCell Name="Cell27" Font="Arial, 10pt">
+            <TextObject Name="Text48" Left="9.45" Width="47.25" Height="18.9" Text="[VRequisitionMainDetail.ItemLocation]" Font="Arial, 8pt"/>
+          </TableCell>
+          <TableCell Name="Cell28" Font="Arial, 10pt">
+            <TextObject Name="Text49" Left="9.45" Width="56.7" Height="18.9" Text="[VRequisitionMainDetail.ItemBinRackNo]" Font="Arial, 8pt"/>
+          </TableCell>
+          <TableCell Name="Cell29" Font="Arial, 10pt">
+            <TextObject Name="Text50" Width="94.5" Height="18.9" Text="[VRequisitionMainDetail.ExpectedDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+          </TableCell>
+          <TableCell Name="Cell30" Font="Arial, 10pt">
+            <TextObject Name="Text29" Left="9.45" Width="56.7" Height="18.9" Text="[VRequisitionMainDetail.Remarks]" Font="Arial, 8pt"/>
+          </TableCell>
+        </TableRow>
+      </TableObject>
     </DataBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="320.13" Width="718.2" Height="75.6">
+    <ReportSummaryBand Name="ReportSummary1" Top="326.66" Width="718.2" Height="75.6">
       <TextObject Name="Text34" Left="132.3" Top="56.7" Width="94.5" Height="18.9" Text="Prepared By" Font="Arial, 10pt"/>
       <TextObject Name="Text35" Left="463.05" Top="56.7" Width="94.5" Height="18.9" Text="Approved By" Font="Arial, 10pt"/>
       <TextObject Name="Text39" Left="444.15" Top="28.35" Width="189" Height="18.9" Text="[VRequisitionMainDetail.CreatedByName]" Font="Arial, 10pt"/>
       <TextObject Name="Text40" Left="113.4" Top="28.35" Width="189" Height="18.9" Text="[VRequisitionMainDetail.CreatedByName]" Font="Arial, 10pt"/>
       <LineObject Name="Line22" Left="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
     </ReportSummaryBand>
-    <PageFooterBand Name="PageFooter1" Top="398.48" Width="718.2" Height="18.9">
+    <PageFooterBand Name="PageFooter1" Top="407.2" Width="718.2" Height="18.9">
       <TextObject Name="Text42" Left="292.95" Width="66.15" Height="18.9" Text="Page No" Font="Arial, 10pt"/>
       <TextObject Name="Text41" Left="359.1" Width="56.7" Height="18.9" Text="[Page#]" Font="Arial, 10pt"/>
     </PageFooterBand>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="01/10/2025 14:48:14" ReportInfo.Modified="03/09/2025 12:37:01" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/10/2025 14:48:14" ReportInfo.Modified="03/09/2025 23:42:19" ReportInfo.CreatorVersion="2023.2.0.0">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -66,7 +66,7 @@ namespace FastReport
 }
 </ScriptText>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSJzA2TKFcZ0sqSW1g3cx2Ow==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RS/PTTtQC14By7Z4L2h/l87Q==">
       <TableDataSource Name="VIndentMainDetail" DataType="System.Int32" Enabled="true" TableName="VIndentMainDetail" SelectCommand="select * from VIndentMainDetail where entryid=@entryparam and yearcode=@yearparam">
         <Column Name="EntryId" DataType="System.Int64"/>
         <Column Name="YearCode" DataType="System.Int64"/>
@@ -334,7 +334,7 @@ namespace FastReport
         <LineObject Name="Line82" Left="1.89" Height="37.8"/>
       </ChildBand>
     </ReportSummaryBand>
-    <PageFooterBand Name="PageFooter1" Top="521.46" Width="718.2" CanShrink="true" PrintOn="LastPage">
+    <PageFooterBand Name="PageFooter1" Top="521.46" Width="718.2" Height="66.15" CanShrink="true" PrintOn="LastPage">
       <LineObject Name="Line26" Left="-9.45" Width="718.2" Border.Style="Dot" Diagonal="true"/>
     </PageFooterBand>
   </ReportPage>
