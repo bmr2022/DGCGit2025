@@ -122,18 +122,27 @@ namespace eTactWeb.DOM.Models
         public string ItemSize { get; set; } = string.Empty;
         public string ItemDescription { get; set; } = string.Empty;
         public string Remark { get; set; } = string.Empty;
+        public string MIRNo { get; set; } = string.Empty;
+        public int MIREntryID { get; set; }
+        public int MIRYearCode { get; set; }
+        public string MIRDate { get; set; } = string.Empty;
+
+        public string InprocessNo { get; set; } = string.Empty;
+        public int InprocessEntryID { get; set; }
+        public int InprocessYearCode { get; set; }
+        public string InprocessDate { get; set; } = string.Empty;
     }
     public class AccPurchaseRejectionAgainstBillDetail : TaxModel
     {
         public int CheckBoxNo { get; set; }
         public string PurchaseRejectionInvoiceNo { get; set; } = string.Empty;
         public string PurchaseRejectionVoucherNo { get; set; } = string.Empty;
-        public string? AgainstSaleBillBillNo { get; set; }
-        public int? AgainstSaleBillYearCode { get; set; }
-        public string? AgainstSaleBillDate { get; set; }
-        public int? AgainstSaleBillEntryId { get; set; }
-        public string? AgainstSaleBillVoucherNo { get; set; }
-        public string? SaleBillType { get; set; }
+        //public string? AgainstSaleBillBillNo { get; set; }
+        //public int? AgainstSaleBillYearCode { get; set; }
+        //public string? AgainstSaleBillDate { get; set; }
+        //public int? AgainstSaleBillEntryId { get; set; }
+        //public string? AgainstSaleBillVoucherNo { get; set; }
+        //public string? SaleBillType { get; set; }
         public string? AgainstPurchaseBillBillNo { get; set; }
         public int? AgainstPurchaseBillYearCode { get; set; }
         public string? AgainstPurchaseBillDate { get; set; }
@@ -156,11 +165,11 @@ namespace eTactWeb.DOM.Models
         public int? POYearCode { get; set; }
         public float? PoRate { get; set; }
         public string? PoAmmNo { get; set; }
-        public string? SONO { get; set; }
-        public int? SOYearCode { get; set; }
-        public string? SODate { get; set; }
-        public string? CustOrderNo { get; set; }
-        public int? SOEntryId { get; set; }
+        //public string? SONO { get; set; }
+        //public int? SOYearCode { get; set; }
+        //public string? SODate { get; set; }
+        //public string? CustOrderNo { get; set; }
+        //public int? SOEntryId { get; set; }
         public string? BatchNo { get; set; }
         public string? UniqueBatchNo { get; set; }
         public float? AltQty { get; set; }
