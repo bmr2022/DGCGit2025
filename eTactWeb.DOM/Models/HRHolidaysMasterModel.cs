@@ -48,6 +48,7 @@ namespace eTactWeb.DOM.Models
         public string? CreatedByEmp { get; set; }
         public string? UpdatedByEmp { get; set; }
         public string? CreatedOn { get; set; }
+        public string? EntryDate { get; set; }
         public string? UpdatedOn { get; set; }
 
 

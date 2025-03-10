@@ -17,6 +17,10 @@ namespace eTactWeb.Data.BLL
 
         private readonly SaleBillDAL _SaleBillDAL;
 
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _SaleBillDAL.GetReportName();
+        }
         public SaleBillBLL(IConfiguration configuration, IDataLogic iDataLogic)
         {
             _SaleBillDAL = new SaleBillDAL(configuration, iDataLogic);
@@ -26,6 +30,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.NewEntryId(YearCode);
         }
+       
         public async Task<ResponseResult> GetBatchInventory()
         {
             return await _SaleBillDAL.GetBatchInventory();

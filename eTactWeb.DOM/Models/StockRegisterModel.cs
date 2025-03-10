@@ -27,6 +27,8 @@ namespace eTactWeb.DOM.Models
     {
         public int SeqNo { get; set; }
         public string? StoreName { get; set; }
+
+        public string? package { get; set; }
         public string? TransactionType { get; set; }
         public string? TransDate { get; set; }
         public string? PartCode { get; set; }

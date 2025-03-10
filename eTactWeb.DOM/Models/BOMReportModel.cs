@@ -12,7 +12,7 @@ namespace eTactWeb.DOM.Models
     public class BOMReportModel: TimeStamp
     {
         // Fields for 'BOMTREE' flag
-        public string MainPartCode { get; set; }         
+        public string MainPartCode { get; set; }
         public string BOMPartCode { get; set; }         
         public string MainItemName { get; set; }        
         public string BOMItemName { get; set; }        

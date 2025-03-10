@@ -1419,7 +1419,7 @@
 
         function PlanForNoOfDays() {
             var planForDays = parseInt($('#PlanForNoOFDays').val());
-            //alert('planForDays' + planForDays);
+           // alert('planForDays' + planForDays);
             var effFromDateStr = $('#EffectiveFrom').val();
             var effFromDateParts = effFromDateStr.split('/');
             var EffFromDate = new Date(effFromDateParts[2], effFromDateParts[1]-1 ,effFromDateParts[0]);
@@ -1436,20 +1436,31 @@
              //alert('AFTER SetColumnsDaywise');
             var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
             var EffDate = EffDates();
+                    //alert("EffDate: " + JSON.stringify(EffDate));
             var rowCount = $('#divProductionSchGrid tr').length;
             //alert('rowCount' + rowCount);
              
-            for (var i = 0; i <= rowCount; i++) {
-                var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+            for (var i = 0; i < rowCount; i++) {
+              //  var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
 
                 for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) {
                     // alert('parseDateToFormates(EffDate[dayIndex]).split("/")[0];   ' + parseDateToFormates(EffDate[dayIndex]).split("/")[0]);
-                    // alert('EffDate[dayIndex])  '+ EffDate[dayIndex]) ;
-                    var idEffDate = parseDateToFormat(EffDate[dayIndex]).split("/")[0];
-                     
+                              var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+                                  //   alert('(totalWOQty) sumu :-  '+ totalWOQty) ;
+                                       //      alert('PlanNoOfDays' + PlanNoOfDays);
+                    //var idEffDate = parseDateToFormat(EffDate[dayIndex]).split("/")[0];
+                            var idEffDate = (EffDate[dayIndex]).split("/")[0];
+                            // alert('idEffDate  :-' +idEffDate);
                     var rowIndex = i + 1;
                     var inputId = `dayValus-${idEffDate}-${rowIndex}`;
-                    $('#' + inputId).val((totalWOQty / PlanNoOfDays).toFixed(2));
+                    
+                    //$('#' + inputId).val((totalWOQty / PlanNoOfDays).toFixed(2));
+                            var calculatedValue = (totalWOQty / PlanNoOfDays).toFixed(2);
+                    //alert("Calculated Value: " + calculatedValue);
+                                    //alert('inputId' + inputId );
+                                    //value of  quatity is set here
+                    $('#' + inputId).val(calculatedValue);
+                    //alert('i value'+i);
                 }
             }
         }
@@ -1470,8 +1481,9 @@
                     for (var i = 0; i < PlanNoOfDays; i++) {
                         var dayValues = [];
                         var schDate = EffDate[i];
-                    //    alert('schdate :----->' + schDate);
+                                    //   alert(' EffDate[i].split("/")[0]  :----->' +  EffDate[i].split("/")[0] );
                         $('.AddedPlansGrid thead tr').append('<th class="day-header">' + EffDate[i].split("/")[0] + '</th>');
+                        ///HEADER OF GRID DAYS SETTING HERE
                         for (var j = 1; j <= rowCount; j++) {
                             $('#itemGrid-' + j).append('<td class="day-value"><input type="hidden" value=' + schDate + ' id="schDate-' + EffDate[i].split("/")[0] + "-" + j + '"/><input style="width:80px;background-color:#fff8b8;" id="dayValus-' + EffDate[i].split("/")[0] + "-" + j + '" value="0" onchange="dayValuesQty()"></td>');
                         }

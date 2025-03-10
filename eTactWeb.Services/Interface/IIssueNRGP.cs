@@ -11,6 +11,7 @@ namespace eTactWeb.Services.Interface
     public interface IIssueNRGP
     {
         public Task<ResponseResult> FillEntryandChallanNo(int YearCode, string RGPNRGP);
+        Task<ResponseResult> GetReportName();
         public Task<ResponseResult> GetBatchInventory();
         public Task<ResponseResult> GetVendorList();
         public Task<ResponseResult> GetProcessList();

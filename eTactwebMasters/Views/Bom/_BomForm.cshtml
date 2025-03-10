@@ -38,10 +38,15 @@
                     <div class="form-check form-switch">
                         <input asp-for="CopyBom" class="form-check-input" type="checkbox" role="switch" onchange="CopyBomFunc(this);" />
                     </div>
-                    <label class="form-label">Hide/UnHide</label>
+                    @* <label class="form-label">Hide/UnHide</label>
                     <div class="form-check form-switch">
                         
+                    </div> *@
+                    <label class="form-label">Hide/UnHide</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="hideUnhideToggle" onchange="toggleSection()">
                     </div>
+
                 </div>
                 <div class="col mt-3">
                     <div class="row justify-content-end">
@@ -56,13 +61,18 @@
         </div>
     </div>
 </div>
-<div class="accordion-item">
+<div class="accordion-item" id="optionalParameterSection" style="display:none;">
     <h2 class="accordion-header" id="H_Measurements">
-        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Measurements" aria-expanded="true" aria-controls="B_Measurements">
-            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Optional Parameter</strong>
+        <button class="accordion-button collapsed text-light pnl1BG bg-gradient"
+                type="button" data-bs-toggle="collapse" data-bs-target="#B_Measurements"
+                aria-expanded="true" aria-controls="B_Measurements">
+            <strong style="text-transform:uppercase">
+                <i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Optional Parameter
+            </strong>
         </button>
     </h2>
-    <div id="B_Measurements optionalParameterBtn" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="H_Measurements">
+    <div id="B_Measurements" class="accordion-collapse collapse pnl1 bg-gradient"
+         aria-labelledby="H_Measurements">
         <div class="accordion-body">
             <div class="row g-2 gx-3">
                 <div class="col-lg-6 mt-2" id="DivFG3">
@@ -72,7 +82,7 @@
                     <div class="row g-2 gx-3">
                         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="AltQty1" class="form-label">Alt Qty1</label>
-                            <input asp-for="AltQty1" class="form-control" type="text" min="0" oninput="validity.valid||(value='');" />
+                            <input asp-for="AltQty1" class="form-control" type="text" min="0" />
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                             <label asp-for="UsedStageId" class="form-label">Used In Stage</label>
@@ -94,7 +104,7 @@
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="AltQty2" class="form-label">Alt Qty2</label>
-                            <input asp-for="AltQty2" class="form-control" type="text" min="0" oninput="validity.valid||(value='');" />
+                            <input asp-for="AltQty2" class="form-control" type="text" min="0" />
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="RecFrmCustJobwork" class="form-label">Cust Job Work</label>
@@ -110,11 +120,11 @@
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="RunnerQty" class="form-label">Runner Qty</label>
-                            <input asp-for="RunnerQty" class="form-control" type="text" min="0" oninput="validity.valid||(value='');" />
+                            <input asp-for="RunnerQty" class="form-control" type="text" min="0" />
                         </div>
                     </div>
                 </div>
-                @*In case of List To Choose multiple Items Use same ID of Select instead of ID and List*@
+
                 <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                     <label class="form-label">Remark</label>
                     <input asp-for="Remark" class="form-control" />
@@ -129,26 +139,26 @@
                     <div class="row g-2 gx-3">
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="GrossWt" class="form-label">Gross Weight</label>
-                            <input asp-for="GrossWt" class="form-control" type="text" min="0" oninput="validity.valid||(value='');" />
+                            <input asp-for="GrossWt" class="form-control" type="text" min="0" />
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="NetWt" class="form-label">Net Weight</label>
-                            <input asp-for="NetWt" class="form-control" type="text" min="0" oninput="validity.valid||(value='');" />
+                            <input asp-for="NetWt" class="form-control" type="text" min="0" />
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="Scrap" class="form-label">Scrap</label>
-                            <input asp-for="Scrap" class="form-control" type="text" min="0" oninput="validity.valid||(value='');" />
+                            <input asp-for="Scrap" class="form-control" type="text" min="0" />
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="BurnQty" class="form-label">Burn Qty</label>
-                            <input asp-for="BurnQty" class="form-control" type="text" min="0" oninput="validity.valid||(value='');" />
+                            <input asp-for="BurnQty" class="form-control" type="text" min="0" />
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="Location" class="form-label"></label>
+                            <label asp-for="Location" class="form-label">Location</label>
                             <input asp-for="Location" class="form-control" />
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="MPNNo" class="form-label"></label>
+                            <label asp-for="MPNNo" class="form-label">MPN No</label>
                             <input asp-for="MPNNo" class="form-control" />
                         </div>
                     </div>
@@ -235,3 +245,13 @@
         </div>
     </div>
 </div>
+<script>
+    function toggleSection() {
+        if ($("#hideUnhideToggle").is(":checked")) {
+            $("#optionalParameterSection").slideDown();
+        } else {
+            $("#optionalParameterSection").slideUp();
+        }
+    }
+</script>
+

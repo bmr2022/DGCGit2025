@@ -79,25 +79,25 @@
                                         <label asp-for="HolidayYear" class="form-label">HolidayYear</label>
                                         <input asp-for="HolidayYear" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"  >
                                         <label asp-for="Branch" class="form-label">Branch</label>
                                         <input asp-for="Branch" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="HolidayName" class="form-label">HolidayName</label>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                        <label asp-for="HolidayName" class="form-label">HolidayName<label class="mandatoryField">*</label></label>
                                         <input asp-for="HolidayName" class="form-control" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
-                                        <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom</label>
-                                        <input asp-for="EffectiveFrom" class="form-control" />
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom<label class="mandatoryField">*</label></label>
+                                                <input asp-for="EffectiveFrom" class="form-control" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                <label asp-for="HolidayEffTill" class="form-label">HolidayEffTill<label class="mandatoryField">*</label></label>
+                                                <input asp-for="HolidayEffTill" class="form-control" />
+                                    </div>
                                         
-                                        <label asp-for="HolidayEffTill" class="form-label">HolidayEffTill</label>
-                                        <input asp-for="HolidayEffTill" class="form-control" />
-                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="HolidayType" class="form-label">HolidayType </label>
+                                        <label asp-for="HolidayType" class="form-label">HolidayType<label class="mandatoryField">*</label></label>
                                         
                                         <select asp-for="HolidayType" class="form-control">
                                             @* <option value="@Model.AccountCode">-Select-</option> *@
@@ -138,19 +138,7 @@
                                   
                                     
 
-                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="EmployeeCategory" class="control-label">EmployeeCategory </label>
-                                        <br />
-
-                                        <select class="form-select" multiple="multiple" asp-for="EmployeeCategory" asp-items="@(new SelectList(Model.EmployeeCategoryList,"Value","Text"))"></select>
-                                    </div>
-
-                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="Department" class="control-label">Department </label>
-                                        <br />
-
-                                        <select class="form-select" multiple="multiple" asp-for="Department" asp-items="@(new SelectList(Model.DepartmentList,"Value","Text"))"></select>
-                                    </div>
+                                   
 
                                    
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
@@ -210,11 +198,27 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
                                         <label asp-for="Remark" class="form-label">Remark</label>
                                         <input asp-for="Remark" class="form-control" />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmployeeCategory" class="control-label">EmployeeCategory </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="EmployeeCategory" asp-items="@(new SelectList(Model.EmployeeCategoryList,"Value","Text"))"></select>
+                                    </div>
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Department" class="control-label">Department </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="Department" asp-items="@(new SelectList(Model.DepartmentList,"Value","Text"))"></select>
+                                    </div>
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
                                         <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
                                     </div>
@@ -224,6 +228,10 @@
                                         <label asp-for="CreatedOn" class="form-label">CreatedOn</label>
                                         <input asp-for="CreatedOn" class="form-control " value="@Model.CreatedOn" readonly />
                                     </div>
+                                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                            <label asp-for="EntryDate" class="form-label">EntryDate</label>
+                                            <input asp-for="EntryDate" class="form-control " value="@Model.EntryDate" readonly />
+                                        </div>
                                      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="UpdatedBy" class="form-label">UpdatedBy</label>
                                         <input asp-for="UpdatedBy" class="form-control " value="@Model.UpdatedBy" readonly />
@@ -358,12 +366,14 @@
                 $('#HolidayEffTill').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             }
             else {
                 $('#HolidayEffTill').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
                 $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             }
@@ -600,4 +610,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
 
 
+<style>
+     .mandatoryField {
+         color: red;
+         font-size: small;
+     }
+</style>
 

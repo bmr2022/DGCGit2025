@@ -962,7 +962,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         public IActionResult UploadExcel(IFormFile excelFile)
         {
-            //ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             List<StockAdjustmentModel> data = new List<StockAdjustmentModel>();
 
             using (var stream = excelFile.OpenReadStream())
@@ -1038,19 +1038,46 @@ namespace eTactWeb.Controllers
                     var AdjType = AdjQty > 0 ? "+" : "-";
                     var Amount = (worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock) * ActualRate;
 
+                    //data.Add(new StockAdjustmentModel()
+                    //{
+                    //    StoreWorkCenter = worksheet.Cells[row, 1].Value.ToString(),
+                    //    PartCode = worksheet.Cells[row, 2].Value.ToString(),
+                    //    ItemName = itemName,
+                    //    StoreName = worksheet.Cells[row, 3].Value == null ? string.Empty : worksheet.Cells[row, 3].Value.ToString(),
+                    //    WCName = worksheet.Cells[row, 4].Value == null ? string.Empty : worksheet.Cells[row, 4].Value.ToString(),
+                    //    ActualStockQty = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString()),
+                    //    Unit = worksheet.Cells[row, 6].Value.ToString(),
+                    //    altUnit = worksheet.Cells[row, 7].Value.ToString() == null ? string.Empty : worksheet.Cells[row, 7].Value.ToString(),
+                    //    batchno = worksheet.Cells[row, 8].Value.ToString(),
+                    //    uniqbatchno = worksheet.Cells[row, 9].Value.ToString(),
+                    //    reasonOfAdjustment = worksheet.Cells[row, 10].Value.ToString() == null ? string.Empty : worksheet.Cells[row, 10].Value.ToString(),
+                    //    TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
+                    //    LotStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult,
+                    //    AltQty = AltQtyResult,
+                    //    AdjQty = Math.Abs(AdjQty),
+                    //    AdjType = AdjType,
+                    //    Rate = ActualRate,
+                    //    Amount = Amount,
+                    //    ItemCode = itemCCode,
+                    //    Wcid = WCResult,
+                    //    Storeid = storeIdResult,
+                    //    StockAdjustmentDate ="01/feb/2025"
+                    //    //StockDateResult.ToString()
+                    //});
+
                     data.Add(new StockAdjustmentModel()
                     {
                         StoreWorkCenter = worksheet.Cells[row, 1].Value.ToString(),
                         PartCode = worksheet.Cells[row, 2].Value.ToString(),
                         ItemName = itemName,
-                        StoreName = worksheet.Cells[row, 3].Value == null ? string.Empty : worksheet.Cells[row, 3].Value.ToString(),
-                        WCName = worksheet.Cells[row, 4].Value == null ? string.Empty : worksheet.Cells[row, 4].Value.ToString(),
+                        StoreName = worksheet.Cells[row, 3].Value?.ToString() ?? string.Empty,
+                        WCName = worksheet.Cells[row, 4].Value?.ToString() ?? string.Empty,
                         ActualStockQty = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString()),
                         Unit = worksheet.Cells[row, 6].Value.ToString(),
-                        altUnit = worksheet.Cells[row, 7].Value.ToString(),
+                        altUnit = worksheet.Cells[row, 7].Value?.ToString() ?? string.Empty,
                         batchno = worksheet.Cells[row, 8].Value.ToString(),
                         uniqbatchno = worksheet.Cells[row, 9].Value.ToString(),
-                        reasonOfAdjustment = worksheet.Cells[row, 10].Value.ToString(),
+                        reasonOfAdjustment = worksheet.Cells[row, 10].Value?.ToString() ?? string.Empty,
                         TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
                         LotStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult,
                         AltQty = AltQtyResult,
@@ -1061,7 +1088,8 @@ namespace eTactWeb.Controllers
                         ItemCode = itemCCode,
                         Wcid = WCResult,
                         Storeid = storeIdResult,
-                        StockAdjustmentDate = StockDateResult.ToString()
+                        StockAdjustmentDate = "01/feb/2025"
+                        //StockDateResult.ToString()
                     });
                 }
             }
