@@ -210,13 +210,12 @@
                                                 </label>
                                                 <input type="hidden" asp-for="Mode" value="@Model.Mode" />
                                                 <div style="font-size:0.8em;">
-                                                    <input class="form-control" val="SERVER2\SQLEXPRESS"/>
-                                   @*     <select asp-for="ServerName" new { style="color:black;width: 250px;height:20px;  background: #e6eeff" }>
+                                       <select asp-for="ServerName" new { style="color:black;width: 250px;height:20px;  background: #e6eeff" }>
                                             @if (Model.Mode == "Y")
                                             {
                                                 <input type="hidden" id="hiddenServerName" value="@Model.ServerName"  />
                                             }
-                                        </select> *@
+                                        </select>
                                                 </div>
                                             </div>
                                             <div class="row px-3">
