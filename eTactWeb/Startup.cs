@@ -118,6 +118,7 @@ namespace eTactWeb
             services.TryAddScoped<IItemMaster, ItemMasterBLL>();
             services.TryAddScoped<IHRSalaryHeadMaster, HRSalaryHeadMasterBLL>();
             services.TryAddScoped<IHRWeekOffMaster, HRWeekOffMasterBLL>();
+            services.TryAddScoped<IHRLeaveApplicationMaster, HRLeaveApplicationMasterBLL>();
             services.TryAddScoped<IHRLeaveOpeningMaster, HRLeaveOpeningMasterBLL>();
             services.TryAddScoped<IHRLeaveMaster, HRLeaveMasterBLL>();
             services.TryAddScoped<IHRPFESIMaster, HRPFESIMasterBLL>();
