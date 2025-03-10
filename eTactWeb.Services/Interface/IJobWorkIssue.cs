@@ -12,6 +12,7 @@ namespace eTactWeb.Services.Interface
     public interface IJobWorkIssue
     {
         Task<DataSet> BindAllDropDowns(string Flag);
+        Task<ResponseResult> GetReportName();
         Task<ResponseResult> GetBatchNumber(string SPName, int StoreId, string StoreName,int ItemCode,string TransDate, int YearCode, string BatchNo, string FinFromDate);
         Task<ResponseResult> GetStockQty(string Flag, int ItemCode, int StockId, string TillDate, string BatchNo, string UniqueBatchNo);
         Task<ResponseResult> GetPrevQty(int EntryId, int YearCode, int ItemCode, string uniqueBatchNo);

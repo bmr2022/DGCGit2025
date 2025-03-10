@@ -21,6 +21,25 @@ namespace eTactWeb.Data.DAL
 
         private string DBConnectionString { get; }
 
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+               SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -620,19 +639,17 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> FillItems(string sono, int soYearCode, int accountCode, string showAll, string TypeItemServAssets)
+        public async Task<ResponseResult> FillItems(string sono, int soYearCode, int accountCode, string showAll, string TypeItemServAssets,string bomInd, string sbJobwok)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "ItemsList"));
+                SqlParams.Add(new SqlParameter("@Flag", "ItemList"));
                 SqlParams.Add(new SqlParameter("@ShowAll", showAll));
-                SqlParams.Add(new SqlParameter("@invoicedate", DateTime.Now));
-                SqlParams.Add(new SqlParameter("@sono", sono));
-                SqlParams.Add(new SqlParameter("@SoYearCode", soYearCode));
-                SqlParams.Add(new SqlParameter("@accountcode", accountCode));
                 SqlParams.Add(new SqlParameter("@TypeItemServAssets", TypeItemServAssets));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", sbJobwok));
+                SqlParams.Add(new SqlParameter("@BOMInd", bomInd == "I" ? "IND" : "BOM"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -1162,6 +1179,8 @@ namespace eTactWeb.Data.DAL
 
             return ItemGrid;
         }
+
+      
 
     }
 }

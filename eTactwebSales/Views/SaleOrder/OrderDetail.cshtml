@@ -127,7 +127,7 @@
 									</div>
 									<div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 										<label asp-for="AccountCode" class="form-label" style="color:  red;">Party Name</label>
-										<div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+										<div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="width:180px">
 											<input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
 										</div>
 										<select class="form-select" asp-for="AccountCode" style="width:220px;" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly disabled>
@@ -1089,6 +1089,7 @@
 				type: "POST",
 				url: "@Url.Action("NewAmmEntryId")",
 				dataType: "json",
+                data:{"YearCode" : $('#YearCode').val()},
 				success: function (result, status, error) {
 
 					if (result != null) {
@@ -1548,6 +1549,7 @@
 				$(this).val(dateText);
 			}
 		});
+		var date = new Date();
 			// $('#SODate').datepicker('setDate', new Date());
 		//             $('#SODate').datepicker({
 		//     dateFormat: 'dd/mm/yy' // Set date format
@@ -2621,27 +2623,34 @@
 			});
 		});
 
-		$('.ItemBtn').click(function () {
+		$('.ItemBtn').click(function () 
+		{
 
-			if ($('#PartCode').prop('selectedIndex') == 0) {
+			if ($('#PartCode').prop('selectedIndex') == 0)
+			{
 				AddErrorCls('PartCode');
 				$.notify('PartCode Is Required.', "error");
 				return;
 			}
-			else {
+			else 
+			{
 				RemoveErrorCls('PartCode');
 			}
-			if ($('#ItemName').prop('selectedIndex') == 0) {
+			if ($('#ItemName').prop('selectedIndex') == 0) 
+			{
 				AddErrorCls('ItemName');
 				$.notify('ItemName Is Required.', "error");
 				return;
 			}
-			else {
+			else 
+			{
 				RemoveErrorCls('ItemName');
 			}
-			if ($('#SOType').val() == "CLOSE") {
+			if ($('#SOType').val() == "CLOSE") 
+			{
 
-				if (isNaN(parseFloat($('#Qty').val())) || parseFloat($('#Qty').val()) == 0 || parseFloat($('#Qty').val()) < 0) {
+				if (isNaN(parseFloat($('#Qty').val())) || parseFloat($('#Qty').val()) == 0 || parseFloat($('#Qty').val()) < 0) 
+				{
 					AddErrorCls('Qty');
 					$.notify('Qty cannot be 0.', "error");
 					return;
@@ -2650,34 +2659,41 @@
 				}
 			}
 
-			if (isNaN(parseFloat($('#Rate').val())) || parseFloat($('#Rate').val()) == 0 || parseFloat($('#Rate').val()) < -1) {
+			if (isNaN(parseFloat($('#Rate').val())) || parseFloat($('#Rate').val()) == 0 || parseFloat($('#Rate').val()) < -1) 
+			{
 				AddErrorCls('Rate');
 				$.notify('Rate cannot be 0.', "error");
 				return;
 			}
-			else {
+			else 
+			{
 				RemoveErrorCls('Rate');
 			}
 
-			if (isNaN(parseFloat($('#OtherRateCurr').val())) || parseFloat($('#OtherRateCurr').val()) == 0 || parseFloat($('#OtherRateCurr').val()) < -1) {
+			if (isNaN(parseFloat($('#OtherRateCurr').val())) || parseFloat($('#OtherRateCurr').val()) == 0 || parseFloat($('#OtherRateCurr').val()) < -1) 
+			{
 				AddErrorCls('OtherRateCurr');
 				$.notify('OtherRate cannot be 0.', "error");
 				return;
 			}
-			else {
+			else 
+			{
 				RemoveErrorCls('OtherRateCurr');
 			}
 
-			if (parseInt($('#DiscPer').val()) < 0 || parseInt($('#DiscPer').val()) > 100) {
+			if (parseInt($('#DiscPer').val()) < 0 || parseInt($('#DiscPer').val()) > 100) 
+			{
 				AddErrorCls('DiscPer');
 				$.notify('DiscPer cannot be 0.', "error");
 				return;
 			}
-			else {
+			else 
+			{
 				RemoveErrorCls('DiscPer');
 			}
 
-			if ('@Model.Mode' == 'SOA' && @Model.ID > 0) {
+			if ('@Model.Mode' == 'SOA' && @Model.ID > 0)
+			{
 				if (!$('#AmendmentReason').val()) {
 					AddErrorCls('AmendmentReason');
 					return;
@@ -2687,7 +2703,8 @@
 				}
 			}
 
-			if ($('OrderType').val() == "Export") {
+			if ($('OrderType').val() == "Export") 
+			{
 				if (parseInt($('#OtherRateCurr').val()) == "" || parseInt($('#OtherRateCurr').val()) == 0 || parseInt(('#OtherRateCurr').val()) < 0) {
 					AddErrorCls('OtherRateCurr');
 					$.notify('OtherRateCurr cannot be 0.', "error");
@@ -2704,7 +2721,8 @@
 			// add spinner to button
 			$(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 
-			var ItemData = {
+			var ItemData = 
+			{
 				"PartCode": $('#PartCode').val(),
 				"PartText": $('#PartCode option:selected').text(),
 				"ItemCode": $('#ItemCode').val(),
@@ -2737,7 +2755,8 @@
 				"ProjQty1": $('#ProjQty1').val(),
 				"ProjQty2": $('#ProjQty2').val(),
 			}
-
+			alert('before itemgrid');
+			debugger
 			console.log(ItemData);
 			$.ajax({
 				url: '@Url.Action("ItemGrid")',
@@ -2748,7 +2767,7 @@
 					console.log(1);
 				},
 				success: function (data, status, xhr) {
-
+					debugger
 					console.log(2);
 					if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
 						$.notify('Duplicate Item Not Allowed.', "info");
@@ -2905,6 +2924,7 @@
 		let Dat = "";
 
 		async function EditItemRow(SeqNo) {
+			debugger
 			var PartCode = $('#PartCode').val();
 			$.ajax({
 				url: '@Url.Action("EditItemRow")',

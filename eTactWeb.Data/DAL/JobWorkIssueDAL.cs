@@ -23,7 +23,25 @@ namespace eTactWeb.Data.DAL
         private IDataReader? Reader;
 
         //public static decimal BatchStockQty { get; private set; }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
 
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_JobworkIssue", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public JobWorkIssueDAL(IConfiguration configuration, IDataLogic iDataLogic)
         {
             _IDataLogic = iDataLogic;

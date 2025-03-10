@@ -105,7 +105,8 @@ namespace eTactWeb.Data.DAL
                                                          EntryId = Convert.ToInt32(dr["entryid"].ToString()),
                                                          AltRecQty = Convert.ToDecimal(dr["AltRecQty"].ToString()),
                                                          AltIssQty = Convert.ToDecimal(dr["AltIssQty"].ToString()),
-                                                         GroupName = string.IsNullOrEmpty(dr["Group_name"].ToString()) ? "" : dr["Group_name"].ToString()
+                                                         GroupName = string.IsNullOrEmpty(dr["Group_name"].ToString()) ? "" : dr["Group_name"].ToString(),
+                                                         package = string.IsNullOrEmpty(dr["package"].ToString()) ? "" : dr["package"].ToString()
                                                      }).ToList();
                     }
                 }

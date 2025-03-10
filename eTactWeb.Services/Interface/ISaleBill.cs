@@ -9,6 +9,7 @@ using static eTactWeb.DOM.Models.Common;
 namespace eTactWeb.Services.Interface
 {
     public interface ISaleBill {
+        Task<ResponseResult> GetReportName();
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> GetBatchInventory();
         Task<ResponseResult> GetCustomerBasedDetails(int Code);
@@ -21,7 +22,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillConsigneeList(string showAllConsignee);
         Task<ResponseResult> FillSOYearCode(string sono,string accountCode);
         Task<ResponseResult> DisplaySODetail(string accountName, string itemName, string partCode, string sono, int soYearCode, string custOrderNo, string schNo, int schYearCode);
-        Task<ResponseResult> FillItems(string sono,int soYearCode,int accountCode, string showAll, string TypeItemServAssets);
+        Task<ResponseResult> FillItems(string sono,int soYearCode,int accountCode, string showAll, string TypeItemServAssets,string bomInd,string sbJobWork);
         Task<ResponseResult> FillStore();
         Task<ResponseResult> AllowTaxPassword();
         Task<ResponseResult> FillSOPendQty(int saleBillEntryId, string saleBillNo, int saleBillYearCode,string sono, int soYearcode, string custOrderNo, int itemCode, int accountCode, string schNo, int schYearCode);

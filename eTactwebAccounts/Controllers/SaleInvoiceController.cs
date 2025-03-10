@@ -20,6 +20,9 @@ using common = eTactWeb.Data.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using FastReport.Data;
+using FastReport;
+using System.Configuration;
 
 
 namespace eTactWeb.Controllers
@@ -31,7 +34,7 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
 
         public ISaleBill _SaleBill { get; }
-        private readonly IConfiguration iconfiguration;
+        private readonly IConfiguration _iconfiguration;
         private readonly ILogger<SaleBillController> _logger;
         private readonly IMemoryCache _MemoryCache;
         private readonly ICustomerJobWorkIssue _ICustomerJobWorkIssue;
@@ -43,7 +46,7 @@ namespace eTactWeb.Controllers
             _SaleBill = iSaleBill;
             _MemoryCache = memoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
-            iconfiguration = configuration;
+            _iconfiguration = configuration;
             _ICustomerJobWorkIssue = CustomerJobWorkIssue;
         }
         [HttpPost]
@@ -892,9 +895,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillItems(string sono, int soYearCode, int accountCode, string showAll, string TypeItemServAssets)
+        public async Task<JsonResult> FillItems(string sono, int soYearCode, int accountCode, string showAll, string TypeItemServAssets,string bomInd,string sbJobWork)
         {
-            var JSON = await _SaleBill.FillItems(sono, soYearCode, accountCode, showAll, TypeItemServAssets);
+            var JSON = await _SaleBill.FillItems(sono, soYearCode, accountCode, showAll, TypeItemServAssets,bomInd,sbJobWork);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -931,29 +934,46 @@ namespace eTactWeb.Controllers
         }
         public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "")
         {
+            //string my_connection_string;
+            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //var webReport = new WebReport();
+            //webReport.Report.Load(webRootPath + "\\SaleBill.frx");
+            //webReport.Report.SetParameterValue("entryparam", EntryId);
+            //webReport.Report.SetParameterValue("yearparam", YearCode);
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //return View(webReport);
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
-            webReport.Report.Load(webRootPath + "\\SaleBill.frx");
-
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
+            webReport.Report.Clear();
+            var ReportName = _SaleBill.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
+            }
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
-            //         ID = web; Password = bmr2401";
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Prepare();
+            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+            {
+                if (dataSource is TableDataSource tableDataSource)
+                {
+                    tableDataSource.Enabled = true;
+                    tableDataSource.Init(); // Refresh the data source
+                }
+            }
             return View(webReport);
         }
         private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)

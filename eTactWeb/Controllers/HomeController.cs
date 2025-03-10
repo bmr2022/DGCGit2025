@@ -673,7 +673,8 @@ public class HomeController : Controller
         if (isAuthenticate)
         {
             ClaimsPrincipal principal = new(identity);
-            HttpContext.Session.SetString("Branch", model.Unit); //done
+            HttpContext.Session.SetString("Branch", model.Unit); //done CompanyName
+            HttpContext.Session.SetString("CompanyName", model.CompanyName); //done CompanyName
             HttpContext.Session.SetString("YearCode", yearCode.ToString());//done
             HttpContext.Session.SetString("UID", EmpId.ToString());//done there is no UID it will be same as EMpid
             HttpContext.Session.SetString("EmpID", EmpId.ToString());//use this everywhere

@@ -18,17 +18,21 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Data;
 using System.Globalization;
+using FastReport.Data;
+using System.Configuration;
 
 
 namespace eTactWeb.Controllers
 {
     public class MaterialReceiptController : Controller
     {
+        public IMaterialReceipt _MRN { get; }
+       // public IWebHostEnvironment IWebHostEnvironment { get; }
         private readonly IDataLogic _IDataLogic;
         private readonly IMaterialReceipt _IMaterialReceipt;
         private readonly ILogger<MaterialReceiptController> _logger;
         private readonly IMemoryCache _MemoryCache;
-        private readonly IConfiguration iconfiguration;
+        private readonly IConfiguration _iconfiguration;
 
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         public MaterialReceiptController(ILogger<MaterialReceiptController> logger, IDataLogic iDataLogic, IMaterialReceipt iMaterialReceipt, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
@@ -38,36 +42,51 @@ namespace eTactWeb.Controllers
             _IMaterialReceipt = iMaterialReceipt;
             _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
-            this.iconfiguration = iconfiguration;
+            this._iconfiguration = iconfiguration;
         }
 
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
         {
+            //string my_connection_string;
+            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //var webReport = new WebReport();
+            //webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
+            //webReport.Report.SetParameterValue("MrnEntryparam", EntryId);
+            //webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //return View(webReport);
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
-
-            webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
-
-
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
+            webReport.Report.Clear();
+            var ReportName = _IMaterialReceipt.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
+            }
             webReport.Report.SetParameterValue("MrnEntryparam", EntryId);
             webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
-
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
-            //         ID = web; Password = bmr2401";
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Prepare();
+            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+            {
+                if (dataSource is TableDataSource tableDataSource)
+                {
+                    tableDataSource.Enabled = true;
+                    tableDataSource.Init(); // Refresh the data source
+                }
+            }
             return View(webReport);
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string MrnNo = "")
@@ -830,13 +849,20 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
+            DateTime fromDt, toDt;
+            string fromDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
+                 fromDt = DateTime.ParseExact(fromDtString, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                // Use fromDt as needed
+            string toDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(ToDate);
+                 toDt = DateTime.ParseExact(toDtString, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                // Use fromDt as needed
+            //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
+            // DateTime fromDt = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
+            //string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
+            //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
+            //string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
 
-            DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
-            string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
-            DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
-            string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
-
-            return RedirectToAction("MRNDashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, Flag = "False", VendorName = VendorName, MrnNo = MrnNo, GateNo = GateNo, PONo = PONo, ItemName = ItemName, PartCode = PartCode, Type = Type });
+            return RedirectToAction("MRNDashboard", new { FromDate = fromDt, ToDate = toDt, Flag = "False", VendorName = VendorName, MrnNo = MrnNo, GateNo = GateNo, PONo = PONo, ItemName = ItemName, PartCode = PartCode, Type = Type });
 
         }
         public async Task<JsonResult> FillEntryandMRN(int YearCode)

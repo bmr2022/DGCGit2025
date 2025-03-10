@@ -75,6 +75,7 @@ namespace eTactWeb.DOM.Models
         public string? CustJwAdjustmentMandatory { get; set; }
         public string? Location { get; set; }
         public string? MPNNo { get; set; }
+        public string? CustJWmandatory { get; set; }
         public bool FG1 { get; set; }
         public IList<TextValue>? FG1CodeList { get; set; }
         public IList<TextValue>? FG1NameList { get; set; }

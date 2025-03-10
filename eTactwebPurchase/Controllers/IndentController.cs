@@ -18,6 +18,9 @@ using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Data;
 using System.Globalization;
+using FastReport.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using String = System.Runtime.InteropServices.JavaScript.JSType.String;
 
 namespace eTactWeb.Controllers
 {
@@ -29,7 +32,7 @@ namespace eTactWeb.Controllers
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<IndentController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
-        private readonly IConfiguration iconfiguration;
+        private readonly IConfiguration _iconfiguration;
         public IndentController(IIndent _IIndent, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<IndentController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _Indent = _IIndent;
@@ -38,7 +41,7 @@ namespace eTactWeb.Controllers
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
-            iconfiguration = iconfiguration;
+            _iconfiguration = iconfiguration;
         }
 
         [HttpGet]
@@ -98,36 +101,33 @@ namespace eTactWeb.Controllers
             string my_connection_string;
             string contentRootPath = IWebHostEnvironment.ContentRootPath;
             string webRootPath = IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
-
+            webReport.Report.Clear();
             var ReportName = _Indent.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
             if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
-                //webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
-                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] ); // from database
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
             }
             else
             {
                 webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
-
             }
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
-            //         ID = web; Password = bmr2401";
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Prepare();
+            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+            {
+                if (dataSource is TableDataSource tableDataSource)
+                {
+                    tableDataSource.Enabled = true;
+                    tableDataSource.Init(); // Refresh the data source
+                }
+            }
             return View(webReport);
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)

@@ -201,7 +201,7 @@ namespace eTactWeb.DOM.Models
         public string? LastUpdatedByName { get; set; } // Nullable
         public string? LastUpdationDate { get; set; } // Nullable
         public string? EntryFreezToAccounts { get; set; }
-        public int PaymentCreditDay { get; set; }
+        public int PaymentCreditDay { get; set; } = 45;
         public string? ChallanNo { get; set; }
         public string? ChallanDate { get; set; }
         public int ChallanYearCode { get; set; }

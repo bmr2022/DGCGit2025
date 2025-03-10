@@ -257,9 +257,9 @@ public class SaleOrderController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    public async Task<JsonResult> NewAmmEntryId()
+    public async Task<JsonResult> NewAmmEntryId(int YearCode)
     {
-        var JSON = await _ISaleOrder.NewAmmEntryId();
+        var JSON = await _ISaleOrder.NewAmmEntryId(YearCode);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
@@ -524,25 +524,25 @@ public class SaleOrderController : Controller
             Result = model.ItemDetailGrid.Where(m => m.SeqNo == model.SeqNo).ToList();
             model.ItemDetailGrid.RemoveAt(Convert.ToInt32(Indx));
 
-            Indx = 0;
-            foreach (ItemDetail item in model.ItemDetailGrid)
-            {
-                Indx++;
-                item.SeqNo = Indx;
-            }
+            //Indx = 0;
+            //foreach (ItemDetail item in model.ItemDetailGrid)
+            //{
+            //    Indx++;
+            //    item.SeqNo = Indx;
+            //}
 
-            if (model.ItemDetailGrid.Count > 0)
-            {
-                HttpContext.Session.SetString
-                (
-                    "ItemList",
-                    JsonConvert.SerializeObject(model.ItemDetailGrid)
-                );
-            }
-            else
-            {
-                HttpContext.Session.Remove("ItemList");
-            }
+            //if (model.ItemDetailGrid.Count > 0)
+            //{
+            //    HttpContext.Session.SetString
+            //    (
+            //        "ItemList",
+            //        JsonConvert.SerializeObject(model.ItemDetailGrid)
+            //    );
+            //}
+            //else
+            //{
+            //    HttpContext.Session.Remove("ItemList");
+            //}
         }
 
         return Json(JsonConvert.SerializeObject(Result));
@@ -738,8 +738,8 @@ public class SaleOrderController : Controller
 
             model.ItemDetailGrid = _List;
             model.ItemNetAmount = decimal.Parse(_List.Sum(x => x.Amount).ToString("#.#0"));
-            //HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
-            //_MemoryCache.Set("ItemList", model.ItemDetailGrid);
+            HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
+            _MemoryCache.Set("ItemList", model.ItemDetailGrid);
         }
         else
         {
@@ -752,7 +752,8 @@ public class SaleOrderController : Controller
                 model.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(storedItemList);
             }
 
-            bool TF = model.ItemDetailGrid.Any(x => x.ItemCode == model.ItemCode);
+            //var ItmPartCode = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(model.SeqNo)).PartCode;
+            bool TF = _List.Any(x => x.ItemCode == model.ItemCode);
             //bool TF = MainModel.ItemDetailGrid.Any(x => x.ItemCode == model.ItemCode);
 
             if (TF == false)
