@@ -53,6 +53,15 @@ namespace eTactWeb.DOM.Models
         public string VendorName { get; set; }
         public string SchNo { get; set; }
         public string SchDate { get; set; }
+
+        public decimal IssuedToShopFloorAgstPlan { get; set; }
+        public decimal IssuedToShopFloorAgstBOMReq { get; set; }
+        public decimal IssuedToShopFloorAgstIndReq { get; set; }
+        public decimal IssFromInterStoreTransf { get; set; }
+        public decimal IssViaMaterialConv { get; set; }
+        public decimal IssStockAdjustment { get; set; }
+        public decimal IssueOther { get; set; }
+        public decimal TotalIssue { get; set; }
         public IList<ConsumptionReportModel>? ConsumptionReportGrid { get; set; }
     }
 }

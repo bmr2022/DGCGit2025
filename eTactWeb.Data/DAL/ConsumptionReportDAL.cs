@@ -144,7 +144,7 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     
-                        command.Parameters.AddWithValue("@Flag", ReportType);
+                        command.Parameters.AddWithValue("@flag", ReportType);
                         command.Parameters.AddWithValue("@fromdate", fromDate);
                         command.Parameters.AddWithValue("@todate", toDate);
                         command.Parameters.AddWithValue("@Storeid", Storeid);
@@ -180,16 +180,23 @@ namespace eTactWeb.Data.DAL
                                                         AltUnit = row["AltUnit"] != DBNull.Value ? row["AltUnit"].ToString() : string.Empty,
                                                         RecFromMRN = row["RecFromMRN"] != DBNull.Value ? Convert.ToDecimal(row["RecFromMRN"]) : 0,
                                                         RecFromJW = row["RecFromJW"] != DBNull.Value ? Convert.ToDecimal(row["RecFromJW"]) : 0,
-                                                        //ReturnFromShopFloor = row["ReturnFromShopFloor"] != DBNull.Value ? Convert.ToDecimal(row["ReturnFromShopFloor"]) : 0,
                                                         RecMaterialConv = row["RecMaterialConv"] != DBNull.Value ? Convert.ToDecimal(row["RecMaterialConv"]) : 0,
                                                         InterStoreTransfer = row["InterStoreTRansfer"] != DBNull.Value ? Convert.ToDecimal(row["InterStoreTRansfer"]) : 0,
                                                         OtherRec = row["OtherRec"] != DBNull.Value ? Convert.ToDecimal(row["OtherRec"]) : 0,
-                                                        TotalRec = row["TotalQty"] != DBNull.Value ? Convert.ToDecimal(row["TotalQty"]) : 0,
-                                                        IssuedToShopFloor = row["issuedToShopFloor"] != DBNull.Value ? Convert.ToDecimal(row["issuedToShopFloor"]) : 0,
+                                                        TotalRec = row["TotalRecQty"] != DBNull.Value ? Convert.ToDecimal(row["TotalRecQty"]) : 0,
+
+                                                        
+                                                        IssuedToShopFloorAgstPlan = row["IssuedToShopFloorAgstPlan"] != DBNull.Value ? Convert.ToDecimal(row["IssuedToShopFloorAgstPlan"]) : 0,
+                                                        IssuedToShopFloorAgstBOMReq = row["IssuedToShopFloorAgstBOMReq"] != DBNull.Value ? Convert.ToDecimal(row["IssuedToShopFloorAgstBOMReq"]) : 0,
+                                                        IssuedToShopFloorAgstIndReq = row["IssuedToShopFloorAgstIndReq"] != DBNull.Value ? Convert.ToDecimal(row["IssuedToShopFloorAgstIndReq"]) : 0,
                                                         IssuedViaChallan = row["IssuedViaChallan"] != DBNull.Value ? Convert.ToDecimal(row["IssuedViaChallan"]) : 0,
-                                                        IssMaterialConv = row["IssMaterialConv"] != DBNull.Value ? Convert.ToDecimal(row["IssMaterialConv"]) : 0,
                                                         ReturnViaRejection = row["ReturnViaRejection"] != DBNull.Value ? Convert.ToDecimal(row["ReturnViaRejection"]) : 0,
-                                                        OtherIssue = row["OtherIssue"] != DBNull.Value ? Convert.ToDecimal(row["OtherIssue"]) : 0,
+                                                        IssFromInterStoreTransf = row["IssFromInterStoreTransf"] != DBNull.Value ? Convert.ToDecimal(row["IssFromInterStoreTransf"]) : 0,
+                                                        IssViaMaterialConv = row["IssViaMaterialConv"] != DBNull.Value ? Convert.ToDecimal(row["IssViaMaterialConv"]) : 0,
+                                                        IssStockAdjustment = row["IssStockAdjustment"] != DBNull.Value ? Convert.ToDecimal(row["IssStockAdjustment"]) : 0,
+                                                        IssueOther = row["IssueOther"] != DBNull.Value ? Convert.ToDecimal(row["IssueOther"]) : 0,
+                                                        TotalIssue = row["TotalIssue"] != DBNull.Value ? Convert.ToDecimal(row["TotalIssue"]) : 0,
+
                                                         FGPartCode = row["FGPartCode"] != DBNull.Value ? row["FGPartCode"].ToString() : string.Empty,
                                                         FGItemName = row["FGItemName"] != DBNull.Value ? row["FGItemName"].ToString() : string.Empty,
                                                         ConsumedRMQty = row["ConsumedRMQty"] != DBNull.Value ? Convert.ToDecimal(row["ConsumedRMQty"]) : 0,
@@ -222,7 +229,7 @@ namespace eTactWeb.Data.DAL
                                                         PODate = row["PODate"] != DBNull.Value ? Convert.ToDateTime(row["PODate"]).ToString("dd/MM/yyyy") : string.Empty,
                                                         POQty = row["POQty"] != DBNull.Value ? Convert.ToDecimal(row["POQty"]) : 0,
                                                         AltPOQty = row["AltPOQty"] != DBNull.Value ? Convert.ToDecimal(row["AltPOQty"]) : 0,
-                                                        AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
+                                                       // AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
                                                         VendorName = row["VendorName"] != DBNull.Value ? row["VendorName"].ToString() : string.Empty,
                                                         AltUnit = row["AltUnit"] != DBNull.Value ? row["AltUnit"].ToString() : string.Empty,
                                                         SchNo = row["SchNo"] != DBNull.Value ? row["SchNo"].ToString() : string.Empty,
@@ -231,10 +238,16 @@ namespace eTactWeb.Data.DAL
                                                         RecFromJW = row["RecFromJW"] != DBNull.Value ? Convert.ToDecimal(row["RecFromJW"]) : 0,
                                                         OtherRec = row["OtherRec"] != DBNull.Value ? Convert.ToDecimal(row["OtherRec"]) : 0,
                                                         TotalRec = row["TotalRec"] != DBNull.Value ? Convert.ToDecimal(row["TotalRec"]) : 0,
-                                                        IssuedToShopFloor = row["IssuedToShopFloor"] != DBNull.Value ? Convert.ToDecimal(row["IssuedToShopFloor"]) : 0,
+                                                        IssuedToShopFloorAgstPlan = row["IssuedToShopFloorAgstPlan"] != DBNull.Value ? Convert.ToDecimal(row["IssuedToShopFloorAgstPlan"]) : 0,
+                                                        IssuedToShopFloorAgstBOMReq = row["IssuedToShopFloorAgstBOMReq"] != DBNull.Value ? Convert.ToDecimal(row["IssuedToShopFloorAgstBOMReq"]) : 0,
+                                                        IssuedToShopFloorAgstIndReq = row["IssuedToShopFloorAgstIndReq"] != DBNull.Value ? Convert.ToDecimal(row["IssuedToShopFloorAgstIndReq"]) : 0,
                                                         IssuedViaChallan = row["IssuedViaChallan"] != DBNull.Value ? Convert.ToDecimal(row["IssuedViaChallan"]) : 0,
                                                         ReturnViaRejection = row["ReturnViaRejection"] != DBNull.Value ? Convert.ToDecimal(row["ReturnViaRejection"]) : 0,
-                                                        OtherIssue = row["OtherIssue"] != DBNull.Value ? Convert.ToDecimal(row["OtherIssue"]) : 0,
+                                                        IssFromInterStoreTransf = row["IssFromInterStoreTransf"] != DBNull.Value ? Convert.ToDecimal(row["IssFromInterStoreTransf"]) : 0,
+                                                        IssViaMaterialConv = row["IssViaMaterialConv"] != DBNull.Value ? Convert.ToDecimal(row["IssViaMaterialConv"]) : 0,
+                                                        IssStockAdjustment = row["IssStockAdjustment"] != DBNull.Value ? Convert.ToDecimal(row["IssStockAdjustment"]) : 0,
+                                                        IssueOther = row["IssueOther"] != DBNull.Value ? Convert.ToDecimal(row["IssueOther"]) : 0,
+                                                        TotalIssue = row["TotalIssue"] != DBNull.Value ? Convert.ToDecimal(row["TotalIssue"]) : 0,
                                                         FGPartCode = row["FGPartCode"] != DBNull.Value ? row["FGPartCode"].ToString() : string.Empty,
                                                         FGItemName = row["FGItemName"] != DBNull.Value ? row["FGItemName"].ToString() : string.Empty,
                                                         ConsumedRMQty = row["ConsumedRMQty"] != DBNull.Value ? Convert.ToDecimal(row["ConsumedRMQty"]) : 0,
@@ -244,6 +257,36 @@ namespace eTactWeb.Data.DAL
                                                         ClosingStock = row["ClosingStock"] != DBNull.Value ? Convert.ToDecimal(row["ClosingStock"]) : 0,
                                                         WIPClosingStock = row["WIPClosingStock"] != DBNull.Value ? Convert.ToDecimal(row["WIPClosingStock"]) : 0,
                                                         RMItemCode = row["RMItemcode"] != DBNull.Value ? Convert.ToInt32(row["RMItemcode"]) : 0
+
+                                                    }).ToList();
+                    }
+                }
+               else if (ReportType.ToString() == "ProductionConsumptionReport(CONSOLIDATED)")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+
+
+                        resultList.ConsumptionReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                    select new ConsumptionReportModel
+                                                    {
+                                                        RMPartCode = row["RMPartCode"] != DBNull.Value ? row["RMPartCode"].ToString() : string.Empty,
+                                                        RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
+                                                        OpeningQty = row["OpeningQty"] != DBNull.Value ? Convert.ToDecimal(row["OpeningQty"]) : 0,
+                                                        OpeningWIP = row["OpeningWIP"] != DBNull.Value ? Convert.ToDecimal(row["OpeningWIP"]) : 0,
+                                                        Unit = row["Unit"] != DBNull.Value ? row["Unit"].ToString() : string.Empty,
+                                                        POQty = row["POQty"] != DBNull.Value ? Convert.ToDecimal(row["POQty"]) : 0,
+                                                        TotalRec = row["TotalRecQty"] != DBNull.Value ? Convert.ToDecimal(row["TotalRecQty"]) : 0,
+                                                        TotalIssue = row["TotalIssue"] != DBNull.Value ? Convert.ToDecimal(row["TotalIssue"]) : 0,
+                                                        ConsumedRMQty = row["ConsumedRMQty"] != DBNull.Value ? Convert.ToDecimal(row["ConsumedRMQty"]) : 0,
+                                                        ConsumedRMUnit = row["ConsumedRMUnit"] != DBNull.Value ? row["ConsumedRMUnit"].ToString() : string.Empty,
+                                                        FGPartCode = row["FGPartCode"] != DBNull.Value ? row["FGPartCode"].ToString() : string.Empty,
+                                                        FGItemName = row["FGItemName"] != DBNull.Value ? row["FGItemName"].ToString() : string.Empty,
+                                                        FGOKQty = row["FGOKQty"] != DBNull.Value ? Convert.ToDecimal(row["FGOKQty"]) : 0,
+                                                        FGProdQty = row["FGProdQty"] != DBNull.Value ? Convert.ToDecimal(row["FGProdQty"]) : 0,
+                                                        ClosingStock = row["ClosingStock"] != DBNull.Value ? Convert.ToDecimal(row["ClosingStock"]) : 0,
+                                                        WIPClosingStock = row["WIPClosingStock"] != DBNull.Value ? Convert.ToDecimal(row["WIPClosingStock"]) : 0,
+                                                        RMItemCode = row["RMItemCode"] != DBNull.Value ? Convert.ToInt32(row["RMItemCode"]) : 0
 
                                                     }).ToList();
                     }

@@ -84,6 +84,10 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_ConsumptionReportDetailGrid", model);
             }
+          if (ReportType == "ProductionConsumptionReport(CONSOLIDATED)")
+            {
+                return PartialView("_ConsumptionReportCONSOLIDATEDGrid", model);
+            }
           
 
             return null;

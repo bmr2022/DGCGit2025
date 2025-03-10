@@ -172,6 +172,7 @@ namespace eTactWeb
             services.TryAddTransient<IMaterialReceipt, MaterialReceiptBLL>();
             services.TryAddTransient<IMirModule, MirBLL>();
             services.TryAddTransient<IJobWorkIssue, JobWorkIssueBLL>();
+            services.TryAddTransient<IInventoryAgingReport, InventoryAgingReportBLL>();
             services.TryAddTransient<IJobWorkReceive, JobWorkReceiveBLL>();
             services.TryAddTransient<IReqWithoutBOM,ReqWithoutBomBLL>();
             services.TryAddTransient<IReqThruBom,ReqThruBomBLL>();
