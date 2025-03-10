@@ -18,6 +18,7 @@ namespace eTactWeb.DOM.Models
         public string? EmpCode {  get; set; }
         public string? Designation { get; set; }
         public int? DesignationId {  get; set; }
+        public int? SrNO { get; set; }
 
         public string? Department { get; set; }
         public int? DeptId { get; set; }

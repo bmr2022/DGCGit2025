@@ -296,9 +296,7 @@ namespace eTactWeb.Data.DAL
                                                                    LeaveOpnYearCode = Convert.ToInt32(dr["LeaveOpnYearCode"]),
                                                                    ActualEntryDate = dr["EntryDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(dr["EntryDate"]).ToString("dd-MM-yyyy"),
 
-
                                                                    EmpName = dr["Empname"].ToString(),
-
 
                                                                    EntryByMachine = dr["EntryByMachine"].ToString(),
                                                                    Department = dr["DeptName"].ToString(),
