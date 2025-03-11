@@ -713,20 +713,20 @@
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
-                    ItemCode: row.find("td:eq(2)").text().trim(), // ItemCode
-                    Unit: row.find("td:eq(19)").text().trim(),
-                    BillQty: row.find("td:eq(10)").text().trim(),
-                    JWRate: row.find("td:eq(11)").text().trim(),
-                    ProcessId: row.find("td:eq(2)").text().trim(), // ProcoessId
-                    SONO: row.find("td:eq(3)").text().trim(),
-                    CustOrderNo: row.find("td:eq(5)").text().trim(),
-                    SOYearCode: row.find("td:eq(17)").text().trim(),
-                    SchNo: row.find("td:eq(6)").text().trim(),
-                    SchYearcode: row.find("td:eq(18)").text().trim(),
-                    BOMIND: "", // BOMIND
+                    ItemCode: row.find("td:eq(2) input").val().trim(), // ItemCode
+                    Unit: row.find("td:eq(21)").text().trim(),
+                    BillQty: row.find("td:eq(12)").text().trim(),
+                    JWRate: row.find("td:eq(13)").text().trim(),
+                    ProcessId: row.find("td:eq(29) input").val().trim(), // ProcoessId
+                    SONO: row.find("td:eq(5)").text().trim(),
+                    CustOrderNo: row.find("td:eq(7)").text().trim(),
+                    SOYearCode: row.find("td:eq(19)").text().trim(),
+                    SchNo: row.find("td:eq(8)").text().trim(),
+                    SchYearcode: row.find("td:eq(20)").text().trim(),
+                    BOMIND: row.find("td:eq(3)").text().trim(), // BOMIND
                     BOMNO: "", //BomNo
                     BOMEffDate: "", //Bom Eff Date
-                    Produnprod: "",
+                    Produnprod: row.find("td:eq(4)").text().trim(),
                     fromChallanOrSalebill: "",
                     ItemAdjustmentRequired: ""
                 };
@@ -1146,12 +1146,12 @@
                 }
                 
                 if ($('#ProducedUnprod').prop('selectedIndex') == 0) {
-                    AddErrorCls('#ProducedUnprod');
-                    $.notify('please select #Produced Unprod...!', "error");
+                    AddErrorCls('ProducedUnprod');
+                    $.notify('please select Produced Unprod...!', "error");
                     Err = 1;
                 }
                 else {
-                    RemoveErrorCls('#ProducedUnprod');
+                    RemoveErrorCls('ProducedUnprod');
                 }
             }
 
