@@ -1608,8 +1608,8 @@ public class TaxController : Controller
             case "ItemList":
                 HttpContext.Session.Get(TxPageName);
                 MainModel = new SaleOrderModel();
-                MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxPageName));
-                MainModel.AccountCode = AC;
+                MainModel.ItemDetailGrid = _MemoryCache.TryGetValue("ItemList", out MainModel);
+				MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 MainModel.TxRoundOff = RF;
                 isSuccess = ValidateHsnTax(MainModel);

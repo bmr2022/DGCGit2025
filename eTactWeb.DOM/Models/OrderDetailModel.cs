@@ -211,18 +211,18 @@ namespace eTactWeb.DOM.Models
             new() { Value = "Y", Text = "Yes" },
             new() { Value = "N", Text = "No" },
         };
-        [Required(ErrorMessage = "Party Name is required")]
+        //[Required(ErrorMessage = "Party Name is required")]
         public int AccountCode { get; set; }
         public IList<TextValue>? AccountList { get; set; }
         public IList<SaleOrderBillToShipTo>? SaleOrderBillToShipTo { get; set; }
         public string? Address { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [Required(ErrorMessage = "Please Select Amendment Effective Date.")]
+        //[Required(ErrorMessage = "Please Select Amendment Effective Date.")]
         public string? AmmEffDate { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [Required]
+        //[Required]
         public int AmmNo { get; set; }
         public string? TypeOfSave { get; set; }
 
@@ -236,7 +236,7 @@ namespace eTactWeb.DOM.Models
         public string FinFromDate { get; set; }
         public string FinToDate { get; set; }
 
-        [Required]
+        //[Required]
         public string? CustOrderNo { get; set; }
 
         public int DAltQty { get; set; }
@@ -274,13 +274,13 @@ namespace eTactWeb.DOM.Models
         public string? FreightPaidBy { get; set; }
         public bool IN1 { get; set; }
         public string? InsuApplicable { get; set; }
-        [Required(ErrorMessage = "Item Detail grid is required")]
+        //[Required(ErrorMessage = "Item Detail grid is required")]
         public IList<ItemDetail>? ItemDetailGrid { get; set; }
         public IList<TextValue>? ItemNameList { get; set; }
 
         [Column(TypeName = "decimal(10, 2)")]
         public decimal NetTotal { get; set; }
-        [Required]
+        //[Required]
         public string? OrderType { get; set; }
 
         public IList<SelectListItem> OrderTypeList
@@ -313,13 +313,13 @@ namespace eTactWeb.DOM.Models
         public string? SOConfirmDate { get; set; }
         public string? SODate { get; set; }
         public string? SODeliveryDate { get; set; }
-        [Required(ErrorMessage = "SO FOR CAN NOT BE BLANK")]
+        //[Required(ErrorMessage = "SO FOR CAN NOT BE BLANK")]
         public string? SOFor { get; set; }
         public IList<TextValue>? SOForList { get; set; }
         public int SOItemCode { get; set; }
         public int SONo { get; set; }
         public string? SORemark { get; set; }
-        [Required(ErrorMessage = "SO FOR CAN NOT BE BLANK")]
+        //[Required(ErrorMessage = "SO FOR CAN NOT BE BLANK")]
 
         public string? SOType { get; set; }
         public IList<TextValue>? SOTypeList { get; set; }
@@ -350,7 +350,7 @@ namespace eTactWeb.DOM.Models
             get => _UnitRate;
             set => _UnitRate = value;
         }
-        [Required]
+        //[Required]
         public string? WEF { get; set; }
         public int YearCode { get; set; }
 

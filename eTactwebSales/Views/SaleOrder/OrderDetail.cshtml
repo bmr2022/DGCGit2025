@@ -60,7 +60,7 @@
 			</h5>
 		</div>
 		<div class="card-body bg-light pt-0">
-			<div asp-validation-summary="All" class="text-danger pt-1"></div>
+			@* <div asp-validation-summary="All" class="text-danger pt-1"></div> *@
 			<div class="accordion shadow-lg">
 				<div class="accordion-item">
 					<h2 class="accordion-header" id="H_RParameter">
@@ -2625,7 +2625,7 @@
 
 		$('.ItemBtn').click(function () 
 		{
-
+			debugger
 			if ($('#PartCode').prop('selectedIndex') == 0)
 			{
 				AddErrorCls('PartCode');
@@ -2931,6 +2931,7 @@
 				type: "POST",
 				data: { PartCode: PartCode, SeqNo: SeqNo },
 				success: function (data, status, xhr) {
+					debugger
 					if (data == "Duplicate" && (xhr.statusCode == 207 || xhr.responseText == "Duplicate")) {
 						$.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
 					}
@@ -2981,6 +2982,7 @@
 							$('#Excessper').val(obj[0].Excessper);
 							$('#ProjQty1').val(obj[0].ProjQty1);
 							$('#ProjQty2').val(obj[0].ProjQty2);
+							$('#OtherRateCurr').val(obj[0].OtherRateCurr);
 							DelSeqNo = SeqNo;
 							$('#divSaleItemGrid .' + DelSeqNo).remove();
 							if ($('#divSaleItemGrid').children().length == 0) {
@@ -3004,6 +3006,7 @@
 			$('.select2-search__field').focus();
 			// You can perform any additional actions or trigger other events here
 		});
+
 		async function DeleteItemRow(SeqNo) {
 			$.ajax({
 				url: '@Url.Action("DeleteItemRow")',
