@@ -18,7 +18,7 @@ public class HomeController : Controller
 {
     private readonly IDataLogic _IDataLogic;
     private readonly ILogger<HomeController> _logger;
-    private readonly IConfiguration configuration;
+    private readonly IConfiguration _configuration;
     private readonly EncryptDecrypt _EncryptDecrypt;
     private readonly IConnectionStringHelper _connectionStringHelper;
     private readonly UserContextService _userContextService;
@@ -36,7 +36,7 @@ public class HomeController : Controller
     {
         _logger = logger;
         this._IDataLogic = iDataLogic;
-        configuration = config;
+        _configuration = config;
         _EncryptDecrypt = encryptDecrypt;
         _connectionStringHelper = connectionStringHelper;
         _userContextService = userContextService;
@@ -66,7 +66,7 @@ public class HomeController : Controller
 
     public void ChangeConnectionString(string companyName)
     {
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = "Select DISTINCT DataBase_Name from Company_Detail where Company_Name='" + companyName + "'";
@@ -98,7 +98,7 @@ public class HomeController : Controller
     public IActionResult GetBranchName(string companyName)
     {
         ChangeConnectionString(companyName);
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = "Select DISTINCT CC from Company_Detail where Company_Name='" + companyName + "'";
@@ -128,7 +128,7 @@ public class HomeController : Controller
 
     public IActionResult GetYearCode(string branchName, string companyName)
     {
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = "Select DISTINCT Financial_Year from Company_Detail where CC='" + branchName + "' and Company_Name='" + companyName + "' ORDER BY Financial_Year DESC";
@@ -161,7 +161,7 @@ public class HomeController : Controller
     [HttpGet]
     public JsonResult GetCC(string compname)
     {
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = " exec GetId 'Company_Detail','CC', 'Company_Name','" + compname + "'";
@@ -209,8 +209,8 @@ public class HomeController : Controller
         List<LoginModel> catlist = new();
         string connectionstring =
             Tablename == "Store_Master"
-                ? configuration.GetConnectionString("eTactDB")
-                : configuration.GetConnectionString("eTactDB1");
+                ? _configuration.GetConnectionString("eTactDB")
+                : _configuration.GetConnectionString("eTactDB1");
 
         SqlConnection conn = new(connectionstring);
         conn.Open();
@@ -242,12 +242,12 @@ public class HomeController : Controller
     }
     public IActionResult GetServerName()
     {
-        var _configuration = new ConfigurationBuilder()
+        var __configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .Build();
 
         // Retrieve connection string
-        string connectionString = _configuration.GetConnectionString("eTactDB");
+        string connectionString = __configuration.GetConnectionString("eTactDB");
 
         // Extract server name
         string serverName = GetServerNameFromConnectionString(connectionString);
@@ -257,7 +257,7 @@ public class HomeController : Controller
             string lines = serverName; // Split by line breaks
             return Ok(new { Lines = lines });
         }
-        catch (FileNotFoundException)
+        catch (FileNotFoundException ex)
         {
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
@@ -272,7 +272,7 @@ public class HomeController : Controller
     public LoginModel GeteDTRModel()
     {
         var model = new LoginModel();
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = "select company_name from company_detail";
@@ -352,7 +352,7 @@ public class HomeController : Controller
         //string dbNameSql = "SELECT DataBase_Name FROM Company_Detail WHERE Company_Name = @CompanyName";
         //string databaseName = "";
 
-        //using (SqlConnection connDb = new SqlConnection(_configuration.GetConnectionString("eTactDB1")))
+        //using (SqlConnection connDb = new SqlConnection(__configuration.GetConnectionString("eTactDB1")))
         //{
         //    connDb.Open();
         //    using (SqlCommand cmd = new SqlCommand(dbNameSql, connDb))
@@ -815,7 +815,7 @@ public class HomeController : Controller
     }
     public JsonResult GetUnitandBranch(string Company, string servername)
     {
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = "select CC from Company_Detail where Company_Name = '" + Company + "'";
