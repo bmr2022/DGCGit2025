@@ -389,7 +389,7 @@ namespace eTactWeb.Data.DAL
                 {
                     HRLeaveOpeningDetail.Add(new HRLeaveOpeningDetail
                     {
-                        SrNO = Convert.ToInt32(row["SeqNo"].ToString()),
+                        SeqNo = Convert.ToInt32(row["SeqNo"].ToString()),
                         LeaveId = Convert.ToInt32(row["LeaveEntryId"].ToString()),
                         LeaveName = row["LeaveName"].ToString(),
                         LeaveAccrualType = row["LeaveAccrualType"].ToString(),
@@ -404,7 +404,7 @@ namespace eTactWeb.Data.DAL
 
                     });
                 }
-                model.HRLeaveOpeningDetailGrid = HRLeaveOpeningDetail.OrderBy(x => x.SrNO).ToList();
+                model.HRLeaveOpeningDetailGrid = HRLeaveOpeningDetail.OrderBy(x => x.SeqNo).ToList();
             }
             return model;
         }

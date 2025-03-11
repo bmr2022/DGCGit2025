@@ -65,5 +65,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.FillPurchaseRejectionPopUp(DebitNotePurchaseRejection, fromBillDate, toBillDate, itemCode, accountCode, yearCode, showAllBill);
         }
+        public async Task<ResponseResult> FillDetailFromPopupGrid(DataTable model, int itemCode, int popCt)
+        {
+            return await _purchRejDAL.FillDetailFromPopupGrid(model, itemCode, popCt);
+        }
     }
 }

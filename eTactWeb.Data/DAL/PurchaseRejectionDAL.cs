@@ -165,14 +165,15 @@ namespace eTactWeb.Data.DAL
                 {
                     creditNoteAgainstBillGrid.Add(new AccPurchaseRejectionAgainstBillDetail
                     {
-                        //PurchaseRejectionInvoiceNo = row["SchdeliveryDate"]?.ToString(),
-                        //PurchaseRejectionVoucherNo = row["SchdeliveryDate"]?.ToString(),
-                        AgainstSaleBillBillNo = row["AgainstSalebillBillNo"]?.ToString(),
-                        AgainstSaleBillYearCode = row["AgainstSaleBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillYearCode"]) : 0,
-                        AgainstSaleBillDate = row["AgainstSaleBilldate"]?.ToString(),
-                        AgainstSaleBillEntryId = row["AgainstSaleBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillEntryId"]) : 0,
-                        AgainstSaleBillVoucherNo = row["AgainstSalebillVoucherNo"]?.ToString(),
-                        SaleBillType = row["SaleBillTYpe"]?.ToString(),
+                        ////PurchaseRejectionInvoiceNo = row["SchdeliveryDate"]?.ToString(),
+                        ////PurchaseRejectionVoucherNo = row["SchdeliveryDate"]?.ToString(),
+                        
+                        //AgainstSaleBillBillNo = row["AgainstSalebillBillNo"]?.ToString(),
+                        //AgainstSaleBillYearCode = row["AgainstSaleBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillYearCode"]) : 0,
+                        //AgainstSaleBillDate = row["AgainstSaleBilldate"]?.ToString(),
+                        //AgainstSaleBillEntryId = row["AgainstSaleBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillEntryId"]) : 0,
+                        //AgainstSaleBillVoucherNo = row["AgainstSalebillVoucherNo"]?.ToString(),
+                        //SaleBillType = row["SaleBillTYpe"]?.ToString(),
                         AgainstPurchaseBillBillNo = row["AgainstPurchasebillBillNo"]?.ToString(),
                         AgainstPurchaseBillYearCode = row["AgainstPurchaseBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstPurchaseBillYearCode"]) : 0,
                         AgainstPurchaseBillDate = row["AgainstPurchaseBilldate"]?.ToString(),
@@ -180,8 +181,8 @@ namespace eTactWeb.Data.DAL
                         AgainstPurchaseVoucherNo = row["AgainstPurchaseVoucherNo"]?.ToString(),
                         PurchaseBillType = row["PurchaseBilltype"]?.ToString(),
                         ItemCode = row["BillItemCode"] != DBNull.Value ? Convert.ToInt32(row["BillItemCode"]) : 0,
-                        //PartCode = row["SchdeliveryDate"]?.ToString(),
-                        //ItemName = row["BillQty"]?.ToString(),
+                        ////PartCode = row["SchdeliveryDate"]?.ToString(),
+                        ////ItemName = row["BillQty"]?.ToString(),
                         BillQty = row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]) : 0,
                         Unit = row["Unit"]?.ToString(),
                         BillRate = row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]) : 0,
@@ -195,11 +196,11 @@ namespace eTactWeb.Data.DAL
                         POYearCode = row["POYearCode"] != DBNull.Value ? Convert.ToInt32(row["POYearCode"]) : 0,
                         PoRate = row["PoRate"] != DBNull.Value ? Convert.ToInt32(row["PoRate"]) : 0,
                         PoAmmNo = row["poammno"]?.ToString(),
-                        SONO = row["SONO"]?.ToString(),
-                        SOYearCode = row["SOYearcode"] != DBNull.Value ? Convert.ToInt32(row["SOYearcode"]) : 0,
-                        SODate = row["SODate"]?.ToString(),
-                        CustOrderNo = row["CustOrderNo"]?.ToString(),
-                        SOEntryId = row["SOEntryId"] != DBNull.Value ? Convert.ToInt32(row["SOEntryId"]) : 0,
+                        //SONO = row["SONO"]?.ToString(),
+                        //SOYearCode = row["SOYearcode"] != DBNull.Value ? Convert.ToInt32(row["SOYearcode"]) : 0,
+                        //SODate = row["SODate"]?.ToString(),
+                        //CustOrderNo = row["CustOrderNo"]?.ToString(),
+                        //SOEntryId = row["SOEntryId"] != DBNull.Value ? Convert.ToInt32(row["SOEntryId"]) : 0,
                         BatchNo = row["BatchNo"]?.ToString(),
                         UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
                         AltQty = row["AltQty"] != DBNull.Value ? Convert.ToInt32(row["AltQty"]) : 0,
@@ -511,6 +512,27 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@showAllBills", showAllBill));
                 SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", yearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillDetailFromPopupGrid(DataTable model, int itemCode, int popCt)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillDetailFrompopupGrid"));
+                SqlParams.Add(new SqlParameter("@dtAgaintBillNo", model));
+                SqlParams.Add(new SqlParameter("@itemcode", itemCode));
+                //SqlParams.Add(new SqlParameter("@popCt", popCt));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPPurchaseRejectionMainDetail", SqlParams);
             }
             catch (Exception ex)
             {

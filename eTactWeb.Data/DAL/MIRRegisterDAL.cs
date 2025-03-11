@@ -180,6 +180,28 @@ namespace eTactWeb.Data.DAL
                                                        }).ToList();
                         }
                     }
+                } 
+                else if (ReportType == "vendorItemRejectionSummary")
+                {
+                    {
+                        if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                        {
+                            model.MIRRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                       select new MIRRegisterDetail
+                                                       {
+                                                           VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? "" : dr["VendorName"].ToString(),
+                                                           PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
+                                                           ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
+                                                            AcceptedQty = Convert.ToDecimal(dr["AcceptedQty"].ToString()),
+                                                           RejectedQty = Convert.ToDecimal(dr["RejectedQty"].ToString()),
+                                                           HoldQty = Convert.ToDecimal(dr["HoldQty"].ToString()),
+                                                           Reworkqty = Convert.ToDecimal(dr["ReworkQty"].ToString()),
+                                                           BillQty = Convert.ToDecimal(dr["BillQty"].ToString()),
+                                                           RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
+                                                           Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),
+                                                       }).ToList();
+                        }
+                    }
                 }
                 else if (ReportType.ToString().ToUpper() == "vendorWiseConsolidated".ToUpper())
                 {
@@ -277,56 +299,80 @@ namespace eTactWeb.Data.DAL
                         model.MIRRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                    select new MIRRegisterDetail
                                                    {
-                                                            GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(),
-                                                             MRNNo = string.IsNullOrEmpty(dr["MRNNO"].ToString()) ? "" : dr["MRNNO"].ToString(),
-                                                            MRNDate = string.IsNullOrEmpty(dr["MRNDate"].ToString()) ? "" : dr["MRNDate"].ToString(),
-                                                            VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? "" : dr["VendorName"].ToString(),
-                                                            InvoiceNo = string.IsNullOrEmpty(dr["Invoiceno"].ToString()) ? "" : dr["Invoiceno"].ToString(),
-                                                            InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? "" : dr["InvoiceDate"].ToString(),
-                                                             MRNType = string.IsNullOrEmpty(dr["MRNTypes"].ToString()) ? "" : dr["MRNTypes"].ToString(),
-                                                            QCCompleted = string.IsNullOrEmpty(dr["QCCompleted"].ToString()) ? "" : dr["QCCompleted"].ToString(),
-                                                            TotalBillQty = Convert.ToDecimal(dr["BillQty"].ToString()),
-                                                            RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
-                                                             TotalAmt = Convert.ToDecimal(dr["TotalAmt"].ToString()),
-                                                            PurchaseBillPosted = string.IsNullOrEmpty(dr["PurchaseBillPosted"].ToString()) ? "" : dr["PurchaseBillPosted"].ToString(),
-                                                     }).ToList();
+                                                       //GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(),
+                                                       // MRNNo = string.IsNullOrEmpty(dr["MRNNO"].ToString()) ? "" : dr["MRNNO"].ToString(),
+                                                       //MRNDate = string.IsNullOrEmpty(dr["MRNDate"].ToString()) ? "" : dr["MRNDate"].ToString(),
+                                                       //VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? "" : dr["VendorName"].ToString(),
+                                                       //InvoiceNo = string.IsNullOrEmpty(dr["Invoiceno"].ToString()) ? "" : dr["Invoiceno"].ToString(),
+                                                       //InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? "" : dr["InvoiceDate"].ToString(),
+                                                       // MRNType = string.IsNullOrEmpty(dr["MRNTypes"].ToString()) ? "" : dr["MRNTypes"].ToString(),
+                                                       //QCCompleted = string.IsNullOrEmpty(dr["QCCompleted"].ToString()) ? "" : dr["QCCompleted"].ToString(),
+                                                       //TotalBillQty = Convert.ToDecimal(dr["BillQty"].ToString()),
+                                                       //RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
+                                                       // TotalAmt = Convert.ToDecimal(dr["TotalAmt"].ToString()),
+                                                       //PurchaseBillPosted = string.IsNullOrEmpty(dr["PurchaseBillPosted"].ToString()) ? "" : dr["PurchaseBillPosted"].ToString(),
+
+                                                       EntryDate = dr["EntryDate"] == DBNull.Value ? "" : dr["EntryDate"].ToString(),
+                                                       NoOfMRN = dr["NoOfMRN"] == DBNull.Value ? 0 : Convert.ToInt32(dr["NoOfMRN"]),
+                                                       MRNITEM = dr["MRNITEM"] == DBNull.Value ? 0 : Convert.ToInt32(dr["MRNITEM"]),
+                                                       NoOfQC = dr["NOOOFQC"] == DBNull.Value ? 0 : Convert.ToInt32(dr["NOOOFQC"]),
+                                                       MIRITEM = dr["MIRITEM"] == DBNull.Value ? 0 : Convert.ToInt32(dr["MIRITEM"]),
+                                                       PendMRNForQC = dr["PendMRNForQC"] == DBNull.Value ? 0 : Convert.ToInt32(dr["PendMRNForQC"]),
+                                                       PendItemForQC = dr["PendItemForQC"] == DBNull.Value ? 0 : Convert.ToInt32(dr["PendItemForQC"]),
+                                                       TotalMRNPending = dr["TotalMRNPendimng"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TotalMRNPendimng"]),
+                                                       TotalItemPending = dr["TotalItemPending"] == DBNull.Value ? 0 : Convert.ToInt32(dr["TotalItemPending"])
+
+                                                   }).ToList();
                     }
                 }
-                else if (ReportType.ToString().ToUpper() == "PENDMRNFORQC(DEATIL)") //done&working
+                else if (ReportType == "PENDMRNFORQC(Detail)") //done&working
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                     {
                         model.MIRRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                    select new MIRRegisterDetail
                                                    {
-                                                       GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(), 
-                                                       MRNNo = string.IsNullOrEmpty(dr["MRNNO"].ToString()) ? "" : dr["MRNNO"].ToString(),
-                                                       MRNDate = string.IsNullOrEmpty(dr["MRNDate"].ToString()) ? "" : dr["MRNDate"].ToString(),
-                                                       VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? "" : dr["VendorName"].ToString(),
-                                                       InvoiceNo = string.IsNullOrEmpty(dr["Invoiceno"].ToString()) ? "" : dr["Invoiceno"].ToString(),
-                                                       InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? "" : dr["InvoiceDate"].ToString(),
-                                                       DocNo = string.IsNullOrEmpty(dr["DocName"].ToString()) ? "" : dr["DocName"].ToString(),
-                                                       PartCode = string.IsNullOrEmpty(dr["partcode"].ToString()) ? "" : dr["partcode"].ToString(),
-                                                       ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
-                                                       PONo = string.IsNullOrEmpty(dr["PONO"].ToString()) ? "" : dr["PONO"].ToString(),
-                                                       PODate = string.IsNullOrEmpty(dr["PoDate"].ToString()) ? "" : dr["PoDate"].ToString(),
-                                                       POType = string.IsNullOrEmpty(dr["PoType"].ToString()) ? "" : dr["PoType"].ToString(),
-                                                       SchNo = string.IsNullOrEmpty(dr["SchNo"].ToString()) ? "" : dr["SchNo"].ToString(),
-                                                       SchDate = string.IsNullOrEmpty(dr["Schdate"].ToString()) ? "" : dr["Schdate"].ToString(),
-                                                       DepName = string.IsNullOrEmpty(dr["DocName"].ToString()) ? "" : dr["DocName"].ToString(),
+                                                       //GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(), 
+                                                       //MRNNo = string.IsNullOrEmpty(dr["MRNNO"].ToString()) ? "" : dr["MRNNO"].ToString(),
+                                                       //MRNDate = string.IsNullOrEmpty(dr["MRNDate"].ToString()) ? "" : dr["MRNDate"].ToString(),
+                                                       //VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? "" : dr["VendorName"].ToString(),
+                                                       //InvoiceNo = string.IsNullOrEmpty(dr["Invoiceno"].ToString()) ? "" : dr["Invoiceno"].ToString(),
+                                                       //InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? "" : dr["InvoiceDate"].ToString(),
+                                                       //DocNo = string.IsNullOrEmpty(dr["DocName"].ToString()) ? "" : dr["DocName"].ToString(),
+                                                       //PartCode = string.IsNullOrEmpty(dr["partcode"].ToString()) ? "" : dr["partcode"].ToString(),
+                                                       //ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
+                                                       //PONo = string.IsNullOrEmpty(dr["PONO"].ToString()) ? "" : dr["PONO"].ToString(),
+                                                       //PODate = string.IsNullOrEmpty(dr["PoDate"].ToString()) ? "" : dr["PoDate"].ToString(),
+                                                       //POType = string.IsNullOrEmpty(dr["PoType"].ToString()) ? "" : dr["PoType"].ToString(),
+                                                       //SchNo = string.IsNullOrEmpty(dr["SchNo"].ToString()) ? "" : dr["SchNo"].ToString(),
+                                                       //SchDate = string.IsNullOrEmpty(dr["Schdate"].ToString()) ? "" : dr["Schdate"].ToString(),
+                                                       //DepName = string.IsNullOrEmpty(dr["DocName"].ToString()) ? "" : dr["DocName"].ToString(),
 
-                                                       MRNType = string.IsNullOrEmpty(dr["MRNTypes"].ToString()) ? "" : dr["MRNTypes"].ToString(),
-                                                       QCCompleted = string.IsNullOrEmpty(dr["QCCompleted"].ToString()) ? "" : dr["QCCompleted"].ToString(),
-                                                       Rate = Convert.ToDecimal(dr["Rate"].ToString()),
-                                                       TotalBillQty = Convert.ToDecimal(dr["BillQty"].ToString()),
-                                                       TotalAmt = Convert.ToDecimal(dr["ItemAmount"].ToString()),
+                                                       //MRNType = string.IsNullOrEmpty(dr["MRNTypes"].ToString()) ? "" : dr["MRNTypes"].ToString(),
+                                                       //QCCompleted = string.IsNullOrEmpty(dr["QCCompleted"].ToString()) ? "" : dr["QCCompleted"].ToString(),
+                                                       //Rate = Convert.ToDecimal(dr["Rate"].ToString()),
+                                                       //TotalBillQty = Convert.ToDecimal(dr["BillQty"].ToString()),
+                                                       //TotalAmt = Convert.ToDecimal(dr["ItemAmount"].ToString()),
 
-                                                       RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
-                                                        Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),
-                                                       AltAcceptedQty = Convert.ToDecimal(dr["AltRecQty"].ToString()),
-                                                       AltUnit = string.IsNullOrEmpty(dr["AltUnit"].ToString()) ? "" : dr["AltUnit"].ToString(),
-                                                       PurchaseBillPosted = string.IsNullOrEmpty(dr["PurchaseBillPosted"].ToString()) ? "" : dr["PurchaseBillPosted"].ToString(),
-                                                   
+                                                       //RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
+                                                       // Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),
+                                                       //AltAcceptedQty = Convert.ToDecimal(dr["AltRecQty"].ToString()),
+                                                       //AltUnit = string.IsNullOrEmpty(dr["AltUnit"].ToString()) ? "" : dr["AltUnit"].ToString(),
+                                                       //PurchaseBillPosted = string.IsNullOrEmpty(dr["PurchaseBillPosted"].ToString()) ? "" : dr["PurchaseBillPosted"].ToString(),
+                                                       VendorName = dr["VendorName"] == DBNull.Value ? "" : dr["VendorName"].ToString(),
+                                                       MRNNo = dr["MRNNo"] == DBNull.Value ? "" : dr["MRNNo"].ToString(),
+                                                       EntryDate = dr["MRNEntryDate"] == DBNull.Value ? "" : Convert.ToDateTime(dr["MRNEntryDate"]).ToString("dd/MM/yyyy"),
+                                                       InvoiceNo = dr["InvNo"] == DBNull.Value ? "" : dr["InvNo"].ToString(),
+                                                       InvoiceDate = dr["InvDate"] == DBNull.Value ? "" : Convert.ToDateTime(dr["InvDate"]).ToString("dd/MM/yyyy"),
+                                                       PartCode = dr["PartCode"] == DBNull.Value ? "" : dr["PartCode"].ToString(),
+                                                       ItemName = dr["ItemName"] == DBNull.Value ? "" : dr["ItemName"].ToString(),
+                                                       BillQty = dr["BillQty"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["BillQty"]),
+                                                       RecQty = dr["RecQty"] == DBNull.Value ? 0 : Convert.ToDecimal(dr["RecQty"]),
+                                                       Unit = dr["Unit"] == DBNull.Value ? "" : dr["Unit"].ToString(),
+                                                       GateNo = dr["GateNo"] == DBNull.Value ? "" : dr["GateNo"].ToString(),
+                                                       DocumentType = dr["DocumentType"] == DBNull.Value ? "" : dr["DocumentType"].ToString(),
+                                                       State = dr["State"] == DBNull.Value ? "" : dr["State"].ToString()
+
                                                    }).ToList();
                     }
                 }
@@ -367,6 +413,7 @@ namespace eTactWeb.Data.DAL
                                                    }).ToList();
                     }
                 }
+
             }
             catch (Exception ex)
             {

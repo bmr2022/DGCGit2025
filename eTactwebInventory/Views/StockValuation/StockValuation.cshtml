@@ -29,6 +29,7 @@
                             <div class="row">
                                 @* <input type="hidden" value="@Model.YearCode" asp-for="YearCode" />
                                 <input type="hidden" value="@Model.Storeid" asp-for="Storeid" /> *@
+                               <input type="hidden" value="@Model.CurrentDate"  />
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <div class="row">
                                         <div class="col">
@@ -42,18 +43,34 @@
                                     </div>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="StoreName" class="form-label">Store Name</label>
-                                    <select asp-for="StoreName" class="form-select">
-                                        <option value="@Model.StoreId">-Select-</option>
-                                    </select>
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
                                         <option value="">-Select-</option>
                                         <option selected value="BatchWise Stock Valuation">BatchWise Stock Valuation</option>
                                         <option value="BatchWise Stock+WIP Valuation">BatchWise Stock+WIP Valuation</option>
                                         <option value="BatchWise WIP Valuation">BatchWise WIP Valuation</option>
+                                        <option value="Stock Valuation">Stock Valuation</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="StoreName" class="form-label" style="color:red">Store Name*</label>
+                                    <select asp-for="StoreName" class="form-select">
+                                        <option value="@Model.StoreId">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">Part Code</label>
+                                    <input type="hidden" asp-for="@Model.ItemCode" />
+                                    <select asp-for="PartCode" class="form-select">
+                                        <option value="@Model.ItemCode">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label">Item Name</label>
+                                    <input type="hidden" asp-for="@Model.ItemCode" />
+                                    <select asp-for="ItemName" class="form-select">
+                                        <option value="@Model.ItemCode">-Select-</option>
                                     </select>
                                 </div>
                                 @* <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -67,7 +84,7 @@
 
                                 <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
 
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetStandardDetailsData();">
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="SearchStockValuation();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                     </button>
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
@@ -100,11 +117,18 @@
                                             <div class="d-flex justify-content-end mt-2 ">
 
                                                 <div class="d-flex justify-content-end mt-2">
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:100px;">
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:130px;">
+                                                        <label class="form-label">Total Opening Value</label>
+                                                        <input id="totOpeningValue" class="form-control" readonly />
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex justify-content-end mt-2">
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:100px;margin-left:10px;">
                                                         <label class="form-label">Rec Qty</label>
                                                         <input id="totResQty" class="form-control" readonly />
                                                     </div>
                                                 </div>
+
                                                 <div class="d-flex justify-content-end mt-2">
                                                     <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:100px;margin-left:10px;">
                                                         <label class="form-label">Total Issue Qty</label>
@@ -147,40 +171,111 @@
 
         $(document).ready(function () {
             console.log("Ready");
-            // GetServerDate();
 
+            function applyBackgroundColor() {
+                debugger
+                var reportType = $('#ReportType').val(); 
+
+                $("#divStockRegisterBody tr").each(function () {
+                    if (reportType == "BatchWise Stock Valuation") {
+                        $(this).css("background-color", "#e6ffe6"); 
+                    }
+                    else if (reportType == "BatchWise Stock+WIP Valuation") {
+                        $(this).css("background-color", "#fff0b3"); 
+                    }
+                    else if (reportType == "BatchWise WIP Valuation") {
+                        $(this).css("background-color", "#ffe6ff"); 
+                    }
+                    else if (reportType == "Stock Valuation") {
+                        $(this).css("background-color", "#c2f0c2"); 
+                    }
+                    else {
+                        $(this).css("background-color", "antiquewhite"); 
+                    }
+                });
+            }
+
+            
+            $(document).on('click', '#divStockRegisterBody tr', function () {
+               
+                $("#divStockRegisterBody tr").each(function () {
+                    var reportType = $('#ReportType').val();
+
+                    if (reportType == "BatchWise Stock Valuation") {
+                        $(this).css("background-color", "#e6ffe6"); // Light Green
+                    }
+                    else if (reportType == "BatchWise Stock+WIP Valuation") {
+                        $(this).css("background-color", "#fff0b3"); // Light Yellow
+                    }
+                    else if (reportType == "BatchWise WIP Valuation") {
+                        $(this).css("background-color", "#ffe6ff"); // Light Pink
+                    }
+                    else if (reportType == "Stock Valuation") {
+                        $(this).css("background-color", "#c2f0c2"); // Green Shade
+                    }
+                    else {
+                        $(this).css("background-color", "antiquewhite"); // Default
+                    }
+                });
+
+              
+                $(this).css({ 'background-color': '#00bcd4' });
+
+               
+               
+            });
+
+          
+            $('#ReportType').change(function () {
+               // applyBackgroundColor();
+            });
+
+            
+            applyBackgroundColor();
+            // GetServerDate();
+            debugger
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#CurrentDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", 'now');
             $('#StoreName').select2();
             $('#ReportType').select2();
+            $('#ItemName').select2();
+            $('#PartCode').select2();
             //$('#VoucherType').select2();
 
            
             FillStoreName();
-            //FillVoucherName();
-            // if ($('#StoreName').val() === "") { // Assuming an input field for Center Name
-            //     $.notify("Store Name is required.", "warn");
-            // }
-            if ($('#ReportType').val() === "BatchWise Stock Valuation") { // Assuming an input field for Center Name
-                if ($('#StoreName').val() === "") { // Assuming an input field for Center Name
-                    $.notify("Store Name is required.", "warn");
-                }
+            FillItemName();
+            FillPartCode();
+
+        });
+       
+        function SearchStockValuation() {
+            var storeName = $('#StoreName').val();
+
+            if (storeName == "" || storeName == null) {
+                $.notify("Store Name is required!", "error"); 
+                return false; 
             }
+            GetStockValuationDetailsData();
+        }
+        $('#ItemName').change(function () {
+                $('#ItemCode').val($('#ItemName').val());
         });
-        $('#StoreName').change(function () {
-            GetStockValuationDetailsData();// Call details function when StoreName is selected
-        }); $('#ReportType').change(function () {
-            GetStockValuationDetailsData();// Call details function when StoreName is selected
+        $('#PartCode').change(function () {
+            $('#ItemCode').val($('#PartCode').val());
         });
+
         function selection(CurrentRow) {
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
-
+       
         function FillStoreName() {
+            debugger
             var FromDate = $('#FromDate').val();
             var CurrentDate = $('#ToDate').val();
             $.ajax({
@@ -200,7 +295,7 @@
 
                     $.each(obj.Result, function (index, store) {
 
-                        storeNameDropdown.append('<option value="' + store.StoreId + '">' + store.Store_Name + '</option>');
+                        storeNameDropdown.append('<option  value="' + store.StoreId + '">' + store.Store_Name + '</option>');
                     });
 
                 },
@@ -210,15 +305,110 @@
             });
 
         }
+        function FillItemName() {
+            var FromDate = $('#FromDate').val();
+            var CurrentDate = $('#ToDate').val();
+            $.ajax({
+                url: '@Url.Action("FillItemName", "StockValuation")',
+                type: 'GET',
+                async: false,
+                data: {
+                    FromDate: FromDate,
+                    CurrentDate: CurrentDate
+                },
+                success: function (response, status, error) {
 
+                    var ItemNameDropdown = $('#ItemName');
+                    var obj = $.parseJSON(response);
+                    ItemNameDropdown.empty();
+                    ItemNameDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, Item) {
+
+                        ItemNameDropdown.append('<option value="' + Item.Item_code + '">' + Item.ItemName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+        }
+        function FillPartCode() {
+            var FromDate = $('#FromDate').val();
+            var CurrentDate = $('#ToDate').val();
+            $.ajax({
+                url: '@Url.Action("FillPartCode", "StockValuation")',
+                type: 'GET',
+                async: false,
+                data: {
+                    FromDate: FromDate,
+                    CurrentDate: CurrentDate
+                },
+                success: function (response, status, error) {
+
+                    var PartCodeDropdown = $('#PartCode');
+                    var obj = $.parseJSON(response);
+                    PartCodeDropdown.empty();
+                    PartCodeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, PartCode) {
+
+                        PartCodeDropdown.append('<option value="' + PartCode.Item_code + '">' + PartCode.PartCode + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+        }
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ItemName') {
+                RMItemNameChange(cntId);
+            }
+            else {
+                RMPartCodeChange(cntId);
+            }
+        });
+
+        function RMItemNameChange(ID) {
+            RMSetPartCodeItemName(ID);
+        }
+
+        function RMPartCodeChange(ID) {
+            $.when(RMSetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function RMSetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
 
         function GetStockValuationDetailsData() {
-             
+             debugger
             //var reportType = $('#ReportType').val();
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var StoreId = $('#StoreName').val();
             var ReportType = $('#ReportType').val();
+            var CurrentDate = $('#CurrentDate').val();
+            var ItemCode = $('#ItemCode').val();
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("GetStockValuationDetailsData", "StockValuation")",
@@ -226,13 +416,16 @@
                     FromDate: FromDate,
                     ToDate: ToDate,
                     StoreId: StoreId,
-                    ReportType: ReportType
+                    ReportType: ReportType,
+                    CurrentDate: CurrentDate,
+                    ItemCode: ItemCode
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
 
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
+                    
                     countAllTotal();
                 },
                 error: function (xhr, status, error) {
@@ -264,19 +457,21 @@
         }
 
         function countAllTotal() {
-             
+             debugger
             var rowCount = $('#divStockRegisterBody tr').length;
 
             var TotResQty = 0;
             var TotIssueQty = 0;
             var TotClosingStockQty = 0;
             var TotClosingValQty = 0;
+            var TotOpeningValQty = 0;
             for (var i = 1; i <= rowCount; i++) {
                  
                 TotResQty += $('#totRecQtyG-' + i).text() == '' ? 0 : parseFloat($('#totRecQtyG-' + i).text());
                 TotIssueQty += $('#totIssueQtyG-' + i).text() == '' ? 0 : parseFloat($('#totIssueQtyG-' + i).text());
                 TotClosingStockQty += $('#totClosingStockG-' + i).text() == '' ? 0 : parseFloat($('#totClosingStockG-' + i).text());
                 TotClosingValQty += $('#totClosingValG-' + i).text() == '' ? 0 : parseFloat($('#totClosingValG-' + i).text());
+                TotOpeningValQty += $('#totOpeningValueG-' + i).text() == '' ? 0 : parseFloat($('#totOpeningValueG-' + i).text());
                 //if(totAmount < 0){
                 //    $('#SAGridRow-' + i).css('background-color', 'red');
                 //}
@@ -285,6 +480,7 @@
             $('#totIssueQty').val(isNaN(TotIssueQty) ? 0 : TotIssueQty.toFixed(2));
             $('#totClosingStock').val(isNaN(TotClosingStockQty) ? 0 : TotClosingStockQty.toFixed(2));
             $('#totClosingVal').val(isNaN(TotClosingValQty) ? 0 : TotClosingValQty.toFixed(2));
+            $('#totOpeningValue').val(isNaN(TotOpeningValQty) ? 0 : TotOpeningValQty.toFixed(2));
         }
         function getFirstDayOfMonth(dateString) {
             const [day, month, year] = dateString.split('/');
@@ -313,7 +509,8 @@
         });
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
-            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var month = monthNames[date.getMonth()];
             var year = date.getFullYear();
             var dateString = day + "/" + month + "/" + year;
             return dateString;
@@ -451,6 +648,11 @@
     .descCol {
         font-size: 15px;
         vertical-align: super;
+    }
+
+    .selected-row {
+        background-color: #00bcd4 !important;
+        color: #fff;
     }
 
 </style>

@@ -19,7 +19,7 @@
                 <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
             </tr>
         </thead>
-        <tbody id="divStockRegisterBody">
+        <tbody id="divStockRegisterBody" >
             @{
                 var @Cntr = 0;
                 if (Model.StockValuationGrid == null)
@@ -32,7 +32,7 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="@Cntr" onclick="selection(this)">
+                        <tr id="@Cntr" onclick="selection(this)" style="background-color:#e6ffe6 !important">
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">

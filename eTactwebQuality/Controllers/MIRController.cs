@@ -348,7 +348,7 @@ namespace eTactWeb.Controllers
             MIRGrid.Columns.Add("Rate", typeof(decimal));
             MIRGrid.Columns.Add("rateinother", typeof(decimal));
             MIRGrid.Columns.Add("PODate", typeof(DateTime));
-            MIRGrid.Columns.Add("ItemColor", typeof(string));
+           // MIRGrid.Columns.Add("ItemColor", typeof(string));
             MIRGrid.Columns.Add("FilePath", typeof(string));
             MIRGrid.Columns.Add("MRNNO", typeof(string));
             MIRGrid.Columns.Add("MRNYearCode", typeof(int));
@@ -397,7 +397,7 @@ namespace eTactWeb.Controllers
                     Item.Rate == 0?0:Item.Rate,
                     Item.RateInOtherCurr == 0 ? 0 :Item.RateInOtherCurr,
                     DateTime.Today,
-                    Item.Itemcolor,
+                   // Item.Itemcolor,
                     Item.PathOfFileURL??"",
                     Item.MRNNo ?? "",
                     Item.MRNYearCode == 0 ? 0 : Item.MRNYearCode,

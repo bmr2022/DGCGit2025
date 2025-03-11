@@ -34,7 +34,7 @@ namespace eTactWeb.DOM.Models
         public decimal WIPClosingStock { get; set; }
         public int RMItemCode { get; set; }
         public string ReportType { get; set; }
-
+        public int YearCode { get; set; }
         public decimal RecFromMRN { get; set; }
         public decimal RecFromJW { get; set; }
         public decimal ReturnFromShopFloor { get; set; }

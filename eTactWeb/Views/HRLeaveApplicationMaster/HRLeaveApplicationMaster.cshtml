@@ -1,24 +1,24 @@
-﻿ @model eTactWeb.DOM.Models.HRLeaveOpeningMasterModel
+﻿ @model eTactWeb.DOM.Models.HRLeaveApplicationMasterModel
 
 @{
-    ViewData["Title"] = "LeaveOpening";
+    ViewData["Title"] = "Leave Application";
 
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="HRLeaveOpeningMaster" autocomplete="off" class="form-horizontal">
+    <form asp-action="HRLeaveApplicationMaster" autocomplete="off" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
-                <strong>Leave Opening Master</strong>
+                <strong>Leave Application Master</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="HRLeaveOpeningMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="HRLeaveApplicationMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
                     <div class="row justify-content-between g-2">
                         <div class="col-auto">
-                           
+
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -63,76 +63,73 @@
                 </span>
             </h5>
         </div>
-       
+
         <div class="card-body bg-light mt-0 ">
             @*<div asp-validation-summary="All" class="text-danger pt-1"></div>*@
             <div class="accordion shadow-lg">
-              <div class="accordion-item" id="GI_Grid">
-                <h2 class="accordion-header" id="H_RParameter">
-                    @* <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter"
-                    aria-expanded="true" aria-controls="B_RParameter">
-                    *@
-                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter"
-                            aria-expanded="true" aria-controls="B_RParameter">
-                        @*  <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i> *@
-                        <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
-                           style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
-                        Required Parameter
-                    </button>
-                </h2>
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
 
-                @*   <h2 class="accordion-header" id="H_SAGrid">
-                <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid"
-                aria-expanded="true" aria-controls="B_SAGrid">
-                <strong style="text-transform:uppercase">
-                <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
-                style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Job Work Issue Grid
-                </strong>
-                </button>
-                </h2> *@
-                <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
-                    <div class="accordion-body">
-                        <div class="row g-2 gx-3">
-                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
-
-                                @* <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">*@
-                               
-                                <input type="hidden" asp-for="Mode" value="@Model.Mode" />
-                                
-                                <label asp-for="LeaveOpnEntryId" class="form-label" style="color: blue;">Entry Id</label>
-                                <input asp-for="LeaveOpnEntryId " class="form-control"  readonly />
-                            </div>
-                            @*<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">*@
-                            @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"> *@
-                            @*   <div class="col-xl-1 col-lg-5 col-md-5 col-sm-12 col-xs-12"> *@
-                            <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter"
+                                aria-expanded="true" aria-controls="B_RParameter">
+                            @*  <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i> *@
+                            <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
+                               style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
 
 
-                                <label asp-for="LeaveOpnYearCode" class="form-label" style="color: blue;">Year Code</label>
-                                <input asp-for="LeaveOpnYearCode " class="form-control" value="@Model.LeaveOpnYearCode" readonly />
-                            </div>
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                <label asp-for="EntryDate" class="form-label" style="color: blue;">Entry Date</label>
-                                <input asp-for="EntryDate " class="form-control" readonly />
-                            </div>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
 
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px">
+                                    <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+
+                                    <label asp-for="LeaveAppEntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="LeaveAppEntryId " class="form-control" readonly />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
+                                    <label asp-for="LeaveAppYearCode" class="form-label">Year Code</label>
+                                    <input asp-for="LeaveAppYearCode " class="form-control" value="@Model.LeaveAppYearCode" readonly />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BranchCC" class="form-label">BranchCC</label>
+                                    <input asp-for="BranchCC " class="form-control" readonly />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LeaveAppEntryDate" class="form-label">Entry Date</label>
+                                    <input asp-for="LeaveAppEntryDate " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ApplicationNo" class="form-label">Application No</label>
+                                    <input asp-for="ApplicationNo " class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ApplicationDate" class="form-label">App.uyt Date</label>
+                                    <input asp-for="ApplicationDate " class="form-control" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="EmpName" class="form-label">Employee<span><label class="mandatoryField">*</label></span>  </label>
-                                <input asp-for="EmpId" class="form-control" type="hidden" value="@Model.EmpId" />
-                                <select asp-for="EmpName" class="form-control" >
-                                    @* <option value="@Model.AccountCode">-Select-</option> *@
-                                    <option value="@Model.EmpId">-Select-</option>
-                                    @if (Model.Mode == "U" || Model.Mode == "V")
-                                    {
-                                        <option value="@Model.EmpId" selected>@Model.EmpName</option>
-                                    }
-                                </select>
-                            </div>
-
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:180px">
+                                    <input asp-for="EmpId" class="form-control" type="hidden" value="@Model.EmpId" />
+                                    <select asp-for="EmpName" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.EmpId">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.EmpId" selected>@Model.EmpName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="EmpCode" class="form-label">EmpCode <span><label class="mandatoryField">*</label></span> </label>
-                                   
-                                    <select asp-for="EmpCode" class="form-control" >
+
+                                    <select asp-for="EmpCode" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.EmpId">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
@@ -141,46 +138,111 @@
                                         }
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:180px">
-                                <label asp-for="Designation" class="form-label">Designation  </label>
-                                    <input asp-for="DesignationId" class="form-control" type="hidden" value="@Model.DesignationId" />
-                                    <input asp-for="Designation" class="form-control" type="text" readonly value="@Model.Designation"  />
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MobileNo" class="form-label">MobileNo</label>
+                                    <input asp-for="MobileNo " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PhoneNo" class="form-label">PhoneNo</label>
+                                    <input asp-for="PhoneNo " class="form-control numbers" />
+                                </div>
 
                                
-                            </div>
-
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:180px">
-                                <label asp-for="Department" class="form-label">Department  </label>
-                                    <input asp-for="DeptId" class="form-control" type="hidden" value="@Model.DeptId" />
-                                    <input asp-for="Department" class="form-control" type="text" readonly value="@Model.Department"  />
-                                
-                            </div>
-
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none">
-                                    <label asp-for="EntryByMachine" class="form-label">Department  </label>
-                                    <input asp-for="EntryByMachine" class="form-control" type="text" value="@Environment.MachineName" />
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Designation" class="form-label">Designation  </label>
+                                    <input asp-for="desigEntryId" class="form-control" type="hidden" value="@Model.desigEntryId" />
+                                    <input asp-for="Designation" class="form-control" type="text" readonly value="@Model.Designation" />
 
                                 </div>
 
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="EmpCategory" class="form-label">Employee Category  </label>
+                                    <input asp-for="CategoryId" class="form-control" type="hidden" value="@Model.CategoryId" />
+                                    <input asp-for="EmpCategory" class="form-control" type="text" readonly value="@Model.EmpCategory" />
+
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Department" class="form-label">Department  </label>
+                                    <input asp-for="DeptId" class="form-control" type="hidden" value="@Model.DeptId" />
+                                    <input asp-for="Department" class="form-control" type="text" readonly value="@Model.Department" />
+
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Shift" class="form-label">Shift<span><label class="mandatoryField">*</label></span>  </label>
-                                <input asp-for="ShiftId" class="form-control" type="hidden" value="@Model.ShiftId" />
-                                    <select asp-for="Shift" class="form-control" >
-                                    @* <option value="@Model.AccountCode">-Select-</option> *@
-                                    <option value="@Model.ShiftId">-Select-</option>
-                                    @if (Model.Mode == "U" || Model.Mode == "V")
-                                    {
-                                        <option value="@Model.ShiftId" selected>@Model.Shift</option>
-                                    }
-                                </select>
+                                    <input asp-for="ShiftId" class="form-control" type="hidden" value="@Model.ShiftId" />
+                                    <select asp-for="Shift" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.ShiftId">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.ShiftId" selected>@Model.Shift</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalYearlyLeave" class="form-label">TotalYearlyLeave</label>
+                                    <input asp-for="TotalYearlyLeave " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalMonthlyLeave" class="form-label">TotalMonthlyLeave</label>
+                                    <input asp-for="TotalMonthlyLeave " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="GrossSalary" class="form-label">GrossSalary</label>
+                                    <input asp-for="GrossSalary " class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BalanceMonthlyLeave" class="form-label">Balance Monthly Leave</label>
+                                    <input asp-for="BalanceMonthlyLeave " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MaxAllowedLeave" class="form-label">Max Allowed Leave</label>
+                                    <input asp-for="MaxAllowedLeave " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TraineePermanent" class="form-label">Trainee Permanent</label>
+                                    <input asp-for="TraineePermanent " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BalanceAdvanceAmt" class="form-label">Balance Advance Amt</label>
+                                    <input asp-for="BalanceAdvanceAmt " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="DepartHeadApprovedBy" class="form-label">DepartHeadApprovedBy</label>
+                                    <input asp-for="DepartHeadApprovedBy " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="HRApprovedBy" class="form-label">HRApprovedBy</label>
+                                    <input asp-for="HRApprovedBy " class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="DepartAppdate" class="form-label">DepartAppdate</label>
+                                    <input asp-for="DepartAppdate " class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="HRAppDate" class="form-label">HRAppDate</label>
+                                    <input asp-for="HRAppDate " class="form-control" />
+                                </div>
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Approved" class="form-label">Approved</label>
+                                    <input asp-for="Approved " class="form-control" />
+                                </div>
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Canceled" class="form-label">Canceled</label>
+                                    <input asp-for="Canceled " class="form-control" />
+                                </div>
+
+
+
+
+                                @* </div>*@
                             </div>
-                            
-                            
-                           
-                            @* </div>*@
                         </div>
                     </div>
-                </div>
 
 
 
@@ -188,104 +250,84 @@
 
 
 
-                <div class="accordion-item" id="accordionItemCategory">
+                    <div class="accordion-item" id="accordionItemCategory">
                         <h2 class="accordion-header" id="H_DetailGrid">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_DetailGrid"
                                     aria-expanded="true" aria-controls="B_DetailGrid">
 
-                                <i class="fa-brands fa-wpforms fa-lg fa-fw pr-3"></i> LEAVE OPENING DETAIL SECTION
+                                <i class="fa-brands fa-wpforms fa-lg fa-fw pr-3"></i> LEAVE Application DETAIL SECTION
 
-                               
+
                             </button>
                         </h2>
-                        
 
 
-                    <div id="B_DetailGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_DetailGrid">
+
+                        <div id="B_DetailGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_DetailGrid">
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3" id="_ItemGrid">
                                 </div>
-                                
+
                                 <div class="d-flex justify-content-end align-items-center mb-1">
                                     <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
                                         <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                                     </button>
                                 </div>
 
-                                
+
                                 <div class="card">
                                     <div class="card-body overflow-auto pb-0">
                                         <table class="table table-hover table-bordered table-striped" id="TableGrid">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="GridLabels">
                                                 <tr>
-                                                    <th >LeaveAccrualType<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>From Date<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>To Date<span><label class="mandatoryField">*</label></span></th>
                                                     <th>Leave Name<span><label class="mandatoryField">*</label></span></th>
-                                                    <th >AccrualRate<span><label class="mandatoryField">*</label></span></th>
-                                                    
-                                                    <th>OpeningBalance</th>
-                                                    <th >CarriedForward<span><label class="mandatoryField">*</label></span></th>
-                                                    <th >TotalLeaves<span><label class="mandatoryField">*</label></span></th>
-                                                    <th >MaxCarryForward<span><label class="mandatoryField">*</label></span></th>
-                                                    <th >LeaveEncashmentAllowed<span><label class="mandatoryField">*</label></span></th>
-                                                    <th>LeaveValidityPeriod<span><label class="mandatoryField">*</label></span></th>
-                                                    <th >MandatoryLeaveAfter<span><label class="mandatoryField">*</label></span></th>
-                                                    <th >MaxAllowedLeaves</th>
-                                                    
+                                                    <th>Leave Duration<label class="mandatoryField">*</label></th>
+                                                    <th>Balance Leave Monthly<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>Balance Leave Yearly<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>Max Leave In Month<span><label class="mandatoryField">*</label></span></th>
+
+
                                                 </tr>
                                             </thead>
                                             <tbody id="GridControls">
                                                 <tr>
-                                                   
+                                                    <td><input asp-for="FromDate" class="form-control" style="" /></td>
+                                                    <td><input asp-for="ToDate" class="form-control" style="" /></td>
+
+
                                                     <td>
-                                                    <select class="form-select" asp-for="LeaveAccrualType" >
-                                                        <option value="">-Select-</option>
-                                                        <option value="Monthly">Monthly</option>
-                                                        <option value="Yearly">Yearly</option>
-                                                        <option value="Not Applicable">Not Applicable</option>
-                                                    </select>
-                                                    </td>
-                                                    <td>
-                                                        <select asp-for="LeaveName" class="form-select" style="width:170px">
+                                                        <input type="hidden" asp-for="LeaveEntryId" value="@Model.LeaveEntryId" />
+                                                        <select asp-for="LeaveName" class="form-select" required style="width:170px">
                                                             @* <option value="@Model.AccountCode">-Select-</option> *@
-                                                            <option value="@Model.LeaveId">-Select-</option>
+                                                            <option value="@Model.LeaveEntryId">-Select-</option>
                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                             {
-                                                                <option value="@Model.LeaveId" selected>@Model.LeaveName</option>
+                                                                <option value="@Model.LeaveEntryId" selected>@Model.LeaveName</option>
                                                             }
                                                         </select>
                                                     </td>
 
-                                                    <td><input asp-for="AccrualRate" style=""   /></td>
-                                                    <td><input asp-for="OpeningBalance" class="form-control" oninput="GetTotalLeaves()" /></td>
+                                                    <td><input asp-for="Duration" class="form-control numbers" style="" /></td>
+                                                    <td><input asp-for="BalanceLeaveMonthly" class="form-control numbers" /></td>
 
-                                                    <td><input asp-for="CarriedForward" class="form-control" oninput="GetTotalLeaves()"  /></td>
-                                                    <td><input asp-for="TotalLeaves" class="form-control" readonly   /></td>
-                                                    <td><input asp-for="MaxCarryForward" class="form-control"  /></td>
-                                                    <td>
-                                                <select class="form-select" asp-for="LeaveEncashmentAllowed" >
-                                                    <option value="">-Select-</option>
-                                                    <option value="YES">YES</option>
-                                                    <option value="NO">NO</option>
-                                                    
-                                                </select>
-                                                </td>
+                                                    <td><input asp-for="BalanceLeaveYearly" class="form-control numbers" /></td>
+                                                    <td><input asp-for="MaxLeaveInMonth" class="form-control numbers" /></td>
 
-                                                    <td><input asp-for="LeaveValidityPeriod" class="form-control"   /></td>
-                                                    <td><input asp-for="MandatoryLeaveAfter" class="form-control"    /></td>
-                                                    <td><input asp-for="MaxAllowedLeaves" class="form-control"   /></td>
-                                                   
+
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                              
-                                
+
+
                                 <div class="progress my-3 mb-3" style="height: 4px;">
                                     <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
 
-                                
+
 
                                 <div class="card">
                                     <div class="card-body overflow-auto pb-0">
@@ -294,23 +336,21 @@
                                                 <tr>
                                                     <th>Action</th>
                                                     <th data-columnno="0" data-sortorder="asc" class="sortCol">SeqNo</th>
-                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Accrual Type</th>
-                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px;width:10px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Name</th>
-                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Accrual Rate</th>
-                                                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Opening Balance</th>
-                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CarriedForward</th>
-                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalLeaves</th>
-                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxCarryForward</th>
-                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LeaveEncashmentAllowed</th>
-                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LeaveValidityPeriod</th>
-                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MandatoryLeaveAfter</th>
-                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxAllowedLeaves</th>
-                                                   
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From Date</th>
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px;width:10px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>To Date</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Name</th>
+                                                  
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Duration</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceLeaveMonthly</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceLeaveYearly</th>
+                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxLeaveInMonth</th>
+
+
                                                 </tr>
 
                                             </thead>
-                                            <tbody id="divStockGrid">
-                                                <partial name="_HRLeaveOpeningDetailGrid" />
+                                            <tbody id="DivDetailGrid">
+                                                <partial name="_HRLeaveApplicationDetailGrid" />
                                             </tbody>
                                         </table>
                                     </div>
@@ -319,10 +359,10 @@
                             <div class="progress my-3 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
-                           
+
                         </div>
                     </div>
-                
+
                 </div>
 
                 <div class="accordion-item">
@@ -342,20 +382,16 @@
                                     <input asp-for="ActualEntryBy " class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
-                                    <input asp-for="ActualEntryDate " class="form-control" readonly />
+                                    <label asp-for="Updatedby" class="form-label">Updatedby</label>
+                                    <input asp-for="Updatedby " class="form-control" readonly />
                                 </div>
 
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="UpdatedBy" class="form-label">UpdatedBy</label>
-                                    <input asp-for="UpdatedBy " class="form-control" readonly />
+                                    <label asp-for="LastUPdatedDate" class="form-label">LastUPdatedDate</label>
+                                    <input asp-for="LastUPdatedDate " class="form-control" readonly />
                                 </div>
 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="UpdatedOn" class="form-label">UpdatedOn</label>
-                                    <input asp-for="UpdatedOn " class="form-control" readonly />
-                                </div>
 
                             </div>
                         </div>
@@ -367,16 +403,16 @@
                 <div class="row justify-content-between g-2">
                     <div class="card-header card-headerBG text-light bg-gradient">
                         <h5>
-                            
+
                             <span class="d-flex float-end" style="margin-top:-2px;">
-                               
-                                <a asp-action="HRLeaveOpeningMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+
+                                <a asp-action="HRLeaveApplicationMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
                                 <div class="row justify-content-between g-2">
                                     <div class="col-auto">
-                                       
+
                                         <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                             <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                             BACK
@@ -431,8 +467,18 @@
         $('#submitBTN').click(function (e) {
             debugger;
             e.preventDefault();
-           
+
             $("form").submit();
+        });
+
+        $('.numbers').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
         });
         $("#EmpName").select2();
         $("#EmpCode").select2();
@@ -454,39 +500,8 @@
             // Display the sum in the third textbox
             document.getElementById("TotalLeaves").value = sum;
         }
+
        
-        // function GetFormRights() {
-        //     $.ajax({
-        //         url: "@Url.Action("GetFormRights")",
-        //         type: "POST",
-        //         success: function (data) {
-        //             if (data != null) {
-        //                 var obj = $.parseJSON(data);
-        //                 if (obj.Result.Table.length == 0) {
-        //                     $("#submitBTN").prop("disabled", true);
-        //                     $('.card-footer #submitBTN').prop("disabled", true);
-        //                 }
-        //                 else {
-        //                     // console.log(obj);
-        //                     var optAll = obj.Result.Table[0].OptAll;
-        //                     var optSave = obj.Result.Table[0].OptSave;
-        //                     var optUpdate = obj.Result.Table[0].OptUpdate;
-        //                     var optDelete = obj.Result.Table[0].OptDelete;
-        //                     var optView = obj.Result.Table[0].OptView;
-        //                     if (!optAll) {
-        //                         if (!optSave) {
-        //                             $("#submitBTN").prop("disabled", true);
-        //                             $('.card-footer #submitBTN').prop("disabled", true);
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         },
-        //         error: function (errMsg) {
-        //             $.notify(errMsg, { position: "top center", className: "error" });
-        //         }
-        //     });
-        // }
 
         function copyToClipboardForDropdown(element) {
             var $temp = $("<input>");
@@ -498,9 +513,7 @@
         AutoComplete('VJobworkIssueMainDetail', 'DispatchTo', 'Dispatchto', null);
         // const moment = require('moment');
 
-        $('#LeaveName').change(function () {
-            $('#LeaveId').val($('#LeaveName').val());
-        });
+       
 
         // $('#EmpName').change(function () {
         //     $('#EmpId').val($('#EmpName').val());
@@ -535,15 +548,27 @@
             });
         }
 
+        $("#FromDate, #ToDate").on("mouseenter", function () {
+            $(this).datepicker("show");
+        });
+
         $(document).ready(function () {
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#LeaveAppEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#DepartAppdate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#HRAppDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+              $('#ApplicationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
             else {
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#LeaveAppEntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#DepartAppdate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#HRAppDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#ApplicationDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#LastUPdatedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
 
             $(document).on('select2:select', '#EmpName,#EmpCode', function (e) {
@@ -556,24 +581,21 @@
                     EmpCodeChange(cntId);
                 }
                 $('#EmpId').val($('#EmpName').val())
-                
-                GetEmployeeDepartment();
-                GetEmployeeDesignation();
+
+                GetEmployeeDetail();
 
             });
 
             function EmpNameChange(ID) {
                 SetEmpCodeEmpName(ID);
-                GetEmployeeDepartment();
-                GetEmployeeDesignation();
+                GetEmployeeDetail();
             }
 
             function EmpCodeChange(ID) {
 
                 $.when(SetEmpCodeEmpName(ID)).done(function () {
                 });
-                GetEmployeeDepartment();
-                GetEmployeeDesignation();
+                GetEmployeeDetail();
             }
 
             function SetEmpCodeEmpName(ID) {
@@ -601,17 +623,20 @@
             else
                 $('#lblItemCount').text(0);
 
-            FillEmpCat();
+            FillEmpName();
             FillLeaveName();
             FillShift();
             FillEmpcode();
 
-           
+
         });
 
-        function FillEmpCat() {
+        $(document).on('select2:select', '#LeaveName', function (e) {
+            $('#LeaveEntryId').val($('#LeaveName').val())
+        });
+        function FillEmpName() {
             $.ajax({
-                url: '@Url.Action("GetEmpCat", "HRLeaveOpeningMaster")',
+                url: '@Url.Action("GetEmpName", "HRLeaveApplicationMaster")',
 
                 type: 'GET',
                 async: false,
@@ -667,49 +692,7 @@
             });
         }
 
-        function GetEmployeeDepartment() {
-            debugger;
-            var empId = $("#EmpName").val().trim();
-            if (!empId) return;
-
-           
-
-            $.ajax({
-                url: '@Url.Action("GetDepartment", "HRLeaveOpeningMaster")',
-                type: 'GET',
-                data: { empid: empId },
-                success: function (data) {
-                   
-
-                    // Parse JSON if response is a string
-                    if (typeof data === "string") {
-                        try {
-                            data = JSON.parse(data);
-                        } catch (error) {
-                            
-                            return;
-                        }
-                    }
-
-                    // Extract the first result from the array
-                    if (data && data.Result && data.Result.length > 0) {
-                        var deptData = data.Result[0]; // Extract first object
-
-                    
-                        $("#Department").prop("disabled", false).val(deptData.DeptName).trigger("input");
-                        $("#DeptId").prop("disabled", false).val(deptData.deptId).trigger("input");
-                    } else {
-                       
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching employee details:", xhr.responseText || error);
-                   
-                }
-            });
-        }
-
-        function GetEmployeeDesignation() {
+        function GetEmployeeDetail() {
             debugger;
             var empId = $("#EmpName").val().trim();
             if (!empId) return;
@@ -717,7 +700,7 @@
 
 
             $.ajax({
-                url: '@Url.Action("GetDesignation", "HRLeaveOpeningMaster")',
+                url: '@Url.Action("GetEmployeeDetail", "HRLeaveApplicationMaster")',
                 type: 'GET',
                 data: { empid: empId },
                 success: function (data) {
@@ -735,11 +718,21 @@
 
                     // Extract the first result from the array
                     if (data && data.Result && data.Result.length > 0) {
-                        var deptData = data.Result[0]; // Extract first object
+                        var EmpData = data.Result[0]; // Extract first object
 
 
-                        $("#Designation").prop("disabled", false).val(deptData.Designation).trigger("input");
-                        $("#DesignationId").prop("disabled", false).val(deptData.DesigId).trigger("input");
+                        $("#Department").prop("disabled", false).val(EmpData.DeptName).trigger("input");
+                        $("#DeptId").prop("disabled", false).val(EmpData.deptid).trigger("input");
+
+
+                        $("#Designation").prop("disabled", false).val(EmpData.Designation).trigger("input");
+                        $("#desigEntryId").prop("disabled", false).val(EmpData.desigid).trigger("input");
+
+                        $("#EmpCategory").prop("disabled", false).val(EmpData.EmpCateg).trigger("input");
+                        $("#CategoryId").prop("disabled", false).val(EmpData.categoryid).trigger("input");
+
+                        $("#Shift").prop("disabled", false).val(EmpData.ShiftName).trigger("input");
+                        $("#ShiftId").prop("disabled", false).val(EmpData.ShiftId).trigger("input");
                     } else {
 
                     }
@@ -750,14 +743,11 @@
                 }
             });
         }
-
-
-
 
 
         function FillShift() {
             $.ajax({
-                url: '@Url.Action("GetShiftName", "HRLeaveOpeningMaster")',
+                url: '@Url.Action("GetShiftName", "HRLeaveApplicationMaster")',
 
                 type: 'GET',
                 async: false,
@@ -786,7 +776,7 @@
 
         function FillLeaveName() {
             $.ajax({
-                url: '@Url.Action("GetLeaveName", "HRLeaveOpeningMaster")',
+                url: '@Url.Action("GetLeaveName", "HRLeaveApplicationMaster")',
 
                 type: 'GET',
                 async: false,
@@ -798,10 +788,10 @@
                     EmpCategDropdown.append('<option value=""></option>');
 
                     $.each(obj.Result, function (index, item) {
-                        EmpCategDropdown.append('<option value="' + item.LeaveEntryId + '">' + item.LeaveName + '</option>');
+                        EmpCategDropdown.append('<option value="' + item.LeaveEntryid + '">' + item.LeaveName + '</option>');
                     });
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var LeaveName = '@Model.LeaveId';
+                        var LeaveName = '@Model.LeaveEntryId';
                         $('#LeaveName').val(LeaveName).trigger("change");
                         $('#LeaveName').val(LeaveName);
                     }
@@ -814,17 +804,21 @@
         }
 
         function FillEntryID() {
-
+            debugger
+            var YearCode = $("#LeaveAppYearCode").val();
             $.ajax({
-                url: '@Url.Action("FillEntryId", "HRLeaveOpeningMaster")',
+                url: '@Url.Action("FillEntryId", "HRLeaveApplicationMaster")',
                 type: 'POST',
                 async: false,
+                data: { YearCode: YearCode },
                 success: function (data, status, xhr) {
                     console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                        $('#LeaveOpnEntryId').val(0);
-                        $('#LeaveOpnEntryId').val(obj.Result[0].EntryId);
+                        $('#LeaveAppEntryId').val(0);
+                        $('#LeaveAppEntryId').val(obj.Result[0].LeaveAppEntryId);
+                        $('#ApplicationNo').val(0);
+                        $('#ApplicationNo').val(obj.Result[0].ApplicationNo);
                     }
                 },
                 error: function (xhr, status, error) {
@@ -859,7 +853,7 @@
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         });
 
-        
+
 
 
         $(document).on("click", ".sortCol", function () {
@@ -934,10 +928,10 @@
             finaldate = day + "-" + ("0" + (month)) + "-" + year;
             return finaldate;
         }
-       
 
-       
-       
+
+
+
         function GetAllItems() {
             $.ajax({
                 type: "POST",
@@ -999,115 +993,138 @@
         }
 
 
-        
+        function Validate_LeaveApplicationGrid() {
+            debugger;
+            var Err = 0;
+
+            let fromDate = document.getElementById("FromDate").value;
+            let toDate = document.getElementById("ToDate").value;
+            let datePattern = /^\d{2}\/\d{2}\/\d{4}$/; // DD/MM/YYYY format
+
+            if (!datePattern.test(fromDate)) {
+                AddErrorCls('Date');
+                $.notify("Please Select Valid FromDate", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Date');
+            }
+            if (!datePattern.test(toDate)) {
+                AddErrorCls('Date');
+                $.notify("Please Select Valid ToDate", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Date');
+            }
+
+            if ($("#Duration").val() >= $("#BalanceLeaveMonthly").val() || $("#Duration").val() >= $("#BalanceLeaveYearly").val() || $("#Duration").val() >= $("#MaxLeaveInMonth").val()) {
+               
+                AddErrorCls('Duration');
+                $.notify("Duration is not greater than BalanceLeaveMonthly, BalanceLeaveYearly, MaxLeaveInMonth", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Duration');
+            }
+
+            if (($("#Duration").val() == "0.5" || $("#Duration").val() == ".5") )
+            {
+                if ($("#FromDate").val() != $("#ToDate").val()) {
+                    AddErrorCls('Duration');
+                    $.notify("FromDate And ToDate Must Be Same For Harf Day Leave ", "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('Duration');
+                }
+            }
+           
+            else {
+                RemoveErrorCls('Duration');
+            }
+
+            if ($("#FromDate").val() == '' || $("#ToDate").val() == '' || $("#LeaveName").val() == '' || $("#Duration").val() == '' || $("#BalanceLeaveMonthly").val() == '' || $("#BalanceLeaveYearly").val() == '' || $("#MaxLeaveInMonth").val() == '') 
+            { 
+                AddErrorCls('FromDate');
+                AddErrorCls('ToDate');
+                AddErrorCls('LeaveName');
+                AddErrorCls('Duration');
+                AddErrorCls('BalanceLeaveMonthly');
+                AddErrorCls('BalanceLeaveYearly');
+                AddErrorCls('MaxLeaveInMonth');
+                $.notify("Fill The Required Field", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('FromDate');
+                RemoveErrorCls('ToDate');
+                RemoveErrorCls('LeaveName');
+                RemoveErrorCls('Duration');
+                RemoveErrorCls('BalanceLeaveMonthly');
+                RemoveErrorCls('BalanceLeaveYearly');
+                RemoveErrorCls('MaxLeaveInMonth');
+            }
+
+          
+            Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
+            if (Err == 1) return false;
+            return true;
+        }
+
         $('.GridButton').click(function (e) {
 
-            e.preventDefault();
-
-            console.log('Add to Grid button clicked');
-            var LeaveAccrualType = $('#LeaveAccrualType').val().trim();
-            var LeaveName = $('#LeaveName option:Selected').text().trim();
-            var LeaveId = $('#LeaveName').val().trim();
-            var AccrualRate = $('#AccrualRate').val().trim();
-            var OpeningBalance = $('#OpeningBalance').val().trim();
-            var CarriedForward = $('#CarriedForward').val().trim();
-            var TotalLeaves = $('#TotalLeaves').val().trim();
-            var MaxCarryForward = $('#MaxCarryForward').val().trim();
-            var LeaveEncashmentAllowed = $('#LeaveEncashmentAllowed').val().trim();
-            var LeaveValidityPeriod = $('#LeaveValidityPeriod').val().trim();
-            var MandatoryLeaveAfter = $('#MandatoryLeaveAfter').val().trim();
-            var MaxAllowedLeaves = $('#MaxAllowedLeaves').val().trim();
-            if (!LeaveAccrualType) {
-                $.notify('Fill LeaveAccrualType For Add in Grid', "error");
-                return;
-            }
-            if ( !LeaveName ) {
-                $.notify('Fill LeaveName For Add in Grid', "error");
-                return;
-            }
-            if (!AccrualRate) {
-                $.notify('Fill AccrualRate For Add in Grid', "error");
-                return;
-            }
-            if (!OpeningBalance) {
-                $.notify('Fill OpeningBalance For Add in Grid', "error");
-                return;
-            }
-
-            if (!CarriedForward) {
-                $.notify('Fill CarriedForward For Add in Grid', "error");
-                return;
-            }
-            if (!TotalLeaves) {
-                $.notify('Fill TotalLeaves For Add in Grid', "error");
-                return;
-            }
-            if (!MaxCarryForward) {
-                $.notify('Fill MaxCarryForward For Add in Grid', "error");
-                return;
-            }
-            if (!LeaveEncashmentAllowed) {
-                $.notify('Fill LeaveEncashmentAllowed For Add in Grid', "error");
-                return;
-            }
-            if (!LeaveValidityPeriod) {
-                $.notify('Fill LeaveValidityPeriod For Add in Grid', "error");
-                return;
-            }
-            if (!MandatoryLeaveAfter) {
-                $.notify('Fill MandatoryLeaveAfter For Add in Grid', "error");
-                return;
-            }
-            if (!MaxAllowedLeaves) {
-                $.notify('Fill MaxAllowedLeaves For Add in Grid', "error");
-                return;
-            }
-             
-
-
-
-            var SchData = {
-                "LeaveAccrualType": LeaveAccrualType,
-                "LeaveName": LeaveName,
-                "AccrualRate": AccrualRate,
-                "OpeningBalance": OpeningBalance,
-                "LeaveId":LeaveId,
-                "CarriedForward": CarriedForward,
-                "TotalLeaves": TotalLeaves,
-                "MaxCarryForward": MaxCarryForward,
-                "LeaveEncashmentAllowed": LeaveEncashmentAllowed,
-                "LeaveValidityPeriod": LeaveValidityPeriod,
-                // "EntryDate": $('#EntryDate').val(),
-                "MandatoryLeaveAfter": MandatoryLeaveAfter,
-                "MaxAllowedLeaves": MaxAllowedLeaves
-                
-            };
-
-            console.log(SchData);
-
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("AddLeaveOpeningDetail", "HRLeaveOpeningMaster")',
-                data: { model: SchData },
-                success: function (result, status, xhr) {
-
-                    if (xhr.status == 200 && xhr.responseText == result) {
-                        $('#divStockGrid').html(result);
-                        $.notify('Process Added To Grid', "success");
-                        ClearGrid();
-                        editingNow = false;
-                        // TotalNoOfRows();
-                        // countAllTotal();
-                        //ClearItems();
-                    } else if (xhr.status == 207) {
-                        $.notify('Duplicate Item...!', "info");
-                    }
-
-                },
-                error: function () {
-                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                event.preventDefault();
+            if (!Validate_LeaveApplicationGrid()) return;
+                var ItemData = {
+                "LeaveName": $('#LeaveName').find(":selected").text(),
+                "LeaveEntryId": $('#LeaveName').val(),
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val(),
+                "Duration": $('#Duration').val(),
+                "BalanceLeaveMonthly": $('#BalanceLeaveMonthly').val(),
+                "BalanceLeaveYearly": $('#BalanceLeaveYearly').val(),
+                "MaxLeaveInMonth": $('#MaxLeaveInMonth').val(),
+                "Mode": $('#Mode').val()
                 }
-            });
+
+                $.ajax({
+                    url: "@Url.Action("AddDetailGrid")",
+                    type: "POST",
+                    data: ItemData,
+                    success: function (data, status, xhr) {
+
+                        if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                            $.notify('Duplicate Item Not Allowed.', "info");
+                            $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                        }
+                        else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                            $.notify('Adding Item Not Allowed, Please Clear  Detail...!!!', "info");
+                        }
+                        else {
+                        $('#DivDetailGrid').html(data);
+                            ClearGrid();
+                            editingNow = false;
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify(result.responseText, "error");
+                    },
+                    failure: function (result, status, xhr) {
+                        alert(response.responseText);
+                    },
+                    complete: function () {
+
+                        $('.Schedule').fadeIn();
+                    }
+                }).done(function () {
+
+                }).fail(function () {
+                    alert("error");;
+                }).always(function () {
+
+                });
+            
         });
 
 
@@ -1115,17 +1132,15 @@
 
         function ClearGrid() {
 
-            $('#LeaveAccrualType').val(''),
-                $('#LeaveName').prop('selectedIndex', 0).trigger("change"),           
-                $('#AccrualRate').val(0),
-                $('#OpeningBalance').val(0),
+                $('#LeaveName').prop('selectedIndex', 0).trigger("change"),
+                $('#FromDate').val(''),
+                $('#ToDate').val(''),
                 $('#CarriedForward').val(0),
-                $('#TotalLeaves').val(0),
-                $('#MaxCarryForward').val(0),
-                $('#LeaveEncashmentAllowed').val(''),
-                $('#LeaveValidityPeriod').val(0),
-                $('#MandatoryLeaveAfter').val(0),
-                $('#MaxAllowedLeaves').val(0)
+                $('#Duration').val(0),
+                $('#BalanceLeaveMonthly').val(0),
+                $('#BalanceLeaveYearly').val(0),
+                $('#MaxLeaveInMonth').val(0)
+              
 
         }
 
@@ -1139,120 +1154,18 @@
         }
 
 
-       
-
-        function ClearBothGrid() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ClearTaxGrid")",
-                data: { AccountCode: $('#AccountCode').val() },
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
-                    $('#divTaxGrid').empty();
-                    $('#NetTotall').val(parseFloat($('#lblItemNetAmount').text()).toFixed(2));
-                },
-                error: function (req, status, error) {
-                    alert(error);
-                }
-            });
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ClearJobWorkGrid")",
-                data: { AccountCode: $('#AccountCode').val() },
-                dataType: "json",
-                async: false,
-                success: function (data, status, error) {
-                    $('#divJobWorkGrid').empty();
-                    $('#divTaxGrid').empty();
-                    $('#AmtAftrDiscount').val(0);
-                    $('#NetTotall').val(0);
-                },
-                error: function (req, status, error) {
-                    alert(error);
-                }
-            });
-        }
-
-
-        
-
-
-
-        var editingNow = false;
-        function EditItemRow(SeqNo) {
-            debugger;
-
-            if (editingNow) {
-                $.notify('Cannot edit item while another item is being added to the grid!', "error");
-                return;
-            }
-
-           
-                $.ajax({
-                    url: '@Url.Action("EditItemRow")',
-                    type: "POST",
-                data: { SeqNo: SeqNo, Mode: "U" },
-                    success: function (data) {
-
-                        //alert("success!!!!");
-                        var obj = $.parseJSON(data);
-                        
-                        
-
-                            console.log(obj);
-                            if (obj != null ) {
-                                editingNow = true;
-
-                                // QtyVal = obj[0].IssQty;
-                                $('#LeaveAccrualType').val(obj[0].LeaveAccrualType).trigger("change");
-                                $('#LeaveName').val(obj[0].LeaveId).trigger("change");
-                                $('#AccrualRate').val(obj[0].AccrualRate);
-                                $('#OpeningBalance').val(obj[0].OpeningBalance);
-
-
-                                $('#CarriedForward').val(obj[0].CarriedForward);
-                                $('#TotalLeaves').val(obj[0].TotalLeaves);
-                                $('#MaxCarryForward').val(obj[0].MaxCarryForward);
-                            $('#LeaveEncashmentAllowed').val(obj[0].LeaveEncashmentAllowed).trigger("change");
-                                $('#LeaveValidityPeriod').val(obj[0].LeaveValidityPeriod);
-                                $('#MandatoryLeaveAfter').val(obj[0].MandatoryLeaveAfter);
-                                $('#MaxAllowedLeaves').val(obj[0].MaxAllowedLeaves);
-                                var rowCount = $('#divStockGrid tr').length;
-                                for (var i = 1; i <= rowCount + 1; i++) {
-                                    $('#editItemGrid-' + i).css("pointer-events", "none");
-                                    $('#editItemGrid-' + i).css("cursor", "not-allowed");
-                                }
-
-                        DeleteItemFromGrid(SeqNo);
-                                
-
-                            
-                        }
-                    },
-                    error: function (response) {
-                        $.notify(response.responseText, "error");
-                    },
-                    failure: function (response) {
-                        $.notify(response.responseText, "error");
-                    }
-                });
-            
-        }
-
 
         isEditOperationAllowed = "false";
-        function DeleteItemFromGrid(SeqNo) {
-            debugger;
+        function DeleteItemFromGrid(SeqNo, LeaveEntryId) {
 
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: '@Url.Action("DeleteItemFromGrid")',
                     type: "POST",
-                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val()},
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(), "LeaveEntryId": LeaveEntryId },
                     success: function (data) {
 
-                        $('#divStockGrid').html(data);
+                        $('#DivDetailGrid').html(data);
                         $.notify("Item Deleted from Grid", "info");
                         isEditOperationAllowed = "true";
                         resolve();
@@ -1263,25 +1176,51 @@
                 });
             });
         }
-       
-       
 
-       
+        var editingNow = false;
+        function EditItemRow(SeqNo) {
+            debugger
+            if (editingNow == false) {
 
-        function PressBack() {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditItemRow")',
+                        type: "POST",
+                        data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
+                    })
+                        .done(function (data, status, xhr) {
+                            editingNow = true;
+                            var obj = $.parseJSON(data);
+                            DeleteItemFromGrid(SeqNo)
+                                .then(() => {
+                                    
+                                    $('#FromDate').val(obj[0].FromDate);
+                                    $('#ToDate').val(obj[0].ToDate);
+                                    $('#LeaveEntryId').val(obj[0].LeaveEntryId),
+                                    $('#LeaveName').val(obj[0].LeaveEntryId).trigger('change');
+                                    $('#Duration').val(obj[0].Duration.toFixed(2))
+                                    $('#BalanceLeaveMonthly').val(obj[0].BalanceLeaveMonthly);
+                                    $('#BalanceLeaveYearly').val(obj[0].BalanceLeaveYearly.toFixed(2));
+                                    $('#MaxLeaveInMonth').val(obj[0].MaxLeaveInMonth.toFixed(2));
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
 
-            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-            sessionStorage.setItem('ChallanNoBack', $('#ChallanNoBack').val());
-            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
-            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
-            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
-            sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());
-
-            window.history.back();
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
         }
 
+
        
+
     </script>
 
 }

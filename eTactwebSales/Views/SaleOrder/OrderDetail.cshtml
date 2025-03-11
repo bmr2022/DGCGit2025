@@ -127,7 +127,7 @@
 									</div>
 									<div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
 										<label asp-for="AccountCode" class="form-label" style="color:  red;">Party Name</label>
-										<div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+										<div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="width:180px">
 											<input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
 										</div>
 										<select class="form-select" asp-for="AccountCode" style="width:220px;" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly disabled>
