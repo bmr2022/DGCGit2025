@@ -630,6 +630,7 @@ namespace eTactWeb.Controllers
                     MainModel = BindItem4Grid(MainModel);
                     MainModel.saleBillDetails = saleBillDetail;
                     MainModel.ItemDetailGrid = saleBillDetail;
+                    _MemoryCache.Set("KeySaleBillGrid", MainModel.saleBillDetails, cacheEntryOptions);
                     _MemoryCache.Set("SaleBillModel", MainModel, cacheEntryOptions);
                 }
                 else
