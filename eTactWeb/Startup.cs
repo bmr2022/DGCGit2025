@@ -227,6 +227,7 @@ namespace eTactWeb
             services.TryAddTransient<IPurchaseRejection, PurchaseRejectionBLL>();
 
             services.TryAddTransient<IConnectionStringHelper, ConnectionStringHelper>();
+            services.TryAddSingleton<ConnectionStringService>();
             services.AddScoped<UserContextService>();
         }
     }

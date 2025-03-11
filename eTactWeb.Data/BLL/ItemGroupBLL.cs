@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +12,9 @@ public class ItemGroupBLL : IItemGroup
     private ItemGroupDAL _ItemGroupDAL;
     private readonly IDataLogic _DataLogicDAL;
 
-    public ItemGroupBLL(IConfiguration config, IDataLogic dataLogicDAL)
+    public ItemGroupBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
     {
-        _ItemGroupDAL = new ItemGroupDAL(config, dataLogicDAL);
+        _ItemGroupDAL = new ItemGroupDAL(config, dataLogicDAL,connectionStringService);
         _DataLogicDAL = dataLogicDAL;
     }
 

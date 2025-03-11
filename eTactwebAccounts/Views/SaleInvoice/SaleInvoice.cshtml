@@ -678,9 +678,29 @@
             $('#PendingChallanListPopupModel').modal("hide");
         });
 
+        function ValidateAdjDetail(){
+            if($('#AccountCode').val() == 0){
+                $.notify('please enter AccountCode...!', "error");
+                return false;
+            }
+
+            if ($('#PartCode').val() == 0) {
+                $.notify('please enter PartCode...!', "error");
+                return false;
+            }
+
+            if ($('#ItemCode').val() == 0) {
+                $.notify('please enter ItemName...!', "error");
+                return false;
+            }
+
+            return true;
+        }
+
         $('#btnAdjustChallanListGrid').click(function (event) {
             event.preventDefault();
 
+          if (!ValidateAdjDetail()) return;
             var YearCode = $('#SaleBillYearCode').val();
             var EntryDate = $('#ChallanDate').val();
             var ChallanDate = $('#ChallanDate').val();
@@ -1113,6 +1133,26 @@
             }
             else {
                 RemoveErrorCls('PartCode');
+            }
+
+            if ($('#SaleBillJobwork').val() == "J") {
+                if ($('#BOMInd').prop('selectedIndex') == 0) {
+                    AddErrorCls('BOMInd');
+                    $.notify('please select BOM Ind...!', "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('BOMInd');
+                }
+                
+                if ($('#ProducedUnprod').prop('selectedIndex') == 0) {
+                    AddErrorCls('#ProducedUnprod');
+                    $.notify('please select #Produced Unprod...!', "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('#ProducedUnprod');
+                }
             }
 
             if ($('#ItemCode').prop('selectedIndex') == 0) {
