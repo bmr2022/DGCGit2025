@@ -10,8 +10,10 @@ namespace eTactWeb.Services.Interface
 {
     public interface IStockValuation
     {
-        public Task<StockValuationModel> GetStockValuationDetailsData(string FromDate, string ToDate,string StoreId,string ReportType);
+        public Task<StockValuationModel> GetStockValuationDetailsData(string FromDate, string ToDate,string StoreId,string ReportType,int ItemCode);
         public Task<ResponseResult> FillStoreName(string FromDate, string CurrentDate);
+        public Task<ResponseResult> FillItemName(string FromDate, string CurrentDate);
+        public Task<ResponseResult> FillPartCode(string FromDate, string CurrentDate);
 
     }
 }

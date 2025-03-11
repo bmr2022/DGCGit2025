@@ -32,7 +32,7 @@ else
                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
             </tr>
         </thead>
-        <tbody id="divStockRegisterBody">
+            <tbody id="divStockRegisterBody" style="background-color:#e5ccff !important">
             @{
                 var @Cntr = 0;
                 if (Model.StockValuationGrid == null)
@@ -45,7 +45,7 @@ else
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="@Cntr" onclick="selection(this)">
+                            <tr id="@Cntr" onclick="selection(this)" >
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
@@ -59,7 +59,7 @@ else
                             <td>@item.ItemName</td>
                             <td>@item.OpeningStock</td>
                             <td>@item.OpenRate</td>
-                            <td>@item.OpeningValue</td>
+                            <td id="totOpeningValueG-@Cntr">@item.OpeningValue</td>
                             <td id="totRecQtyG-@Cntr">@item.RecQty</td>
                             <td id="totIssueQtyG-@Cntr">@item.IssueQty</td>
                             <td id="totClosingStockG-@Cntr">@item.ClosingStock</td>

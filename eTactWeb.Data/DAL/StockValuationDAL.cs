@@ -42,7 +42,48 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<StockValuationModel> GetStockValuationDetailsData(string FromDate, string ToDate,string StoreId,string ReportType)
+        public async Task<ResponseResult> FillPartCode(string FromDate,string CurrentDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "PartCode"));
+                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
+                SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPStockValuation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillItemName(string FromDate,string CurrentDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ItemName"));
+                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
+                SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPStockValuation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<StockValuationModel> GetStockValuationDetailsData(string FromDate, string ToDate,string StoreId,string ReportType, int ItemCode)
         {
             var resultList = new StockValuationModel();
             DataSet oDataSet = new DataSet();
@@ -60,6 +101,7 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@CurrentDate", ToDate);
                     command.Parameters.AddWithValue("@StoreId", StoreId);
                     command.Parameters.AddWithValue("@Flag", ReportType);
+                    command.Parameters.AddWithValue("@itemcode", ItemCode);
 
                     await connection.OpenAsync();
 

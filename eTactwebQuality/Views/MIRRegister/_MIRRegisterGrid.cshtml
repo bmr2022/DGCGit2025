@@ -27,12 +27,17 @@ else if (Model.ReportMode == "DAYWISEMIRENTRYLIST")
 }
 else if (Model.ReportMode == "PENDMRNFORQC(SUMMARY)")
 {
-    <partial name="_MRNRegisterPendMRNForQCSummary" />
+    <partial name="_MIRRegisterPendMRNForQCSummary" />
 }
 
-else if (Model.ReportMode == "PENDMRNFORQC(DEATIL)")
+else if (Model.ReportMode == "PENDMRNFORQC(Detail)")
 {
-    <partial name="_MRNRegisterPendMRNForQCDetail" />
+    <partial name="_MIRRegisterPendMRNForQCDetail" />
+}
+
+else if (Model.ReportMode == "vendorItemRejectionSummary")
+{
+    <partial name="_MIRRegisterVendorItemRejectionSummary" />
 }
 
 else

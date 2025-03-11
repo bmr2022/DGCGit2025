@@ -78,7 +78,7 @@
                         {
                             Cntr = Cntr + 1;
 
-                            <tr id="@Cntr" onclick="selection(this)">
+                        <tr id="@Cntr" onclick="selection(this)" style="background-color:#c2f0c2">
                                 <td>
                                     <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                         <span class="fa-stack">
@@ -93,11 +93,11 @@
                             <td>@item.OpeningStock</td>
                             <td>@item.OpenRate</td>
                             <td>@item.OpeningValue</td>
-                            <td>@item.RecQty</td>
-                            <td>@item.IssueQty</td>
-                            <td>@item.ClosingStock</td>
+                            <td id="totRecQtyG-@Cntr">@item.RecQty</td>
+                            <td id="totIssueQtyG-@Cntr">@item.IssueQty</td>
+                            <td id="totClosingStockG-@Cntr">@item.ClosingStock</td>
                             <td>@item.Rate</td>
-                            <td>@item.ClosingValue</td>
+                            <td id="totClosingValG-@Cntr">@item.ClosingValue</td>
                             <td>@item.StoreName</td>
 
                             </tr>
