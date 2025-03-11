@@ -1,8 +1,8 @@
-﻿@model eTactWeb.DOM.Models.HRLeaveOpeningMasterModel;
-@if (Model.HRLeaveOpeningDetailGrid == null)
-{
+﻿@model eTactWeb.DOM.Models.HRLeaveOpeningMasterModel
+@if (Model.HRLeaveOpeningDetailGrid == null || Model.HRLeaveOpeningDetailGrid.Count == 0)
+ {
     <tr class="text-center">
-        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+        <td colspan="23" class="text-black-50"><strong>NO DATA ADDED</strong></td>
     </tr>
 }
 else
@@ -13,39 +13,30 @@ else
         Cntr = Cntr + 1;
         <tr class="small " style="white-space:nowrap">
             <td style="white-space:nowrap;">
-                @if (Model.ID > 0)
-                {
-                    <a class="table-link link-primary noCursor" disabled>
-                        <span class="fa-stack">
-                            <i class="fa fa-square fa-stack-2x"></i>
-                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                    <a class="table-link link-danger noCursor" disabled>
-                        <span class="fa-stack">
-                            <i class="fa fa-square fa-stack-2x"></i>
-                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                }
-                else
-                {
-                    <a class="table-link link-primary" onclick="EditItemRow(@item.SrNO);">
-                        <span class="fa-stack">
-                            <i class="fa fa-square fa-stack-2x"></i>
-                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                    <a class="table-link link-danger" onclick="DeleteItemFromGrid(@item.SrNO);">
-                        <span class="fa-stack">
-                            <i class="fa fa-square fa-stack-2x"></i>
-                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                }
+                <a href="#" class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a href="#" class="table-link link-danger" onclick="DeleteItemFromGrid(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
             </td>
-            <td id="SrNO-@Cntr"><input type="hidden" value="@item.SrNO" />@item.SrNO</td>
-            @* <td><input type="hidden" value="@item.CC" /></td> *@
+            @if (Model.Mode == "U")
+            {
+                <td>
+                    @item.SeqNo
+                </td>
+            }
+            else
+            {
+
+                <td>@Cntr</td>
+            }
             <td>
                 @* @(string.IsNullOrEmpty(item.BillNo) ? item.InvoiceNo : item.BillNo) *@
                 @item.LeaveAccrualType
@@ -65,8 +56,7 @@ else
             <td>@item.LeaveValidityPeriod</td>
             <td>@item.MandatoryLeaveAfter</td>
             <td>@item.MaxAllowedLeaves</td>
-            
-         
+
         </tr>
     }
 }

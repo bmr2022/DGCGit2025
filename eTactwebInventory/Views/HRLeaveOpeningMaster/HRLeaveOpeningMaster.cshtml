@@ -116,10 +116,10 @@
                                 <input asp-for="EntryDate " class="form-control" readonly />
                             </div>
 
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px">
                                     <label asp-for="EmpName" class="form-label">Employee<span><label class="mandatoryField">*</label></span>  </label>
                                 <input asp-for="EmpId" class="form-control" type="hidden" value="@Model.EmpId" />
-                                <select asp-for="EmpName" class="form-control">
+                                <select asp-for="EmpName" class="form-control" >
                                     @* <option value="@Model.AccountCode">-Select-</option> *@
                                     <option value="@Model.EmpId">-Select-</option>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
@@ -129,10 +129,10 @@
                                 </select>
                             </div>
 
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:180px">
                                     <label asp-for="EmpCode" class="form-label">EmpCode <span><label class="mandatoryField">*</label></span> </label>
                                    
-                                    <select asp-for="EmpCode" class="form-control">
+                                    <select asp-for="EmpCode" class="form-control" >
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.EmpId">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
@@ -141,18 +141,18 @@
                                         }
                                     </select>
                                 </div>
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:180px">
                                 <label asp-for="Designation" class="form-label">Designation  </label>
                                     <input asp-for="DesignationId" class="form-control" type="hidden" value="@Model.DesignationId" />
-                                    <input asp-for="Designation" class="form-control" type="text" readonly value="@Model.Designation" />
+                                    <input asp-for="Designation" class="form-control" type="text" readonly value="@Model.Designation"  />
 
                                
                             </div>
 
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:180px">
                                 <label asp-for="Department" class="form-label">Department  </label>
                                     <input asp-for="DeptId" class="form-control" type="hidden" value="@Model.DeptId" />
-                                    <input asp-for="Department" class="form-control" type="text" readonly value="@Model.Department" />
+                                    <input asp-for="Department" class="form-control" type="text" readonly value="@Model.Department"  />
                                 
                             </div>
 
@@ -162,10 +162,10 @@
 
                                 </div>
 
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px">
                                     <label asp-for="Shift" class="form-label">Shift<span><label class="mandatoryField">*</label></span>  </label>
                                 <input asp-for="ShiftId" class="form-control" type="hidden" value="@Model.ShiftId" />
-                                <select asp-for="Shift" class="form-control">
+                                    <select asp-for="Shift" class="form-control" >
                                     @* <option value="@Model.AccountCode">-Select-</option> *@
                                     <option value="@Model.ShiftId">-Select-</option>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
@@ -237,7 +237,7 @@
                                                 <tr>
                                                    
                                                     <td>
-                                                    <select class="form-select" asp-for="LeaveAccrualType" required>
+                                                    <select class="form-select" asp-for="LeaveAccrualType" >
                                                         <option value="">-Select-</option>
                                                         <option value="Monthly">Monthly</option>
                                                         <option value="Yearly">Yearly</option>
@@ -245,7 +245,7 @@
                                                     </select>
                                                     </td>
                                                     <td>
-                                                        <select asp-for="LeaveName" class="form-select" required style="width:70px">
+                                                        <select asp-for="LeaveName" class="form-select" style="width:170px">
                                                             @* <option value="@Model.AccountCode">-Select-</option> *@
                                                             <option value="@Model.LeaveId">-Select-</option>
                                                             @if (Model.Mode == "U" || Model.Mode == "V")
@@ -255,14 +255,14 @@
                                                         </select>
                                                     </td>
 
-                                                    <td><input asp-for="AccrualRate" style=""  required /></td>
+                                                    <td><input asp-for="AccrualRate" style=""   /></td>
                                                     <td><input asp-for="OpeningBalance" class="form-control" oninput="GetTotalLeaves()" /></td>
 
-                                                    <td><input asp-for="CarriedForward" class="form-control" oninput="GetTotalLeaves()" required /></td>
-                                                    <td><input asp-for="TotalLeaves" class="form-control" readonly  required /></td>
+                                                    <td><input asp-for="CarriedForward" class="form-control" oninput="GetTotalLeaves()"  /></td>
+                                                    <td><input asp-for="TotalLeaves" class="form-control" readonly   /></td>
                                                     <td><input asp-for="MaxCarryForward" class="form-control"  /></td>
                                                     <td>
-                                                <select class="form-select" asp-for="LeaveEncashmentAllowed" required>
+                                                <select class="form-select" asp-for="LeaveEncashmentAllowed" >
                                                     <option value="">-Select-</option>
                                                     <option value="YES">YES</option>
                                                     <option value="NO">NO</option>
@@ -270,9 +270,9 @@
                                                 </select>
                                                 </td>
 
-                                                    <td><input asp-for="LeaveValidityPeriod" class="form-control" required  /></td>
-                                                    <td><input asp-for="MandatoryLeaveAfter" class="form-control" required   /></td>
-                                                    <td><input asp-for="MaxAllowedLeaves" class="form-control"  required /></td>
+                                                    <td><input asp-for="LeaveValidityPeriod" class="form-control"   /></td>
+                                                    <td><input asp-for="MandatoryLeaveAfter" class="form-control"    /></td>
+                                                    <td><input asp-for="MaxAllowedLeaves" class="form-control"   /></td>
                                                    
                                                 </tr>
                                             </tbody>
@@ -1017,10 +1017,54 @@
             var LeaveValidityPeriod = $('#LeaveValidityPeriod').val().trim();
             var MandatoryLeaveAfter = $('#MandatoryLeaveAfter').val().trim();
             var MaxAllowedLeaves = $('#MaxAllowedLeaves').val().trim();
-            if (!LeaveAccrualType || !LeaveName || !AccrualRate || !OpeningBalance || !CarriedForward || !TotalLeaves || !MaxCarryForward || !LeaveEncashmentAllowed || !LeaveValidityPeriod ) {
-                $.notify('Fill All Data For Add in Grid', "error");
+            if (!LeaveAccrualType) {
+                $.notify('Fill LeaveAccrualType For Add in Grid', "error");
                 return;
             }
+            if ( !LeaveName ) {
+                $.notify('Fill LeaveName For Add in Grid', "error");
+                return;
+            }
+            if (!AccrualRate) {
+                $.notify('Fill AccrualRate For Add in Grid', "error");
+                return;
+            }
+            if (!OpeningBalance) {
+                $.notify('Fill OpeningBalance For Add in Grid', "error");
+                return;
+            }
+
+            if (!CarriedForward) {
+                $.notify('Fill CarriedForward For Add in Grid', "error");
+                return;
+            }
+            if (!TotalLeaves) {
+                $.notify('Fill TotalLeaves For Add in Grid', "error");
+                return;
+            }
+            if (!MaxCarryForward) {
+                $.notify('Fill MaxCarryForward For Add in Grid', "error");
+                return;
+            }
+            if (!LeaveEncashmentAllowed) {
+                $.notify('Fill LeaveEncashmentAllowed For Add in Grid', "error");
+                return;
+            }
+            if (!LeaveValidityPeriod) {
+                $.notify('Fill LeaveValidityPeriod For Add in Grid', "error");
+                return;
+            }
+            if (!MandatoryLeaveAfter) {
+                $.notify('Fill MandatoryLeaveAfter For Add in Grid', "error");
+                return;
+            }
+            if (!MaxAllowedLeaves) {
+                $.notify('Fill MaxAllowedLeaves For Add in Grid', "error");
+                return;
+            }
+             
+
+
 
             var SchData = {
                 "LeaveAccrualType": LeaveAccrualType,
@@ -1072,8 +1116,7 @@
         function ClearGrid() {
 
             $('#LeaveAccrualType').val(''),
-                $('#LeaveName').val(''),
-               
+                $('#LeaveName').prop('selectedIndex', 0).trigger("change"),           
                 $('#AccrualRate').val(0),
                 $('#OpeningBalance').val(0),
                 $('#CarriedForward').val(0),
@@ -1137,7 +1180,7 @@
 
 
         var editingNow = false;
-        function EditItemRow(SrNO) {
+        function EditItemRow(SeqNo) {
             debugger;
 
             if (editingNow) {
@@ -1149,7 +1192,7 @@
                 $.ajax({
                     url: '@Url.Action("EditItemRow")',
                     type: "POST",
-                    data: { SrNO: SrNO, Mode: "U" },
+                data: { SeqNo: SeqNo, Mode: "U" },
                     success: function (data) {
 
                         //alert("success!!!!");
@@ -1181,7 +1224,7 @@
                                     $('#editItemGrid-' + i).css("cursor", "not-allowed");
                                 }
 
-                        DeleteItemFromGrid(SrNO);
+                        DeleteItemFromGrid(SeqNo);
                                 
 
                             
