@@ -51,7 +51,12 @@ namespace eTactWeb.Controllers
             if (ReportType == "BatchWise Stock+WIP Valuation"|| ReportType == "BatchWise WIP Valuation")
             {
                 return PartialView("_BatchWiseStock+WIPValuation", model);
+            } 
+            if (ReportType == "Stock Valuation")
+            {
+                return PartialView("_StockValuation", model);
             }
+
             return null;
         }
     }
