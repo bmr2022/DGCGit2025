@@ -52,7 +52,6 @@
                                         <option value="ProductionConsumptionReport(SUMMARY)" selected>Summary</option>
                                         <option value="ProductionConsumptionReport(DETAIL)">Detail</option>
                                         <option value="ProductionConsumptionReport(CONSOLIDATED)">Consolidated</option>
-                                    
                                     </select>
 
                                 </div>
@@ -164,50 +163,7 @@
 
         $(document).ready(function () {
             console.log("Ready");
-            // GetServerDate();
 
-            // function loadReportFields(reportType) {
-            //     let html = '';
-
-            //     if (reportType === "BOMTREE") {
-            //         html = `
-            //                           <div class="d-flex flex-wrap">
-
-            //                                              <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
-            //                                            <label class="form-label">Total RMQty</label>
-            //                                            <input id="totQty" class="form-control" readonly/>
-            //                                      </div>
-            //                          </div>
-
-            //                     `;
-            //     } else if (reportType === "BOMSTOCK(WITH SUB BOM)" || reportType === "BOMSTOCK(DIRECT CHILD)") {
-            //         html = `
-            //                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;">
-            //                                                     <label class="form-label">Total StoreStock</label>
-            //                                                     <input id="totStoreStock" class="form-control" readonly />
-            //                                                 </div>
-            //                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
-            //                                                     <label class="form-label">Total WIPStock</label>
-            //                                                      <input id="totWIPStock" class="form-control" readonly />
-            //                                                 </div>
-            //                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
-            //                                                     <label class="form-label">Total Amount</label>
-            //                                                     <input id="totAmount" class="form-control" readonly />
-            //                                                 </div>
-            //                     `;
-            //     }
-
-            //     $("#reportFields").html(html);
-            // }
-
-
-            // $("#ReportType").change(function () {
-            //     let reportType = $(this).val();
-            //     loadReportFields(reportType);
-            // });
-
-            // // Load initial report type if set
-            // loadReportFields($("#ReportType").val());
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
@@ -232,29 +188,28 @@
             // handleReportType();
         });
          
-        $('#ReportType').change(function () {
-            GetConsumptionDetailsData();
-        });
+        // $('#ReportType').change(function () {
+        //     GetConsumptionDetailsData();
+        // });
 
        
-        $('#StoreName').change(function () {
-            GetConsumptionDetailsData();
-        });
+        // $('#StoreName').change(function () {
+        //     GetConsumptionDetailsData();
+        // });
 
-        
-       
-       
         function selection(CurrentRow) {
 
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
+
         function FillFGItemName() {
+            debugger
             $.ajax({
                 url: '@Url.Action("FillFGItemName", "ConsumptionReport")',
                 type: 'GET',
-                async: false,
                 success: function (response, status, error) {
+                    debugger
                     var FGItemNameDropdown = $('#FGItemName');
                     var obj = $.parseJSON(response);
                     FGItemNameDropdown.empty();
@@ -411,6 +366,7 @@
                 }
             }
         }
+
         function FillStoreName() {
             $.ajax({
                 url: '@Url.Action("FillStoreName", "ConsumptionReport")',
@@ -425,7 +381,7 @@
 
                     $.each(obj.Result, function (index, store) {
                          
-                        storeNameDropdown.append('<option value="' + store.storeid + '">' + store.Store_Name + '</option>');
+                        storeNameDropdown.append('<option selected value="' + store.storeid + '">' + store.Store_Name + '</option>');
                     });
 
                 },
@@ -435,6 +391,7 @@
             });
 
         }
+
         function FillWorkCenterName() {
             $.ajax({
                 url: '@Url.Action("FillWorkCenterName", "ConsumptionReport")',
@@ -491,7 +448,15 @@
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
-
+                    if (reportType == "ProductionConsumptionReport(SUMMARY)"){
+                        $('#divStockRegisterBody').css('background-color', 'lightblue');
+                    }
+                    if (reportType == "ProductionConsumptionReport(DETAIL)") {
+                        $('#divStockRegisterBody').css('background-color', '#bde2bd');
+                    }
+                    if (reportType == "ProductionConsumptionReport(CONSOLIDATED)") {
+                        $('#divStockRegisterBody').css('background-color', '#efd9d9');
+                    }
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
                     //countAllTotal();

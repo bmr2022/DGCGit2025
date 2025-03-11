@@ -1519,11 +1519,11 @@
 
         // var sonoItems = [];
         function FillItems(itemType) {
-
+            var sbJobWork = $('#SaleBillJobwork').val() == 'J'  ? "JOBWORK-SALEBILL" : "";
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
             $.ajax({
                 type: "POST",
-                data: { "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "showAll": showAll, "TypeItemServAssets": itemType, "bomInd": $('#BOMInd').val() },
+                data: { "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "showAll": showAll, "TypeItemServAssets": itemType, "bomInd": $('#BOMInd').val(), "sbJobWork": sbJobWork },
                 url: "@Url.Action("FillItems","SaleBill")",
                 dataType: "json",
                 async: false,
