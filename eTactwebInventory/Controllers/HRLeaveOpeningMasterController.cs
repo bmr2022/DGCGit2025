@@ -135,7 +135,7 @@ namespace eTactwebInventory.Controllers
                     {
                         if (LeaveOpeningDetail == null)
                         {
-                            model.SrNO = 1;
+                            model.SeqNo = 1;
                             OrderGrid.Add(model);
                         }
                         else
@@ -147,7 +147,7 @@ namespace eTactwebInventory.Controllers
                             else
                             {
                                 //count = WorkOrderProcessGrid.Count();
-                                model.SrNO = LeaveOpeningDetail.Count + 1;
+                                model.SeqNo = LeaveOpeningDetail.Count + 1;
                                 OrderGrid = LeaveOpeningDetail.Where(x => x != null).ToList();
                                 ssGrid.AddRange(OrderGrid);
                                 OrderGrid.Add(model);
@@ -188,7 +188,7 @@ namespace eTactwebInventory.Controllers
                     {
                         if (LeaveOpeningDetail == null)
                         {
-                            model.SrNO = 1;
+                            model.SeqNo = 1;
                             OrderGrid.Add(model);
                         }
                         else
@@ -200,7 +200,7 @@ namespace eTactwebInventory.Controllers
                             else
                             {
                                 //count = WorkOrderProcessGrid.Count();
-                                model.SrNO = LeaveOpeningDetail.Count + 1;
+                                model.SeqNo = LeaveOpeningDetail.Count + 1;
                                 OrderGrid = LeaveOpeningDetail.Where(x => x != null).ToList();
                                 ssGrid.AddRange(OrderGrid);
                                 OrderGrid.Add(model);
@@ -241,7 +241,7 @@ namespace eTactwebInventory.Controllers
             return PartialView("_HRLeaveOpeningDetailGrid", MainModel);
         }
 
-        public IActionResult EditItemRow(int SrNO, string Mode)
+        public IActionResult EditItemRow(int SeqNo, string Mode)
         {
             IList<HRLeaveOpeningDetail> HRLeaveOpeningDetail = new List<HRLeaveOpeningDetail>();
             if (Mode == "U")
@@ -255,7 +255,7 @@ namespace eTactwebInventory.Controllers
             IEnumerable<HRLeaveOpeningDetail> SSBreakdownGrid = HRLeaveOpeningDetail;
             if (HRLeaveOpeningDetail != null)
             {
-                SSBreakdownGrid = HRLeaveOpeningDetail.Where(x => x.SrNO == SrNO);
+                SSBreakdownGrid = HRLeaveOpeningDetail.Where(x => x.SeqNo == SeqNo);
 
             }
             string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
@@ -281,7 +281,7 @@ namespace eTactwebInventory.Controllers
                     foreach (var item in ItemDetailGrid)
                     {
                         Indx++;
-                        item.SrNO = Indx;
+                        item.SeqNo = Indx;
                     }
                     MainModel.HRLeaveOpeningDetailGrid = ItemDetailGrid;
 
@@ -311,7 +311,7 @@ namespace eTactwebInventory.Controllers
                     foreach (var item in HRLeaveOpeningDetail)
                     {
                         Indx++;
-                        item.SrNO = Indx;
+                        item.SeqNo = Indx;
                     }
                     MainModel.HRLeaveOpeningDetailGrid = HRLeaveOpeningDetail;
 
@@ -367,7 +367,7 @@ namespace eTactwebInventory.Controllers
                     Item.LeaveOpnEntryId??0,
                     Item.LeaveOpnYearCode??0,
                     Item.EmpId ?? 0,
-                    Item.SrNO ?? 0 ,
+                    Item.SeqNo ?? 0 ,
                     Item.LeaveId ?? 0,
                     Item.LeaveAccrualType ?? "",
                     Item.OpeningBalance ?? 0 ,

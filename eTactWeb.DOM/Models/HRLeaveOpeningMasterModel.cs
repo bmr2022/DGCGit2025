@@ -43,7 +43,7 @@ namespace eTactWeb.DOM.Models
     [Serializable]
     public class HRLeaveOpeningDetail: TimeStamp
     {
-        public int? SrNO { get; set; }
+        public int? SeqNo { get; set; }
         public int? LeaveOpnEntryId { get; set; }
         public int? EmpId { get; set; }
         public int? LeaveOpnYearCode { get; set; }
@@ -69,7 +69,7 @@ namespace eTactWeb.DOM.Models
     {
 
 
-        public int? SrNO { get; set; }
+        public int? SeqNo { get; set; }
         public int? LeaveOpnEntryId { get; set; }
         public string? EmpName { get; set; }
         public int? EmpId { get; set; }
