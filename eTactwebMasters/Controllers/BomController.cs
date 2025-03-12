@@ -704,7 +704,7 @@ public class BomController : Controller
     [HttpPost]
     public IActionResult UploadExcel(IFormFile excelFile)
     {
-        //ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
         List<BomViewModel> data = new List<BomViewModel>();
 
         using (var stream = excelFile.OpenReadStream())
