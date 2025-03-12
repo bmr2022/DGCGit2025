@@ -771,6 +771,10 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("ProdSchDate", typeof(string));
             DTSSGrid.Columns.Add("SchdeliveryDate", typeof(string));
             DTSSGrid.Columns.Add("CostCenterid", typeof(int));
+            DTSSGrid.Columns.Add("ProdUnProduced", typeof(string));
+            DTSSGrid.Columns.Add("BOMInd", typeof(string));
+            DTSSGrid.Columns.Add("CustJWmanadatory", typeof(string));
+            DTSSGrid.Columns.Add("StockableNonStockable", typeof(string));
             //DateTime DeliveryDt = new DateTime();
             foreach (var Item in DetailList)
             {
@@ -836,6 +840,10 @@ namespace eTactWeb.Controllers
                     Item.ProdSchDate == null ? string.Empty : common.CommonFunc.ParseFormattedDate(Item.ProdSchDate.Split(" ")[0]),
                     Item.SchdeliveryDate == null ? string.Empty : common.CommonFunc.ParseFormattedDate(Item.SchdeliveryDate.Split(" ")[0]),
                     Item.CostCenterId,
+                    Item.ProducedUnprod ?? string.Empty,
+                    Item.BOMInd ?? string.Empty,
+                    Item.CustJwAdjustmentMandatory ?? string.Empty,
+                    Item.StockableNonStockable ?? string.Empty,
                     });
             }
             DTSSGrid.Dispose();
