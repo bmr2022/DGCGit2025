@@ -991,6 +991,8 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetBatchNumber(int StoreId, string StoreName, int ItemCode, string TransDate, int YearCode, string BatchNo)
         {
             var FinStartDate = HttpContext.Session.GetString("FromDate");
+            FinStartDate = ParseFormattedDate(FinStartDate);
+            TransDate = ParseFormattedDate(TransDate);
             var JSON = await _IIssueNRGP.GetBatchNumber("FillCurrentBatchINStore", StoreId, FinStartDate, StoreName, ItemCode, TransDate, YearCode, BatchNo);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);

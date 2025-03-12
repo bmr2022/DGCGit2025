@@ -96,6 +96,7 @@ namespace eTactWeb.DOM.Models
         public decimal ItemNetAmount { get; set; }
 
         public string? CustJwAdjustmentMandatory { get; set; }
+        public string? StockableNonStockable { get; set; }
         public string? VendJwAdjustmentMandatory { get; set; }
     }
     public class SaleBillModel : SaleBillDetail
