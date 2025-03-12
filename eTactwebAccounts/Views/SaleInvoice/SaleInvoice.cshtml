@@ -1392,9 +1392,9 @@
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divSaleBillList').html(result);
                         var rowCount = $('#divSaleBillList tr').length;
-                         
+
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
-                       
+
                         $('#Uniquebatchno,#Batchno,#Qty').val(0);
                         $('#LotStock,#TotalStock').val("");
                         $('#BOMInd,#ProducedUnprod').val('');
@@ -1448,14 +1448,17 @@
                             "uniquebatchno": uniquebatchnoo,
                             "sono": sono
                         });
-                        for (var i = 1; i <= rowCount; i++) {
-                                if ($('#gridBomInd-'+i).text() == 'Bom') {
-                            $('#saleBillRow-' + i).css("background-color", "#f1fab9");
-                        } else {
-                                $('#saleBillRow-' + i).css("background-color", "#fab9e1");
+
+                        if ($('#SaleBillJobwork').val() == "J") {
+                            for (var i = 1; i <= rowCount; i++) {
+                                if ($('#gridBomInd-' + i).text() == 'Bom') {
+                                    $('#saleBillRow-' + i).css("background-color", "#f1fab9");
+                                } else {
+                                    $('#saleBillRow-' + i).css("background-color", "#fab9e1");
+                                }
+                            }
+                            FillCurrentBatchINStore();
                         }
-                        }
-                        FillCurrentBatchINStore();
                     }
 
                 },
