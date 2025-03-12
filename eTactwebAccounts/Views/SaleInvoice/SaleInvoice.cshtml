@@ -401,7 +401,7 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
-            debugger
+             
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
             } else {
@@ -678,9 +678,29 @@
             $('#PendingChallanListPopupModel').modal("hide");
         });
 
+        function ValidateAdjDetail(){
+            if($('#AccountCode').val() == 0){
+                $.notify('please enter AccountCode...!', "error");
+                return false;
+            }
+
+            if ($('#PartCode').val() == 0) {
+                $.notify('please enter PartCode...!', "error");
+                return false;
+            }
+
+            if ($('#ItemCode').val() == 0) {
+                $.notify('please enter ItemName...!', "error");
+                return false;
+            }
+
+            return true;
+        }
+
         $('#btnAdjustChallanListGrid').click(function (event) {
             event.preventDefault();
 
+          if (!ValidateAdjDetail()) return;
             var YearCode = $('#SaleBillYearCode').val();
             var EntryDate = $('#ChallanDate').val();
             var ChallanDate = $('#ChallanDate').val();
@@ -693,20 +713,20 @@
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
-                    ItemCode: row.find("td:eq(2)").text().trim(), // ItemCode
-                    Unit: row.find("td:eq(19)").text().trim(),
-                    BillQty: row.find("td:eq(10)").text().trim(),
-                    JWRate: row.find("td:eq(11)").text().trim(),
-                    ProcessId: row.find("td:eq(2)").text().trim(), // ProcoessId
-                    SONO: row.find("td:eq(3)").text().trim(),
-                    CustOrderNo: row.find("td:eq(5)").text().trim(),
-                    SOYearCode: row.find("td:eq(17)").text().trim(),
-                    SchNo: row.find("td:eq(6)").text().trim(),
-                    SchYearcode: row.find("td:eq(18)").text().trim(),
-                    BOMIND: "", // BOMIND
+                    ItemCode: row.find("td:eq(2) input").val().trim(), // ItemCode
+                    Unit: row.find("td:eq(21)").text().trim(),
+                    BillQty: row.find("td:eq(12)").text().trim(),
+                    JWRate: row.find("td:eq(13)").text().trim(),
+                    ProcessId: row.find("td:eq(29) input").val().trim(), // ProcoessId
+                    SONO: row.find("td:eq(5)").text().trim(),
+                    CustOrderNo: row.find("td:eq(7)").text().trim(),
+                    SOYearCode: row.find("td:eq(19)").text().trim(),
+                    SchNo: row.find("td:eq(8)").text().trim(),
+                    SchYearcode: row.find("td:eq(20)").text().trim(),
+                    BOMIND: row.find("td:eq(3)").text().trim(), // BOMIND
                     BOMNO: "", //BomNo
                     BOMEffDate: "", //Bom Eff Date
-                    Produnprod: "",
+                    Produnprod: row.find("td:eq(4)").text().trim(),
                     fromChallanOrSalebill: "",
                     ItemAdjustmentRequired: ""
                 };
@@ -935,7 +955,7 @@
         });
 
         function ResetPendQty() {
-            debugger
+             
             FillSOPendQty();
             var rowCount = $('#divSaleBillList tr').length;
             var totalBillQty = 0;
@@ -1113,6 +1133,26 @@
             }
             else {
                 RemoveErrorCls('PartCode');
+            }
+
+            if ($('#SaleBillJobwork').val() == "J") {
+                if ($('#BOMInd').prop('selectedIndex') == 0) {
+                    AddErrorCls('BOMInd');
+                    $.notify('please select BOM Ind...!', "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('BOMInd');
+                }
+                
+                if ($('#ProducedUnprod').prop('selectedIndex') == 0) {
+                    AddErrorCls('ProducedUnprod');
+                    $.notify('please select Produced Unprod...!', "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('ProducedUnprod');
+                }
             }
 
             if ($('#ItemCode').prop('selectedIndex') == 0) {
@@ -1513,7 +1553,7 @@
         }
 
         $('#ItemSA,#BOMInd').change(function () {
-            debugger
+             
             FillItems($('#TypeItemServAssets').val());
         });
 

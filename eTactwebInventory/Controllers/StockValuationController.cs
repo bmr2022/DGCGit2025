@@ -39,19 +39,42 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetStockValuationDetailsData(string FromDate, string ToDate,string StoreId,string ReportType)
+        public async Task<JsonResult> FillItemName(string FromDate, string CurrentDate)
+        {
+            var JSON = await _IStockValuation.FillItemName( FromDate, CurrentDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillPartCode(string FromDate, string CurrentDate)
+        {
+            var JSON = await _IStockValuation.FillPartCode( FromDate, CurrentDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<IActionResult> GetStockValuationDetailsData(string FromDate, string ToDate,string StoreId,string ReportType, int ItemCode)
         {
             var model = new StockValuationModel();
-            model = await _IStockValuation.GetStockValuationDetailsData(FromDate, ToDate, StoreId, ReportType);
+            model = await _IStockValuation.GetStockValuationDetailsData(FromDate, ToDate, StoreId, ReportType,  ItemCode);
           
             if (ReportType == "BatchWise Stock Valuation")
             {
                 return PartialView("_BatchWiseStockValuation", model);
             }
-            if (ReportType == "BatchWise Stock+WIP Valuation"|| ReportType == "BatchWise WIP Valuation")
+            if (ReportType == "BatchWise Stock+WIP Valuation")
             {
                 return PartialView("_BatchWiseStock+WIPValuation", model);
             }
+            if ( ReportType == "BatchWise WIP Valuation")
+            {
+                return PartialView("_BatchWiseWIPValuation", model);
+            }
+            
+            if (ReportType == "Stock Valuation")
+            {
+                return PartialView("_StockValuation", model);
+            }
+
             return null;
         }
     }

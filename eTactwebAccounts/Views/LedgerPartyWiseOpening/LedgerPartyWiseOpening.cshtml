@@ -616,7 +616,7 @@
         }
 
         function GetAllDataAccountCodeWise() {
-            debugger
+             
             var OpeningYearCode = $('#OpeningYearCode').val();
             var AccountCode = $('#AccountCode').val();
             $.ajax({
@@ -628,7 +628,7 @@
                 },
                 dataType: "json",
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result > 0) {
                         var EntryId = result;
                         var currentLocation = window.location.href;
@@ -678,7 +678,7 @@
         }
 
         $('#GridButton').click(function (){
-            debugger
+             
             console.log('Add to Grid button clicked');
             var BillNo = $('#BillNo').val().trim();
             var BillDate = $('#BillDate').val().trim();

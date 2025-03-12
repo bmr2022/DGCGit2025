@@ -204,12 +204,12 @@
         }
 
         function FillFGItemName() {
-            debugger
+             
             $.ajax({
                 url: '@Url.Action("FillFGItemName", "ConsumptionReport")',
                 type: 'GET',
                 success: function (response, status, error) {
-                    debugger
+                     
                     var FGItemNameDropdown = $('#FGItemName');
                     var obj = $.parseJSON(response);
                     FGItemNameDropdown.empty();
@@ -417,7 +417,7 @@
 
         }
         function GetConsumptionDetailsData() {
-              debugger
+               
             var reportType = $('#ReportType').val(); 
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
@@ -582,7 +582,7 @@
             });
         }
         function countAllTotal() {
-            debugger
+             
             var rowCount = $('#divStockRegisterBody tr').length;
            
             var TotQty = 0;

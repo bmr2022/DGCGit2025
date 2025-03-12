@@ -39,7 +39,7 @@ namespace eTactWeb.Controllers
             var MainModel = new PrimaryAccountGroupMasterModel();
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-           // MainModel.EnteredEMPID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.EnteredEMPID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             //MainModel.PrefixEntryId= Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
             _MemoryCache.Remove("PrimaryAccountGroupMasterGrid");

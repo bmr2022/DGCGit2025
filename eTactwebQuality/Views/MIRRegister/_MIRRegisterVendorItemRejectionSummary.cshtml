@@ -1,95 +1,99 @@
 ﻿@model eTactWeb.DOM.Models.MIRRegisterModel
 <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
-    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable" 
-    style="background-color: lightblue;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
         <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
             <tr>
-                <th>Action</th>
+
+                <th>Action VendSumm</th>
                 <th>Sr#</th>
+
                 <th data-columnno="1" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>No Of MRN
+                    </span>Vendor Name
                 </th>
-
-                <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>MRN ITEM
+                    </span>Item Name
                 </th>
-
-                <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>No Of QC
+                    </span>Part Code
                 </th>
-
                 <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>MIR ITEM
+                    </span>Bill Qty
                 </th>
-
-                <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Pend MRN For QC
+                    </span>Rec Qty
                 </th>
-
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Accep Qty
+                </th>
                 <th data-columnno="6" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Pend Item For QC
+                    </span>Rej Qty
                 </th>
-
-                <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <th data-columnno="6" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Total MRN Pending
+                    </span>Rew Qty
                 </th>
-
-                <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                <th data-columnno="6" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Total Item Pending
+                    </span>Hold Qty
                 </th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Unit
+                </th>
+            </tr>
 
-              </tr>
         </thead>
         <tbody id="divStockRegisterBody">
             @{
                 var @Cntr = 0;
                 if (Model.MIRRegisterDetail == null)
                 {
-                            <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
                 }
                 else
                 {
                     foreach (var item in Model.MIRRegisterDetail)
                     {
                         Cntr = Cntr + 1;
-                                    <tr id="SAGridRow-@Cntr">
-                                    <td>
+
+                        <tr id="SAGridRow-@Cntr">
+                            <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">
                                         <i class="fa fa-square fa-stack-2x"></i>
                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                     </span>
                                 </a>
-                                            </td>
-                        
-                                            <th>@Cntr</th>
-                            <td>@item.NoOfMRN</td>
-                            <td>@item.MRNITEM</td>
-                            <td>@item.NoOfQC</td>
-                            <td>@item.MIRITEM</td>
-                            <td>@item.PendMRNForQC</td>
-                            <td>@item.PendItemForQC</td>
-                            <td>@item.TotalMRNPending</td>
-                            <td>@item.TotalItemPending</td>
+                            </td>
+                            <th>@Cntr</th>
+                            <td>@item.VendorName</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.PartCode</td>
 
-
-
+                            <td id="Qty-@Cntr">@item.BillQty</td>
+                            <td id="RecQty-@Cntr">@item.RecQty</td>
+                            <td id="Qty-@Cntr">@item.AcceptedQty</td>
+                            <td id="Amount-@Cntr">@item.RecQty</td>
+                            <td id="Amount-@Cntr">@item.Reworkqty</td>
+                            <td id="Amount-@Cntr">@item.HoldQty</td>
+                            <td>@item.Unit</td>
                         </tr>
                     }
                 }
@@ -116,6 +120,7 @@
         font-size: 15px;
         vertical-align: super;
     }
+
     #dashRThead th {
         background-color: #127387;
         position: sticky;

@@ -193,7 +193,7 @@
         }
        
         function FillRMItemName() {
-            debugger
+             
             $.ajax({
                 url: '@Url.Action("FillRMItemName", "InventoryAgingReport")',
                 type: 'GET',
@@ -225,7 +225,7 @@
 
         }
         function FillRMPartCode() {
-            debugger
+             
             $.ajax({
                 url: '@Url.Action("FillRMPartCode", "InventoryAgingReport")',
                 type: 'GET',
@@ -256,7 +256,7 @@
 
         }
         $(document).on('select2:select', '#RMItemName,#RMPartCode', function (e) {
-            debugger
+             
             var cntId = e.target.id;
             if (cntId == 'RMItemName') {
                 RMItemNameChange(cntId);
@@ -349,7 +349,7 @@
 
         }
         function GetInventoryAgingDetailsData() {
-            debugger
+             
             var reportType = $('#ReportType').val();
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
@@ -503,7 +503,7 @@
             });
         }
         function countAllTotal() {
-            debugger
+             
             var rowCount = $('#divStockRegisterBody tr').length;
 
             var TotQty = 0;

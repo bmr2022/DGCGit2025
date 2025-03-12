@@ -1605,22 +1605,22 @@ public class TaxController : Controller
 
         switch (TxPageName)
         {
-            case "ItemList":
-                HttpContext.Session.Get(TxPageName);
-                MainModel = new SaleOrderModel();
-                MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxPageName));
-                MainModel.AccountCode = AC;
-                MainModel.TxPageName = TxPageName;
-                MainModel.TxRoundOff = RF;
-                isSuccess = ValidateHsnTax(MainModel);
-                if (isSuccess != "SuccessFull")
-                {
-                    return Content(isSuccess);
-                }
-                TaxGrid = await GetHSNTaxList(MainModel);
-                break;
+			case "ItemList":
+				HttpContext.Session.Get(TxPageName);
+				MainModel = new SaleOrderModel();
+				MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxPageName));
+				MainModel.AccountCode = AC;
+				MainModel.TxPageName = TxPageName;
+				MainModel.TxRoundOff = RF;
+				isSuccess = ValidateHsnTax(MainModel);
+				if (isSuccess != "SuccessFull")
+				{
+					return Content(isSuccess);
+				}
+				TaxGrid = await GetHSNTaxList(MainModel);
+				break;
 
-            case "PurchaseOrder":
+			case "PurchaseOrder":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
                 MainModel.AccountCode = AC;

@@ -31,7 +31,7 @@ namespace eTactWeb.Controllers
         {
             var model = new ConsumptionReportModel();
             model.ConsumptionReportGrid = new List<ConsumptionReportModel>();
-            model.YearCode= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            //model.YearCode= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             return View(model);
         }
 

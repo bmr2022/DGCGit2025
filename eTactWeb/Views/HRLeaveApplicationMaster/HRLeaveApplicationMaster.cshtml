@@ -466,7 +466,7 @@
 
         var AccountStateCode = 0;
         $('#submitBTN').click(function (e) {
-            debugger;
+             ;
             e.preventDefault();
 
             $("form").submit();
@@ -683,7 +683,7 @@
         }
 
         function GetEmployeeDetail() {
-            debugger;
+             ;
             var empId = $("#EmpName").val().trim();
             if (!empId) return;
 
@@ -794,7 +794,7 @@
         }
 
         function FillEntryID() {
-            debugger
+             
             var YearCode = $("#LeaveAppYearCode").val();
             $.ajax({
                 url: '@Url.Action("FillEntryId", "HRLeaveApplicationMaster")',
@@ -984,7 +984,7 @@
 
 
         function Validate_LeaveApplicationGrid() {
-            debugger;
+             ;
             var Err = 0;
 
             let fromDate = document.getElementById("FromDate").value;
@@ -1215,7 +1215,7 @@
 
         var editingNow = false;
         function EditItemRow(SeqNo) {
-            debugger
+             
             if (editingNow == false) {
 
                 return new Promise((resolve, reject) => {

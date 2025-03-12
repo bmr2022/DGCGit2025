@@ -515,16 +515,19 @@ $(document).ready(function () {
                         url: "@Url.Action("GetBranchName","Home")",
                         data: {companyName: comName},
                         dataType: "json",
-                        success: function (result, status, error) {
+                        success: function (result, status, error) 
+                        {
                              
                             $('#Unit').empty();
                             $('#Unit').append('<option selected disabled>-Select-</option>');
                             console.log(result);
                             for(var i=0;i<result.length;i++){
-                                if ($('#hiddenUnit').val() == result[i]) {
+                                if ($('#hiddenUnit').val() == result[i]) 
+                                {
                                     $('#Unit').append('<option value="'+result[i]+'" selected>'+result[i]+'</option>');
                                 }
-                                else {
+                                else
+                                {
                                     $('#Unit').append('<option value="'+result[i]+'">'+result[i]+'</option>');
                                 }
                                 
@@ -532,6 +535,7 @@ $(document).ready(function () {
                             var unit = $('#Unit').find(':selected').val();
                             
                              GetYearCode(unit,comName);
+                             fillUnitandYC(serverName,companyName);
                         },
                         error: function(xhr, status, error) {
                             console.log("Error: " + error);
