@@ -1552,19 +1552,89 @@
             }
         }
 
-        $('#ItemSA,#BOMInd').change(function () {
-             
+        $('#ItemSA').change(function () {
             FillItems($('#TypeItemServAssets').val());
+            JWItemList($('#TypeItemServAssets').val());
         });
 
-        // var sonoItems = [];
-        function FillItems(itemType) {
-            var sbJobWork = $('#SaleBillJobwork').val() == 'J'  ? "JOBWORK-SALEBILL" : "";
+        $('#BOMInd').change(function () {
+            JWItemList($('#TypeItemServAssets').val());
+        });
+
+        function JWItemList(itemType){
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
             $.ajax({
                 type: "POST",
-                data: { "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "showAll": showAll, "TypeItemServAssets": itemType, "bomInd": $('#BOMInd').val(), "sbJobWork": sbJobWork },
-                url: "@Url.Action("FillItems","SaleBill")",
+                data: { "typeItemServAssets": itemType, "showAll": showAll, "bomInd": $('#BOMInd').val() },
+                url: "@Url.Action("JWItemList")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#PartCode').empty();
+                        $('#PartCode').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                // sonoItems.push({
+                                //     itemCode: val.itemcode
+                                // });
+                                $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
+                            });
+                        }
+                        $('#ItemCode').empty();
+                        $('#ItemCode').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.ItemName + "</option>");
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillSOWiseItems(){
+            $.ajax({
+                type: "POST",
+                data: { "invoiceDate": $('#SaleBillDate').val(), "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "sbJobWork": "SaleBill" },
+                url: "@Url.Action("FillSOWiseItems")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#PartCode').empty();
+                        $('#PartCode').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                // sonoItems.push({
+                                //     itemCode: val.itemcode
+                                // });
+                                $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
+                            });
+                        }
+                        $('#ItemCode').empty();
+                        $('#ItemCode').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.ItemName + "</option>");
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        // var sonoItems = [];
+        function FillItems(itemType) {
+            var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
+            $.ajax({
+                type: "POST",
+                data: {  "showAll": showAll, "TypeItemServAssets": itemType, "sbJobWork": "SaleBill" },
+                url: "@Url.Action("FillItems")",
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -1954,7 +2024,16 @@
                                 FillSOSchedule();
                                 FillSchYearCode();
                                 $('#SaleSchYearCode').trigger("change");
-                                FillItems($('#TypeItemServAssets').val());
+                                // FillItems($('#TypeItemServAssets').val());
+                                if ($('#SaleBillJobwork').val() == 'J') {
+                                    JWItemList($('#TypeItemServAssets').val());
+                                }
+                                if ($('#SONO').val() == '') {
+                                    FillItems($('#TypeItemServAssets').val());
+                                } else {
+                                    FillSOWiseItems();
+                                }
+
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                                 $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                 FillCurrentBatchINStore();
@@ -2468,7 +2547,11 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-            FillItems($('#TypeItemServAssets').val());
+            if ($('#SaleBillJobwork').val() == 'J') {
+                JWItemList($('#TypeItemServAssets').val());
+            } else {
+                FillSOWiseItems();
+            }
             FILLCustomerOrderAndSPDate();
             FillSOItemRate();
 
@@ -2483,6 +2566,7 @@
 
         $('#TypeItemServAssets').change(function () {
             FillItems($(this).val());
+            JWItemList($(this).val());
         });
 
         function FillSOYearCode() {

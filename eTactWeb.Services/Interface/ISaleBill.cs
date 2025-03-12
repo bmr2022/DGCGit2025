@@ -1,4 +1,5 @@
 ﻿using eTactWeb.DOM.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillConsigneeList(string showAllConsignee);
         Task<ResponseResult> FillSOYearCode(string sono,string accountCode);
         Task<ResponseResult> DisplaySODetail(string accountName, string itemName, string partCode, string sono, int soYearCode, string custOrderNo, string schNo, int schYearCode);
-        Task<ResponseResult> FillItems(string sono,int soYearCode,int accountCode, string showAll, string TypeItemServAssets,string bomInd,string sbJobWork);
+        Task<ResponseResult> FillItems(string showAll, string TypeItemServAssets,string sbJobWork);
+        Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string sbJobWork);
+        Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd);
         Task<ResponseResult> FillStore();
         Task<ResponseResult> AllowTaxPassword();
         Task<ResponseResult> FillSOPendQty(int saleBillEntryId, string saleBillNo, int saleBillYearCode,string sono, int soYearcode, string custOrderNo, int itemCode, int accountCode, string schNo, int schYearCode);
