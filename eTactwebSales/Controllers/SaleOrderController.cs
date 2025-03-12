@@ -454,9 +454,9 @@ public class SaleOrderController : Controller
 		_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
 		int Indx = Convert.ToInt32(SeqNo) - 1;
 
-		if (HttpContext.Session.GetString("ItemList") != null)
+		if (_MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetailGrid) != null)
 		{
-			model.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString("ItemList"));
+			model.ItemDetailGrid = ItemDetailGrid;
 
 			var itemfound = model.ItemDetailGrid.FirstOrDefault(item => item.SeqNo == Convert.ToInt32(SeqNo)).PartCode;
 
@@ -485,15 +485,15 @@ public class SaleOrderController : Controller
 				item.SeqNo = Indx;
 			}
 			model.ItemNetAmount = model.ItemDetailGrid.Sum(x => x.Amount);
-			if (model.ItemDetailGrid.Count <= 0)
-			{
-				HttpContext.Session.Remove("ItemList");
-				_MemoryCache.Remove("ItemList");
-			}
-			else
-			{
-				HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
-			}
+			//if (model.ItemDetailGrid.Count <= 0)
+			//{
+			//	HttpContext.Session.Remove("ItemList");
+			//	_MemoryCache.Remove("ItemList");
+			//}
+			//else
+			//{
+			//	HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
+			//}
 		}
 		return PartialView("_SaleItemGrid", model);
 	}
@@ -563,6 +563,7 @@ public class SaleOrderController : Controller
 		MainModel.Branch = HttpContext.Session.GetString("Branch");
 
 		_MemoryCache.Set("ItemList", MainModel, DateTimeOffset.Now.AddMinutes(60));
+		HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
 		_MemoryCache.Set("KeyTaxGrid", taxList, DateTimeOffset.Now.AddMinutes(60));
 		HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel));
 		_MemoryCache.TryGetValue("ItemList", out MainModel);
@@ -738,6 +739,7 @@ public class SaleOrderController : Controller
 				};
 
 				_MemoryCache.Set("ItemList", MainModel.ItemDetailGrid, cacheEntryOptions);
+				HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
 			}
 			else
 			{
@@ -842,6 +844,7 @@ public class SaleOrderController : Controller
 			if (model.ItemDetailGrid?.Count != 0 && model.ItemDetailGrid != null)
 			{
 				_MemoryCache.Set("ItemList", model.ItemDetailGrid);
+				HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(model.ItemDetailGrid));
 				//_MemoryCache.Set("ItemList", model);
 			}
 
