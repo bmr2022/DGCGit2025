@@ -1774,9 +1774,9 @@
 			 
 			var minDate = $('#SODate').val();
 			//$('#WEF').datepicker("setDate", parseDateToFormat(minDate));
-			$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", minDate);
+			$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(minDate));
 
-			$('#WEF').datepicker("option", "minDate", minDate);
+			$('#WEF').datepicker("option", "minDate", parseDateToFormat(minDate));
 		}
 
 		$('#WEF').change(function () {
