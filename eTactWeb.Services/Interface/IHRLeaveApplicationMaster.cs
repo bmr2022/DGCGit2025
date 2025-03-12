@@ -19,5 +19,14 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetEmployeeDetail(int empid);
 
         Task<ResponseResult> SaveData(HRLeaveApplicationMasterModel model, DataTable DT);
+
+        Task<ResponseResult> GetDashboardData();
+        Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate);
+
+        Task<HRLeaveApplicationMasterModel> GetViewByID(int id, int year);
+
+        Task<ResponseResult> DeleteByID(int Id, int year);
+
+
     }
 }

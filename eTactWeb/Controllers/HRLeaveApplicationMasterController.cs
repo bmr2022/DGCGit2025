@@ -45,29 +45,33 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> HRLeaveApplicationMaster(string Mode,int ID)//, ILogger logger)
+        public async Task<ActionResult> HRLeaveApplicationMaster(string Mode,int ID,int year)//, ILogger logger)
         {
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new HRLeaveApplicationMasterModel();
+            
             _MemoryCache.Remove("KeyLeaveApplicationGrid");
-            //if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
-            //{
-            //    MainModel = await _IHRLeaveApplicationMaster.GetViewByID(ItemCode).ConfigureAwait(false);
-            //    MainModel.Mode = Mode;
-            //    MainModel.ItemCode = ItemCode;
-            //    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            //    {
-            //        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-            //        SlidingExpiration = TimeSpan.FromMinutes(55),
-            //        Size = 1024,
-            //    };
-            //    _MemoryCache.Set("KeyLeaveApplicationGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
-            //}
-            //else
-            //{
-            //    // MainModel = await BindModel(MainModel);
-            //}
+            MainModel.Mode = Mode;
+           year= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.LeaveAppEntryId = ID;
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                MainModel = await _IHRLeaveApplicationMaster.GetViewByID(ID, year).ConfigureAwait(false);
+                MainModel.Mode = Mode;
+                MainModel.LeaveAppYearCode = year;
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+                _MemoryCache.Set("KeyLeaveApplicationGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+            }
+            else
+            {
+                // MainModel = await BindModel(MainModel);
+            }
 
             if (Mode == "U")
             {
@@ -453,7 +457,7 @@ namespace eTactWeb.Controllers
                     //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                     model1.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-                    return RedirectToAction(nameof(HRLeaveApplicationMaster));
+                    return RedirectToAction(nameof(HRLeaveApplicationMasterDashBoard));
                 }
             }
             catch (Exception ex)
@@ -470,6 +474,80 @@ namespace eTactWeb.Controllers
 
                 return View("Error", ResponseResult);
             }
+        }
+
+
+        [HttpGet]
+        [Route("HRLeaveApplicationMasterDashBoard")]
+        public async Task<IActionResult> HRLeaveApplicationMasterDashBoard()
+        {
+            try
+            {
+                var model = new HRLeaveApplicationDashBoard();
+                var result = await _IHRLeaveApplicationMaster.GetDashboardData().ConfigureAwait(true);
+                DateTime now = DateTime.Now;
+
+                if (result != null && result.Result != null)
+                {
+                    DataSet ds = result.Result;
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        var dt = ds.Tables[0];
+                        model.HRLeaveApplicationDashBoardDetail = CommonFunc.DataTableToList<HRLeaveApplicationDashBoard>(dt, "HRLeaveApplicationMaster");
+                    }
+
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<IActionResult> GetDetailData(string ReportType, string FromDate, string ToDate)
+        {
+            //model.Mode = "Search";
+            var model = new HRLeaveApplicationDashBoard();
+            model = await _IHRLeaveApplicationMaster.GetDashboardDetailData(ReportType, FromDate, ToDate);
+
+
+            if (ReportType == "SUMMARY")
+            {
+                return PartialView("_HRLeaveAppDashBoardSummaryGrid", model);
+            }
+            else if (ReportType == "DETAIL")
+            {
+                return PartialView("_HRLeaveAppDashBoardDetailGrid", model);
+
+            }
+            return null;
+        }
+
+
+        public async Task<IActionResult> DeleteByID(int ID, int year)
+        {
+            var Result = await _IHRLeaveApplicationMaster.DeleteByID(ID, year);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+                //TempData["Message"] = "Data deleted successfully.";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("HRLeaveApplicationMasterDashBoard");
+
         }
 
 
