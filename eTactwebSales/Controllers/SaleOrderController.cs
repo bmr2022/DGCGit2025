@@ -336,10 +336,10 @@ public class SaleOrderController : Controller
 		model.SONoList = _List;
 		model.CC = HttpContext.Session.GetString("Branch");
 		model.Year = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-		model.FromDate = new DateTime(DateTime.Today.Year, 4, 1).ToString("dd/MM/yyyy").Replace("-", "/"); // 1st Feb this year
-		model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");//.AddDays(-1); // Last day in January next year
+		model.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy");
+        model.ToDate = DateTime.Now.ToString("dd/MM/yyyy");
 
-		return View(model);
+        return View(model);
 	}
 
 	public async Task<IActionResult> DeleteByID(int ID, int YC)

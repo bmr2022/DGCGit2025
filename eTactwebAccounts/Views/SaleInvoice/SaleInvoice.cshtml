@@ -401,7 +401,7 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
-            debugger
+             
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
             } else {
@@ -955,7 +955,7 @@
         });
 
         function ResetPendQty() {
-            debugger
+             
             FillSOPendQty();
             var rowCount = $('#divSaleBillList tr').length;
             var totalBillQty = 0;
@@ -1553,7 +1553,7 @@
         }
 
         $('#ItemSA,#BOMInd').change(function () {
-            debugger
+             
             FillItems($('#TypeItemServAssets').val());
         });
 

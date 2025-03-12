@@ -1374,7 +1374,7 @@
 		}
 
 		$(document).ready(function () {
-			
+			 
 			$('#AccountCode').select2();
 			//$('#MBillToAccountCode').select2();
 			$('#PartCode').select2();
@@ -1462,7 +1462,7 @@
 
 			//$("#AmmDate").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker();
 
-			$('#AmmEffDate').val(parseDateToFormat($('#AmmEffDate').val().split(' ')[0]));
+			$('#AmmEffDate').val($('#AmmEffDate').val().split(' ')[0]);
 			$('#QDate').val(parseDateToFormat($('#QDate').val().split(' ')[0]));
 			$('#SODate').val(parseDateToFormat($('#SODate').val().split(' ')[0]));
 			// $('#WEF').val($('#WEF').val().split(' ')[0]);
@@ -1554,13 +1554,13 @@
 		//             $('#SODate').datepicker({
 		//     dateFormat: 'dd/mm/yy' // Set date format
 		// }).datepicker('setDate', new Date());
-			var formattedDate = ('0' + date.getDate()).slice(-2) + '/' +
-							('0' + (date.getMonth() + 1)).slice(-2) + '/' +
-							date.getFullYear();
+		// 	var formattedDate = ('0' + date.getDate()).slice(-2) + '/' +
+		// 		('0' + (date.getMonth() + 1)).slice(-2) + '/' +
+		// 		date.getFullYear();
 
-		$('#SODate').datepicker({
-			dateFormat: 'dd/mm/yy'
-		}).val(formattedDate);
+		// $('#SODate').datepicker({
+		// 	dateFormat: 'dd/mm/yy'
+		// }).val(formattedDate);
 
 			var formattedWEF = WEFParts[0] + "/" + monthNames[WEFParts[1]] + "/" + WEFParts[2];
 			var formattedSOCLOSE = soCloseDateparts[0] + "/" + monthNames[soCloseDateparts[1]] + "/" + soCloseDateparts[2];
@@ -1771,17 +1771,17 @@
 		//});
 
 		function WEFDateChange() {
-
+			 
 			var minDate = $('#SODate').val();
 			//$('#WEF').datepicker("setDate", parseDateToFormat(minDate));
-			$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(minDate));
+			$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", minDate);
 
-			$('#WEF').datepicker("option", "minDate", parseDateToFormat(minDate));
+			$('#WEF').datepicker("option", "minDate", minDate);
 		}
 
 		$('#WEF').change(function () {
 			var wefDate = $('#WEF').datepicker('getDate');
-			var socloseDate = parseDateToFormat(wefDate);
+			var socloseDate = wefDate;
 			socloseDate.setFullYear(socloseDate.getFullYear() + 1);
 			//$("#SOCloseDate").datepicker('option', 'minDate', socloseDate);
 		});
@@ -2625,7 +2625,7 @@
 
 		$('.ItemBtn').click(function () 
 		{
-			debugger
+			 
 			if ($('#PartCode').prop('selectedIndex') == 0)
 			{
 				AddErrorCls('PartCode');
@@ -2756,7 +2756,7 @@
 				"ProjQty2": $('#ProjQty2').val(),
 			}
 			alert('before itemgrid');
-			debugger
+			 
 			console.log(ItemData);
 			$.ajax({
 				url: '@Url.Action("ItemGrid")',
@@ -2767,7 +2767,7 @@
 					console.log(1);
 				},
 				success: function (data, status, xhr) {
-					debugger
+					 
 					console.log(2);
 					if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
 						$.notify('Duplicate Item Not Allowed.', "info");
@@ -2924,14 +2924,14 @@
 		let Dat = "";
 
 		async function EditItemRow(SeqNo) {
-			debugger
+			 
 			var PartCode = $('#PartCode').val();
 			$.ajax({
 				url: '@Url.Action("EditItemRow")',
 				type: "POST",
 				data: { PartCode: PartCode, SeqNo: SeqNo },
 				success: function (data, status, xhr) {
-					debugger
+					 
 					if (data == "Duplicate" && (xhr.statusCode == 207 || xhr.responseText == "Duplicate")) {
 						$.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
 					}
@@ -3108,7 +3108,7 @@
 		}
 
 		async function GetTaxPartItem() {
-			debugger
+			 
 			$.ajax({
 				type: "GET",
 				//url: "@Url.Action("GetTaxPartItem")",

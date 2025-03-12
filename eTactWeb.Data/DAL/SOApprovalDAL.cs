@@ -41,8 +41,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@UId", UId));
                 SqlParams.Add(new SqlParameter("@SONO", SONO));
                 SqlParams.Add(new SqlParameter("@AccountName", AccountName));
-                SqlParams.Add(new SqlParameter("@Fromdate", firstDayOfMonth));
-                SqlParams.Add(new SqlParameter("@ToDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@Fromdate", ParseFormattedDate(firstDayOfMonth.ToString())));
+                SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(DateTime.Today.ToString())));
 
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ApproveUnapproveSaleOrder", SqlParams);
@@ -62,8 +62,8 @@ namespace eTactWeb.Data.DAL
             {
                 //DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 //DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                String fromdt = ConvertToDesiredFormat(FromDate);
-                String todt = ConvertToDesiredFormat(ToDate);
+                String fromdt = ParseFormattedDate(FromDate);
+                String todt = ParseFormattedDate(ToDate);
                 var SqlParams = new List<dynamic>();
                 if(ApprovalType == "UnAppSO")
                 SqlParams.Add(new SqlParameter("@Flag", "UNAPPROVEDSOSUMM"));

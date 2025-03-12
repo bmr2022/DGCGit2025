@@ -429,7 +429,7 @@
 
         var AccountStateCode = 0;
         $('#submitBTN').click(function (e) {
-            debugger;
+             ;
             e.preventDefault();
            
             $("form").submit();
@@ -668,7 +668,7 @@
         }
 
         function GetEmployeeDepartment() {
-            debugger;
+             ;
             var empId = $("#EmpName").val().trim();
             if (!empId) return;
 
@@ -710,7 +710,7 @@
         }
 
         function GetEmployeeDesignation() {
-            debugger;
+             ;
             var empId = $("#EmpName").val().trim();
             if (!empId) return;
 
@@ -1181,7 +1181,7 @@
 
         var editingNow = false;
         function EditItemRow(SeqNo) {
-            debugger;
+             ;
 
             if (editingNow) {
                 $.notify('Cannot edit item while another item is being added to the grid!', "error");
@@ -1243,7 +1243,7 @@
 
         isEditOperationAllowed = "false";
         function DeleteItemFromGrid(SeqNo) {
-            debugger;
+             ;
 
             return new Promise((resolve, reject) => {
                 $.ajax({
