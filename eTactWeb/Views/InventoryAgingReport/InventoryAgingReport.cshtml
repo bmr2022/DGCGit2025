@@ -170,17 +170,53 @@
             FillRMItemName();
             FillWorkCenterName();
             FillStoreName();
-            GetInventoryAgingDetailsData();
+            //GetInventoryAgingDetailsData();
             // handleReportType();
+
+            function applyBackgroundColor() {
+                debugger
+                var reportType = $('#ReportType').val();
+
+                $("#divStockRegisterBody tr").each(function () {
+                    if (reportType == "Aging(Detail)") {
+                        $(this).css("background-color", "#e5ccff");
+                    }
+                    // else if (reportType == "BatchWise Stock+WIP Valuation") {
+                    //     $(this).css("background-color", "#fff0b3");
+                    // }
+                   
+                    else {
+                        $(this).css("background-color", "antiquewhite");
+                    }
+                });
+            }
+
+
+            $(document).on('click', '#divStockRegisterBody tr', function () {
+
+                $("#divStockRegisterBody tr").each(function () {
+                    var reportType = $('#ReportType').val();
+
+                    if (reportType == "Aging(Detail)") {
+                        $(this).css("background-color", "#e5ccff");
+                    }
+                    // else if (reportType == "BatchWise Stock+WIP Valuation") {
+                    //     $(this).css("background-color", "#fff0b3"); // Light Yellow
+                    // }
+                   
+                });
+                $(this).css({ 'background-color': '#00bcd4' });
+            });
+            applyBackgroundColor();
         });
 
         $('#ReportType').change(function () {
-           GetInventoryAgingDetailsData();
+          // GetInventoryAgingDetailsData();
         });
 
 
         $('#StoreName').change(function () {
-           GetInventoryAgingDetailsData();
+           //GetInventoryAgingDetailsData();
         });
 
 

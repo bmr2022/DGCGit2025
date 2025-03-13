@@ -160,15 +160,20 @@ namespace eTactWeb.Data.DAL
                                                                 BatchNo = row["Batchno"] != DBNull.Value ? row["Batchno"].ToString() : string.Empty,
                                                                 UniqueBatchNo = row["Uniquebatchno"] != DBNull.Value ? row["Uniquebatchno"].ToString() : string.Empty,
                                                                 Rate = row["Rate"] != DBNull.Value ? Convert.ToDecimal(row["Rate"]) : 0,
-                                                                TotalValue = row["TotalValue"] != DBNull.Value ? Convert.ToDecimal(row["TotalValue"]) : 0,
+                                                                //TotalValue = row["TotalValue"] != DBNull.Value ? Convert.ToDecimal(row["TotalValue"]) : 0,
                                                                 Unit = row["Unit"] != DBNull.Value ? row["Unit"].ToString() : string.Empty,
                                                                 PartyName = row["PartyName"] != DBNull.Value ? row["PartyName"].ToString() : string.Empty,
-                                                                LastMovementDate = row["LastMovementDate"] != DBNull.Value ? Convert.ToDateTime(row["LastMovementDate"]).ToString("dd/MM/yyyy") : string.Empty,
-                                                                InvDays = row["InvDays"] != DBNull.Value ? Convert.ToInt32(row["InvDays"]) : 0,
-                                                                AgingStatus = row["AgingStatus"] != DBNull.Value ? row["AgingStatus"].ToString() : string.Empty,
-                                                                AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
-                                                                ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0
-
+                                                                //LastMovementDate = row["LastMovementDate"] != DBNull.Value ? Convert.ToDateTime(row["LastMovementDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                                                                //InvDays = row["InvDays"] != DBNull.Value ? Convert.ToInt32(row["InvDays"]) : 0,
+                                                                //AgingStatus = row["AgingStatus"] != DBNull.Value ? row["AgingStatus"].ToString() : string.Empty,
+                                                                //AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
+                                                                //ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0
+                                                                Aging_0_30 = row["0-30"] != DBNull.Value ? Convert.ToInt32(row["0-30"]) : 0,
+                                                                Aging_31_60 = row["31-60"] != DBNull.Value ? Convert.ToInt32(row["31-60"]) : 0,
+                                                                Aging_61_90 = row["61-90"] != DBNull.Value ? Convert.ToInt32(row["61-90"]) : 0,
+                                                                Aging_90_180 = row["90-180"] != DBNull.Value ? Convert.ToInt32(row["90-180"]) : 0,
+                                                                Aging_180_360 = row["180-360"] != DBNull.Value ? Convert.ToInt32(row["180-360"]) : 0,
+                                                                Aging_Above360 = row[">360"] != DBNull.Value ? Convert.ToInt32(row[">360"]) : 0
                                                             }).ToList();
                     }
                 }
@@ -183,6 +188,8 @@ namespace eTactWeb.Data.DAL
                                                             {
                                                                 PartCode = row["PartCode"] != DBNull.Value ? row["PartCode"].ToString() : string.Empty,
                                                                 ItemName = row["ItemName"] != DBNull.Value ? row["ItemName"].ToString() : string.Empty,
+                                                                StoreStock = row["StoreStock"] != DBNull.Value ? Convert.ToInt32(row["StoreStock"]) : 0,
+                                                                WIPStock = row["WIPStock"] != DBNull.Value ? Convert.ToInt32(row["WIPStock"]) : 0,
                                                                 MRNNo = row["MRNNo"] != DBNull.Value ? row["MRNNo"].ToString() : string.Empty,
                                                                 MRNEntryDate = row["MRNEntryDate"] != DBNull.Value ? Convert.ToDateTime(row["MRNEntryDate"]).ToString("dd/MM/yyyy") : string.Empty,
                                                                 PONo = row["pono"] != DBNull.Value ? row["pono"].ToString() : string.Empty,
@@ -198,8 +205,8 @@ namespace eTactWeb.Data.DAL
                                                                 InvDays = row["InvDays"] != DBNull.Value ? Convert.ToInt32(row["InvDays"]) : 0,
                                                                 AgingStatus = row["AgingStatus"] != DBNull.Value ? row["AgingStatus"].ToString() : string.Empty,
                                                                 AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
-                                                                ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0
-
+                                                                ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
+                                                                
                                                             }).ToList();
                     }
                 }
