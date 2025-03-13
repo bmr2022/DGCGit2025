@@ -207,6 +207,36 @@ namespace eTactWeb.Controllers
             var model = new PrimaryAccountGroupMasterDashBoardModel();
             model = await _IPrimaryAccountGroupMaster.GetDashboardDetailData();
             return PartialView("_PrimaryAccountGroupMasterDashBoardGrid", model);
+
+        }
+        public async Task<IActionResult> DeleteByID (int AccountCode)
+        {
+            var Result = await _IPrimaryAccountGroupMaster.DeleteByID( AccountCode);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+                ///TempData["ErrorMessage"] = Result.StatusText;
+            }
+            else if (Result.StatusCode == HttpStatusCode.BadRequest) 
+            {
+                ViewBag.isSuccess = false;
+                TempData["ErrorMessage"] = Result.StatusText; 
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("PrimaryAccountGroupMasterDashBoard");
+
         }
     }
 }

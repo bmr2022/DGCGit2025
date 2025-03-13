@@ -286,5 +286,37 @@ namespace eTactWeb.Data.DAL
                 throw;
             }
         }
+        public async Task<ResponseResult> DeleteByID( int AccountCode)
+        {
+            //var _ResponseResult = new ResponseResult();
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                //_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpPrimaryAccountHeadMaster", SqlParams);
+                var response = await _IDataLogic.ExecuteDataTable("AccSpPrimaryAccountHeadMaster", SqlParams);
+
+                if (response.Result is DataTable dt && dt.Rows.Count > 0)
+                {
+                    _ResponseResult.StatusCode = (HttpStatusCode)Convert.ToInt32(dt.Rows[0]["StatusCode"]);
+                    _ResponseResult.StatusText = dt.Rows[0]["StatusText"].ToString();
+
+                    if (dt.Columns.Contains("msg"))
+                    {
+                        _ResponseResult.StatusText = dt.Rows[0]["msg"].ToString(); // Extract error message
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }

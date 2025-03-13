@@ -36,31 +36,38 @@
                 <th data-columnno="10" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate
                 </th>
-                <th data-columnno="11" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Value
-                </th>
+                
                 <th data-columnno="12" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit
                 </th>
                 <th data-columnno="13" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Party Name
                 </th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Movement Date
-                </th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Inventory Days
-                </th>
-                <th data-columnno="16" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Aging Status
-                </th>
-                <th data-columnno="17" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Code
-                </th>
-                <th data-columnno="18" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Code
-                </th>
                
+                <th data-columnno="19" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>0-30 Days
+                </th>
+
+                <th data-columnno="20" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>31-60 Days
+                </th>
+
+                <th data-columnno="21" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>61-90 Days
+                </th>
+
+                <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>90-180 Days
+                </th>
+
+                <th data-columnno="23" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>180-360 Days
+                </th>
+
+                <th data-columnno="24" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>>360 Days
+                </th>
+
 
             </tr>
         </thead>
@@ -97,14 +104,16 @@
                             <td>@item.BatchNo</td>
                             <td>@item.UniqueBatchNo</td>
                             <td>@item.Rate</td>
-                            <td>@item.TotalValue</td>
+                           
                             <td>@item.Unit</td>
                             <td>@item.PartyName</td>
-                            <td>@item.LastMovementDate</td>
-                            <td>@item.InvDays</td>
-                            <td>@item.AgingStatus</td>
-                            <td>@item.AccountCode</td>
-                            <td>@item.ItemCode</td>
+                           
+                            <td>@item.Aging_0_30</td>
+                            <td>@item.Aging_31_60</td>
+                            <td>@item.Aging_61_90</td>
+                            <td>@item.Aging_90_180</td>
+                            <td>@item.Aging_180_360</td>
+                            <td>@item.Aging_Above360</td>
 
 
 

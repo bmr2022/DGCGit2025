@@ -208,12 +208,12 @@
                                     <input asp-for="ChallanNo" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="ChallanDate" class="form-label" style="color: red;">Challan Date*</label>
+                                    <label asp-for="ChallanDate" class="form-label" style="color: red;">Date*</label>
                                     <input asp-for="ChallanDate" class="form-control" readonly />
                                 </div>
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToStore">
-                                    <label asp-for="AccountCode" class="control-label" style="color: red;">Vendor Name*</label>
+                                    <label asp-for="AccountCode" class="control-label" style="color: red;">Vendor*</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
                                         <input type="hidden" value="@Model.AccountCode-@Model.AccountName" id="hiddenAccountCode" />
@@ -241,7 +241,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="DocTypeCode" class="form-label" style="color: red;">Doc Type Name</label>
+                                    <label asp-for="DocTypeCode" class="form-label" style="color: red;">Doc Name</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
                                         <input type="hidden" value="@Model.DocTypeCode-@Model.DocTypeName" id="hiddenDocType" />
