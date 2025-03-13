@@ -401,7 +401,7 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
-             
+
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
             } else {
@@ -678,8 +678,8 @@
             $('#PendingChallanListPopupModel').modal("hide");
         });
 
-        function ValidateAdjDetail(){
-            if($('#AccountCode').val() == 0){
+        function ValidateAdjDetail() {
+            if ($('#AccountCode').val() == 0) {
                 $.notify('please enter AccountCode...!', "error");
                 return false;
             }
@@ -700,7 +700,7 @@
         $('#btnAdjustChallanListGrid').click(function (event) {
             event.preventDefault();
 
-          if (!ValidateAdjDetail()) return;
+            if (!ValidateAdjDetail()) return;
             var YearCode = $('#SaleBillYearCode').val();
             var EntryDate = $('#ChallanDate').val();
             var ChallanDate = $('#ChallanDate').val();
@@ -955,7 +955,7 @@
         });
 
         function ResetPendQty() {
-             
+
             FillSOPendQty();
             var rowCount = $('#divSaleBillList tr').length;
             var totalBillQty = 0;
@@ -1144,7 +1144,7 @@
                 else {
                     RemoveErrorCls('BOMInd');
                 }
-                
+
                 if ($('#ProducedUnprod').prop('selectedIndex') == 0) {
                     AddErrorCls('ProducedUnprod');
                     $.notify('please select Produced Unprod...!', "error");
@@ -1240,7 +1240,7 @@
                     }
                 }
             }
-        
+
             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) return false;
 
@@ -1253,7 +1253,7 @@
                 url: "@Url.Action("FillSOPendQty")",
                 data: { "saleBillEntryId": $('#SaleBillEntryId').val(), "saleBillNo": $('#SaleBillNo').val(), "saleBillYearCode": $('#SaleBillYearCode').val(), "sono": $('#SONO').val(), "soYearcode": $('#SOYearCode').val(), "custOrderNo": $('#CustOrderNo').val(), "itemCode": $('#ItemCode').val(), "accountCode": $('#AccountCode').val(), "schNo": $('#SchNo').val(), "schYearCode": $('#SaleSchYearCode').val() },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -1457,8 +1457,8 @@
                                     $('#saleBillRow-' + i).css("background-color", "#fab9e1");
                                 }
                             }
-                            FillCurrentBatchINStore();
                         }
+                        FillCurrentBatchINStore();
                     }
 
                 },
@@ -1564,7 +1564,7 @@
             JWItemList($('#TypeItemServAssets').val());
         });
 
-        function JWItemList(itemType){
+        function JWItemList(itemType) {
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
             $.ajax({
                 type: "POST",
@@ -1598,7 +1598,7 @@
             });
         }
 
-        function FillSOWiseItems(){
+        function FillSOWiseItems() {
             $.ajax({
                 type: "POST",
                 data: { "invoiceDate": $('#SaleBillDate').val(), "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "sbJobWork": "SaleBill" },
@@ -1636,7 +1636,7 @@
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
             $.ajax({
                 type: "POST",
-                data: {  "showAll": showAll, "TypeItemServAssets": itemType, "sbJobWork": "SaleBill" },
+                data: { "showAll": showAll, "TypeItemServAssets": itemType, "sbJobWork": "SaleBill" },
                 url: "@Url.Action("FillItems")",
                 dataType: "json",
                 async: false,
@@ -2338,7 +2338,7 @@
                 async: false,
                 success: function (result, status, error) {
                     if (result != null) {
-                        
+
                         var obj = $.parseJSON(result);
                         $('#AccountCode').empty();
                         $('#AccountCode').append('<option value="0">-Select-</option>');
@@ -2707,7 +2707,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#LotStock').val($.parseJSON(result).Result[0].STOCK);
