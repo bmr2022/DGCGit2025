@@ -142,13 +142,13 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 
                                     @* <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">*@
-                                    <label asp-for="JobWorkNewRework" class="form-label" style="color: red;">JobWork Type</label>
+                                    <label asp-for="JobWorkNewRework" class="form-label" style="color: red;">Type</label>
                                     <select class="form-select" asp-for="JobWorkNewRework" asp-items="@(new SelectList(Model.JobWorkReworkList,"Value","Text"))">
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="JWChallanNo" class="form-label" style="color: red;">JW ChallanNo</label>
+                                    <label asp-for="JWChallanNo" class="form-label" style="color: red;">ChallanNo</label>
                                     <input asp-for="JWChallanNo " class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1  col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -196,7 +196,7 @@
                                 </div>
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="timeofremoval" class="form-label">Removal Time</label>
+                                    <label asp-for="timeofremoval" class="form-label">Time</label>
                                     <input asp-for="timeofremoval " class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -212,11 +212,11 @@
                                     <input class="form-control" asp-for="TransporterName" />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="VehicleNo" class="form-label">Vehicle Number</label>
+                                    <label asp-for="VehicleNo" class="form-label">Veh. No</label>
                                     <input class="form-control" asp-for="VehicleNo" />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="Distance" class="form-label">Distance(in km)</label>
+                                    <label asp-for="Distance" class="form-label">Distance(km)</label>
                                     <input class="form-control" asp-for="Distance" />
                                 </div>
 
