@@ -61,6 +61,7 @@ namespace eTactWeb.Controllers
             _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
             _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
             _MemoryCache.TryGetValue("KeyDrCrGrid", out List<DbCrModel> DrCrGrid);
+            _MemoryCache.TryGetValue("KeyAdjChallanGrid", out List<CustomerJobWorkIssueAdjustDetail> AdjChallanGrid);
             if (saleBillDetail == null)
             {
                 ModelState.Clear();
@@ -91,6 +92,11 @@ namespace eTactWeb.Controllers
                     model.EntryByempId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     SBGrid = GetDetailTable(saleBillDetail);
                 }
+
+                //if (AdjChallanGrid != null && AdjChallanGrid.Count > 0)
+                //{
+                //    AdjChallanGrid = GetAdjChallanDetailTable(AdjChallanGrid);
+                //}
 
                 if (TaxGrid != null && TaxGrid.Count > 0)
                 {
@@ -277,6 +283,15 @@ namespace eTactWeb.Controllers
 
                 var adjustChallanDt = GetAdjustChallanDetailTable(model);
                 var result = await _SaleBill.GetAdjustedChallanDetailsData(adjustChallanDt, YearCode, EntryDate, ChallanDate, AccountCode);
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
 
                 return PartialView("_CustomerJwisschallanAdjustment", result);
             }
@@ -710,6 +725,45 @@ namespace eTactWeb.Controllers
             return MainModel;
         }
 
+        //private static DataTable GetAdjChallanDetailTable(IList<CustomerJobWorkIssueAdjustDetail> DetailList)
+        //{
+        //    var DTSSGrid = new DataTable();
+
+        //    DTSSGrid.Columns.Add("EntryDate", typeof(int));
+        //    DTSSGrid.Columns.Add("SONO", typeof(int));
+        //    DTSSGrid.Columns.Add("CustOrderNo", typeof(string));
+        //    DTSSGrid.Columns.Add("SOYearCode", typeof(int));
+        //    DTSSGrid.Columns.Add("SODate", typeof(string));
+        //    DTSSGrid.Columns.Add("SchNo", typeof(string));
+        //    DTSSGrid.Columns.Add("SchDate", typeof(string));
+        //    DTSSGrid.Columns.Add("SaleSchYearCode", typeof(int));
+        //    DTSSGrid.Columns.Add("SOAmendNo", typeof(string));
+        //    DTSSGrid.Columns.Add("SOAmendDate", typeof(string));
+        //     DTSSGrid.Columns.Add("SchAmendDate", typeof(string));
+        //    DTSSGrid.Columns.Add("ItemCode", typeof(int));
+        //    DTSSGrid.Columns.Add("HSNNO", typeof(string));
+      
+        //    //DateTime DeliveryDt = new DateTime();
+        //    foreach (var Item in DetailList)
+        //    {
+        //        string uniqueString = Guid.NewGuid().ToString();
+        //        DTSSGrid.Rows.Add(
+        //            new object[]
+        //            {
+        //            Item.SeqNo,
+        //            Item.SONO,
+        //            Item.CustOrderNo ?? string.Empty,
+        //            Item.SOYearCode,
+        //            //Item.SODate == null ? string.Empty : (Item.SODate.Split(" ")[0]),
+        //            Item.SODate == null ? string.Empty : common.CommonFunc.ParseFormattedDate(Item.SODate.Split(" ")[0]),
+        //            Item.SchNo ?? "",
+        //            Item.Schdate == null ? string.Empty : common.CommonFunc.ParseFormattedDate(Item.Schdate.Split(" ")[0])
+        //            });
+        //    }
+        //    DTSSGrid.Dispose();
+        //    return DTSSGrid;
+        //}
+        
         private static DataTable GetDetailTable(IList<SaleBillDetail> DetailList)
         {
             var DTSSGrid = new DataTable();
