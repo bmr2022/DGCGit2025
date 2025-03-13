@@ -20,7 +20,7 @@
             <input asp-for="PurchaseRejEntryDate" class="form-control" readonly />
         </div>
         <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="DebitNotePurchaseRejection" class="form-label" style="color: red;">Debit Note Purchase Rejection</label>
+            <label asp-for="DebitNotePurchaseRejection" class="form-label" style="color: red;">Type</label>
             <select asp-for="DebitNotePurchaseRejection" class="form-control">
                 <option value="">-Select-</option>
                 <option value="Purchase-Rejection" selected>Purchase-Rejection</option>
@@ -58,7 +58,7 @@
             <input asp-for="PurchaseRejectionInvoiceNo" class="form-control" />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="PurchaseRejectionInvoiceDate" class="form-label" style="color: red;">Invoice Date*</label>
+            <label asp-for="PurchaseRejectionInvoiceDate" class="form-label" style="color: red;">Date*</label>
             <input asp-for="PurchaseRejectionInvoiceDate" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
@@ -70,7 +70,7 @@
             <input asp-for="PurchaseRejectionVoucherNo" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="PurchaseRejectionVoucherDate" class="form-label" style="color: red;">voucher date*</label>
+            <label asp-for="PurchaseRejectionVoucherDate" class="form-label" style="color: red;">Date*</label>
             <input asp-for="PurchaseRejectionVoucherDate" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
@@ -83,7 +83,7 @@
             <input asp-for="GSTType" class="form-control" value="@Model.GSTType" readonly />
         </div>
         <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <label asp-for="GSTRegistered" class="form-label" style="color: red;">GST Registered*</label>
+            <label asp-for="GSTRegistered" class="form-label" style="color: red;">GST *</label>
             <input asp-for="GSTRegistered" class="form-control" value="@Model.GSTRegistered" readonly />
         </div>
         <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
@@ -91,7 +91,7 @@
             <input asp-for="CustVendAddress" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="StateNameofSupply" class="form-label" style="color: red;">State of Supply*</label>
+            <label asp-for="StateNameofSupply" class="form-label" style="color: red;">State*</label>
             <input asp-for="StateNameofSupply" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
@@ -107,7 +107,7 @@
             <input asp-for="CountryOfSupply" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="PaymentTerm" class="form-label">Payment Term</label>
+            <label asp-for="PaymentTerm" class="form-label">Pay Term</label>
             <input asp-for="PaymentTerm" class="form-control" />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">

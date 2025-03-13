@@ -98,13 +98,13 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="OrderPriority" class="control-label">Order Priority</label>
+                                    <label asp-for="OrderPriority" class="control-label">Priority</label>
                                     <select class="form-select" asp-for="OrderPriority" asp-items="@Model.OrderPriorityList">
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="SchAmendmentDate" class="startdate">Sch Amd Date</label>
+                                    <label asp-for="SchAmendmentDate" class="startdate">Date</label>
                                     @* <input asp-for="SchAmendmentDate"   class="form-control" />*@
 
                                     <input type="text" asp-for="SchAmendmentDate" class="form-control" readonly />
@@ -113,7 +113,7 @@
                                     </div>*@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ModeOfTransport" class="control-label">Transport mode</label>
+                                    <label asp-for="ModeOfTransport" class="control-label">Mode</label>
                                     <input asp-for="ModeOfTransport" class="form-control" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -121,7 +121,7 @@
                                     <input asp-for="SchAmendmentNo" class="form-control" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="POCloseDate" class="control-label">PO Close Date</label>
+                                    <label asp-for="POCloseDate" class="control-label">PO Exp.</label>
                                     <input type="text" asp-for="POCloseDate" class="form-control" readonly="readonly" />
                                     @*<input asp-for="POCloseDate"   class="form-control" readonly disabled />*@
                                 </div>
@@ -131,7 +131,7 @@
                                     @*      <input asp-for="ScheduleDate" class="form-control" />*@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="SchEffFromDate" class="startdate">Eff From Date</label>
+                                    <label asp-for="SchEffFromDate" class="startdate">PO Eff.</label>
                                     <input type="text" asp-for="SchEffFromDate" readonly class="form-control" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">

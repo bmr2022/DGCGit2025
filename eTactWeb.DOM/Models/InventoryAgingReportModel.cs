@@ -44,6 +44,15 @@ namespace eTactWeb.DOM.Models
         public int WorkCenterId { get; set; }
         public int Itemcode { get; set; }
         public string CurrentDate { get; set; }
+        public int Aging_0_30 { get; set; }
+        public int Aging_31_60 { get; set; }
+        public int Aging_61_90 { get; set; }
+        public int Aging_90_180 { get; set; }
+        public int Aging_180_360 { get; set; }
+        public int Aging_Above360 { get; set; }
+        public int StoreStock { get; set; }
+        public int WIPStock { get; set; }
+
         public IList<InventoryAgingReportModel> InventoryAgingReportGrid { get; set; }
     }
 }

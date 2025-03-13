@@ -50,5 +50,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _PrimaryAccountGroupMasterDAL.GetViewByID(accountCode);
         }
+        public async Task<ResponseResult> DeleteByID(int AccountCode)
+        {
+            return await _PrimaryAccountGroupMasterDAL.DeleteByID(AccountCode);
+        }
     }
 }

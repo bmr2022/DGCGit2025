@@ -85,16 +85,16 @@
                         <div id="B_Panel1" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_Panel1">
                             <div class="accordion-body ">
                                 <div class="row g-2 gx-3">
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
                                         <input type="hidden" asp-for="TypeOfSave" value="" />
                                         <label asp-for="AmmEntryId" class="form-label">Entry ID</label>
                                         <input asp-for="AmmEntryId" class="form-control" readonly disabled />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
                                         <label asp-for="AmmYearCode" class="form-label">Year</label>
                                         <input asp-for="AmmYearCode" class="form-control" value="@Model.YearCode" readonly />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                         <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                         <input asp-for="EntryDate" class="form-control" readonly disabled />
                                     </div>
@@ -215,16 +215,16 @@
                         <div id="B_Panel1" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_Panel1">
                             <div class="accordion-body ">
                                 <div class="row g-2 gx-3">
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
                                         <input type="hidden" asp-for="TypeOfSave" value="" />
                                         <label asp-for="EntryID" class="form-label">Entry ID</label>
                                         <input asp-for="EntryID" class="form-control" readonly disabled />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
                                         <label asp-for="YearCode" class="form-label">Year</label>
                                         <input asp-for="YearCode" class="form-control" value="@Model.YearCode" readonly />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                         <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                         <input asp-for="EntryDate" class="form-control" readonly disabled />
                                     </div>
@@ -264,57 +264,57 @@
                                         <label asp-for="SchAmendmentNo" class="control-label">Sch Amd No</label>
                                         <input asp-for="SchAmendmentNo" class="form-control" />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px">
                                         <label asp-for="TentetiveConfirm" class="control-label">Tentetive / Confirm</label>
                                         <select class="form-select" asp-for="TentetiveConfirm" asp-items="@Model.TentetiveConfirmList">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                                         <label asp-for="OrderPriority" class="control-label">Order Priority</label>
                                         <select class="form-select" asp-for="OrderPriority" asp-items="@Model.OrderPriorityList">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:110px">
                                         <label asp-for="SchAmendmentDate" class="control-label">Sch Amd Date</label>
-                                        <input asp-for="SchAmendmentDate" class="form-control" readonly/>
+                                        <input asp-for="SchAmendmentDate" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px">
                                         <label asp-for="ModeOfTransport" class="control-label">Mode Of Transport</label>
                                         <input asp-for="ModeOfTransport" class="form-control" />
                                     </div>
 
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
                                         <label asp-for="SODate" class="control-label">SO Date</label>
                                         <input asp-for="SODate" class="form-control" readonly disabled />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
                                         <label asp-for="SOCloseDate" class="control-label">SO Close Date</label>
                                         <input asp-for="SOCloseDate" class="form-control" readonly disabled />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px">
                                         @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
                                         {
                                             <input type="hidden" value="@Model.ScheduleDate" id="hiddenSchDate" />
                                         }
                                         <label asp-for="ScheduleDate" class="control-label">Sch Date</label>
-                                        <input asp-for="ScheduleDate" class="form-control" readonly/>
+                                        <input asp-for="ScheduleDate" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
                                         <label asp-for="SchEffFromDate" class="control-label">Sch Eff From Date</label>
-                                        <input asp-for="SchEffFromDate" class="form-control" readonly/>
+                                        <input asp-for="SchEffFromDate" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
                                         @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
                                         {
                                             <input type="hidden" value="@Model.SchEffTillDate" id="hiddenSchEffTillDate" />
                                         }
                                         <label asp-for="SchEffTillDate" class="control-label">Sch Eff Till Date</label>
-                                        <input asp-for="SchEffTillDate" class="form-control" readonly/>
+                                        <input asp-for="SchEffTillDate" class="form-control" readonly />
                                     </div>
 
-                                    <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12" style="width:300px">
                                         <label asp-for="DeliveryAddress" class="control-label">Delivery Address</label>
                                         <input asp-for="DeliveryAddress" class="form-control" />
                                     </div>
@@ -651,6 +651,8 @@
                                     <button type="button" class="btn btn-success mt-2 me-2 btn-sm mr-2 mb-2" onclick='newRowappend()' style="color:white!important; float:right;">
                                         <i class="fa fa-plus" aria-hidden="true"></i> Add Row
                                     </button>
+                                    <label for="monthlyImport" class="btn btn-sm btn-outline-success mt-2" style="margin-left:740px;">Day Wise Import Excel</label>
+                                    <input id="monthlyImport" class="Execllbl BtnUploadExl btn btn-sm btn-outline-success" style="display:none;" type="file">
                                 </div>
                             </div>
                         </div>
@@ -816,7 +818,7 @@
 </style>
 
 @section Scripts
-    {
+{
     <script>
         var selectedItemCodes = [];
         var selectedSplitItemCodes = [];
@@ -904,7 +906,7 @@
 
         $(document).ready(function () {
             GetServerDate();
-            GetFormRights();
+            //GetFormRights();
             //$('#ScheduleDate').prop('readonly', true);
             var today = new (Date);
 
@@ -995,9 +997,9 @@
                 $("#SODate").datepicker("setDate", new Date($('#SODate').val($('#SODate').val().split(" ")[0])));
                 //$('#SchEffTillDate').datepicker("option", "minDate", new Date(SoDate));
                 //$('#SchEffTillDate').datepicker("option", "maxDate", new Date(SoCloseDate));
-                 
+
             } else {
-                 
+
                 $("#SchEffFromDate").datepicker("setDate", $('#SchEffFromDate').val());
                 $("#SchEffTillDate").datepicker("setDate", $('#SchEffTillDate').val());
                 $('#ScheduleDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
@@ -1148,7 +1150,7 @@
 
 
         $(document).on("click", "th[data-columnno]", function () {
-             
+
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup');
         });
@@ -1439,7 +1441,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     
+
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $("#ScheduleDate,#SchAmendmentDate,#DeliveryDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                 }
@@ -1613,6 +1615,7 @@
         });
 
         $('input[type="radio"]').change(function () {
+             
             var SchEffDate = $('#SchEffFromDate').val().split("/")[1];
             var SchYear = $('#SchEffFromDate').val().split("/")[2];
             var LastDay = new Date(SchYear, SchEffDate, 0).getDate();
@@ -1667,7 +1670,7 @@
 
 
         function BuildMonthlyEntryBody() {
-
+             
             $('#MonthlyEntryData').empty();
             //var SchDate = $('#ScheduleDate').val();
             //var monthPart = $('#ScheduleDate').val().split("/")[1];
@@ -1697,6 +1700,7 @@
 
                 GetSplitItemName(Rowcount);
             }
+             
             // var j = DayStart;
             var j = SchEffFromDate;
             var date;
@@ -2168,49 +2172,49 @@
             }
         });
 
-
-
-        $('.BtnUploadExl').click(function () {
-            $(this).val() != null ? $(this).val('') : null;
+        $('#manualImport').change(function () {
+            handleExcelUpload('manualImport', 'SaleSchedule/UploadExcel');
         });
 
-        $('.BtnUploadExl').change(function () {
+        $('#monthlyImport').change(function () {
+            handleExcelUpload('monthlyImport', '/SaleSchedule/UploadMonthlyExcel');
+        });
+
+        function handleExcelUpload(inputId, uploadUrl) {
+            var fileInput = $('#' + inputId);
             var fileExtension = ['xls', 'xlsx'];
-            var filename = $('.BtnUploadExl').val();
-            if (filename.length == 0) {
-                $.notify('Please select Excel File...!', "error");
+            var filename = fileInput.val();
+
+            if (!filename) {
+                $.notify('Please select an Excel file!', "error");
                 return false;
             }
-            else {
-                var extension = filename.replace(/^.*\./, '');
-                if ($.inArray(extension, fileExtension) == -1) {
-                    $.notify('Please select only Excel File...!', "info");
-                    return false;
-                }
+
+            var extension = filename.split('.').pop().toLowerCase();
+            if ($.inArray(extension, fileExtension) == -1) {
+                $.notify('Please select only an Excel file!', "info");
+                return false;
             }
 
             var fData = new FormData();
-
-            var fileUpload = $(".BtnUploadExl").get(0);
+            var fileUpload = fileInput.get(0);
             var files = fileUpload.files;
-            var AC = parseInt($('#AccountCode').val());
-            var SONO = parseInt($('#SONO').val());
-            var Year = $('#SOYearCode').val();
 
-            fData.append(files[0].name, files[0]);
-            fData.append('AC', AC);
-            fData.append('SONO', SONO);
-            fData.append('Year', Year);
+            if (files.length === 0) {
+                $.notify('No file selected!', "error");
+                return false;
+            }
+
+            fData.append('file', files[0]);
+            fData.append('AC', $('#AccountCode').val());
+            fData.append('SONO', $('#SONO').val());
+            fData.append('Year', $('#SOYearCode').val());
             fData.append('FromDate', $('#SchEffFromDate').val());
             fData.append('TillDate', $('#SchEffTillDate').val());
-            ;
-
-            var fromDt = $('#SchEffFromDate').val();
-            var TillDt = $('#SchEffTillDate').val();
 
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("UploadExcel")",
+                url: uploadUrl,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
                 },
@@ -2224,22 +2228,21 @@
                             ErrMsg += val + '\n';
                         });
                         $.notify(ErrMsg, { position: 'top right', className: 'error', clickToHide: true, autoHide: true });
-                    }
-                    else {
+                    } else {
                         $('#divSaleScheduleGrid').html(result.trim());
                     }
                     TotalSchQty();
                     RowCount();
                     SetSchTillDate();
                 },
-                error: function (result, status, xhr) {
-                    $.notify('Please select only Excel File...!', "info");
+                error: function () {
+                    $.notify('File upload failed. Please try again!', "error");
                 }
             });
-        });
+        }
 
         function SetSchTillDate() {
-            
+
             var RowCount = $('#divSaleScheduleGrid tr').length;
             var TillDate = [];
 
@@ -2276,39 +2279,39 @@
             var formattedDay = (day < 10) ? '0' + day : day;
 
             var formattedDate = formattedDay + '/' + formattedMonth + '/' + year;
-            
+
 
             $('#SchEffTillDate').datepicker("option", "minDate", formattedDate);
 
         }
 
 
-        function GetFormRights() {
+        // function GetFormRights() {
 
-            $.ajax({
-                url: "@Url.Action("GetFormRights")",
-                type: "POST",
-                success: function (data) {
-                    if (data != null) {
+        //     $.ajax({
+        //         url: "@Url.Action("GetFormRights")",
+        //         type: "POST",
+        //         success: function (data) {
+        //             if (data != null) {
 
-                        var obj = $.parseJSON(data);
-                        var optAll = obj.Result.Table[0].OptAll;
-                        var optSave = obj.Result.Table[0].OptSave;
-                        var optUpdate = obj.Result.Table[0].OptUpdate;
-                        var optDelete = obj.Result.Table[0].OptDelete;
-                        var optView = obj.Result.Table[0].OptView;
-                        if (!optAll) {
-                            if (!optSave) {
-                                $("button[type='submit'").prop("disabled", true);
-                            }
-                        }
-                    }
-                },
-                error: function (errMsg) {
-                    $.notify(errMsg, { position: "top center", className: "error" });
-                }
-            });
-        }
+        //                 var obj = $.parseJSON(data);
+        //                 var optAll = obj.Result.Table[0].OptAll;
+        //                 var optSave = obj.Result.Table[0].OptSave;
+        //                 var optUpdate = obj.Result.Table[0].OptUpdate;
+        //                 var optDelete = obj.Result.Table[0].OptDelete;
+        //                 var optView = obj.Result.Table[0].OptView;
+        //                 if (!optAll) {
+        //                     if (!optSave) {
+        //                         $("button[type='submit'").prop("disabled", true);
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         error: function (errMsg) {
+        //             $.notify(errMsg, { position: "top center", className: "error" });
+        //         }
+        //     });
+        // }
 
         $('#AccountCode').change(function () {
             $.getJSON({
@@ -2455,11 +2458,11 @@
                             BuildMonthlyEntryBody();
                             //GetSplitItemName(0);
                             $('.BtnExcel').fadeIn();
-                             
-                            $('#SchEffFromDate').datepicker("option", "minDate",$('#SODate').val());
-                            $('#SchEffFromDate').datepicker("option", "maxDate",$('#SOCloseDate').val());
-                            $('#SchEffTillDate').datepicker("option", "minDate",$('#SchEffFromDate').val());
-                            $('#SchEffTillDate').datepicker("option", "maxDate",$('#SOCloseDate').val());
+
+                            $('#SchEffFromDate').datepicker("option", "minDate", $('#SODate').val());
+                            $('#SchEffFromDate').datepicker("option", "maxDate", $('#SOCloseDate').val());
+                            $('#SchEffTillDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
+                            $('#SchEffTillDate').datepicker("option", "maxDate", $('#SOCloseDate').val());
                         }
                         else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
                             $('#CustomerOrderNo,#SODate,#DeliveryAddress').val('');
@@ -2474,7 +2477,7 @@
                     $.notify(result.responseText, "error");
                 }
             });
-                                                               
+
         });
 
         async function GetSOItem(AC, SONo, Year) {
@@ -2578,7 +2581,7 @@
         };
 
         async function GetSplitItemName(Rowcount) {
-
+             
             var AC = $('#AccountCode').val();
             var SONO = $('#SONO').val();
             var Year = $('#YearCode').val();
@@ -2586,7 +2589,7 @@
                 url: "@Url.Action("GetSOItem")",
                 data: { "AccountCode": AC, "SONO": SONO, "Year": Year },
                 success: await function (result, status, xhr) {
-
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -3572,4 +3575,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
 
-    }
+}

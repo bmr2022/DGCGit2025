@@ -1,5 +1,1951 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model eTactWeb.DOM.Models.BankPaymentModel;
 @{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="BankPayment" asp-controller="BankPayment" method="post" class="form-horizontal">
+        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+            <h5>
+                <strong>Bank Payment</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-controller="BankPayment" asp-action="BankPaymentDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                        Dashboard
+                    </a>
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V")
+                        {
+                            <div class="col-auto">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                Model.Mode = "U";
+                                <div class="col-auto">
+                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body bg-light">
+            <div class="accordion shadow-lg" id="accordionItemCategory">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Bank Payment Detail</strong>
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                @* <input type="hidden" asp-for="MachineName" value="@Environment.MachineName" /> *@
+                                <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                <input type="hidden" asp-for="SrNO" />
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="AccEntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="AccEntryId" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryDate" class="form-label">Entry Date</label>
+                                    <input asp-for="EntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="YearCode" class="form-label">YearCode</label>
+                                    <input asp-for="YearCode" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
+                                    <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
+                                    <input type="hidden" asp-for="SubVoucherID" />
+                                    <select class="form-control" asp-for="SubVoucherName" style="width:130px;">
+                                        <option value="">Bank-Payment</option>
+                                        <option value="Bank-Payment">Bank-Payment</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.SubVoucherName" selected>@Model.SubVoucherName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
+                                    <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
+                                    <input asp-for="VoucherNo" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
+                                    <label asp-for="VoucherDate" class="form-label" style=" color:red;">Voucher Date*</label>
+                                    <input asp-for="VoucherDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
+                                    <label asp-for="Currency" class="form-label">Currency</label>
+                                    <input type="hidden" asp-for="CurrencyId" />
+                                    <select class="form-control" asp-for="Currency" disabled>
+                                        <option value="">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.Currency" selected>@Model.Currency</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ExRate" class="form-label">ExRate</label>
+                                    <input asp-for="ExRate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BankRECO" class="form-label">Bank Reco</label>
+                                    <input asp-for="BankRECO" class="form-control" value="01/01/1900" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Bank Payment Grid</strong>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" style="width:150px;" type="button" onclick="GridButton()">
+                            <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div style="overflow-x:auto; overflow-y:auto; max-height:340px; border:1px solid #ccc;">
+                                        <table class="table table-hover table-bordered table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
+                                                <tr>
+                                                    <th style="color:yellow">Type*</th>
+                                                    <th style="color:yellow">Ledger Name*</th>
+                                                    <th style="color:yellow">Balance* &nbsp;&nbsp; DR/CR*</th>
+                                                    <th>Intrument</th>
+                                                    <th>Intrument No</th>
+                                                    <th>Intrument Date</th>
+                                                    <th style="color:yellow">Mode of Adjustment*</th>
+                                                    <th style="color:yellow">Amount*</th>
+                                                    <th>Amount (OC)</th>
+                                                    <th>Cost Center Name</th>
+                                                    <th>Party-Wise Narration</th>
+                                                    <th>Customer Order No</th>
+                                                    <th>Sale Order No</th>
+                                                    <th>Sales Order Date</th>
+                                                    <th>Sales Order Year</th>
+                                                     <th>PO NO</th>
+                                                      <th>PO Date</th>
+                                                    <th>PO Year</th>
+                                                    <th>Against Voucher No</th>
+                                                    <th>Against Voucher Code</th>
+                                                    <th>Against Voucher Date</th>
+                                                    <th>Against Voucher Type</th>
+                                                    <th>Against Voucher Entry ID</th>
+                                                    <th>Voucher Bill Amount</th>
+                                                    <th>Pending Bill Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divBankPayment">
+                                                <partial name="_BankPayment" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress my-3 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body overflow-auto pb-0">
+                                <div style="overflow-x:auto; overflow-y:auto; max-height:340px; border:1px solid #ccc;">
+                                    <table class="table table-hover table-bordered table-striped">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Sr NO</th>
+                                                <th>Ledger Name</th>
+                                                <th>Balance&nbsp;DR/CR</th>
+                                                <th>Intrument</th>
+                                                <th>Intrument No</th>
+                                                <th>Intrument Date</th>
+                                                <th>Mode of Adjustment</th>
+                                                <th>Amount&nbsp;Type</th>
+                                                <th>Amount (OC)</th>
+                                                <th>Cost Center Name</th>
+                                                <th>Party-Wise Narration</th>
+                                                <th>Customer Order No</th>
+                                                <th>Sales Order Date</th>
+                                               
+                                                <th>Sales Order Year</th>
+                                                <th>PO No</th>
+                                                <th>PO Date</th>
+                                                <th>PO Year</th>
+                                                <th>Against Voucher No</th>
+                                                <th>Against Voucher Code</th>
+                                                <th>Against Voucher Date</th>
+                                                <th>Against Voucher Type</th>
+                                                <th>Against Voucher Entry ID</th>
+                                                <th>Voucher Bill Amount</th>
+                                                <th>Pending Bill Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divBankPaymentDetail">
+                                            <partial name="_BankPaymentGrid" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex flex-wrap align-items-center gap-3">
+                                    <div class="text-center">
+                                        <strong>Total No Of Items: <span id="lblTotalNoOfBelowItems"></span></strong>
+                                    </div>
+
+                                    <div style="width:170px;">
+                                        <label asp-for="Naration" class="form-label">Naration</label>
+                                        <input asp-for="Naration" class="form-control" data-val="false" />
+                                    </div>
+
+                                    <div style="width:170px;">
+                                        <label asp-for="DrAmt" class="form-label">Dr Amt</label>
+                                        <input asp-for="DrAmt" id="DrAmt" class="form-control" readonly />
+                                    </div>
+
+                                    <div style="width:170px;">
+                                        <label asp-for="CrAmt" class="form-label">Cr Amt</label>
+                                        <input asp-for="CrAmt" id="CrAmt" class="form-control" readonly data-val="false" />
+                                    </div>
+
+                                    <div style="width:170px;">
+                                        <label asp-for="VoucherAmt" class="form-label">Voucher Amt</label>
+                                        <input asp-for="VoucherAmt" class="form-control" data-val="false" readonly />
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                        <div class="progress my-2 mb-3" style="height: 4px;">
+                            <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="OtherGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                        <div class="accordion-body">
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="UID" class="form-label">UID</label>
+                                        <input asp-for="UID" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date </label>
+                                        <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="ActualEntryBy" class="form-label">Actual Entry By </label>
+                                        <input asp-for="ActualEntryBy" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">Last Update Date </label>
+                                        <input asp-for="UpdatedOn" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedBy" class="form-label">Last Update By</label>
+                                        <input asp-for="UpdatedBy" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryByMachine" class="form-label">MachineName</label>
+                                        <input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer p-3">
+                    <div class="row justify-content-between g-2">
+                        <div class="card-header card-headerBG text-light bg-gradient">
+                            <h5>
+                                <strong>Bank Payment</strong>
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            PRINT
+                                        </button>
+                                    </div>
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                    <a asp-controller="BankPayment" asp-action="BankPaymentDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                        Dashboard
+                                    </a>
+                                    @*<partial name="_FormsButton" />*@
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U")
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+    </form>
+</div>
+
+<div class="modal fade" id="DisplayRoutingDetailModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Display Popup For Pending Vouchers</h5>
+                <div class="d-flex align-items-center gap-3" style="margin-left:70px">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="AdjustButton()">Adjust</button>
+                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD;" placeholder="Search...">
+                    <div class="col-xl-6 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <label asp-for="PopUpBalance" class="form-label me-2">Total Pending Amount to Adjust</label>
+                        <input asp-for="PopUpBalance" class="form-control" readonly />
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card-body text-center overflow-auto pb-0">
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped mb-0 BomDetailtable" id="GateDataTable">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>Sr#</th>
+                                                <th>Add <input id="CheckUnCheckAll" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                <th>Voucher Type</th>
+                                                <th>YearCode</th>
+                                                <th>Voucher No</th>
+                                                <th>Invoice No</th>
+                                                <th>Voucher Date</th>
+                                                <th>Due Date</th>
+                                                <th>Balance Amt</th>
+                                                <th>Type</th>
+                                                <th>Adj Amt</th>
+                                                <th>Adjusted</th>
+                                                <th>Dr Amt</th>
+                                                <th>Cr Amt</th>
+                                                <th>BillNet Amt</th>
+                                                <th>New RefNo</th>
+                                                <th>Mode Of Adjust</th>
+                                                <th>Acc EntryId</th>
+                                                <th>Actual DrCr Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divDisplayPopupForPendingVouchersDetail">
+                                            <partial name="_DisplayPopupForPendingVouchers" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblroutingtotal"></span></strong>
+                            &nbsp;
+                            <strong>Checked Rows : <span id="lblcheckitem"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex align-items-center gap-3" style="margin-bottom:-15px">
+                        <button type="button" class="btn btn-sm btn-primary" onclick="AdjustButton()" style="width:100px;">Adjust</button>
+                    </div>
+                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <label asp-for="PopDrAmt" class="form-label">Dr Amt</label>
+                        <input asp-for="PopDrAmt" class="form-control" readonly />
+                    </div>
+                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <label asp-for="PopCrAmt" class="form-label">Cr Amt</label>
+                        <input asp-for="PopCrAmt" class="form-control" readonly />
+                    </div>
+                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <label asp-for="PopAdjustmentAmt" class="form-label">Adj Amt</label>
+                        <input asp-for="PopAdjustmentAmt" class="form-control" readonly />
+                    </div>
+                    <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-top: 25px;" type="button" id="btnRoutingExcel">
+                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" style="padding:3px;height:30px;width:100px;margin-top: 25px;" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+
+        function Validate_Submit() {
+
+            var Err = 0;
+            var DrAmt = parseFloat($('#DrAmt').val()) || 0;
+            var CrAmt = parseFloat($('#CrAmt').val()) || 0;
+
+            if (DrAmt != CrAmt) {
+                $.notify("DrAmt and CrAmt must be equal to proceed.", "error");
+                Err = 1;
+            }
+            var Row = $('#divBankPaymentDetail tr').length;
+            if ($('#divBankPaymentDetail tr').text().trim() == "NO DATA ADDED") {
+                $.notify("Grid should have at least one item.", "error");
+                Err = 1;
+            }
+            var BankTypeData = [];
+            for (let i = 1; i <= Row; i++) {
+                BankTypeData.push({
+                    "BankType": $('#BankType-' + i).val()
+                })
+            }
+            var hasBank = BankTypeData.some(item => item.BankType === "Bank");
+            if (!hasBank) {
+                $.notify("There should be at least one bank in grid.", "error");
+                Err = 1;
+            }
+
+            for (let i = 1; i <= Row; i++) {
+                var ModeOfAdjust = $('#ModeOfAdjustment-' + i).text();
+                if (ModeOfAdjust == "Against Ref") {
+                    CheckAmountBeforeSave(i);
+                }
+            }
+            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            if (Err == 1) return false;
+            return true;
+        }
+
+        $('.submitBTN').click(function (e) {
+
+            e.preventDefault();
+            if (!Validate_Submit()) return;
+            $('form').submit();
+        });
+
+        $(document).ready(function () {
+            $('#VoucherType').select2();
+            $('#Intrument').select2();
+            $('#LedgerName').select2();
+            $('#ModeOfAdjustment').select2();
+            $('#CostCenterName').select2();
+            $('#SubVoucherName').select2();
+            $('#Currency').select2();
+
+            $('#PONo').select2();
+            FillCostCenterName();
+            FillSubVoucherName();
+            FillIntrument();
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                FillEntryID();
+            }
+            FillCurrency();
+          
+            FillModeofAdjust();
+            calculateTotalBalance();
+            $('#LedgerName').rules("remove", "required");
+            $('#DRCR').rules("remove", "required");
+            $('#Intrument').rules("remove", "required");
+            $('#InsNo').rules("remove", "required");
+            $('#InsDate').rules("remove", "required");
+            $('#ModeOfAdjustment').rules("remove", "required");
+            $('#AdjustmentAmt').rules("remove", "required");
+            $('#AdjustmentAmtOthCur').rules("remove", "required");
+            $('#CostCenterName').rules("remove", "required");
+            $('#PartyWiseNaration').rules("remove", "required");
+            $('#SoDate').rules("remove", "required");
+            $('#SOYear').rules("remove", "required");
+            $('#SeqNo').rules("remove", "required");
+            $('#CustOrderNo').rules("remove", "required");
+            $('#AgainstVoucherNo').rules("remove", "required");
+            $('#AgainstVoucherDate').rules("remove", "required");
+            $('#AgainstVoucheryearCode').rules("remove", "required");
+            $('#AgainstVoucherType').rules("remove", "required");
+            $('#AgainstVoucherEntryId').rules("remove", "required");
+            $('#VoucherBillAmt').rules("remove", "required");
+            $('#PendBillAmt').rules("remove", "required");
+            $('#Branch').rules("remove", "required");
+            $('#EntryId').rules("remove", "required");
+            $('#EntryDate').rules("remove", "required");
+            $('#YearCode').rules("remove", "required");
+            $('#SubVoucherName').rules("remove", "required");
+            $('#VoucherNo').rules("remove", "required");
+            $('#VoucherDate').rules("remove", "required");
+            $('#Currency').rules("remove", "required");
+            $('#ExRate').rules("remove", "required");
+            $('#BankRECO').rules("remove", "required");
+            $('#Balance').rules("remove", "required");
+            $('#InsDate').rules("remove", "required");
+            $('#AdjustmentAmt').rules("remove", "required");
+            $('#AdjustmentAmtOthCur').rules("remove", "required");
+            $('#SoDate').rules("remove", "required");
+            $('#SOYear').rules("remove", "required");
+            $('#AgainstVoucherNo').rules("remove", "required");
+            $('#AgainstVoucherDate').rules("remove", "required");
+            $('#AgainstVoucheryearCode').rules("remove", "required");
+            $('#AgainstVoucherEntryId').rules("remove", "required");
+            $('#VoucherBillAmt').rules("remove", "required");
+            $('#PendBillAmt').rules("remove", "required");
+            $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
+            $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
+            var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            var currentDate = new Date();
+
+            // Calculate minDate (3 months before today)
+            var minDate = new Date();
+            minDate.setMonth(minDate.getMonth() - 3);
+
+            // Calculate maxDate (3 months after today)
+            var maxDate = new Date();
+            maxDate.setMonth(maxDate.getMonth() + 3);
+
+            // Initialize Datepicker with min & max date
+            $('#InsDate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                minDate: minDate,
+                maxDate: maxDate
+            }).datepicker("setDate", currentDate);
+            $('#ActualEntryDate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                minDate: currentDate,
+                maxDate: currentDate
+            }).datepicker("setDate", currentDate);
+            var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            $('#BankRECO').datepicker({ dateFormat: 'dd/mm/yy' });
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+            }
+            $('#AdjustmentAmt').on('input', function () {
+
+                let adjustmentAmt = $(this).val();
+                $('#AdjustmentAmtOthCur').val(adjustmentAmt);
+            });
+            $("#AdjustmentAmtOthCur").on("input", function () {
+                var value = $(this).val();
+
+                if (!/^\d+$/.test(value)) {
+                    $.notify("Adjustment amount must be a positive number.", "error");
+
+                    $(this).val('');
+                }
+            });
+            $("#PONo").on("change", function () {
+                if ($("#ModeOfAdjustment").val() == "Advance") {
+                    GetPOYear();
+                }
+                if ($("#ModeOfAdjustment").val() == "Advance" && $("#POYear").val()!='') {
+                    GetPODate(); 
+                }
+            });
+
+            function checkModeOfAdjustment() {
+
+                const modeOfAdjustment = $("#ModeOfAdjustment").val(); // Assuming this is the ID of the field
+                // Show/Hide Advance Fields
+                if (modeOfAdjustment === "Advance") {
+                    $("#advanceFieldsSOYear").show();
+                    $("#advanceFieldsSeqNo").show();
+                    $("#advanceFieldsCustOrderNo").show();
+                    $("#againstFieldsVoucherNo").hide();
+                    $("#againstFieldsVoucherDate").hide();
+                    $("#againstFieldsVoucheryearCode").hide();
+                    $("#againstFieldsVoucherType").hide();
+                    $("#againstFieldsVoucherEntryId").hide();
+                    $("#againstFieldsVoucherBillAmt").hide();
+                    $("#againstFieldsVoucherPendAmt").hide();
+                    $('#CustOrderNo').prop('disabled', false);
+                    $('#SoNo').prop('disabled', false);
+                    $('#SOYear').prop('disabled', false);
+                    $('#PONo').prop('disabled', false);
+                    $('#PoDate').prop('disabled', false);
+                    $('#POYear').prop('disabled', false);
+                }
+                // Show/Hide Against Fields
+                else if (modeOfAdjustment === "Against Ref") {
+                    if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
+                        $('#DisplayRoutingDetailModal').modal('hide');
+                    }
+                    $("#againstFieldsVoucherNo").show();
+                    $("#againstFieldsVoucherDate").show();
+                    $("#againstFieldsVoucheryearCode").show();
+                    $("#againstFieldsVoucherType").show();
+                    $("#againstFieldsVoucherEntryId").show();
+                    $("#againstFieldsVoucherBillAmt").show();
+                    $("#againstFieldsVoucherPendAmt").show();
+                    $("#advanceFieldsSOYear").hide();
+                    $("#advanceFieldsSeqNo").hide();
+                    $("#advanceFieldsCustOrderNo").hide();
+                    $('#CustOrderNo').prop('disabled', true);
+                    $('#SoNo').prop('disabled', true);
+                    $('#SOYear').prop('disabled', true);
+                    $('#PONo').prop('disabled', true);
+                    $('#PoDate').prop('disabled', true);
+                    $('#POYear').prop('disabled', true);
+                    if ($('#LedgerName').prop('selectedIndex') == 0) {
+                        $.notify("Please select LedgerName First..!", "error");
+                    }
+                    else {
+                        PopUpForPendingVouchers("AddMode");
+                    }
+                }
+                // Hide all fields for other values
+                else {
+                    $("#advanceFieldsSOYear").hide();
+                    $("#advanceFieldsSeqNo").hide();
+                    $("#advanceFieldsCustOrderNo").hide();
+                    $("#againstFieldsVoucherNo").hide();
+                    $("#againstFieldsVoucherDate").hide();
+                    $("#againstFieldsVoucheryearCode").hide();
+                    $("#againstFieldsVoucherType").hide();
+                    $("#againstFieldsVoucherEntryId").hide();
+                    $("#againstFieldsVoucherBillAmt").hide();
+                    $("#againstFieldsVoucherPendAmt").hide();
+                    $('#CustOrderNo').prop('disabled', true);
+                    $('#SoNo').prop('disabled', true);
+                    $('#SOYear').prop('disabled', true);
+                }
+
+                if ($("#AccountCode").val() != "" && $("#ModeOfAdjustment").val() == "Advance") {
+
+                    FillPONO();
+                }
+            }
+            $("#ModeOfAdjustment").on("change", function () {
+                checkModeOfAdjustment();
+            });
+
+            // Initial check on page load
+            checkModeOfAdjustment();
+        });
+
+        function calculateTotalBalance() {
+
+            let drTotal = 0;
+            let crTotal = 0;
+            const rowCount = $('#divBankPaymentDetail tr').length;
+            for (let i = 1; i <= rowCount; i++) {
+
+                const drcr = $(`#Type-${i}`).text().trim();
+                const AdjAmt = parseFloat($(`#AdjAmtG-${i}`).text().trim()) || 0;
+
+                if (drcr.toLowerCase() === "dr") {
+                    drTotal += AdjAmt;
+                } else if (drcr.toLowerCase() === "cr") {
+                    crTotal += AdjAmt;
+                }
+            }
+
+            $('#DrAmt').val(drTotal.toFixed(2));
+            $('#CrAmt').val(crTotal.toFixed(2));
+        }
+
+        function ClearGrid() {
+
+            $('#LedgerName').prop('selectedIndex', 0).trigger("change");
+            $('#Balance').val(0);
+            $('#DRCR').val('');
+            $('#AdjustmentAmt').val(0);
+            $('#AdjustmentAmtOthCur').val(0);
+            $('#CostCenterName').prop('selectedIndex', 0).trigger("change");
+            $('#PartyWiseNaration').val('');
+        }
+
+        $('#LedgerName').change(function () {
+
+            $('#AccountCode').val($('#LedgerName').val())
+            GetLedgerBalance();
+            CheckBankType();
+            AdjustAmountForAddToGridForDRCR();
+        });
+
+        
+
+        FillLedgerName();
+
+        function TotalNoOfRows() {
+
+            var Row = $('#divBankPaymentDetail tr').length;
+            var tdCount = $('#divBankPaymentDetail tr td').length;
+            if (tdCount >= 1) {
+                $('#lblTotalNoOfBelowItems').text(Row);
+            } else {
+                $('#lblTotalNoOfBelowItems').text(0);
+            }
+        }
+
+        function FillEntryID() {
+
+            $.ajax({
+                url: '@Url.Action("FillEntryID", "BankPayment")',
+                type: 'POST',
+                data: { "YearCode": $('#YearCode').val() },
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                        $('#AccEntryId').val(obj.Result[0].ENtryId || 0);
+                        $('#VoucherNo').val(obj.Result[0].VoucherNo || 0);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load Entry ID.');
+                }
+            });
+        }
+
+        function GetLedgerBalance() {
+            var OpeningYearCode = $('#YearCode').val();
+            var AccountCode = $('#AccountCode').val();
+            var VoucherDate = $('#VoucherDate').val();
+            $.ajax({
+                url: '@Url.Action("GetLedgerBalance", "BankPayment")',
+                type: 'POST',
+                data: {
+                    OpeningYearCode: OpeningYearCode,
+                    AccountCode: AccountCode,
+                    VoucherDate: VoucherDate
+                },
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+
+                        $('#Balance').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
+                        $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
+                        $('#DRCR').val(obj.Result[0].TypeDrCr);
+                    }
+                    else {
+                        $('#Balance').val(0);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load opening amount.');
+                }
+            });
+        }
+
+        $('#Type').change(function () {
+            AdjustAmountForAddToGridForDRCR();
+        })
+
+        function GetOpeningAmtDRCR() {
+            var OpeningYearCode = $('#YearCode').val();
+            var AccountCode = $('#AccountCode').val();
+            var VoucherDate = $('#VoucherDate').val();
+
+            $.ajax({
+                url: '@Url.Action("GetLedgerBalance", "BankPayment")',
+                type: 'POST',
+                data: {
+                    OpeningYearCode: OpeningYearCode,
+                    AccountCode: AccountCode, VoucherDate: VoucherDate
+                },
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+
+                        $('#Type').val(obj.Result[0].DrCr || 0);
+                    }
+                    else {
+                        $('#Type').val('Dr');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load opening amount.');
+                }
+            });
+        }
+
+        function FillCurrency() {
+
+            $.ajax({
+                url: '@Url.Action("FillCurrency", "BankPayment")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var CurrencyDropdown = $('#Currency');
+                    var obj = $.parseJSON(response);
+                    CurrencyDropdown.empty();
+                    $.each(obj.Result, function (index, Currency) {
+                        CurrencyDropdown.append('<option value="' + Currency.CurrencyId + '">' + Currency.Currency + '</option>');
+                    });
+                    $('#CurrencyId').val(parseInt($('#Currency').val()))
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var Currency = '@Model.CurrencyId';
+                        $('#Currency').val(Currency).trigger("change");
+                        $('#Currency').val(Currency);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillPONO() {
+            debugger;
+
+            var accountcode = $('#AccountCode').val();
+            var VoucherDate = $('#VoucherDate').val();
+
+            $.ajax({
+                url: '@Url.Action("FillPONO", "BankPayment")',
+                type: 'POST',
+                async: false,
+                data: {
+                    
+                    accountcode: accountcode,
+                    VoucherDate: VoucherDate
+
+                },
+                success: function (response, status, error) {
+
+                    var PONoDropdown = $('#PONo');
+                    var obj = $.parseJSON(response);
+                    PONoDropdown.empty();
+                    $.each(obj.Result, function (index, pono) {
+                        PONoDropdown.append('<option value="' + pono.PONO + '">' + pono.PONO + '</option>');
+                    });
+                    
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var PONo = '@Model.PONo';
+                        $('#PONo').val(PONo).trigger("change");
+                        $('#PONo').val(PONo);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+
+        function GetPOYear() {
+            
+            var PONO = $("#PONo").val().trim();
+            var accountcode = $("#AccountCode").val().trim();
+            var VoucherDate = $("#VoucherDate").val().trim();
+            if (!PONO) return;
+
+            $.ajax({
+                url: '@Url.Action("GetPODetail", "BankPayment")',
+                type: 'GET',
+                data: { PONO: PONO,
+                    accountcode: accountcode,
+                    VoucherDate: VoucherDate
+                        
+                },
+                success: function (data) {
+
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var POYear = data.Result[0]; // Extract first object
+
+
+                        $("#POYear").prop("disabled", false).val(POYear.POyearcode).trigger("input");
+                       
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+
+                }
+            });
+        }
+
+        function GetPODate() {
+
+            var PONO = $("#PONo").val().trim();
+            var accountcode = $("#AccountCode").val().trim();
+            var VoucherDate = $("#VoucherDate").val().trim();
+            var POYearCode = $("#POYear").val().trim();
+            if (!PONO) return;
+
+            $.ajax({
+                url: '@Url.Action("GetPODate", "BankPayment")',
+                type: 'GET',
+                data: {
+                    PONO: PONO,
+                    accountcode: accountcode,
+                    VoucherDate: VoucherDate,
+                    POYearCode: POYearCode,
+                    PoDate: PoDate
+
+                },
+                success: function (data) {
+
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var PoDate = data.Result[0]; // Extract first object
+
+
+                        $("#PoDate").prop("disabled", false).val(PoDate.POyearcode).trigger("input");
+
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+
+                }
+            });
+        }
+
+
+        function CheckAmountBeforeSave(i) {
+
+            $.ajax({
+                url: '@Url.Action("CheckAmountBeforeSave", "BankPayment")',
+                type: 'POST',
+                async: false,
+                data: { "VoucherDate": $('#VoucherDate').val(), "YearCode": $('#YearCode').val(), "AgainstVoucherYearCode": $('#AgainstVoucheryearCode-' + i).text(), "AgainstVoucherEntryId": $('#AgainstVoucherEntryId-' + i).text(), "AgainstVoucherNo": $('#AgainstVoucherNo-' + i).text(), "AccountCode": $('#AccountCode-' + i).val() },
+                success: function (response, status, error) {
+
+                    var CurrencyDropdown = $('#Currency');
+                    var obj = $.parseJSON(response);
+                    CurrencyDropdown.empty();
+                    $.each(obj.Result, function (index, Currency) {
+                        CurrencyDropdown.append('<option value="' + Currency.CurrencyId + '">' + Currency.Currency + '</option>');
+                    });
+                    $('#CurrencyId').val(parseInt($('#Currency').val()))
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var Currency = '@Model.CurrencyId';
+                        $('#Currency').val(Currency).trigger("change");
+                        $('#Currency').val(Currency);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillLedgerName() {
+
+            var Type = $('#Type').val();
+            $.ajax({
+                url: '@Url.Action("FillLedgerName", "BankPayment")',
+                type: 'POST',
+                data: {
+                    Type: Type
+                },
+                async: false,
+                success: function (response, status, error) {
+
+                    var LedgerNameDropdown = $('#LedgerName');
+                    var obj = $.parseJSON(response);
+                    LedgerNameDropdown.empty();
+                    LedgerNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, LedgerName) {
+                        LedgerNameDropdown.append('<option value="' + LedgerName.Account_Code + '">' + LedgerName.Account_Name + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var LedgerName = '@Model.AccountCode';
+                        $('#LedgerName').val(LedgerName).trigger("change");
+                        $('#LedgerName').val(LedgerName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillSubVoucherName() {
+            var VoucherType = $('#VoucherType').val();
+            $.ajax({
+                url: '@Url.Action("FillSubVoucherName", "BankPayment")',
+                type: 'POST',
+                data: {
+                    VoucherType: VoucherType
+                },
+                async: false,
+                success: function (response, status, error) {
+                    var SubVoucherNameDropdown = $('#SubVoucherName');
+                    var obj = $.parseJSON(response);
+                    SubVoucherNameDropdown.empty();
+                    SubVoucherNameDropdown.append('<option value="">Bank-Payment</option>');
+                    $.each(obj.Result, function (index, SubVoucherName) {
+                        SubVoucherNameDropdown.append('<option value="' + SubVoucherName.SubVoucherName + '">' + SubVoucherName.SubVoucherName + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var SubVoucherName = '@Model.SubVoucherID';
+                        $('#SubVoucherName').val(SubVoucherName).trigger("change");
+                        $('#SubVoucherName').val(SubVoucherName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load SubVoucher names.');
+                }
+            });
+        }
+
+        function FillIntrument() {
+            $.ajax({
+                url: '@Url.Action("FillIntrument", "BankPayment")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var InsDropdown = $('#Intrument');
+                    var obj = $.parseJSON(response);
+                    InsDropdown.empty();
+                    InsDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, Ins) {
+                        InsDropdown.append('<option selected value="' + Ins.InstrumentName + '">' + Ins.InstrumentName + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var Intrument = '@Model.Intrument';
+                        $('#Intrument').val(Intrument).trigger("change");
+                        $('#Intrument').val(Intrument);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillModeofAdjust() {
+            $.ajax({
+                url: '@Url.Action("FillModeofAdjust", "BankPayment")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var ModeOfAdjustmentDropdown = $('#ModeOfAdjustment');
+                    var obj = $.parseJSON(response);
+                    ModeOfAdjustmentDropdown.empty();
+                    //ModeOfAdjustmentDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, MOAdj) {
+                        ModeOfAdjustmentDropdown.append('<option value="' + MOAdj.ModeOfAdjutment + '">' + MOAdj.ModeOfAdjutment + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var ModeOfAdjustment = '@Model.ModeOfAdjustment';
+                        $('#ModeOfAdjustment').val(ModeOfAdjustment).trigger("change");
+                        $('#ModeOfAdjustment').val(ModeOfAdjustment);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillCostCenterName() {
+            $.ajax({
+                url: '@Url.Action("FillCostCenterName", "BankPayment")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var CostCenterNameDropdown = $('#CostCenterName');
+                    var obj = $.parseJSON(response);
+                    CostCenterNameDropdown.empty();
+                    CostCenterNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, CostCenter) {
+                        CostCenterNameDropdown.append('<option value="' + CostCenter.CostCenterId + '">' + CostCenter.CostCenterName + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var CostCenterName = '@Model.CostCenterName';
+                        $('#CostCenterName').val(CostCenterName).trigger("change");
+                        $('#CostCenterName').val(CostCenterName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function CheckBeforeUpdate() {
+            $.ajax({
+                url: '@Url.Action("CheckBeforeUpdate")',
+                type: "POST",
+                data: { "Type": $('#Entry_id').val() },
+                success: function (data) {
+                    console.log("success");
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result != null) {
+                            if (obj.Result.Table[0].Column1 > 0) {
+                                $.notify("You cannot update this Category as Item with this category already exists", "error");
+                            }
+                            else {
+                                $('form').submit();
+                            }
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function CheckBankType() {
+
+            $.ajax({
+                url: '@Url.Action("FillBankType", "BankPayment")',
+                type: 'POST',
+                async: false,
+                data: { "AccountCode": $('#AccountCode').val(), },
+                success: function (data, status, xhr) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                            $('#BankType').val(obj.Result[0].UnderGroup);
+                            if (obj.Result[0].UnderGroup == "Bank") {
+                                $('#Type option').filter(function () {
+                                    return $(this).val() === "CR";
+                                }).prop('selected', true);
+                                $('#Type').prop('disabled', true);
+                                var options = [
+                                    { value: "New Ref", text: "New Ref" },
+                                    { value: "Advance", text: "Advance" },
+                                ];
+                                $('#ModeOfAdjustment').empty();
+                                options.forEach(option => {
+                                    $('#ModeOfAdjustment').append(`<option value="${option.value}">${option.text}</option>`);
+                                });
+                            }
+                            else {
+                                if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
+                                    $('#DisplayRoutingDetailModal').modal('show');
+                                    PopUpForPendingVouchers("AddMode");
+                                }
+                                $('#Type option').filter(function () {
+                                    return $(this).val() === "DR";
+                                }).prop('selected', true);
+                                $('#Type').prop('disabled', false);
+                                $('#Type').trigger('change');
+                                var options = [
+                                    { value: "New Ref", text: "New Ref" },
+                                    { value: "Advance", text: "Advance" },
+                                    { value: "Against Ref", text: "Against Ref" },
+                                ];
+                                $('#ModeOfAdjustment').empty();
+                                options.forEach(option => {
+                                    $('#ModeOfAdjustment').append(`<option value="${option.value}">${option.text}</option>`);
+                                });
+                            }
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function convertDateFormat(dateStr) {
+            let parts = dateStr.split("/");
+            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+
+        function PopUpForPendingVouchers(Action, SrNO) {
+
+            $('#CheckUnCheckAll').prop('checked', false);
+            if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
+                $('#DisplayRoutingDetailModal').modal('hide');
+            }
+            else {
+                $('#DisplayRoutingDetailModal').modal('show');
+            }
+            var DataTable = {};
+            if (Action == "AddMode") {
+                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#LedgerName').val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val() }
+            } else {
+                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#AccountCode-' + SrNO).val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val() };
+            }
+            $.ajax({
+                url: '@Url.Action("PopUpForPendingVouchers", "BankPayment")',
+                type: 'POST',
+                async: false,
+                data: { "DataTable": DataTable },
+                success: function (data, status, xhr) {
+                    if (data != null) {
+
+                        $('#divDisplayPopupForPendingVouchersDetail').empty();
+                        $('#divDisplayPopupForPendingVouchersDetail').append(data);
+                        CheckUnCheckEdit();
+                        var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+                        var TdRow = $('#divDisplayPopupForPendingVouchersDetail tr td').length;
+
+                        if (TdRow > 1) {
+                            $('#lblroutingtotal').text(RowCount);
+                        }
+                        else {
+                            $('#divDisplayPopupForPendingVouchersDetail').empty();
+                        }
+                    }
+                    AdjustAmount();
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function AdjustAmount() {
+
+            var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            var DRAmt = 0;
+            var CRAmt = 0;
+            var TotalDRAmt = 0;
+            var TotalCrAmt = 0;
+            for (var i = 1; i <= rowCount; i++) {
+
+                if ($('#CheckUnCheck-' + i).is(':checked') == true) {
+                    var drcr = $(`#PopUpType-${i}`).text().trim();
+                    var DRAmtrow = parseFloat($(`#PopUpDrAmt-${i}`).text().trim());
+                    var CRAmtrow = parseFloat($(`#PopUpCrAmt-${i}`).text().trim());
+
+                    if (drcr.toLowerCase() === "dr") {
+                        DRAmt += DRAmtrow;
+                    } else if (drcr.toLowerCase() === "cr") {
+                        CRAmt += CRAmtrow;
+                    }
+                }
+                var drcr = $(`#PopUpType-${i}`).text().trim();
+                var DRAmtrow = parseFloat($(`#PopUpDrAmt-${i}`).text().trim());
+                var CRAmtrow = parseFloat($(`#PopUpCrAmt-${i}`).text().trim());
+
+                if (drcr.toLowerCase() === "dr") {
+                    TotalDRAmt += DRAmtrow;
+                } else if (drcr.toLowerCase() === "cr") {
+                    TotalCrAmt += CRAmtrow;
+                }
+            }
+            $('#PopDrAmt').val(DRAmt.toFixed(2));
+            $('#PopCrAmt').val(CRAmt.toFixed(2));
+            $('#PopUpBalance').val((TotalDRAmt - TotalCrAmt).toFixed(2));
+            $('#PopAdjustmentAmt').val((DRAmt - CRAmt).toFixed(2));
+        }
+
+        var isEditAllowed = "false";
+
+        function DeleteItemRow(SeqNo, PopUpData) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Action("DeleteItemRow")',
+                    type: "POST",
+                    data: { "SeqNo": SeqNo, "PopUpData": PopUpData },
+                    async: false,
+                    success: function (data) {
+
+                        if (PopUpData == "PopUpData") {
+                            $('#divDisplayPopupForPendingVouchersDetail').html(data);
+                            var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+                            $('#lblroutingtotal').text(RowCount);
+                        }
+                        else {
+                            $('#divBankPaymentDetail').html(data);
+                            var TotalRow = $('#divBankPaymentDetail tr').length;
+                            $('#lblTotalNoOfBelowItems').text(TotalRow);
+                        }
+                        calculateTotalBalance();
+                        $.notify("Item Deleted from Grid", "info");
+                        isEditAllowed = "true";
+                        resolve();
+                    },
+                    error: function (response) {
+                        reject(response.responseText);
+                    }
+                });
+            });
+        }
+
+        function ChangeAdjustAmt(i) {
+
+            if ($('#AdjustAmt-' + i).val() > 0) {
+                $('#BalanceAmt-' + i).text(parseFloat($('#ActualBalance-' + i).text()) - parseFloat($('#AdjustAmt-' + i).val()));
+                $('#BalanceAmt-' + i).text(Math.round(parseFloat($('#BalanceAmt-' + i).text()) * 100) / 100);
+                $('#CheckUnCheck-' + i).prop('checked', true);
+                $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+            }
+            if ($('#AdjustAmt-' + i).val() == 0) {
+                $('#BalanceAmt-' + i).text(parseFloat($('#ActualBalance-' + i).text()));
+                $('#CheckUnCheck-' + i).prop('checked', false);
+                $('#AdjustData-' + i).css("background-color", "");
+            }
+            if ($('#AdjustAmt-' + i).val() > parseFloat($('#ActualBalance-' + i).text())) {
+                $('#BalanceAmt-' + i).text(parseFloat($('#ActualBalance-' + i).text()));
+                $('#AdjustAmt-' + i).val(0);
+                $.notify('Adjustment amount cannot be greater than Actual Balance.', "error");
+            }
+            AdjustAmount();
+            // var DRAmt = 0;
+            // var CRAmt = 0;
+
+            // var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            // for (var j = 1; j < rowCount + 1; j++) {
+            //     var drcr = $(`#PopUpType-${j}`).text().trim();
+            //     if (drcr.toLowerCase() === "dr") {
+            //         var DrAmtAdj = parseFloat($(`#AdjustAmt-${j}`).val());
+            //         DRAmt += DrAmtAdj;
+            //     } else if (drcr.toLowerCase() === "cr") {
+            //         var CrAmtAdj = parseFloat($(`#AdjustAmt-${j}`).val());
+            //         CRAmt += CrAmtAdj;
+            //     }
+            // }
+            // $('#PopAdjustmentAmt').val(DRAmt - CRAmt);
+        }
+
+        function Validate_AdjustButton() {
+
+            var Err = 0;
+            var RowCount = $('#lblcheckitem').text();
+            if (RowCount <= 0) {
+                $.notify("Please check at least one row to adjust", "error");
+                Err = 1;
+            }
+            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            if (Err == 1) return false;
+            return true;
+        }
+
+        function AdjustButton() {
+
+            if (!Validate_AdjustButton()) return;
+            var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            var ItemData = [];
+            for (var i = 1; i <= rowCount + 1; i++) {
+
+                if ($('#CheckUnCheck-' + i).is(':checked') == true) {
+                    ItemData.push({
+                        "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
+                        "AccountCode": $('#AccountCode').val(),
+                        "Type": $('#PopUpType-' + i).text(),
+                        "Balance": $('#BalanceAmt-' + i).text(),
+                        "DRCR": $('#PopUpType-' + i).text(),
+                        "DrAmt": $('#PopDrAmt').val(),
+                        "CrAmt": $('#PopCrAmt').val(),
+                        "ActualEntryby": $('#ActualEntryBy').val(),
+                        "EntryByMachine": $('#EntryByMachine').val(),
+                        "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),
+                        "AgainstVoucheryearCode": $('#PopUpYearCode-' + i).text(),
+                        "AgainstVoucherDate": $('#popUpVoucherDate-' + i).text(),
+                        "AgainstVoucherType": $('#PopUpVoucherType-' + i).text(),
+                        "AgainstVoucherEntryId": $('#PopUpAccEntryId-' + i).text(),
+                        "VoucherBillAmt": $('#ActualBalance-' + i).text(),
+                        "InVoiceNo": $('#PopUpInVoiceNo-' + i).text(),
+                        "PendBillAmt": $('#BalanceAmt-' + i).text(),
+                        "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
+                        "InsNo": $('#InsNo').val(),
+                        "InsDate": $('#InsDate').val(),
+                        "CurrencyId": parseInt($('#CurrencyId').val()),
+                        "ActualEntryDate": $('#ActualEntryDate').val(),
+                        "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
+                        "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
+                        "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                    })
+                }
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddBankPaymentAdjustDetail", "BankPayment")',
+                data: { model: ItemData },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        $('#DisplayRoutingDetailModal').modal('hide');
+                        $('#divBankPaymentDetail').html(result);
+                        $.notify('Process Added To Grid', "success");
+                        TotalNoOfRows();
+                        calculateTotalBalance();
+                        ClearGrid();
+                    } else if (xhr.status == 207) {
+                        $.notify('Duplicate Item...!', "info");
+                    }
+                },
+                error: function () {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        }
+
+        function Validate_GridButton() {
+
+            var Err = 0;
+            if ($('#Type').val() == "") {
+                AddErrorCls('Type');
+                $.notify("Type is required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Type');
+            }
+            if ($('#LedgerName').prop('selectedIndex') == 0) {
+                AddErrorCls('LedgerName');
+                $.notify("LedgerName is required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('LedgerName');
+            }
+            if ($('#ModeOfAdjustment').val() == null || $('#ModeOfAdjustment').val() == "") {
+                AddErrorCls('ModeOfAdjustment');
+                $.notify("ModeOfAdjustment is required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ModeOfAdjustment');
+            }
+            if ($('#AdjustmentAmt').val() == 0) {
+                AddErrorCls('AdjustmentAmt');
+                $.notify("AdjustmentAmt is must be greater than 0.", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('AdjustmentAmt');
+            }
+            if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
+                AddErrorCls('ModeOfAdjustment');
+                $.notify("Cannot add to grid directly.", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ModeOfAdjustment');
+            }
+            if ($('#BankType').val() == "Bank") {
+                if ($("#Balance").val() < $("#AdjustmentAmt").val()) {
+                    AddErrorCls('Balance');
+                    $.notify("Not have enough balance For the payment", "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('Balance');
+                }
+            }
+            if ($('#BankType').val() == "Bank") {
+
+                if ($('#InsNo').val() == null || $('#InsNo').val() == "") {
+                    AddErrorCls('InsNo');
+                    $.notify("InsNo is required.", "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('InsNo');
+                }
+                if ($('#Intrument').prop('selectedIndex') == 0) {
+                    AddErrorCls('Intrument');
+                    $.notify("Intrument is required.", "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('Intrument');
+                }
+            }
+
+            if ($('#ModeOfAdjustment').val() == "Advance") {
+                if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
+                    AddErrorCls('CustOrderNo');
+                    $.notify("CustOrderNo is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('CustOrderNo');
+                }
+                if ($('#SONo').val() == 0 || $('#SONo').val() == null) {
+                    AddErrorCls('SONo');
+                    $.notify("SONo is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('SONo');
+                }
+                if ($('#SoDate').val() == "" || $('#SoDate').val() == null) {
+                    AddErrorCls('SoDate');
+                    $.notify("SoDate is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('SoDate');
+                }
+                if ($('#SOYear').val() == 0 || $('#SOYear').val() == null) {
+                    AddErrorCls('SOYear');
+                    $.notify("SOYear is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('SOYear');
+                }
+                if ($('#PONo').val() == 0 || $('#PONo').val() == null) {
+                    AddErrorCls('PONo');
+                    $.notify("PONo is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('PONo');
+                }
+                if ($('#PoDate').val() == "" || $('#PoDate').val() == null) {
+                    AddErrorCls('PoDate');
+                    $.notify("PoDate is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('PoDate');
+                }
+                if ($('#POYear').val() == 0 || $('#POYear').val() == null) {
+                    AddErrorCls('POYear');
+                    $.notify("POYear is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('POYear');
+                }
+            }
+
+            Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
+            if (Err == 1) return false;
+            return true;
+        }
+
+        function GridButton() {
+            if (!Validate_GridButton()) return;
+            var SchData = {
+                "AccountCode": $('#AccountCode').val(),
+                "Balance": $('#Balance').val(),
+                "BankType": $('#BankType').val(),
+                "DRCR": $('#DRCR').val(),
+                "InsNo": $('#InsNo').val(),
+                "InsDate": $('#InsDate').val(),
+                "AdjustmentAmt": $('#AdjustmentAmt').val(),
+                "AdjustmentAmtOthCur": $('#AdjustmentAmtOthCur').val(),
+                "PartyWiseNaration": $('#PartyWiseNaration').val(),
+                "AgainstVoucherNo": $('#AgainstVoucherNo').val(),
+                "AgainstVoucherCode": $('#AgainstVoucherCode').val(),
+                "AgainstVoucherDate": $('#AgainstVoucherDate').val(),
+                "AgainstVoucherType": $('#AgainstVoucherType').val(),
+                "AgainstVoucherEntryId": $('#AgainstVoucherEntryId').val(),
+                "VoucherBillAmt": $('#VoucherBillAmt').val(),
+                "PendBillAmt": $('#PendBillAmt').val(),
+                "SeqNo": $('#SeqNo').val(),
+                "CustOrderNo": $('#CustOrderNo').val(),
+                "SoDate": $('#SoDate').val(),
+                "SOYear": $('#SOYear').val(),
+                "DrAmt": $('#DrAmt').val(),
+                "CrAmt": $('#CrAmt').val(),
+                "ActualEntryby": $('#ActualEntryBy').val(),
+                "EntryByMachine": $('#EntryByMachine').val(),
+                "CurrencyId": parseInt($('#CurrencyId').val()),
+                "ActualEntryDate": $('#ActualEntryDate').val(),
+                "Type": $('#Type').find(":selected").text() == '-Select-' ? '' : $('#Type').find(":selected").text(),
+                "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
+                "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
+                "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
+                "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+            };
+
+            const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
+            if (SchData.Type.toLowerCase() === "dr") {
+                SchData.DrAmt = adjAmt.toFixed(2);
+                SchData.CrAmt = "0.00";
+            } else if (SchData.Type.toLowerCase() === "cr") {
+                SchData.CrAmt = adjAmt.toFixed(2);
+                SchData.DrAmt = "0.00";
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddBankPaymentDetail", "BankPayment")',
+                data: { model: SchData },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        $('#divBankPaymentDetail').html(result);
+                        $.notify('Process Added To Grid', "success");
+                        TotalNoOfRows();
+                        calculateTotalBalance();
+                        ClearGrid();
+                    } else if (xhr.status == 207) {
+                        $.notify('Cannot add duplicate item.!!', "info");
+                    } else if (xhr.status == 208) {
+                        $.notify('Cannot add duplicate item.!!', "info");
+                    } else if (xhr.status == 209) {
+                        $.notify('Cannot add duplicate item.!!', "info");
+                    } else if (xhr.status == 210) {
+                        $.notify('Cannot add multiple bank at a one time.!!', "info");
+                    }
+                    EditEachItem = false;
+                },
+                error: function () {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        };
+
+        function AdjustAmountForAddToGridForDRCR() {
+
+            var RowCount = $('#divBankPaymentDetail tr').length;
+            var DrAmt = parseFloat($('#DrAmt').val()) || 0;
+            var CrAmt = parseFloat($('#CrAmt').val()) || 0;
+            var difference = Math.abs(DrAmt - CrAmt);
+            for (let i = 1; i <= RowCount; i++) {
+                if ($('#BankType').val() == "Bank") {
+                    if (DrAmt < CrAmt) {
+                        $('#AdjustmentAmt').val(difference)
+                    }
+                }
+                else {
+                    if ($('#Type-' + i).text() == "DR") {
+                        if ($('#Type').val() == "CR") {
+                            $('#AdjustmentAmt').val(difference)
+                        }
+                    }
+                    if ($('#Type-' + i).text() == "CR") {
+                        if ($('#Type').val() == "DR") {
+                            $('#AdjustmentAmt').val(difference)
+                        }
+                    }
+                }
+            }
+            $('#AdjustmentAmt').trigger('input');
+        }
+
+        var EditEachItem = false;
+        function EditItemRows(SrNO) {
+
+            var RowCount = $('#divBankPaymentDetail tr').length;
+            if (EditEachItem) {
+                $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+            else {
+                $.ajax({
+                    url: '@Url.Action("EditItemRows", "BankPayment")',
+                    type: "POST",
+                    data: { SrNO: SrNO },
+                    success: function (data) {
+
+                        var obj = $.parseJSON(data);
+                        var ModeOfAdjustment = obj[0].ModeOfAdjustment;
+                        if (ModeOfAdjustment == "Against Ref") {
+                            $('#LedgerName').val(obj[0].AccountCode).trigger("change");
+                            $('#AccountCode').val(obj[0].AccountCode);
+                            $('#Intrument').val(obj[0].Intrument).trigger("change");
+                            $('#InsNo').val(obj[0].InsNo);
+                            $('#InsDate').val(obj[0].InsDate);
+                            $('#ModeOfAdjustment').val(obj[0].ModeOfAdjustment).trigger("change");
+                            $('#SeqNo').val(obj[0].SeqNo);
+                            PopUpForPendingVouchers("EditMode", SrNO);
+                            CheckUnCheckEdit();
+                        }
+                        else {
+                            if (obj != null) {
+                                EditEachItem = true;
+                                $('#Type').val(obj[0].Type).trigger("change");
+                                $('#LedgerName').val(obj[0].AccountCode).trigger("change");
+                                $('#AccountCode').val(obj[0].AccountCode);
+                                $('#Balance').val(obj[0].Balance);
+                                $('#DRCR').val(obj[0].DRCR);
+                                $('#Intrument').val(obj[0].Intrument).trigger("change");
+                                $('#InsNo').val(obj[0].InsNo);
+                                $('#InsDate').val(obj[0].InsDate);
+                                $('#ModeOfAdjustment').val(obj[0].ModeOfAdjustment).trigger("change");
+                                $('#AdjustmentAmt').val(obj[0].AdjustmentAmt);
+                                $('#AdjustmentAmtOthCur').val(obj[0].AdjustmentAmtOthCur);
+                                $('#CostCenterName').val(obj[0].CostCenterName).trigger("change");
+                                $('#PartyWiseNaration').val(obj[0].PartyWiseNaration);
+                                $('#AgainstVoucherNo').val(obj[0].AgainstVoucherNo);
+                                $('#AgainstVoucherCode').val(obj[0].AgainstVoucherCode);
+                                $('#AgainstVoucherDate').val(obj[0].AgainstVoucherDate);
+                                $('#AgainstVoucherType').val(obj[0].AgainstVoucherType);
+                                $('#AgainstVoucherEntryId').val(obj[0].AgainstVoucherEntryId);
+                                $('#VoucherBillAmt').val(obj[0].VoucherBillAmt);
+                                $('#PendBillAmt').val(obj[0].PendBillAmt);
+                                $('#SeqNo').val(obj[0].SeqNo);
+                                $('#CustOrderNo').val(obj[0].CustOrderNo);
+                                $('#SoDate').val(obj[0].SoDate);
+                                $('#SOYear').val(obj[0].SOYear);
+                                $('#DrAmt').val(obj[0].DrAmt);
+                                $('#CrAmt').val(obj[0].CrAmt);
+                                var rowCount = $('#divStockGrid tr').length;
+                                for (var i = 1; i <= rowCount + 1; i++) {
+                                    $('#editItemGrid-' + i).css("pointer-events", "none");
+                                    $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                                }
+                                DeleteItemRow(SrNO);
+                            }
+                        }
+                    },
+                    error: function (response) {
+                        $.notify(response.responseText, "error");
+                    },
+                    failure: function (response) {
+                        $.notify(response.responseText, "error");
+                    }
+                });
+            }
+        }
+
+        $('#CheckUnCheckAll').click(function () {
+            var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            if ($('#CheckUnCheckAll').is(':checked') == true) {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#CheckUnCheck-' + i).prop('checked', true)
+                    CheckUnCheckCheck(i);
+                }
+            }
+            else {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#CheckUnCheck-' + i).prop('checked', false)
+                }
+            }
+        })
+
+        function CheckUnCheckCheck(i) {
+
+            var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            if ($('#CheckUnCheck-' + i).is(':checked') == true) {
+                $('#AdjustAmt-' + i).val(($('#BalanceAmt-' + i).text()));
+                $('#BalanceAmt-' + i).text(0);
+                var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
+                $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+            }
+            else {
+                $('#AdjustData-' + i).css("background-color", "");
+            }
+            if (selectedRows === RowCount) {
+                $('#CheckUnCheckAll').prop('checked', true);
+            }
+            else {
+                $('#CheckUnCheckAll').prop('checked', false);
+            }
+            AdjustAmount();
+            $('#lblcheckitem').text(selectedRows)
+        }
+
+        function CheckUnCheckEdit() {
+
+            var RowCount = $('#divBankPaymentDetail tr').length;
+            var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            var selectedRows = 0;
+
+            var existingVoucherIds = new Set();
+
+            for (let i = 1; i <= RowCount; i++) {
+                let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();
+                existingVoucherIds.add(voucherId);
+            }
+
+            for (let i = 1; i <= PopUpRow; i++) {
+                let popupVoucherId = $('#PopUpAccEntryId-' + i).text().trim();
+
+                if (existingVoucherIds.has(popupVoucherId)) {
+                    selectedRows++;
+                    $('#CheckUnCheck-' + i).prop('checked', true);
+                    $('#AdjustAmt-' + i).val($('#BalanceAmt-' + i).text());
+                    $('#BalanceAmt-' + i).text(0);
+                    $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+                }
+            }
+            AdjustAmount();
+            $('#lblcheckitem').text(selectedRows);
+        }
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#divDisplayPopupForPendingVouchersDetail tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+            sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
+            sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+            sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+        $('#btnRoutingExcel').click(function () {
+            $("#GateDataTable").table2excel({
+                filename: "PendingVouchersData.xls"
+            });
+        });
+
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>
+</style>
+
+
+

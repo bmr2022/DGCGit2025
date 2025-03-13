@@ -406,7 +406,7 @@
 										<select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="OtherRateCurr" class="form-label">Rate In Oth Curr.</label>
+										<label asp-for="OtherRateCurr" class="form-label">FX Rate</label>
 										<input asp-for="OtherRateCurr" class="form-control" />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -521,7 +521,7 @@
 													<th>Alt Qty</th>
 													<th>Alt Unit</th>
 													<th>Rate</th>
-													<th>Rate in other</th>
+													<th>Rate in FX</th>
 													<th>Rate/Unit</th>
 													<th>Disc%</th>
 													<th>Disc Rs</th>
@@ -1374,7 +1374,7 @@
 		}
 
 		$(document).ready(function () {
-			 
+			// alert('inside load');
 			$('#AccountCode').select2();
 			//$('#MBillToAccountCode').select2();
 			$('#PartCode').select2();
@@ -1465,6 +1465,8 @@
 			$('#AmmEffDate').val($('#AmmEffDate').val().split(' ')[0]);
 			$('#QDate').val(parseDateToFormat($('#QDate').val().split(' ')[0]));
 			$('#SODate').val(parseDateToFormat($('#SODate').val().split(' ')[0]));
+			//alert($('#WEF').val());
+			$('#WEF').val(parseDateToFormat($('#WEF').val().split(' ')[0]));
 			// $('#WEF').val($('#WEF').val().split(' ')[0]);
 			//$('#SOCloseDate').val($('#SOCloseDate').val().split(' ')[0]);
 			$('#SOConfirmDate').val(parseDateToFormat($('#SOConfirmDate').val().split(' ')[0]));
@@ -1534,7 +1536,7 @@
 			var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 		   // alert('formattedDate2'+formattedDate2);
 
-			//$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+			$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
 			$('#EntryDate').datepicker("option", "minDate", formattedDate1);
 			$('#EntryDate').datepicker("option", "maxDate", formattedDate2);
@@ -1607,7 +1609,7 @@
 			//    $('#WEF').datepicker("option", "maxDate", $('#SOCloseDate').val());
 			//}
 
-		});
+		});//ready end here
 
 
 		var currentSearchColumn = null;
@@ -1774,9 +1776,9 @@
 			 
 			var minDate = $('#SODate').val();
 			//$('#WEF').datepicker("setDate", parseDateToFormat(minDate));
-			$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", minDate);
+			$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(minDate));
 
-			$('#WEF').datepicker("option", "minDate", minDate);
+			$('#WEF').datepicker("option", "minDate", parseDateToFormat(minDate));
 		}
 
 		$('#WEF').change(function () {
@@ -2755,7 +2757,7 @@
 				"ProjQty1": $('#ProjQty1').val(),
 				"ProjQty2": $('#ProjQty2').val(),
 			}
-			alert('before itemgrid');
+			//alert('before itemgrid');
 			 
 			console.log(ItemData);
 			$.ajax({

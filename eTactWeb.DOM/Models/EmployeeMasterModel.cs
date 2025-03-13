@@ -98,6 +98,12 @@ namespace eTactWeb.DOM.Models
         public string JobReference2{ get; set; }     
         public string JoiningThrough{ get; set; }     
 
+        //Document & IDProof
+        public string PassportNo{ get; set; }     
+        public string WorkPeritVisa{ get; set; }     
+        public string DrivingLicenseNo { get; set; }    
+        public string PanNo{ get; set; }   
+        public string MedicalInsuranceDetail { get; set; }    
 
     }
 }
