@@ -901,6 +901,246 @@ public class SaleScheduleController : Controller
                     var Year = Convert.ToInt32(Request.Form.Where(x => x.Key == "Year").FirstOrDefault().Value, new CultureInfo("en-IN"));
                     var FromDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "FromDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
                     var TillDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "TillDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
+                    var Action = Request.Form.Where(x => x.Key == "Action").FirstOrDefault().Value;
+
+                    var JSONString = ISaleSchedule.GetSOItem(AC, SONO, Year, 0).GetAwaiter().GetResult();
+
+                    var ItemList = JsonConvert.DeserializeObject<Root>(JSONString);
+
+                    var rowCount = worksheet.Dimension.Rows;
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+
+                        bool isRowEmpty = true;
+                        for (int col = 1; col <= worksheet.Dimension.Columns; col++)
+                        {
+                            if (!string.IsNullOrEmpty((worksheet.Cells[row, col].Value ?? string.Empty).ToString().Trim()))
+                            {
+                                isRowEmpty = false;
+                                break;
+                            }
+                        }
+
+                        if (isRowEmpty)
+                        {
+                            // Row is empty, you can handle this case accordingly
+                            ErrMsg = "Row : " + row + " is empty.";
+                        }
+                        else
+                        {
+                            var ExlPC = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
+                            var ExlDD = (worksheet.Cells[row, 3].Value ?? string.Empty).ToString().Trim();
+                            var ExlDelDate = (worksheet.Cells[row, 4].Value ?? string.Empty).ToString().Trim();
+                            var ExIC = ItemList.Result.Where(c => c.PartCode == ExlPC).Select(x => x.ItemCode).FirstOrDefault();
+
+                            DateTime DelDate;
+                            var isDate = DateTime.TryParse(ExlDD, out DelDate);
+
+                            var isValidPartCode = ItemList.Result.Where(x => x.PartCode == ExlPC).Any();
+
+                            //var isValidDate = (Convert.ToDateTime(ExlDD).CompareTo(Convert.ToDateTime(FromDate)) > 0) && (Convert.ToDateTime(ExlDD).CompareTo(Convert.ToDateTime(TillDate)) < 1);
+
+                            //var isValidDate = (DelDate.CompareTo(Convert.ToDateTime(FromDate)) > 0) && (DelDate.CompareTo(Convert.ToDateTime(TillDate)) < 1);
+
+                            //if (!isValidPartCode && !isValidDate)
+                            //{
+                            //    ErrMsg = "Row : " + row + " has invalid Partcode & DeliveryDate.";
+                            //}
+                            //else if (!isValidPartCode && isValidDate)
+                            //{
+                            //    ErrMsg = "Row : " + row + " has invalid Partcode.";
+                            //}
+                            //else if (isValidPartCode && !isValidDate)
+                            //{
+                            //    ErrMsg = "Row : " + row + " has invalid DeliveryDate.";
+                            //}
+                            //else if (ExcelDup.Contains(ExlPC))
+                            //{
+                            //    ErrMsg = "Row : " + row + " has Duplicate PartCode.";
+                            //}
+                            //else
+                            //{
+                            //    ExcelDup.Add(ExlPC);
+                            //}
+
+                            //var DelDateValidate = SaleGridList.Where(x => x.DeliveryDate == ExlDelDate).Any();
+                            var EffFromDate = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
+                            var EffTillDate = DateTime.ParseExact(TillDate, "dd/MM/yyyy", null);
+
+                            if (!isValidPartCode)
+                            {
+                                //  ErrorMsg = "PartCode does not Exists";
+                                ErrMsg = "PartCode does not Exists";
+                            }
+                            else if (!(Convert.ToDateTime(ExlDelDate) >= EffFromDate && Convert.ToDateTime(ExlDelDate) <= EffTillDate))
+                            {
+                                ErrMsg = "Row : " + row + "has OutofRange DeliveryDate.";
+                            }
+                            else
+                            {
+                                ExcelDup.Add(ExlPC);
+                            }
+
+                            if (!isValidPartCode /*|| !isValidDate*/ || !string.IsNullOrEmpty(ErrMsg))
+                            {
+                                Error.Add(row.ToString(), ErrMsg);
+                                //TempData["500"] = "500";
+
+                            }
+                            else if (SaleGridList.Any(x => x.ItemCode == ExIC && ParseDate(x.DeliveryDate) == ParseDate(ExlDelDate)))
+                            {
+                                ErrMsg = "Row : " + row + " has Duplicate Items.";
+                            }
+                            else
+                            {
+                                SaleGridList.Add(new SaleScheduleGrid
+                                {
+                                    SeqNo = SaleGridList.Count + 1,
+                                    ItemCode = ExIC,
+                                    ItemName = ItemList.Result.Where(c => c.PartCode == ExlPC).Select(x => x.ItemName).FirstOrDefault(),
+                                    PartCode = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim(),
+                                    SchQty = Convert.ToInt32(worksheet.Cells[row, 2].Value),
+                                    PendQty = Convert.ToInt32(worksheet.Cells[row, 2].Value),
+                                    Unit = ItemList.Result.Where(c => c.PartCode == ExlPC).Select(x => x.Unit).FirstOrDefault(),
+                                    AltUnit = ItemList.Result.Where(c => c.PartCode == ExlPC).Select(x => x.AltUnit).FirstOrDefault(),
+                                    Rate = Convert.ToDecimal(ItemList.Result.Where(c => c.PartCode == ExlPC).Select(x => x.Rate).FirstOrDefault()),
+                                    DeliveryDate = ParseDate(ExlDelDate).ToString(),
+                                    AltSchQty = (worksheet.Cells[row, 5].Value ?? string.Empty).ToString().Trim() == "" ? 0 : Convert.ToDecimal((worksheet.Cells[row, 5].Value ?? string.Empty).ToString().Trim()),
+                                    ItemSize = (worksheet.Cells[row, 6].Value ?? string.Empty).ToString().Trim(),
+                                    ItemColor = (worksheet.Cells[row, 7].Value ?? string.Empty).ToString().Trim(),
+                                    Remarks = (worksheet.Cells[row, 8].Value ?? string.Empty).ToString().Trim(),
+                                    OtherDetail = (worksheet.Cells[row, 9].Value ?? string.Empty).ToString().Trim(),
+                                });
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            ////Read the connection string for the Excel file.
+            //string conString = this.Configuration.GetConnectionString("ExcelConString");
+            //DataTable dt = new DataTable();
+            //conString = string.Format(conString, filePath);
+
+            //using (OleDbConnection connExcel = new OleDbConnection(conString))
+            //{
+            //    using (OleDbCommand cmdExcel = new OleDbCommand())
+            //    {
+            //        using (OleDbDataAdapter odaExcel = new OleDbDataAdapter())
+            //        {
+            //            cmdExcel.Connection = connExcel;
+
+            // //Get the name of First Sheet. connExcel.Open(); DataTable dtExcelSchema;
+            // dtExcelSchema = connExcel.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null); string
+            // sheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString(); connExcel.Close();
+
+            //            //Read Data from First Sheet.
+            //            connExcel.Open();
+            //            cmdExcel.CommandText = "SELECT * From [" + sheetName + "]";
+            //            odaExcel.SelectCommand = cmdExcel;
+            //            odaExcel.Fill(dt);
+            //            connExcel.Close();
+            //        }
+            //    }
+            //}
+
+            ////Insert the Data read from the Excel file to Database Table.
+            //conString = this.Configuration.GetConnectionString("DBConnection");
+            //using (SqlConnection con = new SqlConnection(conString))
+            //{
+            //    using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
+            //    {
+            //        //Set the database table name.
+            //        sqlBulkCopy.DestinationTableName = "dbo.customersDB";
+
+            // //[OPTIONAL]: Map the Excel columns with that of the database table.
+            // sqlBulkCopy.ColumnMappings.Add("CustomerId", "customer_id");
+            // sqlBulkCopy.ColumnMappings.Add("FirstName", "first_name");
+            // sqlBulkCopy.ColumnMappings.Add("LastName", "last_name");
+            // sqlBulkCopy.ColumnMappings.Add("Phone", "phone");
+            // sqlBulkCopy.ColumnMappings.Add("Email", "email");
+            // sqlBulkCopy.ColumnMappings.Add("Street", "street");
+            // sqlBulkCopy.ColumnMappings.Add("City", "city");
+            // sqlBulkCopy.ColumnMappings.Add("State", "state");
+            // sqlBulkCopy.ColumnMappings.Add("Zip", "zip_code");
+
+            //        con.Open();
+            //        sqlBulkCopy.WriteToServer(dt);
+            //        con.Close();
+            //    }
+            //}
+        }
+
+        if (Error.Count > 0)
+        {
+            return StatusCode(207, Error);
+        }
+        else
+        {
+            MainModel.SaleScheduleList = SaleGridList;
+
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            IMemoryCache.Set("KeySaleScheduleGrid", MainModel.SaleScheduleList, cacheEntryOptions);
+
+            return PartialView("_SaleScheduleGrid", MainModel);
+        }
+
+        return View();
+    }
+
+    [HttpPost]
+    [Route("{controller}/UploadMonthlyExcel")]
+    public IActionResult UploadMonthlyExcel()
+    {
+        IFormFile ExcelFile = Request.Form.Files[0];
+        String ErrMsg = String.Empty;
+        var ExcelDup = new List<string>();
+        var SaleGrid = new SaleScheduleGrid();
+        var MainModel = new SaleSubScheduleModel();
+        var SaleGridList = new List<SaleScheduleGrid>();
+        var Error = new Dictionary<string, string>();
+
+        if (ExcelFile != null)
+        {
+            //Create a Folder.
+            string path = Path.Combine(this.IWebHostEnvironment.WebRootPath, "Uploads");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            //Save the uploaded Excel file.
+            string fileName = Path.GetFileName(ExcelFile.FileName);
+            string filePath = Path.Combine(path, fileName);
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                ExcelFile.CopyTo(stream);
+            }
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage package = new ExcelPackage(filePath))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                if (worksheet == null)
+                {
+                    //return or alert message here
+                }
+                else
+                {
+                    var AC = Convert.ToInt32(Request.Form.Where(x => x.Key == "AC").FirstOrDefault().Value, System.Globalization.CultureInfo.InvariantCulture);
+                    var SONO = Convert.ToInt32(Request.Form.Where(x => x.Key == "SONO").FirstOrDefault().Value, System.Globalization.CultureInfo.InvariantCulture);
+                    var Year = Convert.ToInt32(Request.Form.Where(x => x.Key == "Year").FirstOrDefault().Value, new CultureInfo("en-IN"));
+                    var FromDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "FromDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
+                    var TillDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "TillDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
+                    var Action = Request.Form.Where(x => x.Key == "Action").FirstOrDefault().Value;
 
                     var JSONString = ISaleSchedule.GetSOItem(AC, SONO, Year, 0).GetAwaiter().GetResult();
 

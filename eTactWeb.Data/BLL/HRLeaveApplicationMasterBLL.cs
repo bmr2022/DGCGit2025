@@ -52,5 +52,23 @@ namespace eTactWeb.Data.BLL
             //throw new NotImplementedException();
             return await _HRLeaveApplicationMasterDAL.SaveData(model, DT);
         }
+
+        public async Task<ResponseResult> GetDashboardData()
+        {
+            return await _HRLeaveApplicationMasterDAL.GetDashboardData();
+        }
+        public async Task<HRLeaveApplicationDashBoard> GetDashboardDetailData(string ReportType, string FromDate, string ToDate)
+        {
+            return await _HRLeaveApplicationMasterDAL.GetDashboardDetailData(ReportType, FromDate, ToDate);
+        }
+        public async Task<HRLeaveApplicationMasterModel> GetViewByID(int id, int year)
+        {
+            return await _HRLeaveApplicationMasterDAL.GetViewByID(id, year);
+        }
+
+        public async Task<ResponseResult> DeleteByID(int id, int year)
+        {
+            return await _HRLeaveApplicationMasterDAL.DeleteByID(id, year);
+        }
     }
 }

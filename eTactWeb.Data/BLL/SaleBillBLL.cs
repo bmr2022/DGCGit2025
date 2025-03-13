@@ -1,6 +1,7 @@
 ﻿using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -79,9 +80,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FillSOItemRate(sono,soYearCode,accountCode,custOrderNo,itemCode);
         }       
-        public async Task<ResponseResult> FillItems(string sono, int soYearCode,int accountCode, string showAll, string TypeItemServAssets, string bomInd,string sbJobWork)
+        public async Task<ResponseResult> FillItems( string showAll, string typeItemServAssets,string sbJobWork)
         {
-            return await _SaleBillDAL.FillItems(sono,soYearCode,accountCode,showAll,TypeItemServAssets,bomInd,sbJobWork);
+            return await _SaleBillDAL.FillItems(showAll,typeItemServAssets,sbJobWork);
+        }       
+        public async Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string sbJobWork)
+        {
+            return await _SaleBillDAL.FillSOWiseItems(invoiceDate,sono,soYearCode,accountCode,sbJobWork);
+        }       
+        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd)
+        {
+            return await _SaleBillDAL.JWItemList(typeItemServAssets,showAll,bomInd);
         } 
         public async Task<ResponseResult> FillStore()
         {
