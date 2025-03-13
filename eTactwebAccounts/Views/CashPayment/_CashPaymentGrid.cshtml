@@ -1,6 +1,6 @@
-﻿@model eTactWeb.DOM.Models.BankPaymentModel;
-@if (Model.BankPaymentGrid == null)
- {
+﻿@model eTactWeb.DOM.Models.CashPaymentModel;
+@if (Model.CashPaymentGrid == null)
+{
     <tr class="text-center">
         <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
     </tr>
@@ -8,7 +8,7 @@
 else
 {
     var @Cntr = 0;
-    foreach (var item in Model.BankPaymentGrid)
+    foreach (var item in Model.CashPaymentGrid)
     {
         Cntr = Cntr + 1;
         <tr class="small " style="white-space:nowrap">
@@ -43,9 +43,9 @@ else
             <td>@item.AdjustmentAmtOthCur</td>
             <td>@item.CostCenterName</td>
             <td>@item.PartyWiseNaration</td>
-           @*  <td>@item.CustOrderNo</td>
+            <td>@item.CustOrderNo</td>
             <td>@item.SoDate</td>
-            <td>@item.SOYear</td> *@
+            <td>@item.SOYear</td>
             <td>@item.PONo</td>
             <td>@item.PoDate</td>
             <td>@item.POYear</td>
