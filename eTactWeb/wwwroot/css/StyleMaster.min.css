@@ -212,10 +212,33 @@ ul.dropdown-menu.show {
     background-color: #e0f2f1;
 }
 
-    .pnl1 .form-control, .pnl1 .form-control-sm, .pnl1 .form-select, .pnl1 .form-select-sm, .pnl1 .form-check-input, .pnl1 .card {
+/*.select2-container--default .select2-selection--single {
+    background-color: #e0f2f1 !important;
+    border: 1.5px solid #0a0a0a !important;
+    border-radius: 4px;
+    color: #000 !important;
+}
+
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        background-color: #e0f2f1 !important;
+        color: #000 !important;
+        border-bottom: 1.5px solid #0a0a0a !important;
+    } */
+
+/*.select2-container--default .select2-selection--single {
+    background-color: #e0f2f1 !important;
+    border: 1.5px solid #0a0a0a;
+}*/
+
+    /* Style the text of the selected item */
+    /*.select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #e0f2f1 !important;
+    }*/
+
+    .pnl1 .form-control, .pnl1 .form-control-sm, .pnl1 .form-select, .form-select option, .pnl1 .form-select-sm, .pnl1 .form-check-input, .pnl1 .card {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a;
-       
     }
 
 

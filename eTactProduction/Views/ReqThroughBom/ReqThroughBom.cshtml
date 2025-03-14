@@ -106,11 +106,11 @@
                                     <label asp-for="REQNo" class="form-label" style="color:blue">Req NO</label>
                                     @if (Model.Mode != "U" && Model.Mode != "V")
                                     {
-                                        <input asp-for="REQNo" class="form-control" style="width:115px; " readonly" />
+                                        <input asp-for="REQNo" class="form-control" style="width:115px;" readonly style="background-color: lightblue !important;" />
                                     }
                                     else
                                     {
-                                        <input asp-for="REQNo" class="form-control" value="@Model.REQNo" style="width:115px;" readonly />
+                                        <input asp-for="REQNo" class="form-control" value="@Model.REQNo" style="width:115px;" readonly style="background-color: lightblue !important;" />
                                     }
                                 </div>
                                 <div class="col-lg">
