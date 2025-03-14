@@ -2479,7 +2479,6 @@
                                 $('#SONO').append("<option value=" + val.SONo + " data-sotype=" + val.SOType + ">" + val.SONo + "</option>");
                             });
                         }
-
                     }
                 }
             });
@@ -2572,11 +2571,11 @@
             FillSOYearCode();
 
             if ($('#SONO').find(':selected').data('sotype') == "CLOSE") {
-                $('#SchNo').prop("disabled", "true");
-                $('#SaleSchYearCode').prop("disabled", "true");
+                $('#SchNo').prop("disabled", true);
+                $('#SaleSchYearCode').prop("disabled", true);
             } else {
-                $('#SchNo').prop("disabled", "false");
-                $('#SaleSchYearCode').prop("disabled", "false");
+                $('#SchNo').prop("disabled", false);
+                $('#SaleSchYearCode').prop("disabled", false);
             }
 
             if ($('#SONO').val() == '0' || $('#SONO').val() == '') {
@@ -2591,15 +2590,19 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-            if ($('#SaleBillJobwork').val() == 'J') {
-                JWItemList($('#TypeItemServAssets').val());
-            } else {
-                FillSOWiseItems();
+            if ($('#SONO').find(':selected').data('sotype') == "OPEN") {
+                if ($('#SaleBillJobwork').val() == 'J') {
+                    JWItemList($('#TypeItemServAssets').val());
+                } else {
+                    FillSOWiseItems();
+                }
             }
             FILLCustomerOrderAndSPDate();
             FillSOItemRate();
+            FillSOSchedule();
 
             if ($('#SOYearCode').val() == '0') {
+
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {
@@ -2897,7 +2900,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-
+                    debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#SchNo').empty();
@@ -2925,8 +2928,18 @@
                         $('#SaleSchYearCode').empty();
                         $('#SaleSchYearCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
+                            // $.each(obj.Result, function (index, val) {
+                            //     $('#SaleSchYearCode').append("<option value=" + val.SchYearCode + ">" + val.SchYearCode + "</option>");
+                            // });
+
+                            let uniqueYears = new Set(); 
+
                             $.each(obj.Result, function (index, val) {
-                                $('#SaleSchYearCode').append("<option value=" + val.SchYearCode + ">" + val.SchYearCode + "</option>");
+                                uniqueYears.add(val.SchYearCode);
+                            });
+
+                            uniqueYears.forEach(function (year) {
+                                $('#SaleSchYearCode').append("<option value='" + year + "'>" + year + "</option>");
                             });
                         }
                     }
@@ -2947,6 +2960,11 @@
                         $('#Schdate').val("");
                         $('#Schdate').val(obj.Result[0].ScheduleDate);
 
+                        if ($('#SaleBillJobwork').val() == 'J') {
+                            JWItemList($('#TypeItemServAssets').val());
+                        } else {
+                            FillSOWiseItems();
+                        }
                     }
                 }
             });
