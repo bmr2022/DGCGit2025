@@ -47,7 +47,7 @@
                             <input asp-for="DomesticExportNEPZBack" type="hidden" value="@Model.DomesticExportNEPZBack" />
                             <input asp-for="SearchBoxBack" type="hidden" value="@Model.SearchBoxBack" />
                             <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
-                            @if (Model.Mode == "U")
+                            @if (Model.Mode == "U" || Model.Mode == "V")
                             {
                                 <input type="hidden" value="@Model.SaleBillNo" id="hiddenSaleBillNo" />
                             }
@@ -387,6 +387,7 @@
                 $('#DT').prop("checked", true);
                 $('#PN1').prop("checked", true);
                 // FillCustomerList("Y");
+                debugger
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
 
                 var taxRowCount = $('#divTaxGrid tr').length;
@@ -627,6 +628,8 @@
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
                 $('.gridHiddenField').show();
+                FillJWCustomerList();
+
             } else {
                 $('.jobWorkChalln').hide();
                 $('.gridHiddenField').hide();
@@ -1796,8 +1799,10 @@
 
         $('#PN1').change(function (event) {
             event.preventDefault();
-            if ($('#PN1').is(":checked") == true) {
-                FillCustomerList("Y");
+            if ($('#SaleBillJobwork').val() == 'S') {
+                if ($('#PN1').is(":checked") == true) {
+                    FillCustomerList("Y");
+                }
             }
         });
 
@@ -2337,12 +2342,39 @@
             }
         });
 
+        function FillJWCustomerList() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillJWCustomerList")",
+                data: { "SBJobwork": "JOBWORK-SALEBILL", "yearCode": $('#SaleBillYearCode') .val()},
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        $('#AccountCode').empty();
+                        $('#AccountCode').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result.Table, function (index, val) {
+                                $('#AccountCode').append("<option value=" + val.Account_code + ">" + val.CustomeName + "</option>");
+                            });
+                        }
+                    }
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        // $('#AccountCode').val($('#hiddenAccountCode').val()).trigger("change");
+                        $('#AccountCode').val($('#hiddenAccountCode').val()).trigger('change.select2');
+                    }
+                }
+            });
+        }
+
         function FillCustomerList(ShowAllCustomer) {
             var ShowAllCustomer = ShowAllCustomer == "" ? "N" : "Y";
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillCustomerList")",
-                data: { "ShowAllCustomer": ShowAllCustomer },
+                data: { "SBJobwork": "SaleBill", "showAllCustomer": ShowAllCustomer },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {

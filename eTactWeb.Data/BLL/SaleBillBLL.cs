@@ -48,9 +48,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.GetAutocompleteValue();
         }
-        public async Task<ResponseResult> FillCustomerList(string ShowAllCustomer)
+        public async Task<ResponseResult> FillCustomerList(string SBJobwork, string ShowAllCustomer)
         {
-            return await _SaleBillDAL.FillCustomerList(ShowAllCustomer);
+            return await _SaleBillDAL.FillCustomerList(SBJobwork,ShowAllCustomer);
+        }
+        public async Task<ResponseResult> FillJWCustomerList(string SBJobwork, int yearCode)
+        {
+            return await _SaleBillDAL.FillJWCustomerList(SBJobwork,yearCode);
         }
         public async Task<ResponseResult> GetDistance(int accountCode)
         {
@@ -108,9 +112,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FILLSOScheduleDate(sono,accountCode,soYearCode,schNo,schYearCode);
         }  
-        public async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT,DataTable DrCrDetailDT,DataTable AdjDetailDT)
+        public async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT,DataTable DrCrDetailDT,DataTable AdjDetailDT,DataTable AdjChallanDetailDT)
         {
-            return await _SaleBillDAL.SaveSaleBill(model,SBGrid,TaxDetailDT, DrCrDetailDT, AdjDetailDT);
+            return await _SaleBillDAL.SaveSaleBill(model,SBGrid,TaxDetailDT, DrCrDetailDT, AdjDetailDT, AdjChallanDetailDT);
         }  
         public async Task<ResponseResult> FILLCustomerOrderAndSPDate(string billDate, int accountCode, string sono, int soYearCode)
         {
