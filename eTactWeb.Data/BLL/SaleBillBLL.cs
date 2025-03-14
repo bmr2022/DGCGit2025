@@ -88,13 +88,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FillItems(showAll,typeItemServAssets,sbJobWork);
         }       
-        public async Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string sbJobWork)
+        public async Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string schNo, int schYearCode, string sbJobWork)
         {
-            return await _SaleBillDAL.FillSOWiseItems(invoiceDate,sono,soYearCode,accountCode,sbJobWork);
+            return await _SaleBillDAL.FillSOWiseItems(invoiceDate,sono,soYearCode,accountCode,schNo,schYearCode,sbJobWork);
         }       
-        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd)
+        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd, string schNo, int schYearCode)
         {
-            return await _SaleBillDAL.JWItemList(typeItemServAssets,showAll,bomInd);
+            return await _SaleBillDAL.JWItemList(typeItemServAssets,showAll,bomInd,schNo,schYearCode);
         } 
         public async Task<ResponseResult> FillStore()
         {

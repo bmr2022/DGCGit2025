@@ -663,7 +663,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string sbJobWork)
+        public async Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string schNo, int schYearCode, string sbJobWork)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -675,6 +675,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@sono", sono));
                 SqlParams.Add(new SqlParameter("@SoYearCode",soYearCode));
                 SqlParams.Add(new SqlParameter("@accountcode", accountCode));
+                SqlParams.Add(new SqlParameter("@ScheduleNo", schNo));
+                SqlParams.Add(new SqlParameter("@ScheduleYearCode", schYearCode));
                 SqlParams.Add(new SqlParameter("@SaleBillJobwork", sbJobWork));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
@@ -688,7 +690,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd)
+        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd,string schNo,int schYearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -698,6 +700,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "JWSaleBillItemList"));
                 SqlParams.Add(new SqlParameter("@ShowAll", showAll));
                 SqlParams.Add(new SqlParameter("@TypeItemServAssets", typeItemServAssets));
+                SqlParams.Add(new SqlParameter("@ScheduleNo", schNo));
+                SqlParams.Add(new SqlParameter("@ScheduleYearCode", schYearCode));
                 SqlParams.Add(new SqlParameter("@SaleBillJobwork", "JOBWORK-SALEBILL"));
                 SqlParams.Add(new SqlParameter("@SaleBillJobwork", bomInd));
 

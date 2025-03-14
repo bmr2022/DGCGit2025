@@ -387,7 +387,7 @@
                 $('#DT').prop("checked", true);
                 $('#PN1').prop("checked", true);
                 // FillCustomerList("Y");
-                debugger
+                
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
 
                 var taxRowCount = $('#divTaxGrid tr').length;
@@ -402,7 +402,7 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
-            debugger
+            
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
                 $('.gridHiddenField').show();
@@ -624,7 +624,7 @@
         });
 
         $('#SaleBillJobwork').change(function () {
-            debugger
+            
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
                 $('.gridHiddenField').show();
@@ -717,7 +717,7 @@
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-                debugger
+                
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
@@ -1087,7 +1087,7 @@
                 SetPartCodeItemName('ItemCode');
             }
 
-            FillSOSchedule();
+            // FillSOSchedule();
             FillCurrentBatchINStore();
             // $('#StoreId').val(0);
             FillSOPendQty();
@@ -1327,7 +1327,7 @@
             var batchNoo = $('#Batchno').val();
             var uniquebatchnoo = $('#Uniquebatchno').val();
             var sono = parseInt($('#SONO').val());
-
+            debugger
             var SchData = {
                 "SONO": parseInt($('#SONO').val()),
                 "SOYearCode": $('#SOYearCode').val(),
@@ -1403,7 +1403,7 @@
 
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
 
-                        $('#Uniquebatchno,#Batchno,#Qty').val(0);
+                        $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode').val(0);
                         $('#LotStock,#TotalStock').val("");
                         $('#BOMInd,#ProducedUnprod').val('');
                         //$('#HSNNo').val("");
@@ -1465,7 +1465,7 @@
                                     $('#saleBillRow-' + i).css("background-color", "#fab9e1");
                                 }
                             }
-                            debugger
+                            
                             $('.gridHiddenField').show();
                         } else {
                             $('.gridHiddenField').hide();
@@ -1580,7 +1580,7 @@
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
             $.ajax({
                 type: "POST",
-                data: { "typeItemServAssets": itemType, "showAll": showAll, "bomInd": $('#BOMInd').val() },
+                data: { "typeItemServAssets": itemType, "showAll": showAll, "bomInd": $('#BOMInd').val(), "schNo": $('#SchNo').val(), "schYearCode": $('#SaleSchYearCode').val() },
                 url: "@Url.Action("JWItemList")",
                 dataType: "json",
                 async: false,
@@ -1613,7 +1613,7 @@
         function FillSOWiseItems() {
             $.ajax({
                 type: "POST",
-                data: { "invoiceDate": $('#SaleBillDate').val(), "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "sbJobWork": "SaleBill" },
+                data: { "invoiceDate": $('#SaleBillDate').val(), "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(),"schNo" : $('#SchNo').val(),"schYearCode" : $('#SaleSchYearCode').val(), "sbJobWork": "SaleBill" },
                 url: "@Url.Action("FillSOWiseItems")",
                 dataType: "json",
                 async: false,
@@ -2662,7 +2662,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                    
                     $('#Uniquebatchno').empty();
                     $('#Uniquebatchno').append('<option value="0" selected>-Select-</option>');
                     if (result != null) {
@@ -2900,7 +2900,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                    
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#SchNo').empty();
