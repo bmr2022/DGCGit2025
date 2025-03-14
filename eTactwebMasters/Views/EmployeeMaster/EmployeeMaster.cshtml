@@ -248,7 +248,7 @@
                                     <label asp-for="SwiftCode" class="form-label">Swift Code</label>
                                     <input asp-for="SwiftCode" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="PaymentMode" class="form-label">Payment Mode</label>
                                     <select asp-for="PaymentMode" class="form-control">
                                         <option value="RTGS">RTGS</option>
@@ -422,7 +422,7 @@
 
                 <div class="accordion-item">
                 <h2 class="accordion-header" id="HPanel2">
-                    <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                    <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="ODGrid" aria-expanded="false" aria-controls="ODGrid">
                         <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Job & Work Detail</strong>
                     </button>
                 </h2>
@@ -430,7 +430,7 @@
                     <div class="accordion-body">
                         <div class="row g-2 gx-3" id="_ItemGrid">
                             
-                           @*  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                 <label asp-for="JoiningDate" class="form-label">Joining Date</label>
                                 <input asp-for="JoiningDate" class="form-control" />
                             </div>
@@ -506,13 +506,52 @@
                                 <select asp-for="JoiningThrough" class="form-control">
                                     <option value="">Select</option>
                                 </select>
-                            </div> *@
+                            </div>
                            
                         </div>
                     </div>
 
                 </div>
             </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Document & IDProof</strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="PassportNo" class="form-label">National ID/Passport No</label>
+                                    <input asp-for="PassportNo" class="form-control" />
+                                </div>
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="WorkPeritVisa" class="form-label">Work Permit Visa</label>
+                                    <input asp-for="WorkPeritVisa" class="form-control" />
+                                </div>
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="DrivingLicenseNo" class="form-label">Driving Licence No</label>
+                                    <input asp-for="DrivingLicenseNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="PANNo" class="form-label">PAN/Tan Identification No</label>
+                                    <input asp-for="PANNo" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <label asp-for="MedicalInsuranceDetail" class="form-label">Medical Insurance Detail</label>
+                                    <input asp-for="MedicalInsuranceDetail" class="form-control" />
+                                </div>
+
+                               
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+
             </div>
 
             <div class="card-footer card-headerBG text-light bg-gradient">

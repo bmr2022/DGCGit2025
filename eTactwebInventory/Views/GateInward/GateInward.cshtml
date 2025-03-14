@@ -5,10 +5,21 @@
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
-    .row.justify-content-between {
-        flex-wrap: wrap;
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
     }
 
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
 </style>
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_GateInwardDisplay" />
@@ -113,7 +124,7 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="GateNo" class="form-label">Gate Entry No</label>
-                                    <input asp-for="GateNo" class="form-control" value="@Model.GateNo" readonly />
+                                    <input asp-for="GateNo" class="form-control" value="@Model.GateNo" readonly style="background-color: lightblue !important;" />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="CC" class="form-label">Branch</label>

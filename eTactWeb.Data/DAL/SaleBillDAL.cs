@@ -136,7 +136,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT)
+        internal async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT,DataTable AdjChallanDetailDT)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -276,6 +276,7 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@DRCRDATA", DrCrDetailDT));
                 SqlParams.Add(new SqlParameter("@AgainstRef", AdjDetailDT));
+                SqlParams.Add(new SqlParameter("@DTSSGridAdjust", AdjChallanDetailDT));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
 
@@ -288,13 +289,35 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillCustomerList(string ShowAllCustomer)
+        public async Task<ResponseResult> FillJWCustomerList(string SBJobwork, int yearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FILLCustomerList"));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", SBJobwork));
+                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        
+        public async Task<ResponseResult> FillCustomerList(string SBJobwork, string ShowAllCustomer)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillCustomerList"));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", SBJobwork));
                 SqlParams.Add(new SqlParameter("@ShowAllCustomer", ShowAllCustomer));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }

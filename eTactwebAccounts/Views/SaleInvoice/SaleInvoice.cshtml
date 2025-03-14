@@ -47,7 +47,7 @@
                             <input asp-for="DomesticExportNEPZBack" type="hidden" value="@Model.DomesticExportNEPZBack" />
                             <input asp-for="SearchBoxBack" type="hidden" value="@Model.SearchBoxBack" />
                             <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
-                            @if (Model.Mode == "U")
+                            @if (Model.Mode == "U" || Model.Mode == "V")
                             {
                                 <input type="hidden" value="@Model.SaleBillNo" id="hiddenSaleBillNo" />
                             }
@@ -129,8 +129,8 @@
                                                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Seq No</th>
                                                     <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
-                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom/Ind</th>
-                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/UnProd</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom/Ind</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/UnProd</th>
                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
                                                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
@@ -387,6 +387,7 @@
                 $('#DT').prop("checked", true);
                 $('#PN1').prop("checked", true);
                 // FillCustomerList("Y");
+                debugger
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
 
                 var taxRowCount = $('#divTaxGrid tr').length;
@@ -401,11 +402,13 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
-             
+            debugger
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
+                $('.gridHiddenField').show();
             } else {
                 $('.jobWorkChalln').hide();
+                $('.gridHiddenField').hide();
             }
 
             $('#AdjNewRefNo').val($('#SaleBillNo').val());
@@ -621,10 +624,15 @@
         });
 
         $('#SaleBillJobwork').change(function () {
+            debugger
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
+                $('.gridHiddenField').show();
+                FillJWCustomerList();
+
             } else {
                 $('.jobWorkChalln').hide();
+                $('.gridHiddenField').hide();
             }
         });
 
@@ -678,8 +686,8 @@
             $('#PendingChallanListPopupModel').modal("hide");
         });
 
-        function ValidateAdjDetail(){
-            if($('#AccountCode').val() == 0){
+        function ValidateAdjDetail() {
+            if ($('#AccountCode').val() == 0) {
                 $.notify('please enter AccountCode...!', "error");
                 return false;
             }
@@ -700,7 +708,7 @@
         $('#btnAdjustChallanListGrid').click(function (event) {
             event.preventDefault();
 
-          if (!ValidateAdjDetail()) return;
+            if (!ValidateAdjDetail()) return;
             var YearCode = $('#SaleBillYearCode').val();
             var EntryDate = $('#ChallanDate').val();
             var ChallanDate = $('#ChallanDate').val();
@@ -709,15 +717,15 @@
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-
+                debugger
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
-                    ItemCode: row.find("td:eq(2) input").val().trim(), // ItemCode
+                    ItemCode: row.find("td:eq(1) input").val(), // ItemCode
                     Unit: row.find("td:eq(21)").text().trim(),
                     BillQty: row.find("td:eq(12)").text().trim(),
                     JWRate: row.find("td:eq(13)").text().trim(),
-                    ProcessId: row.find("td:eq(29) input").val().trim(), // ProcoessId
+                    ProcessId: row.find("td:eq(29) input").val(), // ProcoessId
                     SONO: row.find("td:eq(5)").text().trim(),
                     CustOrderNo: row.find("td:eq(7)").text().trim(),
                     SOYearCode: row.find("td:eq(19)").text().trim(),
@@ -955,7 +963,7 @@
         });
 
         function ResetPendQty() {
-             
+
             FillSOPendQty();
             var rowCount = $('#divSaleBillList tr').length;
             var totalBillQty = 0;
@@ -1144,7 +1152,7 @@
                 else {
                     RemoveErrorCls('BOMInd');
                 }
-                
+
                 if ($('#ProducedUnprod').prop('selectedIndex') == 0) {
                     AddErrorCls('ProducedUnprod');
                     $.notify('please select Produced Unprod...!', "error");
@@ -1240,7 +1248,7 @@
                     }
                 }
             }
-        
+
             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) return false;
 
@@ -1253,7 +1261,7 @@
                 url: "@Url.Action("FillSOPendQty")",
                 data: { "saleBillEntryId": $('#SaleBillEntryId').val(), "saleBillNo": $('#SaleBillNo').val(), "saleBillYearCode": $('#SaleBillYearCode').val(), "sono": $('#SONO').val(), "soYearcode": $('#SOYearCode').val(), "custOrderNo": $('#CustOrderNo').val(), "itemCode": $('#ItemCode').val(), "accountCode": $('#AccountCode').val(), "schNo": $('#SchNo').val(), "schYearCode": $('#SaleSchYearCode').val() },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -1457,8 +1465,12 @@
                                     $('#saleBillRow-' + i).css("background-color", "#fab9e1");
                                 }
                             }
-                            FillCurrentBatchINStore();
+                            debugger
+                            $('.gridHiddenField').show();
+                        } else {
+                            $('.gridHiddenField').hide();
                         }
+                        FillCurrentBatchINStore();
                     }
 
                 },
@@ -1564,7 +1576,7 @@
             JWItemList($('#TypeItemServAssets').val());
         });
 
-        function JWItemList(itemType){
+        function JWItemList(itemType) {
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
             $.ajax({
                 type: "POST",
@@ -1598,7 +1610,7 @@
             });
         }
 
-        function FillSOWiseItems(){
+        function FillSOWiseItems() {
             $.ajax({
                 type: "POST",
                 data: { "invoiceDate": $('#SaleBillDate').val(), "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "sbJobWork": "SaleBill" },
@@ -1636,7 +1648,7 @@
             var showAll = $('#ItemSA').prop('checked') ? 'T' : 'F';
             $.ajax({
                 type: "POST",
-                data: {  "showAll": showAll, "TypeItemServAssets": itemType, "sbJobWork": "SaleBill" },
+                data: { "showAll": showAll, "TypeItemServAssets": itemType, "sbJobWork": "SaleBill" },
                 url: "@Url.Action("FillItems")",
                 dataType: "json",
                 async: false,
@@ -1787,8 +1799,10 @@
 
         $('#PN1').change(function (event) {
             event.preventDefault();
-            if ($('#PN1').is(":checked") == true) {
-                FillCustomerList("Y");
+            if ($('#SaleBillJobwork').val() == 'S') {
+                if ($('#PN1').is(":checked") == true) {
+                    FillCustomerList("Y");
+                }
             }
         });
 
@@ -2328,17 +2342,44 @@
             }
         });
 
+        function FillJWCustomerList() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillJWCustomerList")",
+                data: { "SBJobwork": "JOBWORK-SALEBILL", "yearCode": $('#SaleBillYearCode') .val()},
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        $('#AccountCode').empty();
+                        $('#AccountCode').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result.Table, function (index, val) {
+                                $('#AccountCode').append("<option value=" + val.Account_code + ">" + val.CustomeName + "</option>");
+                            });
+                        }
+                    }
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        // $('#AccountCode').val($('#hiddenAccountCode').val()).trigger("change");
+                        $('#AccountCode').val($('#hiddenAccountCode').val()).trigger('change.select2');
+                    }
+                }
+            });
+        }
+
         function FillCustomerList(ShowAllCustomer) {
             var ShowAllCustomer = ShowAllCustomer == "" ? "N" : "Y";
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillCustomerList")",
-                data: { "ShowAllCustomer": ShowAllCustomer },
+                data: { "SBJobwork": "SaleBill", "showAllCustomer": ShowAllCustomer },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
                     if (result != null) {
-                        
+
                         var obj = $.parseJSON(result);
                         $('#AccountCode').empty();
                         $('#AccountCode').append('<option value="0">-Select-</option>');
@@ -2438,7 +2479,6 @@
                                 $('#SONO').append("<option value=" + val.SONo + " data-sotype=" + val.SOType + ">" + val.SONo + "</option>");
                             });
                         }
-
                     }
                 }
             });
@@ -2531,11 +2571,11 @@
             FillSOYearCode();
 
             if ($('#SONO').find(':selected').data('sotype') == "CLOSE") {
-                $('#SchNo').prop("disabled", "true");
-                $('#SaleSchYearCode').prop("disabled", "true");
+                $('#SchNo').prop("disabled", true);
+                $('#SaleSchYearCode').prop("disabled", true);
             } else {
-                $('#SchNo').prop("disabled", "false");
-                $('#SaleSchYearCode').prop("disabled", "false");
+                $('#SchNo').prop("disabled", false);
+                $('#SaleSchYearCode').prop("disabled", false);
             }
 
             if ($('#SONO').val() == '0' || $('#SONO').val() == '') {
@@ -2550,15 +2590,19 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-            if ($('#SaleBillJobwork').val() == 'J') {
-                JWItemList($('#TypeItemServAssets').val());
-            } else {
-                FillSOWiseItems();
+            if ($('#SONO').find(':selected').data('sotype') == "OPEN") {
+                if ($('#SaleBillJobwork').val() == 'J') {
+                    JWItemList($('#TypeItemServAssets').val());
+                } else {
+                    FillSOWiseItems();
+                }
             }
             FILLCustomerOrderAndSPDate();
             FillSOItemRate();
+            FillSOSchedule();
 
             if ($('#SOYearCode').val() == '0') {
+
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
             } else {
@@ -2707,7 +2751,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#LotStock').val($.parseJSON(result).Result[0].STOCK);
@@ -2856,7 +2900,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-
+                    debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#SchNo').empty();
@@ -2884,8 +2928,18 @@
                         $('#SaleSchYearCode').empty();
                         $('#SaleSchYearCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
+                            // $.each(obj.Result, function (index, val) {
+                            //     $('#SaleSchYearCode').append("<option value=" + val.SchYearCode + ">" + val.SchYearCode + "</option>");
+                            // });
+
+                            let uniqueYears = new Set(); 
+
                             $.each(obj.Result, function (index, val) {
-                                $('#SaleSchYearCode').append("<option value=" + val.SchYearCode + ">" + val.SchYearCode + "</option>");
+                                uniqueYears.add(val.SchYearCode);
+                            });
+
+                            uniqueYears.forEach(function (year) {
+                                $('#SaleSchYearCode').append("<option value='" + year + "'>" + year + "</option>");
                             });
                         }
                     }
@@ -2906,6 +2960,11 @@
                         $('#Schdate').val("");
                         $('#Schdate').val(obj.Result[0].ScheduleDate);
 
+                        if ($('#SaleBillJobwork').val() == 'J') {
+                            JWItemList($('#TypeItemServAssets').val());
+                        } else {
+                            FillSOWiseItems();
+                        }
                     }
                 }
             });

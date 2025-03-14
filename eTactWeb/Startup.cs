@@ -127,6 +127,7 @@ namespace eTactWeb
             services.TryAddScoped<IItemGroup, ItemGroupBLL>();
             services.TryAddScoped<ILedgerOpeningEntry, LedgerOpeningEntryBLL>();
             services.TryAddScoped<ISubVoucher, SubVoucherBLL>();
+            services.TryAddScoped<ICompanyDetail, CompanyDetailBLL>();
             services.TryAddScoped<IPrimaryAccountGroupMaster, PrimaryAccountGroupMasterBLL>();
             services.TryAddScoped<IAlternateItemMaster, AlternateItemMasterBLL>();
             services.TryAddScoped<IBOMReport, BOMReportBLL>();
@@ -143,6 +144,8 @@ namespace eTactWeb
             services.TryAddScoped<ICostCenterMaster, CostCenterMasterBLL>();
             services.TryAddScoped<ILedgerPartyWiseOpening, LedgerPartyWiseOpeningBLL>();
             services.TryAddScoped<IBankReceipt, BankReceiptBLL>();
+            services.TryAddScoped<IBankPayment, BankPaymentBLL>();
+            services.TryAddScoped<ICashPayment, CashPaymentBLL>();
             services.TryAddScoped<ITrailBalance, TrailBalanceBLL>();
             services.TryAddScoped<IAccGroupLedger, AccGroupLedgerBLL>();
             services.TryAddScoped<IProdPlanStatus, ProdPlanStatusBLL>();

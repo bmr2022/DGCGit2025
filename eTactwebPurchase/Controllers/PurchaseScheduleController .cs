@@ -816,7 +816,7 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
     {
         var Result = await IPurchaseSchedule.GetPSAmmData(model);
 
-        var DT = Result.Result.DefaultView.ToTable(true, "EntryID", "YearCode", "Unit", "SchQty", "AltUnit", "AltSchQty", "AltPendQty", "PendQty", "PONO", "AccountCode", "VendorName", "DeliveryAddress",
+        var DT = Result.Result.DefaultView.ToTable(true, "EntryID", "Unit", "SchQty", "AltUnit", "AltSchQty", "AltPendQty", "PendQty", "PONO", "AccountCode", "VendorName", "DeliveryAddress",
         "SchApproved", "PODate", "SchNo", "SchDate", "SchYear", "POYearCode", "SchEffFromDate", "SchEffTillDate", "CreatedBy", "CreatedOn", "ApprovedBy");
 
         model.PSDashboard = CommonFunc.DataTableToList<PurchaseScheduleDashboard>(DT, "POSCHEDULEDASHBOARD");
