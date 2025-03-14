@@ -68,7 +68,7 @@
                 </select>
             </div>
             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <label asp-for="PONo" class="form-label" style="background-color: lightblue !important;" >PO No</label>
+                <label asp-for="PONo" class="form-label">PO No</label>
                 @{
                     if (@Model.isPONo == true)  
                     {
@@ -231,15 +231,15 @@ else
                 </select>
             </div>
             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <label asp-for="PONo" class="form-label" style="color: red;">PO No*</label>
+                <label asp-for="PONo" class="form-label" style="color: red;" >PO No*</label>
                 @{
                     if (@Model.isPONo == true)
                     {
-                        <input asp-for="PONo" class="form-control" />
+                        <input asp-for="PONo" class="form-control" style="background-color: lightblue !important;" />
                     }
                     else
                     {
-                        <input asp-for="PONo" class="form-control" readonly disabled />
+                        <input asp-for="PONo" class="form-control" readonly style="background-color: lightblue !important;" />
                     }
                 }
             </div>
