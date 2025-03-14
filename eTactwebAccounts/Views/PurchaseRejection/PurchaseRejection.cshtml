@@ -704,7 +704,7 @@
                         var obj = $.parseJSON(data);
                         if (obj != null) {
 
-                            ClearDRCRGrid();
+                            /* ClearDRCRGrid(); */
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
@@ -1328,6 +1328,7 @@
             var purchaseRejectionData = {
                 "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
                 "ItemName": $('#ItemCode').find(':selected').text() == "-Select-" ? "" : $('#ItemCode').find(':selected').text(),
+                "DocAccountName": $('#DocAccountCode').find(':selected').text() == "-Select-" ? "" : $('#DocAccountCode').find(':selected').text(),
                 "DocAccountCode": $('#DocAccountCode').val(),
                 "HSNNo": $('#HSNNo').val(),
                 "ItemCode": $('#ItemCode').val(),
