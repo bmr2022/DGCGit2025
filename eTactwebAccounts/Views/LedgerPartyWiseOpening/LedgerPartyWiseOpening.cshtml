@@ -30,7 +30,7 @@
                                         REFRESH
                                     </a>
                                 </div>
-                                @if (Model.Mode == "U"  )
+                                @if (Model.Mode == "U")
                                 {
                                     Model.Mode = "U";
                                     <div class="col-auto">
@@ -75,7 +75,7 @@
                                     <input type="hidden" value="@Model.CC" asp-for="CC" />
                                     <input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
                                     <input type="hidden" asp-for="SrNO" />
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="EntryId" class="form-label">Entry Id</label>
                                         <input asp-for="EntryId" class="form-control" readonly />
                                     </div>
@@ -89,11 +89,11 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:380px;">
                                         <label asp-for="ShowAllParty" class="form-label col-sm-6">
-                                               <input asp-for="ShowAllParty" type="checkbox" />Show AllParty
-                                          </label>
+                                            <input asp-for="ShowAllParty" type="checkbox" />Show AllParty
+                                        </label>
                                         <label asp-for="LedgerName" class="form-label">Ledger Name</label>
                                         <input type="hidden" asp-for="AccountCode" class="form-control" />@* onchange="GetAllDataAccountCodeWise();" *@
-                                        <select class="form-control" asp-for="LedgerName" required >
+                                        <select class="form-control" asp-for="LedgerName" required>
                                             <option value="">-Select-</option>
                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                             {
@@ -102,10 +102,10 @@
                                             }
                                         </select>
                                     </div>
-                                   
+
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
                                         <label asp-for="Balance" class="form-label"> Balance</label>
-                                        <input asp-for="Balance" class="form-control" type="text" readonly/>
+                                        <input asp-for="Balance" class="form-control" type="text" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
                                         @* <label asp-for="DRCR" class="form-label" style="width:60px;">DR/CR</label>
@@ -123,7 +123,7 @@
                                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                                         <div class="accordion-body">
                                             <div class="row g-2 gx-3" id="_ItemGrid">
-                                                <input asp-for="SrNO" class="form-control" type="hidden"/>
+                                                <input asp-for="SrNO" class="form-control" type="hidden" />
                                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                     <label asp-for="BillNo" class="form-label"> Bill No</label>
                                                     <input asp-for="BillNo" class="form-control" data-val="false" data-val-required="false" />
@@ -134,7 +134,7 @@
                                                 </div>
                                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                     <label asp-for="BillYear" class="form-label"> Bill Year</label>
-                                                    <input asp-for="BillYear" class="form-control" readonly data-value="false"/>
+                                                    <input asp-for="BillYear" class="form-control" readonly data-value="false" />
                                                 </div>
                                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                     <label asp-for="BillNetAmt" class="form-label"> Bill NetAmt</label>
@@ -144,12 +144,12 @@
                                                     <label asp-for="PendAmt" class="form-label"> PendAmt</label>
                                                     <input asp-for="PendAmt" class="form-control" readonly data-value="false" />
                                                 </div>
-                                               @*  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                                    <label asp-for="Type" class="form-label">Type</label>
-                                                    <select class="form-control" asp-for="Type" >
-                                                        <option value="">-Select-</option>
-                                                        
-                                                    </select>
+                                                @*  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                <label asp-for="Type" class="form-label">Type</label>
+                                                <select class="form-control" asp-for="Type" >
+                                                <option value="">-Select-</option>
+
+                                                </select>
                                                 </div> *@
                                                 <div class="col-xl-1 col-lg-4 col-md-4 col-sm-6 col-xs-12" style="width:120px;">
                                                     <label asp-for="Type" class="form-label">Type</label>
@@ -161,33 +161,33 @@
                                                 </div>
                                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                     <label asp-for="TransactionType" class="form-label"> Trans. Type</label>
-                                                    <input asp-for="TransactionType" class="form-control" readonly/>
+                                                    <input asp-for="TransactionType" class="form-control" readonly />
                                                 </div>
                                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                     <label asp-for="DueDate" class=" form-label"> DueDate</label>
-                                                    <input asp-for="DueDate" class=" form-control" readonly/>
+                                                    <input asp-for="DueDate" class=" form-control" readonly />
                                                 </div>
                                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                                     <label asp-for="Unit" class="form-label"> Save/Update</label>
                                                     <input asp-for="Unit" class="form-control" value="S" />
-                                                  
+
                                                 </div>
 
-                                                
+
                                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-top:24px;">
                                                     <button type="button" class="btn btn-sm btn-outline-danger " id="GridButton">
                                                         <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                                                     </button>
                                                 </div>
                                             </div>
-                                                <div class="progress my-2 mb-3" style="height: 4px;">
-                                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                                <div class="card">
-                                                    <div class="card-body overflow-auto pb-0">
-                                                        <table class="table table-hover table-bordered table-striped" id="GateMainTable">
-                                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
-                                                                <tr>
+                                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <div class="card">
+                                                <div class="card-body overflow-auto pb-0">
+                                                    <table class="table table-hover table-bordered table-striped" id="GateMainTable">
+                                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                            <tr>
                                                                 <th>Action</th>
                                                                 <th>Sr No</th>
                                                                 <th>Bill No</th>
@@ -201,125 +201,125 @@
                                                                 <th>Entry Id</th>
                                                                 <th>U_S</th>
                                                                 <th>Adjustment</th>
-                                                                </tr>
-                                                            </thead>
+                                                            </tr>
+                                                        </thead>
                                                         <tbody id="divStockGrid">
-                                                                 <partial name="_LedgerPartyWiseOpeningGrid" />
-                                                            </tbody>
-                                                        </table>
-                                                        <div class="d-flex justify-content-end mt-2" style="margin-right:350px;">
+                                                            <partial name="_LedgerPartyWiseOpeningGrid" />
+                                                        </tbody>
+                                                    </table>
+                                                    <div class="d-flex justify-content-end mt-2" style="margin-right:350px;">
 
-                                                            <div class="d-flex justify-content-end mt-2">
-                                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;margin-left:10px;">
-                                                                    <label class="form-label">Total Adjustment Amt</label>
-                                                                    <input id="TotNetAmt" class="form-control" readonly />
-                                                                </div>
+                                                        <div class="d-flex justify-content-end mt-2">
+                                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;margin-left:10px;">
+                                                                <label class="form-label">Total Adjustment Amt</label>
+                                                                <input id="TotNetAmt" class="form-control" readonly />
                                                             </div>
-                                                           <div class="d-flex justify-content-end mt-2">
-                                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;margin-left:10px;">
-                                                                    <label class="form-label">Total Dr Amt</label>
-                                                                    <input id="TotDrAmt" class="form-control" readonly />
-                                                                </div>
-                                                            </div>
-                                                           <div class="d-flex justify-content-end mt-2">
-                                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;margin-left:10px;">
-                                                                    <label class="form-label">Total Cr Amt</label>
-                                                                    <input id="TotCrAmt" class="form-control" readonly />
-                                                                </div>
-                                                            </div>
-                                                       
                                                         </div>
+                                                        <div class="d-flex justify-content-end mt-2">
+                                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;margin-left:10px;">
+                                                                <label class="form-label">Total Dr Amt</label>
+                                                                <input id="TotDrAmt" class="form-control" readonly />
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-end mt-2">
+                                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;margin-left:10px;">
+                                                                <label class="form-label">Total Cr Amt</label>
+                                                                <input id="TotCrAmt" class="form-control" readonly />
+                                                            </div>
+                                                        </div>
+
                                                     </div>
                                                 </div>
+                                            </div>
                                             <div class="row g-2 gx-3">
                                                 <div class="col-12 text-center">
                                                     <strong>Total No Of Items : <span id="lblTotalNoOfBelowItems"></span></strong>
                                                 </div>
                                             </div>
 
-                                                <div class="progress my-3 mb-3" style="height: 4px;">
-                                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
+                                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                               
-                                
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-               
-                <div class="card-footer p-3">
-                    <div class="row justify-content-between g-2">
-                        <div class="card-header card-headerBG text-light bg-gradient">
-                            <h5>
-                                <strong>Ledger PartyWise Opening</strong>
-                                <span class="d-flex float-end" style="margin-top:-2px;">
 
-                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                                    <a asp-controller="LedgerPartyWiseOpening" asp-action="LedgerPartyWiseOpeningDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
-                                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
-                                        Dashboard
-                                    </a>
-                                    <div class="row justify-content-between g-2">
-                                        <div class="col-auto">
-                                            @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
-                                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
-                                            <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
-                                            <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
-                                            <input asp-for="OpeningYearCodeBack" type="hidden" value="@Model.OpeningYearCodeBack" />
-                                            <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
-                                            <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
-                                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
 
-                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
-                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
-                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
-                                                BACK
-                                            </a>
-                                        </div>
-                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
-                                        {
-                                            <div class="col-auto">
-                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-                                                    REFRESH
-                                                </a>
-                                            </div>
-                                            @if (Model.Mode == "U"  )
-                                            {
-                                                @*Model.Mode = "U";*@
-                                                <div class="col-auto">
-                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
-                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                                                        UPDATE
-                                                    </button>
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div class="col-auto">
-                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
-                                                        <i class="fa-solid fa-chevron-circle-right"></i>
-                                                        SUBMIT
-                                                    </button>
-                                                </div>
-                                            }
-                                        }
-                                    </div>
-                                </span>
-                            </h5>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    <div class="card-header card-headerBG text-light bg-gradient">
+                        <h5>
+                            <strong>Ledger PartyWise Opening</strong>
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+
+                                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                <a asp-controller="LedgerPartyWiseOpening" asp-action="LedgerPartyWiseOpeningDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                    Dashboard
+                                </a>
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+                                        @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                        <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                        <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
+                                        <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
+                                        <input asp-for="OpeningYearCodeBack" type="hidden" value="@Model.OpeningYearCodeBack" />
+                                        <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
+                                        <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
+                                        <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+
+                                        @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                    {
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode == "U")
+                                        {
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                    <i class="fa-solid fa-chevron-circle-right"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 
@@ -329,9 +329,9 @@
     <script>
         $(document).ready(function () {
             if ($('#Mode').val() === "U") {
-                 
+
                 $('#AccountCode').val($('#LedgerName').val());
-                
+
                 countAllTotal();
                 ClearItems();
 
@@ -339,7 +339,7 @@
             $('#BillNo').removeClass('Valid');
             $('#LedgerName').select2();
             $('#Type').select2();
-        
+
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             FillLedgerName();
             // if ($("#Mode").val() !== "U") {
@@ -348,7 +348,7 @@
 
             var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-           
+
             $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
 
             if ($('#Mode').val() == "U") {
@@ -364,7 +364,7 @@
             $("#LedgerName").change(function () {
                 GetAllDataAccountCodeWise();
             });
-            
+
             $('.submitBTN').click(function (e) {
                 validateBalance();
                 if (!validateBalance()) {
@@ -372,45 +372,45 @@
                 }
                 $('form').submit();
             });
-            
+
         });
-        
+
         function validateBalance() {
-             
+
             if ($("#LedgerName").val() == "") {
                 $.notify("LedgerName Can not be Blanck", "error");
             }
-             
+
             var balance = parseFloat($('#Balance').val().replace(/,/g, ''));  // Get Balance value
             var totNetAmt = parseFloat($('#TotNetAmt').val().replace(/,/g, ''));  // Get Total Adjustment Amt
 
-            
+
             if (isNaN(balance) || isNaN(totNetAmt)) {
-                $.notify("Please make sure both Balance and Total Adjustment Amt are valid numbers.","error");
-                return false;  
+                $.notify("Please make sure both Balance and Total Adjustment Amt are valid numbers.", "error");
+                return false;
             }
 
             if (balance !== totNetAmt) {
-                $.notify("Balance must be equal to Total Adjustment Amt.","error");
-                return false;  
+                $.notify("Balance must be equal to Total Adjustment Amt.", "error");
+                return false;
             }
 
-            return true; 
+            return true;
         }
-       
-        const today = new Date(); 
+
+        const today = new Date();
 
         $('#BillDate').datepicker({
             dateFormat: 'dd/mm/yy',
-            maxDate: today, 
+            maxDate: today,
             onSelect: function (dateText) {
                 const billDate = $.datepicker.parseDate('dd/mm/yy', dateText);
                 let billYear = "";
                 FillDueDate();
-               
-                if (billDate.getMonth() >= 3) { 
+
+                if (billDate.getMonth() >= 3) {
                     billYear = billDate.getFullYear();
-                } else { 
+                } else {
                     billYear = billDate.getFullYear() - 1;
                 }
 
@@ -418,26 +418,27 @@
             }
         });
 
-        
-        const initialDate = $('#BillDate').val();
-        if (initialDate) {
-            const billDate = $.datepicker.parseDate('dd/mm/yy', initialDate);
-            let billYear = "";
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            const initialDate = $('#BillDate').val();
+            if (initialDate) {
+                const billDate = $.datepicker.parseDate('dd/mm/yy', initialDate);
+                let billYear = "";
 
-            if (billDate.getMonth() >= 3) {
-                billYear = billDate.getFullYear();
-            } else {
-                billYear = billDate.getFullYear() - 1;
+                if (billDate.getMonth() >= 3) {
+                    billYear = billDate.getFullYear();
+                } else {
+                    billYear = billDate.getFullYear() - 1;
+                }
+
+                $('#BillYear').val(billYear);
+
             }
-
-            $('#BillYear').val(billYear);
-           
         }
         $(document).on('change', '#BillDate', function () {
             FillDueDate();
         });
         $('#Type').on('input', function () {
-            const typeValue = $(this).val().toUpperCase(); 
+            const typeValue = $(this).val().toUpperCase();
             let transactionType = "";
 
             if (typeValue === "DR") {
@@ -452,7 +453,7 @@
         $('#BillNetAmt').on('input', function () {
             let billNetAmt = $(this).val();
             let isValid = true;
-           
+
             if (!/^\d*\.?\d+$/.test(billNetAmt) || parseFloat(billNetAmt) < 0) {
                 isValid = false;
             }
@@ -475,28 +476,28 @@
                 $(this).val(billNetAmt); // Reset to BillNetAmt
             }
         });
-            $('#LedgerName').change(function () {
-                $('#AccountCode').val($('#LedgerName').val());
-                if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-                    ClearGrid();
-                }
-                GetOpeningAmt();
+        $('#LedgerName').change(function () {
+            $('#AccountCode').val($('#LedgerName').val());
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                ClearGrid();
+            }
+            GetOpeningAmt();
             GetOpeningAmtDRCR();
-            });
-              
-            $('#BillDate').change(function () {
-              
-            });
-           
-               
-           
-            //  $('#LedgerName').change(function () {
-            //      GetOpeningAmt();
-            //     // GetDrCrType();
-            // });
+        });
+
+        $('#BillDate').change(function () {
+
+        });
+
+
+
+        //  $('#LedgerName').change(function () {
+        //      GetOpeningAmt();
+        //     // GetDrCrType();
+        // });
 
         function GetOpeningAmt() {
-              
+
             var OpeningYearCode = $('#OpeningYearCode').val();
             var AccountCode = $('#AccountCode').val();
             $('#AccountCode').val(AccountCode);
@@ -511,8 +512,8 @@
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-                      
-                        
+
+
                         $('#Balance').val(obj.Result[0].Amount || 0);
                     }
                 },
@@ -556,10 +557,10 @@
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-                         
+
                         //$('#DueDate').val(obj.Result[0].GetCreditDays || 0);
                         //var creditDays = obj.Result[0]?.GetCreditDays || 0;
-                         
+
 
                         var creditDays = obj.Result[0]?.GetCreditDays || 0;
 
@@ -583,7 +584,7 @@
                 }
             });
         }
-        
+
         function FillLedgerName() {
             var OpeningYearCode = $('#OpeningYearCode').val();
             var Mode = $('#Mode').val();
@@ -600,9 +601,9 @@
                     $.each(obj.Result, function (index, LedgerName) {
                         StoreTypeDropdown.append('<option value="' + LedgerName.Account_Code + '">' + LedgerName.Account_Name + '</option>');
                     });
-                     
+
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                          
+
                         var LedgerName = '@Model.AccountCode';
                         //$('#LedgerName').val(LedgerName).trigger("change");
                         $('#LedgerName').val(LedgerName);
@@ -616,7 +617,7 @@
         }
 
         function GetAllDataAccountCodeWise() {
-             
+
             var OpeningYearCode = $('#OpeningYearCode').val();
             var AccountCode = $('#AccountCode').val();
             $.ajax({
@@ -628,7 +629,7 @@
                 },
                 dataType: "json",
                 success: function (result, status, error) {
-                     
+
                     if (result > 0) {
                         var EntryId = result;
                         var currentLocation = window.location.href;
@@ -646,13 +647,13 @@
                             //OpeningAmt: OpeningAmt,
                             //InvoiceNo: InvoiceNo,
                             //InvoiceDate: InvoiceDate,
-                           // InvNetAmt: InvNetAmt,
+                            // InvNetAmt: InvNetAmt,
                             //InvPendAmt: InvPendAmt,
                             //DrCrType: DrCrType,
                             //TransactionType: TransactionType,
                             //DueDate: DueDate,
                             //CC: CC,
-                           // ActualEntryBy: ActualEntryBy,
+                            // ActualEntryBy: ActualEntryBy,
                             //ActualEntryDate: ActualEntryDate,
                             //UpdatedBy: UpdatedBy,
                             //LastUpdatedDate: LastUpdatedDate,
@@ -677,9 +678,9 @@
             $('#BillNo,#BillDate,#Type,#TransactionType,#DueDate,#Unit').val('');
         }
 
-        $('#GridButton').click(function (){
-             
+        $(document).on('click', '#GridButton', function () {
             console.log('Add to Grid button clicked');
+
             var BillNo = $('#BillNo').val().trim();
             var BillDate = $('#BillDate').val().trim();
             var BillYear = $('#BillYear').val().trim();
@@ -690,30 +691,20 @@
             var DueDate = $('#DueDate').val().trim();
             var Unit = $('#Unit').val().trim();
 
-            // Validation: Check if any required field is empty, null, or zero
             if (!BillNo || !BillDate || !BillYear || !BillNetAmt || !PendAmt || !Type || !TransactionType || !DueDate || !Unit ||
                 BillNetAmt == "0" || PendAmt == "0") {
                 $.notify('Fill All Data For Add in Grid', "error");
                 return;
             }
+
             var seqnoarray = [];
-            var rowsCounting = parseInt($('#divStockGrid tr').length);
-            $('#divStockGrid tr').each(function (index, element) {
-
-                var currentRow = $(element);
-                var seqnoText = currentRow.find('td[id^=SrNO]').text();
-
-                seqnoarray.push(parseInt(seqnoText));
-
+            $('#divStockGrid tr').each(function () {
+                var seqnoText = $(this).find('td[id^=SrNO]').text();
+                seqnoarray.push(parseInt(seqnoText) || 0);
             });
-            var highestValue = 0;
-            if (seqnoarray.length == 0) {
-                highestValue = 0;
-            }
-            else {
 
-                highestValue = Math.max(...seqnoarray);
-            }
+            var highestValue = seqnoarray.length ? Math.max(...seqnoarray) : 0;
+
             var SchData = {
                 "BillNo": BillNo,
                 "BillDate": BillDate,
@@ -724,14 +715,13 @@
                 "TransactionType": TransactionType,
                 "DueDate": DueDate,
                 "Unit": Unit,
-               // "EntryDate": $('#EntryDate').val(),
                 "U_S": $('#U_S').val(),
                 "Adjustment": $('#Adjustment').val(),
                 "CC": $('#CC').val(),
                 "ActualEntryDate": $('#ActualEntryDate').val(),
                 "EntryByMachine": $('#EntryByMachine').val(),
                 "ActualEntryBy": $('#ActualEntryBY').val(),
-                "SrNO": parseInt($('#SrNO').val()) == 0 ? (highestValue + 1) : parseInt($('#SrNO').val())
+                "SrNO": parseInt($('#SrNO').val()) === 0 ? (highestValue + 1) : parseInt($('#SrNO').val())
             };
 
             console.log(SchData);
@@ -741,17 +731,14 @@
                 url: '@Url.Action("AddLedgerPartWiseOpeningDetail", "LedgerPartyWiseOpening")',
                 data: { model: SchData },
                 success: function (result, status, xhr) {
-                     
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divStockGrid').html(result);
                         $.notify('Process Added To Grid', "success");
                         TotalNoOfRows();
                         countAllTotal();
-                        //ClearItems();
                     } else if (xhr.status == 207) {
                         $.notify('Duplicate Item...!', "info");
                     }
-                   
                 },
                 error: function () {
                     $.notify('Something Went Wrong, Please Try Again.', "error");
@@ -800,7 +787,7 @@
                     $('#divStockGrid').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divStockGrid').html(NoData);
-                   // BasicTotal();
+                    // BasicTotal();
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -843,7 +830,7 @@
                     var obj = $.parseJSON(data);
                     if (obj != null) {
                         EditEachItem = true;
-
+                         
                         $('#BillNo').val(obj[0].BillNo).trigger("change");
                         $('#BillDate').val(obj[0].BillDate).trigger("change");
                         $('#BillYear').val(obj[0].BillYear).trigger("change");
@@ -877,12 +864,12 @@
             });
         }
         async function DeleteItemRow(SrNO) {
-             
+
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
                 data: { SrNO: SrNO, Mode: "U" },
-                success:  function (data, status, xhr) {
+                success: function (data, status, xhr) {
                     $('#divStockGrid').html(data);
                     $.notify("Process deleted from Grid", "info");
                     // EditEachItem = false;
@@ -907,7 +894,7 @@
         //var editingNow = false;
 
         // function EditItemRow(SrNO) {
-        //      
+        //
         //     if (!editingNow) {
         //         return new Promise((resolve, reject) => {
         //             $.ajax({

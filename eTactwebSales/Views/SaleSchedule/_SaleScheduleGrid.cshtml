@@ -60,7 +60,14 @@ else
             <td>@item.AltPendQty</td>
             <td>@item.Rate.ToString("#.#0")</td>
             <td>@item.RateInOthCurr.ToString("#.#0")</td>
-            <td id="DelDate-@Cntr">@item.DeliveryDate.Split()[0]</td>
+            @if (item.DeliveryDate != null)
+            {
+                <td id="DelDate-@Cntr">@item.DeliveryDate.Split()[0]</td>
+            }
+            else
+            {
+                <td>@item.DeliveryDate</td>
+            }
             <td>@item.ItemSize</td>
             <td>@item.ItemColor</td>
             <td>@item.OtherDetail</td>

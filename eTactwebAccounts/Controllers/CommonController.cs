@@ -785,9 +785,9 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new SaleRejectionModel();
             }
-            else if (model.AdjPageName == "PurchaseRejection")
+            else if (model.AdjPageName == "CreditNote")
             {
-                MainModel = new AccPurchaseRejectionModel();
+                MainModel = new AccCreditNoteModel();
             }
             else if (model.AdjPageName == "PurchaseRejection")
             {
