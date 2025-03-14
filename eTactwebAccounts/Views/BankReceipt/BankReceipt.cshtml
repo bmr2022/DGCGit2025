@@ -3,6 +3,23 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="BankReceipt" asp-controller="BankReceipt" method="post" class="form-horizontal">
