@@ -135,7 +135,7 @@
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="CustOrderNo" class="form-label"> Order No</label>
-										<input asp-for="CustOrderNo" class="form-control" readonly disabled />
+										<input asp-for="CustOrderNo" class="form-control" readonly  style="background-color: lightblue !important;" />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="SODate" class="form-label" style="color:  red;">SO Date</label>
@@ -278,7 +278,7 @@
 
 									<div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="CustOrderNo" class="form-label" style="color:  red;"> Order No</label>
-										<input asp-for="CustOrderNo" class="form-control" />
+										<input asp-for="CustOrderNo" class="form-control" style="background-color: lightblue !important;" />
 									</div>
 									<div class="col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="SODate" class="form-label" style="color:  red;">SO Date</label>
@@ -626,7 +626,7 @@
 										<select class="form-select" asp-for="UnitRate" asp-items="Model.UnitRateList" onchange="CalculateRate();"></select>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="OtherRateCurr" class="form-label">Rate In Oth Curr.</label>
+										<label asp-for="OtherRateCurr" class="form-label">Rate In FX</label>
 										<input asp-for="OtherRateCurr" type="number" step="any" min="0" class="form-control" />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
