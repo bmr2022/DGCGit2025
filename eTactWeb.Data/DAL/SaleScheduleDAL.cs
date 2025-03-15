@@ -322,7 +322,7 @@ internal class SaleScheduleDAL
         var _ResponseResult = new ResponseResult();
         try
         {
-            DateTime now = DateTime.Parse( DateTime.Now.ToString("dd/MMM/yyyy"));
+            DateTime now = DateTime.Parse(DateTime.Now.ToString("dd/MMM/yyyy"));
             DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
@@ -674,16 +674,17 @@ internal class SaleScheduleDAL
             DateTime SchAmendAppDate = new DateTime();
             DateTime SchEffFromDt = new DateTime();
             DateTime SchEffTillDt = new DateTime();
+            DateTime SoCloseDt = new DateTime();
 
-
-            EntryDt = DateTime.Parse( ConvertToDesiredFormat(model.EntryDate));
+            EntryDt = DateTime.Parse(ConvertToDesiredFormat(model.EntryDate));
             SoDt = DateTime.Parse((model.SODate));
             SchDt = DateTime.Parse(ConvertToDesiredFormat(model.ScheduleDate));
             SchAmmDt = DateTime.Parse(ConvertToDesiredFormat(model.SchAmendmentDate));
+            SoCloseDt = DateTime.Parse(ConvertToDesiredFormat(model.SOCloseDate));
+
             if (model.SchApprovalDate == null)
-                {
+            {
                 SchAppDate = DateTime.Now;
-                
             }
             else
             {
@@ -693,7 +694,6 @@ internal class SaleScheduleDAL
             if (model.SchAmendApprovalDate == null)
             {
                 SchAmendAppDate = DateTime.Now;
-
             }
             else
             {
@@ -713,10 +713,10 @@ internal class SaleScheduleDAL
             SqlParams.Add(new SqlParameter("@CustomerOrderNo", model.CustomerOrderNo));
             SqlParams.Add(new SqlParameter("@SOYearCode", model.SOYearCode));
             SqlParams.Add(new SqlParameter("@SODate", SoDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SoDt));
+            SqlParams.Add(new SqlParameter("@SOCloseDate", SoCloseDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SoCloseDt));
             SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
             SqlParams.Add(new SqlParameter("@DeliveryAddress", model.DeliveryAddress));
             SqlParams.Add(new SqlParameter("@ScheduleNo", model.ScheduleNo));
-            //oCmd.Parameters.AddWithValue("@SODate", DateTime.ParseExact(model.SODate.ToString(), "dd/mm/yyyy", CultureInfo.InvariantCulture));
 
             SqlParams.Add(new SqlParameter("@ScheduleDate", SchDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchDt.ToString("dd/MMM/yyyy")));
             if (model.Mode == "SSA")
@@ -725,8 +725,8 @@ internal class SaleScheduleDAL
                 SqlParams.Add(new SqlParameter("@SchApproved", model.SchApproved));
                 SqlParams.Add(new SqlParameter("@SchAppBy", model.SchAppBy));
                 SqlParams.Add(new SqlParameter("@SchApprovalDate", SchAppDate == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchAppDate));
-                SqlParams.Add(new SqlParameter("@SchAmendApproved", model.SchAmendApproved ));
-                SqlParams.Add(new SqlParameter("@SchAmendApprovedBy", model.SchAmendAppBy ));
+                SqlParams.Add(new SqlParameter("@SchAmendApproved", model.SchAmendApproved));
+                SqlParams.Add(new SqlParameter("@SchAmendApprovedBy", model.SchAmendAppBy));
                 SqlParams.Add(new SqlParameter("@SchAmendApprovalDate", SchAmendAppDate == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchAmendAppDate));
                 SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
             }
@@ -736,10 +736,10 @@ internal class SaleScheduleDAL
                 SqlParams.Add(new SqlParameter("@SchApproved", "N"));
                 SqlParams.Add(new SqlParameter("@SchAppBy", ""));
                 SqlParams.Add(new SqlParameter("@SchApprovalDate", "1900/04/01"));
-                SqlParams.Add(new SqlParameter("@SchAmendApproved","N"));
+                SqlParams.Add(new SqlParameter("@SchAmendApproved", "N"));
                 SqlParams.Add(new SqlParameter("@SchAmendApprovedBy", ""));
                 SqlParams.Add(new SqlParameter("@SchAmendApprovalDate", "1900/04/01"));
-               
+
             }
             SqlParams.Add(new SqlParameter("@SchAmendNo", model.SchAmendmentNo));
             SqlParams.Add(new SqlParameter("@SchAmendDate", SchAmmDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchAmmDt));
@@ -800,6 +800,7 @@ internal class SaleScheduleDAL
         model.CustomerOrderNo = DS.Tables[0].Rows[0]["CustomerOrderNo"].ToString();
         model.SOYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SOYearCode"].ToString());
         model.SODate = formattedDate.Replace("-", "/");
+        model.SOCloseDate = DS.Tables[0].Rows[0]["SOCloseDate"].ToString();
         model.SchEffFromDate = DS.Tables[0].Rows[0]["ScheduleEffectiveFromDate"].ToString();
         model.SchEffTillDate = DS.Tables[0].Rows[0]["ScheduleEffectiveTillDate"].ToString();
         model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["Accountcode"].ToString());

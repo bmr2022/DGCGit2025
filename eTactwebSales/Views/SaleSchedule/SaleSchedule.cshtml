@@ -206,7 +206,7 @@
                                     <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <input type="hidden" value="" id="ManualMonthSplit" name="ManualMonthSplit">
                                         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-end">
-                                            <input type="radio" id="ManEntryImport" name="SaleSchGrid" value="Manual" checked="" class="me-1">
+                                            <input type="radio" id="ManEntryImport" name="SaleSchGrid" value="Manual" checked class="me-1">
                                             <label class="control-label">Manual Entry + Import</label>
                                         </div>
                                         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-end">
@@ -905,7 +905,7 @@
             //GetFormRights();
             //$('#ScheduleDate').prop('readonly', true);
             var today = new (Date);
-
+            $('#ManualMonthSplit').val('Manual');
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
                 NewEntryId();
@@ -967,9 +967,20 @@
             // $('#SchEffFromDate').datepicker("option", "minDate", $('#SODate').val());
             $("#SchEffFromDate,#SchEffTillDate,#SOCloseDate").datepicker({ dateFormat: 'dd/mm/yy' });
             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V' || $('#Mode').val() == 'SSA' || $('#Mode').val() == 'SSC') {
-
+                 
                 var hiddenSchDate = $('#hiddenSchDate').val();
                 var hiddenSchEffTillDate = $('#hiddenSchEffTillDate').val();
+                var ManualSplitMonthly = "@Model.ManualMonthSplit";
+                if(ManualSplitMonthly == "Manual"){
+                    $('input[name="SaleSchGrid"][value="Manual"]').prop('checked', true);
+                }
+                if (ManualSplitMonthly == "Split") {
+                    $('input[name="SaleSchGrid"][value="Split"]').prop('checked', true);
+                }
+                if (ManualSplitMonthly == "Month") {
+                    $('input[name="SaleSchGrid"][value="Month"]').prop('checked', true);
+                }
+                $('input[type="radio"]').change();
 
                 hiddenSchDate = formateDashDateToSlashDate(hiddenSchDate.split(" ")[0]);
                 hiddenSchEffTillDate = formateDashDateToSlashDate(hiddenSchEffTillDate.split(" ")[0]);
@@ -981,15 +992,15 @@
                     $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", new Date(SoCloseDate));
                 }
 
+                var SOCloseDate = "@Model.SOCloseDate";
+                var SoDate = "@Model.SODate";
                 $('#ScheduleDate').datepicker("setDate", hiddenSchDate);
                 $("#SchEffFromDate").datepicker("setDate", new Date(SchEffFromDate));
                 $("#SchEffTillDate").datepicker("setDate", hiddenSchEffTillDate);
                 $('#DeliveryDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
                 $('#DeliveryDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
-                //$("#SOCloseDate").datepicker("setDate", $('#SOCloseDate').val());
-                //   $("#SOCloseDate").datepicker("setDate", new Date($('#SOCloseDate').val()));
-                $("#SOCloseDate").datepicker("setDate", $('#SOCloseDate').val().split(" ")[0].replace(/-/g, '/'));
-                $("#SODate").datepicker("setDate", new Date($('#SODate').val($('#SODate').val().split(" ")[0])));
+                $("#SOCloseDate").datepicker("setDate", parseDateToFormat(SOCloseDate));
+                $("#SODate").datepicker("setDate", parseDateToFormat(SoDate));
                 //$('#SchEffTillDate').datepicker("option", "minDate", new Date(SoDate));
                 //$('#SchEffTillDate').datepicker("option", "maxDate", new Date(SoCloseDate));
 
@@ -1503,6 +1514,7 @@
                                             deldate: parseInt(ress[counter].DeliveryDate.split('-')[2].split('T')[0]),
                                             schQty: ress[counter].SchQty,
                                             ItemCode: ress[counter].ItemCode
+
                                         });
 
                                     }
@@ -1610,13 +1622,13 @@
         });
 
         $('input[type="radio"]').change(function () {
-            debugger 
+              
             var SchEffDate = $('#SchEffFromDate').val().split("/")[1];
             var SchYear = $('#SchEffFromDate').val().split("/")[2];
             var LastDay = new Date(SchYear, SchEffDate, 0).getDate();
             if ($(this).is(':checked')) {
                 const selectedValue = $(this).val();
-
+                $('#ManualMonthSplit').val(selectedValue)
                 if (selectedValue == "Manual") {
                     $('#Manual').val("")
                     $('.ManualEntryImportbody').fadeIn();
@@ -2502,7 +2514,7 @@
 
 
         $('#SOYearCode').change(function () {
-            debugger
+              
             $.getJSON({
                 url: "@Url.Action("GetSODATA")",
                 async: false,
@@ -2519,7 +2531,7 @@
 
                             $('#CustomerOrderNo').val(obj.Result[0].CustOrderNo), $('#SODate').val(formattedDate), $('#SOCloseDate').val(formattedSoCloseDate), $('#DeliveryAddress').val(obj.Result[0].DeliveryAddress);
                             $('#SchEffFromDate,#SchEffTillDate').prop('disabled', false);
-                            $("#SchEffFromDate,#SchEffTillDate,#SchAmendmentDate").datepicker("option", "maxDate", parseDateToFormat(obj.Result[0].SOCloseDate));
+                            $("#SchEffFromDate,#SchAmendmentDate").datepicker("option", "maxDate", parseDateToFormat(obj.Result[0].SOCloseDate));
                             $('#ScheduleDate,#DeliveryDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
                             GetSOItem(parseInt($('#AccountCode').val()), $('#SONO').val(), $('#SOYearCode').val());
                             $('#MonthlyEntryData').empty();

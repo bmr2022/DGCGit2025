@@ -387,7 +387,7 @@
                 $('#DT').prop("checked", true);
                 $('#PN1').prop("checked", true);
                 // FillCustomerList("Y");
-                debugger
+                 
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
 
                 var taxRowCount = $('#divTaxGrid tr').length;
@@ -402,7 +402,7 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
-            debugger
+             
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
                 $('.gridHiddenField').show();
@@ -624,7 +624,7 @@
         });
 
         $('#SaleBillJobwork').change(function () {
-            debugger
+             
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
                 $('.gridHiddenField').show();
@@ -717,7 +717,7 @@
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-                debugger
+                 
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
@@ -1465,7 +1465,7 @@
                                     $('#saleBillRow-' + i).css("background-color", "#fab9e1");
                                 }
                             }
-                            debugger
+                             
                             $('.gridHiddenField').show();
                         } else {
                             $('.gridHiddenField').hide();
@@ -2900,7 +2900,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#SchNo').empty();
