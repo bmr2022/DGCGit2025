@@ -153,32 +153,19 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
 
-                DateTime entDt = new DateTime();
-                DateTime SaleBillDate = new DateTime();
-                DateTime InvoiceTime = new DateTime();
-                DateTime performaInvDate = new DateTime();
-                DateTime RemovalDate = new DateTime();
-                DateTime RemovalTime = new DateTime();
-                DateTime ApprovalDate = new DateTime();
-                DateTime Shippingdate = new DateTime();
-                DateTime Canceldate = new DateTime();
-                DateTime ActualEntryDate = new DateTime();
-                DateTime LastUpdationDate = new DateTime();
-                DateTime ChallanDate = new DateTime();
-                DateTime SaleQuotDate = new DateTime();
-
-                entDt = ParseDate(model.SaleBillEntryDate);
-                SaleBillDate = ParseDate(model.SaleBillDate);
-                InvoiceTime = ParseDate(model.InvoiceTime);
-                performaInvDate = ParseDate(model.PerformaInvDate);
-                RemovalDate = ParseDate(model.RemovalDate);
-                ApprovalDate = ParseDate(model.ApprovDate);
-                Shippingdate = ParseDate(model.Shippingdate);
-                Canceldate = ParseDate(model.Canceldate);
-                ActualEntryDate = ParseDate(model.ActualEntryDate);
-                LastUpdationDate = ParseDate(model.LastUpdationDate);
-                ChallanDate = ParseDate(model.ChallanDate);
-                SaleQuotDate = ParseDate(model.SaleQuotDate);
+                var entDt = Common.CommonFunc.ParseFormattedDate(model.SaleBillEntryDate);
+                var SaleBillDate = Common.CommonFunc.ParseFormattedDate(model.SaleBillDate);
+                var InvoiceTime = Common.CommonFunc.ParseFormattedDate(model.InvoiceTime);
+                var performaInvDate = Common.CommonFunc.ParseFormattedDate(model.PerformaInvDate);
+                var RemovalDate = Common.CommonFunc.ParseFormattedDate(model.RemovalDate);
+                var ApprovalDate = Common.CommonFunc.ParseFormattedDate(model.ApprovDate);
+                var Shippingdate = Common.CommonFunc.ParseFormattedDate(model.Shippingdate);
+                var Canceldate = Common.CommonFunc.ParseFormattedDate(model.Canceldate);
+                var ActualEntryDate = Common.CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var LastUpdationDate = Common.CommonFunc.ParseFormattedDate(model.LastUpdationDate);
+                var ChallanDate = Common.CommonFunc.ParseFormattedDate(model.ChallanDate);
+                var SaleQuotDate = Common.CommonFunc.ParseFormattedDate(model.SaleQuotDate);
+                var RemovalTime = Common.CommonFunc.ParseFormattedDate(model.RemovalTime);
 
                 SqlParams.Add(new SqlParameter("@EntryId", model.SaleBillEntryId));
                 SqlParams.Add(new SqlParameter("@Yearcode", model.SaleBillYearCode));
