@@ -703,7 +703,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ScheduleNo", schNo));
                 SqlParams.Add(new SqlParameter("@ScheduleYearCode", schYearCode));
                 SqlParams.Add(new SqlParameter("@SaleBillJobwork", "JOBWORK-SALEBILL"));
-                SqlParams.Add(new SqlParameter("@SaleBillJobwork", bomInd));
+                SqlParams.Add(new SqlParameter("@BOMInd", bomInd));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
             }

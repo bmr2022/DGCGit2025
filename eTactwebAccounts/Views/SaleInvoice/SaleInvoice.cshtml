@@ -387,7 +387,7 @@
                 $('#DT').prop("checked", true);
                 $('#PN1').prop("checked", true);
                 // FillCustomerList("Y");
-                
+
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
 
                 var taxRowCount = $('#divTaxGrid tr').length;
@@ -402,7 +402,7 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
-            
+
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
                 $('.gridHiddenField').show();
@@ -624,7 +624,7 @@
         });
 
         $('#SaleBillJobwork').change(function () {
-            
+
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
                 $('.gridHiddenField').show();
@@ -633,6 +633,7 @@
             } else {
                 $('.jobWorkChalln').hide();
                 $('.gridHiddenField').hide();
+                FillCustomerList($('#PN1').is(":checked"));
             }
         });
 
@@ -717,7 +718,7 @@
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-                
+
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
@@ -1465,7 +1466,7 @@
                                     $('#saleBillRow-' + i).css("background-color", "#fab9e1");
                                 }
                             }
-                            
+
                             $('.gridHiddenField').show();
                         } else {
                             $('.gridHiddenField').hide();
@@ -1613,7 +1614,7 @@
         function FillSOWiseItems() {
             $.ajax({
                 type: "POST",
-                data: { "invoiceDate": $('#SaleBillDate').val(), "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(),"schNo" : $('#SchNo').val(),"schYearCode" : $('#SaleSchYearCode').val(), "sbJobWork": "SaleBill" },
+                data: { "invoiceDate": $('#SaleBillDate').val(), "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "schNo": $('#SchNo').val(), "schYearCode": $('#SaleSchYearCode').val(), "sbJobWork": "SaleBill" },
                 url: "@Url.Action("FillSOWiseItems")",
                 dataType: "json",
                 async: false,
@@ -1976,6 +1977,7 @@
         }
 
         $('#SubmitButton').click(function () {
+            debugger
             $("form").submit();
         })
 
@@ -2346,7 +2348,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillJWCustomerList")",
-                data: { "SBJobwork": "JOBWORK-SALEBILL", "yearCode": $('#SaleBillYearCode') .val()},
+                data: { "SBJobwork": "JOBWORK-SALEBILL", "yearCode": $('#SaleBillYearCode').val() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -2591,6 +2593,12 @@
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
             if ($('#SONO').find(':selected').data('sotype') == "OPEN") {
+                if ($('#SaleBillJobwork').val() == 'J') {
+                    JWItemList($('#TypeItemServAssets').val());
+                } else {
+                    FillSOWiseItems();
+                }
+            } else {
                 if ($('#SaleBillJobwork').val() == 'J') {
                     JWItemList($('#TypeItemServAssets').val());
                 } else {
@@ -2900,7 +2908,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#SchNo').empty();
@@ -2932,7 +2940,7 @@
                             //     $('#SaleSchYearCode').append("<option value=" + val.SchYearCode + ">" + val.SchYearCode + "</option>");
                             // });
 
-                            let uniqueYears = new Set(); 
+                            let uniqueYears = new Set();
 
                             $.each(obj.Result, function (index, val) {
                                 uniqueYears.add(val.SchYearCode);
