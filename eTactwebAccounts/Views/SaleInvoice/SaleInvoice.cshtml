@@ -2590,12 +2590,22 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-            if ($('#SONO').find(':selected').data('sotype') == "OPEN") {
+            if ($('#SONO').find(':selected').data('sotype') == "OPEN") 
+            {
                 if ($('#SaleBillJobwork').val() == 'J') {
                     JWItemList($('#TypeItemServAssets').val());
                 } else {
                     FillSOWiseItems();
                 }
+            }
+              else
+            {
+                  if ($('#SaleBillJobwork').val() == 'J') {
+                    JWItemList($('#TypeItemServAssets').val());
+                } else {
+                    FillSOWiseItems();
+                }
+
             }
             FILLCustomerOrderAndSPDate();
             FillSOItemRate();
