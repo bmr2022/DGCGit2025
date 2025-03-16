@@ -132,22 +132,21 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-2" style="width:190px;">
                                         GenerateMRP
                                         <div class="card shadow">
                                             <div class="card-header bg-white font-bold">
                                                 CONSIDER STOCK OF
                                             </div>
-                                            <div class="card-body">
+                                            <div class="card-body" style="font-size:10px;">
                                                 <div class="p-3" style="background-color:#f1fab9;">
-                                                    <label class="mb-1">STORE</label>
+                                                    <label class="mb-1" style="font-weight:bold"><input type="checkbox" id="CheckAllStore"/>STORE</label>
                                                     <div id="appendStore" style="max-height:70px;overflow-y:auto;"></div>
                                                 </div>
                                                 <div class="mt-4 p-3" style="background-color:#fab9e1;">
-                                                    <label class="mb-1">WORKCENTER</label>
+                                                    <label class="mb-1" style="font-weight:bold"><input type="checkbox" id="CheckAllWC" />WORKCENTER</label>
                                                     <div id="appendWc" style="max-height:70px;overflow-y:auto;"></div>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -330,7 +329,7 @@
         //}
 
         $('#GenerateMRP').click(function () {
-
+            debugger
             FillStore();
             FillWorkCenter();
             var RowCount = $('#divPendingMRPbody tr').length;
@@ -348,7 +347,7 @@
             }
 
             var uniqueSONOYearCodes = [];
-            // var uniqueSONOYearCodes = [];
+            var uniqueSchNoYearCodes = [];
             for (var i = 1; i <= RowCount; i++) {
                 var isCheckeValue = $('#dataCheckbox-' + i).prop("checked");
                 if (isCheckeValue) {
@@ -363,6 +362,15 @@
                         SOEntryId: soEntryId
                     });
 
+                    var schNo = $('#GMRPSchNo-' + i).text();
+                    var schEntryId = $('#GMRPSchEntryId-' + i).text();
+                    var schYC = $('#GMRPSchYC-' + i).text();
+                    var schNoYearVal = schEntryId + " " + schYC;
+                    uniqueSchNoYearCodes.push({
+                        SchNoYearCode: schNoYearVal,
+                        SchYearCode: schYC,
+                        SchEntryId: schEntryId
+                    });
                 }
             }
 
@@ -375,8 +383,18 @@
                 };
             });
 
+            const schnoyear = Array.from(
+                new Set(uniqueSchNoYearCodes.map(item => item.SchNoYearCode))
+            ).map(schNoYearCode => {
+                return {
+                    SchNoYearCode: schNoYearCode,
+                    SchYearCode: uniqueSchNoYearCodes.find(item => item.SchNoYearCode === schNoYearCode).SchYearCode,
+                };
+            });
              
             var sonoyearValue = sonoyear.map(item => item.SONOYearCode).join(',');
+
+            var schnoyearValue = schnoyear.map(item => item.SchNoYearCode).join(',');
 
             var data = [];
             var ForMonth = parseInt($('#Month').val().split("-")[1]);
@@ -392,7 +410,8 @@
                     "Month": ForMonth,
                     "ForMonthYear": ForMonthYear,
                     "StoreId": SelectedStorevalues,
-                    "WcId": SelectedWcValues
+                    "WcId": SelectedWcValues,
+                    "ScheduleNo": schnoyearValue
                 });
 
             } else {
@@ -402,7 +421,8 @@
                     "Month": ForMonth,
                     "ForMonthYear": ForMonthYear,
                     "StoreId": SelectedStorevalues,
-                    "WcId": SelectedWcValues
+                    "WcId": SelectedWcValues,
+                    "ScheduleNo": schnoyearValue
                 });
             }
             console.log(data);
@@ -480,6 +500,19 @@
             }
         });
 
+        $('#CheckAllStore').click(function () {
+            let checkboxes = document.querySelectorAll("#appendStore input[type='checkbox']");
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        })
+
+        $('#CheckAllWC').click(function () {
+            let checkboxes = document.querySelectorAll("#appendWc input[type='checkbox']");
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        })
 
         $("#SendToExcel").click(function () {
             var table = $(".PMRPGrid");
