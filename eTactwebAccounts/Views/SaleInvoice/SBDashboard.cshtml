@@ -143,13 +143,11 @@
     <script>
         $(document).ready(function () {
             GetServerDate();
-
+            debugger
             // var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
             var ToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
             // $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
             $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
-
-            $('#PartCode').rules('remove', 'required');
 
             var fromDateBack = sessionStorage.getItem('FromDateBack');
             var toDateBack = sessionStorage.getItem('ToDateBack');
@@ -195,6 +193,7 @@
                 $('#search-box').val(searchBoxBack);
                 $('#SummaryDetail').val(summaryDetailBack);
             }
+            debugger
             GetSearchData();
 
             sessionStorage.removeItem('FromDateBack');
@@ -211,6 +210,9 @@
             sessionStorage.removeItem('DomesticExportNEPZBack');
             sessionStorage.removeItem('SearchBoxBack');
             sessionStorage.removeItem('summaryDetailBack');
+
+            $('#PartCode').rules('remove', 'required');
+
         });
 
         function GetServerDate() {
