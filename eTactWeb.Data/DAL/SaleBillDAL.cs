@@ -136,7 +136,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT,DataTable AdjChallanDetailDT)
+        internal async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT, DataTable AdjChallanDetailDT)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -144,9 +144,11 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
+                    model.LastUpdationDate = DateTime.Now.ToString("dd/MM/yyyy");
+                    var lastDt = Common.CommonFunc.ParseFormattedDate(model.LastUpdationDate);
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdationDate", DateTime.Today));
+                    SqlParams.Add(new SqlParameter("@LastUpdationDate", lastDt ?? string.Empty));
                 }
                 else
                 {
@@ -296,7 +298,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        
+
         public async Task<ResponseResult> FillCustomerList(string SBJobwork, string ShowAllCustomer)
         {
             var _ResponseResult = new ResponseResult();
@@ -660,7 +662,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "SaleOrderWiseItemsList"));
                 SqlParams.Add(new SqlParameter("@invoicedate", invoiceDate));
                 SqlParams.Add(new SqlParameter("@sono", sono));
-                SqlParams.Add(new SqlParameter("@SoYearCode",soYearCode));
+                SqlParams.Add(new SqlParameter("@SoYearCode", soYearCode));
                 SqlParams.Add(new SqlParameter("@accountcode", accountCode));
                 SqlParams.Add(new SqlParameter("@ScheduleNo", schNo));
                 SqlParams.Add(new SqlParameter("@ScheduleYearCode", schYearCode));
@@ -677,7 +679,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd,string schNo,int schYearCode)
+        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll, string bomInd, string schNo, int schYearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
