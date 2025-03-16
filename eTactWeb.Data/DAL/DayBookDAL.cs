@@ -68,6 +68,8 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+                DateTime currentDate = DateTime.Today;
+                DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand command = new SqlCommand("AccSPDayBook", connection)
@@ -76,8 +78,8 @@ namespace eTactWeb.Data.DAL
                     };
 
                     command.Parameters.AddWithValue("@flag", "DAYBOOK");
-                    command.Parameters.AddWithValue("@Date", FromDate);
-                    command.Parameters.AddWithValue("@ToDate", ToDate);
+                    command.Parameters.Add(new SqlParameter("@Date", firstDateOfMonth.ToString("yyyy/MM/dd")));
+                    command.Parameters.Add(new SqlParameter("@ToDate", currentDate.ToString("yyyy/MM/dd")));
                     command.Parameters.AddWithValue("@LedgerHead", Ledger);
                     command.Parameters.AddWithValue("@amtcr", CrAmt);
                     command.Parameters.AddWithValue("@amtdr", DrAmt);
