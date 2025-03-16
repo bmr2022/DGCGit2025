@@ -739,8 +739,8 @@ namespace eTactWeb.Controllers
                     new object[]
                     {
                         Item.AccountCode,
-                        Item.DrAmt ?? 0,
-                        Item.CrAmt ?? 0,
+                     Item.DrAmt != null ? Math.Round((decimal)Item.DrAmt, 2) : 0,
+                      Item.CrAmt != null ? Math.Round((decimal)Item.CrAmt, 2) : 0
                     });
                 }
             }

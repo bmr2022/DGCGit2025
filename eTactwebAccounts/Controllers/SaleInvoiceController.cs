@@ -1146,7 +1146,7 @@ namespace eTactWeb.Controllers
                     Item.TxPercentg,
                     Item.TxAdInTxable,
                     Item.TxRoundOff,
-                    Item.TxAmount,
+                     Item.TxAmount != null ? Math.Round((decimal)Item.TxAmount, 2) : 0,
                     Item.TxRefundable,
                     Item.TxOnExp,
                     Item.TxRemark,
