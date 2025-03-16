@@ -2169,7 +2169,7 @@ public class TaxController : Controller
             List<string> partCodeCheck = new List<string>();
             foreach (var item in grid)
             {
-                HSNTAXParam.HSNNo = (MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : item.HSNNo;
+                HSNTAXParam.HSNNo = (MainModel != null && MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : (item.HSNNo != null && !string.IsNullOrEmpty(item.HSNNo.ToString()) ? Convert.ToInt32(item.HSNNo) : 0);
                 HSNTAXParam.AC = MainModel.AccountCode;
                 if (MainModel.TxPageName == "PurchaseBill")
                 {

@@ -612,11 +612,13 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("DRCR", typeof(string));
 
                 IList<AccPurchaseRejectionDetail> itemDetailList = MainModel.AccPurchaseRejectionDetails;
-                foreach (var Item in itemDetailList)
+                if (itemDetailList != null && itemDetailList.Any())
                 {
-                    Table.Rows.Add(
-                    new object[]
+                    foreach (var Item in itemDetailList)
                     {
+                        Table.Rows.Add(
+                        new object[]
+                        {
                     MainModel.PurchaseRejEntryId,
                     MainModel.PurchaseRejYearCode,
                     Item.SeqNo,
@@ -633,9 +635,9 @@ namespace eTactWeb.Controllers
                     Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
                     Math.Round(Item.Amount ?? 0, 2, MidpointRounding.AwayFromZero),
                     "CR",
-                        });
+                            });
+                    }
                 }
-
                 return Table;
             }
             catch (Exception ex)
