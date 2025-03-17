@@ -337,7 +337,7 @@
 										<label asp-for="AmmEffDate" class="form-label">Amm Date</label>
 										<input asp-for="AmmEffDate" class="form-control" readonly />
 									</div>
-									<div class="col-xl- col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px">
 										<label asp-for="SOConfirmDate" class="form-label">SO Confirm Date</label>
 										<input asp-for="SOConfirmDate" class="form-control" readonly />
 									</div>
@@ -1420,7 +1420,9 @@
 				$('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(SOClosedate));
 				$('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
 			}
-			//$('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
+			var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
+			$('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
+			$('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
 			// NewEntryId();
 			if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SOA" && $('#Mode').val() != "SAU") {
 
@@ -1569,20 +1571,21 @@
 		   // alert('formattedDate2'+formattedDate2);
 
 			$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+			$('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
 			$('#EntryDate').datepicker("option", "minDate", formattedDate1);
 			$('#EntryDate').datepicker("option", "maxDate", formattedDate2);
-			// $('#SODate').datepicker("option", "minDate", formattedDate1);
-			// $('#SODate').datepicker("option", "maxDate", formattedDate2);
+			 $('#SODate').datepicker("option", "minDate", formattedDate1);
+			 $('#SODate').datepicker("option", "maxDate", formattedDate2);
 
-			$('#SODate').datepicker({
+			/* $('#SODate').datepicker({
 			dateFormat: 'dd/mm/yy',  // Ensure correct format
 			minDate: formattedDate1,
 			maxDate: formattedDate2,
 			onSelect: function(dateText) {
 				$(this).val(dateText);
 			}
-		});
+			}); */
 		var date = new Date();
 			// $('#SODate').datepicker('setDate', new Date());
 		//             $('#SODate').datepicker({
@@ -1605,10 +1608,15 @@
 				formattedWEF = WEFParts[0] + "/" + WEFParts[1] + "/" + WEFParts[2];
 				var VSOCloseDt = $('#hiddenSOCloseDate').val().split(" ")[0].replace(/-/g, '/');
 				$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedWEF));
-				$('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(VSOCloseDt));
+				$('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedWEF));
 
 				$('#WEF').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
 				$('#WEF').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+
+				$('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+				$('#SOCloseDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+
+
 			}
 
 			if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
