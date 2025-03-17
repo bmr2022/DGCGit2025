@@ -39,7 +39,7 @@ namespace eTactwebAccounts.Controllers
         }
         public async Task<JsonResult> FillGroupName(string FromDate, string ToDate)
         {
-            var JSON = await _IAccGroupLedger.FillGroupName( FromDate,ToDate);
+            var JSON = await _IAccGroupLedger.FillGroupName((FromDate),ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

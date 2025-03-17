@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -29,8 +30,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillGroups"));
                 SqlParams.Add(new SqlParameter("@FromFormName", "GROUPSUMMARYFORM"));
-                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
-                SqlParams.Add(new SqlParameter("@toDate", ToDate));
+                SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@toDate", ParseFormattedDate(ToDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpTrailBalancesheetProfitLossGroupLedger", SqlParams);
             }
             catch (Exception ex)
@@ -59,8 +60,8 @@ namespace eTactWeb.Data.DAL
                     };
 
                     // command.Parameters.AddWithValue("@flag", "GROUPSUMMARYFORM");
-                    command.Parameters.Add(new SqlParameter("@FromDate", firstDateOfMonth.ToString("yyyy/MM/dd")));
-                    command.Parameters.Add(new SqlParameter("@ToDate", currentDate.ToString("yyyy/MM/dd")));
+                    command.Parameters.Add(new SqlParameter("@FromDate", ParseFormattedDate(FromDate)));
+                    command.Parameters.Add(new SqlParameter("@ToDate", ParseFormattedDate(ToDate)));
                     command.Parameters.AddWithValue("@GroupCode", GroupCode);
                     command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
                     command.Parameters.AddWithValue("@FromFormName", "GROUPSUMMARYFORM");

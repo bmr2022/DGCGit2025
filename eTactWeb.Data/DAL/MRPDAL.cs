@@ -304,6 +304,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@so_yearcode", model.SOYearCode));
                 SqlParams.Add(new SqlParameter("@Consider_Stock_Stores", model.StoreId));
                 SqlParams.Add(new SqlParameter("@Consider_WIP", model.WcId));
+                SqlParams.Add(new SqlParameter("@Sch_entryid", model.ScheduleNo));
                 var ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRPGENERATION", SqlParams);
 
                 if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
