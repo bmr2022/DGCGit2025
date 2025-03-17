@@ -635,8 +635,8 @@ public class TaxController : Controller
                             TxItemName = ItemText,
                             TxTaxType = TxModel.TxTaxType,
                             TxTaxTypeName = TxModel.TxTaxTypeName,
-                            TxAccountCode = ToInt32(CgstSgst.Rows[1]["Account_Code"], CI),
-                            TxAccountName = CgstSgst.Rows[0]["Tax_Name"].ToString().Contains("SGST") ? CgstSgst.Rows[0]["Tax_Name"].ToString() : CgstSgst.Rows[1]["Tax_Name"].ToString(),
+                            TxAccountCode = ToInt32((CgstSgst.Rows.Count > 1 ? CgstSgst.Rows[1]["Account_Code"] : CgstSgst.Rows[0]["Account_Code"]), CI),
+                            TxAccountName = CgstSgst.Rows[0]["Tax_Name"].ToString().Contains("SGST") ? CgstSgst.Rows[0]["Tax_Name"].ToString() : (CgstSgst.Rows.Count > 1 ? CgstSgst.Rows[1]["Tax_Name"].ToString() : CgstSgst.Rows[0]["Tax_Name"].ToString()),
                             TxPercentg = TxModel.TxPercentg,
                             TxAdInTxable = TxModel.TxAdInTxable,
                             TxRoundOff = TxModel.TxRoundOff,
@@ -1356,6 +1356,7 @@ public class TaxController : Controller
             MainModel = SN == "DirectPurchaseBill" ? new DirectPurchaseBillModel() : (SN == "ItemList" ? new SaleOrderModel() : (SN == "PurchaseBill" ? new PurchaseBillModel() : new PurchaseOrderModel()));
             MainModel = SN == "JobWorkIssue" ? new JobWorkIssueModel() : "";
             MainModel = SN == "ItemList" ? new SaleOrderModel() : "";
+            MainModel = SN == "PurchaseRejection" ? new AccPurchaseRejectionModel() : "";
             _MemoryCache.Remove("KeyTaxGrid");
             return PartialView("_TaxGrid", MainModel);
         }
@@ -2169,7 +2170,7 @@ public class TaxController : Controller
             List<string> partCodeCheck = new List<string>();
             foreach (var item in grid)
             {
-                HSNTAXParam.HSNNo = (MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : item.HSNNo;
+                HSNTAXParam.HSNNo = (MainModel != null && MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : (item.HSNNo != null && !string.IsNullOrEmpty(item.HSNNo.ToString()) ? Convert.ToInt32(item.HSNNo) : 0);
                 HSNTAXParam.AC = MainModel.AccountCode;
                 if (MainModel.TxPageName == "PurchaseBill")
                 {
