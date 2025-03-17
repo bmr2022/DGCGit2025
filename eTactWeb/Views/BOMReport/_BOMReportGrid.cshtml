@@ -44,7 +44,9 @@ else
                         {
                             Cntr = Cntr + 1;
 
-                            <tr id="@Cntr" onclick="selection(this)">
+                            string highlightClass = item.SubBOM == "Y" ? "highlight" : "";
+
+                            <tr id="@Cntr" class="@highlightClass" onclick="selection(this)">
                                 <td>
                                     <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                         <span class="fa-stack">
@@ -105,5 +107,9 @@ else
         position: sticky;
         top: -18px;
         z-index: 1;
+    }
+
+    .highlight {
+        background-color: #f9e6ff !important;
     }
 </style>
