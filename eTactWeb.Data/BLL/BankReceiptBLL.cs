@@ -93,5 +93,17 @@ namespace eTactWeb.Data.BLL
             return await _BankReceiptDAL.CheckAmountBeforeSave(VoucherDate, YearCode, AgainstVoucherYearCode,AgainstVoucherEntryId, AgainstVoucherNo, AccountCode);
 
         }
+        public async Task<ResponseResult> FillSONO(string accountcode, string VoucherDate)
+        {
+            return await _BankReceiptDAL.FillSONO(accountcode, VoucherDate);
+        }
+        public async Task<ResponseResult> GetSODetail(int SONO, string accountcode, string VoucherDate)
+        {
+            return await _BankReceiptDAL.GetSODetail(SONO, accountcode, VoucherDate);
+        }
+        public async Task<ResponseResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode)
+        {
+            return await _BankReceiptDAL.GetSODate(SONO, accountcode, VoucherDate, SOYearCode);
+        }
     }
 }

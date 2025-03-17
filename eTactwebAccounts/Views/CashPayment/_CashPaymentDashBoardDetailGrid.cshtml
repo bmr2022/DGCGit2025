@@ -105,8 +105,9 @@
                             <td>@item.ModeOfAdjustment</td>
                             <td>@item.ActualEntryBy<input type="hidden" value="@item.ActualEntryby" /></td>
                             <td>@item.ActualEntryDate</td>
-                            <td>@(item.UpdatedOn?.ToString("dd/MMM/yyyy") ?? "-")</td>
                             <td>@item.UpdatedBy</td>
+                            <td>@(item.UpdatedOn?.ToString("dd/MMM/yyyy") ?? "-")</td>
+                            
                             <td>@item.EntryByMachine</td>
                             <td>@item.SubVoucherName</td>
                             <td>@item.AccEntryId</td>
