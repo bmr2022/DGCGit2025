@@ -85,7 +85,7 @@
            
         });
         $(function () {
-            debugger
+             
             if ($('#gateDashboardtable tr').length < 1) {
                 var dashGrid = 0;
                 $('#totalRows').text(dashGrid);
@@ -161,7 +161,7 @@
             }
         });
         function GetDetailData() {
-            debugger
+             
             var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetDetailData","CompanyDetail")',

@@ -730,11 +730,13 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime ChallanDt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime ChallanDt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var ChallanDt =ParseFormattedDate(TillDate.ToString());
 
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@STORE_ID", StoreId));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", ChallanDt.ToString("yyyy/MM/dd")));
+                //  SqlParams.Add(new SqlParameter("@TILL_DATE", ChallanDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", ChallanDt));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(Flag, SqlParams);
             }
             catch (Exception ex)

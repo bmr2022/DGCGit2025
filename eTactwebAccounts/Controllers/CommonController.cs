@@ -612,11 +612,13 @@ namespace eTactWeb.Controllers
                 Table.Columns.Add("DRCR", typeof(string));
 
                 IList<AccPurchaseRejectionDetail> itemDetailList = MainModel.AccPurchaseRejectionDetails;
-                foreach (var Item in itemDetailList)
+                if (itemDetailList != null && itemDetailList.Any())
                 {
-                    Table.Rows.Add(
-                    new object[]
+                    foreach (var Item in itemDetailList)
                     {
+                        Table.Rows.Add(
+                        new object[]
+                        {
                     MainModel.PurchaseRejEntryId,
                     MainModel.PurchaseRejYearCode,
                     Item.SeqNo,
@@ -633,9 +635,9 @@ namespace eTactWeb.Controllers
                     Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
                     Math.Round(Item.Amount ?? 0, 2, MidpointRounding.AwayFromZero),
                     "CR",
-                        });
+                            });
+                    }
                 }
-
                 return Table;
             }
             catch (Exception ex)
@@ -739,8 +741,8 @@ namespace eTactWeb.Controllers
                     new object[]
                     {
                         Item.AccountCode,
-                        Item.DrAmt ?? 0,
-                        Item.CrAmt ?? 0,
+                     Item.DrAmt != null ? Math.Round((decimal)Item.DrAmt, 2) : 0,
+                      Item.CrAmt != null ? Math.Round((decimal)Item.CrAmt, 2) : 0
                     });
                 }
             }
@@ -785,9 +787,9 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new SaleRejectionModel();
             }
-            else if (model.AdjPageName == "PurchaseRejection")
+            else if (model.AdjPageName == "CreditNote")
             {
-                MainModel = new AccPurchaseRejectionModel();
+                MainModel = new AccCreditNoteModel();
             }
             else if (model.AdjPageName == "PurchaseRejection")
             {
@@ -989,7 +991,7 @@ namespace eTactWeb.Controllers
                         acccode ?? 0,
                         Item.AdjModeOfAdjstment,
                         Item.AdjDrCr ?? string.Empty,
-                        (Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0,//Item.AdjAdjstedAmt ?? 0,
+                       (float)Math.Round((Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0, 2),//Item.AdjAdjstedAmt ?? 0,
                         0,//AgainstAccEntryId
                         0,//AgainstVoucheryearcode
                         string.Empty,//AgainstvoucherType
@@ -1000,7 +1002,7 @@ namespace eTactWeb.Controllers
                         0,//AgainstOpeningVoucheryearcode
                         Item.AdjNewRefNo,
                         Item.AdjDescription,
-                        Item.DueDate == null ? AdjDueDt : ParseFormattedDate(Item.DueDate.Split(" ")[0]),
+                        Item.DueDate == null ? AdjDueDt : ParseFormattedDate(Item.DueDate.Split(" ")[0]).Split(" ")[0],
                         string.Empty,//AgainstOrderno
                         0,//AgainstOrderYeearCode
                         AdjOrderDt,//AgainstOrderDate

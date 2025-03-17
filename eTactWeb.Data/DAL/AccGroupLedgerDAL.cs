@@ -49,6 +49,8 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+                DateTime currentDate = DateTime.Today;
+                DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand command = new SqlCommand("AccSpTrailBalancesheetProfitLossGroupLedger", connection)
@@ -56,9 +58,9 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
 
-                   // command.Parameters.AddWithValue("@flag", "GROUPSUMMARYFORM");
-                    command.Parameters.AddWithValue("@FromDate", FromDate);
-                    command.Parameters.AddWithValue("@ToDate", ToDate);
+                    // command.Parameters.AddWithValue("@flag", "GROUPSUMMARYFORM");
+                    command.Parameters.Add(new SqlParameter("@FromDate", firstDateOfMonth.ToString("yyyy/MM/dd")));
+                    command.Parameters.Add(new SqlParameter("@ToDate", currentDate.ToString("yyyy/MM/dd")));
                     command.Parameters.AddWithValue("@GroupCode", GroupCode);
                     command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
                     command.Parameters.AddWithValue("@FromFormName", "GROUPSUMMARYFORM");

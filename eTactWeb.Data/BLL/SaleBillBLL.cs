@@ -48,9 +48,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.GetAutocompleteValue();
         }
-        public async Task<ResponseResult> FillCustomerList(string ShowAllCustomer)
+        public async Task<ResponseResult> FillCustomerList(string SBJobwork, string ShowAllCustomer)
         {
-            return await _SaleBillDAL.FillCustomerList(ShowAllCustomer);
+            return await _SaleBillDAL.FillCustomerList(SBJobwork,ShowAllCustomer);
+        }
+        public async Task<ResponseResult> FillJWCustomerList(string SBJobwork, int yearCode)
+        {
+            return await _SaleBillDAL.FillJWCustomerList(SBJobwork,yearCode);
         }
         public async Task<ResponseResult> GetDistance(int accountCode)
         {
@@ -84,13 +88,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FillItems(showAll,typeItemServAssets,sbJobWork);
         }       
-        public async Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string sbJobWork)
+        public async Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string schNo, int schYearCode, string sbJobWork)
         {
-            return await _SaleBillDAL.FillSOWiseItems(invoiceDate,sono,soYearCode,accountCode,sbJobWork);
+            return await _SaleBillDAL.FillSOWiseItems(invoiceDate,sono,soYearCode,accountCode,schNo,schYearCode,sbJobWork);
         }       
-        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd)
+        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd, string schNo, int schYearCode)
         {
-            return await _SaleBillDAL.JWItemList(typeItemServAssets,showAll,bomInd);
+            return await _SaleBillDAL.JWItemList(typeItemServAssets,showAll,bomInd,schNo,schYearCode);
         } 
         public async Task<ResponseResult> FillStore()
         {
@@ -108,9 +112,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FILLSOScheduleDate(sono,accountCode,soYearCode,schNo,schYearCode);
         }  
-        public async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT,DataTable DrCrDetailDT,DataTable AdjDetailDT)
+        public async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT,DataTable DrCrDetailDT,DataTable AdjDetailDT,DataTable AdjChallanDetailDT)
         {
-            return await _SaleBillDAL.SaveSaleBill(model,SBGrid,TaxDetailDT, DrCrDetailDT, AdjDetailDT);
+            return await _SaleBillDAL.SaveSaleBill(model,SBGrid,TaxDetailDT, DrCrDetailDT, AdjDetailDT, AdjChallanDetailDT);
         }  
         public async Task<ResponseResult> FILLCustomerOrderAndSPDate(string billDate, int accountCode, string sono, int soYearCode)
         {

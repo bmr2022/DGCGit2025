@@ -56,6 +56,7 @@ namespace eTactWeb.Controllers
             DataTable TaxDetailDT = null;
             DataTable AdjDetailDT = null;
             DataTable DrCrDetailDT = null;
+            DataTable AdjChallanDetailDT = null;
             _MemoryCache.TryGetValue("SaleBillModel", out SaleBillModel MainModel);
 
             _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
@@ -93,10 +94,10 @@ namespace eTactWeb.Controllers
                     SBGrid = GetDetailTable(saleBillDetail);
                 }
 
-                //if (AdjChallanGrid != null && AdjChallanGrid.Count > 0)
-                //{
-                //    AdjChallanGrid = GetAdjChallanDetailTable(AdjChallanGrid);
-                //}
+                if (AdjChallanGrid != null && AdjChallanGrid.Count > 0)
+                {
+                    AdjChallanDetailDT = GetAdjChallanDetailTable(AdjChallanGrid);
+                }
 
                 if (TaxGrid != null && TaxGrid.Count > 0)
                 {
@@ -152,7 +153,7 @@ namespace eTactWeb.Controllers
                     model.AttachmentFilePath3 = ImagePath;
                 }
 
-                var Result = await _SaleBill.SaveSaleBill(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT);
+                var Result = await _SaleBill.SaveSaleBill(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, AdjChallanDetailDT);
 
                 if (Result != null)
                 {
@@ -725,45 +726,103 @@ namespace eTactWeb.Controllers
             return MainModel;
         }
 
-        //private static DataTable GetAdjChallanDetailTable(IList<CustomerJobWorkIssueAdjustDetail> DetailList)
-        //{
-        //    var DTSSGrid = new DataTable();
+        private static DataTable GetAdjChallanDetailTable(IList<CustomerJobWorkIssueAdjustDetail> DetailList)
+        {
+            var DTSSGrid = new DataTable();
 
-        //    DTSSGrid.Columns.Add("EntryDate", typeof(int));
-        //    DTSSGrid.Columns.Add("SONO", typeof(int));
-        //    DTSSGrid.Columns.Add("CustOrderNo", typeof(string));
-        //    DTSSGrid.Columns.Add("SOYearCode", typeof(int));
-        //    DTSSGrid.Columns.Add("SODate", typeof(string));
-        //    DTSSGrid.Columns.Add("SchNo", typeof(string));
-        //    DTSSGrid.Columns.Add("SchDate", typeof(string));
-        //    DTSSGrid.Columns.Add("SaleSchYearCode", typeof(int));
-        //    DTSSGrid.Columns.Add("SOAmendNo", typeof(string));
-        //    DTSSGrid.Columns.Add("SOAmendDate", typeof(string));
-        //     DTSSGrid.Columns.Add("SchAmendDate", typeof(string));
-        //    DTSSGrid.Columns.Add("ItemCode", typeof(int));
-        //    DTSSGrid.Columns.Add("HSNNO", typeof(string));
-      
-        //    //DateTime DeliveryDt = new DateTime();
-        //    foreach (var Item in DetailList)
-        //    {
-        //        string uniqueString = Guid.NewGuid().ToString();
-        //        DTSSGrid.Rows.Add(
-        //            new object[]
-        //            {
-        //            Item.SeqNo,
-        //            Item.SONO,
-        //            Item.CustOrderNo ?? string.Empty,
-        //            Item.SOYearCode,
-        //            //Item.SODate == null ? string.Empty : (Item.SODate.Split(" ")[0]),
-        //            Item.SODate == null ? string.Empty : common.CommonFunc.ParseFormattedDate(Item.SODate.Split(" ")[0]),
-        //            Item.SchNo ?? "",
-        //            Item.Schdate == null ? string.Empty : common.CommonFunc.ParseFormattedDate(Item.Schdate.Split(" ")[0])
-        //            });
-        //    }
-        //    DTSSGrid.Dispose();
-        //    return DTSSGrid;
-        //}
-        
+            DTSSGrid.Columns.Add("EntryDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("CustJwRecEntryId", typeof(int));
+            DTSSGrid.Columns.Add("CustJwRecYearCode", typeof(int));
+            DTSSGrid.Columns.Add("CustJwRecChallanNo", typeof(string));
+            DTSSGrid.Columns.Add("CustJwRecEntryDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("RecItemCode", typeof(int));
+            DTSSGrid.Columns.Add("CustJwIssEntryid", typeof(int));
+            DTSSGrid.Columns.Add("CustJwIssYearCode", typeof(int));
+            DTSSGrid.Columns.Add("CustJwIssChallanNo", typeof(string));
+            DTSSGrid.Columns.Add("CustJwIssChallanDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("AccountCode", typeof(int));
+            DTSSGrid.Columns.Add("FinishItemCode", typeof(int));
+            DTSSGrid.Columns.Add("AdjQty", typeof(float));
+            DTSSGrid.Columns.Add("CC", typeof(string));
+            DTSSGrid.Columns.Add("UID", typeof(int));
+            DTSSGrid.Columns.Add("AdjFormType", typeof(string));
+            DTSSGrid.Columns.Add("TillDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("TotIssQty", typeof(float));
+            DTSSGrid.Columns.Add("PendQty", typeof(float));
+            DTSSGrid.Columns.Add("BOMQty", typeof(float));
+            DTSSGrid.Columns.Add("BomRevNo", typeof(int));
+            DTSSGrid.Columns.Add("BOMRevDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("ProcessID", typeof(int));
+            DTSSGrid.Columns.Add("BOMInd", typeof(char));
+            DTSSGrid.Columns.Add("IssQty", typeof(float));
+            DTSSGrid.Columns.Add("TotadjQty", typeof(float));
+            DTSSGrid.Columns.Add("TotalIssQty", typeof(float));
+            DTSSGrid.Columns.Add("TotalRecQty", typeof(float));
+            DTSSGrid.Columns.Add("RunnerItemCode", typeof(int));
+            DTSSGrid.Columns.Add("ScrapItemCode", typeof(int));
+            DTSSGrid.Columns.Add("IdealScrapQty", typeof(float));
+            DTSSGrid.Columns.Add("IssuedScrapQty", typeof(float));
+            DTSSGrid.Columns.Add("PreRecChallanNo", typeof(string));
+            DTSSGrid.Columns.Add("ScrapqtyagainstRcvqty", typeof(float));
+            DTSSGrid.Columns.Add("Recbatchno", typeof(string));
+            DTSSGrid.Columns.Add("Recuniquebatchno", typeof(string));
+            DTSSGrid.Columns.Add("Issbatchno", typeof(string));
+            DTSSGrid.Columns.Add("Issuniquebatchno", typeof(string));
+            DTSSGrid.Columns.Add("ScrapAdjusted", typeof(string));
+
+
+            //DateTime DeliveryDt = new DateTime();
+            foreach (var Item in DetailList)
+            {
+                string uniqueString = Guid.NewGuid().ToString();
+                DTSSGrid.Rows.Add(
+                    new object[]
+                    {
+                    "",
+                    0, //CustJwRecEntryId
+                   2025 , // custJwRecYearCode
+                    Item.ChallanNo,
+                    "", // CustJwRecEntryDate
+                    Item.ItemCode,
+                    0 , // CustJwIssEntryid
+                    0, // CustJwIssYearCode
+                    Item.ChallanNo, // CustJwIssChallanNo
+                    Item.ChallanDate, // CustJwIssChallanDate
+                    0, // AccountCode
+                    Item.ItemCode, // finishedItemCode
+                    0, // AdjQty
+                    "" , // CC
+                    "", //UID
+                    "", //AdjFormType
+                    "", // TillDate
+                    Item.IssQty,
+                    Item.PendQty,
+                    "", // BomQty
+                    "" , // BomRevNo
+                    "" , // BOMRevDate
+                    Item.ProcessId,
+                    Item.BOMIND,
+                    Item.IssQty,
+                    Item.BillQty, // TotalAjdQty  
+                    Item.IssQty, // TotalIssQty
+                    Item.RecQty, //TotalRecQty
+                    Item.ItemCode, // RunnerItemCode
+                    Item.ItemCode, // ScrapItemCode
+                    Item.BillQty, // IdealScrapQty
+                    Item.BillQty, // IssuedScrapQty
+                    Item.ChallanNo,
+                    Item.BillQty, // ScrapqtyagainstRcvqty
+                    "", // Recbatchno
+                    "", // Recuniquebatchno
+                    "" , // Issbatchno
+                    "" , // Issuniquebatchno
+                    ""
+                    });
+            }
+            DTSSGrid.Dispose();
+            return DTSSGrid;
+        }
+
         private static DataTable GetDetailTable(IList<SaleBillDetail> DetailList)
         {
             var DTSSGrid = new DataTable();
@@ -910,9 +969,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillCustomerList(string ShowAllCustomer)
+        public async Task<JsonResult> FillCustomerList(string SBJobwork, string ShowAllCustomer)
         {
-            var JSON = await _SaleBill.FillCustomerList(ShowAllCustomer);
+            var JSON = await _SaleBill.FillCustomerList(SBJobwork,ShowAllCustomer);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillJWCustomerList(string SBJobwork,int yearCode)
+        {
+            var JSON = await _SaleBill.FillJWCustomerList(SBJobwork,yearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -964,16 +1029,16 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillSOWiseItems(string invoiceDate, string sono,int soYearCode,int accountCode, string sbJobWork)
+        public async Task<JsonResult> FillSOWiseItems(string invoiceDate, string sono,int soYearCode,int accountCode,string schNo,int schYearCode, string sbJobWork)
         {
             invoiceDate = ParseFormattedDate(invoiceDate);
-            var JSON = await _SaleBill.FillSOWiseItems( invoiceDate, sono,soYearCode,accountCode,sbJobWork);
+            var JSON = await _SaleBill.FillSOWiseItems( invoiceDate, sono,soYearCode,accountCode,schNo,schYearCode,sbJobWork);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> JWItemList(string typeItemServAssets, string showAll, string bomInd)
+        public async Task<JsonResult> JWItemList(string typeItemServAssets, string showAll, string bomInd, string schNo, int schYearCode)
         {
-            var JSON = await _SaleBill.JWItemList(typeItemServAssets,showAll,bomInd);
+            var JSON = await _SaleBill.JWItemList(typeItemServAssets,showAll,bomInd,schNo,schYearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -1081,7 +1146,7 @@ namespace eTactWeb.Controllers
                     Item.TxPercentg,
                     Item.TxAdInTxable,
                     Item.TxRoundOff,
-                    Item.TxAmount,
+                     Item.TxAmount != null ? Math.Round((decimal)Item.TxAmount, 2) : 0,
                     Item.TxRefundable,
                     Item.TxOnExp,
                     Item.TxRemark,
