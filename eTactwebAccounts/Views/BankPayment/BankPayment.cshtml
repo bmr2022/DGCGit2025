@@ -8,7 +8,7 @@
     <form asp-action="BankPayment" asp-controller="BankPayment" method="post" class="form-horizontal">
         <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
             <h5>
-                <strong>Bank Payment</strong>
+                <strong>Cash Payment</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <a asp-controller="BankPayment" asp-action="BankPaymentDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
@@ -59,7 +59,7 @@
                     <h2 class="accordion-header" id="H_ItemCategoryDetail">
                         <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
                                 aria-expanded="true" aria-controls="B_ItemCategoryDetail">
-                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Bank Payment Detail</strong>
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Cash Payment Detail</strong>
                             <small class="p-3"></small>
                         </button>
                     </h2>
@@ -89,8 +89,8 @@
                                     <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
                                     <input type="hidden" asp-for="SubVoucherID" />
                                     <select class="form-control" asp-for="SubVoucherName" style="width:130px;">
-                                        <option value="">Bank-Payment</option>
-                                        <option value="Bank-Payment">Bank-Payment</option>
+                                        <option value="">Bank-payment</option>
+                                        <option value="Bank-payment">Bank-payment</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
                                             <option value="@Model.SubVoucherName" selected>@Model.SubVoucherName</option>
@@ -131,7 +131,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Bank Payment Grid</strong>
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Cash Payment Grid</strong>
                         </button>
                         <button class="btn btn-sm btn-outline-danger" style="width:150px;" type="button" onclick="GridButton()">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
@@ -162,9 +162,12 @@
                                                     <th>Amount (OC)</th>
                                                     <th>Cost Center Name</th>
                                                     <th>Party-Wise Narration</th>
-                                                    
-                                                     <th>PO NO</th>
-                                                      <th>PO Date</th>
+                                                    <th>Customer Order No</th>
+                                                    <th>Sale Order No</th>
+                                                    <th>Sales Order Date</th>
+                                                    <th>Sales Order Year</th>
+                                                    <th>PO NO</th>
+                                                    <th>PO Date</th>
                                                     <th>PO Year</th>
                                                     <th>Against Voucher No</th>
                                                     <th>Against Voucher Code</th>
@@ -204,7 +207,10 @@
                                                 <th>Amount (OC)</th>
                                                 <th>Cost Center Name</th>
                                                 <th>Party-Wise Narration</th>
-                                               
+                                                <th>Customer Order No</th>
+                                                <th>Sales Order Date</th>
+
+                                                <th>Sales Order Year</th>
                                                 <th>PO No</th>
                                                 <th>PO Date</th>
                                                 <th>PO Year</th>
@@ -302,7 +308,7 @@
                     <div class="row justify-content-between g-2">
                         <div class="card-header card-headerBG text-light bg-gradient">
                             <h5>
-                                <strong>Bank Payment</strong>
+                                <strong>Cash Payment</strong>
                                 <span class="d-flex float-end" style="margin-top:-2px;">
                                     <div class="col-auto">
                                         @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
@@ -521,9 +527,12 @@
                 FillEntryID();
             }
             FillCurrency();
-          
+
             FillModeofAdjust();
-            calculateTotalBalance();
+            $('#CostCenterName').change(function () {
+                $('#CostCenterId').val($('#CostCenterName').val());
+            });
+            //alculateTotalBalance();
             $('#LedgerName').rules("remove", "required");
             $('#DRCR').rules("remove", "required");
             $('#Intrument').rules("remove", "required");
@@ -569,35 +578,40 @@
             $('#PendBillAmt').rules("remove", "required");
             $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
             $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
-            var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            var currentDate = new Date();
-
-            // Calculate minDate (3 months before today)
-            var minDate = new Date();
-            minDate.setMonth(minDate.getMonth() - 3);
-
-            // Calculate maxDate (3 months after today)
-            var maxDate = new Date();
-            maxDate.setMonth(maxDate.getMonth() + 3);
+            $('#PONo').rules("remove", "required");
+            $('#PoDate').rules("remove", "required");
+            $('#POYear').rules("remove", "required");
+           
 
             // Initialize Datepicker with min & max date
-            $('#InsDate').datepicker({
-                dateFormat: 'dd/mm/yy',
-                minDate: minDate,
-                maxDate: maxDate
-            }).datepicker("setDate", currentDate);
-            $('#ActualEntryDate').datepicker({
-                dateFormat: 'dd/mm/yy',
-                minDate: currentDate,
-                maxDate: currentDate
-            }).datepicker("setDate", currentDate);
-            var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            
 
             $('#BankRECO').datepicker({ dateFormat: 'dd/mm/yy' });
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
+            if ($('#Mode').val() != "U" || $('#Mode').val() != "V") {
+                var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                var currentDate = new Date();
+
+                // Calculate minDate (3 months before today)
+                var minDate = new Date();
+                minDate.setMonth(minDate.getMonth() - 3);
+
+                // Calculate maxDate (3 months after today)
+                var maxDate = new Date();
+                maxDate.setMonth(maxDate.getMonth() + 3);
+                $('#InsDate').datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    minDate: minDate,
+                    maxDate: maxDate
+                }).datepicker("setDate", currentDate);
+                $('#ActualEntryDate').datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    minDate: currentDate,
+                    maxDate: currentDate
+                }).datepicker("setDate", currentDate);
+                var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
             $('#AdjustmentAmt').on('input', function () {
 
@@ -613,7 +627,7 @@
                     $(this).val('');
                 }
             });
-            
+
 
             function checkModeOfAdjustment() {
 
@@ -634,7 +648,8 @@
                     $('#SoNo').prop('disabled', false);
                     $('#SOYear').prop('disabled', false);
                     $('#PONo').prop('disabled', false);
-                    
+                    $('#PoDate').prop('disabled', false);
+                    $('#POYear').prop('disabled', false);
                 }
                 // Show/Hide Against Fields
                 else if (modeOfAdjustment === "Against Ref") {
@@ -655,7 +670,8 @@
                     $('#SoNo').prop('disabled', true);
                     $('#SOYear').prop('disabled', true);
                     $('#PONo').prop('disabled', true);
-                    
+                    $('#PoDate').prop('disabled', true);
+                    $('#POYear').prop('disabled', true);
                     if ($('#LedgerName').prop('selectedIndex') == 0) {
                         $.notify("Please select LedgerName First..!", "error");
                     }
@@ -689,7 +705,6 @@
                 GetPOYear();
                 GetPODate();
             });
-              
             $("#ModeOfAdjustment").on("change", function () {
                 checkModeOfAdjustment();
             });
@@ -738,7 +753,7 @@
             AdjustAmountForAddToGridForDRCR();
         });
 
-        
+
 
         FillLedgerName();
 
@@ -895,7 +910,7 @@
                 type: 'POST',
                 async: false,
                 data: {
-                    
+
                     accountcode: accountcode,
                     VoucherDate: VoucherDate
 
@@ -909,7 +924,7 @@
                     $.each(obj.Result, function (index, pono) {
                         PONoDropdown.append('<option value="' + pono.PONO + '">' + pono.PONO + '</option>');
                     });
-                    
+
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                         var PONo = '@Model.PONo';
@@ -953,10 +968,11 @@
             $.ajax({
                 url: '@Url.Action("GetPODetail", "BankPayment")',
                 type: 'GET',
-                data: { PONO: PONO,
+                data: {
+                    PONO: PONO,
                     accountcode: accountcode,
                     VoucherDate: VoucherDate
-                        
+
                 },
                 success: function (data) {
 
@@ -978,9 +994,15 @@
 
 
                         $("#POYear").prop("disabled", false).val(POYear.POyearcode).trigger("input");
-                        $("#PoDate").prop("disabled", false).val(PoDate.PODate).trigger("input");
+                        // $("#PoDate").prop("disabled", false).val(PoDate.PODate).trigger("input");
+                        if (PoDate.PODate) {
+                            var dateObj = new Date(PoDate.PODate);
+                            var formattedDate = ("0" + dateObj.getDate()).slice(-2) + "/" +
+                                ("0" + (dateObj.getMonth() + 1)).slice(-2) + "/" +
+                                dateObj.getFullYear();
+                            $("#PoDate").prop("disabled", false).val(formattedDate).trigger("input");
+                        }
 
-                       
                     } else {
 
                     }
@@ -1059,6 +1081,7 @@
                 }
             });
         }
+
 
 
         function CheckAmountBeforeSave(i) {
@@ -1217,11 +1240,11 @@
                     CostCenterNameDropdown.empty();
                     CostCenterNameDropdown.append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (index, CostCenter) {
-                        CostCenterNameDropdown.append('<option value="' + CostCenter.CostCenterId + '">' + CostCenter.CostCenterName + '</option>');
+                        CostCenterNameDropdown.append('<option value="' + CostCenter.CostcenterId + '">' + CostCenter.CostCenterName + '</option>');
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var CostCenterName = '@Model.CostCenterName';
+                        var CostCenterName = '@Model.CostCenterId';
                         $('#CostCenterName').val(CostCenterName).trigger("change");
                         $('#CostCenterName').val(CostCenterName);
                     }
@@ -1517,6 +1540,7 @@
                         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
                         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                        "CostCenterId": $('#CostCenterId').val(),
                     })
                 }
             }
@@ -1616,34 +1640,34 @@
             }
 
             if ($('#ModeOfAdjustment').val() == "Advance") {
-                // if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
-                //     AddErrorCls('CustOrderNo');
-                //     $.notify("CustOrderNo is required.", "error");
-                //     Err = 1;
-                // } else {
-                //     RemoveErrorCls('CustOrderNo');
-                // }
-                // if ($('#SONo').val() == 0 || $('#SONo').val() == null) {
-                //     AddErrorCls('SONo');
-                //     $.notify("SONo is required.", "error");
-                //     Err = 1;
-                // } else {
-                //     RemoveErrorCls('SONo');
-                // }
-                // if ($('#SoDate').val() == "" || $('#SoDate').val() == null) {
-                //     AddErrorCls('SoDate');
-                //     $.notify("SoDate is required.", "error");
-                //     Err = 1;
-                // } else {
-                //     RemoveErrorCls('SoDate');
-                // }
-                // if ($('#SOYear').val() == 0 || $('#SOYear').val() == null) {
-                //     AddErrorCls('SOYear');
-                //     $.notify("SOYear is required.", "error");
-                //     Err = 1;
-                // } else {
-                //     RemoveErrorCls('SOYear');
-                // }
+                if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
+                    AddErrorCls('CustOrderNo');
+                    $.notify("CustOrderNo is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('CustOrderNo');
+                }
+                if ($('#SONo').val() == 0 || $('#SONo').val() == null) {
+                    AddErrorCls('SONo');
+                    $.notify("SONo is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('SONo');
+                }
+                if ($('#SoDate').val() == "" || $('#SoDate').val() == null) {
+                    AddErrorCls('SoDate');
+                    $.notify("SoDate is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('SoDate');
+                }
+                if ($('#SOYear').val() == 0 || $('#SOYear').val() == null) {
+                    AddErrorCls('SOYear');
+                    $.notify("SOYear is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('SOYear');
+                }
                 if ($('#PONo').val() == 0 || $('#PONo').val() == null) {
                     AddErrorCls('PONo');
                     $.notify("PONo is required.", "error");
@@ -1692,9 +1716,9 @@
                 "VoucherBillAmt": $('#VoucherBillAmt').val(),
                 "PendBillAmt": $('#PendBillAmt').val(),
                 "SeqNo": $('#SeqNo').val(),
-                "PONo": $('#PONo').val(),
-                "PoDate": $('#PoDate').val(),
-                "POYear": $('#POYear').val(),
+                "CustOrderNo": $('#CustOrderNo').val(),
+                "SoDate": $('#SoDate').val(),
+                "SOYear": $('#SOYear').val(),
                 "DrAmt": $('#DrAmt').val(),
                 "CrAmt": $('#CrAmt').val(),
                 "ActualEntryby": $('#ActualEntryBy').val(),
@@ -1706,6 +1730,7 @@
                 "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
                 "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                 "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                "CostCenterId": $('#CostCenterId').val(),
             };
 
             const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
@@ -1749,10 +1774,10 @@
             var RowCount = $('#divBankPaymentDetail tr').length;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
-            var difference = Math.abs(DrAmt - CrAmt);
+            var difference = Math.abs(CrAmt - DrAmt);
             for (let i = 1; i <= RowCount; i++) {
                 if ($('#BankType').val() == "Bank") {
-                    if (DrAmt < CrAmt) {
+                    if (CrAmt < DrAmt) {
                         $('#AdjustmentAmt').val(difference)
                     }
                 }
@@ -1814,7 +1839,8 @@
                                 $('#ModeOfAdjustment').val(obj[0].ModeOfAdjustment).trigger("change");
                                 $('#AdjustmentAmt').val(obj[0].AdjustmentAmt);
                                 $('#AdjustmentAmtOthCur').val(obj[0].AdjustmentAmtOthCur);
-                                $('#CostCenterName').val(obj[0].CostCenterName).trigger("change");
+                                $('#CostCenterName').val(obj[0].CostCenterId).trigger("change");
+                                $('#CostCenterId').val(obj[0].CostCenterId);
                                 $('#PartyWiseNaration').val(obj[0].PartyWiseNaration);
                                 $('#AgainstVoucherNo').val(obj[0].AgainstVoucherNo);
                                 $('#AgainstVoucherCode').val(obj[0].AgainstVoucherCode);

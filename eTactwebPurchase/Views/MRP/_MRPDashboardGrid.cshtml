@@ -98,7 +98,8 @@
                         </a> *@
                                     @if (item.YearCode == yearCode)
                                     {
-                                        <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" onclick="confirmdelete(event)" asp-route-YC="@item.YearCode" asp-route-MRPNo="@item.MRPNo">
+                                        <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" onclick="confirmdelete(event)" asp-route-YC="@item.YearCode" asp-route-MRPNo="@item.MRPNo"
+                                           asp-route-EntryByMachineName="@item.EntryByMachineName" asp-route-CreatedByEmpId="@item.CreatedByEmpId">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
