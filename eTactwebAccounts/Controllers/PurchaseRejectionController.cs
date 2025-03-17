@@ -330,5 +330,50 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(combinedData);
             return Json(JsonString);
         }
+        public IActionResult DeleteItemRow(int itemCode, string Mode)
+        {
+            var MainModel = new AccPurchaseRejectionModel();
+            if (Mode == "U")
+            {
+                _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+
+                if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
+                {
+                    purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode);
+
+                    MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
+                }
+            }
+            else
+            {
+                _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+
+                if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
+                {
+                    purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode);
+                    MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
+                }
+            }
+
+            return PartialView("_PurchaseRejectionGrid", MainModel);
+        }
     }
 }

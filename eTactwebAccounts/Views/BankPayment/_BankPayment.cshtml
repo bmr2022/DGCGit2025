@@ -52,10 +52,10 @@
     <td>
         <input type="hidden" asp-for="CostCenterId" />
         <select class="form-control" asp-for="CostCenterName" style="width:140px;">
-            <option value="@Model.CostCenterName">-Select-</option>
+           
             @if (Model.Mode == "U" || Model.Mode == "V")
             {
-                <option value="@Model.CostCenterName" selected>@Model.CostCenterName</option>
+                <option value="@Model.CostCenterId" >@Model.CostCenterName</option>
             }
         </select>
     </td>

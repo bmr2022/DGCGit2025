@@ -181,12 +181,12 @@
         }
 
         function GetDashBoardSummaryData() {
-
+            debugger;
             //var data = $('#SParam').serialize();
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             $.ajax({
-                url: '@Url.Action("GetDashBoardSummaryData", "BankReceipt")',
+                url: '@Url.Action("GetDashBoardSummaryData", "BankPayment")',
                 type: "POST",
                 // data: $('#SParam').serializeArray(),
                 data: {

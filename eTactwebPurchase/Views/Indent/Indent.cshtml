@@ -4,6 +4,23 @@
     ViewData["Title"] = "Indent Form";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="Indent" asp-controller="Indent" autocomplete="off" class="form-horizontal" method="post">
@@ -111,7 +128,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="IndentNo" class="form-label" style="color: red;">Indent No*</label>
-                                    <input asp-for="IndentNo" class="form-control" value="@Model.IndentNo" readonly />
+                                    <input asp-for="IndentNo" class="form-control"  style="background-color: lightblue !important;"  value="@Model.IndentNo" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="IndentDate" class="form-label" style="color: red;">Indent Date*</label>

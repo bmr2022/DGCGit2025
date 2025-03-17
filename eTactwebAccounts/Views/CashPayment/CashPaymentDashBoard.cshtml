@@ -186,7 +186,7 @@
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             $.ajax({
-                url: '@Url.Action("GetDashBoardSummaryData", "BankReceipt")',
+                url: '@Url.Action("GetDashBoardSummaryData", "CashPayment")',
                 type: "POST",
                 // data: $('#SParam').serializeArray(),
                 data: {

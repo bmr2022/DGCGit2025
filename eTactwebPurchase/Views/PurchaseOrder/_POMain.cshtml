@@ -1,6 +1,22 @@
 ﻿@model eTactWeb.DOM.Models.PurchaseOrderModel
 
+<style>
 
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
 @if (Model.Mode == "POA" || Model.Mode == "PAU" || Model.Mode == "POC")
 {
     <div class="accordion-body">
@@ -54,13 +70,13 @@
             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <label asp-for="PONo" class="form-label">PO No</label>
                 @{
-                    if (@Model.isPONo == true)
+                    if (@Model.isPONo == true)  
                     {
-                        <input asp-for="PONo" class="form-control" />
+                        <input asp-for="PONo" class="form-control" style="background-color: lightblue !important;" />
                     }
                     else
                     {
-                        <input asp-for="PONo" class="form-control" readonly disabled />
+                        <input asp-for="PONo" class="form-control" readonly style="background-color: lightblue !important;" />
                     }
                 }
             </div>
@@ -215,15 +231,15 @@ else
                 </select>
             </div>
             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <label asp-for="PONo" class="form-label" style="color: red;">PO No*</label>
+                <label asp-for="PONo" class="form-label" style="color: red;" >PO No*</label>
                 @{
                     if (@Model.isPONo == true)
                     {
-                        <input asp-for="PONo" class="form-control" />
+                        <input asp-for="PONo" class="form-control" style="background-color: lightblue !important;" />
                     }
                     else
                     {
-                        <input asp-for="PONo" class="form-control" readonly disabled />
+                        <input asp-for="PONo" class="form-control" readonly style="background-color: lightblue !important;" />
                     }
                 }
             </div>

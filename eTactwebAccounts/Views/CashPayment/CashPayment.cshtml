@@ -8,7 +8,7 @@
     <form asp-action="CashPayment" asp-controller="CashPayment" method="post" class="form-horizontal">
         <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
             <h5>
-                <strong>Bank Payment</strong>
+                <strong>Cash Payment</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <a asp-controller="CashPayment" asp-action="CashPaymentDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
@@ -59,7 +59,7 @@
                     <h2 class="accordion-header" id="H_ItemCategoryDetail">
                         <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
                                 aria-expanded="true" aria-controls="B_ItemCategoryDetail">
-                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Bank Payment Detail</strong>
+                            <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Cash Payment Detail</strong>
                             <small class="p-3"></small>
                         </button>
                     </h2>
@@ -90,7 +90,7 @@
                                     <input type="hidden" asp-for="SubVoucherID" />
                                     <select class="form-control" asp-for="SubVoucherName" style="width:130px;">
                                         <option value="">Cash-Payment</option>
-                                        <option value="Bank-Payment">Bank-Payment</option>
+                                        <option value="Cash-Payment">Cash-Payment</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
                                             <option value="@Model.SubVoucherName" selected>@Model.SubVoucherName</option>
@@ -99,7 +99,7 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
                                     <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
-                                    <input asp-for="VoucherNo" class="form-control" readonly />
+                                    <input asp-for="VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
                                     <label asp-for="VoucherDate" class="form-label" style=" color:red;">Voucher Date*</label>
@@ -131,7 +131,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Bank Payment Grid</strong>
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Cash Payment Grid</strong>
                         </button>
                         <button class="btn btn-sm btn-outline-danger" style="width:150px;" type="button" onclick="GridButton()">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
@@ -308,7 +308,7 @@
                     <div class="row justify-content-between g-2">
                         <div class="card-header card-headerBG text-light bg-gradient">
                             <h5>
-                                <strong>Bank Payment</strong>
+                                <strong>Cash Payment</strong>
                                 <span class="d-flex float-end" style="margin-top:-2px;">
                                     <div class="col-auto">
                                         @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
@@ -529,7 +529,10 @@
             FillCurrency();
 
             FillModeofAdjust();
-            calculateTotalBalance();
+            $('#CostCenterName').change(function () {
+                $('#CostCenterId').val($('#CostCenterName').val());
+            });
+           //alculateTotalBalance();
             $('#LedgerName').rules("remove", "required");
             $('#DRCR').rules("remove", "required");
             $('#Intrument').rules("remove", "required");
@@ -575,6 +578,9 @@
             $('#PendBillAmt').rules("remove", "required");
             $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
             $('#PRODSTATUSProdUnProdRej').rules("remove", "required");
+            $('#PONo').rules("remove", "required");
+            $('#PoDate').rules("remove", "required");
+            $('#POYear').rules("remove", "required");
             var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             var currentDate = new Date();
 
@@ -619,14 +625,7 @@
                     $(this).val('');
                 }
             });
-            $("#PONo").on("change", function () {
-                if ($("#ModeOfAdjustment").val() == "Advance") {
-                    GetPOYear();
-                }
-                if ($("#ModeOfAdjustment").val() == "Advance" && $("#POYear").val() != '') {
-                    GetPODate();
-                }
-            });
+            
 
             function checkModeOfAdjustment() {
 
@@ -700,6 +699,10 @@
                     FillPONO();
                 }
             }
+            $("#PONo").on("change", function () {
+                GetPOYear();
+                GetPODate();
+            });
             $("#ModeOfAdjustment").on("change", function () {
                 checkModeOfAdjustment();
             });
@@ -876,10 +879,29 @@
         }
 
         function FillPONO() {
-            debugger;
+             ;
 
             var accountcode = $('#AccountCode').val();
             var VoucherDate = $('#VoucherDate').val();
+
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
 
             $.ajax({
                 url: '@Url.Action("FillPONO", "CashPayment")',
@@ -896,6 +918,7 @@
                     var PONoDropdown = $('#PONo');
                     var obj = $.parseJSON(response);
                     PONoDropdown.empty();
+                    PONoDropdown.append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (index, pono) {
                         PONoDropdown.append('<option value="' + pono.PONO + '">' + pono.PONO + '</option>');
                     });
@@ -915,11 +938,30 @@
 
 
         function GetPOYear() {
-
-            var PONO = $("#PONo").val().trim();
-            var accountcode = $("#AccountCode").val().trim();
-            var VoucherDate = $("#VoucherDate").val().trim();
+            debugger;
+            var PONO = $("#PONo").val();
+            var accountcode = $("#AccountCode").val();
+            var VoucherDate = $("#VoucherDate").val();
             if (!PONO) return;
+
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
 
             $.ajax({
                 url: '@Url.Action("GetPODetail", "CashPayment")',
@@ -946,9 +988,18 @@
                     // Extract the first result from the array
                     if (data && data.Result && data.Result.length > 0) {
                         var POYear = data.Result[0]; // Extract first object
+                        var PoDate = data.Result[0];
 
 
                         $("#POYear").prop("disabled", false).val(POYear.POyearcode).trigger("input");
+                        // $("#PoDate").prop("disabled", false).val(PoDate.PODate).trigger("input");
+                        if (PoDate.PODate) {
+                            var dateObj = new Date(PoDate.PODate);
+                            var formattedDate = ("0" + dateObj.getDate()).slice(-2) + "/" +
+                                ("0" + (dateObj.getMonth() + 1)).slice(-2) + "/" +
+                                dateObj.getFullYear();
+                            $("#PoDate").prop("disabled", false).val(formattedDate).trigger("input");
+                        }
 
                     } else {
 
@@ -963,11 +1014,29 @@
 
         function GetPODate() {
 
-            var PONO = $("#PONo").val().trim();
-            var accountcode = $("#AccountCode").val().trim();
-            var VoucherDate = $("#VoucherDate").val().trim();
-            var POYearCode = $("#POYear").val().trim();
+            var PONO = $("#PONo").val();
+            var accountcode = $("#AccountCode").val();
+            var VoucherDate = $("#VoucherDate").val();
+            var POYearCode = $("#POYear").val();
             if (!PONO) return;
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
 
             $.ajax({
                 url: '@Url.Action("GetPODate", "CashPayment")',
@@ -998,7 +1067,7 @@
                         var PoDate = data.Result[0]; // Extract first object
 
 
-                        $("#PoDate").prop("disabled", false).val(PoDate.POyearcode).trigger("input");
+                        $("#PoDate").prop("disabled", false).val(PoDate.PODate).trigger("input");
 
                     } else {
 
@@ -1010,6 +1079,7 @@
                 }
             });
         }
+
 
 
         function CheckAmountBeforeSave(i) {
@@ -1168,11 +1238,11 @@
                     CostCenterNameDropdown.empty();
                     CostCenterNameDropdown.append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (index, CostCenter) {
-                        CostCenterNameDropdown.append('<option value="' + CostCenter.CostCenterId + '">' + CostCenter.CostCenterName + '</option>');
+                        CostCenterNameDropdown.append('<option value="' + CostCenter.CostcenterId + '">' + CostCenter.CostCenterName + '</option>');
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var CostCenterName = '@Model.CostCenterName';
+                        var CostCenterName = '@Model.CostCenterId';
                         $('#CostCenterName').val(CostCenterName).trigger("change");
                         $('#CostCenterName').val(CostCenterName);
                     }
@@ -1468,6 +1538,7 @@
                         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
                         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                        "CostCenterId": $('#CostCenterId').val(),
                     })
                 }
             }
@@ -1657,6 +1728,7 @@
                 "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
                 "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                 "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                "CostCenterId": $('#CostCenterId').val(),
             };
 
             const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
@@ -1700,10 +1772,10 @@
             var RowCount = $('#divCashPaymentDetail tr').length;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
-            var difference = Math.abs(DrAmt - CrAmt);
+            var difference = Math.abs(CrAmt - DrAmt);
             for (let i = 1; i <= RowCount; i++) {
                 if ($('#BankType').val() == "Bank") {
-                    if (DrAmt < CrAmt) {
+                    if (CrAmt < DrAmt) {
                         $('#AdjustmentAmt').val(difference)
                     }
                 }
@@ -1765,7 +1837,8 @@
                                 $('#ModeOfAdjustment').val(obj[0].ModeOfAdjustment).trigger("change");
                                 $('#AdjustmentAmt').val(obj[0].AdjustmentAmt);
                                 $('#AdjustmentAmtOthCur').val(obj[0].AdjustmentAmtOthCur);
-                                $('#CostCenterName').val(obj[0].CostCenterName).trigger("change");
+                                $('#CostCenterName').val(obj[0].CostCenterId).trigger("change");
+                                $('#CostCenterId').val(obj[0].CostCenterId);
                                 $('#PartyWiseNaration').val(obj[0].PartyWiseNaration);
                                 $('#AgainstVoucherNo').val(obj[0].AgainstVoucherNo);
                                 $('#AgainstVoucherCode').val(obj[0].AgainstVoucherCode);
