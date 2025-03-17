@@ -50,18 +50,28 @@
         <input asp-for="AdjustmentAmtOthCur" class="form-control" readonly />
     </td>
     <td>
-        <input type="hidden" asp-for="CostCenterId" />
+        <input type="hidden" asp-for="CostCenterId" value="@Model.CostCenterId" />
         <select class="form-control" asp-for="CostCenterName" style="width:140px;">
-            <option value="@Model.CostCenterName">-Select-</option>
+         
+            
             @if (Model.Mode == "U" || Model.Mode == "V")
             {
-                <option value="@Model.CostCenterName" selected>@Model.CostCenterName</option>
+                <option value="@Model.CostCenterId">@Model.CostCenterName</option>
             }
         </select>
     </td>
     <td><input asp-for="PartyWiseNaration" class="form-control" /></td>
     <td><input asp-for="CustOrderNo" class="form-control" /></td>
-    <td><input asp-for="SONo" id="SoNo" class="form-control" /></td>
+    <td>
+
+        <select class="form-control" asp-for="SONo" style="width:140px;">
+            <option value="@Model.SONo">-Select-</option>
+            @if (Model.Mode == "U" || Model.Mode == "V")
+            {
+                <option value="@Model.SONo">@Model.SONo</option>
+            }
+        </select>
+    </td>
     <td><input asp-for="SoDate" id="SoDate" class="form-control" readonly /></td>
     <td><input asp-for="SOYear" class="form-control" /></td>
     <td><input asp-for="AgainstVoucherNo" class="form-control" readonly/></td>

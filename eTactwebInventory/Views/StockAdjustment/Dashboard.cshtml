@@ -46,25 +46,57 @@
                                     <option value="Detail">Detail</option>
                                 </select>
                             </div>
-                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                                <label asp-for="PartCode" class="form-label">Part Code</label>
-                                <input asp-for="PartCode" class="form-control" />
+                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                <label asp-for="PartCode" class="form-label"> Part Code</label>
+
+                                <select class="form-control" asp-for="PartCode">
+                                    <option value="">-Select-</option>
+
+                                    @* <option value="@Model.ItemName" selected>@Model.ItemName</option> *@
+
+                                </select>
                             </div>
                             <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12">
                                 <label asp-for="ItemName" class="form-label">Item Name</label>
-                                <input asp-for="ItemName" class="form-control" />
+                                
+                                <select class="form-control" asp-for="ItemName" >
+                                    <option value="">-Select-</option>
+                                   
+                                        @* <option value="@Model.ItemName" selected>@Model.ItemName</option> *@
+                                   
+                                </select>
                             </div>
                             <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <label asp-for="StoreWorkcenter" class="form-label">Store/WorkCenter</label>
-                                <input asp-for="StoreWorkcenter" class="form-control" />
+
+                                <select class="form-control" asp-for="StoreWorkcenter">
+                                    <option value="">-Select-</option>
+                                     <option value="S">Store</option>
+                                    <option value="W">WorkCenter</option>
+
+                                    @* <option value="@Model.ItemName" selected>@Model.ItemName</option> *@
+
+                                </select>
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <label asp-for="StoreName" class="form-label">Store Name</label>
-                                <input asp-for="StoreName" class="form-control" />
+
+                                <select class="form-control" asp-for="StoreName">
+                                    <option value="">-Select-</option>
+
+                                    @* <option value="@Model.ItemName" selected>@Model.ItemName</option> *@
+
+                                </select>
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                <label asp-for="WCName" class="form-label">WrokCenter Name</label>
-                                <input asp-for="WCName" class="form-control" />
+                                <label asp-for="WCName" class="form-label">Workcenter Name</label>
+
+                                <select class="form-control" asp-for="WCName">
+                                    <option value="">-Select-</option>
+
+                                    @* <option value="@Model.ItemName" selected>@Model.ItemName</option> *@
+
+                                </select>
                             </div>
                          
                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
@@ -154,6 +186,20 @@
 
                 GetSearchData();
             }
+            GetDashItemName();
+            GetDashPartCode();
+            GetDashStoreName();
+            GetDashWorkCenter();
+
+            // $("#StoreWorkcenter").change(function () {
+            //     if ($("#StoreWorkcenter").val()=='S')
+            //     {
+            //         GetDashStoreName();
+            //     }
+            //     else if ($("#StoreWorkcenter").val() == 'W') {
+            //         GetDashWorkCenter();
+            //     }
+            // })
             //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
@@ -399,6 +445,155 @@
                 console.error("An error occurred while exporting to Excel:", error);
             }
         });
+
+        function GetDashItemName() {
+            debugger;
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+
+           
+
+            $.ajax({
+                url: '@Url.Action("GetDashItemName", "StockAdjustment")',
+                type: 'POST',
+                async: false,
+                data: {
+
+                    FromDate: FromDate,
+                    ToDate: ToDate
+
+                },
+                success: function (response, status, error) {
+
+                    var ItemNameDropdown = $('#ItemName');
+                    var obj = $.parseJSON(response);
+                    ItemNameDropdown.empty();
+                    ItemNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, ITEMNAME) {
+                        ItemNameDropdown.append('<option value="' + ITEMNAME.item_name + '">' + ITEMNAME.item_name + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var ItemName = '@Model.ItemName';
+                        $('#ItemName').val(ItemName).trigger("change");
+                        $('#ItemName').val(ItemName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function GetDashPartCode() {
+            debugger;
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+
+
+
+            $.ajax({
+                url: '@Url.Action("GetDashPartCode", "StockAdjustment")',
+                type: 'POST',
+                async: false,
+                data: {
+
+                    FromDate: FromDate,
+                    ToDate: ToDate
+
+                },
+                success: function (response, status, error) {
+
+                    var ItemNameDropdown = $('#PartCode');
+                    var obj = $.parseJSON(response);
+                    ItemNameDropdown.empty();
+                    ItemNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, ITEMNAME) {
+                        ItemNameDropdown.append('<option value="' + ITEMNAME.PartCode + '">' + ITEMNAME.PartCode + '</option>');
+                    });
+
+                    
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function GetDashStoreName() {
+            debugger;
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+
+
+
+            $.ajax({
+                url: '@Url.Action("GetDashStoreName", "StockAdjustment")',
+                type: 'POST',
+                async: false,
+                data: {
+
+                    FromDate: FromDate,
+                    ToDate: ToDate
+
+                },
+                success: function (response, status, error) {
+
+                    var ItemNameDropdown = $('#StoreName');
+                    var obj = $.parseJSON(response);
+                    ItemNameDropdown.empty();
+                    ItemNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, ITEMNAME) {
+                        ItemNameDropdown.append('<option value="' + ITEMNAME.Store_Name + '">' + ITEMNAME.Store_Name + '</option>');
+                    });
+
+                    
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+        function GetDashWorkCenter() {
+            debugger;
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+
+
+
+            $.ajax({
+                url: '@Url.Action("GetDashWorkCenter", "StockAdjustment")',
+                type: 'POST',
+                async: false,
+                data: {
+
+                    FromDate: FromDate,
+                    ToDate: ToDate
+
+                },
+                success: function (response, status, error) {
+
+                    var ItemNameDropdown = $('#WCName');
+                    var obj = $.parseJSON(response);
+                    ItemNameDropdown.empty();
+                    ItemNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, ITEMNAME) {
+                        ItemNameDropdown.append('<option value="' + ITEMNAME.WorkCenter + '">' + ITEMNAME.WorkCenter + '</option>');
+                    });
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>

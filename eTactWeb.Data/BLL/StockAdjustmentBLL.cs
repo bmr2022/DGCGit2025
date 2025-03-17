@@ -131,6 +131,22 @@ namespace eTactWeb.Data.BLL
         {
             return await _StockAdjustmentDAL.GetViewByID(ID, Mode, YC);
         }
+        public async Task<ResponseResult> GetDashItemName(string FromDate, string ToDate)
+        {
+            return await _StockAdjustmentDAL.GetDashItemName( FromDate, ToDate);
+        }
+        public async Task<ResponseResult> GetDashPartCode(string FromDate, string ToDate)
+        {
+            return await _StockAdjustmentDAL.GetDashPartCode(FromDate, ToDate);
+        }
+        public async Task<ResponseResult> GetDashStoreName(string FromDate, string ToDate)
+        {
+            return await _StockAdjustmentDAL.GetDashStoreName(FromDate, ToDate);
+        }
+        public async Task<ResponseResult> GetDashWorkCenter(string FromDate, string ToDate)
+        {
+            return await _StockAdjustmentDAL.GetDashWorkCenter(FromDate, ToDate);
+        }
 
 
     }

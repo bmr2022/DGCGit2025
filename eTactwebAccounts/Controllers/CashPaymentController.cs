@@ -54,7 +54,7 @@ namespace eTactwebAccounts.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
-                // MainModel = await _ICashPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
+               MainModel = await _ICashPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.ID = ID;
                 MainModel.VoucherNo = VoucherNo;

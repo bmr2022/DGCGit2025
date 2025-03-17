@@ -41,7 +41,7 @@ namespace eTactwebAccounts.Controllers
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
-            MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
+            //MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
             if (MainModel.Mode == "U")
@@ -54,7 +54,7 @@ namespace eTactwebAccounts.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
-               // MainModel = await _IBankPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
+               MainModel = await _IBankPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.ID = ID;
                 MainModel.VoucherNo = VoucherNo;

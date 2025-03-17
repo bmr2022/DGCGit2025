@@ -77,14 +77,28 @@
                                             </span>
                                         </a>
                                     </div>
-                                    <div id="printData-@Cntr">
-                                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
+                                    @if (@item.Approved == "N")
+                                    {
+                                        <div>
+                                            <a class="table-link link-dark noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div id="printData-@Cntr">
+                                            <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
                                     @if (@item.Approved == "Y" || item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || item.YearCode !=yearCode)
                                     {
                                         <div>

@@ -1075,16 +1075,7 @@ namespace eTactWeb.Controllers
         }
         public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "")
         {
-            //string my_connection_string;
-            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            //string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //var webReport = new WebReport();
-            //webReport.Report.Load(webRootPath + "\\SaleBill.frx");
-            //webReport.Report.SetParameterValue("entryparam", EntryId);
-            //webReport.Report.SetParameterValue("yearparam", YearCode);
-            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            //return View(webReport);
+           
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
@@ -1115,6 +1106,31 @@ namespace eTactWeb.Controllers
                     tableDataSource.Init(); // Refresh the data source
                 }
             }
+
+            //Additional CODE STARTS
+            // Create 4 copies with tags
+            //string[] tags = { "Original", "Duplicate", "Triplicate", "Office Copy" };
+            //var preparedPages = new List<ReportPage>();
+            //foreach (var tag in tags)
+            //{
+            //    // Set the tag value
+            //    webReport.Report.SetParameterValue("CopyTag", tag);
+            //    // Append pages for this copy
+            //    using (var tempReport = new Report())
+            //    {
+            //        tempReport.Load("path-to-your-report.frx");
+            //        tempReport.Prepare();
+            //        preparedPages.AddRange(tempReport.Pages);
+            //    }
+            //}
+            //// Combine all copies into one print job
+            //foreach (var page in preparedPages)
+            //{
+            //    webReport.Report.Pages.Add(page);
+            //}
+            ////Additional CODE END HERE
+
+
             return View(webReport);
         }
         private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)

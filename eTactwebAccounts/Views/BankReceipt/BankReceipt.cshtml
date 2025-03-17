@@ -250,12 +250,12 @@
 
                                     <div style="width:170px;">
                                         <label asp-for="DrAmt" class="form-label">Dr Amt</label>
-                                        <input asp-for="DrAmt" id="DrAmt" class="form-control" readonly />
+                                        <input asp-for="DrAmt"  class="form-control" readonly />
                                     </div>
 
                                     <div style="width:170px;">
                                         <label asp-for="CrAmt" class="form-label">Cr Amt</label>
-                                        <input asp-for="CrAmt" id="CrAmt" class="form-control" readonly data-val="false" />
+                                        <input asp-for="CrAmt"  class="form-control" readonly data-val="false" />
                                     </div>
 
                                     <div style="width:170px;">
@@ -528,15 +528,23 @@
             $('#CostCenterName').select2();
             $('#SubVoucherName').select2();
             $('#Currency').select2();
+
+            debugger;
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 FillEntryID();
             }
+            
             FillCurrency();
             FillModeofAdjust();
-            calculateTotalBalance();
+           //alculateTotalBalance();
+
+            
+            $('#CostCenterName').change(function () {
+                $('#CostCenterId').val($('#CostCenterName').val());
+            });
             $('#LedgerName').rules("remove", "required");
             $('#DRCR').rules("remove", "required");
             $('#Intrument').rules("remove", "required");
@@ -687,10 +695,22 @@
                     $('#SoNo').prop('disabled', true);
                     $('#SOYear').prop('disabled', true);
                 }
+                if ($("#AccountCode").val() != "" && $("#ModeOfAdjustment").val() == "Advance") {
+
+                    FillSONO();
+                }
+
+               
             }
+            $("#SONo").on("change", function () {
+                GetSOYear();
+                GetSODate();
+            });
             $("#ModeOfAdjustment").on("change", function () {
                 checkModeOfAdjustment();
             });
+
+            
 
             // Initial check on page load
             checkModeOfAdjustment();
@@ -700,6 +720,7 @@
 
             let drTotal = 0;
             let crTotal = 0;
+            
             const rowCount = $('#divBankReceiptDetail tr').length;
             for (let i = 1; i <= rowCount; i++) {
 
@@ -708,6 +729,8 @@
 
                 if (drcr.toLowerCase() === "dr") {
                     drTotal += AdjAmt;
+                    
+
                 } else if (drcr.toLowerCase() === "cr") {
                     crTotal += AdjAmt;
                 }
@@ -715,6 +738,7 @@
 
             $('#DrAmt').val(drTotal.toFixed(2));
             $('#CrAmt').val(crTotal.toFixed(2));
+            $('#VoucherAmt').val(crTotal.toFixed(2));
         }
 
         function ClearGrid() {
@@ -787,7 +811,7 @@
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 
                         $('#Balance').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
-                        $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
+                       // $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
                         $('#DRCR').val(obj.Result[0].TypeDrCr);
                     }
                     else {
@@ -829,6 +853,211 @@
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load opening amount.');
+                }
+            });
+        }
+
+        function FillSONO() {
+            debugger;
+
+            var accountcode = $('#AccountCode').val();
+            var VoucherDate = $('#VoucherDate').val();
+
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
+
+            $.ajax({
+                url: '@Url.Action("FillSONO", "BankReceipt")',
+                type: 'POST',
+                async: false,
+                data: {
+
+                    accountcode: accountcode,
+                    VoucherDate: VoucherDate
+
+                },
+                success: function (response, status, error) {
+
+                    var SONoDropdown = $('#SONo');
+                    var obj = $.parseJSON(response);
+                    SONoDropdown.empty();
+                    SONoDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, sono) {
+                        SONoDropdown.append('<option value="' + sono.SONO + '">' + sono.SONO + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var SONo = '@Model.SONo';
+                        $('#SONo').val(SONo).trigger("change");
+                        $('#SONo').val(SONo);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+
+        function GetSOYear() {
+            debugger;
+            var SONO = $("#SONo").val();
+            var accountcode = $("#AccountCode").val();
+            var VoucherDate = $("#VoucherDate").val();
+            if (!SONO) return;
+
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetSODetail", "BankReceipt")',
+                type: 'GET',
+                data: {
+                    SONO: SONO,
+                    accountcode: accountcode,
+                    VoucherDate: VoucherDate
+
+                },
+                success: function (data) {
+
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var SOYear = data.Result[0]; // Extract first object
+                        var SoDate = data.Result[0];
+                        var CONO = data.Result[0];
+
+
+                        $("#SOYear").prop("disabled", false).val(SOYear.SOYearCode).trigger("input");
+                       // $("#SoDate").prop("disabled", false).val(SoDate.SODate).trigger("input");
+                        if (SoDate.SODate) {
+                            var dateObj = new Date(SoDate.SODate);
+                            var formattedDate = ("0" + dateObj.getDate()).slice(-2) + "/" +
+                                ("0" + (dateObj.getMonth() + 1)).slice(-2) + "/" +
+                                dateObj.getFullYear();
+                            $("#SoDate").prop("disabled", false).val(formattedDate).trigger("input");
+                        }
+                        $("#CustOrderNo").prop("disabled", false).val(CONO.CustOrderNo).trigger("input");
+
+
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+
+                }
+            });
+        }
+
+        function GetSODate() {
+
+            var SONO = $("#SONo").val();
+            var accountcode = $("#AccountCode").val();
+            var VoucherDate = $("#VoucherDate").val();
+            var SOYearCode = $("#SOYear").val();
+            if (!SONO) return;
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetPODate", "BankPayment")',
+                type: 'GET',
+                data: {
+                    PONO: PONO,
+                    accountcode: accountcode,
+                    VoucherDate: VoucherDate,
+                    POYearCode: POYearCode,
+                    PoDate: PoDate
+
+                },
+                success: function (data) {
+
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var PoDate = data.Result[0]; // Extract first object
+
+
+                        $("#PoDate").prop("disabled", false).val(PoDate.PODate).trigger("input");
+
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+
                 }
             });
         }
@@ -1007,21 +1236,23 @@
         }
 
         function FillCostCenterName() {
+            debugger;
             $.ajax({
                 url: '@Url.Action("FillCostCenterName", "BankReceipt")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
+                    console.log("Raw Response:", response);
                     var CostCenterNameDropdown = $('#CostCenterName');
                     var obj = $.parseJSON(response);
                     CostCenterNameDropdown.empty();
                     CostCenterNameDropdown.append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (index, CostCenter) {
-                        CostCenterNameDropdown.append('<option value="' + CostCenter.CostCenterId + '">' + CostCenter.CostCenterName + '</option>');
+                        CostCenterNameDropdown.append('<option value="' + CostCenter.CostcenterId + '">' + CostCenter.CostCenterName + '</option>');
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var CostCenterName = '@Model.CostCenterName';
+                        var CostCenterName = '@Model.CostCenterId';
                         $('#CostCenterName').val(CostCenterName).trigger("change");
                         $('#CostCenterName').val(CostCenterName);
                     }
@@ -1317,6 +1548,7 @@
                         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
                         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                        "CostCenterId": $('#CostCenterId').val(),
                     })
                 }
             }
@@ -1475,11 +1707,13 @@
                 "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
                 "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                 "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                "CostCenterId": $('#CostCenterId').val(),
             };
 
             const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
             if (SchData.Type.toLowerCase() === "dr") {
                 SchData.DrAmt = adjAmt.toFixed(2);
+               
                 SchData.CrAmt = "0.00";
             } else if (SchData.Type.toLowerCase() === "cr") {
                 SchData.CrAmt = adjAmt.toFixed(2);
@@ -1583,7 +1817,8 @@
                                 $('#ModeOfAdjustment').val(obj[0].ModeOfAdjustment).trigger("change");
                                 $('#AdjustmentAmt').val(obj[0].AdjustmentAmt);
                                 $('#AdjustmentAmtOthCur').val(obj[0].AdjustmentAmtOthCur);
-                                $('#CostCenterName').val(obj[0].CostCenterName).trigger("change");
+                                $('#CostCenterName').val(obj[0].CostCenterId).trigger("change");
+                                $('#CostCenterId').val(obj[0].CostCenterId);
                                 $('#PartyWiseNaration').val(obj[0].PartyWiseNaration);
                                 $('#AgainstVoucherNo').val(obj[0].AgainstVoucherNo);
                                 $('#AgainstVoucherCode').val(obj[0].AgainstVoucherCode);

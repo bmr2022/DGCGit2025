@@ -5,6 +5,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using OfficeOpenXml.Drawing.Chart;
 using System.Data;
 using System.Net;
 using System.Runtime.Caching;
@@ -700,6 +701,8 @@ namespace eTactWeb.Controllers
 
         public async Task<JsonResult> GetPopUpData(int YearCode, string EntryDate, string ChallanDate, int AccountCode, string prodUnProd, string BOMINd, int RMItemCode, string Partcode)
         {
+            EntryDate = ParseFormattedDate(EntryDate);
+            ChallanDate = ParseFormattedDate(ChallanDate);
             var JSON = await _ICustomerJobWorkIssue.GetPopUpData( YearCode,  EntryDate,  ChallanDate,  AccountCode,  prodUnProd,  BOMINd,  RMItemCode,  Partcode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);

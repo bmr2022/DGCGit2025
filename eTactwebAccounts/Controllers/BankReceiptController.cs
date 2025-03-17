@@ -96,10 +96,11 @@ namespace eTactWeb.Controllers
                 _MemoryCache.TryGetValue("KeyBankReceiptGrid", out List<BankReceiptModel> BankReceiptGrid);
 
 
-                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEntryBy = HttpContext.Session.GetString("UID");
                 if (model.Mode == "U")
                 {
-                    model.UpdatedOn = DateTime.Now;
+                    //model.UpdatedOn = DateTime.Now;
                     GIGrid = GetDetailTable(BankReceiptGrid);
                 }
                 else
@@ -235,6 +236,8 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("EntryByMachine", typeof(string));
                 GIGrid.Columns.Add("OursalespersonId", typeof(int));
                 GIGrid.Columns.Add("SubVoucherName", typeof(string));
+                
+
                 foreach (var Item in DetailList)
                 {
                     GIGrid.Rows.Add(
@@ -318,13 +321,15 @@ namespace eTactWeb.Controllers
                 Item.ProjectNo ,
                 Item.ProjectYearcode ,
                 Item.ProjectDate = DateTime.Now.ToString("dd/MM/yy"),
-                Item.ActualEntryBy ,
+                Item.ActualEntryby ,
                 Item.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy"),
                 Item.UpdatedBy ,
                 Item.UpdatedOn ,
                 Item.EntryByMachine ?? string.Empty,
                 Item.OursalespersonId ,
-                Item.SubVoucher ?? string.Empty
+                Item.SubVoucher ?? string.Empty,
+             
+
                         });
                 }
                 GIGrid.Dispose();
@@ -386,6 +391,25 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> FillCurrency()
         {
             var JSON = await _IBankReceipt.FillCurrency();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> FillSONO(string accountcode, string VoucherDate)
+        {
+            var JSON = await _IBankReceipt.FillSONO(accountcode, VoucherDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetSODetail(int SONO, string accountcode, string VoucherDate)
+        {
+            var JSON = await _IBankReceipt.GetSODetail(SONO, accountcode, VoucherDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode)
+        {
+            var JSON = await _IBankReceipt.GetSODate(SONO, accountcode, VoucherDate, SOYearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
