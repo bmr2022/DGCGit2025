@@ -1162,6 +1162,17 @@
                 else {
                     RemoveErrorCls('ProducedUnprod');
                 }
+
+                if ($('#ProducedUnprod').val() == 'Unprod') {
+                    if ($("#BOMInd").val() != 'I') {
+                        AddErrorCls('BOMInd');
+                        $.notify('please select Individual in case of unProd...!', "error");
+                        Err = 1;
+                    } else {
+                        RemoveErrorCls('BOMInd');
+                    }
+                }
+
             }
 
             if ($('#ItemCode').prop('selectedIndex') == 0) {
@@ -1255,6 +1266,12 @@
 
             return true;
         }
+
+        $('#ProducedUnprod').change(function () {
+            if ($('#ProducedUnprod').val() == 'Unprod') {
+                $("#BOMInd").val('I');
+            }
+        });
 
         function FillSOPendQty() {
             $.ajax({
@@ -2592,8 +2609,7 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-            if ($('#SONO').find(':selected').data('sotype') == "OPEN") 
-            {
+            if ($('#SONO').find(':selected').data('sotype') == "OPEN") {
                 if ($('#SaleBillJobwork').val() == 'J') {
                     JWItemList($('#TypeItemServAssets').val());
                 } else {
@@ -2606,7 +2622,7 @@
                     FillSOWiseItems();
                 }
             }
-            
+
             FILLCustomerOrderAndSPDate();
             FillSOItemRate();
             FillSOSchedule();
