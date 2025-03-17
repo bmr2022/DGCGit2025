@@ -485,7 +485,10 @@
 
 @section Scripts {
     <script>
-
+                function formatDate(dateString) {
+            const [day, month, year] = dateString.split('/'); // Split dd/MM/yyyy
+            return `${month}/${day}/${year}`; // Reformat to MM/dd/yyyy
+        }
         $(document).ready(function () {
 
             $('#clicktoAdjustButton').hide();
