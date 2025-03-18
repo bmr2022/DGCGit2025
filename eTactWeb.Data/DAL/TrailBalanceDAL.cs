@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -35,8 +36,8 @@ namespace eTactWeb.Data.DAL
                     };
 
                     //command.Parameters.AddWithValue("@flag", "PRIMARYGROUPSUMMARY");
-                    command.Parameters.AddWithValue("@FromDate", FromDate);
-                    command.Parameters.AddWithValue("@ToDate", ToDate);
+                    command.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
+                    command.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
                     //command.Parameters.AddWithValue("@EntryByMachine", EntryByMachine);
                     command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
                     command.Parameters.AddWithValue("@FromFormName", "TRAIL");

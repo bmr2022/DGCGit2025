@@ -42,20 +42,20 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> FillVoucherName(string FromDate, string ToDate)
         {
-            var JSON = await _IDayBook.FillVoucherName( FromDate,  ToDate);
+            var JSON = await _IDayBook.FillVoucherName(FromDate,ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> FillLedgerName(string FromDate, string ToDate)
         {
-            var JSON = await _IDayBook.FillLedgerName( FromDate,  ToDate);
+            var JSON = await _IDayBook.FillLedgerName(FromDate, ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<IActionResult> GetDayBookDetailsData(string FromDate, string ToDate,string Ledger,string VoucherType, string CrAmt, string DrAmt)
         {
             var model = new DayBookModel();
-            model = await _IDayBook.GetDayBookDetailsData(FromDate, ToDate,  Ledger,  VoucherType,  CrAmt,  DrAmt);
+            model = await _IDayBook.GetDayBookDetailsData(FromDate , ToDate,  Ledger,  VoucherType,  CrAmt,  DrAmt);
             return PartialView("_DayBookGrid", model);
            
         }

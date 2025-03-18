@@ -335,6 +335,7 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@InstrumentNo", model.InsNo));
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
+                sqlParams.Add(new SqlParameter("@cc", model.CC));
                 sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", sqlParams);
@@ -622,7 +623,11 @@ namespace eTactWeb.Data.DAL
             int cnt = 1;
             model.AccEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["AccEntryId"].ToString());
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccYearCode"].ToString());
-            model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString().Split(" ")[0];
+           
+            if (DateTime.TryParse(DS.Tables[0].Rows[0]["EntryDate"].ToString(), out DateTime EntryDate))
+                model.EntryDate = EntryDate.ToString("dd/MM/yyyy");
+            if (DateTime.TryParse(DS.Tables[0].Rows[0]["VoucherDocdate"].ToString(), out DateTime VoucherDocdate))
+                model.VoucherDate = VoucherDocdate.ToString("dd/MM/yyyy");
             model.SubVoucherName = DS.Tables[0].Rows[0]["SubVoucherName"].ToString();
             model.VoucherNo = DS.Tables[0].Rows[0]["VoucherNo"].ToString();
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
@@ -681,9 +686,9 @@ namespace eTactWeb.Data.DAL
                         ChequePrintAC = row["ChequePrintAC"].ToString(),
                         InsNo = row["instrumentno"].ToString(),
                         Intrument = row["instrument"].ToString(),
-                        InsDate = row["instrumentdate"].ToString(),
+                        InsDate = DateTime.TryParse(row["instrumentdate"].ToString(), out DateTime insDate) ? insDate.ToString("dd/MM/yyyy") : row["instrumentdate"].ToString(),
                         PONo = row["PONo"].ToString(),
-                        PoDate = row["PoDate"].ToString(),
+                        PoDate = DateTime.TryParse(row["PoDate"].ToString(), out DateTime poDate) ? poDate.ToString("dd/MM/yyyy") : row["PoDate"].ToString(),
                         POYear = Convert.ToInt32(row["POYear"].ToString()),
                         SONo = Convert.ToInt32(row["SONo"].ToString()),
                         SOYear = Convert.ToInt32(row["SOYear"].ToString()),

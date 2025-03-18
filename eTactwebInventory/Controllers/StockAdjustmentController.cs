@@ -1147,5 +1147,33 @@ namespace eTactWeb.Controllers
             return PartialView("_StockAdjustGrid", model);
         }
 
+        public async Task<JsonResult> GetDashItemName(string FromDate, string ToDate)
+        {
+            var JSON = await IStockAdjust.GetDashItemName( FromDate,  ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetDashPartCode(string FromDate, string ToDate)
+        {
+            var JSON = await IStockAdjust.GetDashPartCode(FromDate, ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetDashStoreName(string FromDate, string ToDate)
+        {
+            var JSON = await IStockAdjust.GetDashStoreName(FromDate, ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetDashWorkCenter(string FromDate, string ToDate)
+        {
+            var JSON = await IStockAdjust.GetDashWorkCenter(FromDate, ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
     }
 }

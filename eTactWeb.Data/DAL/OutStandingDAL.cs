@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -31,7 +32,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "FillAccountName"));
                 SqlParams.Add(new SqlParameter("@outstandingType", outstandingType));
                 //SqlParams.Add(new SqlParameter("Debtors", underGroup));
-                SqlParams.Add(new SqlParameter("@TillDate", TillDate));
+                SqlParams.Add(new SqlParameter("@TillDate", ParseFormattedDate(TillDate)));
 
 
 
@@ -57,7 +58,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "FillGroupName"));
                 SqlParams.Add(new SqlParameter("@outstandingType", outstandingType));
                 //SqlParams.Add(new SqlParameter("Debtors", underGroup));
-                SqlParams.Add(new SqlParameter("@TillDate", TillDate));
+                SqlParams.Add(new SqlParameter("@TillDate", ParseFormattedDate(TillDate)));
 
 
 
@@ -91,7 +92,7 @@ namespace eTactWeb.Data.DAL
 
                     command.Parameters.AddWithValue("@Flag", "Outstanding");
                     command.Parameters.AddWithValue("@outstandingType", outstandingType);
-                    command.Parameters.AddWithValue("@TillDate", TillDate);
+                    command.Parameters.AddWithValue("@TillDate", ParseFormattedDate(TillDate));
                     command.Parameters.AddWithValue("@Groupname", GroupName);
                     command.Parameters.AddWithValue("@AccountNamwList", AccountNamwList);
                     command.Parameters.AddWithValue("@ShowOnlyApprovedBill", ShowOnlyApprovedBill);
