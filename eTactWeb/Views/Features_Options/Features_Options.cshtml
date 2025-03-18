@@ -413,6 +413,10 @@
                                     aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Requisition Detail</strong>
                                 <small class="p-3"></small>
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Requisition Detail
+                                </span>
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -421,8 +425,8 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="AllowBackdateReqWOBOM" class="form-label">Allow Backdate ReqWOBOM</label>
                                         <select class="form-control" asp-for="AllowBackdateReqWOBOM" >
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
@@ -432,15 +436,15 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="IssueWithScanner" class="form-label">Issue With Scanner</label>
                                         <select class="form-control" asp-for="IssueWithScanner" >
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="AllowBackDateRequsitionWITHBOM" class="form-label">Allow BackDate ReqWITHBOM</label>
                                         <select class="form-control" asp-for="AllowBackDateRequsitionWITHBOM" >
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -449,10 +453,15 @@
                         </div>
                     </div>
                     @* vend jw iss rec *@
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="VendJwIssRecSection">
                         <h2 class="accordion-header" id="H_SAGrid">
                             <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>vend jw iss rec Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update VendJwIssRec Detail
+                                </span>
                             </button>
                         </h2>
 
@@ -471,23 +480,23 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="AllowBackDateJOBWorkIssue" class="form-label">Allow BackDate JOBWorkIssue</label>
                                         <select class="form-control" asp-for="AllowBackDateJOBWorkIssue"  style="width:150px;">
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="ALLOWBACKDATEJobworkRec" class="form-label">Allow BackDate JobworkRec</label>
                                         <select class="form-control" asp-for="ALLOWBACKDATEJobworkRec"  style="width:150px;">
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="VendorJWAdjustAutoOrManual" class="form-label">Vendor JWAdjust AutoOrManual</label>
                                         <select class="form-control" asp-for="VendorJWAdjustAutoOrManual"  style="width:150px;">
-                                            <option value="Auto">Auto</option>
-                                            <option value="Manual">Manual</option>
+                                            <option value="A">Auto</option>
+                                            <option value="M">Manual</option>
                                         </select>
                                     </div>
                                    
@@ -497,12 +506,16 @@
                         </div>
                     </div>
                    @*  stock adjustmnent *@
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="StockAdjSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
                                     aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Stock Adjustmnent Detail</strong>
                                 <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update StockAdj Detail
+                                </span>
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -511,16 +524,16 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="AllowBackDateStockAdjustment" class="form-label">Allow Backdate StockAdjustment</label>
                                         <select class="form-control" asp-for="AllowBackDateStockAdjustment" >
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
                                   
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="AllowBackDateInterStoreTransfer" class="form-label">Allow Backdate StoreTransfer</label>
                                         <select class="form-control" asp-for="AllowBackDateInterStoreTransfer" >
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
                                     
@@ -530,10 +543,15 @@
                         </div>
                     </div>
                     @* issue with bom & with bom *@
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="IssWithBomSection">
                         <h2 class="accordion-header" id="H_SAGrid">
                             <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue With Bom & With Bom Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update IssWithBom Detail
+                                </span>
                             </button>
                         </h2>
 
@@ -544,37 +562,37 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="AllowBackdateIssueWOBOM" class="form-label">Allow BackDate IssueWOBOM</label>
                                         <select class="form-control" asp-for="AllowBackdateIssueWOBOM"  style="width:150px;">
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="AllowBackDateISSUEWITHBOM" class="form-label">Allow BackDate ISSUEWITHBOM   </label>
                                         <select class="form-control" asp-for="AllowBackDateISSUEWITHBOM"  style="width:150px;">
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="IssueViaScanningBarcode" class="form-label">Issue Via ScanningBarcode</label>
                                         <select class="form-control" asp-for="IssueViaScanningBarcode"  style="width:150px;">
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
                                      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="AllowBackDateIssueChallan" class="form-label">Allow BackDate IssueChallan</label>
                                         <select class="form-control" asp-for="AllowBackDateIssueChallan"  style="width:150px;">
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
                                      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="ALLOWBACKDATRECCHALLAN" class="form-label">Allow BackDate RecChallan</label>
                                         <select class="form-control" asp-for="ALLOWBACKDATRECCHALLAN"  style="width:150px;">
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
 
@@ -584,12 +602,16 @@
                         </div>
                     </div>
                     @* issue challan & rec challan *@
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="IssChallanSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
                                     aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Issue Challan & Rec Challan Detail</strong>
                                 <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Iss&Re Challan Detail
+                                </span>
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -607,8 +629,8 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:300px;">
                                         <label asp-for="AllowBackDateReceiveChallanEntry" class="form-label">Allow Backdate ReceiveChallanEntry</label>
                                         <select class="form-control" asp-for="AllowBackDateReceiveChallanEntry" >
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
 
@@ -618,10 +640,15 @@
                         </div>
                     </div>
                     @* cust jobwork *@
-                    <div class="accordion-item">
+                    <div class="accordion-item" id="CustJobWorkSection">
                         <h2 class="accordion-header" id="H_SAGrid">
                             <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Cust jobwork Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update CustJobWork Detail
+                                </span>
                             </button>
                         </h2>
 
@@ -640,8 +667,8 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:300px;">
                                         <label asp-for="AllowBackDateCustomerJWIssue" class="form-label">Allow BackDate CustomerJWIssue</label>
                                         <select class="form-control" asp-for="AllowBackDateCustomerJWIssue"  style="width:150px;">
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
                                         </select>
                                     </div>
 
@@ -1084,8 +1111,8 @@
             var selectedType = localStorage.getItem("selectedType");
           
             if (mode === "U") {
-               
-                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection").hide();
+
+                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection,#VendJwIssRecSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection").hide();
 
                 
                 if (selectedType === "ItemDetail") {
@@ -1102,11 +1129,23 @@
                     $("#MRNDetailSection").show();
                 } else if (selectedType === "CommonDetail") {
                      $("#CommonSection").show();
+                } else if (selectedType === "RequisitionDetail") {
+                    $("#RquisitionSection").show();
+                } else if (selectedType === "VendJwIssRecDetail") {
+                    $("#VendJwIssRecSection").show();
+                } else if (selectedType === "StockAdjDetail") {
+                    $("#StockAdjSection").show();
+                } else if (selectedType === "IssWithBomDetail") {
+                    $("#IssWithBomSection").show();
+                } else if (selectedType === "IssRecChallanDetail") {
+                    $("#IssChallanSection").show();
+                } else if (selectedType === "JustJobWorkDetail") {
+                    $("#CustJobWorkSection").show();
                 }
 
             } else {
-               
-                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection").show();
+
+                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection, #VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection").show();
             }
 
             // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name
