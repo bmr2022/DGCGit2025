@@ -548,19 +548,21 @@
             $('#NetTotal').val(txTotal.toFixed(2));
             $('#AdjPendAmt').val($('#NetTotal').val());
             $('#CostCenterId').select2();
-
+            debugger
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
 
         });
 
         $('#AdjModeOfAdjstment').change(function () {
+            debugger
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
             $('#AdjPendAmt').val($('#NetTotal').val());
         });
 
         $('#CreditNoteInvoiceNo').change(function () {
+            debugger
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
         });
@@ -625,16 +627,16 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-
+                    debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
                             $('#CreditNoteEntryId').val("");
                             $('#CreditNoteEntryId').val(obj.Result.Table[0].EntryId);
                             $('#CreditNoteVoucherNo').val("");
-                            $('#CreditNoteVoucherNo').val(obj.Result.Table[0].creditNoteNo);
-
-                            $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
+                            $('#CreditNoteInvoiceNo').val(obj.Result.Table[0].creditNoteNo);
+                            debugger
+                            $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
                             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
                         }
                     }

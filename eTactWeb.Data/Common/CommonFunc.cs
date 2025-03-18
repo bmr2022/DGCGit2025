@@ -158,7 +158,7 @@ public static class CommonFunc
                                        out date))
             {
                 // Successfully parsed; return the date in "yyyy-MM-dd" format
-                return date.ToString("yyyy-MM-dd");
+                return date.ToString("dd/MMM/yyyy");
             }
         }
         catch (Exception ex)

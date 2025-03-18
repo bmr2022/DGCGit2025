@@ -374,6 +374,7 @@
 @section Scripts
 {
     <script>
+
         $(document).ready(function () {
 
             GetServerDate();
@@ -598,6 +599,10 @@
             document.getElementById('RemovalTime').value = hours + ':' + minutes;
         });
 
+                function formatDate(dateString) {
+            const [day, month, year] = dateString.split('/'); // Split dd/MM/yyyy
+            return `${month}/${day}/${year}`; // Reformat to MM/dd/yyyy
+        }
         document.addEventListener('DOMContentLoaded', function () {
             var now = new Date();
             var hours = ('0' + now.getHours()).slice(-2);
@@ -640,21 +645,26 @@
         $('#pendingChallanList').click(function (event) {
             event.preventDefault();
             $('#PendingChallanListPopupModel').modal("show");
-
+            alert(parseDateToFormat($('#SaleBillDate').val()));
             $.ajax({
                 url: "@Url.Action("GetPopUpData", "CustomerJWI")",
                 type: 'GET',
                 async: false,
                 data: {
                     "YearCode": $('#SaleBillYearCode').val(),
-                    "EntryDate": $('#SaleBillDate').val(),
-                    "ChallanDate": $('#SaleBillDate').val(),
+                    "EntryDate": formatDate($('#SaleBillDate').val()),
+                    "ChallanDate": formatDate($('#SaleBillDate').val()),
                     "AccountCode": $('#AccountCode').val()
                 },
                 success: function (result, status, xhr) {
-
-                    $('#divPendingChallanDisplayGrid').empty();
-                    if (result != null) {
+                     alert('AJAX request succeeded!'); // Alert for success
+        alert('Result: ' + JSON.stringify(result));
+                     $('#divPendingChallanDisplayGrid').empty();
+                     if (result != null) {
+                     // if (result && result.Result && result.Result.length > 0) 
+                     // {
+                      // if (result && result.Result && Array.isArray(result.Result) && result.Result.length > 0) {
+                         alert('Inside success block with data!');
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
 
@@ -680,6 +690,8 @@
                         } else {
                             $('#divPendingChallanDisplayGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
                         }
+                    } else{
+                         alert('No data or result is not as expected!');
                     }
                 }
             });
@@ -1162,6 +1174,17 @@
                 else {
                     RemoveErrorCls('ProducedUnprod');
                 }
+
+                if ($('#ProducedUnprod').val() == 'Unprod') {
+                    if ($("#BOMInd").val() != 'I') {
+                        AddErrorCls('BOMInd');
+                        $.notify('please select Individual in case of unProd...!', "error");
+                        Err = 1;
+                    } else {
+                        RemoveErrorCls('BOMInd');
+                    }
+                }
+
             }
 
             if ($('#ItemCode').prop('selectedIndex') == 0) {
@@ -1255,6 +1278,12 @@
 
             return true;
         }
+
+        $('#ProducedUnprod').change(function () {
+            if ($('#ProducedUnprod').val() == 'Unprod') {
+                $("#BOMInd").val('I');
+            }
+        });
 
         function FillSOPendQty() {
             $.ajax({
@@ -2592,8 +2621,7 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-            if ($('#SONO').find(':selected').data('sotype') == "OPEN") 
-            {
+            if ($('#SONO').find(':selected').data('sotype') == "OPEN") {
                 if ($('#SaleBillJobwork').val() == 'J') {
                     JWItemList($('#TypeItemServAssets').val());
                 } else {
@@ -2606,7 +2634,7 @@
                     FillSOWiseItems();
                 }
             }
-            
+
             FILLCustomerOrderAndSPDate();
             FillSOItemRate();
             FillSOSchedule();
