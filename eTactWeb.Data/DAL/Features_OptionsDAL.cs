@@ -85,9 +85,29 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@flag", "CommonDashbaord");
                        }
                         if (Type == "RequisitionDetail")
-                       {
+                        {
                         oCmd.Parameters.AddWithValue("@flag", "RequisitionDashbaord");
-                       }
+                        }
+                        if (Type == "VendJwIssRecDetail")
+                        {
+                          oCmd.Parameters.AddWithValue("@flag", "VendJwIssRecDashbaord");
+                        }
+                        if (Type == "StockAdjDetail")
+                        {
+                          oCmd.Parameters.AddWithValue("@flag", "StockAdjDashbaord");
+                        }
+                         if (Type == "IssWithBomDetail")
+                         {
+                          oCmd.Parameters.AddWithValue("@flag", "IssWithBomDashbaord");
+                         }
+                         if (Type == "IssRecChallanDetail")
+                         {
+                          oCmd.Parameters.AddWithValue("@flag", "IssChallanDashbaord");
+                         }
+                          if (Type == "JustJobWorkDetail")
+                         {
+                          oCmd.Parameters.AddWithValue("@flag", "CustJobWorkDashbaord");
+                         }
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -186,7 +206,7 @@ namespace eTactWeb.Data.DAL
                                                             }).ToList();
                      }
                       if (Type == "RequisitionDetail")
-                     {
+                      {
                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                                             select new Features_OptionsModel
                                                             {
@@ -196,7 +216,68 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBackDateRequsitionWITHBOM = dr["AllowBackDateRequsitionWITHBOM"] != DBNull.Value ? dr["AllowBackDateRequsitionWITHBOM"].ToString() : string.Empty,
                                                               
                                                             }).ToList();
-                     }
+                      }
+                       if (Type == "VendJwIssRecDetail")
+                       {
+                        model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                VendJWIssuePrintReportName = dr["VendJWIssuePrintReportName"] != DBNull.Value ? dr["VendJWIssuePrintReportName"].ToString() : string.Empty,
+                                                                VendJWRecPrintReportName = dr["VendJWRecPrintReportName"] != DBNull.Value ? dr["VendJWRecPrintReportName"].ToString() : string.Empty,
+                                                                AllowBackDateJOBWorkIssue = dr["AllowBackDateJOBWorkIssue"] != DBNull.Value ? dr["AllowBackDateJOBWorkIssue"].ToString() : string.Empty,
+                                                                ALLOWBACKDATEJobworkRec = dr["ALLOWBACKDATEJobworkRec"] != DBNull.Value ? dr["ALLOWBACKDATEJobworkRec"].ToString() : string.Empty,
+                                                                VendorJWAdjustAutoOrManual = dr["vendorJWAdjustAutoOrManual"] != DBNull.Value ? dr["vendorJWAdjustAutoOrManual"].ToString() : string.Empty,
+
+                                                            }).ToList();
+                       }
+                       if (Type == "StockAdjDetail")
+                       {
+                        model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                AllowBackDateStockAdjustment = dr["AllowBackDateStockAdjustment"] != DBNull.Value ? dr["AllowBackDateStockAdjustment"].ToString() : string.Empty,
+                                                                AllowBackDateInterStoreTransfer = dr["AllowBackDateInterStoreTransfer"] != DBNull.Value ? dr["AllowBackDateInterStoreTransfer"].ToString() : string.Empty,
+
+                                                            }).ToList();
+                       }
+                        if (Type == "IssWithBomDetail")
+                        {
+                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                AllowBackdateIssueWOBOM = dr["AllowBackdateIssueWOBOM"] != DBNull.Value ? dr["AllowBackdateIssueWOBOM"].ToString() : string.Empty,
+                                                                AllowBackDateISSUEWITHBOM = dr["AllowBackDateISSUEWITHBOM"] != DBNull.Value ? dr["AllowBackDateISSUEWITHBOM"].ToString() : string.Empty,
+                                                                IssueViaScanningBarcode = dr["IssueViaScanningBarcode"] != DBNull.Value ? dr["IssueViaScanningBarcode"].ToString() : string.Empty,
+                                                                AllowBackDateIssueChallan = dr["AllowBackDateIssueChallan"] != DBNull.Value ? dr["AllowBackDateIssueChallan"].ToString() : string.Empty,
+                                                                ALLOWBACKDATRECCHALLAN = dr["ALLOWBACKDATRECCHALLAN"] != DBNull.Value ? dr["ALLOWBACKDATRECCHALLAN"].ToString() : string.Empty,
+
+
+                                                            }).ToList();
+                        }
+                         if (Type == "IssRecChallanDetail")
+                        {
+                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                RGPChallanPrintReportName = dr["RGPChallanPrintReportName"] != DBNull.Value ? dr["RGPChallanPrintReportName"].ToString() : string.Empty,
+                                                                NRGPChallanPrintReportName = dr["NRGPChallanPrintReportName"] != DBNull.Value ? dr["NRGPChallanPrintReportName"].ToString() : string.Empty,
+                                                                AllowBackDateReceiveChallanEntry = dr["AllowBackDateReceiveChallanEntry"] != DBNull.Value ? dr["AllowBackDateReceiveChallanEntry"].ToString() : string.Empty,
+
+
+                                                            }).ToList();
+                        }
+                         if (Type == "JustJobWorkDetail")
+                        {
+                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                CustJWIssuePrintReportName = dr["CustJWIssuePrintReportName"] != DBNull.Value ? dr["CustJWIssuePrintReportName"].ToString() : string.Empty,
+                                                                CUSTJWRecPrintReportName = dr["CUSTJWRecPrintReportName"] != DBNull.Value ? dr["CUSTJWRecPrintReportName"].ToString() : string.Empty,
+                                                                AllowBackDateCustomerJWIssue = dr["AllowBackDateCustomerJWIssue"] != DBNull.Value ? dr["AllowBackDateCustomerJWIssue"].ToString() : string.Empty,
+
+
+                                                            }).ToList();
+                        }
 
                  }
             }
@@ -251,8 +332,28 @@ namespace eTactWeb.Data.DAL
                  }
                  if (Type == "RequisitionDetail")
                  {
-
                     SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDRequisition"));
+                 } 
+                 if (Type == "VendJwIssRecDetail")
+                 {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDVendJwIssRec"));
+                 } 
+
+                 if (Type == "StockAdjDetail")
+                 {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDStockAdj"));
+                 }
+                 if (Type == "IssWithBomDetail")
+                 {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDIssWithBom"));
+                 }
+                 if (Type == "IssRecChallanDetail")
+                 {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDIssChallan"));
+                 }
+                  if (Type == "JustJobWorkDetail")
+                 {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDCustJobWork"));
                  }
 
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("Sp_FeaturesOptions", SqlParams);
@@ -346,6 +447,43 @@ namespace eTactWeb.Data.DAL
                     model.IssueWithScanner = DS.Tables[0].Rows[0]["IssueWithScanner"].ToString();
                     model.AllowBackDateRequsitionWITHBOM = DS.Tables[0].Rows[0]["AllowBackDateRequsitionWITHBOM"].ToString();
                   
+                }
+                if (model.Type == "VendJwIssRecDetail")
+                {
+                    model.VendJWIssuePrintReportName = DS.Tables[0].Rows[0]["VendJWIssuePrintReportName"].ToString();
+                    model.VendJWRecPrintReportName = DS.Tables[0].Rows[0]["VendJWRecPrintReportName"].ToString();
+                    model.AllowBackDateJOBWorkIssue = DS.Tables[0].Rows[0]["AllowBackDateJOBWorkIssue"].ToString();
+                    model.ALLOWBACKDATEJobworkRec = DS.Tables[0].Rows[0]["ALLOWBACKDATEJobworkRec"].ToString();
+                    model.VendorJWAdjustAutoOrManual = DS.Tables[0].Rows[0]["vendorJWAdjustAutoOrManual"].ToString();
+
+                }
+                if (model.Type == "StockAdjDetail")
+                {
+                    model.AllowBackDateStockAdjustment = DS.Tables[0].Rows[0]["AllowBackDateStockAdjustment"].ToString();
+                    model.AllowBackDateInterStoreTransfer = DS.Tables[0].Rows[0]["AllowBackDateInterStoreTransfer"].ToString();
+
+                }
+                if (model.Type == "IssWithBomDetail")
+                {
+                    model.AllowBackdateIssueWOBOM = DS.Tables[0].Rows[0]["AllowBackdateIssueWOBOM"].ToString();
+                    model.AllowBackDateISSUEWITHBOM = DS.Tables[0].Rows[0]["AllowBackDateISSUEWITHBOM"].ToString();
+                    model.IssueViaScanningBarcode = DS.Tables[0].Rows[0]["IssueViaScanningBarcode"].ToString();
+                    model.AllowBackDateIssueChallan = DS.Tables[0].Rows[0]["AllowBackDateIssueChallan"].ToString();
+                    model.ALLOWBACKDATRECCHALLAN = DS.Tables[0].Rows[0]["ALLOWBACKDATRECCHALLAN"].ToString();
+
+                }
+                if (model.Type == "IssRecChallanDetail")
+                {
+                    model.RGPChallanPrintReportName = DS.Tables[0].Rows[0]["RGPChallanPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["RGPChallanPrintReportName"].ToString(): string.Empty;
+                    model.NRGPChallanPrintReportName = DS.Tables[0].Rows[0]["NRGPChallanPrintReportName"] != DBNull.Value? DS.Tables[0].Rows[0]["NRGPChallanPrintReportName"].ToString() : string.Empty;
+                    model.AllowBackDateReceiveChallanEntry = DS.Tables[0].Rows[0]["AllowBackDateReceiveChallanEntry"] != DBNull.Value? DS.Tables[0].Rows[0]["AllowBackDateReceiveChallanEntry"].ToString(): string.Empty;
+
+                }
+                 if (model.Type == "JustJobWorkDetail")
+                {
+                    model.CustJWIssuePrintReportName = DS.Tables[0].Rows[0]["CustJWIssuePrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["RGPChallanPrintReportName"].ToString(): string.Empty;
+                    model.CUSTJWRecPrintReportName = DS.Tables[0].Rows[0]["CUSTJWRecPrintReportName"] != DBNull.Value? DS.Tables[0].Rows[0]["NRGPChallanPrintReportName"].ToString() : string.Empty;
+                    model.AllowBackDateCustomerJWIssue = DS.Tables[0].Rows[0]["AllowBackDateCustomerJWIssue"] != DBNull.Value? DS.Tables[0].Rows[0]["AllowBackDateReceiveChallanEntry"].ToString(): string.Empty;
 
                 }
 
@@ -456,6 +594,48 @@ namespace eTactWeb.Data.DAL
                       
 
                      }
+                     if (model.Type == "VendJwIssRecDetail")
+                     {
+                        SqlParams.Add(new SqlParameter("@Flag", "UPDATEVendJwIssRecDashbaord"));
+                        SqlParams.Add(new SqlParameter("@VendJWIssuePrintReportName", model.VendJWIssuePrintReportName));
+                        SqlParams.Add(new SqlParameter("@VendJWRecPrintReportName", model.VendJWRecPrintReportName));
+                        SqlParams.Add(new SqlParameter("@AllowBackDateJOBWorkIssue", model.AllowBackDateJOBWorkIssue));
+                        SqlParams.Add(new SqlParameter("@ALLOWBACKDATEJobworkRec", model.ALLOWBACKDATEJobworkRec));
+                        SqlParams.Add(new SqlParameter("@vendorJWAdjustAutoOrManual", model.VendorJWAdjustAutoOrManual));
+                     }
+                     if (model.Type == "StockAdjDetail")
+                     {
+                        SqlParams.Add(new SqlParameter("@Flag", "UPDATEStockAdjDashbaord"));
+                        SqlParams.Add(new SqlParameter("@AllowBackDateStockAdjustment", model.AllowBackDateStockAdjustment));
+                        SqlParams.Add(new SqlParameter("@AllowBackDateInterStoreTransfer", model.AllowBackDateInterStoreTransfer));
+
+                    }
+                      if (model.Type == "IssWithBomDetail")
+                      {
+                        SqlParams.Add(new SqlParameter("@Flag", "UPDATEIssWithBomDashbaord"));
+                        SqlParams.Add(new SqlParameter("@AllowBackdateIssueWOBOM", model.AllowBackdateIssueWOBOM));
+                        SqlParams.Add(new SqlParameter("@AllowBackDateISSUEWITHBOM", model.AllowBackDateISSUEWITHBOM));
+                        SqlParams.Add(new SqlParameter("@IssueViaScanningBarcode", model.IssueViaScanningBarcode));
+                        SqlParams.Add(new SqlParameter("@AllowBackDateIssueChallan", model.AllowBackDateIssueChallan));
+                        SqlParams.Add(new SqlParameter("@ALLOWBACKDATRECCHALLAN", model.ALLOWBACKDATRECCHALLAN));
+ 
+                      }
+                        if (model.Type == "IssRecChallanDetail")
+                        {
+                            SqlParams.Add(new SqlParameter("@Flag", "UPDATEIssChallanDashbaord"));
+                            SqlParams.Add(new SqlParameter("@RGPChallanPrintReportName", model.RGPChallanPrintReportName));
+                            SqlParams.Add(new SqlParameter("@NRGPChallanPrintReportName", model.NRGPChallanPrintReportName));
+                            SqlParams.Add(new SqlParameter("@AllowBackDateReceiveChallanEntry", model.AllowBackDateReceiveChallanEntry));
+
+                        }
+                        if (model.Type == "JustJobWorkDetail")
+                        {
+                            SqlParams.Add(new SqlParameter("@Flag", "UPDATECustJobWorkDashbaord"));
+                            SqlParams.Add(new SqlParameter("@CustJWIssuePrintReportName", model.CustJWIssuePrintReportName));
+                            SqlParams.Add(new SqlParameter("@CUSTJWRecPrintReportName", model.CUSTJWRecPrintReportName));
+                            SqlParams.Add(new SqlParameter("@AllowBackDateCustomerJWIssue", model.AllowBackDateCustomerJWIssue));
+
+                        }
 
                 }
 

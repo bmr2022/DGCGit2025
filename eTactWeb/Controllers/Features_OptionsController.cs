@@ -40,7 +40,12 @@ namespace eTactWeb.Controllers
         string AllowBackDateMRIR, string CCMandatoryInQuery,string BatchWiseInventory,string AllowToChangeBranch,
         string AllowBAtchEditable, string AllowBAtchEditablePAssword, string FIFOBasedBatchInventory,
         string AllowBackdateReqWOBOM, long MaxDurationForReqToBePend, string IssueWithScanner,
-        string AllowBackDateRequsitionWITHBOM
+        string AllowBackDateRequsitionWITHBOM, string VendJWIssuePrintReportName, string VendJWRecPrintReportName,
+        string AllowBackDateJOBWorkIssue,string ALLOWBACKDATEJobworkRec,string vendorJWAdjustAutoOrManual,
+        string AllowBackDateStockAdjustment,string AllowBackDateInterStoreTransfer, string AllowBackdateIssueWOBOM,
+        string AllowBackDateISSUEWITHBOM, string IssueViaScanningBarcode,string AllowBackDateIssueChallan,string ALLOWBACKDATRECCHALLAN,
+        string RGPChallanPrintReportName,string NRGPChallanPrintReportName,string AllowBackDateReceiveChallanEntry,
+        string CustJWIssuePrintReportName, string CUSTJWRecPrintReportName, string AllowBackDateCustomerJWIssue
 
 
 )
@@ -98,6 +103,25 @@ namespace eTactWeb.Controllers
                 MainModel.MaxDurationForReqToBePend = MaxDurationForReqToBePend;
                 MainModel.IssueWithScanner = IssueWithScanner;
                 MainModel.AllowBackDateRequsitionWITHBOM = AllowBackDateRequsitionWITHBOM;
+                MainModel.VendJWIssuePrintReportName = VendJWIssuePrintReportName;
+                MainModel.VendJWRecPrintReportName = VendJWRecPrintReportName;
+                MainModel.AllowBackDateJOBWorkIssue = AllowBackDateJOBWorkIssue;
+                MainModel.ALLOWBACKDATEJobworkRec = ALLOWBACKDATEJobworkRec;
+                MainModel.VendorJWAdjustAutoOrManual = vendorJWAdjustAutoOrManual;
+                MainModel.AllowBackDateStockAdjustment = AllowBackDateStockAdjustment;
+                MainModel.AllowBackDateInterStoreTransfer = AllowBackDateInterStoreTransfer;
+                MainModel.AllowBackdateIssueWOBOM = AllowBackdateIssueWOBOM;
+                MainModel.AllowBackDateISSUEWITHBOM = AllowBackDateISSUEWITHBOM;
+                MainModel.IssueViaScanningBarcode = IssueViaScanningBarcode;
+                MainModel.AllowBackDateIssueChallan = AllowBackDateIssueChallan;
+                MainModel.ALLOWBACKDATRECCHALLAN = ALLOWBACKDATRECCHALLAN;
+                MainModel.RGPChallanPrintReportName = RGPChallanPrintReportName;
+                MainModel.NRGPChallanPrintReportName = NRGPChallanPrintReportName;
+                MainModel.AllowBackDateReceiveChallanEntry = AllowBackDateReceiveChallanEntry;
+                MainModel.CustJWIssuePrintReportName = CustJWIssuePrintReportName;
+                MainModel.CUSTJWRecPrintReportName = CUSTJWRecPrintReportName;
+                MainModel.AllowBackDateCustomerJWIssue = AllowBackDateCustomerJWIssue;
+
 
 
 
@@ -227,7 +251,27 @@ namespace eTactWeb.Controllers
              {
                 return PartialView("_Features_OptionsRequisitionDetail", model);
              }
-
+             if (Type == "VendJwIssRecDetail")
+             {
+                return PartialView("_Features_OptionsVendJwIssRecDetail", model);
+             }
+             if (Type == "StockAdjDetail")
+             {
+                return PartialView("_Features_OptionsStockAdjDetail", model);
+             }
+             if (Type == "IssWithBomDetail")
+             {
+                return PartialView("_Features_OptionsIssWithBomDetail", model);
+             }
+              if (Type == "IssRecChallanDetail")
+              {
+                 return PartialView("_Features_OptionsIssRecChallanDetail", model);
+              }
+                if (Type == "JustJobWorkDetail")
+              {
+                 return PartialView("_Features_OptionsCustJobWorkDetail", model);
+              }
+               
             return null;
         }
     }
