@@ -230,14 +230,6 @@ namespace eTactWeb.Data.DAL
                                     Value = Reader["MainMenuHeading"].ToString()
                                 };
                             }
-                            //else if (Flag == "SubMenu")
-                            //{
-                            //    Listval = new TextValue()
-                            //    {
-                            //        Text = Reader["SubMenu"].ToString(),
-                            //        Value = Reader["SubMenu"].ToString()
-                            //    };
-                            //}
                             _List.Add(Listval);
                         }
                     }
