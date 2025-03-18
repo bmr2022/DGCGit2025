@@ -25,7 +25,24 @@ namespace eTactWeb.Data.DAL
         public IConfiguration? Configuration { get; }
 
         private string DBConnectionString { get; }
+        public async Task<ResponseResult> StockAdjBackDatePassword()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "BackDatePassword"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_StockAdjustment", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
+            return _ResponseResult;
+        }
         public async Task<DataSet> BindAllDropDowns(string Flag)
         {
             var oDataSet = new DataSet();

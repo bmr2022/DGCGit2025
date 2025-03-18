@@ -163,6 +163,12 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
+        public async Task<JsonResult> StockAdjBackDatePassword()
+        {
+            var JSON = await IStockAdjust.StockAdjBackDatePassword();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public IActionResult AddStockDetail(StockAdjustmentDetail model)
         {
             try

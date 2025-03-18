@@ -26,6 +26,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _StockAdjustmentDAL.BindAllDropDowns(Flag);
         }
+        public async Task<ResponseResult> StockAdjBackDatePassword()
+        {
+            return await _StockAdjustmentDAL.StockAdjBackDatePassword();
+        }
 
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {

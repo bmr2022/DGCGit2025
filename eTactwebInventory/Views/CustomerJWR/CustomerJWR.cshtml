@@ -161,7 +161,7 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MRNNo" class="form-label" style="color: red;">MRNNo*</label>
-                                    <input asp-for="MRNNo" class="form-control" readonly />
+                                    <input asp-for="MRNNo" class="form-control" value="@Model.MRNNo" readonly />
                                 </div>
                        
                                 @*<div class=" col-4 col-auto">*@
@@ -201,11 +201,7 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-4 col-md-3 col-sm-6 col-xs-12">
                                     <div class="row align-items-center g-2 gx-2">
-                                        <div class="col-auto">
-                                            <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
-                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                                            </button>
-                                        </div>
+                                        
                                         <div class="col-auto">
                                             <button type="button" class="ClearGrid btn btn-sm btn-outline-primary mt-3">
                                                 Clear
@@ -228,6 +224,15 @@
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
+
+                        <button class="GridButton btn btn-sm btn-outline-danger" style="width:150px;" type="button" >
+                            <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
+                        </button>
+                       @*  <div class="col-auto">
+                            <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                            </button>
+                        </div> *@
                     </h2>
 
                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
@@ -255,7 +260,8 @@
                                                 <th>Alt Unit</th>
                                                 <th>Rate</th>
                                                 <th>Amount</th>
-                                                <th>Short Excess Qty</th>
+                                                <th>Srt Exc Qty</th>
+                                                <th>IND/BOM</th>
                                                 <th>SO Date</th>
                                                 <th>So Sch No</th>
                                                 <th>So Sch YC</th>
@@ -277,7 +283,7 @@
                                                 <th>Bom NO</th>
                                                 <th>Bom Name</th>
                                                 <th>Bom Date</th>
-                                                <th>IND/BOM</th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody id="divCustJWRGrid">
@@ -299,7 +305,7 @@
                             </div>
                             <div class="card">
                                 <div class="card-body overflow-auto pb-0">
-                                    <table class="table table-hover table-bordered">
+                                    <table class="table table-hover table-bordered" id="GridDate">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                             <tr>
                                                 <th>Action</th>
@@ -314,7 +320,8 @@
                                                 <th>Alt Unit</th>
                                                 <th>Rate</th>
                                                 <th>Amount</th>
-                                                <th>Short Excess Qty</th>
+                                                <th>Srt Exc Qty</th>
+                                                <th>IND/BOM</th>
                                                 <th>SO Date</th>
                                                 <th>So Sch No</th>
                                                 <th>So Sch YC</th>
@@ -337,7 +344,7 @@
                                                 <th>Bom NO</th>
                                                 <th>Bom Name</th>
                                                 <th>Bom Date</th>
-                                                <th>IND/BOM</th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody id="divCustJWRGridAdd">
@@ -569,6 +576,22 @@
             else {
                 RemoveErrorCls('EntryId');
             }
+            if ($('#MRNNo').val() == 0 || $('#MRNNo').val() == '') {
+                AddErrorCls('MRNNo');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('MRNNo');
+            }
+
+            if ($('#AccountCode').val() == 0 || $('#AccountCode').val() == '') {
+                AddErrorCls('AccountCode');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('AccountCode');
+            }
+
             if ($('#YearCode').val() == 0) {
                 AddErrorCls('YearCode');
                 Err = 1;
@@ -611,7 +634,10 @@
                 async: false,
                 success: function (result, status, error) {
                     if (result != null) {
-                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#EntryDate').datepicker({
+                            dateFormat: 'dd/mm/yy',
+                            minDate: result // Set minDate to the server date (prevents past selection)
+                        }).datepicker("setDate", result);
                     }
                 }
             });
@@ -674,6 +700,7 @@
         }
 
         $('#GateNo').change(function () {
+            debugger;
             $('#GateEntry').val($(this).find(":selected").data('gate-entry'));
             $("#GateYearCode").find("option").css('display', 'none');
             $("#GateYearCode").find("option").prop("selected", false);
@@ -681,7 +708,28 @@
             $("#GateYearCode").find('option:first').attr('selected', 'selected');
             $("#GateYearCode").find("[data-gate-no='" + $(this).val() + "']").css('display', 'block');
 
+            // ✅ Completely clear the grid
+            $('#GridDate tbody').empty();   // Remove all rows from the table
+            $('#divCustJWRGrid').empty();   // Remove dynamically added data
+            $('#divCustJWRGridAdd').html(''); // Clear additional sections
+            $('#GridDate tbody tr').length = 0;
+
+           
+            // ✅ Clear any JavaScript array holding grid data
+            if (typeof gridDataArray !== 'undefined') {
+                gridDataArray.length = 0; // Reset the array
+            }
+
+            // ✅ Clear localStorage if grid data is stored there
+            localStorage.removeItem('gridData');
         });
+        function formatDate(dateString) {
+            if (!dateString) return ""; // Handle empty/null values
+            let dateParts = dateString.split("T")[0].split("-"); // Split by 'T' and '-'
+            return dateParts[2] + "/" + dateParts[1] + "/" + dateParts[0]; // Rearrange to DD/MM/YYYY
+        }
+
+        
 
         $('#GateYearCode').change(function () {
             var dataParams = {
@@ -704,12 +752,12 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#AccountCode').val(val.account_name);
                                 $('#AccountID').val(val.AccountCode);
-                                $('#GateDate').val(val.GDate.split("T")[0]);
+                                $('#GateDate').val(formatDate(val.GDate));
                                 $('#QcCheck').val(val.checkQC);
                                 $('#RecStoreId').val(val.StoreId);
                                 $('#RecStoreName').val(val.RecInStore);
                                 $('#ChallanNo').val(val.Invoiceno);
-                                $('#ChallanDate').val(val.InvoiceDate.split("T")[0]);
+                                $('#ChallanDate').val(formatDate(val.InvoiceDate));
                             });
                         }
                     }
@@ -762,10 +810,10 @@
 
                                 html += '<tr id="divUnMain' + i + '" style="background-color:#f1fab9;"><td><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly ><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td> ' +
                                     ' <td><input style="width:100px !important;" id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td>' +
-                                    ' <td><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td>' +
+                                    ' <td><input style="width:100px !important;" readonly id="PONo' + i + '" value=' + val.PONo + '  ></td>' +
                                     ' <td><input style="width:50px" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td>' +
                                     ' <td><input style="width:50px" readonly id="BillQty' + i + '" onchange="BillQtyChange(' + i + ');" value=' + val.BillQty + ' ></td>' +
-                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + val.RecQty + ' ></td>' +
+                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" class="RecQty" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + val.RecQty + ' ></td>' +
                                     ' <td><input style="width:50px" id="unit' + i + '" value=' + val.unit + ' readonly ></td>' +
                                     ' <td><input style="width:50px;background-color:#ffd6dd !important" id="AltRecQty' + i + '" value=' + val.AltRecQty + ' ></td>' +
                                     ' <td><input style="width:50px;background-color:#ffd6dd !important" id="CustBatchNo' + i + '" value="" ></td>' +
@@ -773,6 +821,7 @@
                                     ' <td><input style="width:50px;"  id="Rate' + i + '" value=' + val.Rate + ' ></td>' +
                                     ' <td><input style="width:50px;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td>' +
                                     ' <td><input style="width:50px;" id="ShortExcessQty' + i + '" readonly value=' + val.ShortExcessQty + ' ></td>' +
+                                    ' <td><select id="INDBOM' + i + '" onchange="ChangeGridIndBom(' + i + ')"><option disabled>-Select-</option><option value="I">Individual</option><option selected value="B">BOM</option></select> </td>' +
                                     ' <td><input style="width:80px" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td>' +
                                     ' <td><input style="width:80px" id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td>' +
                                     ' <td><input style="width:50px" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td>' +
@@ -794,7 +843,7 @@
                                     ' <td><input style="width:50px;" id="BomNO' + i + '" readonly value="" ></td>' +
                                     ' <td><input style="width:50px;" id="Bomname' + i + '" readonly value="" ></td>' +
                                     ' <td><input style="width:50px;" id="BomDate' + i + '" readonly value="" ></td>' +
-                                    ' <td><select id="INDBOM' + i + '" onchange="ChangeGridIndBom(' + i + ')"><option disabled>-Select-</option><option value="I">Individual</option><option selected value="B">BOM</option></select> </td>' +
+                                   
                                     ' </tr > ';
                                 i++;
                             });
@@ -833,10 +882,16 @@
             var rowCount = $('#divCustJWRGrid tr').length;
 
             var ItemData = [];
+           
             for (let i = 1; i <= rowCount; i++) {
                 var pono = '#PONo' + i;
+                if ($('#RecQty' + i).val() < 0) {
+                    $.notify('Rec Qty Should Not Be Negative.', "error");
+                    return false;
+                }
 
                 ItemData.push({
+
                     "SoNo": $('#PONo' + i).val(),
                     "SoYearCode": $('#POYearCode' + i).val(),
                     "SOSchNo": $('#SchNo' + i).val(),
@@ -954,10 +1009,10 @@
                             if (obj != null && obj.length == 1) {
                                 html += '<tr id="divUnMain' + i + '"><td><input id="Item_Name' + i + '" value=' + JSON.stringify(obj[0].RecItemName) + ' readonly ><input id="ItemCode' + i + '" type="hidden" value=' + obj[0].RecitemCode + ' ></td> ' +
                                     ' <td><input style="width:100px !important;" id="PartCode' + i + '" value=' + obj[0].RecPartCode + ' readonly ></td>' +
-                                    ' <td><input readonly id="PONo' + i + '" value=' + obj[0].SoNo + '  ></td>' +
+                                    ' <td><input style="width:100px !important;" readonly id="PONo' + i + '" value=' + obj[0].SoNo + '  ></td>' +
                                     ' <td><input style="width:50px" id="POYearCode' + i + '" value=' + obj[0].SoYearCode + ' readonly ></td>' +
                                     ' <td><input style="width:50px" readonly id="BillQty' + i + '" onchange="BillQtyChange(' + i + ');" value=' + obj[0].BillQty + ' ></td>' +
-                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + obj[0].RecQty + ' ></td>' +
+                                    ' <td><input style="width:50px;background-color:#ffd6dd !important" class="RecQty" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + obj[0].RecQty + ' ></td>' +
                                     ' <td><input style="width:50px" id="unit' + i + '" value=' + obj[0].Unit + ' readonly ></td>' +
                                     ' <td><input style="width:50px;background-color:#ffd6dd !important" id="AltRecQty' + i + '" value=' + obj[0].RecAltQty + ' ></td>' +
                                     ' <td><input style="width:50px;" id="CustBatchNo' + i + '" readonly value=' + obj[0].CustbatchNo + ' ></td>' +
@@ -965,6 +1020,7 @@
                                     ' <td><input style="width:50px;"  id="Rate' + i + '" value=' + obj[0].Rate + ' ></td>' +
                                     ' <td><input style="width:50px;" id="Amount' + i + '" readonly value=' + obj[0].Amount + ' ></td>' +
                                     ' <td><input style="width:50px;" id="ShortExcessQty' + i + '" readonly value=' + obj[0].ShortExcessQty + ' ></td>' +
+                                    ' <td><select id="INDBOM' + i + '" onchange="ChangeGridIndBom(' + i + ')"><option disabled>-Select-</option><option value="I">Individual</option><option selected value="B">BOM</option></select>  </td>' +
                                     ' <td><input style="width:80px" id="PODate' + i + '" value=' + obj[0].SoDate + ' readonly ></td>' +
                                     ' <td><input style="width:80px" id="SchNo' + i + '" value=' + obj[0].SOSchNo + ' readonly ></td>' +
                                     ' <td><input style="width:50px" id="SchYearCode' + i + '" value=' + obj[0].SOSchYearCode + ' readonly ></td>' +
@@ -986,7 +1042,7 @@
                                     ' <td><input style="width:50px;" id="BomNO' + i + '" readonly value=' + obj[0].BomNo + ' ></td>' +
                                     ' <td><input style="width:50px;" id="Bomname' + i + '" readonly value=' + obj[0].BomName + ' ></td>' +
                                     ' <td><input style="width:50px;" id="BomDate' + i + '" readonly value=' + obj[0].BomDate + ' ></td>' +
-                                    ' <td><select id="INDBOM' + i + '" onchange="ChangeGridIndBom(' + i + ')"><option disabled>-Select-</option><option value="I">Individual</option><option selected value="B">BOM</option></select>  </td>' +
+                                   
                                     ' </tr > ';
                             }
                             $('#divCustJWRGrid').append(html);
