@@ -66,7 +66,10 @@ namespace eTactWeb.DOM.Models
         //below are newly added
         public string GSTRegistered { get; set; }
         public string GSTType { get; set; }
-
+        public string? Batchno { get; set; }
+        public string? Uniquebatchno { get; set; }
+        public float LotStock { get; set; }
+        public float TotalStock { get; set; }
         //below are defaults
         public string AttachmentFilePath1 { get; set; } = string.Empty;
         public string AttachmentFilePath2 { get; set; } = string.Empty;
@@ -131,6 +134,10 @@ namespace eTactWeb.DOM.Models
         public int InprocessEntryID { get; set; }
         public int InprocessYearCode { get; set; }
         public string InprocessDate { get; set; } = string.Empty;
+        public string? Batchno { get; set; } = string.Empty;
+        public string? Uniquebatchno { get; set; } = string.Empty;
+        public float LotStock { get; set; }
+        public float TotalStock { get; set; }
     }
     public class AccPurchaseRejectionAgainstBillDetail : TaxModel
     {
