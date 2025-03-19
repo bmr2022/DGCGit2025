@@ -1193,63 +1193,65 @@ public class TaxController : Controller
             }
             try
             {
-
-                foreach (var item in ListOfItems)
+                if (ListOfItems != null)
                 {
-                    if (SN != "CreditNote" || SN != "PurchaseRejection")
+                    foreach (var item in ListOfItems)
                     {
-                        //Basic Total Amount
-                        BasicTotal = BasicTotal + (item.Amount == null ? 0 : item.Amount);
-                    }
-
-                    //Item Amount
-                    if (SN == "IssueNRGP" || SN == "DirectPurchaseBill" || SN == "SaleInvoice" || SN == "SaleRejection")
-                    {
-                        if (item.ItemCode == ToInt32(PC))
+                        if (SN != "CreditNote" || SN != "PurchaseRejection")
                         {
-                            Amt += (item.Amount == null ? 0 : item.Amount);
-                        }
-                    }
-                    else if (SN == "CreditNote")
-                    {
-                        if (item.ItemCode == ToInt32(PC))
-                        {
-                            Amt += item.ItemAmount;
-                            BasicTotal = BasicTotal + (item.ItemAmount == null ? 0 : item.ItemAmount);
-                        }
-                    }
-                    else if (SN == "PurchaseRejection")
-                    {
-                        if (item.ItemCode == ToInt32(PC))
-                        {
-                            Amt += item.ItemAmount;
-                            BasicTotal = BasicTotal + (item.ItemAmount == null ? 0 : item.ItemAmount);
-                        }
-                    }
-                    else if (SN == "PurchaseBill")
-                    {
-                        if (item.ItemCode == ToInt32(PC))
-                        {
-                            Amt += item.Amount;
-                        }
-                    }
-                    else if (SN == "JobWorkIssue")
-                    {
-                        if (item.ItemCode == ToInt32(PC))
-                        {
-                            Amt += item.PurchasePrice * item.IssQty;
-                        }
-                    }
-                    else
-                    {
-                        if (item.ItemCode == ToInt32(PC))
-                        {
-                            Amt = (item.Amount == null ? 0 : item.Amount);
+                            //Basic Total Amount
+                            BasicTotal = BasicTotal + (item.Amount == null ? 0 : item.Amount);
                         }
 
+                        //Item Amount
+                        if (SN == "IssueNRGP" || SN == "DirectPurchaseBill" || SN == "SaleInvoice" || SN == "SaleRejection")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += (item.Amount == null ? 0 : item.Amount);
+                            }
+                        }
+                        else if (SN == "CreditNote")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += item.ItemAmount;
+                                BasicTotal = BasicTotal + (item.ItemAmount == null ? 0 : item.ItemAmount);
+                            }
+                        }
+                        else if (SN == "PurchaseRejection")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += item.ItemAmount;
+                                BasicTotal = BasicTotal + (item.ItemAmount == null ? 0 : item.ItemAmount);
+                            }
+                        }
+                        else if (SN == "PurchaseBill")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += item.Amount;
+                            }
+                        }
+                        else if (SN == "JobWorkIssue")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += item.PurchasePrice * item.IssQty;
+                            }
+                        }
+                        else
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt = (item.Amount == null ? 0 : item.Amount);
+                            }
+
+                        }
                     }
                 }
-            }
+             }
             catch (Exception ex)
             {
                 throw;
