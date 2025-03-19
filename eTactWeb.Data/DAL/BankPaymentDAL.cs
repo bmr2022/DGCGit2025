@@ -699,6 +699,7 @@ namespace eTactWeb.Data.DAL
                         VoucherRemark = row["VoucherRemark"].ToString(),
                         ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
                         BankType = row["UnderGroup"].ToString(),
+                        
                     });
                 }
                 model.BankPaymentGrid = ItemList;

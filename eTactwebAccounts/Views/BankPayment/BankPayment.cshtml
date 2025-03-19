@@ -734,6 +734,7 @@
 
             $('#DrAmt').val(drTotal.toFixed(2));
             $('#CrAmt').val(crTotal.toFixed(2));
+            $('#VoucherAmt').val(crTotal.toFixed(2));
         }
 
         function ClearGrid() {
@@ -808,7 +809,7 @@
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 
                         $('#Balance').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
-                        $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
+                        //$('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
                         $('#DRCR').val(obj.Result[0].TypeDrCr);
                     }
                     else {
@@ -1694,6 +1695,9 @@
                 "CustOrderNo": $('#CustOrderNo').val(),
                 "SoDate": $('#SoDate').val(),
                 "SOYear": $('#SOYear').val(),
+                "PONo": $('#PONo').val(),
+                "POYear": $('#POYear').val(),
+                "PODate": $('#PoDate').val(),
                 "DrAmt": $('#DrAmt').val(),
                 "CrAmt": $('#CrAmt').val(),
                 "ActualEntryby": $('#ActualEntryBy').val(),
@@ -1828,6 +1832,9 @@
                                 $('#CustOrderNo').val(obj[0].CustOrderNo);
                                 $('#SoDate').val(obj[0].SoDate);
                                 $('#SOYear').val(obj[0].SOYear);
+                                $('#PONo').val(obj[0].PONo).trigger("change");
+                                   $('#POYear').val(obj[0].POYear);
+                                   $('#PoDate').val(obj[0].PODate);
                                 $('#DrAmt').val(obj[0].DrAmt);
                                 $('#CrAmt').val(obj[0].CrAmt);
                                 var rowCount = $('#divStockGrid tr').length;
