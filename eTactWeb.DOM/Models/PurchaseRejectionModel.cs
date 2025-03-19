@@ -70,6 +70,8 @@ namespace eTactWeb.DOM.Models
         public string? Uniquebatchno { get; set; }
         public float LotStock { get; set; }
         public float TotalStock { get; set; }
+        public string fromBillDate { get; set; }
+        public string toBillDate { get; set; }
         //below are defaults
         public string AttachmentFilePath1 { get; set; } = string.Empty;
         public string AttachmentFilePath2 { get; set; } = string.Empty;

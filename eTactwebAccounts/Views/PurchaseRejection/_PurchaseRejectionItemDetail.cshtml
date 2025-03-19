@@ -3,11 +3,10 @@
     <table class="table table-hover table-bordered table-striped" id="poTable">
         <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
             <tr id="headerRow">
-                <th data-columnno="1" data-sortorder="asc" class="sortCol position-relative">
+                <th data-columnno="1" data-sortorder="asc" class="sortCol position-relative" style="color:yellow">
                     <span class="sort-icon p-2">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>
-                    Doc Head
+                    </span>Doc Head*
                     <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                         <input asp-for="DA" class="form-check-input mt-2" style="float:inline-end;" type="checkbox" role="switch" />
                         <label class="form-check-label ms-2" style="position: inherit;">Show All</label>
@@ -16,7 +15,7 @@
                 <th data-columnno="2" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Part Code
+                    </span>Part Code*
                     <div class="form-check form-switch mx-3 w-auto  d-inline">
                         <input asp-for="ItemSA" class="form-check-input mt-2" style="float:inherit;" type="checkbox" role="switch" />
                         <label class="form-check-label ms-2" style="position: inherit;">Show All</label>
@@ -27,167 +26,157 @@
                         <i class="fa" aria-hidden="true"></i>
                     </span>Item Name                
                  </th>
-                <th data-columnno="4" data-sortorder="asc" class="sortCol" style="color:darkblue">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>From Bill Date
-                </th>
-                <th data-columnno="5" data-sortorder="asc" class="sortCol" style="color:darkblue">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>To Bill Date
-                </th>
-                <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Hsn No
                 </th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="5" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Bill  Qty*
                 </th>
-                <th data-columnno="8" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="6" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Bill Rate*
                 </th>
-                <th data-columnno="9" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="7" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Rej Qty*
                 </th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="8" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Unit*
                 </th>
-                <th data-columnno="11" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="9" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>CRN Rate*
                 </th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="10" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Item Amount*
                 </th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                <th data-columnno="11" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Store Name
                 </th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol">
+                <th data-columnno="12" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Disc Per
                 </th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                <th data-columnno="13" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Disc Amt
                 </th>
-                <th data-columnno="16" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="14" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Batch No*
                 </th>
-                <th data-columnno="17" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="15" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Unique BatchNo*
                 </th>
-                <th data-columnno="18" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="16" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Lot Stock*
                 </th>
-                <th data-columnno="19" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="17" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Total Stock*
                 </th>
-                <th data-columnno="20" data-sortorder="asc" class="sortCol">
+                <th data-columnno="18" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Cost Center
                 </th>
-                <th data-columnno="21" data-sortorder="asc" class="sortCol">
+                <th data-columnno="19" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Alt Qty
                 </th>
-                <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                <th data-columnno="20" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Alt Unit
                 </th>
-                <th data-columnno="23" data-sortorder="asc" class="sortCol">
+                <th data-columnno="21" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Alt Rate
                 </th>
-                <th data-columnno="24" data-sortorder="asc" class="sortCol">
+                <th data-columnno="22" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Unit Rate
                 </th>
-                <th data-columnno="25" data-sortorder="asc" class="sortCol">
+                <th data-columnno="23" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>No Of Case
                 </th>
-                <th data-columnno="26" data-sortorder="asc" class="sortCol">
+                <th data-columnno="24" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Item Size
                 </th>
-                <th data-columnno="27" data-sortorder="asc" class="sortCol">
+                <th data-columnno="25" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Item Description
                 </th>
-                <th data-columnno="28" data-sortorder="asc" class="sortCol">
+                <th data-columnno="26" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Remark
                 </th>
-                <th data-columnno="29" data-sortorder="asc" class="sortCol">
+                <th data-columnno="27" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>MIRNo
                 </th>
-                <th data-columnno="30" data-sortorder="asc" class="sortCol">
+                <th data-columnno="28" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>MIR Entry Id
                 </th>
-                <th data-columnno="31" data-sortorder="asc" class="sortCol">
+                <th data-columnno="29" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>MIR Year Code
                 </th>
-                <th data-columnno="32" data-sortorder="asc" class="sortCol">
+                <th data-columnno="30" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>MIR Date
                 </th>
-                <th data-columnno="33" data-sortorder="asc" class="sortCol">
+                <th data-columnno="31" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>In Process No
                 </th>
-                <th data-columnno="34" data-sortorder="asc" class="sortCol">
+                <th data-columnno="32" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>In Process Entry Id
                 </th>
-                <th data-columnno="35" data-sortorder="asc" class="sortCol">
+                <th data-columnno="33" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>In Process Year Code
                 </th>
-                <th data-columnno="36" data-sortorder="asc" class="sortCol">
+                <th data-columnno="34" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>In Process Date
@@ -209,12 +198,6 @@
             <select asp-for="ItemCode" class="form-control" style="width:200px;">
                 <option value="0">-Select-</option>
             </select>
-        </td>
-        <td>
-            <input id="fromBillDate" class="form-control" />
-        </td>
-        <td>
-            <input id="toBillDate" class="form-control" />
         </td>
         <td>
             <input asp-for="HSNNo" class="form-control" />
