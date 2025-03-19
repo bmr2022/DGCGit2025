@@ -130,7 +130,7 @@ namespace eTactWeb.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(BankReceiptDashBoard));
+                return RedirectToAction(nameof(BankReceipt));
 
             }
             catch (Exception ex)
@@ -382,9 +382,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillEntryID(int YearCode)
+        public async Task<JsonResult> FillEntryID(int YearCode, string VoucherDate)
         {
-            var JSON = await _IBankReceipt.FillEntryID(YearCode);
+            var JSON = await _IBankReceipt.FillEntryID(YearCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

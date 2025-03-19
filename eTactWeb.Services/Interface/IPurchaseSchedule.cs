@@ -7,6 +7,9 @@ public interface IPurchaseSchedule
 {
     Task<DataSet> BindAllDropDown();
 
+    Task<ResponseResult> FillMRPNo();
+    Task<ResponseResult> FillMRPDetail(string MRPNo);
+
     Task<ResponseResult> DeleteByID(int ID, int YC, int createdBy, string entryByMachineName);
     Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty);
 

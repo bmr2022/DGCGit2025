@@ -259,7 +259,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillEntryID(int YearCode)
+        public async Task<ResponseResult> FillEntryID(int YearCode, string VoucherDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -268,6 +268,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Payment"));
                 SqlParams.Add(new SqlParameter("@yearcode", YearCode));
+                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate)); 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -508,6 +509,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDate));
+                SqlParams.Add(new SqlParameter("@Vouchertype", "Bank-Payment"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -635,7 +637,7 @@ namespace eTactWeb.Data.DAL
             model.CurrencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
             model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
-            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
+            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryBy"].ToString();
             if (DateTime.TryParse(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(), out DateTime actualEntryDate))
                 model.ActualEntryDate = actualEntryDate.ToString("dd/MM/yyyy");
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();

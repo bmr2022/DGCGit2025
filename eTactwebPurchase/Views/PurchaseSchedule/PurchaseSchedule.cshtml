@@ -159,6 +159,21 @@
                                     <label asp-for="DeliveryAddress" class="control-label">Delivery Address</label>
                                     <input asp-for="DeliveryAddress" class="form-control" />
                                 </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MRPNO" class="form-label">MRP No</label>
+                                    <select class="form-select form-control" asp-for="MRPNO">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MRPNoYearCode" class="form-label">MRP Year </label>
+                                    <input asp-for="MRPNoYearCode" disabled class="form-control" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MRPentryId" class="form-label">MRPEntryId </label>
+                                    <input asp-for="MRPentryId" disabled class="form-control" />
+                                </div>
                                 @if (@Model.Mode == "PSA")
                                 {
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -499,6 +514,88 @@
             });
         }
 
+
+        function FillMRPNo() {
+           
+            debugger;
+            $.ajax({
+                url: '@Url.Action("FillMRPNo", "PurchaseSchedule")',
+                type: 'POST',
+                async: false,
+               
+                success: function (response, status, error) {
+
+                    var MRPNoDropdown = $('#MRPNO');
+                    var obj = $.parseJSON(response);
+                    MRPNoDropdown.empty();
+                    MRPNoDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, mrpno) {
+                        MRPNoDropdown.append('<option value="' + mrpno.MRPNo + '">' + mrpno.MRPNo + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var MRPNo = '@Model.MRPNO';
+                        $('#MRPNO').val(MRPNo).trigger("change");
+                        $('#MRPNO').val(MRPNo);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillMRPDetail() {
+
+            var MRPNo = $("#MRPNO").val();
+            
+            
+
+           
+
+            $.ajax({
+                url: '@Url.Action("FillMRPDetail", "PurchaseSchedule")',
+                type: 'GET',
+                data: {
+                    MRPNo: MRPNo,
+                   
+                },
+                success: function (data) {
+
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var Year = data.Result[0]; // Extract first object
+                        var EntryId = data.Result[0];
+
+
+                        $("#MRPNoYearCode").prop("disabled", false).val(Year.YearCode).trigger("input");
+                        $("#MRPentryId").prop("disabled", false).val(EntryId.EntryId).trigger("input");
+                       
+
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+
+                }
+            });
+        }
+
+
         function LockedFinancialYear() {
             $.ajax({
                 type: "GET",
@@ -592,8 +689,14 @@
                 $('#DeliveryDate').datepicker("option", "minDate", effFromDate);
                 $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
 
-            }
+                
 
+            }
+            FillMRPNo();
+            $("#MRPNO").on("change", function () {
+                FillMRPDetail();
+              
+            });
 
 
             //$('#ScheduleDate').on("change", function () {
