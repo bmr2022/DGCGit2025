@@ -45,10 +45,17 @@ namespace eTactWeb.Controllers
         string AllowBackDateStockAdjustment,string AllowBackDateInterStoreTransfer, string AllowBackdateIssueWOBOM,
         string AllowBackDateISSUEWITHBOM, string IssueViaScanningBarcode,string AllowBackDateIssueChallan,string ALLOWBACKDATRECCHALLAN,
         string RGPChallanPrintReportName,string NRGPChallanPrintReportName,string AllowBackDateReceiveChallanEntry,
-        string CustJWIssuePrintReportName, string CUSTJWRecPrintReportName, string AllowBackDateCustomerJWIssue
-
-
-)
+        string CustJWIssuePrintReportName, string CUSTJWRecPrintReportName, string AllowBackDateCustomerJWIssue,
+        string SaleBillPrintReportName,string JWSaleBillPrintReportName,string PurchaseRejPrintReportName,string DebitNotePrintReportName,
+        string CreditNotePrintReportName,string SaleRejectionPrintReportName,string PurchaseBillPrintReportName,string DirectPurchaseBillPrintReportName,
+        string PurchBillVoucherPrintReportName,string DirectPurchBillVoucherPrintReportName,string BankRecVoucherPrintReportName,
+        string BankPaymentVoucherPrintReportName,string CashRecVoucherPrintReportName,string CashPaymentVoucherPrintReportName,
+        string JournalVoucherPrintReportName, string PrdProdEntryAgainstWOProdSchReqManual,string AllowProdWithoutBom,
+        string ProdSchAllowToAddManualNewItem,string ProdEntryAllowToAddRMItem,string ProdEntryAllowToAddWithoutRM,
+        string ProdEntryAllowToAddNegativeStock,string BatchWiseProduction,string ProdEntryAllowBackDate,string AllowBackDateDAILYPRODUCTION,
+        string AllowBackDateTRANSFERMATERIAL,string AllowBackDateRECEIVEINSTORE,string AllowBackDateSALEBILL,
+        string VoucherRotationDailyMonthYearly, string AllowBackDateWorkorderEntry,string AllowBackDateProductionScheduleEntry,
+        string InProdScheduleShowSumOrDetail)
         {
             _logger.LogInformation("\n \n ********** Page Features_Options ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
 
@@ -121,6 +128,37 @@ namespace eTactWeb.Controllers
                 MainModel.CustJWIssuePrintReportName = CustJWIssuePrintReportName;
                 MainModel.CUSTJWRecPrintReportName = CUSTJWRecPrintReportName;
                 MainModel.AllowBackDateCustomerJWIssue = AllowBackDateCustomerJWIssue;
+                MainModel.SaleBillPrintReportName = SaleBillPrintReportName;
+                MainModel.JWSaleBillPrintReportName = JWSaleBillPrintReportName;
+                MainModel.PurchaseRejPrintReportName = PurchaseRejPrintReportName;
+                MainModel.DebitNotePrintReportName = DebitNotePrintReportName;
+                MainModel.CreditNotePrintReportName = CreditNotePrintReportName;
+                MainModel.SaleRejectionPrintReportName = SaleRejectionPrintReportName;
+                MainModel.PurchaseBillPrintReportName = PurchaseBillPrintReportName;
+                MainModel.DirectPurchaseBillPrintReportName = DirectPurchaseBillPrintReportName;
+                MainModel.PurchBillVoucherPrintReportName = PurchBillVoucherPrintReportName;
+                MainModel.DirectPurchBillVoucherPrintReportName = DirectPurchBillVoucherPrintReportName;
+                MainModel.BankRecVoucherPrintReportName = BankRecVoucherPrintReportName;
+                MainModel.BankPaymentVoucherPrintReportName = BankPaymentVoucherPrintReportName;
+                MainModel.CashRecVoucherPrintReportName = CashRecVoucherPrintReportName;
+                MainModel.CashPaymentVoucherPrintReportName = CashPaymentVoucherPrintReportName;
+                MainModel.JournalVoucherPrintReportName = JournalVoucherPrintReportName;
+                MainModel.PrdProdEntryAgainstWOProdSchReqManual = PrdProdEntryAgainstWOProdSchReqManual;
+                MainModel.AllowProdWithoutBom = AllowProdWithoutBom;
+                MainModel.ProdSchAllowToAddManualNewItem = ProdSchAllowToAddManualNewItem;
+                MainModel.ProdEntryAllowToAddRMItem = ProdEntryAllowToAddRMItem;
+                MainModel.ProdEntryAllowToAddWithoutRM = ProdEntryAllowToAddWithoutRM;
+                MainModel.ProdEntryAllowToAddNegativeStock = ProdEntryAllowToAddNegativeStock;
+                MainModel.BatchWiseProduction = BatchWiseProduction;
+                MainModel.ProdEntryAllowBackDate = ProdEntryAllowBackDate;
+                MainModel.AllowBackDateDAILYPRODUCTION = AllowBackDateDAILYPRODUCTION;
+                MainModel.AllowBackDateTRANSFERMATERIAL = AllowBackDateTRANSFERMATERIAL;
+                MainModel.AllowBackDateRECEIVEINSTORE = AllowBackDateRECEIVEINSTORE;
+                MainModel.AllowBackDateSALEBILL = AllowBackDateSALEBILL;
+                MainModel.VoucherRotationDailyMonthYearly = VoucherRotationDailyMonthYearly;
+                MainModel.AllowBackDateWorkorderEntry = AllowBackDateWorkorderEntry;
+                MainModel.AllowBackDateProductionScheduleEntry = AllowBackDateProductionScheduleEntry;
+                MainModel.InProdScheduleShowSumOrDetail = InProdScheduleShowSumOrDetail;
 
 
 
@@ -267,9 +305,29 @@ namespace eTactWeb.Controllers
               {
                  return PartialView("_Features_OptionsIssRecChallanDetail", model);
               }
-                if (Type == "JustJobWorkDetail")
+              if (Type == "JustJobWorkDetail")
               {
                  return PartialView("_Features_OptionsCustJobWorkDetail", model);
+              }
+              if (Type == "PrintReportDetail")
+              {
+                 return PartialView("_Features_OptionsPrintReportDetail", model);
+              }
+              if (Type == "ProdEntryDetail")
+              {
+                 return PartialView("_Features_OptionsProdEntryDetail", model);
+              }
+              if (Type == "ProdPlanSchDetail")
+              {
+                 return PartialView("Features_OptionsProdPlanSchDetail", model);
+              }
+              if (Type == "TransMtrFromWcRec")
+              {
+                 return PartialView("_Features_OptionsTransferWcRecDetail", model);
+              }
+              if (Type == "SaleBillDetail")
+              {
+                 return PartialView("_Features_OptionsSaleBillDetail", model);
               }
                
             return null;

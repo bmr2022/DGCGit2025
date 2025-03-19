@@ -140,15 +140,21 @@
                                     <label asp-for="CC" class="form-label">Branch</label>
                                     <input asp-for="CC" value="@Model.CC" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="StockAdjustmentDate" class="form-label" style="color: blue;">StockAdjustment Date</label>
-                                    <input asp-for="StockAdjustmentDate" class="form-control" />
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="StockAdjustmentDate" class="form-label" style="color: blue;">StockAdj Date</label>
+                                    <input asp-for="StockAdjustmentDate" class="form-control" disabled />
                                 </div>
                                 <div class="col-auto">
                                     <button type="button" class="MultiBatchno btn btn-sm btn-outline-success mt-3" onclick="MultipleBatchno();">
                                         <i class="faduotone fa-angle-double-down fa-fw fa-lg"></i> Multiple Batch
                                     </button>
 
+                                </div>
+                                <div class="col-sm-auto py-2 text-center enterBackDatePass" style="display:block;">
+                                    <button type="button" class="btn btn-sm btn-outline-primary btnBackDatePass" style="margin-top:10px;">
+                                        <i class="fa-solid fa-money-bill-trend-up fa-fw fa-lg"></i>
+                                        Enter Password
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -410,11 +416,49 @@
 
 </div>
 
+<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Enter Password</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Enter Password:</h6>
+                                            <input type="password" class="form-control" id="BackDatePassword" placeholder="Enter Password" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-success" onclick="PasswordCheck();">Done</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" onclick="RefreshSchedule('');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts
     {
     <script>
         $(document).ready(function () {
             //AdjStockOperation();
+            StockAdjBackDatePassword();
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                  
@@ -452,15 +496,18 @@
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
             //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-
-            $('#Entrydate').datepicker("option", "minDate", formattedDate1);
-            $('#Entrydate').datepicker("option", "maxDate", formattedDate2);
+           
 
             //$('#StockAdjustmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             $('#StockAdjustmentDate').datepicker("option", "maxDate", 'now');
             var CurrentStockDate = $('#StockAdjustmentDate').val();
             $('#StockAdjustmentDate').datepicker("option", "minDate", formattedDate1);
             $('#StockAdjustmentDate').datepicker("option", "maxDate",CurrentStockDate);
+
+            $('#Entrydate').datepicker("option", "maxDate", 'now');
+            var Entrydate = $('#Entrydate').val();
+            $('#Entrydate').datepicker("option", "minDate", formattedDate1);
+            $('#Entrydate').datepicker("option", "maxDate", CurrentStockDate);
 
             fillItems();
             FillStore();
@@ -631,6 +678,47 @@
                     }
                 }
             });
+        });
+
+        function PasswordCheck() {
+
+            if ($('#BackDatePassword').val() != allowManualPassword) {
+                $.notify('please correct password...!', "error");
+            } else {
+                $('#StockAdjustmentDate').prop("disabled", false);
+               
+
+                $('#PasswordAllowPopup').modal('hide');
+            }
+            $('#BackDatePassword').val("");
+        }
+
+
+        var isAllowBackDatePass = "";
+        var allowManualPassword = "";
+        function StockAdjBackDatePassword() {
+            debugger;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("StockAdjBackDatePassword")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result.length > 0) {
+                            allowManualPassword = obj.Result[0].StockadjustmentBackdatePassword;
+                        }
+                    }
+                }
+            });
+        }
+
+        $('.enterBackDatePass').click(function () {
+            // if(isAllowTaxPass == "Y"){
+            $('#PasswordAllowPopup').modal("show");
+            // }
         });
 
         function ValidateExcelStockDate() {
@@ -1271,7 +1359,7 @@
                         if (obj.Result[0].AllowBackDate == null || obj.Result[0].AllowBackDate == 'N') {
                             $('#StockAdjustmentDate').prop("readonly", true);
                         } else {
-                            $('#StockAdjustmentDate').prop("readonly", false);
+                           // $('#StockAdjustmentDate').prop("readonly", true);
                         }
                     }
                 }
