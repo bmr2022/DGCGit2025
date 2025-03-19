@@ -701,27 +701,13 @@
                             var workdropdown = $('#ToWorkCenter-' + i);
                             workdropdown.empty();
                             workdropdown.append('<option disabled>-Select-</option>');
+                            var WorckCenterId = $('#ToWcId-' + i).val();
                             $.each(obj.Result, function (index, val) {
-                                workdropdown.append('<option value="' + val.WcId + '">' + val.WorkCenter + '</option>');
+                                var isSelected = (val.WcId == WorckCenterId) ? "selected" : "";
+                                workdropdown.append('<option ' + isSelected + ' value="' + val.WcId + '">' + val.WorkCenter + '</option>');
                                 $('#ToWcId-' + i).val($('#ToWorkCenter-' + i).val())
                                 $('#ToStoreId-' + i).val(0)
                             });
-                            var WorckCenterId = $('#ToWcId-' + i).val();
-                            if(WorckCenterId != 0 || WorckCenterId != null){
-                                var targetworkcenterValue = WorckCenterId;
-                                var selectedOption = workdropdown.find('option').filter(function () {
-                                    return $(this).val() == targetworkcenterValue;
-                                });
-
-                                if (selectedOption.length > 0) {
-                                    selectedOption.prop('selected', true);
-                                } else {
-                                    console.warn(`Value "${targetworkcenterValue}" not found in dropdown.`);
-                                }
-                            }
-                            else {
-                                workdropdown.append('<option>-Select-</option>');
-                            }
                         }
                     }
                 }
@@ -729,41 +715,27 @@
         }
 
         function FillTransferToStore(i) {
-             
+            debugger
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillTransferToStore")",
                 dataType: "json",
                 data: {},
                 success: function (result, status, error) {
-                     
+                    debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             var storedropdown = $('#ToStoreName-' + i);
                             storedropdown.empty();
                             storedropdown.append('<option disabled>-Select-</option>');
+                            var storeId = $('#ToStoreId-' + i).val();
                             $.each(obj.Result, function (index, val) {
-                                storedropdown.append('<option value="' + val.StoreId + '">' + val.StoreName + '</option>');
+                                var isSelected = (val.StoreId == storeId) ? "selected" : "";
+                                storedropdown.append('<option ' + isSelected +' value="' + val.StoreId + '">' + val.StoreName + '</option>');
                                 $('#ToStoreId-' + i).val($('#ToStoreName-' + i).val())
                                 $('#ToWcId-' + i).val(0)
                             });
-                            var storeId = $('#ToStoreId-' + i).val();
-                            if(storeId != 0){
-                                var targetstoreValue = storeId;
-                                var selectedOption = storedropdown.find('option').filter(function () {
-                                    return $(this).val() == targetstoreValue;
-                                });
-
-                                if (selectedOption.length > 0) {
-                                    selectedOption.prop('selected', true);
-                                } else {
-                                    console.warn(`Value "${targetstoreValue}" not found in dropdown.`);
-                                }
-                            }
-                            else{
-                                storedropdown.append('<option>-Select-</option>');
-                            }
                         }
                     }
                 }

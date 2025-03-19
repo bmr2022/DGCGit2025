@@ -45,7 +45,10 @@
                     foreach (var item in Model.TransactionLedgerGrid)
                     {
                         Cntr = Cntr + 1;
-
+                        @if(item.VoucherType == "Bank-Receipt")
+                        {
+                            
+                        }
                         <tr id="@Cntr" onclick="selection(this)" style="background-color:#DAE0E2">
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container" style="display: flex; gap: 5px; justify-content: center;">
@@ -116,9 +119,6 @@
                             <td>@item.VchNo</td>
                             <td>@item.AccEntryId</td>
                             <td>@item.AccEntryYearCode</td>
-
-
-
                         </tr>
                     }
                 }
