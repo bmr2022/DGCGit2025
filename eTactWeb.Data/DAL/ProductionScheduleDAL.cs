@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
-using eTactWeb.Data.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -400,11 +400,11 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime FromDate1 = DateTime.ParseExact(FromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                //DateTime FromDate1 = DateTime.ParseExact(FromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 SqlParams.Add(new SqlParameter("@Flag", "dashboard"));
-                SqlParams.Add(new SqlParameter("@SOFromDate", FromDate1));
+                SqlParams.Add(new SqlParameter("@SOFromDate", ParseFormattedDate(FromDate)));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
-                SqlParams.Add(new SqlParameter("@CurrentDate", ToDate));
+                SqlParams.Add(new SqlParameter("@CurrentDate", ParseFormattedDate(ToDate)));
                 SqlParams.Add(new SqlParameter("@PartCode", partCode));
                 SqlParams.Add(new SqlParameter("@ItemName", itemName));
                 SqlParams.Add(new SqlParameter("@AccountName", accountName));
