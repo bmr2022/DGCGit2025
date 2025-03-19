@@ -29,7 +29,7 @@
                                 <label asp-for="PartCode" class="form-label">PartCode</label>
                                 <input asp-for="PartCode" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" style="width:170px;">
                                 <label asp-for="ItemName" class="form-label">ItemName</label>
                                 <input asp-for="ItemName" class="form-control" />
                             </div>
@@ -37,15 +37,15 @@
                                 <label asp-for="AccountName" class="form-label">AccountName</label>
                                 <input asp-for="AccountName" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" style="width:150px;">
                                 <label asp-for="ProdSchNo" class="form-label">Prod SchNo</label>
                                 <input asp-for="ProdSchNo" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" style="width:150px;">
                                 <label asp-for="WONo" class="form-label">WO No</label>
                                 <input asp-for="WONo" class="form-control" />
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-3" style="width:220px">
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">From Date</label>
@@ -57,7 +57,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2" style="width:130px;">
                                 <label asp-for="SummaryDetail" class="form-label">Summary/Detail</label>
                                 <select class="form-select" asp-for="SummaryDetail" onchange="GetSearchData();">
                                     <option>-Select-</option>
@@ -121,9 +121,13 @@
             var summaryDetailBack = sessionStorage.getItem('SummaryDetailBack');
             var searchBoxBack = sessionStorage.getItem('SearchBoxBack');
 
-            var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
-            $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            $('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
             $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+            // $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
+            // $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             $('#PartCode').rules('remove', 'required');
 

@@ -375,7 +375,7 @@ namespace eTactWeb.Controllers
             model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             model.EntryDate = DateTime.Now.ToString();
             model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            var Result = await _IProductionSchedule.GetDashboardData(partCode, itemName, accountName, ParseFormattedDate(fromDate.Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), model.YearCode).ConfigureAwait(true);
+            var Result = await _IProductionSchedule.GetDashboardData(partCode, itemName, accountName, fromDate, toDate, model.YearCode).ConfigureAwait(true);
             if (Result != null)
             {
                 var _List = new List<TextValue>();
