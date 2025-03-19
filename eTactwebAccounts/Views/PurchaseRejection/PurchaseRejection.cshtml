@@ -1281,13 +1281,31 @@
                 RemoveErrorCls('PartCode');
             }
 
-            if ($('#ItemCode').prop('selectedIndex') == 0) {
-                AddErrorCls('ItemCode');
-                $.notify('please select ItemName...!', "error");
+            if ($('#Batchno').prop('selectedIndex') == 0) {
+                AddErrorCls('Batchno');
+                $.notify('please select Batchno...!', "error");
                 Err = 1;
             }
             else {
-                RemoveErrorCls('ItemCode');
+                RemoveErrorCls('Batchno');
+            }
+
+            if ($('#Uniquebatchno').prop('selectedIndex') == 0) {
+                AddErrorCls('Uniquebatchno');
+                $.notify('please select Uniquebatchno...!', "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Uniquebatchno');
+            }
+
+            if ($('#DocAccountCode').prop('selectedIndex') == 0) {
+                AddErrorCls('DocAccountCode');
+                $.notify('please select Doc Head...!', "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('DocAccountCode');
             }
 
             if ($('#DocAccountCode').val() == 0) {
@@ -1301,16 +1319,54 @@
 
             if ($('#ItemAmount').val() == 0) {
                 AddErrorCls('ItemAmount');
-                $.notify('please select Item Amount...!', "error");
+                $.notify('please add Item Amount...!', "error");
                 Err = 1;
             }
             else {
                 RemoveErrorCls('ItemAmount');
             }
 
-            if ($('#BillQty').val() < $('#RejectedQty').val()) {
+            if ($('#BillQty').val() == null) {
+                AddErrorCls('BillQty');
+                $.notify('please add Bill Qty...!', "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('BillQty');
+            }
+
+            if ($('#RejectedQty').val() == null) {
                 AddErrorCls('RejectedQty');
-                $.notify('Rej Qty can not greter then billQty...!', "error");
+                $.notify('please add Rejected Qty...!', "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('RejectedQty');
+            }
+
+            if ($('#LotStock').val() == null) {
+                AddErrorCls('LotStock');
+                $.notify('please add Lot Stock...!', "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('LotStock');
+            }
+
+            if ($('#TotalStock').val() == null) {
+                AddErrorCls('TotalStock');
+                $.notify('please add Total Stock...!', "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('TotalStock');
+            }
+
+            if ($('#BillQty').val() != null && $('#RejectedQty').val() != null && $('#LotStock').val() != null && $('#TotalStock').val() != null && (parseFloat($('#BillQty').val()) < parseFloat($('#RejectedQty').val()))
+            || (parseFloat($('#LotStock').val()) < parseFloat($('#RejectedQty').val())) 
+            || (parseFloat($('#TotalStock').val()) < parseFloat($('#RejectedQty').val()))) {
+                AddErrorCls('RejectedQty');
+                $.notify('Rej Qty can not greter then billQty or LotStock or TotalStock...!', "error");
                 Err = 1;
             }
             else {
@@ -1805,29 +1861,29 @@
                             GetBatchInventory();
 
                             var selectListLength = $('#Batchno option').length - 1;
-                            var itemArrayLength = itemBatchArray.length;
-                            if (itemArrayLength > 0) {
-                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
-                                    return item.itemcode === parseInt(ItemCode);
-                                });
-                                var selectList = $('#Batchno');
-                                selectList.find('option').each(function () {
-                                    var optionValue = $(this).val();
-                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
-                                        return item.batchno === optionValue;
-                                    });
-
-                                    if (existsInItemsWithCode16) {
-                                        $(this).remove();
-                                    }
-                                });
-
-                                //}
-                                //if (itemBatchArray.length > 0) {
-                                //    $('#BatchNo option[value="' + itemBatchArray[0].batchno + '"]').remove();
-                                //    $('#uniquebatchno option[value="' + itemBatchArray[0].uniquebatchno + '"]').remove();
-                                //}
-                            }
+                           //var itemArrayLength = itemBatchArray.length;
+                           //if (itemArrayLength > 0) {
+                          //     var itemsWithCode16 = itemBatchArray.filter(function (item) {
+                          //         return item.itemcode === parseInt(ItemCode);
+                          //     });
+                          //     var selectList = $('#Batchno');
+                          //     selectList.find('option').each(function () {
+                          //         var optionValue = $(this).val();
+                          //         var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                          //             return item.batchno === optionValue;
+                          //         });
+                          //
+                          //         if (existsInItemsWithCode16) {
+                          //             $(this).remove();
+                          //         }
+                          //     });
+                          //
+                          //     //}
+                          //     //if (itemBatchArray.length > 0) {
+                          //     //    $('#BatchNo option[value="' + itemBatchArray[0].batchno + '"]').remove();
+                          //     //    $('#uniquebatchno option[value="' + itemBatchArray[0].uniquebatchno + '"]').remove();
+                          //     //}
+                          //}
                         } else {
                             $('#Batchno').empty();
                             $('#Batchno').append('<option value="0" disabled selected>-Select-</option>');
@@ -1909,6 +1965,46 @@
                     }
                     // SetminQty();
                     CalculateAmount();
+                }
+            });
+        }
+         $('#RejectedQty').change(function () {
+            CalculateAmount();  
+            FillAltQty();
+        });
+
+        $('#AltQty').change(function () {
+            FillAltQty();
+        });
+
+        $('#PRRate').change(function () {
+            CalculateAmount();
+        });
+
+        function CalculateAmount() {
+
+            var rate = $('#PRRate').val();
+            var Qty = $('#RejectedQty').val();
+
+            $('#ItemAmount').val(rate * Qty);
+        }
+        function FillAltQty() {
+            var ItemCode = parseInt($('#ItemCode').val());
+            var AltQty = $('#AltQty').val();
+            var UnitQty = parseFloat($('#TotalStock').val());
+            $.ajax({
+                type: "POST",
+                data: { "ItemCode": ItemCode, "AltQty": AltQty, "UnitQty": UnitQty },
+                url: "@Url.Action("GetAltUnitQty", "StockAdjustment")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result.length > 0) {
+                            $('#AltQty').val("");
+                            $('#AltQty').val(obj.Result[0].AltUnitValue);
+                        }
+                    }
                 }
             });
         }
