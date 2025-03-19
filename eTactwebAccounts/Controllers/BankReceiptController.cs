@@ -52,7 +52,7 @@ namespace eTactWeb.Controllers
 
             _MemoryCache.Remove("KeyBankReceiptGrid");
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _IBankReceipt.GetViewByID(ID,YearCode,VoucherNo).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update

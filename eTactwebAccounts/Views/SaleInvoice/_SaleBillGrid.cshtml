@@ -4,7 +4,7 @@
 @if (Model.saleBillDetails == null)
 {
     <tr class="text-center">
-        <td colspan="40" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+        <td colspan="45" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
     </tr>
 }
 else
@@ -94,6 +94,9 @@ else
             <td>@item.PacketsDetail</td>
             <td>@item.OtherDetail</td>
             <td>@item.ItemRemark</td>
+            <td class="gridHiddenField">@item.StockableNonStockable</td> @* stockable *@
+            <td class="gridHiddenField">@item.CustJwAdjustmentMandatory</td> @* cust *@
+            <td class="gridHiddenField">@item.VendJwAdjustmentMandatory</td> @* vend *@
         </tr>
 
     }

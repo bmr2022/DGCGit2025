@@ -770,8 +770,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
                 SqlParams.Add(new SqlParameter("@DTTItemGrid", adjustedData));
 
-                var ResponseResult = await _IDataLogic.ExecuteDataSet("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
-                //var ResponseResult = await _IDataLogic.ExecuteDataTable("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
+                //var ResponseResult = await _IDataLogic.ExecuteDataSet("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
+                var ResponseResult = await _IDataLogic.ExecuteDataTable("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
 
                 if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
                 {

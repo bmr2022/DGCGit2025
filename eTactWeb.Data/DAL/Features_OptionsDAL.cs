@@ -104,10 +104,31 @@ namespace eTactWeb.Data.DAL
                          {
                           oCmd.Parameters.AddWithValue("@flag", "IssChallanDashbaord");
                          }
-                          if (Type == "JustJobWorkDetail")
+                         if (Type == "JustJobWorkDetail")
                          {
                           oCmd.Parameters.AddWithValue("@flag", "CustJobWorkDashbaord");
+                         } 
+                         if (Type == "PrintReportDetail")
+                         {
+                          oCmd.Parameters.AddWithValue("@flag", "PrintReportDashbaord");
                          }
+                         if (Type == "ProdEntryDetail")
+                         {
+                          oCmd.Parameters.AddWithValue("@flag", "ProdEntryDashbaord");
+                         }
+                         if (Type == "ProdPlanSchDetail")
+                         {
+                            oCmd.Parameters.AddWithValue("@flag", "ProdPlanSchDashbaord");
+                         }
+                         if (Type == "TransMtrFromWcRec")
+                         {
+                          oCmd.Parameters.AddWithValue("@flag", "TransMtrFromWcRecDashbaord");
+                         }
+                         if (Type == "SaleBillDetail")
+                         {
+                          oCmd.Parameters.AddWithValue("@flag", "SaleBillDashbaord");
+                         }
+                        
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -266,7 +287,7 @@ namespace eTactWeb.Data.DAL
 
                                                             }).ToList();
                         }
-                         if (Type == "JustJobWorkDetail")
+                        if (Type == "JustJobWorkDetail")
                         {
                          model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                                             select new Features_OptionsModel
@@ -276,6 +297,78 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBackDateCustomerJWIssue = dr["AllowBackDateCustomerJWIssue"] != DBNull.Value ? dr["AllowBackDateCustomerJWIssue"].ToString() : string.Empty,
 
 
+                                                            }).ToList();
+                        }
+                        if (Type == "PrintReportDetail")
+                        {
+                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                SaleBillPrintReportName = dr["SaleBillPrintReportName"] != DBNull.Value ? dr["SaleBillPrintReportName"].ToString() : string.Empty,
+                                                                JWSaleBillPrintReportName = dr["JWSaleBillPrintReportName"] != DBNull.Value ? dr["JWSaleBillPrintReportName"].ToString() : string.Empty,
+                                                                PurchaseRejPrintReportName = dr["PurchaseRejPrintReportName"] != DBNull.Value ? dr["PurchaseRejPrintReportName"].ToString() : string.Empty,
+                                                                DebitNotePrintReportName = dr["DebitNotePrintReportName"] != DBNull.Value ? dr["DebitNotePrintReportName"].ToString() : string.Empty,
+                                                                CreditNotePrintReportName = dr["CreditNotePrintReportName"] != DBNull.Value ? dr["CreditNotePrintReportName"].ToString() : string.Empty,
+                                                                SaleRejectionPrintReportName = dr["SaleRejectionPrintReportName"] != DBNull.Value ? dr["SaleRejectionPrintReportName"].ToString() : string.Empty,
+                                                                PurchaseBillPrintReportName = dr["PurchaseBillPrintReportName"] != DBNull.Value ? dr["PurchaseBillPrintReportName"].ToString() : string.Empty,
+                                                                DirectPurchaseBillPrintReportName = dr["DirectPurchaseBillPrintReportName"] != DBNull.Value ? dr["DirectPurchaseBillPrintReportName"].ToString() : string.Empty,
+                                                                PurchBillVoucherPrintReportName = dr["PurchBillVoucherPrintReportName"] != DBNull.Value ? dr["PurchBillVoucherPrintReportName"].ToString() : string.Empty,
+                                                                DirectPurchBillVoucherPrintReportName = dr["DirectPurchBillVoucherPrintReportName"] != DBNull.Value ? dr["DirectPurchBillVoucherPrintReportName"].ToString() : string.Empty,
+                                                                BankRecVoucherPrintReportName = dr["BankRecVoucherPrintReportName"] != DBNull.Value ? dr["BankRecVoucherPrintReportName"].ToString() : string.Empty,
+                                                                BankPaymentVoucherPrintReportName = dr["BankPaymentVoucherPrintReportName"] != DBNull.Value ? dr["BankPaymentVoucherPrintReportName"].ToString() : string.Empty,
+                                                                CashRecVoucherPrintReportName = dr["CashRecVoucherPrintReportName"] != DBNull.Value ? dr["CashRecVoucherPrintReportName"].ToString() : string.Empty,
+                                                                CashPaymentVoucherPrintReportName = dr["CashPaymentVoucherPrintReportName"] != DBNull.Value ? dr["CashPaymentVoucherPrintReportName"].ToString() : string.Empty,
+                                                                JournalVoucherPrintReportName = dr["JournalVoucherPrintReportName"] != DBNull.Value ? dr["JournalVoucherPrintReportName"].ToString() : string.Empty,
+
+                                                            }).ToList();
+                        } 
+                        if (Type == "ProdEntryDetail")
+                        {
+                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                PrdProdEntryAgainstWOProdSchReqManual = dr["PrdProdEntryAgainstWOProdSchReqManual"] != DBNull.Value ? dr["PrdProdEntryAgainstWOProdSchReqManual"].ToString() : string.Empty,
+                                                                AllowProdWithoutBom = dr["AllowProdWithoutBom"] != DBNull.Value ? dr["AllowProdWithoutBom"].ToString() : string.Empty,
+                                                                ProdSchAllowToAddManualNewItem = dr["ProdSchAllowToAddManualNewItem"] != DBNull.Value ? dr["ProdSchAllowToAddManualNewItem"].ToString() : string.Empty,
+                                                                ProdEntryAllowToAddRMItem = dr["ProdEntryAllowToAddRMItem"] != DBNull.Value ? dr["ProdEntryAllowToAddRMItem"].ToString() : string.Empty,
+                                                                ProdEntryAllowToAddWithoutRM = dr["ProdEntryAllowToAddWithoutRM"] != DBNull.Value ? dr["ProdEntryAllowToAddWithoutRM"].ToString() : string.Empty,
+                                                                ProdEntryAllowToAddNegativeStock = dr["ProdEntryAllowToAddNegativeStock"] != DBNull.Value ? dr["ProdEntryAllowToAddNegativeStock"].ToString() : string.Empty,
+                                                                BatchWiseProduction = dr["BatchWiseProduction"] != DBNull.Value ? dr["BatchWiseProduction"].ToString() : string.Empty,
+                                                                ProdEntryAllowBackDate = dr["ProdEntryAllowBackDate"] != DBNull.Value ? dr["ProdEntryAllowBackDate"].ToString() : string.Empty,
+                                                                AllowBackDateDAILYPRODUCTION = dr["AllowBackDateDAILYPRODUCTION"] != DBNull.Value ? dr["AllowBackDateDAILYPRODUCTION"].ToString() : string.Empty,
+
+                                                            }).ToList();
+                        }
+                        if (Type == "ProdPlanSchDetail")
+                        {
+                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                AllowBackDateWorkorderEntry = dr["AllowBackDateWorkorderEntry"] != DBNull.Value ? dr["AllowBackDateWorkorderEntry"].ToString() : string.Empty,
+                                                                AllowBackDateProductionScheduleEntry = dr["AllowBackDateProductionScheduleEntry"] != DBNull.Value ? dr["AllowBackDateProductionScheduleEntry"].ToString() : string.Empty,
+                                                                InProdScheduleShowSumOrDetail = dr["InProdScheduleShowSumOrDetail"] != DBNull.Value ? dr["InProdScheduleShowSumOrDetail"].ToString() : string.Empty,
+
+                                                            }).ToList();
+                        }
+
+                        if (Type == "TransMtrFromWcRec")
+                        {
+                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                AllowBackDateTRANSFERMATERIAL = dr["AllowBackDateTRANSFERMATERIAL"] != DBNull.Value ? dr["AllowBackDateTRANSFERMATERIAL"].ToString() : string.Empty,
+                                                                AllowBackDateRECEIVEINSTORE = dr["AllowBackDateRECEIVEINSTORE"] != DBNull.Value ? dr["AllowBackDateRECEIVEINSTORE"].ToString() : string.Empty,
+                                                               
+                                                            }).ToList();
+                        }
+                        if (Type == "SaleBillDetail")
+                        {
+                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                AllowBackDateSALEBILL = dr["AllowBackDateSALEBILL"] != DBNull.Value ? dr["AllowBackDateSALEBILL"].ToString() : string.Empty,
+                                                                VoucherRotationDailyMonthYearly = dr["VoucherRotationDailyMonthYearly"] != DBNull.Value ? dr["VoucherRotationDailyMonthYearly"].ToString() : string.Empty,
+                                                               
                                                             }).ToList();
                         }
 
@@ -351,10 +444,30 @@ namespace eTactWeb.Data.DAL
                  {
                     SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDIssChallan"));
                  }
-                  if (Type == "JustJobWorkDetail")
+                 if (Type == "JustJobWorkDetail")
                  {
                     SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDCustJobWork"));
                  }
+                 if (Type == "PrintReportDetail")
+                 {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDPrintReport"));
+                 }
+                 if (Type == "ProdEntryDetail")
+                 {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDProdEntry"));
+                 }
+                 if (Type == "TransMtrFromWcRec")
+                 {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDTransMtrFromWcRec"));
+                 }
+                 if (Type == "SaleBillDetail")
+                 {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDSaleBill"));
+                 }
+                  if (Type == "ProdPlanSchDetail")
+                  {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDProdPlanSch"));
+                  }
 
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("Sp_FeaturesOptions", SqlParams);
 
@@ -401,7 +514,7 @@ namespace eTactWeb.Data.DAL
                     model.AllowBackDateINDENT = DS.Tables[0].Rows[0]["AllowBackDateINDENT"].ToString();
                     model.CheckPOPendFromPOonlyNotFromAmendment = DS.Tables[0].Rows[0]["CheckPOPendFromPOonlyNotFromAmendment"].ToString();
                 }
-                if (model.Type == "SaleOrderDetail")
+                if (Type == "SaleOrderDetail")
                 {
                     model.SaleInvoiceFileName = DS.Tables[0].Rows[0]["SaleInvoiceFileName"].ToString();
                     model.AutoGenItemGroupCode = DS.Tables[0].Rows[0]["AutoGenItemGroupCode"].ToString();
@@ -412,7 +525,7 @@ namespace eTactWeb.Data.DAL
                     model.SaleScheduleAmendPrintReportName = DS.Tables[0].Rows[0]["SaleScheduleAmendPrintReportName"].ToString();
 
                 } 
-                if (model.Type == "GateEntryDetail")
+                if (Type == "GateEntryDetail")
                 {
                     model.BlockGateEntry4UnAppPOAmm = DS.Tables[0].Rows[0]["BlockGateEntry4UnAppPOAmm"].ToString();
                     model.AllowBackDateGAteEntry = DS.Tables[0].Rows[0]["AllowBackDateGAteEntry"].ToString();
@@ -421,7 +534,7 @@ namespace eTactWeb.Data.DAL
                     model.AllowGateRateEnabled = DS.Tables[0].Rows[0]["AllowGateRateEnabled"].ToString();
 
                 }
-                if (model.Type == "MRNDetail")
+                if (Type == "MRNDetail")
                 {
                     model.AllowBackDateMRNEntry = DS.Tables[0].Rows[0]["AllowBackDateMRNEntry"].ToString();
                     model.AllowToChangeStoreInMRN = DS.Tables[0].Rows[0]["AllowToChangeStoreInMRN"].ToString();
@@ -430,7 +543,7 @@ namespace eTactWeb.Data.DAL
 
 
                 }
-                if (model.Type == "CommonDetail")
+                if (Type == "CommonDetail")
                 {
                     model.CCMandatoryInQuery = DS.Tables[0].Rows[0]["CCMandatoryInQuery"].ToString();
                     model.BatchWiseInventory = DS.Tables[0].Rows[0]["BatchWiseInventory"].ToString();
@@ -440,7 +553,7 @@ namespace eTactWeb.Data.DAL
                     model.FIFOBasedBatchInventory = DS.Tables[0].Rows[0]["FIFOBasedBatchInventory"].ToString();
 
                 }
-                if (model.Type == "RequisitionDetail")
+                if (Type == "RequisitionDetail")
                 {
                     model.AllowBackdateReqWOBOM = DS.Tables[0].Rows[0]["AllowBackdateReqWOBOM"].ToString();
                     model.MaxDurationForReqToBePend = Convert.ToInt64(DS.Tables[0].Rows[0]["MaxDurationForReqToBePend"]);
@@ -448,7 +561,7 @@ namespace eTactWeb.Data.DAL
                     model.AllowBackDateRequsitionWITHBOM = DS.Tables[0].Rows[0]["AllowBackDateRequsitionWITHBOM"].ToString();
                   
                 }
-                if (model.Type == "VendJwIssRecDetail")
+                if (Type == "VendJwIssRecDetail")
                 {
                     model.VendJWIssuePrintReportName = DS.Tables[0].Rows[0]["VendJWIssuePrintReportName"].ToString();
                     model.VendJWRecPrintReportName = DS.Tables[0].Rows[0]["VendJWRecPrintReportName"].ToString();
@@ -457,13 +570,13 @@ namespace eTactWeb.Data.DAL
                     model.VendorJWAdjustAutoOrManual = DS.Tables[0].Rows[0]["vendorJWAdjustAutoOrManual"].ToString();
 
                 }
-                if (model.Type == "StockAdjDetail")
+                if (Type == "StockAdjDetail")
                 {
                     model.AllowBackDateStockAdjustment = DS.Tables[0].Rows[0]["AllowBackDateStockAdjustment"].ToString();
                     model.AllowBackDateInterStoreTransfer = DS.Tables[0].Rows[0]["AllowBackDateInterStoreTransfer"].ToString();
 
                 }
-                if (model.Type == "IssWithBomDetail")
+                if (Type == "IssWithBomDetail")
                 {
                     model.AllowBackdateIssueWOBOM = DS.Tables[0].Rows[0]["AllowBackdateIssueWOBOM"].ToString();
                     model.AllowBackDateISSUEWITHBOM = DS.Tables[0].Rows[0]["AllowBackDateISSUEWITHBOM"].ToString();
@@ -472,19 +585,70 @@ namespace eTactWeb.Data.DAL
                     model.ALLOWBACKDATRECCHALLAN = DS.Tables[0].Rows[0]["ALLOWBACKDATRECCHALLAN"].ToString();
 
                 }
-                if (model.Type == "IssRecChallanDetail")
+                if (Type == "IssRecChallanDetail")
                 {
                     model.RGPChallanPrintReportName = DS.Tables[0].Rows[0]["RGPChallanPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["RGPChallanPrintReportName"].ToString(): string.Empty;
                     model.NRGPChallanPrintReportName = DS.Tables[0].Rows[0]["NRGPChallanPrintReportName"] != DBNull.Value? DS.Tables[0].Rows[0]["NRGPChallanPrintReportName"].ToString() : string.Empty;
                     model.AllowBackDateReceiveChallanEntry = DS.Tables[0].Rows[0]["AllowBackDateReceiveChallanEntry"] != DBNull.Value? DS.Tables[0].Rows[0]["AllowBackDateReceiveChallanEntry"].ToString(): string.Empty;
 
                 }
-                 if (model.Type == "JustJobWorkDetail")
+                if (Type == "JustJobWorkDetail")
                 {
                     model.CustJWIssuePrintReportName = DS.Tables[0].Rows[0]["CustJWIssuePrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["RGPChallanPrintReportName"].ToString(): string.Empty;
                     model.CUSTJWRecPrintReportName = DS.Tables[0].Rows[0]["CUSTJWRecPrintReportName"] != DBNull.Value? DS.Tables[0].Rows[0]["NRGPChallanPrintReportName"].ToString() : string.Empty;
                     model.AllowBackDateCustomerJWIssue = DS.Tables[0].Rows[0]["AllowBackDateCustomerJWIssue"] != DBNull.Value? DS.Tables[0].Rows[0]["AllowBackDateReceiveChallanEntry"].ToString(): string.Empty;
 
+                }
+                if (Type == "PrintReportDetail")
+                {
+                    model.SaleBillPrintReportName = DS.Tables[0].Rows[0]["SaleBillPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["SaleBillPrintReportName"].ToString() : string.Empty;
+                    model.JWSaleBillPrintReportName = DS.Tables[0].Rows[0]["JWSaleBillPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["JWSaleBillPrintReportName"].ToString() : string.Empty;
+                    model.PurchaseRejPrintReportName = DS.Tables[0].Rows[0]["PurchaseRejPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["PurchaseRejPrintReportName"].ToString() : string.Empty;
+                    model.DebitNotePrintReportName = DS.Tables[0].Rows[0]["DebitNotePrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["DebitNotePrintReportName"].ToString() : string.Empty;
+                    model.CreditNotePrintReportName = DS.Tables[0].Rows[0]["CreditNotePrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["CreditNotePrintReportName"].ToString() : string.Empty;
+                    model.SaleRejectionPrintReportName = DS.Tables[0].Rows[0]["SaleRejectionPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["SaleRejectionPrintReportName"].ToString() : string.Empty;
+                    model.PurchaseBillPrintReportName = DS.Tables[0].Rows[0]["PurchaseBillPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["PurchaseBillPrintReportName"].ToString() : string.Empty;
+                    model.DirectPurchaseBillPrintReportName = DS.Tables[0].Rows[0]["DirectPurchaseBillPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["DirectPurchaseBillPrintReportName"].ToString() : string.Empty;
+                    model.PurchBillVoucherPrintReportName = DS.Tables[0].Rows[0]["PurchBillVoucherPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["PurchBillVoucherPrintReportName"].ToString() : string.Empty;
+                    model.DirectPurchBillVoucherPrintReportName = DS.Tables[0].Rows[0]["DirectPurchBillVoucherPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["DirectPurchBillVoucherPrintReportName"].ToString() : string.Empty;
+                    model.BankRecVoucherPrintReportName = DS.Tables[0].Rows[0]["BankRecVoucherPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["BankRecVoucherPrintReportName"].ToString() : string.Empty;
+                    model.BankPaymentVoucherPrintReportName = DS.Tables[0].Rows[0]["BankPaymentVoucherPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["BankPaymentVoucherPrintReportName"].ToString() : string.Empty;
+                    model.CashRecVoucherPrintReportName = DS.Tables[0].Rows[0]["CashRecVoucherPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["CashRecVoucherPrintReportName"].ToString() : string.Empty;
+                    model.CashPaymentVoucherPrintReportName = DS.Tables[0].Rows[0]["CashPaymentVoucherPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["CashPaymentVoucherPrintReportName"].ToString() : string.Empty;
+                    model.JournalVoucherPrintReportName = DS.Tables[0].Rows[0]["JournalVoucherPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["JournalVoucherPrintReportName"].ToString() : string.Empty;
+
+                }
+                if (Type == "ProdEntryDetail")
+                {
+                    model.PrdProdEntryAgainstWOProdSchReqManual = DS.Tables[0].Rows[0]["PrdProdEntryAgainstWOProdSchReqManual"] != DBNull.Value ? DS.Tables[0].Rows[0]["PrdProdEntryAgainstWOProdSchReqManual"].ToString() : string.Empty;
+                    model.AllowProdWithoutBom = DS.Tables[0].Rows[0]["AllowProdWithoutBom"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowProdWithoutBom"].ToString() : string.Empty;
+                    model.ProdSchAllowToAddManualNewItem = DS.Tables[0].Rows[0]["ProdSchAllowToAddManualNewItem"] != DBNull.Value ? DS.Tables[0].Rows[0]["ProdSchAllowToAddManualNewItem"].ToString() : string.Empty;
+                    model.ProdEntryAllowToAddRMItem = DS.Tables[0].Rows[0]["ProdEntryAllowToAddRMItem"] != DBNull.Value ? DS.Tables[0].Rows[0]["ProdEntryAllowToAddRMItem"].ToString() : string.Empty;
+                    model.ProdEntryAllowToAddWithoutRM = DS.Tables[0].Rows[0]["ProdEntryAllowToAddWithoutRM"] != DBNull.Value ? DS.Tables[0].Rows[0]["ProdEntryAllowToAddWithoutRM"].ToString() : string.Empty;
+                    model.ProdEntryAllowToAddNegativeStock = DS.Tables[0].Rows[0]["ProdEntryAllowToAddNegativeStock"] != DBNull.Value ? DS.Tables[0].Rows[0]["ProdEntryAllowToAddNegativeStock"].ToString() : string.Empty;
+                    model.BatchWiseProduction = DS.Tables[0].Rows[0]["BatchWiseProduction"] != DBNull.Value ? DS.Tables[0].Rows[0]["BatchWiseProduction"].ToString() : string.Empty;
+                    model.ProdEntryAllowBackDate = DS.Tables[0].Rows[0]["ProdEntryAllowBackDate"] != DBNull.Value ? DS.Tables[0].Rows[0]["ProdEntryAllowBackDate"].ToString() : string.Empty;
+                    model.AllowBackDateDAILYPRODUCTION = DS.Tables[0].Rows[0]["AllowBackDateDAILYPRODUCTION"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateDAILYPRODUCTION"].ToString() : string.Empty;
+
+                }
+                if (Type == "ProdPlanSchDetail")
+                {
+                    model.AllowBackDateWorkorderEntry = DS.Tables[0].Rows[0]["AllowBackDateWorkorderEntry"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateWorkorderEntry"].ToString() : string.Empty;
+                    model.AllowBackDateProductionScheduleEntry = DS.Tables[0].Rows[0]["AllowBackDateProductionScheduleEntry"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateProductionScheduleEntry"].ToString() : string.Empty;
+                    model.InProdScheduleShowSumOrDetail = DS.Tables[0].Rows[0]["InProdScheduleShowSumOrDetail"] != DBNull.Value ? DS.Tables[0].Rows[0]["InProdScheduleShowSumOrDetail"].ToString() : string.Empty;
+
+                }
+                if (Type == "TransMtrFromWcRec")
+                {
+                    model.AllowBackDateTRANSFERMATERIAL = DS.Tables[0].Rows[0]["AllowBackDateTRANSFERMATERIAL"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateTRANSFERMATERIAL"].ToString() : string.Empty;
+                    model.AllowBackDateRECEIVEINSTORE = DS.Tables[0].Rows[0]["AllowBackDateRECEIVEINSTORE"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateRECEIVEINSTORE"].ToString() : string.Empty;
+                    
+                }
+                 if (Type == "SaleBillDetail")
+                {
+                    model.AllowBackDateSALEBILL = DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"].ToString() : string.Empty;
+                    model.VoucherRotationDailyMonthYearly = DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"] != DBNull.Value ? DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"].ToString() : string.Empty;
+                    
                 }
 
                 if (DS.Tables.Count != 0 && DS.Tables[0].Rows.Count > 0)
@@ -634,6 +798,64 @@ namespace eTactWeb.Data.DAL
                             SqlParams.Add(new SqlParameter("@CustJWIssuePrintReportName", model.CustJWIssuePrintReportName));
                             SqlParams.Add(new SqlParameter("@CUSTJWRecPrintReportName", model.CUSTJWRecPrintReportName));
                             SqlParams.Add(new SqlParameter("@AllowBackDateCustomerJWIssue", model.AllowBackDateCustomerJWIssue));
+
+                        }
+                        if (model.Type == "PrintReportDetail")
+                        {
+                            SqlParams.Add(new SqlParameter("@Flag", "UPDATEPrintReportDashbaord"));
+                            SqlParams.Add(new SqlParameter("@SaleBillPrintReportName", model.SaleBillPrintReportName));
+                            SqlParams.Add(new SqlParameter("@JWSaleBillPrintReportName", model.JWSaleBillPrintReportName));
+                            SqlParams.Add(new SqlParameter("@PurchaseRejPrintReportName", model.PurchaseRejPrintReportName));
+                            SqlParams.Add(new SqlParameter("@DebitNotePrintReportName", model.DebitNotePrintReportName));
+                            SqlParams.Add(new SqlParameter("@CreditNotePrintReportName", model.CreditNotePrintReportName));
+                            SqlParams.Add(new SqlParameter("@SaleRejectionPrintReportName", model.SaleRejectionPrintReportName));
+                            SqlParams.Add(new SqlParameter("@PurchaseBillPrintReportName", model.PurchaseBillPrintReportName));
+                            SqlParams.Add(new SqlParameter("@DirectPurchaseBillPrintReportName", model.DirectPurchaseBillPrintReportName));
+                            SqlParams.Add(new SqlParameter("@PurchBillVoucherPrintReportName", model.PurchBillVoucherPrintReportName));
+                            SqlParams.Add(new SqlParameter("@DirectPurchBillVoucherPrintReportName", model.DirectPurchBillVoucherPrintReportName));
+                            SqlParams.Add(new SqlParameter("@BankRecVoucherPrintReportName", model.BankRecVoucherPrintReportName));
+                            SqlParams.Add(new SqlParameter("@BankPaymentVoucherPrintReportName", model.BankPaymentVoucherPrintReportName));
+                            SqlParams.Add(new SqlParameter("@CashRecVoucherPrintReportName", model.CashRecVoucherPrintReportName));
+                            SqlParams.Add(new SqlParameter("@CashPaymentVoucherPrintReportName", model.CashPaymentVoucherPrintReportName));
+                            SqlParams.Add(new SqlParameter("@JournalVoucherPrintReportName", model.JournalVoucherPrintReportName));
+
+                    }
+
+                    if (model.Type == "ProdEntryDetail")
+                        {
+                            SqlParams.Add(new SqlParameter("@Flag", "UPDATEProdEntryDashbaord"));
+                            SqlParams.Add(new SqlParameter("@PrdProdEntryAgainstWOProdSchReqManual", model.PrdProdEntryAgainstWOProdSchReqManual));
+                            SqlParams.Add(new SqlParameter("@AllowProdWithoutBom", model.AllowProdWithoutBom));
+                            SqlParams.Add(new SqlParameter("@ProdSchAllowToAddManualNewItem", model.ProdSchAllowToAddManualNewItem));
+                            SqlParams.Add(new SqlParameter("@ProdEntryAllowToAddRMItem", model.ProdEntryAllowToAddRMItem));
+                            SqlParams.Add(new SqlParameter("@ProdEntryAllowToAddWithoutRM", model.ProdEntryAllowToAddWithoutRM));
+                            SqlParams.Add(new SqlParameter("@ProdEntryAllowToAddNegativeStock", model.ProdEntryAllowToAddNegativeStock));
+                            SqlParams.Add(new SqlParameter("@BatchWiseProduction", model.BatchWiseProduction));
+                            SqlParams.Add(new SqlParameter("@ProdEntryAllowBackDate", model.ProdEntryAllowBackDate));
+                            SqlParams.Add(new SqlParameter("@AllowBackDateDAILYPRODUCTION", model.AllowBackDateDAILYPRODUCTION));
+
+                        }
+                        if (model.Type == "ProdPlanSchDetail")
+                        {
+                            SqlParams.Add(new SqlParameter("@Flag", "UPDATEProdPlanSchDashbaord"));
+                            SqlParams.Add(new SqlParameter("@AllowBackDateWorkorderEntry", model.AllowBackDateWorkorderEntry));
+                            SqlParams.Add(new SqlParameter("@AllowBackDateProductionScheduleEntry", model.AllowBackDateProductionScheduleEntry));
+                            SqlParams.Add(new SqlParameter("@InProdScheduleShowSumOrDetail", model.InProdScheduleShowSumOrDetail));
+
+                        }
+
+                        if (model.Type == "TransMtrFromWcRec")
+                        {
+                            SqlParams.Add(new SqlParameter("@Flag", "UPDATETransMtrFromWcRecDashbaord"));
+                            SqlParams.Add(new SqlParameter("@AllowBackDateTRANSFERMATERIAL", model.AllowBackDateTRANSFERMATERIAL));
+                            SqlParams.Add(new SqlParameter("@AllowBackDateRECEIVEINSTORE", model.AllowBackDateRECEIVEINSTORE));
+
+                        }
+                        if (model.Type == "SaleBillDetail")
+                        {
+                            SqlParams.Add(new SqlParameter("@Flag", "UPDATESaleBill"));
+                            SqlParams.Add(new SqlParameter("@AllowBackDateSALEBILL", model.AllowBackDateSALEBILL));
+                            SqlParams.Add(new SqlParameter("@VoucherRotationDailyMonthYearly", model.VoucherRotationDailyMonthYearly));
 
                         }
 

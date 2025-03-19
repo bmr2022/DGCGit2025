@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
@@ -283,8 +284,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@summDetail", "Summary"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
-                SqlParams.Add(new SqlParameter("@fromdate", FromDate));
-                SqlParams.Add(new SqlParameter("@todate", ToDate));
+                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
                 responseResult = await _IDataLogic.ExecuteDataSet("AccSpVoucherEntry", SqlParams).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -310,8 +311,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Detail");
                     oCmd.Parameters.AddWithValue("@VoucherType", "Bank-Receipt");
-                    oCmd.Parameters.AddWithValue("@fromdate", DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
-                    oCmd.Parameters.AddWithValue("@todate", DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
+                    oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
+                    oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -373,8 +374,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Summary");
                     oCmd.Parameters.AddWithValue("@VoucherType", "Bank-Receipt");
-                    oCmd.Parameters.AddWithValue("@fromdate", DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
-                    oCmd.Parameters.AddWithValue("@todate", DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
+                    oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
+                    oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
