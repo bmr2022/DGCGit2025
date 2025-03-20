@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -86,7 +87,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
                     SqlParams.Add(new SqlParameter("@StoreId", model.StoreId > 0 ? model.StoreId : (object)DBNull.Value));
                     SqlParams.Add(new SqlParameter("@Store_Name", string.IsNullOrEmpty(model.Store_Name) ? DBNull.Value : model.Store_Name));
-                    SqlParams.Add(new SqlParameter("@Entry_Date", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : model.EntryDate));
+                    SqlParams.Add(new SqlParameter("@Entry_Date", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : CommonFunc.ParseFormattedDate( model.EntryDate)));
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
                     SqlParams.Add(new SqlParameter("@StoreType", string.IsNullOrEmpty(model.StoreType) ? DBNull.Value : model.StoreType));
                 }
@@ -96,7 +97,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@StoreId", model.StoreId > 0 ? model.StoreId : (object)DBNull.Value));
                     SqlParams.Add(new SqlParameter("@Store_Name", string.IsNullOrEmpty(model.Store_Name) ? DBNull.Value : model.Store_Name));
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
-                    SqlParams.Add(new SqlParameter("@Entry_Date", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : model.EntryDate));
+                    SqlParams.Add(new SqlParameter("@Entry_Date", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : CommonFunc.ParseFormattedDate(model.EntryDate)));
                     SqlParams.Add(new SqlParameter("@StoreType", string.IsNullOrEmpty(model.StoreType) ? DBNull.Value : model.StoreType));
                 }
                 
