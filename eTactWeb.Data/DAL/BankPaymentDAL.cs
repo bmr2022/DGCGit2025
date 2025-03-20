@@ -675,7 +675,13 @@ namespace eTactWeb.Data.DAL
                         CurrentValue = Convert.ToDecimal(row["CurrentValue"].ToString()),
                         LedgerName = row["LedgerName"].ToString(),
                         AccountCode = Convert.ToInt32(row["Accountcode"].ToString()),
-                       
+                        VoucherType = row["Vouchertype"].ToString(),
+                        VoucherDocNo = row["VoucherDocNo"].ToString(),
+                        EntryByMachine = row["EntryByMachine"].ToString(),
+                        BillVouchNo = row["BillVouchNo"].ToString(),
+                        DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
+                        CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
+
                         AdjustmentAmt = Convert.ToDecimal(row["AmountInOtherCurr"].ToString()),
                         AdjustmentAmtOthCur = Convert.ToDouble(row["AmountInOtherCurr"].ToString()),
                         ChequeDate = row["chequeDate"].ToString(),
@@ -702,7 +708,8 @@ namespace eTactWeb.Data.DAL
                         VoucherRemark = row["VoucherRemark"].ToString(),
                         ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
                         BankType = row["UnderGroup"].ToString(),
-                        
+                        Type = row["DRCRTYPE"].ToString(),
+
                     });
                 }
                 model.BankPaymentGrid = ItemList;
