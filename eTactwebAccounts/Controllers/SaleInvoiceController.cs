@@ -223,7 +223,7 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public static DataTable GetAdjustChallanDetailTable(List<CustomerJobWorkIssueAdjustDetail> model)
+        public static DataTable GetAdjustChallanDetailTable(List<CustomerInputJobWorkIssueAdjustDetail> model)
         {
             DataTable Table = new();
             Table.Columns.Add("ItemCode", typeof(int));
@@ -273,7 +273,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
+        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerInputJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
         {
             try
             {
@@ -295,6 +295,36 @@ namespace eTactWeb.Controllers
                 _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
 
                 return PartialView("_CustomerJwisschallanAdjustment", result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetBomCustAdjChallanDetailsData(List<CustomerInputJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
+        {
+            try
+            {
+                if (model == null || !model.Any())
+                {
+                    return Json(new { success = false, message = "No data received." });
+                }
+
+                var adjustChallanDt = GetAdjustChallanDetailTable(model);
+                var result = await _SaleBill.GetAdjustedChallanDetailsData(adjustChallanDt, YearCode, EntryDate, ChallanDate, AccountCode);
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
+
+                return PartialView("_BomCustomerJWIssChallanADJ", result);
             }
             catch (Exception ex)
             {
