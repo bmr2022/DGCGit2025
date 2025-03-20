@@ -45,9 +45,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _CashPaymentDAL.FillCostCenterName();
         }
-        public async Task<ResponseResult> FillEntryID(int YearCode)
+        public async Task<ResponseResult> FillEntryID(int YearCode, string VoucherDate)
         {
-            return await _CashPaymentDAL.FillEntryID(YearCode);
+            return await _CashPaymentDAL.FillEntryID(YearCode, VoucherDate);
         }
         public async Task<ResponseResult> FillCurrency()
         {

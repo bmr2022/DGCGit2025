@@ -523,9 +523,7 @@
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
-            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                FillEntryID();
-            }
+            
             FillCurrency();
 
             FillModeofAdjust();
@@ -607,6 +605,9 @@
             var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                FillEntryID();
+            }
             $('#BankRECO').datepicker({ dateFormat: 'dd/mm/yy' });
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
@@ -767,11 +768,30 @@
         }
 
         function FillEntryID() {
+            var VoucherDate = $('#VoucherDate').val();
 
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
             $.ajax({
                 url: '@Url.Action("FillEntryID", "CashPayment")',
                 type: 'POST',
-                data: { "YearCode": $('#YearCode').val() },
+                data: { "YearCode": $('#YearCode').val(), "VoucherDate": VoucherDate },
                 async: false,
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);

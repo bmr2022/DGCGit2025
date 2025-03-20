@@ -381,9 +381,9 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillEntryID(int YearCode)
+        public async Task<JsonResult> FillEntryID(int YearCode,string VoucherDate)
         {
-            var JSON = await _ICashPayment.FillEntryID(YearCode);
+            var JSON = await _ICashPayment.FillEntryID(YearCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

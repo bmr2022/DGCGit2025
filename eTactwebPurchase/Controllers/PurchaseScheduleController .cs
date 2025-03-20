@@ -722,6 +722,19 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
         return DTSSGrid;
     }
 
+    public async Task<JsonResult> FillMRPNo()
+    {
+        var JSON = await IPurchaseSchedule.FillMRPNo();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+
+    public async Task<JsonResult> FillMRPDetail(string MRPNo)
+    {
+        var JSON = await IPurchaseSchedule.FillMRPDetail( MRPNo);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     private async Task<PurchaseSubScheduleModel> BindModel(PurchaseSubScheduleModel model)
     {
         var oDataSet = new DataSet();

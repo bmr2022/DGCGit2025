@@ -179,6 +179,9 @@
                                                     <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Packets Detail</th>
                                                     <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
                                                     <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Remark</th>
+                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StockableNonStockable</th>
+                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustJwAdjustmentMandatory</th>
+                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VendJwAdjustmentMandatory</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="divSaleBillList">
@@ -1416,7 +1419,10 @@
                 "SchdeliveryDate": $('#SchdeliveryDate').val(),
                 "BOMInd": $('#BOMInd').val(),
                 "ProducedUnprod": $('#ProducedUnprod').val(),
-                "SeqNo": parseInt($('#SeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#SeqNo').val())
+                "SeqNo": parseInt($('#SeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#SeqNo').val()),
+                "CustJwAdjustmentMandatory": $('#CustJwAdjustmentMandatory').val(),
+                "StockableNonStockable": $('#StockableNonStockable').val(),
+                "VendJwAdjustmentMandatory": $('#VendJwAdjustmentMandatory').val()
             }
 
             $.ajax({

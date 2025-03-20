@@ -114,7 +114,7 @@
                                         }
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
                                     <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
                                     <input asp-for="VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
@@ -533,9 +533,7 @@
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
-            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                FillEntryID();
-            }
+          
             
             FillCurrency();
             FillModeofAdjust();
@@ -635,6 +633,9 @@
                 }
             });
 
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                FillEntryID();
+            }
             function checkModeOfAdjustment() {
 
                 const modeOfAdjustment = $("#ModeOfAdjustment").val(); // Assuming this is the ID of the field
@@ -774,11 +775,31 @@
         }
 
         function FillEntryID() {
+            debugger;
+            var VoucherDate = $('#VoucherDate').val();
 
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
             $.ajax({
                 url: '@Url.Action("FillEntryID", "BankReceipt")',
                 type: 'POST',
-                data: { "YearCode": $('#YearCode').val() },
+                data: { "YearCode": $('#YearCode').val(), "VoucherDate": VoucherDate },
                 async: false,
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);

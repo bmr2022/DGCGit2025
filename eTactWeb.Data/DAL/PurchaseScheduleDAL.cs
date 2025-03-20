@@ -24,6 +24,51 @@ public class PurchaseScheduleDAL
 
     private string DBConnectionString { get; }
 
+    public async Task<ResponseResult> FillMRPNo()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "MRPDETAIL"));
+            
+
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseSchedule", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+
+    public async Task<ResponseResult> FillMRPDetail(string MRPNo)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "MRPYEAR"));
+            SqlParams.Add(new SqlParameter("@MRPNO", MRPNo));
+
+
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseOrder", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
+
+
     public async Task<DataSet> BindAllDropDown()
     {
         var oDataSet = new DataSet();
@@ -593,6 +638,7 @@ public class PurchaseScheduleDAL
             SqlParams.Add(new SqlParameter("@OrderPriority", model.OrderPriority));
             SqlParams.Add(new SqlParameter("@FirstMonthTentRatio", model.FirstMonthTentRatio));
             SqlParams.Add(new SqlParameter("@SecMonthTentRatio", model.SecMonthTentRatio));
+            
             SqlParams.Add(new SqlParameter("@CC", model.CC));
             if (model.Mode == "PSA")
             {
@@ -641,7 +687,11 @@ public class PurchaseScheduleDAL
         model.DeliveryAddress = DS.Tables[0].Rows[0]["DeliveryAddress"].ToString();
         model.ScheduleNo = DS.Tables[0].Rows[0]["ScheduleNo"].ToString();
         model.ScheduleDate = (DS.Tables[0].Rows[0]["ScheduleDate"].ToString());
-        if(mode=="PSA")
+        model.MRPNO = Convert.ToInt32(DS.Tables[0].Rows[0]["MRPNO"].ToString());
+        model.MRPNoYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["MRPNoYearCode"].ToString());
+        model.MRPentryId = Convert.ToInt32(DS.Tables[0].Rows[0]["MRPentry_Id"].ToString());
+
+        if (mode=="PSA")
         {
 
             model.SchAmendmentNo = Convert.ToInt32(DS.Tables[0].Rows[0]["SchAmendNo"].ToString()) + 1;

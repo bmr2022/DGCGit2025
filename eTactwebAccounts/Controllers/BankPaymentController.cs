@@ -130,7 +130,7 @@ namespace eTactwebAccounts.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(BankPaymentDashBoard));
+                return RedirectToAction(nameof(BankPayment));
 
             }
             catch (Exception ex)
@@ -381,9 +381,9 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillEntryID(int YearCode)
+        public async Task<JsonResult> FillEntryID(int YearCode,string VoucherDate)
         {
-            var JSON = await _IBankPayment.FillEntryID(YearCode);
+            var JSON = await _IBankPayment.FillEntryID(YearCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -641,9 +641,19 @@ namespace eTactwebAccounts.Controllers
         {
             var MainModel = new BankPaymentModel();
             _MemoryCache.TryGetValue("KeyBankPaymentGrid", out IList<BankPaymentModel> GridDetail);
-            var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
-            string JsonString = JsonConvert.SerializeObject(SAGrid);
+           
+
+            IEnumerable<BankPaymentModel> SSGrid = GridDetail;
+            if (GridDetail != null)
+            {
+                SSGrid = GridDetail.Where(x => x.SeqNo == SrNO);
+            }
+            string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
+
+            //var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
+            //string JsonString = JsonConvert.SerializeObject(SAGrid);
+            //return Json(JsonString);
         }
         public IActionResult DeleteItemRow(int SeqNo, string PopUpData)
         {

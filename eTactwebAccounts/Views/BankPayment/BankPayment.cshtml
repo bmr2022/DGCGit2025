@@ -97,7 +97,7 @@
                                         }
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
                                     <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
                                     <input asp-for="VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
@@ -517,9 +517,7 @@
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
-            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                FillEntryID();
-            }
+           
             FillCurrency();
 
             FillModeofAdjust();
@@ -582,7 +580,7 @@
 
             $('#BankRECO').datepicker({ dateFormat: 'dd/mm/yy' });
 
-            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+           
                 var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 var currentDate = new Date();
 
@@ -606,14 +604,10 @@
                 var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            }
-            else { 
-                $('#InsDate').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            
+
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                FillEntryID();
             }
             $('#AdjustmentAmt').on('input', function () {
 
@@ -746,6 +740,8 @@
             $('#AdjustmentAmtOthCur').val(0);
             $('#CostCenterName').prop('selectedIndex', 0).trigger("change");
             $('#PartyWiseNaration').val('');
+            $('#PoDate').val('');
+            $('#POYear').val('');
         }
 
         $('#LedgerName').change(function () {
@@ -772,11 +768,30 @@
         }
 
         function FillEntryID() {
+            var VoucherDate = $('#VoucherDate').val();
 
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
             $.ajax({
                 url: '@Url.Action("FillEntryID", "BankPayment")',
                 type: 'POST',
-                data: { "YearCode": $('#YearCode').val() },
+                data: { "YearCode": $('#YearCode').val(), "VoucherDate": VoucherDate },
                 async: false,
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);
@@ -884,7 +899,7 @@
         }
 
         function FillPONO() {
-             ;
+             
 
             var accountcode = $('#AccountCode').val();
             var VoucherDate = $('#VoucherDate').val();
@@ -1510,6 +1525,7 @@
         }
 
         function AdjustButton() {
+            debugger;
 
             if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
@@ -1778,7 +1794,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-
+            debugger;
             var RowCount = $('#divBankPaymentDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1793,6 +1809,11 @@
 
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
+                        if (!ModeOfAdjustment) {
+                            console.error("ModeOfAdjustment is undefined");
+                            $.notify("Invalid data received", "error");
+                            return;
+                        }
                         if (ModeOfAdjustment == "Against Ref") {
                             $('#LedgerName').val(obj[0].AccountCode).trigger("change");
                             $('#AccountCode').val(obj[0].AccountCode);

@@ -1,6 +1,10 @@
 ﻿@model List<SoApprovalDetail>
 @using Microsoft.AspNetCore.Http
 @using System.Reflection.PortableExecutable
+@{
+    ViewData["Title"] = "SO Approval";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");

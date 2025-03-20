@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -30,8 +31,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillBankNAme"));
                 SqlParams.Add(new SqlParameter("@NewOrEdit", NewOrEdit));
-                SqlParams.Add(new SqlParameter("@DateFrom", DateFrom));
-                SqlParams.Add(new SqlParameter("@DateTo", DateTo));
+                SqlParams.Add(new SqlParameter("@DateFrom", ParseFormattedDate(DateFrom)));
+                SqlParams.Add(new SqlParameter("@DateTo", ParseFormattedDate(DateTo)));
 
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpBankreconcilation", SqlParams);
@@ -66,8 +67,8 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@NewOrEdit", NewOrEdit);
                     command.Parameters.AddWithValue("@chequeNo", chequeNo);
                     command.Parameters.AddWithValue("@BankAccountCode", Account_Code);
-                    command.Parameters.AddWithValue("@DateFrom", DateFrom);
-                    command.Parameters.AddWithValue("@DateTo", DateTo);
+                    command.Parameters.AddWithValue("@DateFrom", ParseFormattedDate(DateFrom));
+                    command.Parameters.AddWithValue("@DateTo", ParseFormattedDate(DateTo));
 
 
                     await connection.OpenAsync();
