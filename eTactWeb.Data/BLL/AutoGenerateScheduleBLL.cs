@@ -21,10 +21,19 @@ namespace eTactWeb.Data.BLL
             _AutoGenerateScheduleDAL = new AutoGenerateScheduleDAL(config, dataLogicDAL);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<ResponseResult> GetMrpNo(string SchEffectivedate, string MrpYearCode)
+        public async Task<ResponseResult> GetMrpNo(string SchEffectivedate, int YearCode)
         {
-            return await _AutoGenerateScheduleDAL.GetMrpNo( SchEffectivedate,  MrpYearCode);
+            return await _AutoGenerateScheduleDAL.GetMrpNo( SchEffectivedate, YearCode);
         }
+         public async Task<ResponseResult> GetMrpId(string SchEffectivedate, int YearCode, int MrpNo, int MrpYearCode)
+        {
+            return await _AutoGenerateScheduleDAL.GetMrpId( SchEffectivedate, YearCode, MrpNo, MrpYearCode);
+        }
+         public async Task<ResponseResult> GetMrpYearCode(string SchEffectivedate, int YearCode, int MrpNo)
+        {
+            return await _AutoGenerateScheduleDAL.GetMrpYearCode( SchEffectivedate, YearCode, MrpNo);
+        }
+
         public async Task<AutoGenerateScheduleModel> GetAutoGenSchDetailData(string ReportType, string SchEffectivedate, string MrpNo, int MrpYearCode, int MrpEntryId, int CreatedBy, string CC, int UID, string MachineName)
         {
             return await _AutoGenerateScheduleDAL.GetAutoGenSchDetailData(ReportType, SchEffectivedate, MrpNo, MrpYearCode, MrpEntryId, CreatedBy, CC,UID, MachineName);

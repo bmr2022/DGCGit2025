@@ -21,7 +21,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
         }
-        public async Task<ResponseResult> GetMrpNo(string SchEffectivedate, string MrpYearCode)
+        public async Task<ResponseResult> GetMrpNo(string SchEffectivedate, int YearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -29,7 +29,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillMRPNO"));
                 SqlParams.Add(new SqlParameter("@SchEffectivedate", SchEffectivedate));
-                SqlParams.Add(new SqlParameter("@CurrentYear", MrpYearCode));
+                SqlParams.Add(new SqlParameter("@CurrentYear", YearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SpGenerateAutoPurchScheduleAgainstMRP", SqlParams);
             }
             catch (Exception ex)
@@ -41,6 +41,50 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+         public async Task<ResponseResult> GetMrpId(string SchEffectivedate, int YearCode, int MrpNo, int MrpYearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillMRPentryid"));
+                SqlParams.Add(new SqlParameter("@SchEffectivedate", SchEffectivedate));
+                SqlParams.Add(new SqlParameter("@CurrentYear", YearCode));
+                SqlParams.Add(new SqlParameter("@MRPNO", MrpNo));
+                SqlParams.Add(new SqlParameter("@MRPYearcode", MrpYearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpGenerateAutoPurchScheduleAgainstMRP", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+         public async Task<ResponseResult> GetMrpYearCode(string SchEffectivedate, int YearCode, int MrpNo)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillMRPyearcode"));
+                SqlParams.Add(new SqlParameter("@SchEffectivedate", SchEffectivedate));
+                SqlParams.Add(new SqlParameter("@CurrentYear", YearCode));
+                SqlParams.Add(new SqlParameter("@MRPNO", MrpNo));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpGenerateAutoPurchScheduleAgainstMRP", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<AutoGenerateScheduleModel> GetAutoGenSchDetailData(string ReportType, string SchEffectivedate, string MrpNo, int MrpYearCode, int MrpEntryId, int CreatedBy, string CC, int UID, string MachineName)
         {
             var resultList = new AutoGenerateScheduleModel();
