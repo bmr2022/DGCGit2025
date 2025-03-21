@@ -2538,7 +2538,7 @@ public class ProductionEntryDAL
                                                              ProdSchYearCode = Convert.ToInt32(row["ProdSchYearCode"]),
                                                              WorkCenter = row["WorkCenter"] == DBNull.Value ? string.Empty : row["WorkCenter"].ToString(),
                                                              WcId = Convert.ToInt32(row["WCID"]),
-
+                                                             BomNo = Convert.ToInt32(row["BOMNO"])
                                                          }).ToList();
             }
         }
