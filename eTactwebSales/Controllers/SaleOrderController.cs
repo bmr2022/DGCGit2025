@@ -45,7 +45,8 @@ public class SaleOrderController : Controller
 
 	private EncryptDecrypt _EncryptDecrypt { get; }
 	private IWebHostEnvironment _IWebHostEnvironment { get; }
-	private LoggerInfo LoggerInfo { get; }
+    public IMemoryCache IMemoryCache { get; }
+    private LoggerInfo LoggerInfo { get; }
 
 	public PartialViewResult AddSchedule(DeliverySchedule model)
 	{
@@ -1530,122 +1531,110 @@ public class SaleOrderController : Controller
 	[HttpPost]
 	public IActionResult UploadExcel()
 	{
-		var excelFile = Request.Form.Files[0];
-		string Currency = Request.Form.Where(x => x.Key == "Currency").FirstOrDefault().Value;
-		var GetExhange = GetCurrency(Currency);
-
-		ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-		List<ItemDetail> data = new List<ItemDetail>();
-
-		using (var stream = excelFile.OpenReadStream())
-		using (var package = new ExcelPackage(stream))
+		try
 		{
-			var worksheet = package.Workbook.Worksheets[0];
-			for (int row = 2; row <= worksheet.Dimension.Rows; row++)
+			IFormFile ExcelFile = Request.Form.Files.FirstOrDefault();
+			if (ExcelFile == null || ExcelFile.Length == 0)
 			{
-				//var itemCatCode = IStockAdjust.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
-				var itemCode = _ISaleOrder.GetItemCode(worksheet.Cells[row, 3].Value.ToString());
-				var partcode = 0;
-				var itemCodeValue = 0;
-				if (itemCode.Result.Result != null)
-				{
-					partcode = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
-					itemCodeValue = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
-				}
-				if (partcode == 0)
-				{
-					return Json("Partcode not available");
-				}
-
-				JObject AltRate = JObject.Parse(GetExhange.Result.Value.ToString());
-				decimal AltRateToken = (decimal)AltRate["Result"][0]["Rate"];
-				var RateInOther = Convert.ToDecimal(worksheet.Cells[row, 10].Value) * AltRateToken;
-
-				data.Add(new ItemDetail()
-				{
-					SeqNo = Convert.ToInt32(worksheet.Cells[row, 2].Value.ToString()),
-					PartCode = partcode,
-					ItemCode = itemCodeValue,
-					PartText = worksheet.Cells[row, 3].Value.ToString(),
-					ItemText = worksheet.Cells[row, 4].Value.ToString(),
-					HSNNo = Convert.ToInt32(worksheet.Cells[row, 5].Value.ToString()),
-					Qty = Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()),
-					Unit = worksheet.Cells[row, 7].Value.ToString(),
-					AltQty = Convert.ToDecimal(worksheet.Cells[row, 8].Value.ToString()),
-					AltUnit = worksheet.Cells[row, 9].Value == null ? "" : worksheet.Cells[row, 9].Value.ToString(),
-					Rate = Convert.ToDecimal(worksheet.Cells[row, 10].Value.ToString()),
-					OtherRateCurr = RateInOther,
-					UnitRate = worksheet.Cells[row, 12].Value.ToString(),
-					DiscPer = Convert.ToDecimal(worksheet.Cells[row, 13].Value.ToString()),
-					DiscRs = Convert.ToDecimal(worksheet.Cells[row, 14].Value.ToString()),
-					Amount = Convert.ToDecimal(worksheet.Cells[row, 15].Value.ToString()),
-					TolLimit = Convert.ToDecimal(worksheet.Cells[row, 16].Value.ToString()),
-					Description = worksheet.Cells[row, 17].Value == null ? "" : worksheet.Cells[row, 17].Value.ToString(),
-					Remark = worksheet.Cells[row, 18].Value == null ? "" : worksheet.Cells[row, 18].Value.ToString(),
-					AmendmentNo = worksheet.Cells[row, 19].Value == null ? "" : worksheet.Cells[row, 19].Value.ToString(),
-					AmendmentDate = worksheet.Cells[row, 20].Value.ToString(),
-					AmendmentReason = worksheet.Cells[row, 21].Value == null ? "" : worksheet.Cells[row, 21].Value.ToString(),
-					Color = worksheet.Cells[row, 22].Value == null ? "" : worksheet.Cells[row, 22].Value.ToString(),
-					Rejper = Convert.ToDecimal(worksheet.Cells[row, 23].Value) == null ? 0 : Convert.ToDecimal(worksheet.Cells[row, 23].Value),
-					Excessper = Convert.ToInt32(worksheet.Cells[row, 24].Value) == null ? 0 : Convert.ToInt32(worksheet.Cells[row, 24].Value),
-					ProjQty1 = Convert.ToDecimal(worksheet.Cells[row, 25].Value.ToString()),
-					ProjQty2 = Convert.ToDecimal(worksheet.Cells[row, 26].Value.ToString()),
-				});
+				return BadRequest("Invalid file. Please upload a valid Excel file.");
 			}
-		}
 
-
-		var MainModel = new SaleOrderModel();
-		var POItemGrid = new List<ItemDetail>();
-		var POGrid = new List<ItemDetail>();
-		var SSGrid = new List<ItemDetail>();
-
-		MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-		{
-			AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-			SlidingExpiration = TimeSpan.FromMinutes(55),
-			Size = 1024,
-		};
-		var seqNo = 0;
-
-		_MemoryCache.Remove("ItemList");
-
-		foreach (var item in data)
-		{
-			_MemoryCache.TryGetValue("ItemList", out SaleOrderModel Model);
-
-			if (item != null)
+			string path = Path.Combine(this._IWebHostEnvironment.WebRootPath, "Uploads");
+			if (!Directory.Exists(path))
 			{
-
-				if (Model == null)
-				{
-					item.SeqNo += seqNo + 1;
-					POItemGrid.Add(item);
-					seqNo++;
-				}
-				else
-				{
-					if (Model.ItemDetailGrid.Where(x => x.ItemCode == item.ItemCode).Any())
-					{
-						return StatusCode(207, "Duplicate");
-					}
-					else
-					{
-						item.SeqNo = Model.ItemDetailGrid.Count + 1;
-						POItemGrid = Model.ItemDetailGrid.Where(x => x != null).ToList();
-						SSGrid.AddRange(POItemGrid);
-						POItemGrid.Add(item);
-					}
-				}
-				MainModel.ItemDetailGrid = POItemGrid;
-
-				_MemoryCache.Set("ItemList", MainModel, cacheEntryOptions);
-				HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+				Directory.CreateDirectory(path);
 			}
-		}
-		_MemoryCache.TryGetValue("ItemList", out SaleOrderModel MainModel1);
 
-		return PartialView("_SaleItemGrid", MainModel);
+			string fileName = Path.GetFileName(ExcelFile.FileName);
+			string filePath = Path.Combine(path, fileName);
+			using (FileStream stream = new FileStream(filePath, FileMode.Create))
+			{
+				ExcelFile.CopyTo(stream);
+			}
+
+			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+			var SaleGridList = new List<ItemDetail>();
+			using (var package = new ExcelPackage(new FileInfo(filePath)))
+			{
+				ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
+				if (worksheet == null)
+				{
+					return BadRequest("Uploaded file does not contain any worksheet.");
+				}
+
+				var rowCount = worksheet.Dimension.Rows;
+				
+
+				var Error = new Dictionary<string, string>();
+
+				for (int row = 2; row <= rowCount; row++)
+				{
+					bool isRowEmpty = true;
+					for (int col = 1; col <= worksheet.Dimension.Columns; col++)
+					{
+						if (!string.IsNullOrEmpty((worksheet.Cells[row, col].Value ?? string.Empty).ToString().Trim()))
+						{
+							isRowEmpty = false;
+							break;
+						}
+					}
+					if (isRowEmpty) continue;
+
+					var partCode = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
+					decimal qty = decimal.TryParse(worksheet.Cells[row, 6].Value?.ToString(), out decimal tempQty) ? tempQty : 0;
+					DateTime delDate = DateTime.TryParse(worksheet.Cells[row, 4].Value?.ToString(), out DateTime tempDelDate) ? tempDelDate : DateTime.MinValue;
+
+					SaleGridList.Add(new ItemDetail
+					{
+						//PartCode = partCode.ToString(),
+						Qty = qty,
+						PartText = worksheet.Cells[row, 1].Value?.ToString() ?? "",
+
+						Unit = worksheet.Cells[row, 2].Value?.ToString() ?? "",
+						//PartText = worksheet.Cells[row, 3].Value?.ToString() ?? "",
+						ItemText = worksheet.Cells[row, 9].Value?.ToString() ?? "",
+						HSNNo = int.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out int tempHSN) ? tempHSN : 0,
+						AltQty = decimal.TryParse(worksheet.Cells[row, 8].Value?.ToString(), out decimal tempAltQty) ? tempAltQty : 0,
+						AltUnit = worksheet.Cells[row, 9].Value?.ToString() ?? "",
+						Rate = decimal.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out decimal tempRate) ? tempRate : 0,
+						OtherRateCurr = decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempOtherRate) ? tempOtherRate : 0,
+						UnitRate = worksheet.Cells[row, 12].Value?.ToString() ?? "",
+						DiscPer = decimal.TryParse(worksheet.Cells[row, 13].Value?.ToString(), out decimal tempDiscPer) ? tempDiscPer : 0,
+						DiscRs = decimal.TryParse(worksheet.Cells[row, 14].Value?.ToString(), out decimal tempDiscRs) ? tempDiscRs : 0,
+						Amount = decimal.TryParse(worksheet.Cells[row, 15].Value?.ToString(), out decimal tempAmount) ? tempAmount : 0,
+						TolLimit = decimal.TryParse(worksheet.Cells[row, 16].Value?.ToString(), out decimal tempTolLimit) ? tempTolLimit : 0,
+						Description = worksheet.Cells[row, 17].Value?.ToString() ?? "",
+						Remark = worksheet.Cells[row, 18].Value?.ToString() ?? "",
+						AmendmentNo = worksheet.Cells[row, 19].Value?.ToString() ?? "",
+						AmendmentDate = worksheet.Cells[row, 20].Value?.ToString() ?? "",
+						AmendmentReason = worksheet.Cells[row, 21].Value?.ToString() ?? "",
+						Color = worksheet.Cells[row, 22].Value?.ToString() ?? "",
+						Rejper = decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempRejper) ? tempRejper : 0,
+						Excessper = int.TryParse(worksheet.Cells[row, 24].Value?.ToString(), out int tempExcessper) ? tempExcessper : 0,
+						ProjQty1 = decimal.TryParse(worksheet.Cells[row, 25].Value?.ToString(), out decimal tempProjQty1) ? tempProjQty1 : 0,
+						ProjQty2 = decimal.TryParse(worksheet.Cells[row, 26].Value?.ToString(), out decimal tempProjQty2) ? tempProjQty2 : 0,
+					});
+				}
+			}
+
+
+			var MainModel = new SaleOrderModel();
+				MainModel.ItemDetailGrid = SaleGridList;
+				MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+				{
+					AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+					SlidingExpiration = TimeSpan.FromMinutes(55),
+					Size = 1024,
+				};
+				//IMemoryCache.Set("ItemList", MainModel.ItemDetailGrid, cacheEntryOptions);
+				return PartialView("_SaleItemGrid", MainModel);
+			
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error occurred while processing the Excel file.");
+			return StatusCode(500, "An internal server error occurred. Please check the file format.");
+		}
 	}
 
 }
