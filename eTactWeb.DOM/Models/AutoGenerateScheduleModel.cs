@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public string CC { get; set; }
         public int MrpNo { get; set; }
         public int UID { get; set; }
+        public int YearCode { get; set; }
         public int AccountCode { get; set; }
         public int SoEntryId { get; set; }
         public string Sono { get; set; }

@@ -33,25 +33,38 @@ namespace eTactWeb.Controllers
             MainModel.AutoGenerateScheduleGrid = new List<AutoGenerateScheduleModel>();
             //MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             //MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            MainModel.MrpYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.CC = HttpContext.Session.GetString("Branch");
             return View(MainModel); // Pass the model with old data to the view
         }
-        public async Task<JsonResult> GetMrpNo(string SchEffectivedate, string MrpYearCode)
+        public async Task<JsonResult> GetMrpNo(string SchEffectivedate, int YearCode)
         {
-            var JSON = await _IAutoGenerateSchedule.GetMrpNo(SchEffectivedate, MrpYearCode);
+            var JSON = await _IAutoGenerateSchedule.GetMrpNo(SchEffectivedate, YearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+         public async Task<JsonResult> GetMrpId(string SchEffectivedate, int YearCode, int MrpNo, int MrpYearCode)
+        {
+            var JSON = await _IAutoGenerateSchedule.GetMrpId(SchEffectivedate, YearCode, MrpNo, MrpYearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+         public async Task<JsonResult> GetMrpYearCode(string SchEffectivedate, int YearCode, int MrpNo)
+        {
+            var JSON = await _IAutoGenerateSchedule.GetMrpYearCode(SchEffectivedate, YearCode, MrpNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         public async Task<IActionResult> GetAutoGenSchDetailData(string ReportType, string SchEffectivedate, string MrpNo, int MrpYearCode, int MrpEntryId, int CreatedBy, string CC, int UID, string MachineName)
         {
             var model = new AutoGenerateScheduleModel();
             model = await _IAutoGenerateSchedule.GetAutoGenSchDetailData(ReportType,SchEffectivedate,MrpNo,MrpYearCode, MrpEntryId,  CreatedBy,  CC,  UID,  MachineName);
             if(ReportType== "List Of Item For Schedule")
             {
-                return PartialView("_AutoGenSchListOfItem", model);
+                return PartialView("_AutoGenSchListOfItem", model); 
             }
             if(ReportType== "Generate Purchase Schedule")
             {
