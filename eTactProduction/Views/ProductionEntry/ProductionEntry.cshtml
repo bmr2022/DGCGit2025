@@ -2739,14 +2739,14 @@
         }
 
         function CheckAutoOrManual() {
-
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetFeatureOption")",
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#ProdEntryAllowToAddRMItem').val(obj.Result[0].ProdEntryAllowToAddRMItem);
@@ -3831,14 +3831,14 @@
         }
 
         function GetItem() {
-            debugger 
+              
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetItems")",
                 dataType: "json",
                 data: { ProdAgainst: $('#ProdAgainstPlanManual').val(), YearCode: $('#YearCode').val() },
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -3863,14 +3863,14 @@
         }
 
         function GetPartCode() {
-            debugger
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPartCode")",
                 dataType: "json",
                 data: { ProdAgainst: $('#ProdAgainstPlanManual').val(), YearCode: $('#YearCode').val() },
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {

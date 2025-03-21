@@ -88,16 +88,7 @@
 
         $(document).ready(function () {
             console.log("Ready");
-          
-          
             GetDetailsData();
-
-          
-
-          
-           
-
-
         });
 
         function selection(CurrentRow) {
@@ -112,7 +103,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetPendingProductionEntry", "ProductionEntry")',
-                data: { Yearcode: 2024 },
+                data: { Yearcode: new Date().getFullYear() },
 
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -128,7 +119,7 @@
         }
 
         function ShowingRow(i) {
-            debugger
+             
             var ItemData = {
                 "PlanNo": $('#PendingPlanNo-' + i).text(),
                 "PlanNoDate": $('#PendingPlanNoDate-' + i).text(),
@@ -150,7 +141,7 @@
                 type: "POST",
                 data: ItemData,
                 success: function (data) {
-                    debugger
+                     
                     if (data != null) {
                         var url = '/ProductionEntry/Index';
                         window.location.href = url;

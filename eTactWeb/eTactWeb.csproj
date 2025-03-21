@@ -69,6 +69,7 @@
 		<None Include="Views\Shared\_FormsButton.cshtml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		
 
 		<None Include="Views\Shared\_DrCrTable.cshtml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -118,7 +119,7 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.2" />
 		<PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.0" />
 		<PackageReference Include="Moment.js" Version="2.29.4" />

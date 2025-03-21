@@ -294,7 +294,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC,int entryByEmp,string EntryByMachineName)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC,int entryByEmp,string EntryByMachineName, string EntryDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -305,6 +305,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
                 SqlParams.Add(new SqlParameter("@entryByEmp", entryByEmp));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
+                SqlParams.Add(new SqlParameter("@EntryDate", ParseFormattedDate(EntryDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_StockAdjustment", SqlParams);
             }
             catch (Exception ex)

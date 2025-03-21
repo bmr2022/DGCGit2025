@@ -36,7 +36,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetItems(int ItemCode);
         Task<ResponseResult> GetWCName(int Wcid);
         Task<ResponseResult> GetStoreName(int storeid);
-        Task<ResponseResult> DeleteByID(int ID, int YC, int entryByEmp, string EntryByMachineName);
+        Task<ResponseResult> DeleteByID(int ID, int YC, int entryByEmp, string EntryByMachineName,string EntryDate);
         Task<StockAdjustmentModel> GetViewByID(int ID, string Mode, int YC);
     }
 }
