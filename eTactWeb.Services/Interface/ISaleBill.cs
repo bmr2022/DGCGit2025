@@ -40,6 +40,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> DeleteByID(int ID, int YC, string machineName);
 
         Task<List<CustomerJobWorkIssueAdjustDetail>> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
-        //Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type, string InvoiceNo, int AccountCode);
     }
 }

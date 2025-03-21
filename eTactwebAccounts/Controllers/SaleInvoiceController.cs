@@ -1103,40 +1103,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "")
+        public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "",string InvoiceNo = "",int AccountCode = 0 )
         {
-
-            //string my_connection_string;
-            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            //string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //var webReport = new WebReport();
-            //webReport.Report.Clear();
-            //var ReportName = _SaleBill.GetReportName();
-            //webReport.Report.Dispose();
-            //webReport.Report = new Report();
-            //if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
-            //{
-            //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
-            //}
-            //else
-            //{
-            //    webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
-            //}
-            //webReport.Report.SetParameterValue("entryparam", EntryId);
-            //webReport.Report.SetParameterValue("yearparam", YearCode);
-            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
-            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            //webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            //webReport.Report.Prepare();
-            //foreach (var dataSource in webReport.Report.Dictionary.DataSources)
-            //{
-            //    if (dataSource is TableDataSource tableDataSource)
-            //    {
-            //        tableDataSource.Enabled = true;
-            //        tableDataSource.Init(); // Refresh the data source
-            //    }
-            //}
-            //return View(webReport);
+            var ReportData = _SaleBill.GetReportData(EntryId, YearCode, Type,InvoiceNo,AccountCode);
 
             string my_connection_string;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
