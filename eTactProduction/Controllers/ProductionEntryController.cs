@@ -257,6 +257,7 @@ namespace eTactWeb.Controllers
                     MainModel.ProdPlan = PendingProductionEntryModel.PlanNo;
                     MainModel.ProdPlanYear = PendingProductionEntryModel.PlanNoYearCode;
                     MainModel.ProdPlanDate = PendingProductionEntryModel.PlanNoDate;
+                    MainModel.BOMNo = PendingProductionEntryModel.BomNo;
                 }
                 //_MemoryCache.Set("KeyMIRGrid", MainModel1, cacheEntryOptions);
             }
