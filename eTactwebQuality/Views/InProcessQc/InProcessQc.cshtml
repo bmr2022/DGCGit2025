@@ -715,14 +715,14 @@
         }
 
         function FillTransferToStore(i) {
-            debugger
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillTransferToStore")",
                 dataType: "json",
                 data: {},
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {

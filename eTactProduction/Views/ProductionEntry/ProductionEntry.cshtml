@@ -3893,7 +3893,7 @@
                 dataType: "json",
                 data: { ProdAgainst: $('#ProdAgainstPlanManual').val(), YearCode: $('#YearCode').val() },
                 success: function (result, status, error) {
-                     
+                      
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -3906,6 +3906,7 @@
                                 $('#ItemName').append('<option ' + isSelected + ' value="' + val.Item_Code + '">' + val.Item_Name + '</option>');
                             });
                             if (ItemCode) {
+                                $('#FGItemCode').val(ItemCode);
                                 GetItemNameForPendingProduction();
                             }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
@@ -4036,7 +4037,7 @@
         })
 
         function FillBomNo() {
-            debugger
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillBomNo")",
@@ -4044,15 +4045,18 @@
                 data: { ItemCode: parseInt($('#FGItemCode').val()) },
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var BomEffecDate = obj.Result[0].EffectiveDate;
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#BOMNo').empty();
                             $('#BOMNo').append('<option>-Select-</option>');
+                            var BomNo = "@Model.BOMNo";
+                            BomNo = BomNo ? parseInt(BomNo, 10) : 0;
                             $.each(obj.Result, function (index, val) {
-                                $('#BOMNo').append('<option selected value="' + val.BomNo + '">' + val.BomNo + '</option>')
+                                var isSelected = (val.BomNo == BomNo) ? "selected" : "";
+                                $('#BOMNo').append('<option '+ isSelected +' value="' + val.BomNo + '">' + val.BomNo + '</option>')
                             })
 
                             $('#BomEffecDate').val(BomEffecDate.split("T")[0]);
