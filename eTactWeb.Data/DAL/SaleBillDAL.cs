@@ -1235,9 +1235,9 @@ namespace eTactWeb.Data.DAL
                                 ChallanNo = row["RecJWChallan"].ToString(),
                                 YearCode = Convert.ToInt32(row["RecChallanYearCode"]),
                                 ChallanDate = row["RecChallandate"].ToString(),
-                                RecQty = row["RecQty"] != DBNull.Value ? Convert.ToSingle(row["RecQty"]) : 0,
-                                IssQty = row["IssQty"] != null ? Convert.ToSingle(row["IssQty"]) : 0,
-                                AccPendQty = row["ActualPendQty"] != DBNull.Value ? Convert.ToSingle(row["ActualPendQty"]) : 0,
+                                RecQty = row["RecQty"] != DBNull.Value ? Convert.ToDecimal(row["RecQty"]) : 0,
+                                IssQty = row["IssQty"] != null ? Convert.ToDecimal(row["IssQty"]) : 0,
+                                AccPendQty = row["ActualPendQty"] != DBNull.Value ? Convert.ToDecimal(row["ActualPendQty"]) : 0,
                                 PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0
                             }
                         });
