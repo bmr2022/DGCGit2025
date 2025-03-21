@@ -127,9 +127,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _StockAdjustmentDAL.GetStoreName(storeid);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, int entryByEmp, string EntryByMachineName)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, int entryByEmp, string EntryByMachineName, string EntryDate)
         {
-            return await _StockAdjustmentDAL.DeleteByID(ID, YC,entryByEmp,EntryByMachineName);
+            return await _StockAdjustmentDAL.DeleteByID(ID, YC,entryByEmp,EntryByMachineName,EntryDate);
         }
         public async Task<StockAdjustmentModel> GetViewByID(int ID, string Mode, int YC)
         {

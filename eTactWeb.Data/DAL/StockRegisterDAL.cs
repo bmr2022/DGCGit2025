@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -54,12 +55,9 @@ namespace eTactWeb.Data.DAL
                             CommandType = CommandType.StoredProcedure
                         };
                     }
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
                     oCmd.Parameters.AddWithValue("@Flag", ReportType);
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
+                    oCmd.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName);
                     oCmd.Parameters.AddWithValue("@GroupName", ItemGroup);
@@ -106,7 +104,7 @@ namespace eTactWeb.Data.DAL
                                                          AltRecQty = Convert.ToDecimal(dr["AltRecQty"].ToString()),
                                                          AltIssQty = Convert.ToDecimal(dr["AltIssQty"].ToString()),
                                                          GroupName = string.IsNullOrEmpty(dr["Group_name"].ToString()) ? "" : dr["Group_name"].ToString(),
-                                                         package = string.IsNullOrEmpty(dr["package"].ToString()) ? "" : dr["package"].ToString()
+                                                         //package = string.IsNullOrEmpty(dr["package"].ToString()) ? "" : dr["package"].ToString()
                                                      }).ToList();
                     }
                 }

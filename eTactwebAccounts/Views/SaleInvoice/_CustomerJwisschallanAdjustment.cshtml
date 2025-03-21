@@ -14,39 +14,35 @@
         {
             Cntr = Cntr + 1;
             <tr id="@Cntr" class="small" id="divUnMain" style="white-space:nowrap">
-                <td style="white-space:nowrap;">
-
-                    <a class="table-link link-primary" style="border:none;" id="editButton-@Cntr" onclick="EditItemRow(@item.ItemCode);">
-                        <span class="fa-stack">
-                            <i class="fa fa-square fa-stack-2x"></i>
-                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-
-                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.ItemCode);">
-                        <span class="fa-stack">
-                            <i class="fa fa-square fa-stack-2x"></i>
-                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-
-                </td>
                 <td>@Cntr</td>
-                <td>@item.CustomerName</td>
-                <td>@item.PartCode</td>
-                <td>@item.ItemName</td>
-                <td>@item.BOMIND</td>
-                <td>@item.ChallanNo</td>
-                <td>@item.YearCode</td>
+                <td>@item.EntryIdRecJW</td>
+                <td>@item.RecJWChallanNo</td>
+                <td>@item.RecYearCode</td>
                 <td>@item.ChallanDate</td>
-                <td>@item.RecQty</td>
-                <td>@item.IssQty</td>
-                <td>@item.AccPendQty</td>
+                <td>@item.RecPartCode</td>
+                <td>@item.RecItemName<input type="hidden" value="@item.RecItemCode"/></td>
+                <td>@item.BomNo</td>
+                <td>@item.BomDate</td>
+                <td>@item.BomStatus</td>
                 <td>@item.PendQty</td>
+                <td>@item.IssuePartCode</td>
+                <td>@item.IssueItemName</td>
+                <td>@item.BomQty</td>
+                <td>@item.Through</td>
+                <td>@item.QtyToBeRec</td>
+                <td>@item.ActualAdjQty</td>
+                <td>@item.Batchno</td>
+                <td>@item.UniqueBatchno</td>
+                <td>@item.IssueQty</td>
+                <td>@item.Rate</td>
+                <td>@item.OriginalRecQty</td>
+                <td>@item.IdealScrap</td>
+                <td>@item.IssuedScrap</td>
 
             </tr>
         }
     }
+    
 }
 <style>
     #container {

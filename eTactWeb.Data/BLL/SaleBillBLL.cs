@@ -136,13 +136,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.DeleteByID(ID, YC,machineName);
         }          
-        public  async Task<List<CustomerJobWorkIssueAdjustDetail>> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        public  async Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
         {
             return await  _SaleBillDAL.GetAdjustedChallanDetailsData(adjustedData,  YearCode,  EntryDate, ChallanDate, AccountCode);
         }
-        //public async Task<ResponseResult> GetReportName()
-        //{
-        //    return await _SaleBillDAL.GetReportName();
-        //}
+        public async Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type,string InvoiceNo,int AccountCode)
+        {
+            return await _SaleBillDAL.GetReportData(EntryId, YearCode, Type,InvoiceNo,AccountCode);
+        }
     }
 }

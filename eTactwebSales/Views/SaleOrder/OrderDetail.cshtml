@@ -459,7 +459,7 @@
 											<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
 										</button>
 									</div>
-									@if (Model.Mode == "SOA" || Model.Mode == "SSA")
+									@if (Model.Mode != "SOA" || Model.Mode != "SSA")
 									{
 										<div class="col-auto">
 											<button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
@@ -475,6 +475,7 @@
 											</button>
 										</div>
 									}
+									
 									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
 										<div class="form-check form-switch d-flex justify-content-center mt-2">
 											<input asp-for="SH" class="form-check-input" type="checkbox" role="switch" />
@@ -668,6 +669,29 @@
 											<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
 										</button>
 									</div>
+									@if (Model.Mode != "SOA" || Model.Mode != "SSA")
+									{
+										<div class="col-auto">
+											<button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
+												<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
+											</button>
+										</div>
+										<div class="col-auto">
+											<input class="form-control" type="file" id="ExcelFile" />
+										</div>
+										<div class="col-auto">
+											<button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
+												<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+											</button>
+										</div>
+									}
+									<div class="col-lg-3 col-md-3 col-sm-3 text-center ImportExcel">
+
+										<div class="input_container">
+											<label for="files" class="btn btn-sm btn-outline-success mt-2">Import Excel</label>
+											<input id="files" class="Execllbl BtnUploadExl btn btn-sm btn-outline-success" style="display:none;" type="file">
+										</div>
+									</div>
 									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
 										<div class="form-check form-switch d-flex justify-content-center mt-2">
 											<input asp-for="SH" class="form-check-input" type="checkbox" role="switch" />
@@ -708,10 +732,14 @@
 								<div class="progress my-2 mb-3" style="height: 4px;">
 									<div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 								</div>
-								<div class="row justify-content-end">
-									<div class="col-md-2">
+								<div class="d-flex justify-content-end mb-2">
+									<div class="col-md-2 me-3">
 										<input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
 									</div>
+									<a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportSaleOrderFormate();">
+										<i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+										IMPORT FORMAT
+									</a>
 								</div>
 								<div class="card">
 									<div class="card-body overflow-auto pb-0">
@@ -751,6 +779,11 @@
 													<partial name="_SaleItemGrid" />
 												</tbody>
 											</table>
+											<div class="col-lg-2 col-md-3 col-sm-3 text-center mt-3 ms-auto">
+												<button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnGridExcel">
+													<i class="fa-solid fa-upload fa-fw fa-lg "></i> EXCEL
+												</button>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -1094,6 +1127,26 @@
 				}, 1000);
 			}
 		});
+		 document.querySelector("#files").onchange = function () {
+            const fileName = this.files[0]?.name;
+            const label = document.querySelector("label[for=files]");
+            label.innerText = fileName ?? "Import Excel";
+        };
+
+
+		 function ExportSaleOrderFormate() {
+            
+			$('#divSaleItemGrid').empty();
+            var wb = XLSX.utils.book_new();
+
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit","Rate", "Ori. MRP", "PO No.", "Date"] });
+
+            //ws['!ref'] = 'A1:I1';
+
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "ImportSaleOrderFormat.xlsx");
+        }
 
 		function NewEntryId() {
 
@@ -1365,13 +1418,18 @@
 
 
 		function UploadExcel() {
+			debugger;
 			var fileInput = $('#ExcelFile');
 			var file = fileInput.prop("files")[0];
 
 			var formData = new FormData();
 			formData.append("excelFile", file);
-			formData.append("Currency", $('#CurrencyID').find(":selected").text());
-
+			formData.append("Flag", "SALEORDER");
+			//formData.append("PoNo",$('#PONo').val());
+			//formData.append("POYearcode",$('#YearCode').val());
+			//formData.append("AccountCode",$('#AccountCode').val());
+			//formData.append("SchNo","");
+			//formData.append("SchYearCode",0);
 			var Err = 0;
 
 			if ($('#ExcelFile').val() == '') {
@@ -1393,6 +1451,9 @@
 					if (result == "Duplicate") {
 
 						$.notify("Duplicate Item Not allowed", "error");
+					}
+					else if (result == "Not Done") {
+						$.notify("Pend Qty cannot be less than 0!Please Try again!", "error");
 					}
 					else if (result == "Partcode not available") {
 						$.notify("Imported Partcode is not available, Please check!!!", "error");
@@ -1915,7 +1976,7 @@
 		//});
 
 		$(document).on('click', '.submitBTN,#submitBTNFooter', function (e) {
-
+			 
 			$('#TypeOfSave').val("NPS");
 			e.preventDefault();
 			var soGrid = $('#divSaleItemGrid tr td').length;
@@ -3241,6 +3302,12 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+
+
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+	@*<script src="~/Scripts/table2excel.js"></script>*@
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
 
 }

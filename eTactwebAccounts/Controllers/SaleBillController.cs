@@ -1,17 +1,4 @@
-﻿//using eTactWeb.Data.Common;
-//using eTactWeb.DOM.Models;
-//using eTactWeb.Services.Interface;
-//using FastReport;
-//using FastReport.Barcode;
-//using FastReport.Web;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.Extensions.Caching.Memory;
-//using Microsoft.Extensions.Configuration;
-//using Newtonsoft.Json;
-//using NuGet.Packaging;
-//using System.Composition;
-//using static eTactWeb.Data.Common.CommonFunc;
-//using static eTactWeb.DOM.Models.Common;
+﻿
 using eTactWeb.Data.Common;
 using FastReport.Web;
 using Microsoft.Extensions.Caching.Memory;
@@ -343,7 +330,7 @@ namespace eTactWeb.Controllers
         }
 
 
-        public static DataTable GetAdjustChallanDetailTable(List<CustomerJobWorkIssueAdjustDetail> model)
+        public static DataTable GetAdjustChallanDetailTable(List<CustomerInputJobWorkIssueAdjustDetail> model)
         {
             DataTable Table = new();
             Table.Columns.Add("ItemCode", typeof(int));
@@ -379,7 +366,7 @@ namespace eTactWeb.Controllers
                         Item.CustOrderNo ?? string.Empty,
                         Item.SOYearCode,
                         Item.SchNo ?? string.Empty,
-                        Item.SchYearcode,
+                        Item.SOYearCode,
                         Item.BOMIND ?? string.Empty,
                         Item.BOMNO,
                         Item.BOMEffDate == null ? string.Empty : ParseFormattedDate(Item.BOMEffDate) ,
@@ -394,7 +381,7 @@ namespace eTactWeb.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode, int itemCode)
+        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerInputJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode, int itemCode)
         {
             try
             {
@@ -855,27 +842,15 @@ namespace eTactWeb.Controllers
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
             webReport.Report.Load(webRootPath + "\\SaleBill.frx");
-
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-
-
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
-            //         ID = web; Password = bmr2401";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
             return View(webReport);
+
+
         }
     }
 }

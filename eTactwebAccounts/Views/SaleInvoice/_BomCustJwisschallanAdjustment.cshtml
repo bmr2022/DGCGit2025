@@ -1,0 +1,81 @@
+﻿@model List<eTactWeb.DOM.Models.BomCustomerJWIssChallanADJ>
+
+@{
+   
+    @if (Model == null || Model.Count == 0)
+    {
+        <tr class="text-center">
+            <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+        </tr>
+    }
+    else
+    {
+        var @Cntr = 0;
+        foreach (var item in Model)
+        {
+            Cntr = Cntr + 1;
+            <tr id="@Cntr" class="small" id="divUnMain" style="white-space:nowrap">
+                <td>@Cntr</td>
+                <td> @item.FGPartCode </td>
+                <td> @item.FGItemName <input type="hidden" value="@item.FinishedItemCode" /></td>
+                <td> @item.RMItemName </td>
+                <td> @item.RMPartCode </td>
+                <td> @item.Qty </td>
+                <td> @item.ActualPendQty </td>
+                <td> @item.PendToAdjust </td>
+                <td> @item.BOMIND </td>
+                <td> @item.ProdUnprod </td>
+                <td> @item.FullyAdjusted </td>
+
+            </tr>
+        }
+    }
+
+
+}
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+</style>

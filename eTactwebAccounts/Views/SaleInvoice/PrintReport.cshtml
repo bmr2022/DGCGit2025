@@ -1,5 +1,13 @@
-﻿@model FastReport.Web.WebReport
+﻿@model List<FastReport.Web.WebReport>
 @{
-    ViewData["Title"] = "Categories - Report";
+    ViewData["Title"] = "Sale Invoice Reports";
 }
-@await Model.Render()
+
+@foreach (var report in Model)
+{
+    <div>
+        <h2>@report.Report.GetParameterValue("copyType")</h2>
+        @await report.Render()
+    </div>
+}
+
