@@ -100,7 +100,7 @@
                                         <label asp-for="GroupName" class="form-label">Ledger Group</label>
                                         <input asp-for="GroupAccountCode" class="form-control" type="hidden" value="@Model.GroupAccountCode" />
                                  @*        <input asp-for="GroupCode" class="form-control" type="hidden" value="@Model.GroupCode" /> *@
-                                        <select asp-for="GroupName" id="GroupName" class="form-control" data-is-update-mode="@((Model?.Mode == "U" || Model?.Mode == "V") ? "true" : "false")">
+                                        <select disabled asp-for="GroupName" id="GroupName" class="form-control" data-is-update-mode="@((Model?.Mode == "U" || Model?.Mode == "V") ? "true" : "false")">
                                             <option value="@Model.GroupAccountCode">-Select-</option>
                                             @* <option value="@Model.AccountCode">-Select-</option>*@
                                             @if (Model.Mode == "U" || Model.Mode == "V")
@@ -125,6 +125,7 @@
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="ClosingYearCode" class="form-label" style="color:red">Closing Year*</label>
+                                        <input asp-for="FinFromDate" type="hidden" value="@Model.FinFromDate" />
                                         <input asp-for="ClosingYearCode" class="form-control" value="@Model.ClosingYearCode" readonly  />
                                     
                                     </div>
@@ -340,10 +341,7 @@
         $('#LedgerName').change(function () {
              
             GetGroupByAccountCode();
-        });
-        $('#GroupName').change(function () {
-             
-            GetLedgerByAccountCode();
+            GetAmountAndType();
         });
 
         // $('#LedgerName').change(function () {
@@ -391,13 +389,14 @@
                 }
             });
         }
-        function GetLedgerByAccountCode() {
-             
-            var AccountCode = $('#GroupAccountCode').val();
-            var ActualEntryDate = $('#ActualEntryDate').val();
-            var OpeningForYear = $('#OpeningForYear').val();
+
+        function GetAmountAndType() {
+            debugger
+            var AccountCode = $('#LedgerName').val();
+            var ActualEntryDate = $('#FinFromDate').val();
+            var OpeningForYear = $('#ClosingYearCode').val();
             $.ajax({
-                url: '@Url.Action("GetLedgerByAccountCode", "LedgerOpeningEntry")', // Action that returns FillGroup data
+                url: '@Url.Action("GetAmountAndType", "LedgerOpeningEntry")', // Action that returns FillGroup data
                 type: 'GET',
                 data:{
                     AccountCode: AccountCode,
@@ -405,20 +404,12 @@
                     OpeningForYear: OpeningForYear
                 },
                 success: function (response, status, error) {
-                    var ledgerDropdown = $('#GroupName');
+                    debugger
                     var obj = $.parseJSON(response);
-                    ledgerDropdown.empty();
-                    //ledgerDropdown.append('<option value="">-- Select Ledger --</option>');
-
-
-                    $.each(obj.Result, function (index, ledger) {
-                         
-                        ledgerDropdown.append('<option value="' + ledger.GroupCode + '">' + ledger.GroupName + '</option>');
-                    });
-                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
-                        var GroupCode = '@Model.GroupAccountCode';
-                        $('#LedgerName').val(GroupCode).trigger("change");
+                    $('#PreviousAmount').val(obj.Result[0].OpnAmt);
+                    var Type = obj.Result[0].OpnType;
+                    if (Type) {
+                        $("select[name='DrCr']").val(Type.toUpperCase()).trigger("change"); // Set the value & update Select2
                     }
                 },
                 error: function (xhr, status, error) {
@@ -430,7 +421,7 @@
         }
 
         function GetGroupByAccountCode() {
-             
+            debugger 
             var AccountCode = $('#LedgerName').val();
             $.ajax({
                 url: '@Url.Action("GetGroupByAccountCode", "LedgerOpeningEntry")', // Action that returns FillGroup data
@@ -518,109 +509,7 @@
 
 
         }
-        // $(document).on('select2:select', '#GroupName,#LedgerName', function (e) {
-        //      
-        //     var cntId = e.target.id;
-        //     if (cntId == 'GroupName') {
-        //         ItemNameChange(cntId);
-        //     }
-        //     else {
-        //         PartCodeChange(cntId);
-        //     }
-        // });
-
-        // function ItemNameChange(ID) {
-        //      
-        //     SetPartCodeItemName(ID);
-        // }
-
-        // function PartCodeChange(ID) {
-        //      
-        //     $.when(SetPartCodeItemName(ID)).done(function () {
-        //     });
-        // }
-
-        // function SetPartCodeItemName(ID) {
-        //     if (!ID) return;
-        //     else {
-        //          
-        //         var v = $('#' + ID).select2('val');
-        //         if (ID == "LedgerName") {
-        //             $("#GroupName").val(v).trigger("change");
-        //         }
-
-        //         if (ID == "GroupName") {
-        //             $("#LedgerName").val(v).trigger("change");
-        //         }
-        //     }
-        // }
         
-        // $(document).on('select2:select', '#LedgerName', function (e) {
-
-        //     var cntId = e.target.id;
-        //     if (cntId == 'LedgerName') {
-        //         ItemNameChange(cntId);
-        //     }
-            
-        // });
-
-        // function ItemNameChange(ID) {
-        //     SetPartCodeItemName(ID);
-        // }
-
-        // function PartCodeChange(ID) {
-
-        //     $.when(SetPartCodeItemName(ID)).done(function () {
-        //     });
-        // }
-
-        // function SetPartCodeItemName(ID) {
-        //     if (!ID) return;
-        //     else {
-
-        //         var v = $('#' + ID).select2('val');
-        //         if (ID == "LedgerName") {
-        //             $("#GroupName").val(v).trigger("change");
-        //         }
-        //     }
-        // }
-
-
-        // $('#GroupName').change(function () {
-             
-        //     var groupAccountCode = $(this).val(); 
-        //     if (groupAccountCode) {
-        //         $.ajax({
-        //             url: '@Url.Action("GetLedgersByGroup", "LedgerOpeningEntry")', 
-        //             type: 'GET',
-        //             data: { groupAccountCode: groupAccountCode },
-        //             success: function (response, status, error) {
-        //                 var ledgerDropdown = $('#LedgerName');
-        //                 var obj = $.parseJSON(response);
-        //                 ledgerDropdown.empty(); 
-        //                 ledgerDropdown.append('<option value="">-- Select Ledger --</option>');
-
-                       
-        //                 $.each(obj.Result, function (index, ledger) {
-        //                     ledgerDropdown.append('<option value="' + ledger.account_code + '">' + ledger.LedgerName + '</option>');
-        //                 });
-        //                 if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
-        //                     var GroupCode = '@Model.GroupAccountCode';
-        //                     $('#LedgerName').val(GroupCode).trigger("change");
-        //                 }
-        //             },
-        //             error: function (xhr, status, error) {
-        //                 alert('Failed to load ledgers.');
-        //             }
-
-        //         });
-        //     } else {
-               
-        //         $('#LedgerName').empty();
-        //         $('#LedgerName').append('<option value="">-- Select Ledger --</option>');
-        //     }
-        // });
         $('#GridButton').click(function (e) {
             e.preventDefault();
             
