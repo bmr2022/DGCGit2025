@@ -391,7 +391,7 @@
         }
 
         function GetAmountAndType() {
-            debugger
+             
             var AccountCode = $('#LedgerName').val();
             var ActualEntryDate = $('#FinFromDate').val();
             var OpeningForYear = $('#ClosingYearCode').val();
@@ -404,7 +404,7 @@
                     OpeningForYear: OpeningForYear
                 },
                 success: function (response, status, error) {
-                    debugger
+                     
                     var obj = $.parseJSON(response);
                     $('#PreviousAmount').val(obj.Result[0].OpnAmt);
                     var Type = obj.Result[0].OpnType;
@@ -421,7 +421,7 @@
         }
 
         function GetGroupByAccountCode() {
-            debugger 
+              
             var AccountCode = $('#LedgerName').val();
             $.ajax({
                 url: '@Url.Action("GetGroupByAccountCode", "LedgerOpeningEntry")', // Action that returns FillGroup data
