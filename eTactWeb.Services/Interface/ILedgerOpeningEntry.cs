@@ -11,7 +11,7 @@ namespace eTactWeb.Services.Interface
     public interface ILedgerOpeningEntry
     {
         Task<ResponseResult> GetGroupByAccountCode(int AccountCode); 
-        Task<ResponseResult> GetLedgerByAccountCode(int AccountCode, int OpeningForYear, string ActualEntryDate);
+        Task<ResponseResult> GetAmountAndType(int AccountCode, int OpeningForYear, string ActualEntryDate);
         Task<ResponseResult> GetLedgersALLGroup();
         Task<ResponseResult> GetAllGroupName();
         Task<ResponseResult> GetLedgersByGroup(string groupAccountCode);
