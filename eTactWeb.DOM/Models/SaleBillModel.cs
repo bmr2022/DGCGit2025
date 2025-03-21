@@ -318,6 +318,7 @@ namespace eTactWeb.DOM.Models
         public string FGItemName { get; set; }
         public int FinishedItemCode { get; set; }
         public string RMItemName { get; set; }
+        public int ItemCode { get; set; }
         public string RMPartCode { get; set; }
         public float Qty { get; set; }
         public float ActualPendQty { get; set; }
@@ -325,5 +326,11 @@ namespace eTactWeb.DOM.Models
         public string BOMIND { get; set; }
         public string ProdUnprod { get; set; }
         public string FullyAdjusted { get; set; }
+    }
+
+    public class AdjChallanDetail
+    {
+        public List<CustomerJobWorkIssueAdjustDetail> CustomerJobWorkIssueAdjustDetails { get; set; }
+        public List<BomCustomerJWIssChallanADJ> BomCustomerJWIssChallanAdj { get; set; }
     }
 }

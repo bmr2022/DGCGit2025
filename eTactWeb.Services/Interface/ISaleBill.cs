@@ -39,7 +39,7 @@ namespace eTactWeb.Services.Interface
         Task<SaleBillModel> GetViewByID(int ID, string Mode, int YC);
         Task<ResponseResult> DeleteByID(int ID, int YC, string machineName);
 
-        Task<List<CustomerJobWorkIssueAdjustDetail>> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
+        Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
         //Task<ResponseResult> GetReportName();
     }
 }
