@@ -13,6 +13,7 @@ namespace eTactWeb.Services.Interface
         public Task<ResponseResult> GetMrpNo(string SchEffectivedate, int YearCode);
         public Task<ResponseResult> GetMrpId(string SchEffectivedate, int YearCode,int MrpNo,int MrpYearCode);
         public Task<ResponseResult> GetMrpYearCode(string SchEffectivedate, int YearCode,int MrpNo);
+        //public Task<ResponseResult> GetAutoGenSchDetailData(string ReportType, string SchEffectivedate, string MrpNo, int MrpYearCode, int MrpEntryId, int CreatedBy, string CC, int UID, string MachineName);
         public  Task<AutoGenerateScheduleModel> GetAutoGenSchDetailData(string ReportType, string SchEffectivedate, string MrpNo, int MrpYearCode, int MrpEntryId, int CreatedBy,string CC,int UID,string MachineName);
     }
 }

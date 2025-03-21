@@ -1111,13 +1111,19 @@
 				}, 1000);
 			}
 		});
+		 document.querySelector("#files").onchange = function () {
+            const fileName = this.files[0]?.name;
+            const label = document.querySelector("label[for=files]");
+            label.innerText = fileName ?? "Import Excel";
+        };
+
 
 		 function ExportSaleOrderFormate() {
-            ;
+            
 			$('#divSaleItemGrid').empty();
             var wb = XLSX.utils.book_new();
 
-            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit", "Ori. MRP", "PO No.", "Date"] });
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit","Rate", "Ori. MRP", "PO No.", "Date"] });
 
             //ws['!ref'] = 'A1:I1';
 
