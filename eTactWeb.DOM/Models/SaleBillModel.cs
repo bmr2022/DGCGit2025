@@ -281,6 +281,7 @@ namespace eTactWeb.DOM.Models
         public string Produnprod { get; set; }
         public string fromChallanOrSalebill { get; set; }
         public string ItemAdjustmentRequired { get; set; }
+        public int SchYearcode {  get; set; }
     }
 
     public class CustomerJobWorkIssueAdjustDetail
@@ -310,6 +311,30 @@ namespace eTactWeb.DOM.Models
         public float OriginalRecQty{ get; set; }
         public string IdealScrap{ get; set; }
         public string IssuedScrap{ get; set; }
+        public string CustomerName { get; set; }
+        public string PartCode {  get; set; }
+        public string ItemName {  get; set; }
+        public string BOMIND { get; set; }
+        public string ChallanNo {  get; set; }
+        public int YearCode {  get; set; }
+        public decimal RecQty {  get; set; }
+        public decimal IssQty { get; set; }
+        public decimal AccPendQty { get; set; }
+        public decimal ItemCode { get; set; }
+        public string Unit {  get; set; }
+        public decimal BillQty {  get; set; }
+        public decimal JWRate { get; set; }
+        public int ProcessId {  get; set; }
+        public string SONO { get; set; }
+        public int SOYearCode { get; set; }
+        public string SchNo { get; set; }
+        public string CustOrderNo { get; set; }
+        public int SchYearcode {  get; set; }
+        public string BOMNO {  get; set; }
+        public string BOMEffDate {  get; set; }
+        public string Produnprod { get; set; }
+        public string fromChallanOrSalebill {  get; set; }
+        public string ItemAdjustmentRequired {  get; set; }
     }
 
     public class BomCustomerJWIssChallanADJ

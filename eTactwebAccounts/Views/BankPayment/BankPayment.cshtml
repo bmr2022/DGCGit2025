@@ -1525,7 +1525,7 @@
         }
 
         function AdjustButton() {
-            debugger;
+             ;
 
             if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
@@ -1533,14 +1533,25 @@
             for (var i = 1; i <= rowCount + 1; i++) {
 
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
+                    var type = $('#PopUpType-' + i).text().trim().toLowerCase();
+                    var adjAmt = parseFloat($('#AdjustAmt-' + i).val()) || 0; // Convert to float, default to 0
+
+                    var DrAmt = "0.00";
+                    var CrAmt = "0.00";
+
+                    if (type === "dr") {
+                        DrAmt = adjAmt.toFixed(2);
+                    } else if (type === "cr") {
+                        CrAmt = adjAmt.toFixed(2);
+                    }
                     ItemData.push({
                         "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
                         "AccountCode": $('#AccountCode').val(),
                         "Type": $('#PopUpType-' + i).text(),
                         "Balance": $('#BalanceAmt-' + i).text(),
                         "DRCR": $('#PopUpType-' + i).text(),
-                        "DrAmt": $('#PopDrAmt').val(),
-                        "CrAmt": $('#PopCrAmt').val(),
+                        "DrAmt": DrAmt,
+                        "CrAmt":CrAmt,
                         "ActualEntryby": $('#ActualEntryBy').val(),
                         "EntryByMachine": $('#EntryByMachine').val(),
                         "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),
@@ -1794,7 +1805,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-            debugger;
+             ;
             var RowCount = $('#divBankPaymentDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");

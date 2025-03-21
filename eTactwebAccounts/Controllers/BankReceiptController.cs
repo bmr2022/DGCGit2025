@@ -618,7 +618,7 @@ namespace eTactWeb.Controllers
                             item.SeqNo = ProductionEntryDetail.Count + 1;
 
                             // Swap Type values
-                            item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
+                           // item.Type = item.Type.ToLower() == "dr" ? "DR" : "CR";
 
                             // Add new item to list
                             ProductionEntryDetail.Add(item);

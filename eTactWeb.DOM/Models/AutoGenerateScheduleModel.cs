@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public string CC { get; set; }
         public int MrpNo { get; set; }
         public int UID { get; set; }
+        public int YearCode { get; set; }
         public int AccountCode { get; set; }
         public int SoEntryId { get; set; }
         public string Sono { get; set; }
@@ -21,6 +22,10 @@ namespace eTactWeb.DOM.Models
         public string ItemName { get; set; }
         public string VendorName { get; set; }
         public int VendSchOty { get; set; }
+        public float SchQty { get; set; }
+        public float PendQty { get; set; }
+        public string DeliveryWeek { get; set; }
+        public string AltUnit { get; set; }
         public string MachineName { get; set; }
         public string CustomerOrderNo { get; set; }
         public long SchEntryId { get; set; }
@@ -60,5 +65,30 @@ namespace eTactWeb.DOM.Models
         public double NewOrderQty { get; set; }
         public string ReportType { get; set; }
         public IList<AutoGenerateScheduleModel> AutoGenerateScheduleGrid { get; set; }
+        public IList<AutoGenerateScheduleModel> AutoGenerateScheduleGrid2 { get; set; }
+    }
+    public class AutoGenPurchaseScheduleModel
+    {
+        public string VendorName1 { get; set; } = string.Empty;
+        public string PONO1 { get; set; } = string.Empty;
+        public string PoDate1 { get; set; } = string.Empty;
+        public int PoYearCode1 { get; set; } = 0;
+        public string SchNo1 { get; set; } = string.Empty;
+        public string ScheduleDate1 { get; set; } = string.Empty;
+        public int SchAmendNo1 { get; set; } = 0;
+        public string ScheduleEffectiveFromDate1 { get; set; } = string.Empty;
+        public string ScheduleEffectiveTillDate1 { get; set; } = string.Empty;
+        public string PartCode1 { get; set; } = string.Empty;
+        public string ItemName1 { get; set; } = string.Empty;
+        public int SchQty1 { get; set; } = 0;
+        public string Unit1 { get; set; } = string.Empty;
+        public string DeliveryDate1 { get; set; } = string.Empty;
+        public string DeliveryWeek1 { get; set; } = string.Empty;
+        public string AltUnit1 { get; set; } = string.Empty;
+        public int PendQty1 { get; set; } = 0;
+        public int MRPNO1 { get; set; } = 0;
+        public int MRPNoYearCode1 { get; set; } = 0;
+        public int MRPEntry_Id1 { get; set; } = 0;
+        public IList<AutoGenPurchaseScheduleModel> AutoGenPurchaseScheduleGrid { get; set; }
     }
 }

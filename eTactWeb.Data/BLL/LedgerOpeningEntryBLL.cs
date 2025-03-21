@@ -30,9 +30,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _LedgerOpeningEntryDAL.GetGroupByAccountCode(AccountCode);
         } 
-        public async Task<ResponseResult> GetLedgerByAccountCode(int AccountCode, int OpeningForYear, string ActualEntryDate)
+        public async Task<ResponseResult> GetAmountAndType(int AccountCode, int OpeningForYear, string ActualEntryDate)
         {
-            return await _LedgerOpeningEntryDAL.GetLedgerByAccountCode( AccountCode,  OpeningForYear,  ActualEntryDate);
+            return await _LedgerOpeningEntryDAL.GetAmountAndType( AccountCode,  OpeningForYear,  ActualEntryDate);
         }
         public async Task<ResponseResult> GetLedgersALLGroup()
         {

@@ -20,7 +20,7 @@
                         PRINT VOUCHER
                     </a>
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
-                       asp-controller="SaleInvoice" asp-route-EntryId="@Model.SaleBillEntryId" asp-route-YearCode="@Model.SaleBillYearCode">
+                       asp-controller="SaleInvoice" asp-route-EntryId="@Model.SaleBillEntryId" asp-route-YearCode="@Model.SaleBillYearCode" asp-route-Type="SALEBILL" asp-route-InvoiceNo="@Model.SaleBillNo" asp-route-AccountCode="@Model.AccountCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT INVOICE
                     </a>
@@ -417,7 +417,7 @@
     <script>
 
         $(document).ready(function () {
-            debugger
+             
             GetServerDate();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
@@ -482,7 +482,7 @@
             AutoComplete("vehicleNo", "vehicleNo");
             AutoComplete("TransporterName", "TransporterName");
 
-            debugger
+             
             var InvDate = parseDateToFormat($('#SaleBillDate').val().split(" ")[0]);
 
             // var parts = InvDate.split('/');
@@ -769,7 +769,7 @@
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-                
+                 
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
@@ -795,7 +795,7 @@
             });
 
             console.log("Adustdata:", adjustedData);
-
+             
             $.ajax({
                 url: "@Url.Action("GetAdjustedChallanDetailsData")",
                 type: "POST",

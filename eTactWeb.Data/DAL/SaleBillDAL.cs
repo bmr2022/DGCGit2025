@@ -41,6 +41,30 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type,string InvoiceNo,int AccountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@ENTRYID", EntryId));
+                SqlParams.Add(new SqlParameter("@YEARCODE", YearCode));
+                SqlParams.Add(new SqlParameter("@BillTYpe", Type));
+                SqlParams.Add(new SqlParameter("@INVOICENO", InvoiceNo));
+                SqlParams.Add(new SqlParameter("@accountcode", AccountCode));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPHSNBILLREPORT", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             var _ResponseResult = new ResponseResult();

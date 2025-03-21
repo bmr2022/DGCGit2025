@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -61,7 +62,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         } 
-        public async Task<ResponseResult> GetLedgerByAccountCode (int AccountCode, int OpeningForYear, string ActualEntryDate)
+        public async Task<ResponseResult> GetAmountAndType (int AccountCode, int OpeningForYear, string ActualEntryDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -69,8 +70,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetLedgerOpening"));
                 SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDate));
-                SqlParams.Add(new SqlParameter("@OpeningForYear", OpeningForYear));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ParseFormattedDate(ActualEntryDate)));
+                SqlParams.Add(new SqlParameter("@CloseYearcode", OpeningForYear));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerOpeningEntry", SqlParams);
             }
             catch (Exception ex)
@@ -119,103 +120,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        /*
-        public async Task<ResponseResult> SaveWorkOrderProcess(LedgerOpeningEntryModel model)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-
-                var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime techwoDt = new DateTime();
-                DateTime amendmentDt = new DateTime();
-
-                entDt = ParseDate(model.ActualEntryDate);
-                //techwoDt = ParseDate(model.TechWODate);
-                //amendmentDt = ParseDate(model.AmendmentDate);
-
-                if (model.Mode == "U" || model.Mode == "V")
-                {
-                    SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
-                    SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.UpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdationDate", DateTime.Today));
-                }
-                else
-                {
-                    SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
-                }
-
-                SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode == 0 ? 0 : model.AccountCode));
-                SqlParams.Add(new SqlParameter("@GroupAccountCode", model.GroupAccountCode == 0 ? 0 : model.GroupAccountCode));
-                SqlParams.Add(new SqlParameter("@OpeningForYear", model.OpeningForYear == 0 ? 0 : model.OpeningForYear));
-                SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine == null ? "" : model.EntryByMachine));
-                SqlParams.Add(new SqlParameter("@Amount", model.PreviousAmount == 0 ? 0 : model.PreviousAmount));
-                SqlParams.Add(new SqlParameter("@DrCr", model.DrCr == null ? "" : model.DrCr));
-                //SqlParams.Add(new SqlParameter("@CC", model.CC == null ? "" : model.CC));
-                //SqlParams.Add(new SqlParameter("@EntryByEmpId", model.EntryByEmpId == 0 ? 0 : model.EntryByEmpId));
-                //SqlParams.Add(new SqlParameter("@ActualEntryDate", entDt == default ? string.Empty : entDt));
-                //SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedByEmpId == 0 ? 0 : model.UpdatedByEmpId));
-
-
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerOpeningEntry", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
-            return _ResponseResult;
-        }*/
-        //public async Task<ResponseResult> SaveWorkOrderProcess(LedgerOpeningEntryModel model)
-        //{
-        //    var _ResponseResult = new ResponseResult();
-        //    try
-        //    {
-        //        var SqlParams = new List<dynamic>();
-        //        DateTime entDt = ParseDate(model.ActualEntryDate);
-
-        //        if (model.Mode == "U" || model.Mode == "V") // Update mode
-        //        {
-        //            SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
-        //            SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedByEmpId));
-        //            SqlParams.Add(new SqlParameter("@Updationdate", DateTime.Today));
-        //        }
-        //        else
-        //        {
-        //            SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
-        //        }
-        //        SqlParams.Add(new SqlParameter("@EntryByEmpId", model.EntryByEmpId == 0 ? 0 : model.EntryByEmpId));
-        //        SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode == 0 ? 0 : model.AccountCode));
-        //        SqlParams.Add(new SqlParameter("@PreviousAmount", model.PreviousAmount == 0 ? 0 : model.PreviousAmount));
-        //        SqlParams.Add(new SqlParameter("@GroupAccountCode", model.GroupAccountCode == 0 ? 0 : model.GroupAccountCode));
-        //        SqlParams.Add(new SqlParameter("@OpeningForYear", model.OpeningForYear == 0 ? 0 : model.OpeningForYear));
-        //        SqlParams.Add(new SqlParameter("@EntryByMachine", string.IsNullOrEmpty(model.EntryByMachine) ? "" : model.EntryByMachine));
-        //        SqlParams.Add(new SqlParameter("@Amount", model.Amount == 0 ? 0 : model.Amount));
-        //        SqlParams.Add(new SqlParameter("@DrCr", string.IsNullOrEmpty(model.DrCr) ? "" : model.DrCr));
-        //        SqlParams.Add(new SqlParameter("@ActualEntryDate", string.IsNullOrEmpty(model.ActualEntryDate) ? "" : model.ActualEntryDate));
-
-        //        SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? "" : model.CC));
-
-        //        //if (model.Mode == "U")
-        //        //{
-        //        //    SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedByEmpId == 0 ? 0 : model.UpdatedByEmpId));
-        //        //    SqlParams.Add(new SqlParameter("@Updationdate", model.Updationdate == null ? "" : model.Updationdate));
-        //        //}
-
-        //        _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerOpeningEntry", SqlParams);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
-        //        _ResponseResult.StatusText = "Error";
-        //        _ResponseResult.Result = new { ex.Message, ex.StackTrace };
-        //    }
-
-        //    return _ResponseResult;
-        //}
-
+       
         public async Task<ResponseResult> SaveWorkOrderProcess(LedgerOpeningEntryModel model)
         {
             var _ResponseResult = new ResponseResult();
@@ -246,9 +151,9 @@ namespace eTactWeb.Data.DAL
                     //SqlParams.Add(new SqlParameter("@GroupAccountCode", model.GroupCode == 0 ? 0 : model.GroupCode));
                 }
 
-                SqlParams.Add(new SqlParameter("@OpeningForYear", model.OpeningForYear == 0 ? 0 : model.OpeningForYear));
+                SqlParams.Add(new SqlParameter("@CloseYearcode", model.ClosingYearCode == 0 ? 0 : model.ClosingYearCode));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", string.IsNullOrEmpty(model.EntryByMachine) ? "" : model.EntryByMachine));
-                SqlParams.Add(new SqlParameter("@Amount", model.Amount == 0 ? 0 : model.Amount));
+                SqlParams.Add(new SqlParameter("@Amount", model.PreviousAmount == 0 ? 0 : model.PreviousAmount));
                 SqlParams.Add(new SqlParameter("@DrCr", string.IsNullOrEmpty(model.DrCr) ? "" : model.DrCr));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", (object)entDt));
                 SqlParams.Add(new SqlParameter("@PreviousAmount", model.PreviousAmount == 0 ? 0 : model.PreviousAmount));
@@ -451,7 +356,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@AccountCode", AC));
-                SqlParams.Add(new SqlParameter("@OpeningForYear", YC));
+                SqlParams.Add(new SqlParameter("@CloseYearcode", YC));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerOpeningEntry", SqlParams);
             }
             catch (Exception ex)
