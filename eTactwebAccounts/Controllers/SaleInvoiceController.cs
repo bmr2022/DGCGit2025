@@ -223,7 +223,7 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public static DataTable GetAdjustChallanDetailTable(List<CustomerJobWorkIssueAdjustDetail> model)
+        public static DataTable GetAdjustChallanDetailTable(List<CustomerInputJobWorkIssueAdjustDetail> model)
         {
             DataTable Table = new();
             Table.Columns.Add("ItemCode", typeof(int));
@@ -273,7 +273,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
+        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerInputJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
         {
             try
             {
@@ -295,6 +295,36 @@ namespace eTactWeb.Controllers
                 _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
 
                 return PartialView("_CustomerJwisschallanAdjustment", result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetBomCustAdjChallanDetailsData(List<CustomerInputJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
+        {
+            try
+            {
+                if (model == null || !model.Any())
+                {
+                    return Json(new { success = false, message = "No data received." });
+                }
+
+                var adjustChallanDt = GetAdjustChallanDetailTable(model);
+                var result = await _SaleBill.GetAdjustedChallanDetailsData(adjustChallanDt, YearCode, EntryDate, ChallanDate, AccountCode);
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
+
+                return PartialView("_BomCustomerJWIssChallanADJ", result);
             }
             catch (Exception ex)
             {
@@ -1075,38 +1105,99 @@ namespace eTactWeb.Controllers
         }
         public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "")
         {
-           
+
+            //string my_connection_string;
+            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //var webReport = new WebReport();
+            //webReport.Report.Clear();
+            //var ReportName = _SaleBill.GetReportName();
+            //webReport.Report.Dispose();
+            //webReport.Report = new Report();
+            //if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            //{
+            //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+            //}
+            //else
+            //{
+            //    webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
+            //}
+            //webReport.Report.SetParameterValue("entryparam", EntryId);
+            //webReport.Report.SetParameterValue("yearparam", YearCode);
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            //webReport.Report.Prepare();
+            //foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+            //{
+            //    if (dataSource is TableDataSource tableDataSource)
+            //    {
+            //        tableDataSource.Enabled = true;
+            //        tableDataSource.Init(); // Refresh the data source
+            //    }
+            //}
+            //return View(webReport);
+
             string my_connection_string;
-            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-            var webReport = new WebReport();
-            webReport.Report.Clear();
-            var ReportName = _SaleBill.GetReportName();
-            webReport.Report.Dispose();
-            webReport.Report = new Report();
-            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+
+            // Create a list to hold the reports
+            List<WebReport> reports = new List<WebReport>();
+
+            // Define the copy types
+            string[] copyTypes = { "Original", "Duplicate", "Triplicate", "Office Copy" };
+
+            foreach (var copyType in copyTypes)
             {
-                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
-            }
-            else
-            {
-                webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
-            }
-            webReport.Report.SetParameterValue("entryparam", EntryId);
-            webReport.Report.SetParameterValue("yearparam", YearCode);
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
-            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            webReport.Report.Prepare();
-            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
-            {
-                if (dataSource is TableDataSource tableDataSource)
+                var webReport = new WebReport();
+                webReport.Report.Clear();
+                var ReportName = _SaleBill.GetReportName();
+                webReport.Report.Dispose();
+                webReport.Report = new Report();
+
+                // Load the report from the database or use default
+                if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
                 {
-                    tableDataSource.Enabled = true;
-                    tableDataSource.Init(); // Refresh the data source
+                    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
                 }
+                else
+                {
+                    webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
+                }
+
+                // Set parameters for the report
+                webReport.Report.SetParameterValue("entryparam", EntryId);
+                webReport.Report.SetParameterValue("yearparam", YearCode);
+                my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+                webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+                webReport.Report.SetParameterValue("copyType", copyType);
+
+                // Set the connection string for the data source
+                webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+
+                // Set a parameter for the copy type
+                webReport.Report.SetParameterValue("copyType", copyType);
+
+                // Prepare the report
+                webReport.Report.Prepare();
+
+                // Initialize data sources
+                foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+                {
+                    if (dataSource is TableDataSource tableDataSource)
+                    {
+                        tableDataSource.Enabled = true;
+                        tableDataSource.Init(); // Refresh the data source
+                    }
+                }
+
+                // Add the report instance to the list
+                reports.Add(webReport);
             }
 
+            // Return the view with all reports
+            return View(reports);
+            
             //Additional CODE STARTS
             // Create 4 copies with tags
             //string[] tags = { "Original", "Duplicate", "Triplicate", "Office Copy" };
@@ -1131,7 +1222,7 @@ namespace eTactWeb.Controllers
             ////Additional CODE END HERE
 
 
-            return View(webReport);
+
         }
         private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
         {
