@@ -1,0 +1,1268 @@
+﻿@model eTactWeb.DOM.Models.Features_OptionsModel;
+@{
+    ViewData["Title"] = "Features_Options";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="Features_Options" asp-controller="Features_Options" method="post" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h5>
+                    <strong>Features_Options</strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-controller="Features_Options" asp-action="Features_OptionsDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+
+                            <div class="col-auto">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+
+
+                        </div>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionItemCategory">
+                    @* ItemDetail *@
+                    <div class="accordion-item" id="ItemDetailSection" >
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Item Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:900px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Item Detail
+                                </span>
+                            </button>
+                        </h2>
+                       
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <input type="hidden" value="@Model.Type" asp-for="Type" />
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="AutoGen_PartCode" class="form-label">AutoGen_PartCode</label>
+                                        <select class="form-control" asp-for="AutoGen_PartCode" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="DuplicateItemName" class="form-label">Duplicate ItemName</label>
+                                        <select class="form-control" asp-for="DuplicateItemName" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="ItemPartcodeGenerationFormat" class="form-label" >Item Partcode Gen Format</label>
+                                        <input asp-for="ItemPartcodeGenerationFormat" class="form-control" />
+                                    </div>
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* PurchaseDetail *@
+                    <div class="accordion-item" id="PurchaseDetailSection" >
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Purchase Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Purchase Detail
+                                </span>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                   
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                        <label asp-for="Po_File_Name" class="form-label">Po File Name</label>
+                                        <input asp-for="Po_File_Name" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                        <label asp-for="Allow_PO_Print" class="form-label" >Allow PO Print</label>
+                                        <select class="form-control" asp-for="Allow_PO_Print"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                   
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PONOEditable" class="form-label">PONO Editable</label>
+                                        <select class="form-control" asp-for="PONOEditable"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PONOYearlyRenew" class="form-label">PONO YearlyRenew</label>
+                                        <select class="form-control" asp-for="PONOYearlyRenew"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                        <label asp-for="AutoGeneratedPUrchaseOrder" class="form-label">Auto Gen PO</label>
+                                        <input asp-for="AutoGeneratedPUrchaseOrder" class="form-control" />
+                                    </div> 
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                        <label asp-for="PurchaseOrderReport" class="form-label">PO Report</label>
+                                        <input asp-for="PurchaseOrderReport" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="PurchaseorderPrintReportName" class="form-label" >PO PrintReport Name</label>
+                                        <input asp-for="PurchaseorderPrintReportName" class="form-control"  />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="PurchaseorderAmendPrintReportName" class="form-label" >PO Amend PrintReport Name</label>
+                                        <input asp-for="PurchaseorderAmendPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="PurchasSchedulePrintReportName" class="form-label">PO Schedule PrintReport Name</label>
+                                        <input asp-for="PurchasSchedulePrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="PurchasScheduleAmendPrintReportName" class="form-label">PO Schedule Amend PrintReport Name</label>
+                                        <input asp-for="PurchasScheduleAmendPrintReportName" class="form-control" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDatePURCHASEORDER" class="form-label">Allow BackDate PO</label>
+                                        <select class="form-control" asp-for="AllowBackDatePURCHASEORDER"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateINDENT" class="form-label">Allow BackDate INDENT</label>
+                                        <select class="form-control" asp-for="AllowBackDateINDENT"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="CheckPOPendFromPOonlyNotFromAmendment" class="form-label">Check POPendFrom PO only Not FromAmendment</label>
+                                        <select class="form-control" asp-for="CheckPOPendFromPOonlyNotFromAmendment"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @* sale order Detail *@
+                    <div class="accordion-item" id="SaleOrderDetailSection">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>sale order Detail</strong>
+                                <small class="p-3"></small>
+                               
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update SO Detail
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+
+                                   
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="SaleInvoiceFileName" class="form-label">Sale Invoice FileName</label>
+                                        <input asp-for="SaleInvoiceFileName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AutoGenItemGroupCode" class="form-label">Auto Gen ItemGroupCode</label>
+                                        <select class="form-control" asp-for="AutoGenItemGroupCode" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowMultipleBuyerInSaleOrder" class="form-label">Allow Multiple Buyer In SaleOrder</label>
+                                        <select class="form-control" asp-for="AllowMultipleBuyerInSaleOrder" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="SaleorderPrintReportName" class="form-label">SO PrintReport Name</label>
+                                        <input asp-for="SaleorderPrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="SaleAmendPrintReportName" class="form-label">SO Amend PrintReport Name</label>
+                                        <input asp-for="SaleAmendPrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="SaleSchedulePrintReportName" class="form-label">SO Schedule PrintReport Name</label>
+                                        <input asp-for="SaleSchedulePrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="SaleScheduleAmendPrintReportName" class="form-label">SO Schedule Amend PrintReport Name</label>
+                                        <input asp-for="SaleScheduleAmendPrintReportName" class="form-control" />
+                                    </div>
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* Gate Entry Detail *@
+                    <div class="accordion-item" id="GateEntryDetailSection">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Gate Entry Detail</strong>
+                           
+                            <small class="p-3"></small>
+
+                            <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                Update GateEntry Detail
+                            </span>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="BlockGateEntry4UnAppPOAmm" class="form-label">Block GateEntry For UnAppPOAmm</label>
+                                        <input asp-for="BlockGateEntry4UnAppPOAmm" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateGAteEntry" class="form-label">Allow Back Date GateEntry</label>
+                                        <select class="form-control" asp-for="AllowBackDateGAteEntry"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ShowRateINGAteMrn" class="form-label">Show Rate In GateMrn</label>
+                                        <select class="form-control" asp-for="ShowRateINGAteMrn"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="GateEntryPrintReportName" class="form-label">Gate Entry PrintReportName</label>
+                                        <input asp-for="GateEntryPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowGateRateEnabled" class="form-label">Allow Gate RateEnabled</label>
+                                        <select class="form-control" asp-for="AllowGateRateEnabled"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                  @*   MRN/MRIR *@
+                    <div class="accordion-item" id="MRNDetailSection">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>MRN/MRIR Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update MRN Detail
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateMRNEntry" class="form-label">Allow Back Date MRNEntry</label>
+                                        <select class="form-control" asp-for="AllowBackDateMRNEntry" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowToChangeStoreInMRN" class="form-label">Allow To Change StoreInMRN</label>
+                                        <select class="form-control" asp-for="AllowToChangeStoreInMRN" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                  
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="MRNPrintReportName" class="form-label">MRN PrintReport Name</label>
+                                        <input asp-for="MRNPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateMRIR" class="form-label">Allow BackDate MRIR</label>
+                                        <select class="form-control" asp-for="AllowBackDateMRIR" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* Common *@
+                    <div class="accordion-item" id="CommonSection">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Common Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Common Detail
+                                </span>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CCMandatoryInQuery" class="form-label">CC Mandatory InQuery</label>
+                                        <select class="form-control" asp-for="CCMandatoryInQuery"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BatchWiseInventory" class="form-label">BatchWise Inventory</label>
+                                        <select class="form-control" asp-for="BatchWiseInventory"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowToChangeBranch" class="form-label">Allow To ChangeBranch</label>
+                                        <select class="form-control" asp-for="AllowToChangeBranch"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBAtchEditable" class="form-label">Allow Batch Editable</label>
+                                        <select class="form-control" asp-for="AllowBAtchEditable"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="AllowBAtchEditablePAssword" class="form-label">Allow Batch EditablePAssword</label>
+                                        <input asp-for="AllowBAtchEditablePAssword" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="FIFOBasedBatchInventory" class="form-label">FIFO Based BatchInventory</label>
+                                        <select class="form-control" asp-for="FIFOBasedBatchInventory"  style="width:100px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                 
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @* requisition *@
+                    <div class="accordion-item" id="RquisitionSection">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Requisition Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Requisition Detail
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackdateReqWOBOM" class="form-label">Allow Backdate ReqWOBOM</label>
+                                        <select class="form-control" asp-for="AllowBackdateReqWOBOM" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
+                                        <label asp-for="MaxDurationForReqToBePend" class="form-label">Max Duration For ReqToBePend</label>
+                                        <input asp-for="MaxDurationForReqToBePend" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="IssueWithScanner" class="form-label">Issue With Scanner</label>
+                                        <select class="form-control" asp-for="IssueWithScanner" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateRequsitionWITHBOM" class="form-label">Allow BackDate ReqWITHBOM</label>
+                                        <select class="form-control" asp-for="AllowBackDateRequsitionWITHBOM" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* vend jw iss rec *@
+                    <div class="accordion-item" id="VendJwIssRecSection">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>vend jw iss rec Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update VendJwIssRec Detail
+                                </span>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="VendJWIssuePrintReportName" class="form-label">Vend JWIssue PrintReportName</label>
+                                        <input asp-for="VendJWIssuePrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="VendJWRecPrintReportName" class="form-label">Vend JWRec PrintReportName</label>
+                                        <input asp-for="VendJWRecPrintReportName" class="form-control" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateJOBWorkIssue" class="form-label">Allow BackDate JOBWorkIssue</label>
+                                        <select class="form-control" asp-for="AllowBackDateJOBWorkIssue"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ALLOWBACKDATEJobworkRec" class="form-label">Allow BackDate JobworkRec</label>
+                                        <select class="form-control" asp-for="ALLOWBACKDATEJobworkRec"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="VendorJWAdjustAutoOrManual" class="form-label">Vendor JWAdjust AutoOrManual</label>
+                                        <select class="form-control" asp-for="VendorJWAdjustAutoOrManual"  style="width:150px;">
+                                            <option value="A">Auto</option>
+                                            <option value="M">Manual</option>
+                                        </select>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                   @*  stock adjustmnent *@
+                    <div class="accordion-item" id="StockAdjSection">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Stock Adjustmnent Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update StockAdj Detail
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateStockAdjustment" class="form-label">Allow Backdate StockAdjustment</label>
+                                        <select class="form-control" asp-for="AllowBackDateStockAdjustment" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                  
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateInterStoreTransfer" class="form-label">Allow Backdate StoreTransfer</label>
+                                        <select class="form-control" asp-for="AllowBackDateInterStoreTransfer" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* issue with bom & with bom *@
+                    <div class="accordion-item" id="IssWithBomSection">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue WithBom Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update IssWithBom Detail
+                                </span>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                   
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackdateIssueWOBOM" class="form-label">Allow BackDate IssueWOBOM</label>
+                                        <select class="form-control" asp-for="AllowBackdateIssueWOBOM"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateISSUEWITHBOM" class="form-label">Allow BackDate ISSUEWITHBOM   </label>
+                                        <select class="form-control" asp-for="AllowBackDateISSUEWITHBOM"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="IssueViaScanningBarcode" class="form-label">Issue Via ScanningBarcode</label>
+                                        <select class="form-control" asp-for="IssueViaScanningBarcode"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateIssueChallan" class="form-label">Allow BackDate IssueChallan</label>
+                                        <select class="form-control" asp-for="AllowBackDateIssueChallan"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ALLOWBACKDATRECCHALLAN" class="form-label">Allow BackDate RecChallan</label>
+                                        <select class="form-control" asp-for="ALLOWBACKDATRECCHALLAN"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @* issue challan & rec challan *@
+                    <div class="accordion-item" id="IssChallanSection">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Issue RecChallan Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Iss&Re Challan Detail
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="RGPChallanPrintReportName" class="form-label">RGPChallan  PrintReportName</label>
+                                        <input asp-for="RGPChallanPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="NRGPChallanPrintReportName" class="form-label">NRGPChallan  PrintReportName</label>
+                                        <input asp-for="NRGPChallanPrintReportName" class="form-control" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="AllowBackDateReceiveChallanEntry" class="form-label">Allow Backdate ReceiveChallanEntry</label>
+                                        <select class="form-control" asp-for="AllowBackDateReceiveChallanEntry" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* cust jobwork *@
+                    <div class="accordion-item" id="CustJobWorkSection">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Cust jobwork Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update CustJobWork Detail
+                                </span>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="CustJWIssuePrintReportName" class="form-label">CustJWIssue  PrintReportName</label>
+                                        <input asp-for="CustJWIssuePrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="CUSTJWRecPrintReportName" class="form-label">CustJWRec  PrintReportName</label>
+                                        <input asp-for="CUSTJWRecPrintReportName" class="form-control" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="AllowBackDateCustomerJWIssue" class="form-label">Allow BackDate CustomerJWIssue</label>
+                                        <select class="form-control" asp-for="AllowBackDateCustomerJWIssue"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @* print report name *@
+                    <div class="accordion-item" id="PrintReportSection">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Print Report Name  Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update PrintReport Detail
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="SaleBillPrintReportName" class="form-label">SaleBill  PrintReportName</label>
+                                        <input asp-for="SaleBillPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="JWSaleBillPrintReportName" class="form-label">JWSaleBill  PrintReportName</label>
+                                        <input asp-for="JWSaleBillPrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="PurchaseRejPrintReportName" class="form-label">PurchaseRej PrintReportName</label>
+                                        <input asp-for="PurchaseRejPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="DebitNotePrintReportName" class="form-label">DebitNote PrintReportName</label>
+                                        <input asp-for="DebitNotePrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="CreditNotePrintReportName" class="form-label">CreditNote PrintReportName</label>
+                                        <input asp-for="CreditNotePrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="SaleRejectionPrintReportName" class="form-label">SaleRejection PrintReportName</label>
+                                        <input asp-for="SaleRejectionPrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                        <label asp-for="PurchaseBillPrintReportName" class="form-label">PurchaseBill PrintReportName</label>
+                                        <input asp-for="PurchaseBillPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="DirectPurchaseBillPrintReportName" class="form-label">DirectPurchaseBill PrintReportName</label>
+                                        <input asp-for="DirectPurchaseBillPrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="PurchBillVoucherPrintReportName" class="form-label">PurchBillVoucher PrintReportName</label>
+                                        <input asp-for="PurchBillVoucherPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="DirectPurchBillVoucherPrintReportName" class="form-label">DirectPurchBillVoucher PrintReportName</label>
+                                        <input asp-for="DirectPurchBillVoucherPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="BankRecVoucherPrintReportName" class="form-label">BankRecVoucher PrintReportName</label>
+                                        <input asp-for="BankRecVoucherPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="BankPaymentVoucherPrintReportName" class="form-label">BankPaymentVoucher PrintReportName</label>
+                                        <input asp-for="BankPaymentVoucherPrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="CashRecVoucherPrintReportName" class="form-label">CashRecVoucher PrintReportName</label>
+                                        <input asp-for="CashRecVoucherPrintReportName" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="CashPaymentVoucherPrintReportName" class="form-label">CashPaymentVoucher PrintReportName</label>
+                                        <input asp-for="CashPaymentVoucherPrintReportName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="JournalVoucherPrintReportName" class="form-label">JournalVoucher PrintReportName</label>
+                                        <input asp-for="JournalVoucherPrintReportName" class="form-control" />
+                                    </div>
+
+                                   
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* production entry *@
+                    <div class="accordion-item" id="ProdEntrySection">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Production Entry Detail</strong>
+                            
+                            <small class="p-3"></small>
+                            <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                Update ProdEntryDetail
+                            </span>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="PrdProdEntryAgainstWOProdSchReqManual" class="form-label">Prd ProdEntrAgainsWOProdSchReqManual</label>
+                                        <input asp-for="PrdProdEntryAgainstWOProdSchReqManual" class="form-control" />
+                                    </div>
+                                   
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                        <label asp-for="AllowProdWithoutBom" class="form-label">Allow ProdWithoutBom</label>
+                                        <select class="form-control" asp-for="AllowProdWithoutBom"  style="width:200px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="ProdSchAllowToAddManualNewItem" class="form-label">ProdSch Allow To AddManualNewItem</label>
+                                        <select class="form-control" asp-for="ProdSchAllowToAddManualNewItem"  style="width:300px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="ProdEntryAllowToAddRMItem" class="form-label" >Prod Entry Allow To AddRMItem</label>
+                                        <select class="form-control" asp-for="ProdEntryAllowToAddRMItem"  style="width:300px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="ProdEntryAllowToAddWithoutRM" class="form-label">Prod Entry Allow To AddWithoutRM</label>
+                                        <select class="form-control" asp-for="ProdEntryAllowToAddWithoutRM"  style="width:200px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="ProdEntryAllowToAddNegativeStock" class="form-label">Prod Entry Allow To AddNegativeStock</label>
+                                        <select class="form-control" asp-for="ProdEntryAllowToAddNegativeStock"  style="width:200px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="BatchWiseProduction" class="form-label">BatchWise Production</label>
+                                        <select class="form-control" asp-for="BatchWiseProduction"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ProdEntryAllowBackDate" class="form-label">ProdEntry AllowBackDate</label>
+                                        <select class="form-control" asp-for="ProdEntryAllowBackDate"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateDAILYPRODUCTION" class="form-label"> AllowBackDate Daily Production</label>
+                                        <select class="form-control" asp-for="AllowBackDateDAILYPRODUCTION"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @* production plan & production schedule *@
+                    <div class="accordion-item" id="ProdPlanSchSection">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Prod Plan&Sch Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update ProdPlan&SchDetail
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+                                   
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateWorkorderEntry" class="form-label">Allow Backdate WorkorderEntry</label>
+                                        <select class="form-control" asp-for="AllowBackDateWorkorderEntry" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="AllowBackDateProductionScheduleEntry" class="form-label" >Allow Backdate ProductionScheduleEntry</label>
+                                        <select class="form-control" asp-for="AllowBackDateProductionScheduleEntry"  >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="InProdScheduleShowSumOrDetail" class="form-label" style="width:400px;">In ProdSchedule Show SumOrDetail</label>
+                                        <select class="form-control" asp-for="InProdScheduleShowSumOrDetail"  style="width:400px;">
+                                            <option value="S">SUMMARY</option>
+                                            <option value="D">DETAIL</option>
+                                        </select>
+                                    </div>
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* transfer material from wc & rec in store *@
+                    <div class="accordion-item" id="TransMtrFromWcRec">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i> TransMtrFrom WcRec Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:600px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update TransFromWcRecDetail
+                                </span>
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                  
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateTRANSFERMATERIAL" class="form-label">AllowBackDate TransferMaterial</label>
+                                        <select class="form-control" asp-for="AllowBackDateTRANSFERMATERIAL"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateRECEIVEINSTORE" class="form-label">AllowBackDate ReceiveInStore</label>
+                                        <select class="form-control" asp-for="AllowBackDateRECEIVEINSTORE"  style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @* sale bill *@
+                    <div class="accordion-item" id="SaleBillSection">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Sale Bill Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update SaleBill Detail
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AllowBackDateSALEBILL" class="form-label">Allow Backdate Sale Bill</label>
+                                        <select class="form-control" asp-for="AllowBackDateSALEBILL" >
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="VoucherRotationDailyMonthYearly" class="form-label" style="width:400px;">Voucher Rotation DailyMonthYearly</label>
+                                        <select class="form-control" asp-for="VoucherRotationDailyMonthYearly" >
+                                            <option value="D">Daily</option>
+                                            <option value="M">Monthly</option>
+                                            <option value="Y">Yearly</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+
+                </div>
+
+                <div class="progress my-3 mb-3" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <div class="card-footer p-3">
+                    <div class="row justify-content-between g-2">
+                        <div class="card-header card-headerBG text-light bg-gradient">
+                            <h5>
+                                <strong>Features_Options</strong>
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                    <a asp-controller="Features_Options" asp-action="Features_OptionsDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+
+                                        }
+                                    </div>
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <script>
+
+        $('.submitBTN').click(function (e) {
+         
+            e.preventDefault();
+            $('form').submit();
+        });
+
+
+        $(document).ready(function () {
+
+            //$('#StoreType').rules("remove", "");
+            $('#AutoGen_PartCode').select2();
+            $('#DuplicateItemName').select2();
+            $('#Allow_PO_Print').select2();
+            $('#PONOEditable').select2();
+            $('#PONOYearlyRenew').select2();
+            $('#PONOYearlyRenew').select2();
+            $('#AllowBackDatePURCHASEORDER').select2();
+            $('#AllowBackDateINDENT').select2();
+            $('#CheckPOPendFromPOonlyNotFromAmendment').select2();
+            $('#AllowGateRateEnabled').select2();
+            $('#ShowRateINGAteMrn').select2();
+            $('#AllowBackDateGAteEntry').select2();
+            $('#AutoGenItemGroupCode').select2();
+            $('#AllowMultipleBuyerInSaleOrder').select2();
+            $('#AllowBackDateMRNEntry').select2();
+            $('#AllowToChangeStoreInMRN').select2();
+            $('#AllowBackDateMRIR').select2();
+            $('#CCMandatoryInQuery').select2();
+            $('#BatchWiseInventory').select2();
+            $('#AllowToChangeBranch').select2();
+            $('#AllowBAtchEditable').select2();
+            $('#FIFOBasedBatchInventory').select2();
+            $('#AllowBackdateReqWOBOM').select2();
+            $('#IssueWithScanner').select2();
+            $('#AllowBackDateRequsitionWITHBOM').select2();
+            $('#AllowBackDateJOBWorkIssue').select2();
+            $('#ALLOWBACKDATEJobworkRec').select2();
+            $('#vendorJWAdjustAutoOrManual').select2();
+            $('#AllowBackDateInterStoreTransfer').select2();
+            $('#AllowBackDateStockAdjustment').select2();
+            $('#AllowBackdateIssueWOBOM').select2();
+            $('#AllowBackDateISSUEWITHBOM').select2();
+            $('#IssueViaScanningBarcode').select2();
+            $('#AllowBackDateIssueChallan').select2();
+            $('#ALLOWBACKDATRECCHALLAN').select2();
+            $('#AllowBackDateReceiveChallanEntry').select2();
+            $('#AllowBackDateCustomerJWIssue').select2();
+            $('#AllowProdWithoutBom').select2();
+            $('#ProdSchAllowToAddManualNewItem').select2();
+            $('#ProdEntryAllowToAddRMItem').select2();
+            $('#ProdEntryAllowToAddWithoutRM').select2();
+            $('#ProdEntryAllowToAddNegativeStock').select2();
+            $('#BatchWiseProduction').select2();
+            $('#ProdEntryAllowBackDate').select2();
+            $('#AllowBackDateDAILYPRODUCTION').select2();
+            $('#AllowBackDateWorkorderEntry').select2();
+            $('#AllowBackDateProductionScheduleEntry').select2();
+            $('#InProdScheduleShowSumOrDetail').select2();
+            $('#AllowBackDateTRANSFERMATERIAL').select2();
+            $('#AllowBackDateRECEIVEINSTORE').select2();
+            $('#AllowBackDateSALEBILL').select2();
+            $('#VoucherRotationDailyMonthYearly').select2();
+
+            const fieldsToRemoveRules = [
+                'FlagSelectUpdate', 'Module', 'AutoGen_PartCode', 'DuplicateItemName', 'Allow_PO_Print', 'Po_File_Name',
+                'SaleInvoiceFileName', 'PONOEditable', 'PONOYearlyRenew', 'AutoGeneratedPUrchaseOrder', 'AutoGenItemGroupCode',
+                'BlockGateEntry4UnAppPOAmm', 'ShowRateINGAteMrn', 'CCMandatoryInQuery', 'BatchWiseInventory',
+                'AllowBackdateReqWOBOM', 'AllowBackDateGAteEntry', 'AllowToChangeBranch', 'MaxDurationForReqToBePend',
+                'AllowBackDateMRNEntry', 'AllowMultipleBuyerInSaleOrder', 'AllowToChangeStoreInMRN',
+                'ItemPartcodeGenerationFormat', 'AllowBackDateStockAdjustment', 'AllowBAtchEditable',
+                'AllowBAtchEditablePAssword', 'AllowBackdateIssueWOBOM', 'PurchaseOrderReport', 'IssueWithScanner',
+                'PurchaseorderPrintReportName', 'PurchaseorderAmendPrintReportName', 'PurchasSchedulePrintReportName',
+                'PurchasScheduleAmendPrintReportName', 'GateEntryPrintReportName', 'MRNPrintReportName',
+                'RGPChallanPrintReportName', 'NRGPChallanPrintReportName', 'VendJWIssuePrintReportName',
+                'VendJWRecPrintReportName', 'CustJWIssuePrintReportName', 'CUSTJWRecPrintReportName',
+                'SaleorderPrintReportName', 'SaleAmendPrintReportName', 'SaleSchedulePrintReportName',
+                'SaleScheduleAmendPrintReportName', 'SaleBillPrintReportName', 'JWSaleBillPrintReportName',
+                'PurchaseRejPrintReportName', 'DebitNotePrintReportName', 'CreditNotePrintReportName',
+                'SaleRejectionPrintReportName', 'PurchaseBillPrintReportName', 'DirectPurchaseBillPrintReportName',
+                'PurchBillVoucherPrintReportName', 'DirectPurchBillVoucherPrintReportName', 'BankRecVoucherPrintReportName',
+                'BankPaymentVoucherPrintReportName', 'CashRecVoucherPrintReportName', 'CashPaymentVoucherPrintReportName',
+                'JournalVoucherPrintReportName', 'AllowBackDateRequsitionWITHBOM', 'AllowBackDateISSUEWITHBOM',
+                'AllowBackDatePURCHASEORDER', 'AllowBackDateINDENT', 'AllowBackDateMRIR', 'AllowBackDateIssueChallan',
+                'ALLOWBACKDATRECCHALLAN', 'AllowBackDateJOBWorkIssue', 'ALLOWBACKDATEJobworkRec', 'AllowBackDateRECEIVEINSTORE',
+                'AllowBackDateSALEBILL', 'AllowBackDateDAILYPRODUCTION', 'AllowBackDateTRANSFERMATERIAL',
+                'CheckPOPendFromPOonlyNotFromAmendment', 'AllowBackDateReceiveChallanEntry', 'FIFOBasedBatchInventory',
+                'AllowGateRateEnabled', 'AllowBackDateCustomerJWIssue', 'IssueViaScanningBarcode', 'AllowBackDateWorkorderEntry',
+                'AllowBackDateInterStoreTransfer', 'VendorJWAdjustAutoOrManual', 'AllowBackDateProductionScheduleEntry',
+                'InProdScheduleShowSumOrDetail', 'PrdProdEntryAgainstWOProdSchReqManual', 'AllowProdWithoutBom',
+                'ProdSchAllowToAddManualNewItem', 'ProdEntryAllowToAddRMItem', 'ProdEntryAllowToAddWithoutRM',
+                'ProdEntryAllowToAddNegativeStock', 'BatchWiseProduction', 'VoucherRotationDailyMonthYearly',
+                'ProdEntryAllowBackDate', 'AccAllowtochangeDocumentinPurchaseBill', 'AccPasswordToChangeDocumentinPurchaseBill',
+                'AccAllowtochangeInvoiceNoDateinPurchaseBill', 'ProdMaxNoofIteminWorkorder', 'AccPasswordToAllowManualTax',
+                'AccSaleBillManualTaxAllowed', 'POClosePOAlwaysAgainstIndent', 'AccAllowBackdateVoucherEntry',
+                'AccBackdateVoucherEntryPassword', 'IndentReportName', 'AccAllowToChangeVoucherDateInPurchBill',
+                'ProdAllowMultiplePlanInProdSchOrNot', 'AccPurchaseVoucherPrintoutFilename',
+                'AccPurchaseBillInvoicePrintoutFilename', 'FromDate', 'ToDate', 'Searchbox', 'Type'
+            ];
+
+            fieldsToRemoveRules.forEach(field => {
+                $('#' + field).rules("remove", "required");
+            });
+
+            var mode = $("#Mode").val();
+            var selectedType = localStorage.getItem("selectedType");
+          
+            if (mode === "U") {
+
+                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection,#VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection").hide();
+
+                
+                if (selectedType === "ItemDetail") {
+                    $("#ItemDetailSection").show();
+                } else if (selectedType === "PurchaseDetail") {
+                    $("#PurchaseDetailSection").show();
+                } else if (selectedType === "SaleOrderDetailSection") {
+                    $("#SaleOrderDetailSection").show();
+                } else if (selectedType === "SaleOrderDetail") {
+                    $("#SaleOrderDetailSection").show();
+                } else if (selectedType === "GateEntryDetail") {
+                    $("#GateEntryDetailSection").show();
+                } else if (selectedType === "MRNDetail") {
+                    $("#MRNDetailSection").show();
+                } else if (selectedType === "CommonDetail") {
+                     $("#CommonSection").show();
+                } else if (selectedType === "RequisitionDetail") {
+                    $("#RquisitionSection").show();
+                } else if (selectedType === "VendJwIssRecDetail") {
+                    $("#VendJwIssRecSection").show();
+                } else if (selectedType === "StockAdjDetail") {
+                    $("#StockAdjSection").show();
+                } else if (selectedType === "IssWithBomDetail") {
+                    $("#IssWithBomSection").show();
+                } else if (selectedType === "IssRecChallanDetail") {
+                    $("#IssChallanSection").show();
+                } else if (selectedType === "JustJobWorkDetail") {
+                    $("#CustJobWorkSection").show();
+                } else if (selectedType === "PrintReportDetail") {
+                    $("#PrintReportSection").show();
+                } else if (selectedType === "ProdEntryDetail") {
+                    $("#ProdEntrySection").show();
+                } else if (selectedType === "ProdPlanSchDetail") {
+                    $("#ProdPlanSchSection").show();
+                } else if (selectedType === "TransMtrFromWcRec") {
+                    $("#TransMtrFromWcRec").show();
+                } else if (selectedType === "SaleBillDetail") {
+                    $("#SaleBillSection").show();
+                }
+
+            } else {
+
+                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection, #VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection").show();
+            }
+
+            // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name
+            //     $.notify("SaleBill Nunmber is .", "warn");
+            // }
+
+            // FillStoreType();
+
+
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+
+                //FillCostCenterID();
+            }
+        });
+
+        function TotalNoOfRows() {
+            var Row = $('#divStockGrid tr').length;
+            var tdCount = $('#divStockGrid tr td').length;
+            if (tdCount >= 1) {
+                $('#lblTotalNoOfBelowItems').text(Row);
+            } else {
+                $('#lblTotalNoOfBelowItems').text(0);
+            }
+        }
+
+        function CheckBeforeUpdate() {
+            $.ajax({
+                url: '@Url.Action("CheckBeforeUpdate")',
+                type: "POST",
+                data: { "Type": $('#Entry_id').val() },
+                success: function (data) {
+                    console.log("success");
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result != null) {
+                            if (obj.Result.Table[0].Column1 > 0) {
+                                $.notify("You cannot update this Category as Item with this category already exists", "error");
+                            }
+                            else {
+                                $('form').submit();
+                            }
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+
+
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+            sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
+            sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+            sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+
+
+    </script>
+
+
+}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+

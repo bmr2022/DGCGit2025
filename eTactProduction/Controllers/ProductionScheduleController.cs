@@ -375,7 +375,7 @@ namespace eTactWeb.Controllers
             model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             model.EntryDate = DateTime.Now.ToString();
             model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            var Result = await _IProductionSchedule.GetDashboardData(partCode, itemName, accountName, ParseFormattedDate(fromDate.Split(" ")[0]), ParseFormattedDate(toDate.Split(" ")[0]), model.YearCode).ConfigureAwait(true);
+            var Result = await _IProductionSchedule.GetDashboardData(partCode, itemName, accountName, fromDate, toDate, model.YearCode).ConfigureAwait(true);
             if (Result != null)
             {
                 var _List = new List<TextValue>();
@@ -413,9 +413,10 @@ namespace eTactWeb.Controllers
                 var model = new ProductionScheduleDashboard();
 
                 var FromDt = HttpContext.Session.GetString("FromDate");
-                model.FinFromDate = Convert.ToDateTime(FromDt).ToString("dd/MM/yyyy");
+                model.FinFromDate = ParseFormattedDate(FromDt);
+                    //Convert.ToDateTime(FromDt).ToString("dd/MM/yyyy");
                 DateTime ToDate = DateTime.Today;
-                model.FinToDate = ToDate.ToString();
+                model.FinToDate = ParseFormattedDate( ToDate.ToString());
 
                 model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 var Result = await _IProductionSchedule.GetDashboardData(partCode, itemName, accountName, ParseFormattedDate(model.FinFromDate.Split(" ")[0]), ParseFormattedDate(model.FinToDate.Split(" ")[0]), model.YearCode).ConfigureAwait(true);
@@ -438,8 +439,8 @@ namespace eTactWeb.Controllers
 
                     }
                 }
-                model.FinFromDate = fromDate;
-                model.FinToDate = toDate;
+                model.FinFromDate = ParseFormattedDate(fromDate);
+                model.FinToDate = ParseFormattedDate( toDate);
                 model.PartCode = partCode;
                 model.ItemName= itemName;
                 model.AccountName = accountName;

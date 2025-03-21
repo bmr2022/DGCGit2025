@@ -130,6 +130,10 @@ public class TaxController : Controller
         {
             MainModel = new AccCreditNoteModel();
         }
+        else if (model.TxPageName == "PurchaseRejection")
+        {
+            MainModel = new AccPurchaseRejectionModel();
+        }
         else if (model.TxPageName == "JobWorkIssue")
         {
             MainModel = new JobWorkIssueModel();
@@ -171,6 +175,13 @@ public class TaxController : Controller
                 var creditNoteModel = new AccCreditNoteModel();
                 creditNoteModel.AccCreditNoteDetails = creditNoteDetail.ToList();
                 MainModel = creditNoteModel;
+            }
+            else if (model.TxPageName == "PurchaseRejection")
+            {
+                _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out IList<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+                var purchaseRejectionModel = new AccPurchaseRejectionModel();
+                purchaseRejectionModel.AccPurchaseRejectionDetails = purchaseRejectionDetail.ToList();
+                MainModel = purchaseRejectionModel;
             }
             else if (model.TxPageName == "SaleRejection")
             {
@@ -343,247 +354,280 @@ public class TaxController : Controller
 
     public IActionResult ApplyTax2All(TaxModel TxModel)
     {
-            int ItemCnt = 0;
-            decimal BasicTotal = 0;
-            decimal ItemAmount = 0;
-            decimal TaxAmount = 0;
-            decimal ExpTaxAmt = 0;
-            decimal TaxOnExp = 0;
-            bool isExp = false;
-            bool exists = false;
-            decimal TotalTaxAmt = 0;
+        int ItemCnt = 0;
+        decimal BasicTotal = 0;
+        decimal ItemAmount = 0;
+        decimal TaxAmount = 0;
+        decimal ExpTaxAmt = 0;
+        decimal TaxOnExp = 0;
+        bool isExp = false;
+        bool exists = false;
+        decimal TotalTaxAmt = 0;
 
-            dynamic MainModel = null;
-            dynamic ItemDetailGrid = null;
+        dynamic MainModel = null;
+        dynamic ItemDetailGrid = null;
 
-            var PartCode = 0;
-            var PartName = "";
-            var ItemCode = 0;
-            var ItemText = "";
+        var PartCode = 0;
+        var PartName = "";
+        var ItemCode = 0;
+        var ItemText = "";
 
-            var _List = new List<TaxModel>();
+        var _List = new List<TaxModel>();
 
-            var CgstSgst = ITaxModule.SgstCgst(TxModel.TxAccountCode);
+        var CgstSgst = ITaxModule.SgstCgst(TxModel.TxAccountCode);
 
-            CultureInfo CI = new CultureInfo("en-IN");
-            CI.NumberFormat.NumberDecimalDigits = 4;
+        CultureInfo CI = new CultureInfo("en-IN");
+        CI.NumberFormat.NumberDecimalDigits = 4;
 
+        if (TxModel.TxPageName == "ItemList")
+        {
+            MainModel = new SaleOrderModel();
+        }
+        else if (TxModel.TxPageName == "PurchaseOrder")
+        {
+            MainModel = new PurchaseOrderModel();
+        }
+        else if (TxModel.TxPageName == "DirectPurchaseBill")
+        {
+            MainModel = new DirectPurchaseBillModel();
+        }
+        else if (TxModel.TxPageName == "PurchaseBill")
+        {
+            MainModel = new PurchaseBillModel();
+        }
+        else if (TxModel.TxPageName == "JobWorkIssue")
+        {
+            MainModel = new JobWorkIssueModel();
+        }
+        else if (TxModel.TxPageName == "SaleInvoice")
+        {
+            MainModel = new SaleBillModel();
+        }
+        else if (TxModel.TxPageName == "CreditNote")
+        {
+            MainModel = new AccCreditNoteModel();
+        }
+        else if (TxModel.TxPageName == "PurchaseRejection")
+        {
+            MainModel = new AccPurchaseRejectionModel();
+        }
+        else if (TxModel.TxPageName == "SaleRejection")
+        {
+            MainModel = new SaleRejectionModel();
+        }
+        if (HttpContext.Session.GetString(TxModel.TxPageName) != null)
+        {
             if (TxModel.TxPageName == "ItemList")
             {
-                MainModel = new SaleOrderModel();
+                ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxModel.TxPageName) ?? string.Empty);
             }
             else if (TxModel.TxPageName == "PurchaseOrder")
             {
-                MainModel = new PurchaseOrderModel();
-            }
-            else if (TxModel.TxPageName == "DirectPurchaseBill")
-            {
-                MainModel = new DirectPurchaseBillModel();
-            }
-            else if (TxModel.TxPageName == "PurchaseBill")
-            {
-                MainModel = new PurchaseBillModel();
-            }
-            else if (TxModel.TxPageName == "JobWorkIssue")
-            {
-                MainModel = new JobWorkIssueModel();
+                _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                ItemDetailGrid = MainModel.ItemDetailGrid;
             }
             else if (TxModel.TxPageName == "SaleInvoice")
             {
-                MainModel = new SaleBillModel();
+                _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
+                ItemDetailGrid = saleBillDetail;
             }
             else if (TxModel.TxPageName == "CreditNote")
             {
-                MainModel = new AccCreditNoteModel();
+                _MemoryCache.TryGetValue("KeyCreditNoteGrid", out IList<AccCreditNoteDetail> creditNoteDetail);
+                ItemDetailGrid = creditNoteDetail;
+            }
+            else if (TxModel.TxPageName == "PurchaseRejection")
+            {
+                _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out IList<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+                ItemDetailGrid = purchaseRejectionDetail;
             }
             else if (TxModel.TxPageName == "SaleRejection")
             {
-                MainModel = new SaleRejectionModel();
+                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
+                ItemDetailGrid = saleRejectionDetail;
             }
-            if (HttpContext.Session.GetString(TxModel.TxPageName) != null)
+            else if (TxModel.TxPageName == "DirectPurchaseBill")
             {
-                if (TxModel.TxPageName == "ItemList")
-                {
-                    ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxModel.TxPageName) ?? string.Empty);
-                }
-                else if (TxModel.TxPageName == "PurchaseOrder")
-                {
-                    _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
-                    ItemDetailGrid = MainModel.ItemDetailGrid;
-                }
-                else if (TxModel.TxPageName == "SaleInvoice")
-                {
-                    _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
-                    ItemDetailGrid = saleBillDetail;
-                }
-                else if (TxModel.TxPageName == "CreditNote")
-                {
-                    _MemoryCache.TryGetValue("KeyCreditNoteGrid", out IList<AccCreditNoteDetail> creditNoteDetail);
-                    ItemDetailGrid = creditNoteDetail;
-                }
-                else if (TxModel.TxPageName == "SaleRejection")
-                {
-                    _MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
-                    ItemDetailGrid = saleRejectionDetail;
-                }
-                else if (TxModel.TxPageName == "DirectPurchaseBill")
-                {
-                    _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
-                    ItemDetailGrid = MainModel.ItemDetailGrid;
-                    var _ItemGrid = new List<DPBItemDetail>();
-                    _ItemGrid = ItemDetailGrid;
-                    var Amount = 0.0;
-                    var itemCodeArray = new List<int>();
-                    _ItemGrid = _ItemGrid
-                     .GroupBy(item => item.ItemCode)
-                     .Select(group => new DPBItemDetail
-                     {
-                         Amount = group.Sum(item => item.Amount),
-                         ItemCode = group.Key,
-                         PartCode = group.First().PartCode,
-                         ItemText = group.First().ItemText,
-                         PartText = group.First().PartText,
-                     })
-                     .ToList();
+                _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                ItemDetailGrid = MainModel.ItemDetailGrid;
+                var _ItemGrid = new List<DPBItemDetail>();
+                _ItemGrid = ItemDetailGrid;
+                var Amount = 0.0;
+                var itemCodeArray = new List<int>();
+                _ItemGrid = _ItemGrid
+                 .GroupBy(item => item.ItemCode)
+                 .Select(group => new DPBItemDetail
+                 {
+                     Amount = group.Sum(item => item.Amount),
+                     ItemCode = group.Key,
+                     PartCode = group.First().PartCode,
+                     ItemText = group.First().ItemText,
+                     PartText = group.First().PartText,
+                 })
+                 .ToList();
 
-                    ItemDetailGrid = _ItemGrid;
-                }
-                else if (TxModel.TxPageName == "PurchaseBill")
-                {
-                    _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
-                    ItemDetailGrid = MainModel.ItemDetailGrid != null ? MainModel.ItemDetailGrid : MainModel.ItemDetailGridd;
-                    var _ItemGrid = new List<PBItemDetail>();
-                    _ItemGrid = ItemDetailGrid;
-                    var Amount = 0.0;
-                    var itemCodeArray = new List<int>();
-                    _ItemGrid = _ItemGrid
-                     .GroupBy(item => item.ItemCode)
-                     .Select(group => new PBItemDetail
-                     {
-                         //MRP = group.Sum(item => item.MRP),
-                         Amount = Convert.ToDecimal(group.Sum(item => item.Amount)),
-                         ItemCode = group.Key,
-                         PartCode = group.First().PartCode,
-                         ItemText = group.First().ItemText,
-                         PartText = group.First().PartText,
-                         Item_Name = group.First().Item_Name,
-                     })
-                     .ToList();
+                ItemDetailGrid = _ItemGrid;
+            }
+            else if (TxModel.TxPageName == "PurchaseBill")
+            {
+                _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                ItemDetailGrid = MainModel.ItemDetailGrid != null ? MainModel.ItemDetailGrid : MainModel.ItemDetailGridd;
+                var _ItemGrid = new List<PBItemDetail>();
+                _ItemGrid = ItemDetailGrid;
+                var Amount = 0.0;
+                var itemCodeArray = new List<int>();
+                _ItemGrid = _ItemGrid
+                 .GroupBy(item => item.ItemCode)
+                 .Select(group => new PBItemDetail
+                 {
+                     //MRP = group.Sum(item => item.MRP),
+                     Amount = Convert.ToDecimal(group.Sum(item => item.Amount)),
+                     ItemCode = group.Key,
+                     PartCode = group.First().PartCode,
+                     ItemText = group.First().ItemText,
+                     PartText = group.First().PartText,
+                     Item_Name = group.First().Item_Name,
+                 })
+                 .ToList();
 
-                    ItemDetailGrid = _ItemGrid;
-                }
-                else if (TxModel.TxPageName == "JobWorkIssue")
-                {
-                    _MemoryCache.TryGetValue("KeyJobWorkIssue", out MainModel);
-                    if (MainModel == null)
-                        _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out MainModel);
-                    ItemDetailGrid = MainModel;
-                    var _ItemGrid = new List<JobWorkGridDetail>();
-                    _ItemGrid = ItemDetailGrid;
-                    var Amount = 0.0;
-                    var itemCodeArray = new List<int>();
-                    _ItemGrid = _ItemGrid
-                     .GroupBy(item => item.ItemCode)
-                     .Select(group => new JobWorkGridDetail
-                     {
-                         Amount = group.Sum(item => item.PurchasePrice * item.IssQty),
-                         ItemCode = group.Key,
-                         PartCode = group.First().PartCode,
-                         ItemName = group.First().ItemName
-                     })
-                     .ToList();
+                ItemDetailGrid = _ItemGrid;
+            }
+            else if (TxModel.TxPageName == "JobWorkIssue")
+            {
+                _MemoryCache.TryGetValue("KeyJobWorkIssue", out MainModel);
+                if (MainModel == null)
+                    _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out MainModel);
+                ItemDetailGrid = MainModel;
+                var _ItemGrid = new List<JobWorkGridDetail>();
+                _ItemGrid = ItemDetailGrid;
+                var Amount = 0.0;
+                var itemCodeArray = new List<int>();
+                _ItemGrid = _ItemGrid
+                 .GroupBy(item => item.ItemCode)
+                 .Select(group => new JobWorkGridDetail
+                 {
+                     Amount = group.Sum(item => item.PurchasePrice * item.IssQty),
+                     ItemCode = group.Key,
+                     PartCode = group.First().PartCode,
+                     ItemName = group.First().ItemName
+                 })
+                 .ToList();
 
-                    ItemDetailGrid = _ItemGrid;
+                ItemDetailGrid = _ItemGrid;
+            }
+
+            if (ItemDetailGrid != null && TxModel.TxType != "EXPENSES")
+            {
+                _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+
+                foreach (var item in ItemDetailGrid)
+                {
+                    //Basic Total Amount
+                    BasicTotal = item.Amount == null ? 0 : (BasicTotal + item.Amount);
                 }
 
-                if (ItemDetailGrid != null && TxModel.TxType != "EXPENSES")
-                {
-                    _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+                List<string> partCodeArray = new List<string>();
+                var taxGrid22 = new List<int>();
 
-                    foreach (var item in ItemDetailGrid)
+                foreach (var item in ItemDetailGrid)
+                {
+                    List<JobWorkGridDetail> taxGrid1 = new List<JobWorkGridDetail>();
+                    _MemoryCache.TryGetValue("KeyJobWorkIssue", out taxGrid1);
+                    if (taxGrid1 == null)
+                        _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out taxGrid1);
+
+                    if (taxGrid1 == null)
                     {
-                        //Basic Total Amount
-                        BasicTotal = item.Amount == null ? 0 : (BasicTotal + item.Amount);
+                        taxGrid1 = new List<JobWorkGridDetail>();
                     }
 
-                    List<string> partCodeArray = new List<string>();
-                    var taxGrid22 = new List<int>();
+                    var checkContains = false;
+                    if (TxModel.TxPageName == "JobWorkIssue" || TxModel.TxPageName == "SaleInvoice" || TxModel.TxPageName == "PurchaseBill" || TxModel.TxPageName == "SaleRejection" || TxModel.TxPageName == "CreditNote" || TxModel.TxPageName == "PurchaseRejection")
+                        checkContains = partCodeArray.Contains(item.PartCode);
+                    else
+                        checkContains = partCodeArray.Contains(item.PartText);
 
-                    foreach (var item in ItemDetailGrid)
+                    if (taxGrid22.Contains(item.ItemCode))
                     {
-                        List<JobWorkGridDetail> taxGrid1 = new List<JobWorkGridDetail>();
-                        _MemoryCache.TryGetValue("KeyJobWorkIssue", out taxGrid1);
-                        if (taxGrid1 == null)
-                            _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out taxGrid1);
-
-                        if (taxGrid1 == null)
-                        {
-                            taxGrid1 = new List<JobWorkGridDetail>();
-                        }
-
-                        var checkContains = false;
-                        if (TxModel.TxPageName == "JobWorkIssue" || TxModel.TxPageName == "SaleInvoice" || TxModel.TxPageName == "PurchaseBill" || TxModel.TxPageName == "SaleRejection" || TxModel.TxPageName == "CreditNote")
-                            checkContains = partCodeArray.Contains(item.PartCode);
-                        else
-                            checkContains = partCodeArray.Contains(item.PartText);
-
-                        if (taxGrid22.Contains(item.ItemCode))
-                        {
-                            ItemAmount += item.Amount;
-                        }
-                        else
-                        {
-                            ItemAmount = item.Amount == null ? 0 : item.Amount;
-                        }
-                        taxGrid22.Add(item.ItemCode);
-
-                        //if (checkContains)
-                        //{
-                        //    //do nothing
-                        //}
-                        //else
-                        //{
-                        decimal ItemAmount1 = 0;
-                        ItemCnt = ItemCnt + 1;
+                        ItemAmount += item.Amount;
+                    }
+                    else
+                    {
                         ItemAmount = item.Amount == null ? 0 : item.Amount;
+                    }
+                    taxGrid22.Add(item.ItemCode);
 
-                        if (isExp)
-                        {
-                            ExpTaxAmt = TaxGrid.Where(m => m.TxType == "EXPENSES" && m.TxAdInTxable == "Y").Sum(x => x.TxAmount);
-                            //TaxOnExp = ((ItemAmount / BasicTotal) * ExpTaxAmt);
-                            TaxOnExp = ItemAmount == 0 && BasicTotal == 0 ? 0 : ExpTaxAmt / BasicTotal * ItemAmount;
-                            ItemAmount = TaxOnExp + ItemAmount;
-                        }
+                    //if (checkContains)
+                    //{
+                    //    //do nothing
+                    //}
+                    //else
+                    //{
+                    decimal ItemAmount1 = 0;
+                    ItemCnt = ItemCnt + 1;
+                    ItemAmount = item.Amount == null ? 0 : item.Amount;
 
-                        TaxAmount = ItemAmount * TxModel.TxPercentg / 100;
+                    if (isExp)
+                    {
+                        ExpTaxAmt = TaxGrid.Where(m => m.TxType == "EXPENSES" && m.TxAdInTxable == "Y").Sum(x => x.TxAmount);
+                        //TaxOnExp = ((ItemAmount / BasicTotal) * ExpTaxAmt);
+                        TaxOnExp = ItemAmount == 0 && BasicTotal == 0 ? 0 : ExpTaxAmt / BasicTotal * ItemAmount;
+                        ItemAmount = TaxOnExp + ItemAmount;
+                    }
 
-                        if (TxModel.TxPageName == "JobWorkIssue" || TxModel.TxPageName == "SaleInvoice" || TxModel.TxPageName == "SaleRejection" || TxModel.TxPageName == "CreditNote")
-                        {
-                            PartCode = item.ItemCode;
-                            PartName = item.PartCode;
-                            ItemCode = item.ItemCode;
-                            ItemText = item.ItemName;
-                        }
-                        else if (TxModel.TxPageName == "PurchaseBill")
-                        {
-                            PartCode = item.ItemCode;
-                            PartName = item.PartCode;
-                            ItemCode = item.ItemCode;
-                            ItemText = item.Item_Name;
-                        }
-                        else
-                        {
-                            PartCode = item.PartCode;
-                            PartName = item.PartText;
-                            ItemCode = item.ItemCode;
-                            ItemText = item.ItemText;
-                        }
-                        var intialCount = TaxGrid == null ? 0 : TaxGrid!.Count;
-                        var existsTaxType = TaxGrid != null ? TaxGrid!.Any(x => x.TxType == "EXPENSES") : false;
+                    TaxAmount = ItemAmount * TxModel.TxPercentg / 100;
+
+                    if (TxModel.TxPageName == "JobWorkIssue" || TxModel.TxPageName == "SaleInvoice" || TxModel.TxPageName == "SaleRejection" || TxModel.TxPageName == "CreditNote" || TxModel.TxPageName == "PurchaseRejection")
+                    {
+                        PartCode = item.ItemCode;
+                        PartName = item.PartCode;
+                        ItemCode = item.ItemCode;
+                        ItemText = item.ItemName;
+                    }
+                    else if (TxModel.TxPageName == "PurchaseBill")
+                    {
+                        PartCode = item.ItemCode;
+                        PartName = item.PartCode;
+                        ItemCode = item.ItemCode;
+                        ItemText = item.Item_Name;
+                    }
+                    else
+                    {
+                        PartCode = item.PartCode;
+                        PartName = item.PartText;
+                        ItemCode = item.ItemCode;
+                        ItemText = item.ItemText;
+                    }
+                    var intialCount = TaxGrid == null ? 0 : TaxGrid!.Count;
+                    var existsTaxType = TaxGrid != null ? TaxGrid!.Any(x => x.TxType == "EXPENSES") : false;
+                    _List.Add(new TaxModel
+                    {
+                        //TxSeqNo = _List.Count + 1,
+                        TxSeqNo = !existsTaxType ? (_List.Count + 1) : (intialCount + (_List.Count + 1)),
+                        TxType = TxModel.TxType,
+                        TxPartCode = PartCode,
+                        TxPartName = PartName,
+                        TxItemCode = ItemCode,
+                        TxItemName = ItemText,
+                        TxTaxType = TxModel.TxTaxType,
+                        TxTaxTypeName = TxModel.TxTaxTypeName,
+                        TxAccountCode = TxModel.TxAccountCode,
+                        TxAccountName = TxModel.TxAccountName,
+                        TxPercentg = TxModel.TxPercentg,
+                        TxAdInTxable = TxModel.TxAdInTxable,
+                        TxRoundOff = TxModel.TxRoundOff,
+                        TxAmount = TxModel.TxRoundOff == "Y" ? Math.Floor(TaxAmount) : Math.Round(TaxAmount, 2),
+                        TxRefundable = TxModel.TxRefundable,
+                        TxOnExp = TaxOnExp,
+                        TxRemark = TxModel.TxRemark,
+                    });
+
+                    if (CgstSgst.Rows.Count > 0 && TxModel.TxAccountName.Contains("CGST"))
+                    {
                         _List.Add(new TaxModel
                         {
                             //TxSeqNo = _List.Count + 1,
-                            TxSeqNo = !existsTaxType ? (_List.Count + 1) : (intialCount + (_List.Count + 1)),
+                            TxSeqNo = intialCount + (_List.Count + 1),
                             TxType = TxModel.TxType,
                             TxPartCode = PartCode,
                             TxPartName = PartName,
@@ -591,8 +635,8 @@ public class TaxController : Controller
                             TxItemName = ItemText,
                             TxTaxType = TxModel.TxTaxType,
                             TxTaxTypeName = TxModel.TxTaxTypeName,
-                            TxAccountCode = TxModel.TxAccountCode,
-                            TxAccountName = TxModel.TxAccountName,
+                            TxAccountCode = ToInt32((CgstSgst.Rows.Count > 1 ? CgstSgst.Rows[1]["Account_Code"] : CgstSgst.Rows[0]["Account_Code"]), CI),
+                            TxAccountName = CgstSgst.Rows[0]["Tax_Name"].ToString().Contains("SGST") ? CgstSgst.Rows[0]["Tax_Name"].ToString() : (CgstSgst.Rows.Count > 1 ? CgstSgst.Rows[1]["Tax_Name"].ToString() : CgstSgst.Rows[0]["Tax_Name"].ToString()),
                             TxPercentg = TxModel.TxPercentg,
                             TxAdInTxable = TxModel.TxAdInTxable,
                             TxRoundOff = TxModel.TxRoundOff,
@@ -601,108 +645,89 @@ public class TaxController : Controller
                             TxOnExp = TaxOnExp,
                             TxRemark = TxModel.TxRemark,
                         });
+                    }
+                    if (TxModel.TxPageName == "JobWorkIssue" || TxModel.TxPageName == "SaleInvoice" || TxModel.TxPageName == "PurchaseBill" || TxModel.TxPageName == "SaleRejection" || TxModel.TxPageName == "CreditNote" || TxModel.TxPageName == "PurchaseRejection")
+                        partCodeArray.Add(item.PartCode);
+                    else
+                        partCodeArray.Add(item.PartText);
 
-                        if (CgstSgst.Rows.Count > 0 && TxModel.TxAccountName.Contains("CGST"))
-                        {
-                            _List.Add(new TaxModel
-                            {
-                                //TxSeqNo = _List.Count + 1,
-                                TxSeqNo = intialCount + (_List.Count + 1),
-                                TxType = TxModel.TxType,
-                                TxPartCode = PartCode,
-                                TxPartName = PartName,
-                                TxItemCode = ItemCode,
-                                TxItemName = ItemText,
-                                TxTaxType = TxModel.TxTaxType,
-                                TxTaxTypeName = TxModel.TxTaxTypeName,
-                                TxAccountCode = ToInt32(CgstSgst.Rows[1]["Account_Code"], CI),
-                                TxAccountName = CgstSgst.Rows[0]["Tax_Name"].ToString().Contains("SGST") ? CgstSgst.Rows[0]["Tax_Name"].ToString() : CgstSgst.Rows[1]["Tax_Name"].ToString(),
-                                TxPercentg = TxModel.TxPercentg,
-                                TxAdInTxable = TxModel.TxAdInTxable,
-                                TxRoundOff = TxModel.TxRoundOff,
-                                TxAmount = TxModel.TxRoundOff == "Y" ? Math.Floor(TaxAmount) : Math.Round(TaxAmount, 2),
-                                TxRefundable = TxModel.TxRefundable,
-                                TxOnExp = TaxOnExp,
-                                TxRemark = TxModel.TxRemark,
-                            });
-                        }
-                        if (TxModel.TxPageName == "JobWorkIssue" || TxModel.TxPageName == "SaleInvoice" || TxModel.TxPageName == "PurchaseBill" || TxModel.TxPageName == "SaleRejection" || TxModel.TxPageName == "CreditNote")
-                            partCodeArray.Add(item.PartCode);
-                        else
-                            partCodeArray.Add(item.PartText);
+                }
+                if (TxModel.TxPageName == "JobWorkIssue")
+                {
+                    MainModel = new JobWorkIssueModel();
+                }
+                MainModel!.TaxDetailGridd = _List;
+                TaxGrid = MainModel.TaxDetailGridd;
 
+                if (HttpContext.Session.GetString(TxModel.TxPageName) != null)
+                {
+                    if (TxModel.TxPageName == "ItemList")
+                    {
+                        MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxModel.TxPageName) ?? string.Empty);
+                    }
+                    if (TxModel.TxPageName == "PurchaseOrder")
+                    {
+                        HttpContext.Session.Get(TxModel.TxPageName);
+                        HttpContext.Session.GetString(TxModel.TxPageName);
+                    }
+                    if (TxModel.TxPageName == "DirectPurchaseBill")
+                    {
+                        HttpContext.Session.Get(TxModel.TxPageName);
+                        HttpContext.Session.GetString(TxModel.TxPageName);
+                    }
+                    if (TxModel.TxPageName == "PurchaseBill")
+                    {
+                        HttpContext.Session.Get(TxModel.TxPageName);
+                        HttpContext.Session.GetString(TxModel.TxPageName);
                     }
                     if (TxModel.TxPageName == "JobWorkIssue")
                     {
-                        MainModel = new JobWorkIssueModel();
+                        HttpContext.Session.Get(TxModel.TxPageName);
+                        HttpContext.Session.GetString(TxModel.TxPageName);
                     }
-                    MainModel!.TaxDetailGridd = _List;
-                    TaxGrid = MainModel.TaxDetailGridd;
-
-                    if (HttpContext.Session.GetString(TxModel.TxPageName) != null)
+                    if (TxModel.TxPageName == "SaleInvoice")
                     {
-                        if (TxModel.TxPageName == "ItemList")
-                        {
-                            MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxModel.TxPageName) ?? string.Empty);
-                        }
-                        if (TxModel.TxPageName == "PurchaseOrder")
-                        {
-                            HttpContext.Session.Get(TxModel.TxPageName);
-                            HttpContext.Session.GetString(TxModel.TxPageName);
-                        }
-                        if (TxModel.TxPageName == "DirectPurchaseBill")
-                        {
-                            HttpContext.Session.Get(TxModel.TxPageName);
-                            HttpContext.Session.GetString(TxModel.TxPageName);
-                        }
-                        if (TxModel.TxPageName == "PurchaseBill")
-                        {
-                            HttpContext.Session.Get(TxModel.TxPageName);
-                            HttpContext.Session.GetString(TxModel.TxPageName);
-                        }
-                        if (TxModel.TxPageName == "JobWorkIssue")
-                        {
-                            HttpContext.Session.Get(TxModel.TxPageName);
-                            HttpContext.Session.GetString(TxModel.TxPageName);
-                        }
-                        if (TxModel.TxPageName == "SaleInvoice")
-                        {
-                            HttpContext.Session.Get(TxModel.TxPageName);
-                            HttpContext.Session.GetString(TxModel.TxPageName);
-                        }
-                        if (TxModel.TxPageName == "CreditNote")
-                        {
-                            HttpContext.Session.Get(TxModel.TxPageName);
-                            HttpContext.Session.GetString(TxModel.TxPageName);
-                        }
-                        if (TxModel.TxPageName == "SaleRejection")
-                        {
-                            HttpContext.Session.Get(TxModel.TxPageName);
-                            HttpContext.Session.GetString(TxModel.TxPageName);
-                        }
+                        HttpContext.Session.Get(TxModel.TxPageName);
+                        HttpContext.Session.GetString(TxModel.TxPageName);
                     }
-
-                    if (TaxGrid != null)
+                    if (TxModel.TxPageName == "CreditNote")
                     {
-                        TotalTaxAmt = TaxGrid.Sum(x => x.TxAmount);
+                        HttpContext.Session.Get(TxModel.TxPageName);
+                        HttpContext.Session.GetString(TxModel.TxPageName);
                     }
-                    TotalTaxAmt = TotalTaxAmt + (MainModel.ItemNetAmount == null ? 0 : MainModel.ItemNetAmount);
-                    MainModel.TotalTaxAmt = TotalTaxAmt;
-
-                    //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    //{
-                    //    AbsoluteExpiration = DateTime.Now.AddMinutes(55),
-                    //    SlidingExpiration = TimeSpan.FromMinutes(60),
-                    //    Size = 1024,
-                    //};
-
-                    //_MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
-
-                    StoreInCache("KeyTaxGrid", TaxGrid);
+                    if (TxModel.TxPageName == "PurchaseRejection")
+                    {
+                        HttpContext.Session.Get(TxModel.TxPageName);
+                        HttpContext.Session.GetString(TxModel.TxPageName);
+                    }
+                    if (TxModel.TxPageName == "SaleRejection")
+                    {
+                        HttpContext.Session.Get(TxModel.TxPageName);
+                        HttpContext.Session.GetString(TxModel.TxPageName);
+                    }
                 }
+
+                if (TaxGrid != null)
+                {
+                    TotalTaxAmt = TaxGrid.Sum(x => x.TxAmount);
+                }
+                TotalTaxAmt = TotalTaxAmt + (MainModel.ItemNetAmount == null ? 0 : MainModel.ItemNetAmount);
+                MainModel.TotalTaxAmt = TotalTaxAmt;
+
+                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                //{
+                //    AbsoluteExpiration = DateTime.Now.AddMinutes(55),
+                //    SlidingExpiration = TimeSpan.FromMinutes(60),
+                //    Size = 1024,
+                //};
+
+                //_MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
+
+                StoreInCache("KeyTaxGrid", TaxGrid);
             }
-            return PartialView("_TaxGrid", MainModel);
-        
+        }
+        return PartialView("_TaxGrid", MainModel);
+
 
         /*
         int ItemCnt = 0;
@@ -1083,6 +1108,10 @@ public class TaxController : Controller
         {
             ListOfItems = new AccCreditNoteModel();
         }
+        else if (SN == "PurchaseRejection")
+        {
+            ListOfItems = new AccPurchaseRejectionModel();
+        }
         else if (SN == "SaleRejection")
         {
             ListOfItems = new SaleRejectionModel();
@@ -1119,12 +1148,18 @@ public class TaxController : Controller
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
                 _MemoryCache.TryGetValue("SaleBillModel", out SaleBillModel MainModel);
-                ListOfItems = MainModel.ItemDetailGrid;
+                ListOfItems = MainModel.saleBillDetails;
             }
             else if (SN == "CreditNote")
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
                 _MemoryCache.TryGetValue("CreditNoteModel", out AccCreditNoteModel MainModel);
+                ListOfItems = MainModel.ItemDetailGrid;
+            }
+            else if (SN == "PurchaseRejection")
+            {
+                //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
+                _MemoryCache.TryGetValue("PurchaseRejectionModel", out AccPurchaseRejectionModel MainModel);
                 ListOfItems = MainModel.ItemDetailGrid;
             }
             else if (SN == "SaleRejection")
@@ -1158,55 +1193,65 @@ public class TaxController : Controller
             }
             try
             {
-
-                foreach (var item in ListOfItems)
+                if (ListOfItems != null)
                 {
-                    if (SN != "CreditNote")
+                    foreach (var item in ListOfItems)
                     {
-                        //Basic Total Amount
-                        BasicTotal = BasicTotal + (item.Amount == null ? 0 : item.Amount);
-                    }
-
-                    //Item Amount
-                    if (SN == "IssueNRGP" || SN == "DirectPurchaseBill" || SN == "SaleInvoice" || SN == "SaleRejection")
-                    {
-                        if (item.ItemCode == ToInt32(PC))
+                        if (SN != "CreditNote" || SN != "PurchaseRejection")
                         {
-                            Amt += (item.Amount == null ? 0 : item.Amount);
-                        }
-                    }
-                    if (SN == "CreditNote")
-                    {
-                        if (item.ItemCode == ToInt32(PC))
-                        {
-                            Amt += item.ItemAmount;
-                            BasicTotal = BasicTotal + (item.ItemAmount == null ? 0 : item.ItemAmount);
-                        }
-                    }
-                    if (SN == "PurchaseBill")
-                    {
-                        if (item.ItemCode == ToInt32(PC))
-                        {
-                            Amt += item.Amount;
-                        }
-                    }
-                    else if (SN == "JobWorkIssue")
-                    {
-                        if (item.ItemCode == ToInt32(PC))
-                        {
-                            Amt += item.PurchasePrice * item.IssQty;
-                        }
-                    }
-                    else
-                    {
-                        if (item.ItemCode == ToInt32(PC))
-                        {
-                            Amt = (item.Amount == null ? 0 : item.Amount);
+                            //Basic Total Amount
+                            BasicTotal = BasicTotal + (item.Amount == null ? 0 : item.Amount);
                         }
 
+                        //Item Amount
+                        if (SN == "IssueNRGP" || SN == "DirectPurchaseBill" || SN == "SaleInvoice" || SN == "SaleRejection")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += (item.Amount == null ? 0 : item.Amount);
+                            }
+                        }
+                        else if (SN == "CreditNote")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += item.ItemAmount;
+                                BasicTotal = BasicTotal + (item.ItemAmount == null ? 0 : item.ItemAmount);
+                            }
+                        }
+                        else if (SN == "PurchaseRejection")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += item.ItemAmount;
+                                BasicTotal = BasicTotal + (item.ItemAmount == null ? 0 : item.ItemAmount);
+                            }
+                        }
+                        else if (SN == "PurchaseBill")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += item.Amount;
+                            }
+                        }
+                        else if (SN == "JobWorkIssue")
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt += item.PurchasePrice * item.IssQty;
+                            }
+                        }
+                        else
+                        {
+                            if (item.ItemCode == ToInt32(PC))
+                            {
+                                Amt = (item.Amount == null ? 0 : item.Amount);
+                            }
+
+                        }
                     }
                 }
-            }
+             }
             catch (Exception ex)
             {
                 throw;
@@ -1312,6 +1357,8 @@ public class TaxController : Controller
         {
             MainModel = SN == "DirectPurchaseBill" ? new DirectPurchaseBillModel() : (SN == "ItemList" ? new SaleOrderModel() : (SN == "PurchaseBill" ? new PurchaseBillModel() : new PurchaseOrderModel()));
             MainModel = SN == "JobWorkIssue" ? new JobWorkIssueModel() : "";
+            MainModel = SN == "ItemList" ? new SaleOrderModel() : "";
+            MainModel = SN == "PurchaseRejection" ? new AccPurchaseRejectionModel() : "";
             _MemoryCache.Remove("KeyTaxGrid");
             return PartialView("_TaxGrid", MainModel);
         }
@@ -1347,6 +1394,10 @@ public class TaxController : Controller
         else if (SN == "CreditNote")
         {
             MainModel = new AccCreditNoteModel();
+        }
+        else if (SN == "PurchaseRejection")
+        {
+            MainModel = new AccPurchaseRejectionModel();
         }
         else if (SN == "JobWorkIssue")
         {
@@ -1604,22 +1655,22 @@ public class TaxController : Controller
 
         switch (TxPageName)
         {
-            case "ItemList":
-                HttpContext.Session.Get(TxPageName);
-                MainModel = new SaleOrderModel();
-                MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxPageName));
-                MainModel.AccountCode = AC;
-                MainModel.TxPageName = TxPageName;
-                MainModel.TxRoundOff = RF;
-                isSuccess = ValidateHsnTax(MainModel);
-                if (isSuccess != "SuccessFull")
-                {
-                    return Content(isSuccess);
-                }
-                TaxGrid = await GetHSNTaxList(MainModel);
-                break;
+			case "ItemList":
+				HttpContext.Session.Get(TxPageName);
+				MainModel = new SaleOrderModel();
+				MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxPageName));
+				MainModel.AccountCode = AC;
+				MainModel.TxPageName = TxPageName;
+				MainModel.TxRoundOff = RF;
+				isSuccess = ValidateHsnTax(MainModel);
+				if (isSuccess != "SuccessFull")
+				{
+					return Content(isSuccess);
+				}
+				TaxGrid = await GetHSNTaxList(MainModel);
+				break;
 
-            case "PurchaseOrder":
+			case "PurchaseOrder":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
                 MainModel.AccountCode = AC;
@@ -1650,6 +1701,13 @@ public class TaxController : Controller
             case "CreditNote":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
+                MainModel.AccountCode = AC;
+                MainModel.TxPageName = TxPageName;
+                TaxGrid = await GetHSNTaxList(MainModel);
+                break;
+            case "PurchaseRejection":
+                HttpContext.Session.Get(TxPageName);
+                _MemoryCache.TryGetValue("PurchaseRejectionModel", out MainModel);
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
@@ -1786,7 +1844,7 @@ public class TaxController : Controller
                     }
                 }
             }
-            
+
             if (SessionName == "PurchaseBill")
             {
                 _MemoryCache.TryGetValue("PurchaseBill", out PurchaseBillModel MainModel);
@@ -1838,11 +1896,34 @@ public class TaxController : Controller
                     }
                 }
             }
-            
+
             if (SessionName == "CreditNote")
             {
                 _MemoryCache.TryGetValue("KeyCreditNoteGrid", out IList<AccCreditNoteDetail> creditNoteDetail);
                 ItemModel = creditNoteDetail;
+
+                if (ItemModel != null && ItemModel?.Count > 0)
+                {
+                    foreach (var item in ItemModel)
+                    {
+                        PartCode.Add(new TextValue
+                        {
+                            Text = item.PartCode,
+                            Value = item.ItemCode.ToString()
+                        });
+
+                        ItemCode.Add(new TextValue
+                        {
+                            Text = item.ItemName,
+                            Value = item.ItemCode.ToString()
+                        });
+                    }
+                }
+            }
+            if (SessionName == "PurchaseRejection")
+            {
+                _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out IList<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+                ItemModel = purchaseRejectionDetail;
 
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
@@ -2091,18 +2172,19 @@ public class TaxController : Controller
             List<string> partCodeCheck = new List<string>();
             foreach (var item in grid)
             {
-                HSNTAXParam.HSNNo = (MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : item.HSNNo;
+                HSNTAXParam.HSNNo = (MainModel != null && MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : (item.HSNNo != null && !string.IsNullOrEmpty(item.HSNNo.ToString()) ? Convert.ToInt32(item.HSNNo) : 0);
                 HSNTAXParam.AC = MainModel.AccountCode;
                 if (MainModel.TxPageName == "PurchaseBill")
                 {
                     MainModel.HSNNO = item.HSNNO;
                 }
-                else {
-                    MainModel.HSNNo =  item.HSNNo;
+                else
+                {
+                    MainModel.HSNNo = item.HSNNo;
                 }
 
                 string partCode = "";
-                if (MainModel.TxPageName == "JobWorkIssue" || MainModel.TxPageName == "SaleInvoice"|| MainModel.TxPageName == "CreditNote" || MainModel.TxPageName == "PurchaseBill" || MainModel.TxPageName == "SaleRejection")
+                if (MainModel.TxPageName == "JobWorkIssue" || MainModel.TxPageName == "SaleInvoice" || MainModel.TxPageName == "CreditNote"  || MainModel.TxPageName == "PurchaseRejection" || MainModel.TxPageName == "PurchaseBill" || MainModel.TxPageName == "SaleRejection")
                     partCode = item.PartCode;
                 else
                     partCode = item.PartText;
@@ -2131,7 +2213,7 @@ public class TaxController : Controller
                             HSNTaxDetail.CGSTTaxName = dataRow["CGSTTaxName"].ToString();
                             HSNTaxDetail.TaxType = dataRow["TaxType"].ToString();
                             HSNTaxDetail.TaxPercent = ToInt32(dataRow["TaxPercent"]);
-                            if (MainModel.TxPageName == "JobWorkIssue" || MainModel.TxPageName == "SaleInvoice" || MainModel.TxPageName == "SaleRejection" || MainModel.TxPageName == "CreditNote")
+                            if (MainModel.TxPageName == "JobWorkIssue" || MainModel.TxPageName == "SaleInvoice" || MainModel.TxPageName == "SaleRejection" || MainModel.TxPageName == "CreditNote" || MainModel.TxPageName == "PurchaseRejection")
                             {
                                 HSNTaxDetail.ItemCode = item.ItemCode;
                                 HSNTaxDetail.ItemName = item.ItemName;
@@ -2376,10 +2458,12 @@ public class TaxController : Controller
             var HSNTAXParam = new HSNTAX();
             HSNTAXParam.HSNNo = ((MainModel.TxPageName == "PurchaseBill") ? item.HSNNO : item.HSNNo);
             HSNTAXParam.AC = MainModel.AccountCode;
-            if (MainModel.TxPageName == "PurchaseBill") 
+            if (MainModel.TxPageName == "PurchaseBill")
             {
-                MainModel.HSNNO = item.HSNNO; 
-            } else {
+                MainModel.HSNNO = item.HSNNO;
+            }
+            else
+            {
                 MainModel.HSNNo = item.HSNNo;
             }
 

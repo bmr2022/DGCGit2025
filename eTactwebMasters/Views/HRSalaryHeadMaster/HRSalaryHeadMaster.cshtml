@@ -97,7 +97,7 @@
 
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="SalaryHead" class="form-label">Head Name</label>
+                                        <label asp-for="SalaryHead" class="form-label">Head Name<span><label class="mandatoryField">*</label></span></label>
                                     <input asp-for="SalaryHead" class="form-control" value="@Model.SalaryHead"  />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -109,7 +109,7 @@
                                     <input asp-for="SalHeadEffectiveDate" class="form-control"  />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label id="Types" class="form-label">Type Of Salary Head</label>
+                                        <label id="Types" class="form-label">Type Of Salary Head<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="TypeOfSalary" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                        @*  <option value="@Model.TypeOfSalary">-Select-</option> *@
@@ -135,7 +135,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label id="Types" class="form-label">Part Of GrossBasic</label>
+                                        <label id="Types" class="form-label">Part Of GrossBasic<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="PartOfGrossBasic" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.PartOfGrossBasic">-Select-</option>
@@ -236,7 +236,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="FrequencyOfPayment" class="form-label">Frequency</label>
+                                        <label asp-for="FrequencyOfPayment" class="form-label">Frequency<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="FrequencyOfPayment" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.FrequencyOfPayment">-Select-</option>
@@ -250,10 +250,12 @@
                                 <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="CarryForward" class="form-label">Carry Forward</label>
                                         <select asp-for="CarryForward" class="form-select" onchange="CarryForwerdAmt()">
-                                        <option value="" disabled>-Select-</option>
-                                        <option value="YES" selected>YES</option>
-                                        <option value="NO">NO</option>
-                                      
+                                        @* <option value="" disabled>-Select-</option> *@
+                                           @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.CarryForward" selected>@Model.CarryForward</option>
+                                            }
+
                                     </select>
                                 </div>
 
@@ -265,7 +267,7 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="EmployerContribution" class="form-label">Employer Contribution</label>
-                                        <select asp-for="EmployerContribution" class="form-select" onchange="CarryForwerdAmt()">
+                                        <select asp-for="EmployerContribution" class="form-select" onchange="EmpContribution()">
                                         <option value="" disabled>-Select-</option>
                                         <option value="YES" selected>YES</option>
                                         <option value="NO">NO</option>
@@ -333,7 +335,7 @@
 
                                 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="PFApplicable" class="form-label">Provident Fund Applicable</label>
+                                        <label asp-for="PFApplicable" class="form-label">Provident Fund Applicable<span><label class="mandatoryField">*</label></span></label>
                                     <select asp-for="PFApplicable" class="form-select">
                                         <option value="" disabled>-Select-</option>
                                         <option value="YES" selected>YES</option>
@@ -353,28 +355,29 @@
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="IncomeTaxApplicable" class="form-label">Income Tax Applicable</label>
-                                    <select asp-for="IncomeTaxApplicable" class="form-select">
+                                        <select asp-for="IncomeTaxApplicable" class="form-select" onchange="TaxApplicable()">
                                         <option value="" disabled>-Select-</option>
-                                        <option value="YES" selected>YES</option>
-                                        <option value="NO">NO</option>
+                                            <option value="NO" selected>NO</option>
+                                            <option value="YES" >YES</option>
+                                        
 
                                     </select>
                                 </div>
                                   
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Taxpercentage" class="form-label">Tax Percentage</label>
-                                        <input asp-for="Taxpercentage" class="form-control numbers" value="@Model.Taxpercentage" max="50"/>
+                                        <input asp-for="Taxpercentage" class="form-control numbers" value="@Model.Taxpercentage" disabled max="50"/>
                                 </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="TaxAmount" class="form-label">Tax Amount</label>
-                                        <input asp-for="TaxAmount" class="form-control numbers" value="@Model.TaxAmount" />
+                                        <input asp-for="TaxAmount" class="form-control numbers" value="@Model.TaxAmount" disabled />
                                 </div>
 
                                 <div class="col-xl-2  col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="DeductionMorY" class="form-label">Deduction M/Y </label>
 
-                                    <select asp-for="DeductionMorY" class="form-control">
+                                    <select asp-for="DeductionMorY" class="form-control" disabled>
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
                                         <option value="@Model.DeductionMorY">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
@@ -383,10 +386,6 @@
                                         }
                                     </select>
                                 </div>
-
-
-
-
 
                             </div>
                         </div>
@@ -411,8 +410,17 @@
                                     <label asp-for="ActiveStatus" class="form-label">Active Status</label>
                                     <select asp-for="ActiveStatus" class="form-select">
                                         <option value="" disabled>-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
                                         <option value="YES" selected>YES</option>
                                         <option value="NO">NO</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO" disabled>NO</option>
+                                            }
+
 
                                     </select>
                                 </div>
@@ -646,16 +654,97 @@
 
 
         function CarryForwerdAmt() {
-            var dropdown = document.getElementById("EmployerContribution");
+            var dropdown = document.getElementById("CarryForward");
             var textbox1 = document.getElementById("MaxAmountofCarryForward");
            
             if (dropdown.value == "YES") {
                 textbox1.disabled = false; 
             }
+
+            else if (dropdown.value == "NO") {
+                textbox1.disabled = true;
+                textbox1.value = "0";
+            }
              else {
                 textbox1.disabled = true;
                 textbox1.value = "0";
                
+            }
+        }
+
+        function EmpContribution() {
+            var dropdown = document.getElementById("EmployerContribution");
+            var textbox1 = document.getElementById("ContributionPercentage");
+            var textbox2 = document.getElementById("ContributionAmount");
+            var textbox3 = document.getElementById("MinAmount");
+            var textbox4 = document.getElementById("MaxAmount");
+
+            if (dropdown.value == "YES") {
+                textbox1.disabled = false;
+                textbox2.disabled = false;
+                textbox3.disabled = false;
+                textbox4.disabled = false;
+
+            }
+
+            else if (dropdown.value == "NO") {
+                textbox1.disabled = true;
+                textbox2.disabled = true;
+                textbox3.disabled = true;
+                textbox4.disabled = true;
+                textbox1.value = "0";
+                textbox2.value = "0";
+                textbox3.value = "0";
+                textbox4.value = "0";
+            }
+            else {
+                textbox1.disabled = true;
+                textbox2.disabled = true;
+                textbox3.disabled = true;
+                textbox4.disabled = true;
+                textbox1.value = "0";
+                textbox2.value = "0";
+                textbox3.value = "0";
+                textbox4.value = "0";
+
+            }
+        }
+
+        function TaxApplicable() {
+            var dropdown = document.getElementById("IncomeTaxApplicable");
+            var textbox1 = document.getElementById("Taxpercentage");
+            var textbox2 = document.getElementById("TaxAmount");
+            var textbox3 = document.getElementById("DeductionMorY");
+            
+
+            if (dropdown.value == "YES") {
+                textbox1.disabled = false;
+                textbox2.disabled = false;
+                textbox3.disabled = false;
+              
+
+            }
+
+            else if (dropdown.value == "NO") {
+                textbox1.disabled = true;
+                textbox2.disabled = true;
+                textbox3.disabled = true;
+                
+                textbox1.value = "0";
+                textbox2.value = "0";
+                textbox3.value = "";
+               
+            }
+            else {
+                textbox1.disabled = true;
+                textbox2.disabled = true;
+                textbox3.disabled = true;
+               
+                textbox1.value = "0";
+                textbox2.value = "0";
+                textbox3.value = "";
+               
+
             }
         }
 
@@ -696,24 +785,20 @@
             });
 
           
-           
-
-           
-
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
 
-                $('#SalHeadEntryDate').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
-                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", 'now');
+                $('#SalHeadEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
             else {
-                $('#SalHeadEntryDate').datepicker({ dateFormat: 'yy/mm/dd' });
-                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'yy/mm/dd' });
+                $('#SalHeadEntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#SalHeadEffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' });
             }
             
            
            
             var LastUpdatedOn = parseDateToFormat($('#LastUpdatedOn').val().split(" ")[0]);
-            $('#LastUpdatedOn').datepicker({ dateFormat: 'yy/mm/dd' }).datepicker("setDate", LastUpdatedOn);
+            $('#LastUpdatedOn').datepicker({ dateFormat: 'dd/MM/yy' }).datepicker("setDate", LastUpdatedOn);
 
 
             
@@ -767,6 +852,9 @@
             FillCurrency();
             FillAmountPercentageOfCalculation();
             FillRoundOff();
+            FillCarryForward();
+            FillEmployerContribution();
+            FillIncomeTaxApplicable();
            
             FillPaymentFrequency();
             FillDeductionOfTax();
@@ -939,7 +1027,7 @@
                     var CurrencyDropdown = $('#Currency');
                     var obj = $.parseJSON(response);
                     CurrencyDropdown.empty();
-                    // CurrencyDropdown.append('<option value="">--Select--</option>');
+                    CurrencyDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, item) {
                         CurrencyDropdown.append('<option value="' + item.CurrencyId + '">' + item.Currency + '</option>');
@@ -986,6 +1074,98 @@
                 }
             });
         }
+
+        function FillCarryForward() {
+            $.ajax({
+                url: '@Url.Action("GetYesOrNo", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var AmountPercentageOfCalculationDropdown = $('#CarryForward');
+                    var obj = $.parseJSON(response);
+                    AmountPercentageOfCalculationDropdown.empty();
+                    AmountPercentageOfCalculationDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        AmountPercentageOfCalculationDropdown.append('<option value="' + item.YESNO + '">' + item.YESNO + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var CarryForward = '@Model.CarryForward';
+                        $('#CarryForward').val(CarryForward).trigger("change");
+                        $('#CarryForward').val(CarryForward);
+                    }
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillEmployerContribution() {
+            $.ajax({
+                url: '@Url.Action("GetYesOrNo", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var AmountPercentageOfCalculationDropdown = $('#EmployerContribution');
+                    var obj = $.parseJSON(response);
+                    AmountPercentageOfCalculationDropdown.empty();
+                    AmountPercentageOfCalculationDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        AmountPercentageOfCalculationDropdown.append('<option value="' + item.YESNO + '">' + item.YESNO + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmployerContribution = '@Model.EmployerContribution';
+                        $('#EmployerContribution').val(EmployerContribution).trigger("change");
+                        $('#EmployerContribution').val(EmployerContributionsss);
+                    }
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillIncomeTaxApplicable() {
+            $.ajax({
+                url: '@Url.Action("GetYesOrNo", "HRSalaryHeadMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var AmountPercentageOfCalculationDropdown = $('#IncomeTaxApplicable');
+                    var obj = $.parseJSON(response);
+                    AmountPercentageOfCalculationDropdown.empty();
+                    AmountPercentageOfCalculationDropdown.append('<option value="YES">YES</option>');
+                    AmountPercentageOfCalculationDropdown.append('<option value="NO" selected>NO</option>');
+
+                    // $.each(obj.Result, function (index, item) {
+                    //     AmountPercentageOfCalculationDropdown.append('<option value="' + item.YESNO + '">' + item.YESNO + '</option>');
+                    // });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var IncomeTaxApplicable = '@Model.IncomeTaxApplicable';
+                        $('#IncomeTaxApplicable').val(IncomeTaxApplicable).trigger("change");
+                        $('#IncomeTaxApplicable').val(IncomeTaxApplicable);
+                    }
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
         function FillRoundOff() {
             $.ajax({
                 url: '@Url.Action("GetRoundOff", "HRSalaryHeadMaster")',
@@ -997,7 +1177,7 @@
                     var RoundOffDropdown = $('#RoundOffMethod');
                     var obj = $.parseJSON(response);
                     RoundOffDropdown.empty();
-                    RoundOffDropdown.append('<option value="">--Select--</option>');
+                    //RoundOffDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, item) {
                         RoundOffDropdown.append('<option value="' + item.RoundType + '">' + item.RoundType + '</option>');
@@ -1025,7 +1205,7 @@
                     var PaymentFrequencyDropdown = $('#FrequencyOfPayment');
                     var obj = $.parseJSON(response);
                     PaymentFrequencyDropdown.empty();
-                    PaymentFrequencyDropdown.append('<option value="">--Select--</option>');
+                    PaymentFrequencyDropdown.append('<option value="Monthly" selected>Monthly</option>');
 
                     $.each(obj.Result, function (index, item) {
                         PaymentFrequencyDropdown.append('<option value="' + item.PaymentFrequency + '">' + item.PaymentFrequency + '</option>');
@@ -1102,3 +1282,10 @@
         
     </script>
 }
+
+<style>
+    .mandatoryField {
+        color: red;
+        font-size: small;
+    }
+</style>

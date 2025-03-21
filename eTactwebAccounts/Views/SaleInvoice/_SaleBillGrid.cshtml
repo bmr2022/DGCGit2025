@@ -4,7 +4,7 @@
 @if (Model.saleBillDetails == null)
 {
     <tr class="text-center">
-        <td colspan="40" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+        <td colspan="45" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
     </tr>
 }
 else
@@ -44,6 +44,8 @@ else
             <th>@item.SeqNo <input type="hidden" id="SeqNo-@Cntr" value="@item.SeqNo" /></th>
             <td>@item.PartCode<input type="hidden" id="GridIC-@Cntr" value="@item.ItemCode" /></td>
             <td>@item.ItemName</td>
+            <td id="gridBomInd-@Cntr" class="gridHiddenField">@item.BOMInd</td>
+            <td class="gridHiddenField">@item.ProducedUnprod</td>
             <td id="GridSONO-@Cntr">@item.SONO</td>
             <td>@(item.SODate != null ? (item.SODate).Split(" ")[0] : item.SODate)</td>
             <td>@item.CustOrderNo</td>
@@ -92,6 +94,9 @@ else
             <td>@item.PacketsDetail</td>
             <td>@item.OtherDetail</td>
             <td>@item.ItemRemark</td>
+            <td class="gridHiddenField">@item.StockableNonStockable</td> @* stockable *@
+            <td class="gridHiddenField">@item.CustJwAdjustmentMandatory</td> @* cust *@
+            <td class="gridHiddenField">@item.VendJwAdjustmentMandatory</td> @* vend *@
         </tr>
 
     }

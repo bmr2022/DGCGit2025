@@ -87,9 +87,9 @@ namespace eTactWeb.Controllers
         }
 
 
-        public async Task<IActionResult> DeleteByID(int ID, int YC, string MRPNo)
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string MRPNo, string EntryByMachineName, int CreatedByEmpId)
         {
-            var Result = await IMRP.DeleteByID(ID, YC, MRPNo).ConfigureAwait(false);
+            var Result = await IMRP.DeleteByID(ID, YC, MRPNo,  EntryByMachineName,  CreatedByEmpId).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {

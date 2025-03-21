@@ -12,7 +12,7 @@ namespace eTactWeb.DOM.Models
     public class BOMReportModel: TimeStamp
     {
         // Fields for 'BOMTREE' flag
-        public string MainPartCode { get; set; }         
+        public string MainPartCode { get; set; }
         public string BOMPartCode { get; set; }         
         public string MainItemName { get; set; }        
         public string BOMItemName { get; set; }        
@@ -22,6 +22,7 @@ namespace eTactWeb.DOM.Models
         public string RMPartCode { get; set; }           
         public string RMItemName { get; set; }          
         public int? NetReqQty { get; set; }           
+        public double? ReqQty { get; set; }           
         public int? RMQty { get; set; }               
         public int? BomRevNo { get; set; }             
         public int? ItemLvl { get; set; }               
@@ -53,7 +54,10 @@ namespace eTactWeb.DOM.Models
         public long? StoreId { get; set; }               
         public float? WIPRecQty { get; set; }            
         public float? WIPIssueQty { get; set; }       
+        public double? Rate { get; set; }       
+        public double? Amount { get; set; }       
         public double? WIPStock { get; set; }            
+        public double? TotalStock { get; set; }            
         public long? WCID { get; set; }    
         public string? FGUnit { get; set; }    
         public string? RMUnit { get; set; }    

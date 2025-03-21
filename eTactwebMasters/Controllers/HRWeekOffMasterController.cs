@@ -4,6 +4,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
 using System.Data;
 using System.Net;
@@ -39,8 +40,9 @@ namespace eTactWeb.Controllers
             TempData.Clear();
             var MainModel = new HRWeekOffMasterModel();
             MainModel.EffectiveFrom = HttpContext.Session.GetString("EffectiveFrom");
+            MainModel.WeekoffYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U"|| Mode=="V")
             {
                 MainModel = await _IHRWeekOffMaster.GetViewByID(ID).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
@@ -92,9 +94,9 @@ namespace eTactWeb.Controllers
                 if (model != null)
                 {
                     model.Mode = model.Mode == "U" ? "update" : "INSERT";
-                    model.EntryByEmpId = Constants.UserID;
+                    model.EntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-                   
+
 
                     if (model.Mode == "update")
                     {
@@ -198,7 +200,7 @@ namespace eTactWeb.Controllers
             else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
             {
                 ViewBag.isSuccess = true;
-                TempData["410"] = "410";
+                TempData["423"] = "423";
             }
             else
             {

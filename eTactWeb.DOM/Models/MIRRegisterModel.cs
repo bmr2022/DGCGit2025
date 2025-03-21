@@ -40,6 +40,8 @@ namespace eTactWeb.DOM.Models
         public string? MIRNo { get; set; }
         public string? MIRDate { get; set; }
         public string? GateDate { get; set; }
+        public string? DocumentType { get; set; }
+        public string? State { get; set; }
         public string? EntryDate { get; set; }
         public string? VendorName { get; set; }
         public string? InvoiceNo { get; set; }
@@ -109,6 +111,16 @@ namespace eTactWeb.DOM.Models
         public string? DepName { get; set; } 
         public string? RecInStore { get; set; }
         public string? VendAddress { get; set; }  
-        public string? EntryBy { get; set; } 
+        public string? EntryBy { get; set; }
+
+       
+        public int NoOfMRN { get; set; }
+        public int MRNITEM { get; set; }
+        public int NoOfQC { get; set; }
+        public int MIRITEM { get; set; }
+        public int PendMRNForQC { get; set; }
+        public int PendItemForQC { get; set; }
+        public int TotalMRNPending { get; set; }
+        public int TotalItemPending { get; set; }
     }
 }

@@ -117,16 +117,25 @@ namespace eTactWeb
             services.TryAddScoped<IDataLogic, DataLogicBLL>();
             services.TryAddScoped<IItemMaster, ItemMasterBLL>();
             services.TryAddScoped<IHRSalaryHeadMaster, HRSalaryHeadMasterBLL>();
+            services.TryAddScoped<IHRWeekOffMaster, HRWeekOffMasterBLL>();
+            services.TryAddScoped<IHRLeaveApplicationMaster, HRLeaveApplicationMasterBLL>();
+            services.TryAddScoped<IHRLeaveOpeningMaster, HRLeaveOpeningMasterBLL>();
+            services.TryAddScoped<IHRLeaveMaster, HRLeaveMasterBLL>();
+            services.TryAddScoped<IHRPFESIMaster, HRPFESIMasterBLL>();
+            services.TryAddScoped<IHRHolidaysMaster, HRHolidaysMasterBLL>();
             services.TryAddScoped<IItemCategory,ItemCategoryBLL>();
             services.TryAddScoped<IItemGroup, ItemGroupBLL>();
             services.TryAddScoped<ILedgerOpeningEntry, LedgerOpeningEntryBLL>();
             services.TryAddScoped<ISubVoucher, SubVoucherBLL>();
+            services.TryAddScoped<IFeatures_Options, Features_OptionsBLL>();
+            services.TryAddScoped<ICompanyDetail, CompanyDetailBLL>();
             services.TryAddScoped<IPrimaryAccountGroupMaster, PrimaryAccountGroupMasterBLL>();
             services.TryAddScoped<IAlternateItemMaster, AlternateItemMasterBLL>();
             services.TryAddScoped<IBOMReport, BOMReportBLL>();
             services.TryAddScoped<IMinimumMaximaumLevel, MinimumMaximaumLevelBLL>();
             services.TryAddScoped<IUserRightReport, UserRightReportBLL>();
             services.TryAddScoped<IDayBook, DayBookBLL>();
+            services.TryAddScoped<IConsumptionReport, ConsumptionReportBLL>();
             services.TryAddScoped<IStockValuation, StockValuationBLL>();
             services.TryAddScoped<ICancelSaleBillrequisition, CancelSaleBillrequisitionBLL>();
             services.TryAddScoped<IStoreMaster, StoreMasterBLL>();
@@ -136,7 +145,12 @@ namespace eTactWeb
             services.TryAddScoped<ICostCenterMaster, CostCenterMasterBLL>();
             services.TryAddScoped<ILedgerPartyWiseOpening, LedgerPartyWiseOpeningBLL>();
             services.TryAddScoped<IBankReceipt, BankReceiptBLL>();
+            services.TryAddScoped<IBankPayment, BankPaymentBLL>();
+            services.TryAddScoped<ICashPayment, CashPaymentBLL>();
+            services.TryAddScoped<ITrailBalance, TrailBalanceBLL>();
+            services.TryAddScoped<IAccGroupLedger, AccGroupLedgerBLL>();
             services.TryAddScoped<IProdPlanStatus, ProdPlanStatusBLL>();
+            services.TryAddScoped<IHRShiftMaster, HRShiftMasterBLL>();
             services.TryAddScoped<IIssueAgainstProdSchedule, IssueAgainstProdScheduleBLL>();
             services.TryAddScoped<IPendingProductionSchedule, PendingProductionScheduleBLL>();
             services.TryAddScoped<IAdminModule, AdminModuleBLL>();
@@ -152,6 +166,7 @@ namespace eTactWeb
             services.TryAddScoped<ITransactionLedger, TransactionLedgerBLL>();
             services.TryAddScoped<IOutStanding, OutStandingBLL>();
             services.TryAddScoped<IIndentRegister, IndentRegisterBLL>();
+            services.TryAddScoped<IAutoGenerateSchedule, AutoGenerateScheduleBLL>();
 
 
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
@@ -162,6 +177,7 @@ namespace eTactWeb
             services.TryAddTransient<IMaterialReceipt, MaterialReceiptBLL>();
             services.TryAddTransient<IMirModule, MirBLL>();
             services.TryAddTransient<IJobWorkIssue, JobWorkIssueBLL>();
+            services.TryAddTransient<IInventoryAgingReport, InventoryAgingReportBLL>();
             services.TryAddTransient<IJobWorkReceive, JobWorkReceiveBLL>();
             services.TryAddTransient<IReqWithoutBOM,ReqWithoutBomBLL>();
             services.TryAddTransient<IReqThruBom,ReqThruBomBLL>();
@@ -217,6 +233,7 @@ namespace eTactWeb
             services.TryAddTransient<IPurchaseRejection, PurchaseRejectionBLL>();
 
             services.TryAddTransient<IConnectionStringHelper, ConnectionStringHelper>();
+            services.TryAddSingleton<ConnectionStringService>();
             services.AddScoped<UserContextService>();
         }
     }

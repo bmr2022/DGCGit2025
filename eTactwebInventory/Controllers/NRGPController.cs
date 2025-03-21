@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using System.Configuration;
 using System.Net;
 using System.Globalization;
+using FastReport.Data;
 
 namespace eTactWeb.Controllers
 {
@@ -32,7 +33,7 @@ namespace eTactWeb.Controllers
         private EncryptDecrypt _EncryptDecrypt { get; }
         private IWebHostEnvironment _IWebHostEnvironment { get; }
         private LoggerInfo LoggerInfo { get; }
-        private readonly IConfiguration iconfiguration;
+        private readonly IConfiguration _iconfiguration;
 
         public NRGPController(ILogger<NRGPController> logger, IConfiguration configuration, IDataLogic iDataLogic, IIssueNRGP iIssueNRGP, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo)
         {
@@ -45,7 +46,7 @@ namespace eTactWeb.Controllers
             this.itemMaster = itemMaster;
             _EncryptDecrypt = encryptDecrypt;
             LoggerInfo = loggerInfo;
-            iconfiguration = configuration; 
+            _iconfiguration = configuration; 
         }
 
         // [Route("{controller}/Index")]
@@ -203,20 +204,46 @@ namespace eTactWeb.Controllers
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string Type = "")
         {
+            //string my_connection_string;
+            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //var webReport = new WebReport();
+            //webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // summary report
+            //webReport.Report.SetParameterValue("entryparam", EntryId);
+            //webReport.Report.SetParameterValue("yearparam", YearCode);
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //return View(webReport); 
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
-
-            //webReport.Report.Load(webRootPath + "\\IssueRGPNRGPChallan.frx"); // summary report
-            webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // summary report
-
+            webReport.Report.Clear();
+            var ReportName = _IIssueNRGP.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // default report
+            }
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Prepare();
+            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+            {
+                if (dataSource is TableDataSource tableDataSource)
+                {
+                    tableDataSource.Enabled = true;
+                    tableDataSource.Init(); // Refresh the data source
+                }
+            }
             return View(webReport);
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
@@ -964,6 +991,8 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetBatchNumber(int StoreId, string StoreName, int ItemCode, string TransDate, int YearCode, string BatchNo)
         {
             var FinStartDate = HttpContext.Session.GetString("FromDate");
+            FinStartDate = ParseFormattedDate(FinStartDate);
+            TransDate = ParseFormattedDate(TransDate);
             var JSON = await _IIssueNRGP.GetBatchNumber("FillCurrentBatchINStore", StoreId, FinStartDate, StoreName, ItemCode, TransDate, YearCode, BatchNo);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);

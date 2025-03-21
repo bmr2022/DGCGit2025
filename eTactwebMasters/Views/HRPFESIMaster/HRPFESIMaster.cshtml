@@ -1,0 +1,632 @@
+﻿@model eTactWeb.DOM.Models.HRPFESIMasterModel
+
+@{
+    ViewData["Title"] = "HRPFESIMaster";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="rounded shadow-lg">
+    @* <partial name="_ItemDetailConfirmation" /> *@
+
+    <form asp-action="HRPFESIMaster" enctype="multipart/form-data" autocomplete="off" class="form-horizontal" method="post">
+        @Html.AntiForgeryToken()
+        @* <input type="hidden" asp-for="Act">
+        <input type="hidden" asp-for="ImageURL"> *@
+        <input type="hidden" asp-for="Mode">
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    @*@ViewData["Title"] - @Model.YearCode *@
+                     PFESI Master
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="HRPFESIMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    @*Model.Mode = "U";*@
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <div class="card rounded shadow-lg">
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionAccountMaster">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_BasicInformation">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicInformation" aria-expanded="true" aria-controls="B_BasicInformation">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Basic  Information </strong>
+                            </button>
+                        </h2>
+                        <div id="B_BasicInformation" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicInformation">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        @* <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                        <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" /> *@
+                                        <label asp-for="EntryId" class="form-label">Entry Id</label>
+                                        <input asp-for="EntryId" class="form-control numbers" value="@Model.EntryId" readonly />
+
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="SchemeType" class="form-label">Scheme Type</label>
+                                        <select asp-for="SchemeType" class="form-select">
+                                            <option value="" selected>-Select-</option>
+                                            <option value="PF">PF</option>
+                                            <option value="ESI">ESI</option>                                     
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EffectiveFrom" class="form-label">Effective From</label>
+                                        <input asp-for="EffectiveFrom" class="form-control" value="@Model.EffectiveFrom" />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_PFDetails">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_PFDetails" aria-expanded="true" aria-controls="B_PFDetails">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Provident Fund (PF) Details </strong>
+                            </button>
+                        </h2>
+                        <div id="B_PFDetails" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_PFDetails">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+
+
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+
+                                        <label asp-for="EmployeePFDeducionPer" class="form-label">EmployeePFDeducionPer</label>
+                                        <input asp-for="EmployeePFDeducionPer" class="form-control numbers" value="@Model.EmployeePFDeducionPer" />
+
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmployerPFContributionPer" class="form-label">EmployerPFContributionPer</label>
+                                        <input asp-for="EmployerPFContributionPer" class="form-control numbers" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmployerEPSContributionPer" class="form-label">EmployerEPSContributionPer</label>
+                                        <input asp-for="EmployerEPSContributionPer" class="form-control numbers" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFWageLimit" class="form-label">PFWageLimit </label>
+                                        <input asp-for="PFWageLimit" class="form-control numbers" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MinServicePeriodForPF" class="form-label">MinServicePeriodForPF </label>
+                                        <input asp-for="MinServicePeriodForPF" class="form-control numbers" />
+                                    </div>
+
+                                    
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFAccountNumberFormat" class="form-label">PFAccountNumberFormat</label>
+                                        <input asp-for="PFAccountNumberFormat" class="form-control " value="@Model.PFAccountNumberFormat" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaxCompanyLimitAmt" class="form-label">MaxCompanyLimitAmt </label>
+                                        <input asp-for="MaxCompanyLimitAmt" class="form-control numbers" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFBankName" class="form-label">PFBankName</label>
+                                        <input asp-for="PFBankName" class="form-control " value="@Model.PFBankName" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFBankAddress" class="form-label">PFBankAddress</label>
+                                        <input asp-for="PFBankAddress" class="form-control " value="@Model.PFBankAddress" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFRegistationNo" class="form-label">PFRegistationNo</label>
+                                        <input asp-for="PFRegistationNo" class="form-control " value="@Model.PFRegistationNo" />
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ESIDetails">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ESIDetails" aria-expanded="true" aria-controls="B_ESIDetails">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Employee State Insurance (ESI) Details</strong>
+                            </button>
+                        </h2>
+                        <div id="B_ESIDetails" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ESIDetails">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmployeeESIContributionPer" class="form-label">EmployeeESIContribution%</label>
+                                        <input asp-for="EmployeeESIContributionPer" class="form-control numbers" value="@Model.EmployeeESIContributionPer"  />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmployerESIContributionPer" class="form-label">EmployerESIContribution%</label>
+                                        <input asp-for="EmployerESIContributionPer" class="form-control numbers" value="@Model.EmployerESIContributionPer"  />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ESIWageLimit" class="form-label">ESIWageLimit</label>
+                                        <input asp-for="ESIWageLimit" class="form-control numbers" value="@Model.ESIWageLimit"  />
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ESICode" class="form-label">ESICode</label>
+                                        <input asp-for="ESICode" class="form-control " value="@Model.ESICode" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ESIDispensary" class="form-label">ESIDispensary</label>
+                                        <select asp-for="ESIDispensary" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            @*  <option value="@Model.TypeOfSalary">-Select-</option> *@
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ESIDispensary" selected>@Model.ESIDispensary</option>
+                                            }
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_OtherStatutoryandComplianceFields">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_OtherStatutoryandComplianceFields" aria-expanded="true" aria-controls="B_OtherStatutoryandComplianceFields">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Other Statutory & Compliance Fields</strong>
+                            </button>
+                        </h2>
+                        <div id="B_OtherStatutoryandComplianceFields" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_OtherStatutoryandComplianceFields">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="TaxDeductionApplicable" class="form-label">TaxDeductionApplicable</label>
+                                        <select asp-for="TaxDeductionApplicable" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>                                          
+                                     
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="VoluntaryPFAllowed" class="form-label">VoluntaryPFAllowed</label>
+                                        <select asp-for="VoluntaryPFAllowed" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="PFWithdrawalLockPeriod" class="form-label">PFWithdrawalLockPeriod</label>
+                                        <input asp-for="PFWithdrawalLockPeriod" class="form-control numbers" value="@Model.PFWithdrawalLockPeriod" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ESIBenefitsCovered" class="form-label">ESIBenefitsCovered</label>
+                                        <input asp-for="ESIBenefitsCovered" class="form-control numbers" value="@Model.ESIBenefitsCovered" />
+                                    </div>
+                                    
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ExemptedCategories" class="control-label">ExemptedCategories </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="ExemptedCategories" asp-items="@(new SelectList(Model.ExemptedCategoriesList,"Value","Text"))"></select>
+                                    </div>
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ApplicableOnSalaryHead" class="control-label">ApplicableOnSalaryHead </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="ApplicableOnSalaryHead" asp-items="@(new SelectList(Model.ApplicableOnSalaryHeadList,"Value","Text"))"></select>
+                                    </div>
+
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ComplianceStatus" class="form-label">ComplianceStatus</label>
+                                        <select asp-for="ComplianceStatus" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="Compliant" selected>Compliant</option>
+                                            <option value="Non-Compliant">Non-Compliant</option>
+
+                                        </select>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_AuditAndStatus">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AuditAndStatus" aria-expanded="true" aria-controls="B_AuditAndStatus">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Audit & Tracking Fields</strong>
+                            </button>
+                        </h2>
+                        <div id="B_LeaveValidityAndRestrictions" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AuditAndStatus">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Active" class="form-label">Active</label>
+                                        <select asp-for="Active" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO">NO</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO" disabled>NO</option>
+                                            }
+
+
+                                        </select>
+                                    </div>
+
+
+
+                                  
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none">
+                                        <label asp-for="CreatedBy" class="form-label">CreatedBy</label>
+                                        <input asp-for="CreatedBy" class="form-control " value="@Model.CreatedBy" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none">
+                                        <label asp-for="UpdatedBy" class="form-label">UpdatedBy</label>
+                                        <input asp-for="UpdatedBy" class="form-control " value="@Model.UpdatedBy" />
+                                    </div>
+
+                                   
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedOn" class="form-label">CreatedOn</label>
+                                        <input asp-for="CreatedOn" class="form-control " value="@Model.CreatedOn" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">UpdatedOn</label>
+                                        <input asp-for="UpdatedOn" class="form-control " value="@Model.UpdatedOn" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px">
+                                        <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
+                                        <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
+                                    </div>
+                                   
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+
+                    <div class="card border-light bg-gradient rounded shadow-lg">
+                        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                            <h4>
+
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    <a asp-action="HRPFESIMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U")
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
+                                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+        $('.submitBTN').click(function (e) {
+            e.preventDefault();
+
+            $('form').submit();
+        });
+
+
+        $('.numbers').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+
+
+        $(function () {
+
+            $('#ESIDispensary').select2();
+            $('#LeaveCategory').select2();
+            $('#GenderApplicable').select2();
+            $('#Encashable').select2();
+            $('#CarryForward').select2();
+            $('#HalfDayAllowed').select2();
+            $('#LeaveApprovalRequired').select2();
+
+            $('#CompensatoryOffRequired').select2();
+            $('#LeaveDeductionApplicable').select2();
+            $('#Active').select2();
+            $('#EmpApprovalLevel1').select2();
+            $('#EmpApprovalLevel2').select2();
+            $('#EmpApprovalLevel3').select2();
+
+        });
+
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            FillEntryID();
+        }
+
+        function simulateBackspace(element) {
+            var event = new KeyboardEvent("keydown", {
+                key: "Backspace",
+                keyCode: 8,
+                code: "Backspace",
+                which: 8,
+                bubbles: true,
+                cancelable: true,
+            });
+
+            element.dispatchEvent(event);
+        }
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit']").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("button[type='submit']").prop("disabled", true);
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        
+
+
+
+        $(document).ready(function () {
+
+            $("#ExemptedCategories").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+
+
+            });
+
+            $("#ApplicableOnSalaryHead").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+
+
+            });
+
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+
+                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+               
+            }
+            else {
+                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                
+            }
+
+            
+
+            
+
+
+            GetFormRights();
+           
+            FillESIDispensary();
+           
+
+            $('.datefield').keyup(function (e) {
+                e.preventDefault();
+                if (e.keyCode == 8) {
+                    return false;
+                }
+            });
+           
+            
+        });
+
+        function FillEntryID() {
+
+            $.ajax({
+                url: '@Url.Action("FillEntryId", "HRPFESIMaster")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#EntryId').val(0);
+                        $('#EntryId').val(obj.Result[0].EntryId);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillESIDispensary() {
+
+            $.ajax({
+                url: '@Url.Action("GetESIDispensary", "HRPFESIMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ESIBenifitCoverd = $('#ESIDispensary');
+                    var obj = $.parseJSON(response);
+                    ESIBenifitCoverd.empty();
+                    // TypeOfSalaryDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ESIBenifitCoverd.append('<option value="' + item.ESIBenifitCoverd + '">' + item.ESIBenifitCoverd + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var ESIDispensary = '@Model.ESIDispensary';
+                        $('#ESIDispensary').val(ESIDispensary).trigger("change");
+                        $('#ESIDispensary').val(ESIDispensary);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+
+    </script>
+}

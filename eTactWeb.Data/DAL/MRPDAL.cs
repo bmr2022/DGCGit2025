@@ -241,7 +241,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string MRPNo)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string MRPNo, string EntryByMachineName, int CreatedByEmpId)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -251,6 +251,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Entryid", ID));
                 SqlParams.Add(new SqlParameter("@yearcode", YC));
                 SqlParams.Add(new SqlParameter("@MRPNO", MRPNo));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
+                SqlParams.Add(new SqlParameter("@CreatedByEmpId", CreatedByEmpId));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_MRP", SqlParams);
             }
             catch (Exception ex)
@@ -304,6 +306,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@so_yearcode", model.SOYearCode));
                 SqlParams.Add(new SqlParameter("@Consider_Stock_Stores", model.StoreId));
                 SqlParams.Add(new SqlParameter("@Consider_WIP", model.WcId));
+                SqlParams.Add(new SqlParameter("@Sch_entryid", model.ScheduleNo));
                 var ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRPGENERATION", SqlParams);
 
                 if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")

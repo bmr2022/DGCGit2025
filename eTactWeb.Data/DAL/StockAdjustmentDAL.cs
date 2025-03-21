@@ -25,7 +25,24 @@ namespace eTactWeb.Data.DAL
         public IConfiguration? Configuration { get; }
 
         private string DBConnectionString { get; }
+        public async Task<ResponseResult> StockAdjBackDatePassword()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "BackDatePassword"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_StockAdjustment", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
+            return _ResponseResult;
+        }
         public async Task<DataSet> BindAllDropDowns(string Flag)
         {
             var oDataSet = new DataSet();
@@ -138,6 +155,23 @@ namespace eTactWeb.Data.DAL
                 return string.Empty;
             }
         }
+        private string ConvertToDDMMMYYYY(string dateStr)
+        {
+            if (string.IsNullOrEmpty(dateStr))
+                return null;
+
+            string[] possibleFormats = { "dd/MM/yyyy", "dd-MM-yyyy" }; // ✅ Supports both formats
+
+            if (DateTime.TryParseExact(dateStr, possibleFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+            {
+                return parsedDate.ToString("dd/MMM/yyyy");  // ✅ Convert to "dd/MMM/yyyy" format
+            }
+            else
+            {
+                Console.WriteLine($"Invalid date format: {dateStr}");
+                return null;
+            }
+        }
         internal async Task<ResponseResult> GetDashboardData(SADashborad model)
         {
             var _ResponseResult = new ResponseResult();
@@ -145,6 +179,7 @@ namespace eTactWeb.Data.DAL
             {
                 DateTime currentDate = DateTime.Today;
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+              
                 var SqlParams = new List<dynamic>();
                 var Flag = "";
                 if (model.SummaryDetail == "Detail")
@@ -161,8 +196,11 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@StoreWorkcenter", model.StoreWorkcenter));
                 SqlParams.Add(new SqlParameter("@StoreName", model.StoreName));
                 SqlParams.Add(new SqlParameter("@WorkCenter", model.WorkCenter));
-                SqlParams.Add(new SqlParameter("@StartDate", firstDateOfMonth));
-                SqlParams.Add(new SqlParameter("@EndDate", currentDate));
+                string formattedFromDate = ConvertToDDMMMYYYY(model.FromDate);
+                string formattedToDate = ConvertToDDMMMYYYY(model.ToDate);
+
+                SqlParams.Add(new SqlParameter("@StartDate", string.IsNullOrEmpty(formattedFromDate) ? DBNull.Value : (object)formattedFromDate));
+                SqlParams.Add(new SqlParameter("@EndDate", string.IsNullOrEmpty(formattedToDate) ? DBNull.Value : (object)formattedToDate));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_stockAdjustment", SqlParams);
             }
@@ -742,5 +780,104 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetDashItemName(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "DASHBOARDItemName"));
+                SqlParams.Add(new SqlParameter("@StartDate", FromDate));
+                SqlParams.Add(new SqlParameter("@EndDate", ToDate));
+               
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_stockadjustment", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetDashPartCode(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "DASHBOARDPartCode"));
+                SqlParams.Add(new SqlParameter("@StartDate", FromDate));
+                SqlParams.Add(new SqlParameter("@EndDate", ToDate));
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_stockadjustment", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetDashStoreName(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "DASHBOARDStoreName"));
+                SqlParams.Add(new SqlParameter("@StartDate", FromDate));
+                SqlParams.Add(new SqlParameter("@EndDate", ToDate));
+               
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_stockadjustment", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetDashWorkCenter(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "DASHBOARDWorkCenter"));
+                SqlParams.Add(new SqlParameter("@StartDate", FromDate));
+                SqlParams.Add(new SqlParameter("@EndDate", ToDate));
+
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_stockadjustment", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
     }
 }

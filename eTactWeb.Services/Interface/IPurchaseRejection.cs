@@ -8,7 +8,15 @@ namespace eTactWeb.Services.Interface
         Task<AccPurchaseRejectionModel> GetViewByID(int ID, int YearCode, string mode);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> FillDocument(string ShowAllDoc);
-        Task<ResponseResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode);
+        Task<ResponseResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode, string DebitNotePurchaseRejection);
         Task<ResponseResult> GetStateGST(int Code);
+        Task<ResponseResult> FillItems(int YearCode, int accountCode, string showAllItems, string Flag);
+        Task<ResponseResult> GetExchangeRate(string Currency);
+        Task<ResponseResult> FillCurrency(int? AccountCode);
+        Task<ResponseResult> FillStore();
+        Task<ResponseResult> FillSubvoucher(int? PurchaseRejYearCode, string DebitNotePurchaseRejection);
+        Task<ResponseResult> GetHSNUNIT(int itemCode);
+        Task<ResponseResult> FillPurchaseRejectionPopUp(string DebitNotePurchaseRejection, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode, string showAllBill);
+        Task<ResponseResult> FillDetailFromPopupGrid(DataTable model, int itemCode, int poopCt);
     }
 }

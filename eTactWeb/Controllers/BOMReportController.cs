@@ -106,6 +106,15 @@ namespace eTactWeb.Controllers
             {
                  return PartialView("_DirectBOM", model);
             }
+            if (ReportType == "BOMSTOCK(WITH SUB BOM)")
+            {
+                 return PartialView("_WITHSUBBOM", model);
+            }
+            if (ReportType == "BOMSTOCK(DIRECT CHILD)")
+            {
+                 return PartialView("_DIRECTCHILD", model);
+            }
+
             return null;
         }
 

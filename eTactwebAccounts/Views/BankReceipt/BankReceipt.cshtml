@@ -3,6 +3,23 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="BankReceipt" asp-controller="BankReceipt" method="post" class="form-horizontal">
@@ -70,8 +87,8 @@
                                 <input type="hidden" value="@Model.Mode" asp-for="Mode" />
                                 <input type="hidden" asp-for="SrNO" />
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="Branch" class="form-label">Branch</label>
-                                    <input asp-for="Branch" class="form-control" readonly />
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="AccEntryId" class="form-label">Entry Id</label>
@@ -86,7 +103,7 @@
                                     <input asp-for="YearCode" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
-                                    <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name</label>
+                                    <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
                                     <input type="hidden" asp-for="SubVoucherID" />
                                     <select class="form-control" asp-for="SubVoucherName" style="width:130px;">
                                         <option value="">BANK-RECEIPT</option>
@@ -97,12 +114,12 @@
                                         }
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
-                                    <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo</label>
-                                    <input asp-for="VoucherNo" class="form-control" readonly />
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
+                                    <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
+                                    <input asp-for="VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
-                                    <label asp-for="VoucherDate" class="form-label" style=" color:red;">Voucher Date</label>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
+                                    <label asp-for="VoucherDate" class="form-label" style=" color:red;">Voucher Date*</label>
                                     <input asp-for="VoucherDate" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
@@ -151,14 +168,14 @@
                                         <table class="table table-hover table-bordered table-striped">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                                 <tr>
-                                                    <th>Type</th>
-                                                    <th>Ledger Name</th>
-                                                    <th>Balance &nbsp;&nbsp; DR/CR</th>
+                                                    <th style="color:yellow">Type*</th>
+                                                    <th style="color:yellow">Ledger Name*</th>
+                                                    <th style="color:yellow">Balance* &nbsp;&nbsp; DR/CR*</th>
                                                     <th>Intrument</th>
                                                     <th>Intrument No</th>
                                                     <th>Intrument Date</th>
-                                                    <th>Mode of Adjustment</th>
-                                                    <th>Amount</th>
+                                                    <th style="color:yellow">Mode of Adjustment*</th>
+                                                    <th style="color:yellow">Amount*</th>
                                                     <th>Amount (OC)</th>
                                                     <th>Cost Center Name</th>
                                                     <th>Party-Wise Narration</th>
@@ -233,12 +250,12 @@
 
                                     <div style="width:170px;">
                                         <label asp-for="DrAmt" class="form-label">Dr Amt</label>
-                                        <input asp-for="DrAmt" id="DrAmt" class="form-control" readonly />
+                                        <input asp-for="DrAmt"  class="form-control" readonly />
                                     </div>
 
                                     <div style="width:170px;">
                                         <label asp-for="CrAmt" class="form-label">Cr Amt</label>
-                                        <input asp-for="CrAmt" id="CrAmt" class="form-control" readonly data-val="false" />
+                                        <input asp-for="CrAmt"  class="form-control" readonly data-val="false" />
                                     </div>
 
                                     <div style="width:170px;">
@@ -318,16 +335,6 @@
                                     @*<partial name="_FormsButton" />*@
                                     <div class="row justify-content-between g-2">
                                         <div class="col-auto">
-                                            @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
-                                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
-                                            <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
-                                            <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
-                                            <input asp-for="OpeningForYearBack" type="hidden" value="@Model.OpeningForYearBack" />
-                                            <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
-                                            <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
-                                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
-
-                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
                                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                                 BACK
@@ -469,7 +476,7 @@
     <script>
 
         function Validate_Submit() {
-
+             
             var Err = 0;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -494,6 +501,13 @@
                 $.notify("There should be at least one bank in grid.", "error");
                 Err = 1;
             }
+
+            for (let i = 1; i <= Row; i++) {
+                var ModeOfAdjust = $('#ModeOfAdjustment-' + i).text();
+                if (ModeOfAdjust == "Against Ref") {
+                    CheckAmountBeforeSave(i);
+                }
+            }
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
             if (Err == 1) return false;
             return true;
@@ -514,15 +528,21 @@
             $('#CostCenterName').select2();
             $('#SubVoucherName').select2();
             $('#Currency').select2();
+
+            debugger;
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
-            if ($('#Mode').val() != "U" && $('#Mode').val() != "V"){
-                FillEntryID();
-            }
+          
+            
             FillCurrency();
             FillModeofAdjust();
-            calculateTotalBalance();
+           //alculateTotalBalance();
+
+            
+            $('#CostCenterName').change(function () {
+                $('#CostCenterId').val($('#CostCenterName').val());
+            });
             $('#LedgerName').rules("remove", "required");
             $('#DRCR').rules("remove", "required");
             $('#Intrument').rules("remove", "required");
@@ -599,7 +619,7 @@
 
             }
             $('#AdjustmentAmt').on('input', function () {
-                 
+
                 let adjustmentAmt = $(this).val();
                 $('#AdjustmentAmtOthCur').val(adjustmentAmt);
             });
@@ -613,6 +633,9 @@
                 }
             });
 
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                FillEntryID();
+            }
             function checkModeOfAdjustment() {
 
                 const modeOfAdjustment = $("#ModeOfAdjustment").val(); // Assuming this is the ID of the field
@@ -628,6 +651,9 @@
                     $("#againstFieldsVoucherEntryId").hide();
                     $("#againstFieldsVoucherBillAmt").hide();
                     $("#againstFieldsVoucherPendAmt").hide();
+                    $('#CustOrderNo').prop('disabled', false);
+                    $('#SoNo').prop('disabled', false);
+                    $('#SOYear').prop('disabled', false);
                 }
                 // Show/Hide Against Fields
                 else if (modeOfAdjustment === "Against Ref") {
@@ -644,6 +670,9 @@
                     $("#advanceFieldsSOYear").hide();
                     $("#advanceFieldsSeqNo").hide();
                     $("#advanceFieldsCustOrderNo").hide();
+                    $('#CustOrderNo').prop('disabled', true);
+                    $('#SoNo').prop('disabled', true);
+                    $('#SOYear').prop('disabled', true);
                     if ($('#LedgerName').prop('selectedIndex') == 0) {
                         $.notify("Please select LedgerName First..!", "error");
                     }
@@ -663,11 +692,26 @@
                     $("#againstFieldsVoucherEntryId").hide();
                     $("#againstFieldsVoucherBillAmt").hide();
                     $("#againstFieldsVoucherPendAmt").hide();
+                    $('#CustOrderNo').prop('disabled', true);
+                    $('#SoNo').prop('disabled', true);
+                    $('#SOYear').prop('disabled', true);
                 }
+                if ($("#AccountCode").val() != "" && $("#ModeOfAdjustment").val() == "Advance") {
+
+                    FillSONO();
+                }
+
+               
             }
+            $("#SONo").on("change", function () {
+                GetSOYear();
+                GetSODate();
+            });
             $("#ModeOfAdjustment").on("change", function () {
                 checkModeOfAdjustment();
             });
+
+            
 
             // Initial check on page load
             checkModeOfAdjustment();
@@ -677,6 +721,7 @@
 
             let drTotal = 0;
             let crTotal = 0;
+            
             const rowCount = $('#divBankReceiptDetail tr').length;
             for (let i = 1; i <= rowCount; i++) {
 
@@ -685,6 +730,8 @@
 
                 if (drcr.toLowerCase() === "dr") {
                     drTotal += AdjAmt;
+                    
+
                 } else if (drcr.toLowerCase() === "cr") {
                     crTotal += AdjAmt;
                 }
@@ -692,6 +739,7 @@
 
             $('#DrAmt').val(drTotal.toFixed(2));
             $('#CrAmt').val(crTotal.toFixed(2));
+            $('#VoucherAmt').val(crTotal.toFixed(2));
         }
 
         function ClearGrid() {
@@ -727,9 +775,31 @@
         }
 
         function FillEntryID() {
+            debugger;
+            var VoucherDate = $('#VoucherDate').val();
+
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
             $.ajax({
                 url: '@Url.Action("FillEntryID", "BankReceipt")',
                 type: 'POST',
+                data: { "YearCode": $('#YearCode').val(), "VoucherDate": VoucherDate },
                 async: false,
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);
@@ -762,7 +832,7 @@
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 
                         $('#Balance').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
-                        $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
+                       // $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
                         $('#DRCR').val(obj.Result[0].TypeDrCr);
                     }
                     else {
@@ -775,7 +845,7 @@
             });
         }
 
-        $('#Type').change(function(){
+        $('#Type').change(function () {
             AdjustAmountForAddToGridForDRCR();
         })
 
@@ -808,22 +878,258 @@
             });
         }
 
+        function FillSONO() {
+            debugger;
+
+            var accountcode = $('#AccountCode').val();
+            var VoucherDate = $('#VoucherDate').val();
+
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
+
+            $.ajax({
+                url: '@Url.Action("FillSONO", "BankReceipt")',
+                type: 'POST',
+                async: false,
+                data: {
+
+                    accountcode: accountcode,
+                    VoucherDate: VoucherDate
+
+                },
+                success: function (response, status, error) {
+
+                    var SONoDropdown = $('#SONo');
+                    var obj = $.parseJSON(response);
+                    SONoDropdown.empty();
+                    SONoDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, sono) {
+                        SONoDropdown.append('<option value="' + sono.SONO + '">' + sono.SONO + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var SONo = '@Model.SONo';
+                        $('#SONo').val(SONo).trigger("change");
+                        $('#SONo').val(SONo);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+
+        function GetSOYear() {
+            debugger;
+            var SONO = $("#SONo").val();
+            var accountcode = $("#AccountCode").val();
+            var VoucherDate = $("#VoucherDate").val();
+            if (!SONO) return;
+
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetSODetail", "BankReceipt")',
+                type: 'GET',
+                data: {
+                    SONO: SONO,
+                    accountcode: accountcode,
+                    VoucherDate: VoucherDate
+
+                },
+                success: function (data) {
+
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var SOYear = data.Result[0]; // Extract first object
+                        var SoDate = data.Result[0];
+                        var CONO = data.Result[0];
+
+
+                        $("#SOYear").prop("disabled", false).val(SOYear.SOYearCode).trigger("input");
+                       // $("#SoDate").prop("disabled", false).val(SoDate.SODate).trigger("input");
+                        if (SoDate.SODate) {
+                            var dateObj = new Date(SoDate.SODate);
+                            var formattedDate = ("0" + dateObj.getDate()).slice(-2) + "/" +
+                                ("0" + (dateObj.getMonth() + 1)).slice(-2) + "/" +
+                                dateObj.getFullYear();
+                            $("#SoDate").prop("disabled", false).val(formattedDate).trigger("input");
+                        }
+                        $("#CustOrderNo").prop("disabled", false).val(CONO.CustOrderNo).trigger("input");
+
+
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+
+                }
+            });
+        }
+
+        function GetSODate() {
+
+            var SONO = $("#SONo").val();
+            var accountcode = $("#AccountCode").val();
+            var VoucherDate = $("#VoucherDate").val();
+            var SOYearCode = $("#SOYear").val();
+            if (!SONO) return;
+            if (VoucherDate) {
+                var dateParts = VoucherDate.split("/"); // Split by "/"
+                if (dateParts.length === 3) {
+                    var day = dateParts[0]; // Get day
+                    var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
+                    var year = dateParts[2]; // Get year
+
+                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var monthShort = monthNames[monthNumber - 1]; // Get short month name
+
+                    // Construct new formatted date
+                    VoucherDate = `${day}/${monthShort}/${year}`;
+                } else {
+                    console.error("Invalid date format:", VoucherDate);
+                    return; // Stop execution if format is incorrect
+                }
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetPODate", "BankPayment")',
+                type: 'GET',
+                data: {
+                    PONO: PONO,
+                    accountcode: accountcode,
+                    VoucherDate: VoucherDate,
+                    POYearCode: POYearCode,
+                    PoDate: PoDate
+
+                },
+                success: function (data) {
+
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var PoDate = data.Result[0]; // Extract first object
+
+
+                        $("#PoDate").prop("disabled", false).val(PoDate.PODate).trigger("input");
+
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+
+                }
+            });
+        }
+
         function FillCurrency() {
+
             $.ajax({
                 url: '@Url.Action("FillCurrency", "BankReceipt")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
+
                     var CurrencyDropdown = $('#Currency');
                     var obj = $.parseJSON(response);
                     CurrencyDropdown.empty();
                     $.each(obj.Result, function (index, Currency) {
                         CurrencyDropdown.append('<option value="' + Currency.CurrencyId + '">' + Currency.Currency + '</option>');
                     });
-
+                    $('#CurrencyId').val(parseInt($('#Currency').val()))
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                        var Currency = '@Model.Currency';
+                        var Currency = '@Model.CurrencyId';
+                        $('#Currency').val(Currency).trigger("change");
+                        $('#Currency').val(Currency);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function CheckAmountBeforeSave(i) {
+             
+            $.ajax({
+                url: '@Url.Action("CheckAmountBeforeSave", "BankReceipt")',
+                type: 'POST',
+                async: false,
+                data: { "VoucherDate": $('#VoucherDate').val(), "YearCode": $('#YearCode').val(), "AgainstVoucherYearCode": $('#AgainstVoucheryearCode-' + i).text(), "AgainstVoucherEntryId": $('#AgainstVoucherEntryId-' + i).text(), "AgainstVoucherNo": $('#AgainstVoucherNo-' + i).text(), "AccountCode": $('#AccountCode-' + i).val() },
+                success: function (response, status, error) {
+
+                    var CurrencyDropdown = $('#Currency');
+                    var obj = $.parseJSON(response);
+                    CurrencyDropdown.empty();
+                    $.each(obj.Result, function (index, Currency) {
+                        CurrencyDropdown.append('<option value="' + Currency.CurrencyId + '">' + Currency.Currency + '</option>');
+                    });
+                    $('#CurrencyId').val(parseInt($('#Currency').val()))
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var Currency = '@Model.CurrencyId';
                         $('#Currency').val(Currency).trigger("change");
                         $('#Currency').val(Currency);
                     }
@@ -951,21 +1257,23 @@
         }
 
         function FillCostCenterName() {
+            debugger;
             $.ajax({
                 url: '@Url.Action("FillCostCenterName", "BankReceipt")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
+                    console.log("Raw Response:", response);
                     var CostCenterNameDropdown = $('#CostCenterName');
                     var obj = $.parseJSON(response);
                     CostCenterNameDropdown.empty();
                     CostCenterNameDropdown.append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (index, CostCenter) {
-                        CostCenterNameDropdown.append('<option value="' + CostCenter.CostCenterId + '">' + CostCenter.CostCenterName + '</option>');
+                        CostCenterNameDropdown.append('<option value="' + CostCenter.CostcenterId + '">' + CostCenter.CostCenterName + '</option>');
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var CostCenterName = '@Model.CostCenterName';
+                        var CostCenterName = '@Model.CostCenterId';
                         $('#CostCenterName').val(CostCenterName).trigger("change");
                         $('#CostCenterName').val(CostCenterName);
                     }
@@ -1036,6 +1344,9 @@
                                     $('#DisplayRoutingDetailModal').modal('show');
                                     PopUpForPendingVouchers("AddMode");
                                 }
+                                $('#Type option').filter(function () {
+                                    return $(this).val() === "CR";
+                                }).prop('selected', true);
                                 $('#Type').prop('disabled', false);
                                 $('#Type').trigger('change');
                                 var options = [
@@ -1107,7 +1418,7 @@
         }
 
         function AdjustAmount() {
-             
+
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var DRAmt = 0;
             var CRAmt = 0;
@@ -1232,14 +1543,28 @@
             for (var i = 1; i <= rowCount + 1; i++) {
 
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
+
+                    var type = $('#PopUpType-' + i).text().trim().toLowerCase();
+                    var adjAmt = parseFloat($('#AdjustAmt-' + i).val()) || 0; // Convert to float, default to 0
+
+                    var DrAmt = "0.00";
+                    var CrAmt = "0.00";
+
+                    if (type === "dr") {
+                        DrAmt = adjAmt.toFixed(2);
+                    } else if (type === "cr") {
+                        CrAmt = adjAmt.toFixed(2);
+                    }
                     ItemData.push({
                         "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
                         "AccountCode": $('#AccountCode').val(),
                         "Type": $('#PopUpType-' + i).text(),
                         "Balance": $('#BalanceAmt-' + i).text(),
                         "DRCR": $('#PopUpType-' + i).text(),
-                        "DrAmt": $('#PopDrAmt').val(),
-                        "CrAmt": $('#PopCrAmt').val(),
+                        "DrAmt": DrAmt,
+                        "CrAmt": CrAmt,
+                        "ActualEntryby": $('#ActualEntryBy').val(),
+                        "EntryByMachine": $('#EntryByMachine').val(),
                         "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),
                         "AgainstVoucheryearCode": $('#PopUpYearCode-' + i).text(),
                         "AgainstVoucherDate": $('#popUpVoucherDate-' + i).text(),
@@ -1251,9 +1576,12 @@
                         "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
                         "InsNo": $('#InsNo').val(),
                         "InsDate": $('#InsDate').val(),
+                        "CurrencyId": parseInt($('#CurrencyId').val()),
+                        "ActualEntryDate": $('#ActualEntryDate').val(),
                         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
                         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                        "CostCenterId": $('#CostCenterId').val(),
                     })
                 }
             }
@@ -1322,9 +1650,9 @@
             else {
                 RemoveErrorCls('ModeOfAdjustment');
             }
-            if($('#BankType').val() == "Bank"){
+            if ($('#BankType').val() == "Bank") {
 
-                if ($('#InsNo').val() == null || $('#InsNo').val() == ""){
+                if ($('#InsNo').val() == null || $('#InsNo').val() == "") {
                     AddErrorCls('InsNo');
                     $.notify("InsNo is required.", "error");
                     Err = 1;
@@ -1342,8 +1670,8 @@
                 }
             }
 
-            if ($('#ModeOfAdjustment').val() == "Advance"){
-                if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null){
+            if ($('#ModeOfAdjustment').val() == "Advance") {
+                if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
                     AddErrorCls('CustOrderNo');
                     $.notify("CustOrderNo is required.", "error");
                     Err = 1;
@@ -1403,16 +1731,22 @@
                 "SOYear": $('#SOYear').val(),
                 "DrAmt": $('#DrAmt').val(),
                 "CrAmt": $('#CrAmt').val(),
+                "ActualEntryby": $('#ActualEntryBy').val(),
+                "EntryByMachine": $('#EntryByMachine').val(),
+                "CurrencyId": parseInt($('#CurrencyId').val()),
+                "ActualEntryDate": $('#ActualEntryDate').val(),
                 "Type": $('#Type').find(":selected").text() == '-Select-' ? '' : $('#Type').find(":selected").text(),
                 "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
                 "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
                 "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                 "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
+                "CostCenterId": $('#CostCenterId').val(),
             };
 
             const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
             if (SchData.Type.toLowerCase() === "dr") {
                 SchData.DrAmt = adjAmt.toFixed(2);
+               
                 SchData.CrAmt = "0.00";
             } else if (SchData.Type.toLowerCase() === "cr") {
                 SchData.CrAmt = adjAmt.toFixed(2);
@@ -1446,8 +1780,8 @@
             });
         };
 
-        function AdjustAmountForAddToGridForDRCR(){
-              
+        function AdjustAmountForAddToGridForDRCR() {
+
             var RowCount = $('#divBankReceiptDetail tr').length;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -1473,7 +1807,7 @@
             }
             $('#AdjustmentAmt').trigger('input');
         }
-        
+
         var EditEachItem = false;
         function EditItemRows(SrNO) {
 
@@ -1516,7 +1850,8 @@
                                 $('#ModeOfAdjustment').val(obj[0].ModeOfAdjustment).trigger("change");
                                 $('#AdjustmentAmt').val(obj[0].AdjustmentAmt);
                                 $('#AdjustmentAmtOthCur').val(obj[0].AdjustmentAmtOthCur);
-                                $('#CostCenterName').val(obj[0].CostCenterName).trigger("change");
+                                $('#CostCenterName').val(obj[0].CostCenterId).trigger("change");
+                                $('#CostCenterId').val(obj[0].CostCenterId);
                                 $('#PartyWiseNaration').val(obj[0].PartyWiseNaration);
                                 $('#AgainstVoucherNo').val(obj[0].AgainstVoucherNo);
                                 $('#AgainstVoucherCode').val(obj[0].AgainstVoucherCode);
@@ -1591,9 +1926,9 @@
 
             var RowCount = $('#divBankReceiptDetail tr').length;
             var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-            var selectedRows = 0;  
+            var selectedRows = 0;
 
-            var existingVoucherIds = new Set(); 
+            var existingVoucherIds = new Set();
 
             for (let i = 1; i <= RowCount; i++) {
                 let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();

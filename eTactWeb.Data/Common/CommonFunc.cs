@@ -158,7 +158,7 @@ public static class CommonFunc
                                        out date))
             {
                 // Successfully parsed; return the date in "yyyy-MM-dd" format
-                return date.ToString("yyyy-MM-dd");
+                return date.ToString("dd/MMM/yyyy");
             }
         }
         catch (Exception ex)
@@ -381,6 +381,42 @@ public static class CommonFunc
                     }
                 }
                 else if (table.TableName == "HSNDetail")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
+                else if (table.TableName == "EmpCategDetail1")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
+                else if (table.TableName == "DeptWiseCategDetail1")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
+                else if (table.TableName == "LeaveEmpCategDetail")
+                {
+                    if (typeProperty.PropertyInfo.Name != "Mode")
+                    {
+                        object value = row[typeProperty.PropertyInfo.Name];
+                        object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
+                        typeProperty.PropertyInfo.SetValue(obj, safeValue, null);
+                    }
+                }
+                else if (table.TableName == "LeaveDeptWiseCategDetail")
                 {
                     if (typeProperty.PropertyInfo.Name != "Mode")
                     {
@@ -1331,8 +1367,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxAccountName" && typeProperty.PropertyInfo.Name != "adjustmentModel"
                         && typeProperty.PropertyInfo.Name != "TxAdInTxable" && typeProperty.PropertyInfo.Name != "ProcessName"
                         && typeProperty.PropertyInfo.Name != "TxAmount" && typeProperty.PropertyInfo.Name != "CostCenterName"
-                        && typeProperty.PropertyInfo.Name != "TxItemCode"
-                        && typeProperty.PropertyInfo.Name != "TxItemName"
+                        && typeProperty.PropertyInfo.Name != "TxItemCode" && typeProperty.PropertyInfo.Name != "VendJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "StockableNonStockable"
+                        && typeProperty.PropertyInfo.Name != "TxItemName" && typeProperty.PropertyInfo.Name != "CustJwAdjustmentMandatory"
                         && typeProperty.PropertyInfo.Name != "TxOnExp"
                         && typeProperty.PropertyInfo.Name != "TxPartCode"
                         && typeProperty.PropertyInfo.Name != "TxPartName"
@@ -1342,7 +1378,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxRoundOff"
                         && typeProperty.PropertyInfo.Name != "TxSeqNo"
                         && typeProperty.PropertyInfo.Name != "TxTaxType"
-                        && typeProperty.PropertyInfo.Name != "TxTaxTypeName"
+                        && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
                         && typeProperty.PropertyInfo.Name != "TxType" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
                         && typeProperty.PropertyInfo.Name != "YesNo" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "CreatedBy" && typeProperty.PropertyInfo.Name != "CreatedOn" && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "Mode"
@@ -1406,7 +1442,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "PerformaInvNoBack" && typeProperty.PropertyInfo.Name != "TaxList" && typeProperty.PropertyInfo.Name != "DT"
                         && typeProperty.PropertyInfo.Name != "SaleQuoteNoBack" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
                         && typeProperty.PropertyInfo.Name != "DomesticExportNEPZBack" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
-                        && typeProperty.PropertyInfo.Name != "SearchBoxBack" && typeProperty.PropertyInfo.Name != "SummaryDetailBack"
+                        && typeProperty.PropertyInfo.Name != "SearchBoxBack" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "SaleBillDataDashboard"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

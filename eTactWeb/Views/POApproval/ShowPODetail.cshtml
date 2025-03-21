@@ -1,5 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using System.Reflection.PortableExecutable
+@{
+    ViewData["Title"] = "PS Approval";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
@@ -143,7 +147,7 @@
                                         <td style="color:black;">@item.OldRate</td>
                                     }
                                     <td>@item.POFor</td>
-                                    <td>@item.PartyName</td>
+                                    <td style="background-color: #e09ef0;">@item.PartyName</td>
                                     <td>@item.ItemName</td>
                                     <td>@item.PartCode</td>
                                     <td>@item.HSNNo</td>

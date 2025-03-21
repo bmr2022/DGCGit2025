@@ -24,37 +24,15 @@
                 <div class="card-body">
                     <form id="SParam">
                         <div class="row">
-                            <div class="col-xxl-3 col-xl-2 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                                <label asp-for="CustomerName" class="form-label">Customer Name</label>
-                                <input asp-for="CustomerName" class="form-control" />
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6">
+                                <label class="form-label">From Date</label>
+                                <input asp-for="FromDate" maxlength="10" class="form-control" />
                             </div>
-                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                                <label asp-for="CustOrderNo" class="form-label">Customer Order</label>
-                                <input asp-for="CustOrderNo" class="form-control" />
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6">
+                                <label class="form-label">To Date</label>
+                                <input asp-for="ToDate" maxlength="10" class="form-control" />
                             </div>
-                            <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-                                <label asp-for="SONO" class="form-label">SO No</label>
-                                <select class="form-select" asp-for="SONO" asp-items="@(new SelectList(Model.SONOList,"Value","Text"))">
-                                    <option value=0>-Select-</option>
-                                </select>
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                <label asp-for="ItemName" class="form-label">Item Name</label>
-                                <input asp-for="ItemName" class="form-control" />
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                                <div class="row">
-                                    <div class="col">
-                                        <label class="form-label">From Date</label>
-                                        <input asp-for="FromDate" maxlength="10" class="form-control" />
-                                    </div>
-                                    <div class="col">
-                                        <label class="form-label">To Date</label>
-                                        <input asp-for="ToDate" maxlength="10" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-sm-6 col-xs-12">
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6">
                                 <label asp-for="SummaryDetail" class="form-label">Summary/Detail</label>
                                 <select class="form-select" asp-for="SummaryDetail" onchange="GetSearchData();">
                                     <option value="">-Select-</option>
@@ -62,28 +40,59 @@
                                     <option value="Detail">Detail</option>
                                 </select>
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6">
+                                <label asp-for="CustomerName" class="form-label">Customer Name</label>
+                                <input asp-for="CustomerName" class="form-control" />
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6">
+                                <label asp-for="CustOrderNo" class="form-label">Customer Order</label>
+                                <input asp-for="CustOrderNo" class="form-control" />
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6">
+                                <label asp-for="SONO" class="form-label">SO No</label>
+                                <select class="form-select" asp-for="SONO" asp-items="@(new SelectList(Model.SONOList, "Value", "Text"))">
+                                    <option value="0">-Select-</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Global Search Box & Status Labels in Same Row -->
+                        <div class="row align-items-end mt-2">
+                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                                <label class="form-label">Item Name</label>
+                                <input asp-for="ItemName" class="form-control" />
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                                <label class="form-label">Global Search</label>
+                                <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 d-flex justify-content-end">
                                 <button class="btn btn-sm btn-outline-info me-3" type="button" onclick="GetSearchData();">
-                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i> SEARCH
                                 </button>
                                 <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnSSExcel">
-                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    <i class="fa-solid fa-upload fa-fw fa-lg"></i> EXCEL
                                 </button>
                                 <a class="btn btn-sm btn-outline-danger" asp-controller="SaleSchedule" asp-action="Dashboard">
-                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i> RESET
                                 </a>
-                                <div class="col-xxl-4 col-xl-6 col-lg-3 col-md-6 col-sm-12 col-xs-12" style="margin-left:50px;margin-top:10px;">
-                                    <label class="color-box" style="background-color: #FF0000;"></label><label style="margin-left:5px;margin-top:-5px;">UNAPPROVED</label>
-                                    <label class="color-box" style="background-color: green;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">APPROVED</label>
-                                    <label class="color-box" style="background-color: blue;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Amendment Approved</label>
+                            </div>
+                        </div>
+
+                        <!-- Status Labels in the Same Row -->
+                        <div class="row mt-2">
+                            <div class="col d-flex align-items-center gap-4">
+                                <div class="d-flex align-items-center">
+                                    <label class="color-box" style="background-color: #FF0000; width: 20px; height: 20px; display: inline-block;"></label>
+                                    <label class="ms-2">UNAPPROVED</label>
                                 </div>
-                                <div class="ms-auto d-flex align-items-center">
-                                    <div class="col-md-4">
-                                        <label class="form-label me-2">Global search</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
-                                    </div>
+                                <div class="d-flex align-items-center">
+                                    <label class="color-box" style="background-color: green; width: 20px; height: 20px; display: inline-block;"></label>
+                                    <label class="ms-2">APPROVED</label>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <label class="color-box" style="background-color: blue; width: 20px; height: 20px; display: inline-block;"></label>
+                                    <label class="ms-2">Amendment Approved</label>
                                 </div>
                             </div>
                         </div>

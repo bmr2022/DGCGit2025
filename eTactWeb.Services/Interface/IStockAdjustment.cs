@@ -11,6 +11,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IStockAdjustment
     {
+        Task<ResponseResult> StockAdjBackDatePassword();
         Task<DataSet> BindAllDropDowns(string Flag);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> FillPartCode(string Flag);
@@ -36,6 +37,11 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetItems(int ItemCode);
         Task<ResponseResult> GetWCName(int Wcid);
         Task<ResponseResult> GetStoreName(int storeid);
+
+        Task<ResponseResult> GetDashItemName(string FromDate,string ToDate);
+        Task<ResponseResult> GetDashPartCode(string FromDate, string ToDate);
+        Task<ResponseResult> GetDashStoreName(string FromDate, string ToDate);
+        Task<ResponseResult> GetDashWorkCenter(string FromDate, string ToDate);
         Task<ResponseResult> DeleteByID(int ID, int YC, int entryByEmp, string EntryByMachineName,string EntryDate);
         Task<StockAdjustmentModel> GetViewByID(int ID, string Mode, int YC);
     }

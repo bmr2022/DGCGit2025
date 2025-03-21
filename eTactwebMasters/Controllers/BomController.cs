@@ -222,6 +222,7 @@ public class BomController : Controller
                 _Table.Columns.Add("RunnerItemCode", typeof(int));
                 _Table.Columns.Add("RunnerQty", typeof(decimal));
                 _Table.Columns.Add("BurnQty", typeof(decimal));
+                _Table.Columns.Add("CustJWmandatory", typeof(string));
 
                 //_Table = Repository.Common.ToDataTable(BomList);
 
@@ -250,7 +251,8 @@ public class BomController : Controller
                     _Item.Scrap,
                     _Item.RunnerItemCode,
                     _Item.RunnerQty,
-                    _Item.BurnQty
+                    _Item.BurnQty,
+                    _Item.CustJwAdjustmentMandatory ?? ""
                     });
                 }
 
@@ -348,7 +350,8 @@ public class BomController : Controller
                 GrossWt = model.GrossWt,
                 NetWt = model.NetWt,
                 Scrap = model.Scrap,
-                BurnQty = model.BurnQty
+                BurnQty = model.BurnQty,
+                CustJwAdjustmentMandatory = model.CustJwAdjustmentMandatory
             });
             model.BomList = _List;
             HttpContext.Session.SetString("BomList", JsonConvert.SerializeObject(model.BomList));
@@ -397,7 +400,8 @@ public class BomController : Controller
                     GrossWt = model.GrossWt,
                     NetWt = model.NetWt,
                     Scrap = model.Scrap,
-                    BurnQty = model.BurnQty
+                    BurnQty = model.BurnQty,
+                    CustJwAdjustmentMandatory = model.CustJwAdjustmentMandatory
                 });
                 HttpContext.Session.SetString("BomList", JsonConvert.SerializeObject(model.BomList));
             }
@@ -700,7 +704,7 @@ public class BomController : Controller
     [HttpPost]
     public IActionResult UploadExcel(IFormFile excelFile)
     {
-        //ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
         List<BomViewModel> data = new List<BomViewModel>();
 
         using (var stream = excelFile.OpenReadStream())

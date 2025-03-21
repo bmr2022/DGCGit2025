@@ -1,4 +1,4 @@
-﻿    using eTactWeb.DOM.Models;
+﻿using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -51,98 +51,98 @@ namespace eTactWeb.Data.DAL
             return model;
         }
         public async Task<ResponseResult> FillLedgerName(int OpeningYearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
             {
-                var _ResponseResult = new ResponseResult();
-                try
-                {
-                    var SqlParams = new List<dynamic>();
-                    SqlParams.Add(new SqlParameter("@Flag", "FillLedger"));
-                    SqlParams.Add(new SqlParameter("@OpeningYearCode", OpeningYearCode));
-                    _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
-                }
-                catch (Exception ex)
-                {
-                    dynamic Error = new ExpandoObject();
-                    Error.Message = ex.Message;
-                    Error.Source = ex.Source;
-                }
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillLedger"));
+                SqlParams.Add(new SqlParameter("@OpeningYearCode", OpeningYearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
-                return _ResponseResult;
-            }  
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillAccountNameForDashBoard()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
             {
-                var _ResponseResult = new ResponseResult();
-                try
-                {
-                    var SqlParams = new List<dynamic>();
-                    SqlParams.Add(new SqlParameter("@Flag", "FillAccountNameForDashBoard"));
-                    _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
-                }
-                catch (Exception ex)
-                {
-                    dynamic Error = new ExpandoObject();
-                    Error.Message = ex.Message;
-                    Error.Source = ex.Source;
-                }
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillAccountNameForDashBoard"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
-                return _ResponseResult;
+            return _ResponseResult;
         }
         public async Task<ResponseResult> FillInvoiceForDashBoard()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
             {
-                var _ResponseResult = new ResponseResult();
-                try
-                {
-                    var SqlParams = new List<dynamic>();
-                    SqlParams.Add(new SqlParameter("@Flag", "FillInvoiceForDashBoard"));
-                    _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
-                }
-                catch (Exception ex)
-                {
-                    dynamic Error = new ExpandoObject();
-                    Error.Message = ex.Message;
-                    Error.Source = ex.Source;
-                }
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillInvoiceForDashBoard"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
-                return _ResponseResult;
-        } 
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetOpeningAmt(int OpeningYearCode, int AccountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
             {
-                var _ResponseResult = new ResponseResult();
-                try
-                {
-                    var SqlParams = new List<dynamic>();
-                    SqlParams.Add(new SqlParameter("@Flag", "GetOpeningAmt"));
-                    SqlParams.Add(new SqlParameter("@OpeningYearCode", OpeningYearCode));
-                    SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
-                    _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
-                }
-                catch (Exception ex)
-                {
-                    dynamic Error = new ExpandoObject();
-                    Error.Message = ex.Message;
-                    Error.Source = ex.Source;
-                }
-
-                return _ResponseResult;
-        } 
-        public async Task<ResponseResult> FillDueDate( int AccountCode)
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetOpeningAmt"));
+                SqlParams.Add(new SqlParameter("@OpeningYearCode", OpeningYearCode));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
+            }
+            catch (Exception ex)
             {
-                var _ResponseResult = new ResponseResult();
-                try
-                {
-                    var SqlParams = new List<dynamic>();
-                    SqlParams.Add(new SqlParameter("@Flag", "GetCreditDays"));
-                    SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
-                    _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
-                }
-                catch (Exception ex)
-                {
-                    dynamic Error = new ExpandoObject();
-                    Error.Message = ex.Message;
-                    Error.Source = ex.Source;
-                }
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
-                return _ResponseResult;
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillDueDate(int AccountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetCreditDays"));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
         }
         public async Task<ResponseResult> SaveLedgerPartyWiseOpening(LedgerPartyWiseOpeningModel model, DataTable GIGrid)
         {
@@ -160,7 +160,7 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
                     sqlParams.Add(new SqlParameter("@LedgerOpnEntryDate", model.ActualEntryDate));
                     sqlParams.Add(new SqlParameter("@OpeningAmt", model.Balance));
-                    sqlParams.Add(new SqlParameter("@LastUpdatedDate",model.UpdationDate));
+                    sqlParams.Add(new SqlParameter("@LastUpdatedDate", model.UpdationDate));
                     sqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedByEmp));
                     //sqlParams.Add(new SqlParameter("@SeqNo", model.SrNO));
                     sqlParams.Add(new SqlParameter("@dt", GIGrid));
@@ -227,7 +227,7 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<LedgerPartyWiseOpeningDashBoardModel> GetDashboardDetailData(string LedgerName,string BillNo)
+        public async Task<LedgerPartyWiseOpeningDashBoardModel> GetDashboardDetailData(string LedgerName, string BillNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new LedgerPartyWiseOpeningDashBoardModel();
@@ -252,31 +252,31 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     model.LedgerPartyWiseOpeningDashBoardDetail = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                              select new LedgerPartyWiseOpeningDashBoardModel
-                                                              {
-                                                                  EntryId = Convert.ToInt32(dr["LedgerOpnEntryId"]),
-                                                                  OpeningYearCode = Convert.ToInt32(dr["LedgerOpnYearCode"]),
-                                                                  AccBookTransEntryId = Convert.ToInt32(dr["AccBookTransEntryId"]),
-                                                                  AccBookTransYearCode = Convert.ToInt32(dr["AccBookTransYearCode"]),
-                                                                  AccountCode = Convert.ToInt32(dr["AccountCode"].ToString()),
-                                                                  LedgerName = dr["Account_Name"].ToString(),
-                                                                  OpeningAmt = Convert.ToDouble(dr["OpeningAmt"]),
-                                                                  BillNo = dr["InvoiceNo"].ToString(),
-                                                                  BillDate = dr.IsNull("InvoiceDate") ? string.Empty : Convert.ToDateTime(dr["InvoiceDate"]).ToString("dd-MM-yyyy"),
-                                                                  BillNetAmt = Convert.ToDecimal(dr["InvNetAmt"]),
-                                                                  PendAmt = Convert.ToDecimal(dr["InvPendAmt"]),
-                                                                  Type = dr["DrCrType"].ToString(),
-                                                                  TransactionType = dr["TransactionType"].ToString(),
-                                                                  DueDate = dr["DueDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["DueDate"]).ToString("dd-MM-yyyy"),
-                                                                  CC = dr["CC"].ToString(),
-                                                                  ActualEntryBy = Convert.ToInt32(dr["ActualEntryBy"]),
-                                                                  ActualEntryDate = dr["ActualEntryDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd-MM-yyyy"),
-                                                                  UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
-                                                                  LastUpdatedDate = dr["LastUpdatedDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["LastUpdatedDate"]).ToString("dd-MM-yyyy"),
-                                                                  EntryByMachine = dr["EntryByMachine"].ToString(),
-                                                                  AccountNarration = dr["AccountNarration"].ToString(),
-                                                                  Unit = dr["SaveUpdate"].ToString()
-                                                              }).ToList();
+                                                                   select new LedgerPartyWiseOpeningDashBoardModel
+                                                                   {
+                                                                       EntryId = Convert.ToInt32(dr["LedgerOpnEntryId"]),
+                                                                       OpeningYearCode = Convert.ToInt32(dr["LedgerOpnYearCode"]),
+                                                                       AccBookTransEntryId = Convert.ToInt32(dr["AccBookTransEntryId"]),
+                                                                       AccBookTransYearCode = Convert.ToInt32(dr["AccBookTransYearCode"]),
+                                                                       AccountCode = Convert.ToInt32(dr["AccountCode"].ToString()),
+                                                                       LedgerName = dr["Account_Name"].ToString(),
+                                                                       OpeningAmt = Convert.ToDouble(dr["OpeningAmt"]),
+                                                                       BillNo = dr["InvoiceNo"].ToString(),
+                                                                       BillDate = dr.IsNull("InvoiceDate") ? string.Empty : Convert.ToDateTime(dr["InvoiceDate"]).ToString("dd-MM-yyyy"),
+                                                                       BillNetAmt = Convert.ToDecimal(dr["InvNetAmt"]),
+                                                                       PendAmt = Convert.ToDecimal(dr["InvPendAmt"]),
+                                                                       Type = dr["DrCrType"].ToString(),
+                                                                       TransactionType = dr["TransactionType"].ToString(),
+                                                                       DueDate = dr["DueDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["DueDate"]).ToString("dd-MM-yyyy"),
+                                                                       CC = dr["CC"].ToString(),
+                                                                       ActualEntryBy = Convert.ToInt32(dr["ActualEntryBy"]),
+                                                                       ActualEntryDate = dr["ActualEntryDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd-MM-yyyy"),
+                                                                       UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
+                                                                       LastUpdatedDate = dr["LastUpdatedDate"] == DBNull.Value ? null : Convert.ToDateTime(dr["LastUpdatedDate"]).ToString("dd-MM-yyyy"),
+                                                                       EntryByMachine = dr["EntryByMachine"].ToString(),
+                                                                       AccountNarration = dr["AccountNarration"].ToString(),
+                                                                       Unit = dr["SaveUpdate"].ToString()
+                                                                   }).ToList();
                 }
             }
             catch (Exception ex)
@@ -337,33 +337,31 @@ namespace eTactWeb.Data.DAL
                     {
                         ItemList.Add(new LedgerPartyWiseOpeningDetailModel
                         {
-                            EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnEntryId"].ToString()),
-                            BillYear = Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnYearCode"].ToString()),
-                            AccBookTransEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["AccBookTransEntryId"].ToString()),
-                            AccBookTransYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccBookTransYearCode"].ToString()),
-                            AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"].ToString()),
-                            LedgerName = DS.Tables[0].Rows[0]["Account_Name"].ToString(),
-                            OpeningAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["OpeningAmt"].ToString()),
-                            BillNo = DS.Tables[0].Rows[0]["InvoiceNo"].ToString(),
-                            BillDate = DS.Tables[0].Rows[0]["InvoiceDate"] == DBNull.Value? null: Convert.ToDateTime(DS.Tables[0].Rows[0]["InvoiceDate"]).ToString("dd-MM-yyyy"),
-                            BillNetAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["InvNetAmt"].ToString()),
-                            PendAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["InvPendAmt"].ToString()),
-                            Type = DS.Tables[0].Rows[0]["DrCrType"].ToString(),
-                            TransactionType = DS.Tables[0].Rows[0]["TransactionType"].ToString(),
-                            DueDate = DS.Tables[0].Rows[0]["DueDate"] == DBNull.Value? null : Convert.ToDateTime(DS.Tables[0].Rows[0]["DueDate"]).ToString("dd-MM-yyyy"),
-                            // DueDate = DS.Tables[0].Rows[0]["DueDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(DS.Tables[0].Rows[0]["DueDate"]),
-                            CC = DS.Tables[0].Rows[0]["CC"].ToString(),
-                            ActualEntryBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString()),
-                            //ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]),
-                            ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(),
-                            UpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()),
-                            LastUpdatedDate = DS.Tables[0].Rows[0]["LastUpdatedDate"].ToString(),
-                            //LastUpdatedDate = DS.Tables[0].Rows[0]["LastUpdatedDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdatedDate"]),
-                            EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString(),
-                            AccountNarration = DS.Tables[0].Rows[0]["AccountNarration"].ToString(),
-                            Unit = DS.Tables[0].Rows[0]["SaveUpdate"].ToString(),
-                            SrNO = Convert.ToInt32(DS.Tables[0].Rows[0]["SeqNo"].ToString()),
-                           
+                            EntryId = DS.Tables[0].Rows[0]["LedgerOpnEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnEntryId"]),
+                            BillYear = DS.Tables[0].Rows[0]["LedgerOpnYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnYearCode"]),
+                            AccBookTransEntryId = DS.Tables[0].Rows[0]["AccBookTransEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["AccBookTransEntryId"]),
+                            AccBookTransYearCode = DS.Tables[0].Rows[0]["AccBookTransYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["AccBookTransYearCode"]),
+                            AccountCode = DS.Tables[0].Rows[0]["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"]),
+                            LedgerName = DS.Tables[0].Rows[0]["Account_Name"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["Account_Name"].ToString(),
+                            OpeningAmt = DS.Tables[0].Rows[0]["OpeningAmt"] == DBNull.Value ? 0.0 : Convert.ToDouble(DS.Tables[0].Rows[0]["OpeningAmt"]),
+                            BillNo = DS.Tables[0].Rows[0]["InvoiceNo"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["InvoiceNo"].ToString(),
+                            BillDate = DS.Tables[0].Rows[0]["InvoiceDate"] == DBNull.Value ? null : Convert.ToDateTime(DS.Tables[0].Rows[0]["InvoiceDate"]).ToString("dd-MM-yyyy"),
+                            BillNetAmt = DS.Tables[0].Rows[0]["InvNetAmt"] == DBNull.Value ? 0.0 : Convert.ToDouble(DS.Tables[0].Rows[0]["InvNetAmt"]),
+                            PendAmt = DS.Tables[0].Rows[0]["InvPendAmt"] == DBNull.Value ? 0.0 : Convert.ToDouble(DS.Tables[0].Rows[0]["InvPendAmt"]),
+                            Type = DS.Tables[0].Rows[0]["DrCrType"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["DrCrType"].ToString(),
+                            TransactionType = DS.Tables[0].Rows[0]["TransactionType"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["TransactionType"].ToString(),
+                            DueDate = DS.Tables[0].Rows[0]["DueDate"] == DBNull.Value ? null : Convert.ToDateTime(DS.Tables[0].Rows[0]["DueDate"]).ToString("dd-MM-yyyy"),
+                            CC = DS.Tables[0].Rows[0]["CC"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["CC"].ToString(),
+                            ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryBy"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"]),
+                            ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] == DBNull.Value ? null : DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(),
+                            UpdatedBy = DS.Tables[0].Rows[0]["UpdatedBy"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"]),
+                            LastUpdatedDate = DS.Tables[0].Rows[0]["LastUpdatedDate"] == DBNull.Value ? null : DS.Tables[0].Rows[0]["LastUpdatedDate"].ToString(),
+                            EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["EntryByMachine"].ToString(),
+                            AccountNarration = DS.Tables[0].Rows[0]["AccountNarration"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["AccountNarration"].ToString(),
+                            Unit = DS.Tables[0].Rows[0]["SaveUpdate"] == DBNull.Value ? string.Empty : DS.Tables[0].Rows[0]["SaveUpdate"].ToString(),
+                            SrNO = DS.Tables[0].Rows[0]["SeqNo"] == DBNull.Value ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["SeqNo"])
+
+
                         });
                     }
                     model.LedgerPartyWiseOpeningDetails = ItemList;

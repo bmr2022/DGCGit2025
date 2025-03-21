@@ -87,9 +87,9 @@ namespace eTactWeb.Data.BLL
         //{
         //    return await _CustomerJobWorkIssueDAL.GetDashboardSummaryData();
         //}
-        public async Task<ResponseResult> SaveCustomerJWI(CustomerJobWorkIssueModel model, DataTable JWIGrid)
+        public async Task<ResponseResult> SaveCustomerJWI(CustomerJobWorkIssueModel model, DataTable JWIGrid, DataTable ChallanGrid)
         {
-            return await _CustomerJobWorkIssueDAL.SaveCustomerJWI(model, JWIGrid);
+            return await _CustomerJobWorkIssueDAL.SaveCustomerJWI(model, JWIGrid, ChallanGrid);
         } 
         public async Task<ResponseResult> DeleteByID(int CustJwIssEntryId, int CustJwIssYearCode, string EntryMachineName, int EntryById, string ActualEntryDate, int Account_Code)
         {
@@ -104,15 +104,15 @@ namespace eTactWeb.Data.BLL
         //{
         //    return await _CustomerJobWorkIssueDAL.GetAdjustedChallan( YearCode,  EntryDate,  ChallanDate, DTTItemGrid);
         //}
-        //public async Task<ResponseResult> GetAdjustedChallanDetailsData(int YearCode, string EntryDate, string ChallanDate, DataTable DTTItemGrid)
-        //{
-        //    return await _CustomerJobWorkIssueDAL.GetAdjustedChallanDetailsData( YearCode,  EntryDate,  ChallanDate,  DTTItemGrid);
-        //}
-
-        public List<CustomerJobWorkIssueModel> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueModel> adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        public async Task<ResponseResult> GetAdjustedChallanDetailsData(int YearCode, string EntryDate, string ChallanDate, int AccountCode, DataTable DTTItemGrid)
         {
-            return _CustomerJobWorkIssueDAL.GetAdjustedChallanDetailsData(adjustedData, YearCode, EntryDate, ChallanDate, AccountCode);
+            return await _CustomerJobWorkIssueDAL.GetAdjustedChallanDetailsData(YearCode, EntryDate, ChallanDate, AccountCode, DTTItemGrid);
         }
+
+        //public List<CustomerJobWorkIssueModel> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueModel> adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        //{
+        //    return _CustomerJobWorkIssueDAL.GetAdjustedChallanDetailsData(adjustedData, YearCode, EntryDate, ChallanDate, AccountCode);
+        //}
         public async Task<ResponseResult> GetPopUpData(int YearCode, string EntryDate, string ChallanDate, int AccountCode, string prodUnProd, string BOMINd, int RMItemCode, string Partcode)
         {
             return await _CustomerJobWorkIssueDAL.GetPopUpData(YearCode, EntryDate, ChallanDate, AccountCode, prodUnProd, BOMINd, RMItemCode, Partcode);

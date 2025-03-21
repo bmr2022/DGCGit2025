@@ -290,8 +290,8 @@ public class SaleScheduleController : Controller
 
             var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryID", "EntryDate", "SONO", "AccountCode", "CustomerName", "CustomerOrderNo", "DeliveryAddress",
             "SchApproved", "SchAmendApprove", "SODate", "SchNo", "SchDate", "SchYear", "CreatedBYName", "SOYearCode", "SchEffFromDate", "SchEffTillDate", "SOCloseDate",
-            "SchCompleted", "SchClosed", "SchAmendNo", "CreatedBy", "CreatedOn", "ApprovedBy","ModeOFTransport", "TentetiveConfirm",
-            "OrderPriority","CC","UpdatedByName","UpdatedOn", "EntryByMachineName");
+            "SchCompleted", "SchClosed", "SchAmendNo", "CreatedBy", "CreatedOn", "ApprovedBy", "ModeOFTransport", "TentetiveConfirm",
+            "OrderPriority", "CC", "UpdatedByName", "UpdatedOn", "EntryByMachineName");
 
             model.SSDashboard = CommonFunc.DataTableToList<SaleScheduleDashboard>(DT, "SaleSchedule");
 
@@ -380,11 +380,11 @@ public class SaleScheduleController : Controller
         }
         else
         {
-            var DT = Result.Result.DefaultView.ToTable(true, "EntryID","EntryDate", "SONO", "AccountCode", "CustomerName", "CustomerOrderNo", "DeliveryAddress",
+            var DT = Result.Result.DefaultView.ToTable(true, "EntryID", "EntryDate", "SONO", "AccountCode", "CustomerName", "CustomerOrderNo", "DeliveryAddress",
              "SchApproved", "SchAmendApprove", "SODate", "SchNo", "SchDate", "SchYear", "CreatedBYName", "SOYearCode", "SchEffFromDate", "SchEffTillDate", "SOCloseDate",
              "SchCompleted", "SchClosed", "SchAmendNo", "CreatedBy", "CreatedOn", "ApprovedBy", "ModeOFTransport", "TentetiveConfirm",
-             "OrderPriority", "CC", "UpdatedByName", "UpdatedOn","EntryByMachineName","ItemCode","ItemName","PartCode","Unit","SchQty",
-             "PendQty","AltUnit","AltPendQty","Rate", "RateInOthCurr","DeliveryDate","ItemSize","ItemColor","OtherDetail","Remarks");
+             "OrderPriority", "CC", "UpdatedByName", "UpdatedOn", "EntryByMachineName", "ItemCode", "ItemName", "PartCode", "Unit", "SchQty",
+             "PendQty", "AltUnit", "AltPendQty", "Rate", "RateInOthCurr", "DeliveryDate", "ItemSize", "ItemColor", "OtherDetail", "Remarks");
 
             model.SSDashboard = CommonFunc.DataTableToList<SaleScheduleDashboard>(DT, "SaleScheduleDetail");
         }
@@ -901,6 +901,7 @@ public class SaleScheduleController : Controller
                     var Year = Convert.ToInt32(Request.Form.Where(x => x.Key == "Year").FirstOrDefault().Value, new CultureInfo("en-IN"));
                     var FromDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "FromDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
                     var TillDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "TillDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
+                    var Action = Request.Form.Where(x => x.Key == "Action").FirstOrDefault().Value;
 
                     var JSONString = ISaleSchedule.GetSOItem(AC, SONO, Year, 0).GetAwaiter().GetResult();
 
@@ -1095,6 +1096,187 @@ public class SaleScheduleController : Controller
         return View();
     }
 
+    [HttpPost]
+    [Route("{controller}/UploadMonthlyExcel")]
+    public IActionResult UploadMonthlyExcel()
+    {
+        IFormFile ExcelFile = Request.Form.Files[0];
+        String ErrMsg = String.Empty;
+        var ExcelDup = new List<string>();
+        var SaleGrid = new SaleScheduleGrid();
+        var MainModel = new SaleSubScheduleModel();
+        var SaleGridList = new List<SaleScheduleGrid>();
+        var Error = new Dictionary<string, string>();
+
+        if (ExcelFile != null)
+        {
+            // Create a Folder.
+            string path = Path.Combine(this.IWebHostEnvironment.WebRootPath, "Uploads");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            // Save the uploaded Excel file.
+            string fileName = Path.GetFileName(ExcelFile.FileName);
+            string filePath = Path.Combine(path, fileName);
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                ExcelFile.CopyTo(stream);
+            }
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage package = new ExcelPackage(filePath))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                if (worksheet == null)
+                {
+                    return BadRequest("Invalid Excel File.");
+                }
+
+                var rowCount = worksheet.Dimension.Rows;
+
+                // Dictionary to store column mappings
+                Dictionary<string, int> columnMapping = new Dictionary<string, int>();
+
+                for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+                {
+                    string header = (worksheet.Cells[1, col].Value ?? string.Empty).ToString().Trim();
+
+                    if (!string.IsNullOrEmpty(header))
+                    {
+                        // Check if the header is a number
+                        if (int.TryParse(header, out _))
+                        {
+                            header = "Exl" + header; // Replace numeric headers with "Exl" + original number
+                        }
+
+                        columnMapping[header] = col; // Store the modified header name and column index
+                    }
+                }
+
+
+                // Initialize DataTable
+                DataTable dt = new DataTable();
+
+                // Add columns dynamically from headers
+                foreach (var header in columnMapping.Keys)
+                {
+                    dt.Columns.Add(header);
+                }
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    bool isRowEmpty = true;
+                    for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+                    {
+                        if (!string.IsNullOrEmpty((worksheet.Cells[row, col].Value ?? string.Empty).ToString().Trim()))
+                        {
+                            isRowEmpty = false;
+                            break;
+                        }
+                    }
+
+                    if (isRowEmpty)
+                    {
+                        ErrMsg = "Row : " + row + " is empty.";
+                        continue;
+                    }
+
+                    var ExlPC = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
+
+                    int AC = Convert.ToInt32(Request.Form["AC"]);
+                    int SONO = Convert.ToInt32(Request.Form["SONO"]);
+                    int Year = Convert.ToInt32(Request.Form["Year"], new CultureInfo("en-IN"));
+                    string FromDate = Convert.ToDateTime(Request.Form["FromDate"]).ToString("dd/MM/yyyy");
+                    string TillDate = Convert.ToDateTime(Request.Form["TillDate"]).ToString("dd/MM/yyyy");
+
+                    var JSONString = ISaleSchedule.GetSOItem(AC, SONO, Year, 0).GetAwaiter().GetResult();
+                    var ItemList = JsonConvert.DeserializeObject<Root>(JSONString);
+                    var ItemDetails = ItemList?.Result?.FirstOrDefault(c => c.PartCode == ExlPC);
+                    if (ItemDetails == null)
+                    {
+                        ErrMsg = $"PartCode does not exist.{ExlPC}";
+                        Error.Add(row.ToString(), ErrMsg);
+                        continue;
+                    }
+
+                    // Create a new row
+                    DataRow dr = dt.NewRow();
+                    dr["PART NO"] = ExlPC;
+
+                    foreach (var kvp in columnMapping)
+                    {
+                        var value = worksheet.Cells[row, kvp.Value].Value ?? 0;
+                        dr[kvp.Key] = value;
+                    }
+
+                    dt.Rows.Add(dr);
+
+                    // Add to Sale Grid List
+                    SaleGridList.Add(new SaleScheduleGrid
+                    {
+                        SeqNo = SaleGridList.Count + 1,
+                        ItemCode = ItemDetails.ItemCode,
+                        ItemName = ItemDetails.ItemName,
+                        PartCode = ExlPC,
+                        Unit = ItemDetails.Unit,
+                        AltUnit = ItemDetails.AltUnit,
+                        Rate = Convert.ToDecimal(ItemDetails.Rate),
+                    });
+                }
+
+                if (Error.Count > 0)
+                {
+                    return StatusCode(207, Error);
+                }
+                else
+                {
+                    // Convert DataTable to a List of Dictionary for JSON serialization
+                    var dtList = dt.AsEnumerable().Select(row =>
+                        dt.Columns.Cast<DataColumn>().ToDictionary(col => col.ColumnName, col => row[col])).ToList();
+
+                    // Create an object containing both DataTable data and SaleGridList
+                    var responseObject = new
+                    {
+                        SaleGridList = SaleGridList,
+                        DataTableData = dtList
+                    };
+
+                    // Convert to JSON
+                    var jsonString = JsonConvert.SerializeObject(responseObject, Formatting.Indented);
+
+                    return Json(jsonString);
+                }
+            }
+        }
+
+        return BadRequest("No file uploaded.");
+    }
+
+    private bool IsRowEmpty(ExcelWorksheet worksheet, int row, int totalCols)
+    {
+        for (int col = 1; col <= totalCols; col++)
+        {
+            if (!string.IsNullOrEmpty(worksheet.Cells[row, col].Value?.ToString().Trim()))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Safely convert cell value to integer
+    private int ConvertToInt(object value)
+    {
+        return value == null || string.IsNullOrWhiteSpace(value.ToString()) ? 0 : Convert.ToInt32(value);
+    }
+
+    // Safely convert cell value to decimal
+    private decimal ConvertToDecimal(object value)
+    {
+        return value == null || string.IsNullOrWhiteSpace(value.ToString()) ? 0 : Convert.ToDecimal(value);
+    }
     private static DataTable GetDetailTable(IList<SaleScheduleGrid> DetailList)
     {
         var DTSSGrid = new DataTable();
@@ -1122,12 +1304,12 @@ public class SaleScheduleController : Controller
             {
                 return default;
             }
-           // String deliveryDt;
+            // String deliveryDt;
             if (DateTime.TryParseExact(Item.DeliveryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime deliveryDt))
             {
                 //  deliveryDt = ConvertToDesiredFormat(Item.DeliveryDate);
                 deliveryDt = DateTime.ParseExact(Item.DeliveryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            DelDate = deliveryDt.ToString("dd/MMM/yyyy");
+                DelDate = deliveryDt.ToString("dd/MMM/yyyy");
                 //  DelDate = deliveryDt;
             }
             else

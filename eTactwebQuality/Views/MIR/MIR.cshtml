@@ -1,5 +1,8 @@
 ﻿@model eTactWeb.DOM.Models.MirModel
-
+@{
+    ViewData["Title"] = "MIR";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
 <div class="card bg-gradient mb-3 border-light shadow-lg">
 
     <form asp-action="MIR" autocomplete="off" class="form-horizontal">
@@ -110,7 +113,7 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MIRNo" class="form-label">MIR No</label>
-                                    <input asp-for="MIRNo " class="form-control" readonly />
+                                    <input asp-for="MIRNo " class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="CC" class="form-label">Branch</label>
@@ -490,16 +493,6 @@
 
 @section Scripts {
     <script>
-        //$(document).ajaxStart(function () {
-        //    // Show loader when Ajax request starts
-        //    $('#loader').show();
-        //});
-
-        //$(document).ajaxStop(function () {
-        //    // Hide loader when Ajax request stops
-        //    $('#loader').hide();
-        //});
-
         $(document).ready(function () {
             $('#loader').hide();
             $('#loader-container').hide();
@@ -551,9 +544,9 @@
                     event.preventDefault();
                 }
             });
-            alert("before");
+         //   alert("before");
             if ($('#Mode').val() != 'U' && $('#Mode').val() != "V") {
-            alert("inside");
+           // alert("inside");
                 GetNewEntry();
                 FillFromPend();
                 var now = new Date();
@@ -971,7 +964,7 @@
                     fillAllRewStore();
                     fillAllHoldStore();
                     fillAllRecOkStore();
-                    // FillOkRecStore();
+                    FillOkRecStore();
                 }
             });
         }

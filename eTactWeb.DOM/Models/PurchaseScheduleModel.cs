@@ -155,6 +155,7 @@ public class PurchaseSubScheduleModel : PurchaseScheduleGrid
     public string? ModeOfTransport { get; set; }
     public string? OrderPriority { get; set; }
 
+    
     public IList<SelectListItem> OrderPriorityList
     {
         get => _OrderPriority;

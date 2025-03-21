@@ -20,6 +20,10 @@ namespace eTactWeb.Data.BLL
             _MaterialReceiptDAL = new MaterialReceiptDAL(configuration, iDataLogic);
             _DataLogicDAL = iDataLogic;
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _MaterialReceiptDAL.GetReportName();
+        }
         public async Task<ResponseResult> GetGateNo(string Flag,string SPName,string FromDate,string ToDate)
         {
             return await _MaterialReceiptDAL.GetGateNo(Flag, SPName,FromDate, ToDate);

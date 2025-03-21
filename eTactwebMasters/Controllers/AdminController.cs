@@ -516,8 +516,11 @@ public class AdminController : Controller, IAsyncDisposable
                 MainModel.Update = model.Update;
                 MainModel.Delete = model.Delete;
                 MainModel.View = model.View;
-
-                MainModel.MainMenuList = await _IAdminModule.GetMenuList("MainMenu", model.Module, "");
+                if(model.MainMenu == "0")
+                {
+                    model.MainMenu = string.Empty;
+                }
+                MainModel.MainMenuList = await _IAdminModule.GetMenuList("MainMenu", model.Module, model.MainMenu);
                 int SeqNo = 1;
                 foreach (var item1 in MainModel.MainMenuList)
                 {
@@ -544,7 +547,7 @@ public class AdminController : Controller, IAsyncDisposable
                         }
                         else
                         {
-                            if (UserRightModelDetail1.Where(x => x.UserName == newMenuItemModel.UserName && x.Module == newMenuItemModel.Module && x.MainMenu == newMenuItemModel.MainMenu).Any())
+                            if (UserRightModelDetail1.Where(x => x.EmpName == newMenuItemModel.EmpName && x.Module == newMenuItemModel.Module && x.MainMenu == newMenuItemModel.MainMenu).Any())
                             {
                                 return StatusCode(207, "Duplicate");
                             }

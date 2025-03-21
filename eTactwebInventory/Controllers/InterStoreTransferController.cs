@@ -46,14 +46,6 @@ namespace eTactWeb.Controllers
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
-            if (Mode != "U")
-            {
-                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
-            }
-
-
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await IInterStore.GetViewByID(ID, Mode, YC);
@@ -65,6 +57,20 @@ namespace eTactWeb.Controllers
             else
             {
                 // MainModel = await BindModel(MainModel);
+            }
+            if (Mode != "U")
+            {
+                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+                MainModel.ActualEntryDate = DateTime.Now.ToString();
+            }
+            else
+            {
+                MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.LastUpdationDate = DateTime.Now.ToString();
             }
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
@@ -257,7 +263,7 @@ namespace eTactWeb.Controllers
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             IMemoryCache.Remove("KeyInterStoreTransferGrid");
                             //return View(model1);
-                            return RedirectToAction("InterStoreTransfer", model1);
+                            return RedirectToAction(nameof(ISTDashboard));
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -272,7 +278,7 @@ namespace eTactWeb.Controllers
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             IMemoryCache.Remove("KeyInterStoreTransferGrid");
                             //return View(model1);
-                            return RedirectToAction("InterStoreTransfer",model1);
+                            return RedirectToAction(nameof(ISTDashboard));
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -296,10 +302,10 @@ namespace eTactWeb.Controllers
                             TempData["500"] = "500";
                             Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             // return View("Error", Result);
-                            return View(model);
+                            return RedirectToAction(nameof(ISTDashboard));
                         }
                     }
-                    return View(model);
+                    return RedirectToAction(nameof(ISTDashboard));
                 }
             }
             catch (Exception ex)
@@ -340,7 +346,7 @@ namespace eTactWeb.Controllers
                 var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode","EntryDate",
                     "SlipNo", "SlipDate", "IssueToStoreWC", "Remark", "ActualEntryDate", "ItemCode", "Partcode", "ItemName", "LastUpdatetionDate", "FromStoreName",
                     "ToStorename", "TOWCName", "ActualEntryByName", "LastUpdatedByName", "TransferReason", "CC", "MAchineName", "TotalStockQty", "LotStockQty",
-                    "Qty", "Unit", "AltQty", "Rate", "Batchno", "Uniquebatchno", "ReasonOfTransfer", "RecStoreStock", "AltUnit", "ToStoreId", "ToWCID");
+                    "Qty", "Unit", "AltQty", "Rate", "Batchno", "Uniquebatchno", "ReasonOfTransfer", "RecStoreStock", "AltUnit", "ToStoreId", "ToWCID", "ActualEntryBy", "LastUpdatedBy");
 
                 model.ISTDashboardGrid = CommonFunc.DataTableToList<InterStoreDashboard>(DT, "ISTDashboard");
                 model.ISTDashboardGrid = model.ISTDashboardGrid
@@ -363,9 +369,9 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> DeleteByID(int ID,int YC, string SummaryDetail,string FromDate = "",string ToDate = "",string SlipNo = "",string PartCode = "",string ItemName = "",string BatchNo = "")
+        public async Task<IActionResult> DeleteByID(int ID,int YC, string EntryDate,int ActualEntryBy, string MachineName, string SummaryDetail,string FromDate = "",string ToDate = "",string SlipNo = "",string PartCode = "",string ItemName = "",string BatchNo = "")
         {
-            var Result = await IInterStore.DeleteByID(ID, YC).ConfigureAwait(false);
+            var Result = await IInterStore.DeleteByID(ID, YC,EntryDate,ActualEntryBy,MachineName).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -392,7 +398,7 @@ namespace eTactWeb.Controllers
                 var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode","EntryDate",
                         "SlipNo", "SlipDate", "IssueToStoreWC", "Remark", "ActualEntryDate", "ItemCode", "Partcode", "ItemName", "LastUpdatetionDate", "FromStoreName",
                         "ToStorename", "TOWCName", "ActualEntryByName", "LastUpdatedByName", "TransferReason", "CC", "MAchineName", "TotalStockQty", "LotStockQty",
-                        "Qty", "Unit", "AltQty", "Rate", "Batchno", "Uniquebatchno", "ReasonOfTransfer", "RecStoreStock", "AltUnit", "ToStoreId", "ToWCID");
+                        "Qty", "Unit", "AltQty", "Rate", "Batchno", "Uniquebatchno", "ReasonOfTransfer", "RecStoreStock", "AltUnit", "ToStoreId", "ToWCID", "ActualEntryBy", "LastUpdatedBy");
 
                 model.ISTDashboardGrid = CommonFunc.DataTableToList<InterStoreDashboard>(DT, "ISTDashboard");
                 if (model.SummaryDetail == "Summary")

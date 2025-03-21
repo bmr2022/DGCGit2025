@@ -722,6 +722,19 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
         return DTSSGrid;
     }
 
+    public async Task<JsonResult> FillMRPNo()
+    {
+        var JSON = await IPurchaseSchedule.FillMRPNo();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+
+    public async Task<JsonResult> FillMRPDetail(string MRPNo)
+    {
+        var JSON = await IPurchaseSchedule.FillMRPDetail( MRPNo);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     private async Task<PurchaseSubScheduleModel> BindModel(PurchaseSubScheduleModel model)
     {
         var oDataSet = new DataSet();
@@ -816,7 +829,7 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
     {
         var Result = await IPurchaseSchedule.GetPSAmmData(model);
 
-        var DT = Result.Result.DefaultView.ToTable(true, "EntryID", "YearCode", "Unit", "SchQty", "AltUnit", "AltSchQty", "AltPendQty", "PendQty", "PONO", "AccountCode", "VendorName", "DeliveryAddress",
+        var DT = Result.Result.DefaultView.ToTable(true, "EntryID", "Unit", "SchQty", "AltUnit", "AltSchQty", "AltPendQty", "PendQty", "PONO", "AccountCode", "VendorName", "DeliveryAddress",
         "SchApproved", "PODate", "SchNo", "SchDate", "SchYear", "POYearCode", "SchEffFromDate", "SchEffTillDate", "CreatedBy", "CreatedOn", "ApprovedBy");
 
         model.PSDashboard = CommonFunc.DataTableToList<PurchaseScheduleDashboard>(DT, "POSCHEDULEDASHBOARD");

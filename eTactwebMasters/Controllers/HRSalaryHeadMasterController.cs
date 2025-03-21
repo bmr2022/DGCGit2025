@@ -110,9 +110,6 @@ namespace eTactWeb.Controllers
                 model.EmpCategList = _List;
                 _List = new List<TextValue>();
 
-                
-
-               
             }
 
             
@@ -371,6 +368,13 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetAmountPercentageOfCalculation()
         {
             var JSON = await _ISalaryHeadMaster.GetAmountPercentageOfCalculation();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetYesOrNo()
+        {
+            var JSON = await _ISalaryHeadMaster.GetYesOrNo();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

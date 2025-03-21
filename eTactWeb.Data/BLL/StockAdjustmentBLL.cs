@@ -26,6 +26,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _StockAdjustmentDAL.BindAllDropDowns(Flag);
         }
+        public async Task<ResponseResult> StockAdjBackDatePassword()
+        {
+            return await _StockAdjustmentDAL.StockAdjBackDatePassword();
+        }
 
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
@@ -130,6 +134,22 @@ namespace eTactWeb.Data.BLL
         public async Task<StockAdjustmentModel> GetViewByID(int ID, string Mode, int YC)
         {
             return await _StockAdjustmentDAL.GetViewByID(ID, Mode, YC);
+        }
+        public async Task<ResponseResult> GetDashItemName(string FromDate, string ToDate)
+        {
+            return await _StockAdjustmentDAL.GetDashItemName( FromDate, ToDate);
+        }
+        public async Task<ResponseResult> GetDashPartCode(string FromDate, string ToDate)
+        {
+            return await _StockAdjustmentDAL.GetDashPartCode(FromDate, ToDate);
+        }
+        public async Task<ResponseResult> GetDashStoreName(string FromDate, string ToDate)
+        {
+            return await _StockAdjustmentDAL.GetDashStoreName(FromDate, ToDate);
+        }
+        public async Task<ResponseResult> GetDashWorkCenter(string FromDate, string ToDate)
+        {
+            return await _StockAdjustmentDAL.GetDashWorkCenter(FromDate, ToDate);
         }
 
 

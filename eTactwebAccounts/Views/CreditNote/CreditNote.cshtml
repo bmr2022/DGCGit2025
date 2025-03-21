@@ -6,6 +6,23 @@
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
     ViewData["PageName"] = "Credit Note";
 }
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="CreditNote" asp-controller="CreditNote" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
@@ -531,19 +548,21 @@
             $('#NetTotal').val(txTotal.toFixed(2));
             $('#AdjPendAmt').val($('#NetTotal').val());
             $('#CostCenterId').select2();
-
+            debugger
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
 
         });
 
         $('#AdjModeOfAdjstment').change(function () {
+            debugger
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
             $('#AdjPendAmt').val($('#NetTotal').val());
         });
 
         $('#CreditNoteInvoiceNo').change(function () {
+            debugger
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
         });
@@ -608,16 +627,16 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-
+                    debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
                             $('#CreditNoteEntryId').val("");
                             $('#CreditNoteEntryId').val(obj.Result.Table[0].EntryId);
                             $('#CreditNoteVoucherNo').val("");
-                            $('#CreditNoteVoucherNo').val(obj.Result.Table[0].creditNoteNo);
-
-                            $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
+                            $('#CreditNoteInvoiceNo').val(obj.Result.Table[0].creditNoteNo);
+                            debugger
+                            $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
                             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
                         }
                     }

@@ -17,6 +17,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetSalaryPaymentMode();
         Task<ResponseResult> GetCurrency();
         Task<ResponseResult> GetAmountPercentageOfCalculation();
+        Task<ResponseResult> GetYesOrNo();
         Task<ResponseResult> GetRoundOff();
         Task<ResponseResult> GetPaymentFrequency();
         Task<ResponseResult> GetDeductionOfTax();

@@ -5,6 +5,23 @@
 
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
 <partial name="_BOMStatusConfirmation" />
 <partial name="_ClearTaxGrid" />
 <div class="card bg-gradient mb-3 border-light shadow-lg">
@@ -142,14 +159,14 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 
                                     @* <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">*@
-                                    <label asp-for="JobWorkNewRework" class="form-label" style="color: red;">JobWork Type</label>
+                                    <label asp-for="JobWorkNewRework" class="form-label" style="color: red;">Type</label>
                                     <select class="form-select" asp-for="JobWorkNewRework" asp-items="@(new SelectList(Model.JobWorkReworkList,"Value","Text"))">
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="JWChallanNo" class="form-label" style="color: red;">JW ChallanNo</label>
-                                    <input asp-for="JWChallanNo " class="form-control" readonly />
+                                    <label asp-for="JWChallanNo" class="form-label" style="color: red;">ChallanNo</label>
+                                    <input asp-for="JWChallanNo " class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
                                 <div class="col-xl-1  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ChallanDate" class="form-label" style="color: red;">Challan Date</label>
@@ -196,7 +213,7 @@
                                 </div>
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="timeofremoval" class="form-label">Removal Time</label>
+                                    <label asp-for="timeofremoval" class="form-label">Time</label>
                                     <input asp-for="timeofremoval " class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -212,11 +229,11 @@
                                     <input class="form-control" asp-for="TransporterName" />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="VehicleNo" class="form-label">Vehicle Number</label>
+                                    <label asp-for="VehicleNo" class="form-label">Veh. No</label>
                                     <input class="form-control" asp-for="VehicleNo" />
                                 </div>
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="Distance" class="form-label">Distance(in km)</label>
+                                    <label asp-for="Distance" class="form-label">Distance(km)</label>
                                     <input class="form-control" asp-for="Distance" />
                                 </div>
 

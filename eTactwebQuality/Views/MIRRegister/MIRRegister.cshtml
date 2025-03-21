@@ -54,12 +54,13 @@
                                         <option selected value="DETAIL">DETAIL</option>
                                         <option selected value="vendorItemWiseSummary">VENDOR ITEM WISE SUMMARY</option>
                                         <option value="ItemWiseSummary">ITEM WISE SUMMARY</option>
+                                        <option value="vendorItemRejectionSummary">ITEM Rejection SUMMARY</option>
                                         @* //<option value="vendorItemWiseConsolidated">ITEM WISE CONSOLIDATED</option> *@
 
                                         <option value="PPMRating">PPM & QC RATING </option>
                                         <option value="DAYWISEMIRENTRYLIST">DAY WISE QC ENTRY</option>
                                         <option value="PENDMRNFORQC(SUMMARY)">PENDING MRN FOR QC (SUMMARY)</option>
-                                        <option value="PENDMRNFORQC(DEATIL)">PENDING MRN FOR QC (DETAIL) </option>
+                                        <option value="PENDMRNFORQC(Detail)">PENDING MRN FOR QC (DETAIL) </option>
                                         <option value="POBATCHWISEDETAIL">PO + BATCH WISE DETAIL </option>
                                     </select>
                                 </div>
@@ -305,7 +306,7 @@
                      $('#divStockMainRegister').empty();
                     $('#divStockMainRegister').html(result);
                     $('#totalRows').text($('#divStockMainRegister tr').length - 1);
-                     // countAllTotal();
+                      countAllTotal();
                 }
             });
         }
@@ -568,7 +569,7 @@
         }
 
         function countAllTotal() {
-             
+              
             var rowCount = $('#divStockRegisterBody tr').length;
             var OpnStk = 0;
             var TotStk = 0;

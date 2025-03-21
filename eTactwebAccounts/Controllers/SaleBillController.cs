@@ -1,17 +1,4 @@
-﻿//using eTactWeb.Data.Common;
-//using eTactWeb.DOM.Models;
-//using eTactWeb.Services.Interface;
-//using FastReport;
-//using FastReport.Barcode;
-//using FastReport.Web;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.Extensions.Caching.Memory;
-//using Microsoft.Extensions.Configuration;
-//using Newtonsoft.Json;
-//using NuGet.Packaging;
-//using System.Composition;
-//using static eTactWeb.Data.Common.CommonFunc;
-//using static eTactWeb.DOM.Models.Common;
+﻿
 using eTactWeb.Data.Common;
 using FastReport.Web;
 using Microsoft.Extensions.Caching.Memory;
@@ -342,192 +329,87 @@ namespace eTactWeb.Controllers
             return MainModel;
         }
 
+
+        public static DataTable GetAdjustChallanDetailTable(List<CustomerJobWorkIssueAdjustDetail> model)
+        {
+            DataTable Table = new();
+            Table.Columns.Add("ItemCode", typeof(int));
+            Table.Columns.Add("Unit", typeof(string));
+            Table.Columns.Add("BillQty", typeof(float));
+            Table.Columns.Add("JWRate", typeof(float));
+            Table.Columns.Add("ProcessId", typeof(int));
+            Table.Columns.Add("SONO", typeof(string));
+            Table.Columns.Add("CustOrderNo", typeof(string));
+            Table.Columns.Add("SOYearCode", typeof(int));
+            Table.Columns.Add("SchNo", typeof(string));
+            Table.Columns.Add("SchYearCode", typeof(int));
+            Table.Columns.Add("BOMIND", typeof(string));
+            Table.Columns.Add("BOMNO", typeof(int));
+            Table.Columns.Add("BOMEffDate", typeof(string));
+            Table.Columns.Add("Produnprod", typeof(string));
+            Table.Columns.Add("fromChallanOrSalebill", typeof(string));
+            Table.Columns.Add("ItemAdjustmentRequired", typeof(string));
+
+            if (model != null && model.Count > 0)
+            {
+                foreach (var Item in model)
+                {
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                        Item.ItemCode,
+                        Item.Unit  ?? string.Empty,
+                        Item.BillQty,
+                        Item.JWRate,
+                        Item.ProcessId,
+                        Item.SONO ?? string.Empty,
+                        Item.CustOrderNo ?? string.Empty,
+                        Item.SOYearCode,
+                        Item.SchNo ?? string.Empty,
+                        Item.SchYearcode,
+                        Item.BOMIND ?? string.Empty,
+                        Item.BOMNO,
+                        Item.BOMEffDate == null ? string.Empty : ParseFormattedDate(Item.BOMEffDate) ,
+                        Item.Produnprod ?? string.Empty,
+                        Item.fromChallanOrSalebill ?? string.Empty,
+                        Item.ItemAdjustmentRequired ?? string.Empty
+                    });
+                }
+            }
+            return Table;
+        }
+
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Route("{controller}/Index")]
-        public async Task<IActionResult> SaleBill(SaleBillModel model)
+        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode, int itemCode)
         {
             try
             {
-                var SBGrid = new DataTable();
-                DataTable TaxDetailDT = null;
-                DataTable AdjDetailDT = null;
-                DataTable DrCrDetailDT = null;
-                _MemoryCache.TryGetValue("SaleBillModel", out SaleBillModel MainModel);
-
-                _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
-                _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-                _MemoryCache.TryGetValue("KeyDrCrGrid", out List<DbCrModel> DrCrGrid);
-                if (saleBillDetail == null)
+                if (model == null || !model.Any())
                 {
-                    ModelState.Clear();
-                    ModelState.TryAddModelError("SaleBillDetail", "Sale Bill Grid Should Have Atleast 1 Item...!");
-                    return View("StockADjustment", model);
+                    return Json(new { success = false, message = "No data received." });
                 }
-                else if (saleBillDetail == null)
+
+                var adjustChallanDt = GetAdjustChallanDetailTable(model);
+                var result = await _SaleBill.GetAdjustedChallanDetailsData(adjustChallanDt, YearCode, EntryDate, ChallanDate, AccountCode);
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
-                    ModelState.Clear();
-                    ModelState.TryAddModelError("TaxDetail", "Tax Grid Should Have Atleast 1 Item...!");
-                    return View("StockADjustment", model);
-                }
-                else
-                {
-                    model.CC = HttpContext.Session.GetString("Branch");
-                    //model.ActualEnteredBy   = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                    model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    if (model.Mode == "U")
-                    {
-                        model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
-                        SBGrid = GetDetailTable(saleBillDetail);
-                    }
-                    else
-                    {
-                        model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                        model.EntryByempId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        SBGrid = GetDetailTable(saleBillDetail);
-                    }
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
 
-                    if (TaxGrid != null && TaxGrid.Count > 0)
-                    {
-                        TaxDetailDT = GetTaxDetailTable(TaxGrid);
-                    }
-                    if (DrCrGrid != null && DrCrGrid.Count > 0)
-                    {
-                        DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
-                    }
+                _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
 
-                    if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
-                    {
-                        AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleBillEntryId, model.SaleBillYearCode, model.AccountCode);
-                    }
-                    string serverFolderPath = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "SaleBill");
-                    if (!Directory.Exists(serverFolderPath))
-                    {
-                        Directory.CreateDirectory(serverFolderPath);
-                    }
-
-                    if (model.AttachmentFile1 != null)
-                    {
-                        var ImagePath = Path.Combine("Uploads", "SaleBill", Guid.NewGuid().ToString() + "_" + model.AttachmentFile1.FileName);
-
-                        string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
-                        using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
-                        {
-                            await model.AttachmentFile1.CopyToAsync(FileStream);
-                        }
-                        model.AttachmentFilePath1 = ImagePath;
-                    }
-
-                    if (model.AttachmentFile2 != null)
-                    {
-                        var ImagePath = Path.Combine("Uploads", "SaleBill", Guid.NewGuid().ToString() + "_" + model.AttachmentFile2.FileName);
-                        string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
-                        using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
-                        {
-                            await model.AttachmentFile2.CopyToAsync(FileStream);
-                        }
-                        model.AttachmentFilePath2 = ImagePath;
-                    }
-
-                    if (model.AttachmentFile3 != null)
-                    {
-                        var ImagePath = Path.Combine("Uploads", "SaleBill", Guid.NewGuid().ToString() + "_" + model.AttachmentFile3.FileName);
-
-                        string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
-                        using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
-                        {
-                            await model.AttachmentFile3.CopyToAsync(FileStream);
-                        }
-                        model.AttachmentFilePath3 = ImagePath;
-                    }
-
-                    var Result = await _SaleBill.SaveSaleBill(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT);
-
-                    if (Result != null)
-                    {
-                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-                        {
-                            ViewBag.isSuccess = true;
-                            TempData["200"] = "200";
-                            _MemoryCache.Remove(SBGrid);
-
-                            var model1 = new SaleBillModel();
-                            model1.adjustmentModel = model1.adjustmentModel ?? new AdjustmentModel();
-
-                            model1.FinFromDate = HttpContext.Session.GetString("FromDate");
-                            model1.FinToDate = HttpContext.Session.GetString("ToDate");
-                            var yearCodeStr = HttpContext.Session.GetString("YearCode");
-                            model1.SaleBillYearCode = !string.IsNullOrEmpty(yearCodeStr) ? Convert.ToInt32(yearCodeStr) : 0;
-                            model1.CC = HttpContext.Session.GetString("Branch");
-                            var uidStr = HttpContext.Session.GetString("UID");
-                            model1.CreatedBy = !string.IsNullOrEmpty(uidStr) ? Convert.ToInt32(uidStr) : 0;
-                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            _MemoryCache.Remove("KeySaleBillGrid");
-                            _MemoryCache.Remove("SaleBillModel");
-
-                            //return View(model1);
-                            return RedirectToAction(nameof(SaleBill), new { Id = 0, Mode = "", YC = 0 });
-                        }
-                        if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
-                        {
-                            ViewBag.isSuccess = true;
-                            TempData["202"] = "202";
-                            var model1 = new SaleBillModel();
-                            model1.adjustmentModel = new AdjustmentModel();
-                            model1.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
-                            model1.FinFromDate = HttpContext.Session.GetString("FromDate");
-                            model1.FinToDate = HttpContext.Session.GetString("ToDate");
-                            model1.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                            model1.CC = HttpContext.Session.GetString("Branch");
-                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            _MemoryCache.Remove("KeySaleBillGrid");
-                            _MemoryCache.Remove("SaleBillModel");
-                            return View(model1);
-                        }
-                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                        {
-                            var errNum = Result.Result.Message.ToString().Split(":")[1];
-                            model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
-                            if (errNum == " 2627")
-                            {
-                                ViewBag.isSuccess = false;
-                                TempData["2627"] = "2627";
-                                _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-
-                                return View(model);
-                            }
-
-                            ViewBag.isSuccess = false;
-                            TempData["500"] = "500";
-                            _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            // return View("Error", Result);
-                            return View(model);
-                        }
-                        HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
-                    }
-                    return View(model);
-                }
+                return PartialView("_CustomerJwisschallanAdjustment", result);
             }
             catch (Exception ex)
             {
-                //LogException<SaleBillController>.WriteException(_logger, ex);
-
-
-                //var _ResponseResult = new ResponseResult()
-                //{
-                //    StatusCode = HttpStatusCode.InternalServerError,
-                //    StatusText = "Error",
-                //    Result = ex
-                //};
-
-                //return View("Error", _ResponseResult);
-                return View(model);
+                return Json(new { success = false, message = ex.Message });
             }
         }
+
         public IActionResult ClearGrid()
         {
             _MemoryCache.Remove("KeySaleBilllGrid");
@@ -863,9 +745,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillCustomerList(string ShowAllCustomer)
+        public async Task<JsonResult> FillCustomerList(string SBJobwork, string ShowAllCustomer)
         {
-            var JSON = await _SaleBill.FillCustomerList(ShowAllCustomer);
+            var JSON = await _SaleBill.FillCustomerList(SBJobwork, ShowAllCustomer);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillJWCustomerList(string SBJobwork, int yearCode)
+        {
+            var JSON = await _SaleBill.FillJWCustomerList(SBJobwork, yearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -911,9 +799,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillItems(string sono, int soYearCode, int accountCode, string showAll, string TypeItemServAssets)
+        public async Task<JsonResult> FillItems(string showAll, string TypeItemServAssets, string sbJobWork)
         {
-            var JSON = await _SaleBill.FillItems(sono, soYearCode, accountCode, showAll, TypeItemServAssets);
+            var JSON = await _SaleBill.FillItems(showAll, TypeItemServAssets, sbJobWork);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -954,27 +842,15 @@ namespace eTactWeb.Controllers
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
             webReport.Report.Load(webRootPath + "\\SaleBill.frx");
-
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-
-
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
-            //         ID = web; Password = bmr2401";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
             return View(webReport);
+
+
         }
     }
 }

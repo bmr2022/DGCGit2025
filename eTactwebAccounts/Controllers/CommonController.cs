@@ -79,6 +79,10 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new AccCreditNoteModel();
             }
+            else if (PageName == "PurchaseRejection")
+            {
+                MainModel = new AccPurchaseRejectionModel();
+            }
             else if (PageName == "SaleRejection")
             {
                 MainModel = new SaleRejectionModel();
@@ -120,6 +124,12 @@ namespace eTactWeb.Controllers
                 {
                     _MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
                     DbCrGridd = GetCNDbCrDetailTable(MainModel);
+                    //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
+                }
+                else if (PageName == "PurchaseRejection")
+                {
+                    _MemoryCache.TryGetValue("PurchaseRejectionModel", out MainModel);
+                    DbCrGridd = GetPRDbCrDetailTable(MainModel);
                     //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
                 }
                 else if (PageName == "SaleRejection")
@@ -578,6 +588,64 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
+        
+        private static DataTable GetPRDbCrDetailTable(AccPurchaseRejectionModel MainModel)
+        {
+            try
+            {
+                DataTable Table = new();
+                Table.Columns.Add("AccEntryId", typeof(int));
+                Table.Columns.Add("AccYearCode", typeof(int));
+                Table.Columns.Add("SeqNo", typeof(int));
+                Table.Columns.Add("InvoiceNo", typeof(string));
+                Table.Columns.Add("VoucherNo", typeof(string));
+                Table.Columns.Add("AginstInvNo", typeof(string));
+                Table.Columns.Add("AginstVoucherYearCode", typeof(int));
+                Table.Columns.Add("AccountCode", typeof(int));
+                Table.Columns.Add("DocTypeID", typeof(int));
+                Table.Columns.Add("ItemCode", typeof(int));
+                Table.Columns.Add("BillQty", typeof(float));
+                Table.Columns.Add("Rate", typeof(float));
+                Table.Columns.Add("DiscountPer", typeof(float));
+                Table.Columns.Add("DiscountAmt", typeof(float));
+                Table.Columns.Add("AccountAmount", typeof(float));
+                Table.Columns.Add("DRCR", typeof(string));
+
+                IList<AccPurchaseRejectionDetail> itemDetailList = MainModel.AccPurchaseRejectionDetails;
+                if (itemDetailList != null && itemDetailList.Any())
+                {
+                    foreach (var Item in itemDetailList)
+                    {
+                        Table.Rows.Add(
+                        new object[]
+                        {
+                    MainModel.PurchaseRejEntryId,
+                    MainModel.PurchaseRejYearCode,
+                    Item.SeqNo,
+                    MainModel.PurchaseRejectionInvoiceNo ?? string.Empty, //invoice no
+                    MainModel.adjustmentModel == null ? string.Empty : MainModel.adjustmentModel.AdjAgnstVouchNo, //MainModel.voucherNo ?? string.Empty,
+                    string.Empty, // AginstInvNo
+                    2024, // AginstVoucherYearCode
+                    MainModel.AccountCode,
+                    MainModel.DocAccountCode,
+                    Item.ItemCode,
+                    Math.Round(Item.BillQty, 2, MidpointRounding.AwayFromZero), // qty
+                    Math.Round(Item.PRRate, 2, MidpointRounding.AwayFromZero), // PurchaseRejection rate
+                    Math.Round(Item.DiscountPer, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
+                    Math.Round(Item.Amount ?? 0, 2, MidpointRounding.AwayFromZero),
+                    "CR",
+                            });
+                    }
+                }
+                return Table;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         private static DataTable GetSRDbCrDetailTable(SaleRejectionModel MainModel)
         {
             try
@@ -673,8 +741,8 @@ namespace eTactWeb.Controllers
                     new object[]
                     {
                         Item.AccountCode,
-                        Item.DrAmt ?? 0,
-                        Item.CrAmt ?? 0,
+                     Item.DrAmt != null ? Math.Round((decimal)Item.DrAmt, 2) : 0,
+                      Item.CrAmt != null ? Math.Round((decimal)Item.CrAmt, 2) : 0
                     });
                 }
             }
@@ -723,6 +791,10 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new AccCreditNoteModel();
             }
+            else if (model.AdjPageName == "PurchaseRejection")
+            {
+                MainModel = new AccPurchaseRejectionModel();
+            }
             else if (model.AdjPageName == "JobWorkIssue")
             {
                 MainModel = new JobWorkIssueModel();
@@ -761,6 +833,10 @@ namespace eTactWeb.Controllers
                 else if (model.AdjPageName == "CreditNote")
                 {
                     _MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
+                }
+                else if (model.AdjPageName == "PurchaseRejection")
+                {
+                    _MemoryCache.TryGetValue("PurchaseRejectionModel", out MainModel);
                 }
                 else if (model.AdjPageName == "JobWorkIssue")
                 {
@@ -915,7 +991,7 @@ namespace eTactWeb.Controllers
                         acccode ?? 0,
                         Item.AdjModeOfAdjstment,
                         Item.AdjDrCr ?? string.Empty,
-                        (Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0,//Item.AdjAdjstedAmt ?? 0,
+                       (float)Math.Round((Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0, 2),//Item.AdjAdjstedAmt ?? 0,
                         0,//AgainstAccEntryId
                         0,//AgainstVoucheryearcode
                         string.Empty,//AgainstvoucherType
@@ -926,7 +1002,7 @@ namespace eTactWeb.Controllers
                         0,//AgainstOpeningVoucheryearcode
                         Item.AdjNewRefNo,
                         Item.AdjDescription,
-                        Item.DueDate == null ? AdjDueDt : ParseFormattedDate(Item.DueDate.Split(" ")[0]),
+                        Item.DueDate == null ? AdjDueDt : ParseFormattedDate(Item.DueDate.Split(" ")[0]).Split(" ")[0],
                         string.Empty,//AgainstOrderno
                         0,//AgainstOrderYeearCode
                         AdjOrderDt,//AgainstOrderDate

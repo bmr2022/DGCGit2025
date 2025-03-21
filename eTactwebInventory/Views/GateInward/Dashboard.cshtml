@@ -112,7 +112,8 @@
 @section Scripts
 {
     <script>
-        $(function () {
+        $(function () 
+        {
 
             var fromDateBack = sessionStorage.getItem('FromDateBack');
             var toDateBack = sessionStorage.getItem('ToDateBack');
@@ -233,7 +234,7 @@
             sessionStorage.removeItem('PoNOBack');
             sessionStorage.removeItem('SchNoBack');
 
-        });
+        }); //load function end here
 
         function GetSearchData() {
             if($('#DashboardType').val()=="Summary"){

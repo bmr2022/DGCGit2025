@@ -1,0 +1,224 @@
+﻿@model eTactWeb.DOM.Models.HRShiftMasterModel;
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th>Shift Code</th>
+                <th>Shift Name</th>
+                <th>From Time</th>
+                <th>To Time</th>
+                <th>Grace Time In</th>
+                <th>Grace Time Out</th>
+                <th>Lunch From</th>
+                <th>Lunch To</th>
+                <th>First Break From</th>
+                <th>First Break To</th>
+                <th>Second Break From</th>
+                <th>Second Break To</th>
+                <th>Third Break From</th>
+                <th>Third Break To</th>
+                <th>Duration</th>
+                <th>Shift For Production Only</th>
+                <th>Out Day</th>
+                <th>Shift Type (Fix/Rot/Flex)</th>
+                <th>Applicable To Employee Category</th>
+                <th>Attendance Mode</th>
+                <th>Minimum Hours Required For Full Day</th>
+                <th>Shift ID</th>
+                <th>Entry Date</th>
+                <th>Year Code</th>
+                <th>CC</th>
+                <th>UID</th>
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.HRShiftMasterDashBoardGrid == null || Model.HRShiftMasterDashBoardGrid.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="11" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.HRShiftMasterDashBoardGrid)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-controller="HRShiftMaster" asp-route-ID="@Cntr" asp-action="HRShiftMaster" asp-route-Mode="V"
+                                           asp-route-ID="@item.ShiftId"
+                                           asp-route-EntryDate="@item.EntryDate"
+                                           asp-route-YearCode="@item.YearCode"
+                                           asp-route-ShiftCode="@item.ShiftCode"
+                                           asp-route-ShiftName="@item.ShiftName"
+                                           asp-route-FromTime="@item.FromTime"
+                                           asp-route-ToTime="@item.ToTime"
+                                           asp-route-GraceTimeIn="@item.GraceTimeIn"
+                                           asp-route-GraceTimeOut="@item.GraceTimeOut"
+                                           asp-route-Lunchfrom="@item.Lunchfrom"
+                                           asp-route-Lunchto="@item.Lunchto"
+                                           asp-route-FirstBreakFrom="@item.FirstBreakFrom"
+                                           asp-route-FirstBreakTo="@item.FirstBreakTo"
+                                           asp-route-SecondBreakFrom="@item.SecondBreakFrom"
+                                           asp-route-SecondBreakTo="@item.SecondBreakTo"
+                                           asp-route-CC="@item.CC"
+                                           asp-route-UID="@item.UID"
+                                           asp-route-ThirdBreakFrom="@item.ThirdBreakFrom"
+                                           asp-route-ThirdBreakTo="@item.ThirdBreakTo"
+                                           asp-route-duration="@item.duration"
+                                           asp-route-ShiftForProdOnly="@item.ShiftForProdOnly"
+                                           asp-route-OutDay="@item.OutDay"
+                                           asp-route-ShiftTypeFixRotFlex="@item.ShiftTypeFixRotFlex"
+                                           asp-route-ApplicableToEmployeeCategory="@item.ApplicableToEmployeeCategory"
+                                           asp-route-AttandanceMode="@item.AttandanceMode"
+                                           asp-route-MinimumHourRequiredForFullDay="@item.MinimumHourRequiredForFullDay"
+                                        onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+                                        @* <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="LedgerOpeningEntry" onclick="confirmEdit(event)" asp-controller="LedgerOpeningEntry" asp-route-Mode="U" asp-route-ID="@item.EntryByEmpId" asp-route-YC="@item.ClosingYearCode" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-AccountCode="@item.AccountCode">*@
+                                        <a class="table-link link-primary"
+                                           asp-action="HRShiftMaster"
+                                           asp-controller="HRShiftMaster"
+                                           asp-route-Mode="U"
+                                           asp-route-ID="@item.ShiftId"
+                                           asp-route-EntryDate="@item.EntryDate"
+                                           asp-route-YearCode="@item.YearCode"
+                                           asp-route-ShiftCode="@item.ShiftCode"
+                                           asp-route-ShiftName="@item.ShiftName"
+                                           asp-route-FromTime="@item.FromTime"
+                                           asp-route-ToTime="@item.ToTime"
+                                           asp-route-GraceTimeIn="@item.GraceTimeIn"
+                                           asp-route-GraceTimeOut="@item.GraceTimeOut"
+                                           asp-route-Lunchfrom="@item.Lunchfrom"
+                                           asp-route-Lunchto="@item.Lunchto"
+                                           asp-route-FirstBreakFrom="@item.FirstBreakFrom"
+                                           asp-route-FirstBreakTo="@item.FirstBreakTo"
+                                           asp-route-SecondBreakFrom="@item.SecondBreakFrom"
+                                           asp-route-SecondBreakTo="@item.SecondBreakTo"
+                                           asp-route-CC="@item.CC"
+                                           asp-route-UID="@item.UID"
+                                           asp-route-ThirdBreakFrom="@item.ThirdBreakFrom"
+                                           asp-route-ThirdBreakTo="@item.ThirdBreakTo"
+                                           asp-route-duration="@item.duration"
+                                           asp-route-ShiftForProdOnly="@item.ShiftForProdOnly"
+                                           asp-route-OutDay="@item.OutDay"
+                                           asp-route-ShiftTypeFixRotFlex="@item.ShiftTypeFixRotFlex"
+                                           asp-route-ApplicableToEmployeeCategory="@item.ApplicableToEmployeeCategory"
+                                           asp-route-AttandanceMode="@item.AttandanceMode"
+                                           asp-route-MinimumHourRequiredForFullDay="@item.MinimumHourRequiredForFullDay"
+                                          
+                                           onclick="confirmEdit(event)">
+
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+
+                                    </div>
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="HRShiftMaster" asp-route-ID="@item.ShiftId">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.ShiftCode</td>
+                            <td>@item.ShiftName</td>
+                            <td>@item.FromTime</td>
+                            <td>@item.ToTime</td>
+                            <td>@item.GraceTimeIn</td>
+                            <td>@item.GraceTimeOut</td>
+                            <td>@item.Lunchfrom</td>
+                            <td>@item.Lunchto</td>
+                            <td>@item.FirstBreakFrom</td>
+                            <td>@item.FirstBreakTo</td>
+                            <td>@item.SecondBreakFrom</td>
+                            <td>@item.SecondBreakTo</td>
+                            <td>@item.ThirdBreakFrom</td>
+                            <td>@item.ThirdBreakTo</td>
+                            <td>@item.duration</td>
+                            <td>@item.ShiftForProdOnly</td>
+                            <td>@item.OutDay</td>
+                            <td>@item.ShiftTypeFixRotFlex</td>
+                            <td>@item.ApplicableToEmployeeCategory</td>
+                            <td>@item.AttandanceMode</td>
+                            <td>@item.MinimumHourRequiredForFullDay</td>
+                            <td>@item.ShiftId</td>
+                            <td>@item.EntryDate</td>
+                            <td>@item.YearCode</td>
+                            <td>@item.CC</td>
+                            <td>@item.UID</td>
+
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%; /* Ensure table fills the container width */
+    }
+
+    th, td {
+        white-space: nowrap; /* Prevent content from wrapping */
+    }
+</style>

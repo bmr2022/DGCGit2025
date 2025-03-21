@@ -25,9 +25,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _StockValuationDAL.FillStoreName(FromDate, CurrentDate);
         }
-        public async Task<StockValuationModel> GetStockValuationDetailsData(string FromDate, string ToDate,string StoreId,string ReportType)
+        public async Task<ResponseResult> FillItemName(string FromDate, string CurrentDate)
         {
-            return await _StockValuationDAL.GetStockValuationDetailsData(FromDate, ToDate, StoreId, ReportType);
+            return await _StockValuationDAL.FillItemName(FromDate, CurrentDate);
+        }
+        public async Task<ResponseResult> FillPartCode(string FromDate, string CurrentDate)
+        {
+            return await _StockValuationDAL.FillPartCode(FromDate, CurrentDate);
+        }
+        public async Task<StockValuationModel> GetStockValuationDetailsData(string FromDate, string ToDate,string StoreId,string ReportType, int ItemCode)
+        {
+            return await _StockValuationDAL.GetStockValuationDetailsData(FromDate, ToDate, StoreId, ReportType, ItemCode);
         }
     }
 }

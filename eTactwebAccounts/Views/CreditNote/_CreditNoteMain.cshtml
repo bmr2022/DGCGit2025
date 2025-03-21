@@ -1,6 +1,22 @@
 ﻿@model eTactWeb.DOM.Models.AccCreditNoteModel
 
+<style>
 
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
 <div class="accordion-body">
     <div class="row g-2 gx-3">
 
@@ -16,7 +32,7 @@
             <input asp-for="CreditNoteYearCode" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="AgainstSalePurchase" class="form-label" style="color: red;">Ag Sale Purchase</label>
+            <label asp-for="AgainstSalePurchase" class="form-label" style="color: red;">Against</label>
             <select asp-for="AgainstSalePurchase" class="form-control">
                 <option value="">-Select-</option>
                 <option value="SALE" selected>Sale</option>
@@ -48,7 +64,7 @@
 
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="CreditNoteVoucherNo" class="form-label" style="color: red;">Voucher No*</label>
-            <input asp-for="CreditNoteVoucherNo" class="form-control" readonly />
+            <input asp-for="CreditNoteVoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="CreditNoteVoucherDate" class="form-label" style="color: red;">Voucher Date*</label>
@@ -64,7 +80,7 @@
             <input asp-for="CustVendAddress" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="StateNameofSupply" class="form-label" style="color: red;">State of Supply*</label>
+            <label asp-for="StateNameofSupply" class="form-label" style="color: red;">State *</label>
             <input asp-for="StateNameofSupply" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
@@ -72,19 +88,19 @@
             <input asp-for="StateCode" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="CityofSupply" class="form-label">City of Supply</label>
+            <label asp-for="CityofSupply" class="form-label">City</label>
             <input asp-for="CityofSupply" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="CountryOfSupply" class="form-label">Country of Supply</label>
+            <label asp-for="CountryOfSupply" class="form-label">Country</label>
             <input asp-for="CountryOfSupply" class="form-control" readonly />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="PaymentTerm" class="form-label">Payment Term</label>
+            <label asp-for="PaymentTerm" class="form-label">Terms</label>
             <input asp-for="PaymentTerm" class="form-control" />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-            <label asp-for="PaymentCreditDay" class="form-label">Payment Cr Day</label>
+            <label asp-for="PaymentCreditDay" class="form-label">Credit Day</label>
             <input asp-for="PaymentCreditDay" class="form-control" />
         </div>
         <div class="col-md-1">

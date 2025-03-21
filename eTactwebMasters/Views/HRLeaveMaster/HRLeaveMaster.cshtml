@@ -1,0 +1,884 @@
+﻿@model eTactWeb.DOM.Models.HRLeaveMasterModel
+
+@{
+    ViewData["Title"] = "HRLeaveMaster";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="rounded shadow-lg">
+    @* <partial name="_ItemDetailConfirmation" /> *@
+
+    <form asp-action="HRLeaveMaster" enctype="multipart/form-data" autocomplete="off" class="form-horizontal" method="post">
+        @Html.AntiForgeryToken()
+        @* <input type="hidden" asp-for="Act">
+        <input type="hidden" asp-for="ImageURL"> *@
+        <input type="hidden" asp-for="Mode">
+        <div class="card border-light bg-gradient rounded shadow-lg">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h4>
+                    @*@ViewData["Title"] - @Model.YearCode *@
+                     Leave Master
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-action="HRLeaveMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    @*Model.Mode = "U";*@
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" >
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
+                                            <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h4>
+            </div>
+        </div>
+        @*<div asp-validation-summary="All" class="text-danger"></div>*@
+        <div class="card rounded shadow-lg">
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionAccountMaster">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_BasicInformation">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicLeaveInformation" aria-expanded="true" aria-controls="B_BasicLeaveInformation">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Basic Leave Information </strong>
+                            </button>
+                        </h2>
+                        <div id="B_BasicLeaveInformation" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicLeaveInformation">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        @* <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+                                        <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" /> *@
+                                        <label asp-for="LeaveId" class="form-label">Leave Id</label>
+                                        <input asp-for="LeaveId" class="form-control numbers" value="@Model.LeaveId" readonly />
+
+                                    </div>
+                                    <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
+                                        <label asp-for="LeaveCode" class="form-label">Leave Code</label>
+                                        <input asp-for="LeaveCode" class="form-control"  />
+                                    </div>
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="LeaveName" class="form-label">Leave Name</label>
+                                        <input asp-for="LeaveName" class="form-control" value="@Model.LeaveName" />
+                                    </div>
+                                    
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label id="Types" class="form-label">Leave Type</label>
+                                        <select asp-for="LeaveType" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            @*  <option value="@Model.TypeOfSalary">-Select-</option> *@
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.LeaveType" selected>@Model.LeaveType</option>
+                                            }
+                                        </select>
+                                    </div>
+                                   
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label id="Types" class="form-label">Leave Category</label>
+                                        <select asp-for="LeaveCategory" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            @*   <option value="@Model.CalculationType">-Select-</option> *@
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.LeaveCategory" selected>@Model.LeaveCategory</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="GenderApplicable" class="form-label">GenderApplicable</label>
+                                        <select asp-for="GenderApplicable" class="form-select" >
+                                            <option value="" selected>-Select-</option>
+                                            <option value="Male" >Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="All">All</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_LeaveEntitlementandPolicy">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_LeaveEntitlementandPolicy" aria-expanded="true" aria-controls="B_LeaveEntitlementandPolicy">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Leave Entitlement & Policy </strong>
+                            </button>
+                        </h2>
+                        <div id="B_LeaveEntitlementandPolicy" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_LeaveEntitlementandPolicy">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+                                   
+
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+
+                                        <label asp-for="MaxLeavePerYear" class="form-label">MaxLeavePerYear</label>
+                                        <input asp-for="MaxLeavePerYear" class="form-control numbers" value="@Model.MaxLeavePerYear" />
+
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MinDaysForApplication" class="form-label">MinDaysForApplication</label>
+                                        <input asp-for="MinDaysForApplication" class="form-control numbers" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaxConsecutiveDaysAllowed" class="form-label">MaxConsecutiveDaysAllowed</label>
+                                        <input asp-for="MaxConsecutiveDaysAllowed" class="form-control numbers" />
+                                    </div>
+                                                 
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Encashable" class="form-label">Encashable</label>
+                                        <select asp-for="Encashable" class="form-select" >
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CarryForward" class="form-label">CarryForward</label>
+                                       
+
+                                        <select asp-for="CarryForward" class="form-control" onchange="CarryForwerdAmt()">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            @*   <option value="@Model.CalculationType">-Select-</option> *@
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.CarryForward" selected>@Model.CarryForward</option>
+                                            }
+                                        </select>
+                                    </div>
+
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MaxCarryForwardLimit" class="form-label">MaxCarryForwardLimit</label>
+                                        <input asp-for="MaxCarryForwardLimit" class="form-control numbers" value="@Model.MaxCarryForwardLimit" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="HalfDayAllowed" class="form-label">HalfDayAllowed</label>
+                                        <select asp-for="HalfDayAllowed" class="form-select" >
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="LeaveApprovalRequired" class="form-label">LeaveApprovalRequired</label>
+                                        <select asp-for="LeaveApprovalRequired" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CompensatoryOffRequired" class="form-label">CompensatoryOffRequired</label>
+                                        <select asp-for="CompensatoryOffRequired" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="LeaveDeductionApplicable" class="form-label">LeaveDeductionApplicable</label>
+                                        <select asp-for="LeaveDeductionApplicable" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_LeaveValidityAndRestrictions">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_LeaveValidityAndRestrictions" aria-expanded="true" aria-controls="B_LeaveValidityAndRestrictions">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Leave Validity & Restrictions</strong>
+                            </button>
+                        </h2>
+                        <div id="B_LeaveValidityAndRestrictions" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_LeaveValidityAndRestrictions">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EligibilityAfterMonths" class="form-label">EligibilityAfterMonths</label>
+                                        <input asp-for="EligibilityAfterMonths" class="form-control numbers" value="@Model.EligibilityAfterMonths" max="50" />
+                                    </div>
+
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="RestrictedToEmployeeCategory" class="control-label">Restricted To EmployeeCategory</label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="RestrictedToEmployeeCategory" asp-items="@(new SelectList(Model.EmpCategList, "Value", "Text"))"></select>
+
+
+                                        @* <select class="form-select" multiple="multiple" asp-for="EmpCateg" asp-items="@(new SelectList(Model.EmpCategList,"Value","Text"))"></select> *@
+                                    </div>
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="RestrictedToDepartment" class="control-label">RestrictedToDepartment </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="RestrictedToDepartment" asp-items="@(new SelectList(Model.DeptWiseCategList,"Value","Text"))"></select>
+                                    </div>
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="RestrictedToLocation" class="control-label">RestrictedToLocation </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="RestrictedToLocation" asp-items="@(new SelectList(Model.LocationList,"Value","Text"))"></select>
+                                    </div>
+
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MinWorkDaysRequired" class="form-label">MinWorkDaysRequired</label>
+                                        <input asp-for="MinWorkDaysRequired" class="form-control numbers" value="@Model.MinWorkDaysRequired" max="50" />
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ApprovalWorkflowAndReporting">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ApprovalWorkflowAndReporting" aria-expanded="true" aria-controls="B_ApprovalWorkflowAndReporting">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Approval Workflow & Reporting</strong>
+                            </button>
+                        </h2>
+                        <div id="B_ApprovalWorkflowAndReporting" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ApprovalWorkflowAndReporting">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AutoApproveLimitDays" class="form-label">AutoApproveLimitDays</label>
+                                        <input asp-for="AutoApproveLimitDays" class="form-control numbers" value="@Model.AutoApproveLimitDays"  />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmpApprovalLevel1" class="form-label">ApprovalLevel1 </label>
+                                        <input asp-for="ApprovalLevel1" class="form-control" type="hidden" value="@Model.ApprovalLevel1" />
+                                        <select asp-for="EmpApprovalLevel1" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.ApprovalLevel1">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ApprovalLevel1" selected>@Model.EmpApprovalLevel1</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmpApprovalLevel2" class="form-label">ApprovalLevel2 </label>
+                                        <input asp-for="ApprovalLevel2" class="form-control" type="hidden" value="@Model.ApprovalLevel2" />
+                                        <select asp-for="EmpApprovalLevel2" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.ApprovalLevel2">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ApprovalLevel2" selected>@Model.EmpApprovalLevel2</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmpApprovalLevel3" class="form-label">ApprovalLevel3 </label>
+                                        <input asp-for="ApprovalLevel3" class="form-control" type="hidden" value="@Model.ApprovalLevel3" />
+                                        <select asp-for="EmpApprovalLevel3" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.ApprovalLevel3">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.ApprovalLevel3" selected>@Model.EmpApprovalLevel3</option>
+                                            }
+                                        </select>
+                                    </div>
+
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_AuditAndStatus">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AuditAndStatus" aria-expanded="true" aria-controls="B_AuditAndStatus">
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Audit & Status</strong>
+                            </button>
+                        </h2>
+                        <div id="B_LeaveValidityAndRestrictions" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AuditAndStatus">
+                            <div class="accordion-body">
+                                <div class="row g-3">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Active" class="form-label">Active</label>
+                                        <select asp-for="Active" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO">NO</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO" disabled>NO</option>
+                                            }
+
+
+                                        </select>
+                                    </div>
+
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom</label>
+                                        <input asp-for="EffectiveFrom" class="form-control " value="@Model.EffectiveFrom"  />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none">
+                                        <label asp-for="CreatedBy" class="form-label">CreatedBy</label>
+                                        <input asp-for="CreatedBy" class="form-control " value="@Model.CreatedBy" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="display:none" >
+                                        <label asp-for="UpdatedBy" class="form-label">UpdatedBy</label>
+                                        <input asp-for="UpdatedBy" class="form-control " value="@Model.UpdatedBy" />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedByEmpName" class="form-label">CreatedByEmpName</label>
+                                        <input asp-for="CreatedByEmpName" class="form-control " value="@Model.CreatedByEmpName" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedByEmpName" class="form-label">UpdatedBy</label>
+                                        <input asp-for="UpdatedByEmpName" class="form-control " value="@Model.UpdatedByEmpName" readonly />
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedOn" class="form-label">CreatedOn</label>
+                                        <input asp-for="CreatedOn" class="form-control " value="@Model.CreatedOn" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">UpdatedOn</label>
+                                        <input asp-for="UpdatedOn" class="form-control " value="@Model.UpdatedOn" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CC" class="form-label">CC</label>
+                                        <input asp-for="CC" class="form-control " value="@Model.CC" />
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                  
+                    <div class="card border-light bg-gradient rounded shadow-lg">
+                        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                            <h4>
+                               
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+                                    <a asp-action="DashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                        <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="back();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U")
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton" >
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
+                                                        <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts
+{
+
+    <script type="text/javascript">
+        $('.submitBTN').click(function (e) {
+            e.preventDefault();
+           
+            $('form').submit();
+        });
+
+
+        $('.numbers').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+
+
+        $(function () {
+
+            $('#LeaveType').select2();
+            $('#LeaveCategory').select2();
+            $('#GenderApplicable').select2();
+            $('#Encashable').select2();
+            $('#CarryForward').select2();
+            $('#HalfDayAllowed').select2();
+            $('#LeaveApprovalRequired').select2();
+
+            $('#CompensatoryOffRequired').select2();
+            $('#LeaveDeductionApplicable').select2();
+            $('#Active').select2();
+            $('#EmpApprovalLevel1').select2();
+            $('#EmpApprovalLevel2').select2();
+            $('#EmpApprovalLevel3').select2();
+           
+        });
+
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            FillLeaveID();
+        }
+      
+        function simulateBackspace(element) {
+            var event = new KeyboardEvent("keydown", {
+                key: "Backspace",
+                keyCode: 8,
+                code: "Backspace",
+                which: 8,
+                bubbles: true,
+                cancelable: true,
+            });
+
+            element.dispatchEvent(event);
+        }
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit']").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("button[type='submit']").prop("disabled", true);
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        function CarryForwerdAmt() {
+            var dropdown = document.getElementById("CarryForward");
+            var textbox1 = document.getElementById("MaxCarryForwardLimit");
+
+            if (dropdown.value == "YES") {
+                textbox1.disabled = false;
+            }
+
+            else if (dropdown.value == "NO") {
+                textbox1.disabled = true;
+                textbox1.value = "0";
+            }
+            else {
+                textbox1.disabled = true;
+                textbox1.value = "0";
+
+            }
+        }
+
+      
+      
+        $(document).ready(function () {
+            $("#RestrictedToEmployeeCategory").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+
+
+            });
+            $("#RestrictedToDepartment").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+            });
+            $("#RestrictedToLocation").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+            });
+
+
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+
+                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            }
+            else {
+                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
+            }
+
+            
+                var UpdatedOn = parseDateToFormat($('#UpdatedOn').val().split(" ")[0]);
+                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", UpdatedOn);
+           
+
+            GetFormRights();
+
+            $('#EmpApprovalLevel1').change(function () {
+                $('#ApprovalLevel1').val($('#EmpApprovalLevel1').val());
+            });
+            $('#EmpApprovalLevel2').change(function () {
+                $('#ApprovalLevel2').val($('#EmpApprovalLevel2').val());
+            });
+            $('#EmpApprovalLevel3').change(function () {
+                $('#ApprovalLevel3').val($('#EmpApprovalLevel3').val());
+            });
+
+            $('.datefield').keyup(function (e) {
+                e.preventDefault();
+                if (e.keyCode == 8) {
+                    return false;
+                }
+            });
+
+            FillLeaveType();
+            FillLeaveCategory();
+            FillApprovalLeval1();
+            FillApprovalLeval2();
+            FillApprovalLeval3();
+            FillCarryForward();
+
+        });
+
+        function FillLeaveID() {
+            
+            $.ajax({
+                url: '@Url.Action("FillLeaveId", "HRLeaveMaster")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#LeaveId').val(0);
+                        $('#LeaveId').val(obj.Result[0].EntryId);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillApprovalLeval1() {
+            $.ajax({
+                url: '@Url.Action("GetApprovalleval", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ApprovalDropdown = $('#EmpApprovalLevel1');
+                    var obj = $.parseJSON(response);
+                    ApprovalDropdown.empty();
+                    ApprovalDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ApprovalDropdown.append('<option value="' + item.emp_id + '">' + item.EmployeeName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpApprovalLevel1 = '@Model.ApprovalLevel1';
+                        $('#EmpApprovalLevel1').val(EmpApprovalLevel1).trigger("change");
+                        $('#EmpApprovalLevel1').val(EmpApprovalLevel1);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillCarryForward() {
+            $.ajax({
+                url: '@Url.Action("GetApprovalleval", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ApprovalDropdown = $('#CarryForward');
+                    var obj = $.parseJSON(response);
+                    ApprovalDropdown.empty();
+                     ApprovalDropdown.append('<option value="YES">YES</option>');
+                    ApprovalDropdown.append('<option value="NO">NO</option>');
+
+                    // $.each(obj.Result, function (index, item) {
+                    //     ApprovalDropdown.append('<option value="' + item.emp_id + '">' + item.EmployeeName + '</option>');
+                    // });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var CarryForward = '@Model.CarryForward';
+                        $('#CarryForward').val(CarryForward).trigger("change");
+                        $('#CarryForward').val(CarryForward);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        function FillApprovalLeval2() {
+            $.ajax({
+                url: '@Url.Action("GetApprovalleval", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ApprovalDropdown = $('#EmpApprovalLevel2');
+                    var obj = $.parseJSON(response);
+                    ApprovalDropdown.empty();
+                    ApprovalDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ApprovalDropdown.append('<option value="' + item.emp_id + '">' + item.EmployeeName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpApprovalLevel2 = '@Model.ApprovalLevel2';
+                        $('#EmpApprovalLevel2').val(EmpApprovalLevel2).trigger("change");
+                        $('#EmpApprovalLevel2').val(EmpApprovalLevel2);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        function FillApprovalLeval3() {
+            $.ajax({
+                url: '@Url.Action("GetApprovalleval", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ApprovalDropdown = $('#EmpApprovalLevel3');
+                    var obj = $.parseJSON(response);
+                    ApprovalDropdown.empty();
+                    ApprovalDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ApprovalDropdown.append('<option value="' + item.emp_id + '">' + item.EmployeeName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpApprovalLevel1 = '@Model.ApprovalLevel3';
+                        $('#EmpApprovalLevel3').val(EmpApprovalLevel1).trigger("change");
+                        $('#EmpApprovalLevel3').val(EmpApprovalLevel1);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillLeaveType() {
+             
+            $.ajax({
+                url: '@Url.Action("GetleaveType", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var LeaveTypeDropdown = $('#LeaveType');
+                    var obj = $.parseJSON(response);
+                    LeaveTypeDropdown.empty();
+                    // TypeOfSalaryDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        LeaveTypeDropdown.append('<option value="' + item.leaveType + '">' + item.leaveType + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var LeaveType = '@Model.LeaveType';
+                        $('#LeaveType').val(LeaveType).trigger("change");
+                        $('#LeaveType').val(LeaveType);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillLeaveCategory() {
+             
+            $.ajax({
+                url: '@Url.Action("GetLeaveCategory", "HRLeaveMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var LeaveCategoryDropdown = $('#LeaveCategory');
+                    var obj = $.parseJSON(response);
+                    LeaveCategoryDropdown.empty();
+                    // TypeOfSalaryDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        LeaveCategoryDropdown.append('<option value="' + item.LeaveCategory + '">' + item.LeaveCategory + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var LeaveCategory = '@Model.LeaveCategory';
+                        $('#LeaveCategory').val(LeaveCategory).trigger("change");
+                        $('#LeaveCategory').val(LeaveCategory);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+   
+    </script>
+}

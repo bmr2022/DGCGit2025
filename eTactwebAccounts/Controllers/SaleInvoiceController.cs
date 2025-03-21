@@ -20,6 +20,9 @@ using common = eTactWeb.Data.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using FastReport.Data;
+using FastReport;
+using System.Configuration;
 
 
 namespace eTactWeb.Controllers
@@ -31,7 +34,7 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
 
         public ISaleBill _SaleBill { get; }
-        private readonly IConfiguration iconfiguration;
+        private readonly IConfiguration _iconfiguration;
         private readonly ILogger<SaleBillController> _logger;
         private readonly IMemoryCache _MemoryCache;
         private readonly ICustomerJobWorkIssue _ICustomerJobWorkIssue;
@@ -43,7 +46,7 @@ namespace eTactWeb.Controllers
             _SaleBill = iSaleBill;
             _MemoryCache = memoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
-            iconfiguration = configuration;
+            _iconfiguration = configuration;
             _ICustomerJobWorkIssue = CustomerJobWorkIssue;
         }
         [HttpPost]
@@ -53,11 +56,13 @@ namespace eTactWeb.Controllers
             DataTable TaxDetailDT = null;
             DataTable AdjDetailDT = null;
             DataTable DrCrDetailDT = null;
+            DataTable AdjChallanDetailDT = null;
             _MemoryCache.TryGetValue("SaleBillModel", out SaleBillModel MainModel);
 
             _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
             _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
             _MemoryCache.TryGetValue("KeyDrCrGrid", out List<DbCrModel> DrCrGrid);
+            _MemoryCache.TryGetValue("KeyAdjChallanGrid", out List<CustomerJobWorkIssueAdjustDetail> AdjChallanGrid);
             if (saleBillDetail == null)
             {
                 ModelState.Clear();
@@ -87,6 +92,11 @@ namespace eTactWeb.Controllers
                     model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                     model.EntryByempId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     SBGrid = GetDetailTable(saleBillDetail);
+                }
+
+                if (AdjChallanGrid != null && AdjChallanGrid.Count > 0)
+                {
+                    AdjChallanDetailDT = GetAdjChallanDetailTable(AdjChallanGrid);
                 }
 
                 if (TaxGrid != null && TaxGrid.Count > 0)
@@ -143,7 +153,7 @@ namespace eTactWeb.Controllers
                     model.AttachmentFilePath3 = ImagePath;
                 }
 
-                var Result = await _SaleBill.SaveSaleBill(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT);
+                var Result = await _SaleBill.SaveSaleBill(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, AdjChallanDetailDT);
 
                 if (Result != null)
                 {
@@ -213,8 +223,57 @@ namespace eTactWeb.Controllers
             }
         }
 
+        public static DataTable GetAdjustChallanDetailTable(List<CustomerInputJobWorkIssueAdjustDetail> model)
+        {
+            DataTable Table = new();
+            Table.Columns.Add("ItemCode", typeof(int));
+            Table.Columns.Add("Unit", typeof(string));
+            Table.Columns.Add("BillQty", typeof(float));
+            Table.Columns.Add("JWRate", typeof(float));
+            Table.Columns.Add("ProcessId", typeof(int));
+            Table.Columns.Add("SONO", typeof(string));
+            Table.Columns.Add("CustOrderNo", typeof(string));
+            Table.Columns.Add("SOYearCode", typeof(int));
+            Table.Columns.Add("SchNo", typeof(string));
+            Table.Columns.Add("SchYearCode", typeof(int));
+            Table.Columns.Add("BOMIND", typeof(string));
+            Table.Columns.Add("BOMNO", typeof(int));
+            Table.Columns.Add("BOMEffDate", typeof(string));
+            Table.Columns.Add("Produnprod", typeof(string));
+            Table.Columns.Add("fromChallanOrSalebill", typeof(string));
+            Table.Columns.Add("ItemAdjustmentRequired", typeof(string));
+
+            if (model != null && model.Count > 0)
+            {
+                foreach (var Item in model)
+                {
+                    Table.Rows.Add(
+                    new object[]
+                    {
+                        Item.ItemCode,
+                        Item.Unit  ?? string.Empty,
+                        Item.BillQty,
+                        Item.JWRate,
+                        Item.ProcessId,
+                        Item.SONO ?? string.Empty,
+                        Item.CustOrderNo ?? string.Empty,
+                        Item.SOYearCode,
+                        Item.SchNo ?? string.Empty,
+                        Item.SchYearcode,
+                        Item.BOMIND ?? string.Empty,
+                        Item.BOMNO,
+                        Item.BOMEffDate == null ? string.Empty : ParseFormattedDate(Item.BOMEffDate) ,
+                        Item.Produnprod ?? string.Empty,
+                        Item.fromChallanOrSalebill ?? string.Empty,
+                        Item.ItemAdjustmentRequired ?? string.Empty
+                    });
+                }
+            }
+            return Table;
+        }
+
         [HttpPost]
-        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerInputJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
         {
             try
             {
@@ -223,8 +282,17 @@ namespace eTactWeb.Controllers
                     return Json(new { success = false, message = "No data received." });
                 }
 
-                var result = "";
-                    //_ICustomerJobWorkIssue.GetAdjustedChallanDetailsData(model, YearCode, EntryDate, ChallanDate, AccountCode);
+                var adjustChallanDt = GetAdjustChallanDetailTable(model);
+                var result = await _SaleBill.GetAdjustedChallanDetailsData(adjustChallanDt, YearCode, EntryDate, ChallanDate, AccountCode);
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
 
                 return PartialView("_CustomerJwisschallanAdjustment", result);
             }
@@ -233,6 +301,38 @@ namespace eTactWeb.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetBomCustAdjChallanDetailsData(List<CustomerInputJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
+        {
+            try
+            {
+                if (model == null || !model.Any())
+                {
+                    return Json(new { success = false, message = "No data received." });
+                }
+
+                var adjustChallanDt = GetAdjustChallanDetailTable(model);
+                var result = await _SaleBill.GetAdjustedChallanDetailsData(adjustChallanDt, YearCode, EntryDate, ChallanDate, AccountCode);
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
+
+                return PartialView("_BomCustomerJWIssChallanADJ", result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YC, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
         {
@@ -576,6 +676,7 @@ namespace eTactWeb.Controllers
                     MainModel = BindItem4Grid(MainModel);
                     MainModel.saleBillDetails = saleBillDetail;
                     MainModel.ItemDetailGrid = saleBillDetail;
+                    _MemoryCache.Set("KeySaleBillGrid", MainModel.saleBillDetails, cacheEntryOptions);
                     _MemoryCache.Set("SaleBillModel", MainModel, cacheEntryOptions);
                 }
                 else
@@ -655,6 +756,103 @@ namespace eTactWeb.Controllers
             return MainModel;
         }
 
+        private static DataTable GetAdjChallanDetailTable(IList<CustomerJobWorkIssueAdjustDetail> DetailList)
+        {
+            var DTSSGrid = new DataTable();
+
+            DTSSGrid.Columns.Add("EntryDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("CustJwRecEntryId", typeof(int));
+            DTSSGrid.Columns.Add("CustJwRecYearCode", typeof(int));
+            DTSSGrid.Columns.Add("CustJwRecChallanNo", typeof(string));
+            DTSSGrid.Columns.Add("CustJwRecEntryDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("RecItemCode", typeof(int));
+            DTSSGrid.Columns.Add("CustJwIssEntryid", typeof(int));
+            DTSSGrid.Columns.Add("CustJwIssYearCode", typeof(int));
+            DTSSGrid.Columns.Add("CustJwIssChallanNo", typeof(string));
+            DTSSGrid.Columns.Add("CustJwIssChallanDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("AccountCode", typeof(int));
+            DTSSGrid.Columns.Add("FinishItemCode", typeof(int));
+            DTSSGrid.Columns.Add("AdjQty", typeof(float));
+            DTSSGrid.Columns.Add("CC", typeof(string));
+            DTSSGrid.Columns.Add("UID", typeof(int));
+            DTSSGrid.Columns.Add("AdjFormType", typeof(string));
+            DTSSGrid.Columns.Add("TillDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("TotIssQty", typeof(float));
+            DTSSGrid.Columns.Add("PendQty", typeof(float));
+            DTSSGrid.Columns.Add("BOMQty", typeof(float));
+            DTSSGrid.Columns.Add("BomRevNo", typeof(int));
+            DTSSGrid.Columns.Add("BOMRevDate", typeof(string)); // datetime
+            DTSSGrid.Columns.Add("ProcessID", typeof(int));
+            DTSSGrid.Columns.Add("BOMInd", typeof(char));
+            DTSSGrid.Columns.Add("IssQty", typeof(float));
+            DTSSGrid.Columns.Add("TotadjQty", typeof(float));
+            DTSSGrid.Columns.Add("TotalIssQty", typeof(float));
+            DTSSGrid.Columns.Add("TotalRecQty", typeof(float));
+            DTSSGrid.Columns.Add("RunnerItemCode", typeof(int));
+            DTSSGrid.Columns.Add("ScrapItemCode", typeof(int));
+            DTSSGrid.Columns.Add("IdealScrapQty", typeof(float));
+            DTSSGrid.Columns.Add("IssuedScrapQty", typeof(float));
+            DTSSGrid.Columns.Add("PreRecChallanNo", typeof(string));
+            DTSSGrid.Columns.Add("ScrapqtyagainstRcvqty", typeof(float));
+            DTSSGrid.Columns.Add("Recbatchno", typeof(string));
+            DTSSGrid.Columns.Add("Recuniquebatchno", typeof(string));
+            DTSSGrid.Columns.Add("Issbatchno", typeof(string));
+            DTSSGrid.Columns.Add("Issuniquebatchno", typeof(string));
+            DTSSGrid.Columns.Add("ScrapAdjusted", typeof(string));
+
+
+            //DateTime DeliveryDt = new DateTime();
+            foreach (var Item in DetailList)
+            {
+                string uniqueString = Guid.NewGuid().ToString();
+                DTSSGrid.Rows.Add(
+                    new object[]
+                    {
+                    "",
+                    0, //CustJwRecEntryId
+                   2025 , // custJwRecYearCode
+                    Item.ChallanNo,
+                    "", // CustJwRecEntryDate
+                    Item.ItemCode,
+                    0 , // CustJwIssEntryid
+                    0, // CustJwIssYearCode
+                    Item.ChallanNo, // CustJwIssChallanNo
+                    Item.ChallanDate, // CustJwIssChallanDate
+                    0, // AccountCode
+                    Item.ItemCode, // finishedItemCode
+                    0, // AdjQty
+                    "" , // CC
+                    "", //UID
+                    "", //AdjFormType
+                    "", // TillDate
+                    Item.IssQty,
+                    Item.PendQty,
+                    "", // BomQty
+                    "" , // BomRevNo
+                    "" , // BOMRevDate
+                    Item.ProcessId,
+                    Item.BOMIND,
+                    Item.IssQty,
+                    Item.BillQty, // TotalAjdQty  
+                    Item.IssQty, // TotalIssQty
+                    Item.RecQty, //TotalRecQty
+                    Item.ItemCode, // RunnerItemCode
+                    Item.ItemCode, // ScrapItemCode
+                    Item.BillQty, // IdealScrapQty
+                    Item.BillQty, // IssuedScrapQty
+                    Item.ChallanNo,
+                    Item.BillQty, // ScrapqtyagainstRcvqty
+                    "", // Recbatchno
+                    "", // Recuniquebatchno
+                    "" , // Issbatchno
+                    "" , // Issuniquebatchno
+                    ""
+                    });
+            }
+            DTSSGrid.Dispose();
+            return DTSSGrid;
+        }
+
         private static DataTable GetDetailTable(IList<SaleBillDetail> DetailList)
         {
             var DTSSGrid = new DataTable();
@@ -716,6 +914,10 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("ProdSchDate", typeof(string));
             DTSSGrid.Columns.Add("SchdeliveryDate", typeof(string));
             DTSSGrid.Columns.Add("CostCenterid", typeof(int));
+            DTSSGrid.Columns.Add("ProdUnProduced", typeof(string));
+            DTSSGrid.Columns.Add("BOMInd", typeof(string));
+            DTSSGrid.Columns.Add("CustJWmanadatory", typeof(string));
+            DTSSGrid.Columns.Add("StockableNonStockable", typeof(string));
             //DateTime DeliveryDt = new DateTime();
             foreach (var Item in DetailList)
             {
@@ -781,6 +983,10 @@ namespace eTactWeb.Controllers
                     Item.ProdSchDate == null ? string.Empty : common.CommonFunc.ParseFormattedDate(Item.ProdSchDate.Split(" ")[0]),
                     Item.SchdeliveryDate == null ? string.Empty : common.CommonFunc.ParseFormattedDate(Item.SchdeliveryDate.Split(" ")[0]),
                     Item.CostCenterId,
+                    Item.ProducedUnprod ?? string.Empty,
+                    Item.BOMInd ?? string.Empty,
+                    Item.CustJwAdjustmentMandatory ?? string.Empty,
+                    Item.StockableNonStockable ?? string.Empty,
                     });
             }
             DTSSGrid.Dispose();
@@ -793,9 +999,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillCustomerList(string ShowAllCustomer)
+        public async Task<JsonResult> FillCustomerList(string SBJobwork, string ShowAllCustomer)
         {
-            var JSON = await _SaleBill.FillCustomerList(ShowAllCustomer);
+            var JSON = await _SaleBill.FillCustomerList(SBJobwork,ShowAllCustomer);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillJWCustomerList(string SBJobwork,int yearCode)
+        {
+            var JSON = await _SaleBill.FillJWCustomerList(SBJobwork,yearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -841,9 +1053,22 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillItems(string sono, int soYearCode, int accountCode, string showAll, string TypeItemServAssets)
+        public async Task<JsonResult> FillItems(string showAll, string TypeItemServAssets,string sbJobWork)
         {
-            var JSON = await _SaleBill.FillItems(sono, soYearCode, accountCode, showAll, TypeItemServAssets);
+            var JSON = await _SaleBill.FillItems( showAll, TypeItemServAssets,sbJobWork);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillSOWiseItems(string invoiceDate, string sono,int soYearCode,int accountCode,string schNo,int schYearCode, string sbJobWork)
+        {
+            invoiceDate = ParseFormattedDate(invoiceDate);
+            var JSON = await _SaleBill.FillSOWiseItems( invoiceDate, sono,soYearCode,accountCode,schNo,schYearCode,sbJobWork);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> JWItemList(string typeItemServAssets, string showAll, string bomInd, string schNo, int schYearCode)
+        {
+            var JSON = await _SaleBill.JWItemList(typeItemServAssets,showAll,bomInd,schNo,schYearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -880,30 +1105,124 @@ namespace eTactWeb.Controllers
         }
         public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "")
         {
+
+            //string my_connection_string;
+            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //var webReport = new WebReport();
+            //webReport.Report.Clear();
+            //var ReportName = _SaleBill.GetReportName();
+            //webReport.Report.Dispose();
+            //webReport.Report = new Report();
+            //if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            //{
+            //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+            //}
+            //else
+            //{
+            //    webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
+            //}
+            //webReport.Report.SetParameterValue("entryparam", EntryId);
+            //webReport.Report.SetParameterValue("yearparam", YearCode);
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            //webReport.Report.Prepare();
+            //foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+            //{
+            //    if (dataSource is TableDataSource tableDataSource)
+            //    {
+            //        tableDataSource.Enabled = true;
+            //        tableDataSource.Init(); // Refresh the data source
+            //    }
+            //}
+            //return View(webReport);
+
             string my_connection_string;
-            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
-            var webReport = new WebReport();
-            webReport.Report.Load(webRootPath + "\\SaleBill.frx");
 
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
-            webReport.Report.SetParameterValue("entryparam", EntryId);
-            webReport.Report.SetParameterValue("yearparam", YearCode);
+            // Create a list to hold the reports
+            List<WebReport> reports = new List<WebReport>();
+
+            // Define the copy types
+            string[] copyTypes = { "Original", "Duplicate", "Triplicate", "Office Copy" };
+
+            foreach (var copyType in copyTypes)
+            {
+                var webReport = new WebReport();
+                webReport.Report.Clear();
+                var ReportName = _SaleBill.GetReportName();
+                webReport.Report.Dispose();
+                webReport.Report = new Report();
+
+                // Load the report from the database or use default
+                if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+                {
+                    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+                }
+                else
+                {
+                    webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
+                }
+
+                // Set parameters for the report
+                webReport.Report.SetParameterValue("entryparam", EntryId);
+                webReport.Report.SetParameterValue("yearparam", YearCode);
+                my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+                webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+                webReport.Report.SetParameterValue("copyType", copyType);
+
+                // Set the connection string for the data source
+                webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+
+                // Set a parameter for the copy type
+                webReport.Report.SetParameterValue("copyType", copyType);
+
+                // Prepare the report
+                webReport.Report.Prepare();
+
+                // Initialize data sources
+                foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+                {
+                    if (dataSource is TableDataSource tableDataSource)
+                    {
+                        tableDataSource.Enabled = true;
+                        tableDataSource.Init(); // Refresh the data source
+                    }
+                }
+
+                // Add the report instance to the list
+                reports.Add(webReport);
+            }
+
+            // Return the view with all reports
+            return View(reports);
+            
+            //Additional CODE STARTS
+            // Create 4 copies with tags
+            //string[] tags = { "Original", "Duplicate", "Triplicate", "Office Copy" };
+            //var preparedPages = new List<ReportPage>();
+            //foreach (var tag in tags)
+            //{
+            //    // Set the tag value
+            //    webReport.Report.SetParameterValue("CopyTag", tag);
+            //    // Append pages for this copy
+            //    using (var tempReport = new Report())
+            //    {
+            //        tempReport.Load("path-to-your-report.frx");
+            //        tempReport.Prepare();
+            //        preparedPages.AddRange(tempReport.Pages);
+            //    }
+            //}
+            //// Combine all copies into one print job
+            //foreach (var page in preparedPages)
+            //{
+            //    webReport.Report.Pages.Add(page);
+            //}
+            ////Additional CODE END HERE
 
 
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
-            //         ID = web; Password = bmr2401";
-            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
 
-
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
-            return View(webReport);
         }
         private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
         {
@@ -934,7 +1253,7 @@ namespace eTactWeb.Controllers
                     Item.TxPercentg,
                     Item.TxAdInTxable,
                     Item.TxRoundOff,
-                    Item.TxAmount,
+                     Item.TxAmount != null ? Math.Round((decimal)Item.TxAmount, 2) : 0,
                     Item.TxRefundable,
                     Item.TxOnExp,
                     Item.TxRemark,

@@ -48,9 +48,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _MRPDAL.GetDashboardData(model);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string MRPNo)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string MRPNo, string EntryByMachineName, int CreatedByEmpId)
         {
-            return await _MRPDAL.DeleteByID(ID, YC, MRPNo);
+            return await _MRPDAL.DeleteByID(ID, YC, MRPNo, EntryByMachineName, CreatedByEmpId);
         }
         public async Task<ResponseResult> SaveMRPDetail(MRPMain model, DataTable MRPGrid, DataTable MRPSOGrid, DataTable MRPFGGrid)
         {

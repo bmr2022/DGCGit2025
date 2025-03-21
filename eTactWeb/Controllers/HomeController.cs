@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Caching.Memory;
 using static eTactWeb.DOM.Models.Common;
-using  eTactWeb.DOM.Models;
+using eTactWeb.DOM.Models;
 
 namespace eTactWeb.Controllers;
 
@@ -18,10 +18,11 @@ public class HomeController : Controller
 {
     private readonly IDataLogic _IDataLogic;
     private readonly ILogger<HomeController> _logger;
-    private readonly IConfiguration configuration;
+    private readonly IConfiguration _configuration;
     private readonly EncryptDecrypt _EncryptDecrypt;
     private readonly IConnectionStringHelper _connectionStringHelper;
     private readonly UserContextService _userContextService;
+    private readonly ConnectionStringService _connectionStringService;
 
     //private readonly string FilterData;
     private string CC;
@@ -31,20 +32,21 @@ public class HomeController : Controller
     private string year_code;
 
     //public HomeController(ILogger<HomeController> logger)
-    public HomeController(IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService)
+    public HomeController(IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService)
     {
         _logger = logger;
         this._IDataLogic = iDataLogic;
-        configuration = config;
+        _configuration = config;
         _EncryptDecrypt = encryptDecrypt;
         _connectionStringHelper = connectionStringHelper;
         _userContextService = userContextService;
+        _connectionStringService = connectionStringService;
     }
 
     [HttpPost]
-    public JsonResult AutoComplete(string Schema, string ColName, string prefix,string FromDate="",string ToDate="",int ItemCode=0,int Storeid=0)
+    public JsonResult AutoComplete(string Schema, string ColName, string prefix, string FromDate = "", string ToDate = "", int ItemCode = 0, int Storeid = 0)
     {
-        IList<Common.TextValue> iList = _IDataLogic.AutoComplete(Schema, ColName,FromDate,ToDate,ItemCode,Storeid);
+        IList<Common.TextValue> iList = _IDataLogic.AutoComplete(Schema, ColName, FromDate, ToDate, ItemCode, Storeid);
         var Result = (from item in iList where item.Text.ToLower().Contains(prefix.ToLower()) select new { item.Text })
             .Distinct()
             .ToList();
@@ -64,7 +66,7 @@ public class HomeController : Controller
 
     public void ChangeConnectionString(string companyName)
     {
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = "Select DISTINCT DataBase_Name from Company_Detail where Company_Name='" + companyName + "'";
@@ -84,19 +86,19 @@ public class HomeController : Controller
             }
 
         }
-            if (IsDrOpen == true)
-            {
-                IsDrOpen = false;
-                rdrAccount.Close();
-            }
+        if (IsDrOpen == true)
+        {
+            IsDrOpen = false;
+            rdrAccount.Close();
+        }
         HttpContext.Session.SetString("databaseName", detail[0]);
         string connectionString = _connectionStringHelper.GetConnectionStringForCompany();
-       
+
     }
     public IActionResult GetBranchName(string companyName)
     {
         ChangeConnectionString(companyName);
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = "Select DISTINCT CC from Company_Detail where Company_Name='" + companyName + "'";
@@ -126,7 +128,7 @@ public class HomeController : Controller
 
     public IActionResult GetYearCode(string branchName, string companyName)
     {
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = "Select DISTINCT Financial_Year from Company_Detail where CC='" + branchName + "' and Company_Name='" + companyName + "' ORDER BY Financial_Year DESC";
@@ -159,7 +161,7 @@ public class HomeController : Controller
     [HttpGet]
     public JsonResult GetCC(string compname)
     {
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = " exec GetId 'Company_Detail','CC', 'Company_Name','" + compname + "'";
@@ -207,8 +209,8 @@ public class HomeController : Controller
         List<LoginModel> catlist = new();
         string connectionstring =
             Tablename == "Store_Master"
-                ? configuration.GetConnectionString("eTactDB")
-                : configuration.GetConnectionString("eTactDB1");
+                ? _configuration.GetConnectionString("eTactDB")
+                : _configuration.GetConnectionString("eTactDB1");
 
         SqlConnection conn = new(connectionstring);
         conn.Open();
@@ -240,12 +242,12 @@ public class HomeController : Controller
     }
     public IActionResult GetServerName()
     {
-        var configuration = new ConfigurationBuilder()
+        var __configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .Build();
 
         // Retrieve connection string
-        string connectionString = configuration.GetConnectionString("eTactDB");
+        string connectionString = __configuration.GetConnectionString("eTactDB");
 
         // Extract server name
         string serverName = GetServerNameFromConnectionString(connectionString);
@@ -255,11 +257,7 @@ public class HomeController : Controller
             string lines = serverName; // Split by line breaks
             return Ok(new { Lines = lines });
         }
-        catch (FileNotFoundException)
-        {
-            return NotFound("File not found.");
-        }
-        catch (Exception ex)
+        catch (FileNotFoundException ex)
         {
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
@@ -274,7 +272,7 @@ public class HomeController : Controller
     public LoginModel GeteDTRModel()
     {
         var model = new LoginModel();
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         sql = "select company_name from company_detail";
@@ -311,7 +309,7 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Index(InputModel model)
     {
-       // HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        // HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return View();
     }
     [HttpGet]
@@ -348,7 +346,28 @@ public class HomeController : Controller
         Constants.FinincialYear = model.YearCode;
         ClaimsIdentity identity = null;
         bool isAuthenticate = false;
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+
+        #region dynamicConnection
+
+        //string dbNameSql = "SELECT DataBase_Name FROM Company_Detail WHERE Company_Name = @CompanyName";
+        //string databaseName = "";
+
+        //using (SqlConnection connDb = new SqlConnection(__configuration.GetConnectionString("eTactDB1")))
+        //{
+        //    connDb.Open();
+        //    using (SqlCommand cmd = new SqlCommand(dbNameSql, connDb))
+        //    {
+        //        cmd.Parameters.AddWithValue("@CompanyName", compName);
+
+        //        object result = cmd.ExecuteScalar();
+        //         databaseName = result?.ToString() ?? "eTactDB"; // Handle null values safely
+
+        //    }
+        //    connDb.Close();
+        //}
+        //string connectionstring = GetConnectionString(databaseName);
+        #endregion
+       string  connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
         CultureInfo culture = new CultureInfo("en-US");
@@ -356,7 +375,7 @@ public class HomeController : Controller
         DateTime ToDate = new DateTime();
         var frmDt = "";
         var toDt = "";
-        sql = "select From_Date,To_Date from Company_Detail where Company_Name = '" + compName + "' and Financial_Year='"+yearCode+"'";
+        sql = "select From_Date,To_Date from Company_Detail where Company_Name = '" + compName + "' and Financial_Year='" + yearCode + "'";
         SqlCommand cmdAccountCode = new(sql, conn);
         SqlDataReader rdrAccount = cmdAccountCode.ExecuteReader();
 
@@ -364,11 +383,11 @@ public class HomeController : Controller
         while (rdrAccount.Read())
         {
             // Access fields by column name
-             FromDate = Convert.ToDateTime(rdrAccount["From_Date"]);
+            FromDate = Convert.ToDateTime(rdrAccount["From_Date"]);
             ToDate = Convert.ToDateTime(rdrAccount["To_Date"]);
-            frmDt = FromDate.ToString("dd/MMM/yyyy HH:mm:ss",culture);
-            toDt = ToDate.ToString("dd/MMM/yyyy HH:mm:ss",culture);
-            
+            frmDt = FromDate.ToString("dd/MMM/yyyy HH:mm:ss", culture);
+            toDt = ToDate.ToString("dd/MMM/yyyy HH:mm:ss", culture);
+
         }
         //FromDate = detail[0];
         //ToDate = detail[1];
@@ -378,7 +397,7 @@ public class HomeController : Controller
             rdrAccount.Close();
         }
         conn.Close();
-        
+
         conn.Open();
         sql = "Select Database_Name from Company_Detail where Company_Name='" + model.CompanyName + "'";
         cmdAccountCode = new(sql, conn);
@@ -402,13 +421,16 @@ public class HomeController : Controller
             rdrAccount.Close();
         }
         conn.Close();
-        connectionstring = $"Data Source={model.ServerName};Initial Catalog={dbName};;User Id=web;Password=bmr2401;Integrated Security=False";
+        //connectionstring = $"Data Source={model.ServerName};Initial Catalog={dbName};;User Id=web;Password=bmr2401;Integrated Security=False";
+        connectionstring = GetConnectionString(dbName);
+        _connectionStringService.SetConnectionString(connectionstring);
         conn = new(connectionstring);
         try
         {
-        conn.Open();
+            conn.Open();
         }
-        catch(Exception ex) {
+        catch (Exception ex)
+        {
             var model1 = GeteDTRModel();
             model.AccList = model1.AccList;
             model.StoreLst = model1.StoreLst;
@@ -451,7 +473,7 @@ public class HomeController : Controller
             rdrAccount.Close();
         }
         conn.Close();
-        
+
         var successfulPass = "";
         if (successfulUser == "SUCCESSFULL user")
         {
@@ -479,7 +501,7 @@ public class HomeController : Controller
                 rdrAccount.Close();
             }
             conn.Close();
-            
+
             if (successfulPass != "UNSUCCESSFULL")
             {
                 EmpId = detail[0];
@@ -501,7 +523,7 @@ public class HomeController : Controller
                         }
                     }
                 }
-                if(active == "N")
+                if (active == "N")
                 {
                     var model1 = GeteDTRModel();
                     model.AccList = model1.AccList;
@@ -528,7 +550,7 @@ public class HomeController : Controller
 
                 conn.Open();
                 sql = "exec [GetUserDetail]   @Flage = 'GETUSERTYPE',@uname ='" + model.UserName + "', @Pass = '" + model.Password + "'";
-               // sql = "select UserType from UserMaster where UserName='" + model.UserName + "' and Password = '" + model.Password + "'";
+                // sql = "select UserType from UserMaster where UserName='" + model.UserName + "' and Password = '" + model.Password + "'";
                 cmdAccountCode = new(sql, conn);
                 rdrAccount = cmdAccountCode.ExecuteReader();
                 detail = new List<string>();
@@ -550,11 +572,11 @@ public class HomeController : Controller
                     rdrAccount.Close();
                 }
                 conn.Close();
-               
+
                 conn.Open();
                 sql = "exec [GetUserDetail]   @Flage = 'GETUID',@uname ='" + model.UserName + "', @Pass = '" + model.Password + "'";
                 //sql = "select UID from UserMaster where UserName='" + model.UserName + "' and Password = '" + model.Password + "'";
-                
+
                 cmdAccountCode = new(sql, conn);
                 rdrAccount = cmdAccountCode.ExecuteReader();
                 if (rdrAccount.HasRows)
@@ -577,11 +599,11 @@ public class HomeController : Controller
                 conn.Close();
                 conn.Open();
                 //sql = "exec [GetUserDetail]   @Flage = 'GetEmpName',@EmpiD ='" + EmpId + "'";
- 
-                sql = "select Emp_Name+'--->'+Emp_Code 'EmpName',dm.deptid Department_Id,dm.DeptName from Employee_Master em join UserMaster um on em.Emp_Id = um.EmpID join DepartmentMaster dm on em.DeptId = dm.DeptId where EmpID='" + EmpId+"'";
- 
+
+                sql = "select Emp_Name+'--->'+Emp_Code 'EmpName',dm.deptid Department_Id,dm.DeptName from Employee_Master em join UserMaster um on em.Emp_Id = um.EmpID join DepartmentMaster dm on em.DeptId = dm.DeptId where EmpID='" + EmpId + "'";
+
                 //sql = "select Emp_Name+'--->'+Emp_Code 'EmpName',em.deptId ,dm.DeptName from Employee_Master em join UserMaster um on em.Emp_Id = um.EmpID join DepartmentMaster dm on em.deptId  = dm.DeptId where EmpID='" + EmpId+"'";
- 
+
 
                 cmdAccountCode = new(sql, conn);
                 rdrAccount = cmdAccountCode.ExecuteReader();
@@ -608,7 +630,7 @@ public class HomeController : Controller
                 conn.Close();
                 conn.Open();
                 //sql = "exec [GetUserDetail]   @Flage = 'CHKPASS',@uname ='" + model.UserName + "', @Pass = '" + model.Password + "'";
-                sql = "select UID,EmpID,EmpName,Module, MainMenu, OptAll, OptSave, OptUpdate,OptDelete, OptView from UserRights where EmpID='"+EmpId+"'";
+                sql = "select UID,EmpID,EmpName,Module, MainMenu, OptAll, OptSave, OptUpdate,OptDelete, OptView from UserRights where EmpID='" + EmpId + "'";
                 cmdAccountCode = new(sql, conn);
                 rdrAccount = cmdAccountCode.ExecuteReader();
                 List<NavigationData> data = new List<NavigationData>();
@@ -618,7 +640,7 @@ public class HomeController : Controller
                     while (rdrAccount.Read())
                     {
                         int entryid = Convert.ToInt32(rdrAccount.GetInt64(0));
-                        int empId = Convert.ToInt32(rdrAccount.GetInt64(1)); 
+                        int empId = Convert.ToInt32(rdrAccount.GetInt64(1));
                         empName = rdrAccount.GetString(2);
                         string module = rdrAccount.GetString(3);
                         string mainMenu = rdrAccount.GetString(4);
@@ -628,8 +650,18 @@ public class HomeController : Controller
                         bool optUpdate = rdrAccount.GetBoolean(8);
                         bool optDelete = rdrAccount.GetBoolean(9);
                         //bool optView = rdrAccount.GetBoolean(10);
-                        NavigationData row = new NavigationData { Entry_id = entryid, EmpID=empId,EmpName=empName,Module=module,MainMenu=mainMenu,
-                        OptAll=optAll, OptSave=optSave, OptUpdate=optUpdate,OptDelete=optDelete};
+                        NavigationData row = new NavigationData
+                        {
+                            Entry_id = entryid,
+                            EmpID = empId,
+                            EmpName = empName,
+                            Module = module,
+                            MainMenu = mainMenu,
+                            OptAll = optAll,
+                            OptSave = optSave,
+                            OptUpdate = optUpdate,
+                            OptDelete = optDelete
+                        };
                         // Add the MyData object to the list
                         data.Add(row);
                     }
@@ -643,13 +675,13 @@ public class HomeController : Controller
                 conn.Close();
 
                 Console.WriteLine(data);
-                string[] mainModule=new string[data.Count];
-                string[] mainMenus=new string[data.Count];
+                string[] mainModule = new string[data.Count];
+                string[] mainMenus = new string[data.Count];
                 //string[] subMenus=new string[data.Count];
-                for(int i = 0; i < data.Count; i++)
+                for (int i = 0; i < data.Count; i++)
                 {
-                    mainModule[i]=data[i].Module;
-                    mainMenus[i]=data[i].MainMenu;
+                    mainModule[i] = data[i].Module;
+                    mainMenus[i] = data[i].MainMenu;
                     //subMenus[i]=data[i].SubMenu;
                 }
                 Console.WriteLine(mainModule);
@@ -673,7 +705,8 @@ public class HomeController : Controller
         if (isAuthenticate)
         {
             ClaimsPrincipal principal = new(identity);
-            HttpContext.Session.SetString("Branch", model.Unit); //done
+            HttpContext.Session.SetString("Branch", model.Unit); //done CompanyName
+            HttpContext.Session.SetString("CompanyName", model.CompanyName); //done CompanyName
             HttpContext.Session.SetString("YearCode", yearCode.ToString());//done
             HttpContext.Session.SetString("UID", EmpId.ToString());//done there is no UID it will be same as EMpid
             HttpContext.Session.SetString("EmpID", EmpId.ToString());//use this everywhere
@@ -696,14 +729,14 @@ public class HomeController : Controller
             model.ServerName = servName;
             model.CompanyName = compName;
             model.CC = branchName;
-            model.YearCode= yearCode;
+            model.YearCode = yearCode;
             model.Mode = "Y";
 
             ModelState.Clear();
             ModelState.AddModelError(string.Empty, "Invalid Username or Password");
             return View(model);
         }
-        return RedirectToAction("Dashboard","ItemCategory");
+        return RedirectToAction("Dashboard", "ItemCategory");
         /*var model1 = GeteDTRModel();
         model.AccList = model1.AccList;
         model.StoreLst = model1.StoreLst;
@@ -769,12 +802,23 @@ public class HomeController : Controller
     //    return Json(JsonString);
     //}
 
+    public string GetConnectionString(string databaseName)
+    {
+        string baseConnectionString = _configuration.GetConnectionString("eTactDB");
+
+        var builder = new SqlConnectionStringBuilder(baseConnectionString)
+        {
+            InitialCatalog = databaseName // Dynamically set the database name
+        };
+
+        return builder.ConnectionString;
+    }
     public JsonResult GetUnitandBranch(string Company, string servername)
     {
-        string connectionstring = configuration.GetConnectionString("eTactDB1");
+        string connectionstring = _configuration.GetConnectionString("eTactDB1");
         SqlConnection conn = new(connectionstring);
         conn.Open();
-        sql = "select CC from Company_Detail where Company_Name = '"+ Company + "'";
+        sql = "select CC from Company_Detail where Company_Name = '" + Company + "'";
         SqlCommand cmdAccountCode = new(sql, conn);
         SqlDataReader rdrAccount = cmdAccountCode.ExecuteReader();
         if (rdrAccount.HasRows)

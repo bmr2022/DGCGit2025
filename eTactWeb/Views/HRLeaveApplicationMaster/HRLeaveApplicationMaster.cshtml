@@ -1,0 +1,1269 @@
+﻿ @model eTactWeb.DOM.Models.HRLeaveApplicationMasterModel
+
+@{
+    ViewData["Title"] = "Leave Application";
+
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="HRLeaveApplicationMaster" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Leave Application Master</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="HRLeaveApplicationMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                    @*<partial name="_FormsButton" />*@
+                </span>
+            </h5>
+        </div>
+
+        <div class="card-body bg-light mt-0 ">
+            @*<div asp-validation-summary="All" class="text-danger pt-1"></div>*@
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter"
+                                aria-expanded="true" aria-controls="B_RParameter">
+                            @*  <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i> *@
+                            <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
+                               style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+
+
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
+
+                                    <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+
+                                    <label asp-for="LeaveAppEntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="LeaveAppEntryId " class="form-control" readonly />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
+                                    <label asp-for="LeaveAppYearCode" class="form-label">Year Code</label>
+                                    <input asp-for="LeaveAppYearCode " class="form-control" value="@Model.LeaveAppYearCode" readonly />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BranchCC" class="form-label">BranchCC</label>
+                                    <input asp-for="BranchCC " class="form-control" readonly />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LeaveAppEntryDate" class="form-label">Entry Date</label>
+                                    <input asp-for="LeaveAppEntryDate " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ApplicationNo" class="form-label">Application No</label>
+                                    <input asp-for="ApplicationNo " class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ApplicationDate" class="form-label">App. Date</label>
+                                    <input asp-for="ApplicationDate " class="form-control" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="EmpName" class="form-label">Employee<span><label class="mandatoryField">*</label></span>  </label>
+                                    <input asp-for="EmpId" class="form-control" type="hidden" value="@Model.EmpId" />
+                                    <select asp-for="EmpName" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.EmpId">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.EmpId" selected>@Model.EmpName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="EmpCode" class="form-label">EmpCode <span><label class="mandatoryField">*</label></span> </label>
+
+                                    <select asp-for="EmpCode" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.EmpId">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.EmpId" selected>@Model.EmpCode</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MobileNo" class="form-label">MobileNo</label>
+                                    <input asp-for="MobileNo " class="form-control numbers" maxlength="10" minlength="10" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="PhoneNo" class="form-label">PhoneNo</label>
+                                    <input asp-for="PhoneNo " class="form-control numbers" maxlength="10" minlengh="10"/>
+                                </div>
+
+                               
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Designation" class="form-label">Designation  </label>
+                                    <input asp-for="desigEntryId" class="form-control" type="hidden" value="@Model.desigEntryId" />
+                                    <input asp-for="Designation" class="form-control" type="text" readonly value="@Model.Designation" />
+
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="EmpCategory" class="form-label">Employee Category  </label>
+                                    <input asp-for="CategoryId" class="form-control" type="hidden" value="@Model.CategoryId" />
+                                    <input asp-for="EmpCategory" class="form-control" type="text" readonly value="@Model.EmpCategory" />
+
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Department" class="form-label">Department  </label>
+                                    <input asp-for="DeptId" class="form-control" type="hidden" value="@Model.DeptId" />
+                                    <input asp-for="Department" class="form-control" type="text" readonly value="@Model.Department" />
+
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Shift" class="form-label">Shift<span><label class="mandatoryField">*</label></span>  </label>
+                                    <input asp-for="ShiftId" class="form-control" type="hidden" value="@Model.ShiftId" />
+                                    <select asp-for="Shift" class="form-control">
+                                        @* <option value="@Model.AccountCode">-Select-</option> *@
+                                        <option value="@Model.ShiftId">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.ShiftId" selected>@Model.Shift</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalYearlyLeave" class="form-label">TotalYearlyLeave</label>
+                                    <input asp-for="TotalYearlyLeave " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TotalMonthlyLeave" class="form-label">TotalMonthlyLeave</label>
+                                    <input asp-for="TotalMonthlyLeave " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="GrossSalary" class="form-label">GrossSalary</label>
+                                    <input asp-for="GrossSalary " class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BalanceMonthlyLeave" class="form-label">Balance Monthly Leave</label>
+                                    <input asp-for="BalanceMonthlyLeave " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MaxAllowedLeave" class="form-label">Max Allowed Leave</label>
+                                    <input asp-for="MaxAllowedLeave " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="TraineePermanent" class="form-label">Trainee Permanent</label>
+                                    <input asp-for="TraineePermanent " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BalanceAdvanceAmt" class="form-label">Balance Advance Amt</label>
+                                    <input asp-for="BalanceAdvanceAmt " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="DepartHeadApprovedBy" class="form-label">DepartHeadApprovedBy</label>
+                                    <input asp-for="DepartHeadApprovedBy " class="form-control numbers" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="HRApprovedBy" class="form-label">HRApprovedBy</label>
+                                    <input asp-for="HRApprovedBy " class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="DepartAppdate" class="form-label">DepartAppdate</label>
+                                    <input asp-for="DepartAppdate " class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="HRAppDate" class="form-label">HRAppDate</label>
+                                    <input asp-for="HRAppDate " class="form-control" />
+                                </div>
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Approved" class="form-label">Approved</label>
+                                    <input asp-for="Approved " class="form-control" />
+                                </div>
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="Canceled" class="form-label">Canceled</label>
+                                    <input asp-for="Canceled " class="form-control" />
+                                </div>
+
+
+
+
+                                @* </div>*@
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+                    <div class="accordion-item" id="accordionItemCategory">
+                        <h2 class="accordion-header" id="H_DetailGrid">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_DetailGrid"
+                                    aria-expanded="true" aria-controls="B_DetailGrid">
+
+                                <i class="fa-brands fa-wpforms fa-lg fa-fw pr-3"></i> LEAVE Application DETAIL SECTION
+
+
+                            </button>
+                        </h2>
+
+
+
+                        <div id="B_DetailGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_DetailGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+                                </div>
+
+                                <div class="d-flex justify-content-end align-items-center mb-1">
+                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger">
+                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
+                                </div>
+
+
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped" id="TableGrid">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="GridLabels">
+                                                <tr>
+                                                    <th>From Date<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>To Date<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>Leave Name<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>Leave Duration<label class="mandatoryField">*</label></th>
+                                                    <th>Balance Leave Monthly<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>Balance Leave Yearly<span><label class="mandatoryField">*</label></span></th>
+                                                    <th>Max Leave In Month<span><label class="mandatoryField">*</label></span></th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="GridControls">
+                                                <tr>
+                                                    <td><input asp-for="FromDate" class="form-control" style="" /></td>
+                                                    <td><input asp-for="ToDate" class="form-control" style="" /></td>
+
+
+                                                    <td>
+                                                        <input type="hidden" asp-for="LeaveEntryId" value="@Model.LeaveEntryId" />
+                                                        <select asp-for="LeaveName" class="form-select" required style="width:170px">
+                                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                                            <option value="@Model.LeaveEntryId">-Select-</option>
+                                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                                            {
+                                                                <option value="@Model.LeaveEntryId" selected>@Model.LeaveName</option>
+                                                            }
+                                                        </select>
+                                                    </td>
+
+                                                    <td><input asp-for="Duration" class="form-control numbers" style="" /></td>
+                                                    <td><input asp-for="BalanceLeaveMonthly" class="form-control numbers" /></td>
+
+                                                    <td><input asp-for="BalanceLeaveYearly" class="form-control numbers" /></td>
+                                                    <td><input asp-for="MaxLeaveInMonth" class="form-control numbers" /></td>
+
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                                <div class="progress my-3 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+
+                                </div>
+
+
+
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped" id="JobWorkTable">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th data-columnno="0" data-sortorder="asc" class="sortCol">SeqNo</th>
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>From Date</th>
+                                                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px;width:10px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>To Date</th>
+                                                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Leave Name</th>
+                                                  
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Duration</th>
+                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceLeaveMonthly</th>
+                                                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceLeaveYearly</th>
+                                                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MaxLeaveInMonth</th>
+
+
+                                                </tr>
+
+                                            </thead>
+                                            <tbody id="DivDetailGrid">
+                                                <partial name="_HRLeaveApplicationDetailGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="OtherGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+                        <div class="accordion-body">
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryBy" class="form-label">ActualEntryBy</label>
+                                    <input asp-for="ActualEntryBy " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="Updatedby" class="form-label">Updatedby</label>
+                                    <input asp-for="Updatedby " class="form-control" readonly />
+                                </div>
+
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUPdatedDate" class="form-label">LastUPdatedDate</label>
+                                    <input asp-for="LastUPdatedDate " class="form-control" readonly />
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-3">
+                <div class="row justify-content-between g-2">
+                    <div class="card-header card-headerBG text-light bg-gradient">
+                        <h5>
+
+                            <span class="d-flex float-end" style="margin-top:-2px;">
+
+                                <a asp-action="HRLeaveApplicationMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                    Dashboard
+                                </a>
+                                <div class="row justify-content-between g-2">
+                                    <div class="col-auto">
+
+                                        <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                            BACK
+                                        </a>
+                                    </div>
+                                    @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                    {
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                REFRESH
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode == "U")
+                                        {
+                                            @*Model.Mode = "U";*@
+                                            <div class="col-auto">
+                                                @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                    UPDATE
+                                                </button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-auto">
+                                                @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                                <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                                    <i class="fa-solid fa-chevron-circle-right"></i>
+                                                    SUBMIT
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                @*<partial name="_FormsButton" />*@
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+
+        var AccountStateCode = 0;
+        $('#submitBTN').click(function (e) {
+             ;
+            e.preventDefault();
+
+            $("form").submit();
+        });
+
+        $('.numbers').on('input', function () {
+            // Remove non-numeric characters except for decimal point
+            $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+
+            // Prevent negative values
+            if ($(this).val() < 0) {
+                $(this).val('');
+            }
+        });
+        $("#EmpName").select2();
+        $("#EmpCode").select2();
+        $("#Shift").select2();
+        $("#LeaveName").select2();
+
+
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            FillEntryID();
+        }
+        
+       
+
+        function copyToClipboardForDropdown(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($(element).find(":selected").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+        AutoComplete('VJobworkIssueMainDetail', 'DispatchTo', 'Dispatchto', null);
+        // const moment = require('moment');
+
+       
+
+        // $('#EmpName').change(function () {
+        //     $('#EmpId').val($('#EmpName').val());
+        // });
+
+        $('#Shift').change(function () {
+            $('#ShiftId').val($('#Shift').val());
+        });
+
+        function sortTableGridOnEdit(columnIndex1, columnIndex2, ascending) {
+
+            var table = $('#JobWorkTable');
+            var rows = table.find('#divJobWorkGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue1 = $(a).find('td').eq(columnIndex1).text().trim();
+                var aValue2 = $(a).find('td').eq(columnIndex2).text().trim();
+                var bValue1 = $(b).find('td').eq(columnIndex1).text().trim();
+                var bValue2 = $(b).find('td').eq(columnIndex2).text().trim();
+
+                // Concatenate ItemCode and Seqno for comparison
+                var aValue = aValue1 + aValue2;
+                var bValue = bValue1 + bValue2;
+
+                // Compare concatenated values
+                return ascending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+            });
+
+            // Re-append the sorted rows back to the table
+            $.each(rows, function (index, row) {
+                table.children('#divJobWorkGrid').append(row);
+            });
+        }
+
+        $("#FromDate, #ToDate").on("mouseenter", function () {
+            $(this).datepicker("show");
+        });
+
+        $(document).ready(function () {
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                $('#LeaveAppEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#DepartAppdate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#HRAppDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+              $('#ApplicationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            }
+            else {
+                $('#LeaveAppEntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#DepartAppdate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#HRAppDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#ApplicationDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#LastUPdatedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            }
+
+            $(document).on('select2:select', '#EmpName,#EmpCode', function (e) {
+
+                var cntId = e.target.id;
+                if (cntId == 'EmpName') {
+                    EmpNameChange(cntId);
+                }
+                else {
+                    EmpCodeChange(cntId);
+                }
+                $('#EmpId').val($('#EmpName').val())
+
+                GetEmployeeDetail();
+
+            });
+
+            function EmpNameChange(ID) {
+                SetEmpCodeEmpName(ID);
+                GetEmployeeDetail();
+            }
+
+            function EmpCodeChange(ID) {
+
+                $.when(SetEmpCodeEmpName(ID)).done(function () {
+                });
+                GetEmployeeDetail();
+            }
+
+            function SetEmpCodeEmpName(ID) {
+                if (!ID) return;
+                else {
+                    var v = $('#' + ID).select2('val');
+                    if (ID == "EmpCode") {
+                        $("#EmpName").val(v).trigger("change");
+                    }
+
+                    if (ID == "EmpName") {
+                        $("#EmpCode").val(v).trigger("change");
+                    }
+                }
+            }
+
+
+            var rowCount = $('#divJobWorkGrid tr').length;
+            var columnCount = $('#divJobWorkGrid tr td').length;
+
+            if (columnCount > 1) {
+
+                $('#lblItemCount').text(rowCount);
+            }
+            else
+                $('#lblItemCount').text(0);
+
+            FillEmpName();
+            FillLeaveName();
+            FillShift();
+            FillEmpcode();
+
+
+        });
+
+        $(document).on('select2:select', '#LeaveName', function (e) {
+            $('#LeaveEntryId').val($('#LeaveName').val())
+        });
+        function FillEmpName() {
+            $.ajax({
+                url: '@Url.Action("GetEmpName", "HRLeaveApplicationMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var EmpCategDropdown = $('#EmpName');
+                    var obj = $.parseJSON(response);
+                    EmpCategDropdown.empty();
+                    EmpCategDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        EmpCategDropdown.append('<option value="' + item.Emp_Id + '">' + item.EmpName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpCategoryId = '@Model.EmpId';
+                        $('#EmpName').val(EmpCategoryId).trigger("change");
+                        $('#EmpName').val(EmpCategoryId);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillEmpcode() {
+            $.ajax({
+                url: '@Url.Action("GetEmpCode", "HRLeaveOpeningMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var EmpCodeDropdown = $('#EmpCode');
+                    var obj = $.parseJSON(response);
+                    EmpCodeDropdown.empty();
+                    EmpCodeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        EmpCodeDropdown.append('<option value="' + item.Emp_Id + '">' + item.Empcode + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var EmpCode = '@Model.EmpId';
+                        $('#EmpCode').val(EmpCode).trigger("change");
+                        $('#EmpCode').val(EmpCode);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function GetEmployeeDetail() {
+             ;
+            var empId = $("#EmpName").val().trim();
+            if (!empId) return;
+
+
+
+            $.ajax({
+                url: '@Url.Action("GetEmployeeDetail", "HRLeaveApplicationMaster")',
+                type: 'GET',
+                data: { empid: empId },
+                success: function (data) {
+
+
+                    // Parse JSON if response is a string
+                    if (typeof data === "string") {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (error) {
+
+                            return;
+                        }
+                    }
+
+                    // Extract the first result from the array
+                    if (data && data.Result && data.Result.length > 0) {
+                        var EmpData = data.Result[0]; // Extract first object
+
+
+                        $("#Department").prop("disabled", false).val(EmpData.DeptName).trigger("input");
+                        $("#DeptId").prop("disabled", false).val(EmpData.deptid).trigger("input");
+
+
+                        $("#Designation").prop("disabled", false).val(EmpData.Designation).trigger("input");
+                        $("#desigEntryId").prop("disabled", false).val(EmpData.desigid).trigger("input");
+
+                        $("#EmpCategory").prop("disabled", false).val(EmpData.EmpCateg).trigger("input");
+                        $("#CategoryId").prop("disabled", false).val(EmpData.categoryid).trigger("input");
+
+                        $("#Shift").prop("disabled", false).val(EmpData.ShiftName).trigger("input");
+                        $("#ShiftId").prop("disabled", false).val(EmpData.ShiftId).trigger("input");
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching employee details:", xhr.responseText || error);
+
+                }
+            });
+        }
+
+
+        function FillShift() {
+            $.ajax({
+                url: '@Url.Action("GetShiftName", "HRLeaveApplicationMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ShiftDropdown = $('#Shift');
+                    var obj = $.parseJSON(response);
+                    ShiftDropdown.empty();
+                    ShiftDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ShiftDropdown.append('<option value="' + item.ShiftId + '">' + item.ShiftName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var Shift = '@Model.ShiftId';
+                        $('#Shift').val(Shift).trigger("change");
+                        $('#Shift').val(Shift);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillLeaveName() {
+            $.ajax({
+                url: '@Url.Action("GetLeaveName", "HRLeaveApplicationMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var EmpCategDropdown = $('#LeaveName');
+                    var obj = $.parseJSON(response);
+                    EmpCategDropdown.empty();
+                    EmpCategDropdown.append('<option value=""></option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        EmpCategDropdown.append('<option value="' + item.LeaveEntryid + '">' + item.LeaveName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var LeaveName = '@Model.LeaveEntryId';
+                        $('#LeaveName').val(LeaveName).trigger("change");
+                        $('#LeaveName').val(LeaveName);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillEntryID() {
+             
+            var YearCode = $("#LeaveAppYearCode").val();
+            $.ajax({
+                url: '@Url.Action("FillEntryId", "HRLeaveApplicationMaster")',
+                type: 'POST',
+                async: false,
+                data: { YearCode: YearCode },
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#LeaveAppEntryId').val(0);
+                        $('#LeaveAppEntryId').val(obj.Result[0].LeaveAppEntryId);
+                        $('#ApplicationNo').val(0);
+                        $('#ApplicationNo').val(obj.Result[0].ApplicationNo);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+
+        $('.Display').click(function () {
+            showAllControls();
+        });
+
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divJobWorkGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+
+
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#JobWorkTable');
+            var rows = table.find('#divJobWorkGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divJobWorkGrid').append(row);
+            });
+        }
+
+
+        function showAllControls() {
+            $('#TableGrid>thead>tr').append("<th>PONO</th><th>PO Year</th><th>PO Date</th><th>Sch No</th><th>Sch Date</th><th>Sch Year</th><th>PO Amend No</th><th>Against Adavice No</th><th>Against Adavice Year</th><th>Against Adavice Date</th><th>Item Color</th><th>Item Size</th>");
+            $('#PONO,#POYear,#PODate,#SchNo,#SchYear,#SchDate,#POAAmmendNo,#AgainstAdaviceNo,#AgainstAdaviceYear,#AgainstAdaviceDate,#ItemColor,#ItemSize').css('display', 'block');
+        }
+        function formatJSONDate(jsonDate) {
+            var newDate = new Date(jsonDate);
+            var day = newDate.getDate();
+            var month = newDate.getUTCMonth() + 1;
+            var year = newDate.getFullYear();
+            finaldate = day + "-" + ("0" + (month)) + "-" + year;
+            return finaldate;
+        }
+
+
+
+
+        function GetAllItems() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAllItems")',
+                data: { TF: $('#IC1').is(':checked') == true ? 'T' : 'F', Types: $('#Types').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            $('#ItemCode').empty();
+                            $('#ItemCode').append('<option value="" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemCode').append('<option value="' + val.Item_Code +
+                                    '">' + val.ItemName + '</option>');
+                            });
+
+                        }
+                        else {
+                            $('#ItemCode,#PartCode').empty();
+                        }
+                    }
+                },
+                error: function (req, status, error) { alert(error); }
+
+            });
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAllPartCodes")',
+                data: { TF: $('#IC1').is(':checked') == true ? 'T' : 'F', Types: $('#Types').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option value="" disabled selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                if ($("#PartCode option[value='" + val.PartCode + "']").length == 0) {
+                                    $('#PartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
+                                }
+                            });
+
+                        }
+                        else {
+                            $('#ItemCode,#PartCode').empty();
+                        }
+                    }
+                },
+                error: function (req, status, error) { alert(error); }
+
+            });
+        }
+
+
+        function Validate_LeaveApplicationGrid() {
+             ;
+            var Err = 0;
+
+            let fromDate = document.getElementById("FromDate").value;
+            let toDate = document.getElementById("ToDate").value;
+            let datePattern = /^\d{2}\/\d{2}\/\d{4}$/; // DD/MM/YYYY format
+
+            if (!datePattern.test(fromDate)) {
+                AddErrorCls('Date');
+                $.notify("Please Select Valid FromDate", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Date');
+            }
+            if (!datePattern.test(toDate)) {
+                AddErrorCls('Date');
+                $.notify("Please Select Valid ToDate", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Date');
+            }
+
+            if ($("#Duration").val() >= $("#BalanceLeaveMonthly").val() || $("#Duration").val() >= $("#BalanceLeaveYearly").val() || $("#Duration").val() >= $("#MaxLeaveInMonth").val()) {
+               
+                AddErrorCls('Duration');
+                $.notify("Duration is not greater than BalanceLeaveMonthly, BalanceLeaveYearly, MaxLeaveInMonth", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Duration');
+            }
+
+
+            if (($("#Duration").val() == "0.5" || $("#Duration").val() == ".5") )
+            {
+                if ($("#FromDate").val() != $("#ToDate").val()) {
+                    AddErrorCls('Duration');
+                    $.notify("FromDate And ToDate Must Be Same For Harf Day Leave ", "error");
+                    Err = 1;
+                }
+                else {
+                    RemoveErrorCls('Duration');
+                }
+            }
+           
+            else {
+                RemoveErrorCls('Duration');
+            }
+
+            if ($("#FromDate").val() == '') 
+            { 
+                AddErrorCls('FromDate');
+                
+                $.notify("Fill The FromDate", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('FromDate');
+                
+            }
+
+            if ( $("#ToDate").val() == '' ) {
+                AddErrorCls('ToDate');               
+                $.notify("Fill The ToDate Field", "error");
+                Err = 1;
+            }
+            else {               
+                RemoveErrorCls('ToDate');
+               
+            }
+            if ($("#LeaveName").val() == '') {
+                AddErrorCls('LeaveName');
+                $.notify("Fill The LeaveName Field", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('LeaveName');
+
+            }
+            if ($("#Duration").val() == ''|| $("#Duration").val() == 0) {
+                AddErrorCls('Duration');
+                $.notify("Fill The Duration ", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Duration');
+
+            }
+            if ($("#BalanceLeaveMonthly").val() == ''|| $("#BalanceLeaveMonthly").val() == 0) {
+                AddErrorCls('BalanceLeaveMonthly');
+                $.notify("Fill The BalanceLeaveMonthly ", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('BalanceLeaveMonthly');
+
+            }
+    if ($("#BalanceLeaveYearly").val() == ''||$("#BalanceLeaveYearly").val() == 0) {
+                AddErrorCls('BalanceLeaveYearly');
+                $.notify("Fill The BalanceLeaveYearly ", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('BalanceLeaveYearly');
+
+            }
+            if ($("#MaxLeaveInMonth").val() == ''||$("#MaxLeaveInMonth").val() == 0) {
+                AddErrorCls('MaxLeaveInMonth');
+                $.notify("Fill The MaxLeaveInMonth ", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('MaxLeaveInMonth');
+
+            }
+
+          
+            Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
+            if (Err == 1) return false;
+            return true;
+        }
+
+        $('.GridButton').click(function (e) {
+
+                event.preventDefault();
+            if (!Validate_LeaveApplicationGrid()) return;
+                var ItemData = {
+                "LeaveName": $('#LeaveName').find(":selected").text(),
+                "LeaveEntryId": $('#LeaveName').val(),
+                "FromDate": $('#FromDate').val(),
+                "ToDate": $('#ToDate').val(),
+                "Duration": $('#Duration').val(),
+                "BalanceLeaveMonthly": $('#BalanceLeaveMonthly').val(),
+                "BalanceLeaveYearly": $('#BalanceLeaveYearly').val(),
+                "MaxLeaveInMonth": $('#MaxLeaveInMonth').val(),
+                "Mode": $('#Mode').val()
+                }
+
+                $.ajax({
+                    url: "@Url.Action("AddDetailGrid")",
+                    type: "POST",
+                    data: ItemData,
+                    success: function (data, status, xhr) {
+
+                        if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                            $.notify('Duplicate Item Not Allowed.', "info");
+                            $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                        }
+                        else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                            $.notify('Adding Item Not Allowed, Please Clear  Detail...!!!', "info");
+                        }
+                        else {
+                        $('#DivDetailGrid').html(data);
+                            ClearGrid();
+                            editingNow = false;
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify(result.responseText, "error");
+                    },
+                    failure: function (result, status, xhr) {
+                        alert(response.responseText);
+                    },
+                    complete: function () {
+
+                        $('.Schedule').fadeIn();
+                    }
+                }).done(function () {
+
+                }).fail(function () {
+                    alert("error");;
+                }).always(function () {
+
+                });
+            
+        });
+
+
+
+
+        function ClearGrid() {
+
+                $('#LeaveName').prop('selectedIndex', 0).trigger("change"),
+                $('#FromDate').val(''),
+                $('#ToDate').val(''),
+                $('#CarriedForward').val(0),
+                $('#Duration').val(0),
+                $('#BalanceLeaveMonthly').val(0),
+                $('#BalanceLeaveYearly').val(0),
+                $('#MaxLeaveInMonth').val(0)
+              
+
+        }
+
+        function formatDate(d) {
+            var newDate = new Date(d);
+            var day = newDate.getDate();
+            var month = newDate.getUTCMonth();
+            var year = newDate.getFullYear();
+            finaldate = new Date(year, month, day);
+            return finaldate;
+        }
+
+
+
+        isEditOperationAllowed = "false";
+        function DeleteItemFromGrid(SeqNo, LeaveEntryId) {
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Action("DeleteItemFromGrid")',
+                    type: "POST",
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(), "LeaveEntryId": LeaveEntryId },
+                    success: function (data) {
+
+                        $('#DivDetailGrid').html(data);
+                        $.notify("Item Deleted from Grid", "info");
+                        isEditOperationAllowed = "true";
+                        resolve();
+                    },
+                    error: function (response) {
+                        reject(response.responseText);
+                    }
+                });
+            });
+        }
+
+        var editingNow = false;
+        function EditItemRow(SeqNo) {
+             
+            if (editingNow == false) {
+
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditItemRow")',
+                        type: "POST",
+                        data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
+                    })
+                        .done(function (data, status, xhr) {
+                            editingNow = true;
+                            var obj = $.parseJSON(data);
+                            DeleteItemFromGrid(SeqNo)
+                                .then(() => {
+                                    
+                                    $('#FromDate').val(obj[0].FromDate);
+                                    $('#ToDate').val(obj[0].ToDate);
+                                    $('#LeaveEntryId').val(obj[0].LeaveEntryId),
+                                    $('#LeaveName').val(obj[0].LeaveEntryId).trigger('change');
+                                    $('#Duration').val(obj[0].Duration.toFixed(2))
+                                    $('#BalanceLeaveMonthly').val(obj[0].BalanceLeaveMonthly);
+                                    $('#BalanceLeaveYearly').val(obj[0].BalanceLeaveYearly.toFixed(2));
+                                    $('#MaxLeaveInMonth').val(obj[0].MaxLeaveInMonth.toFixed(2));
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+
+       
+
+    </script>
+
+}
+
+<style>
+    .mandatoryField {
+        color: red;
+        font-size: small;
+    }
+</style>

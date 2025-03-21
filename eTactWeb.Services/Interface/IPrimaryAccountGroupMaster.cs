@@ -18,5 +18,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashboardData();
         Task<PrimaryAccountGroupMasterDashBoardModel> GetDashboardDetailData();
         Task<PrimaryAccountGroupMasterModel> GetViewByID(int accountCode);
+        Task<ResponseResult> DeleteByID(int accountCode);
     }
 }

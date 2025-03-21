@@ -3,6 +3,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
+    string CompanyName = HttpContextAccessor.HttpContext.Session.GetString("CompanyName");
     string empName = HttpContextAccessor.HttpContext.Session.GetString("EmpName");
     string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
     string FinFromDate = HttpContextAccessor.HttpContext.Session.GetString("FromDate");
@@ -25,7 +26,8 @@
             <div class="col d-flex justify-content-evenly align-self-center">
                 <label>
                     WELCOME: @empName<br/>
-                    Branch: @branchName,
+                    Company:  <b style="color:yellow"> @CompanyName,</b>
+                    Branch:  <b style="color:yellow"> @branchName,</b>
                     FinancialYear: <b id="sessionYC" style="color:yellow">@yearCode</b>,<br />
                     Fin From Date: @FinFromDate,
                     Fin To Date: @FinToDate

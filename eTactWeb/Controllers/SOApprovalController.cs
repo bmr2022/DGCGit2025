@@ -83,7 +83,6 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> SaveApproval(int EntryId, int YC, string SONo, string CustOrderNo, string type, string SONum, string CustOrderNum, string VendorNm)
         {
-
             int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             var Result = await _ISOApproval.SaveApproval(EntryId, YC, SONo, CustOrderNo, type, EmpID).ConfigureAwait(true);
             if (Result != null)

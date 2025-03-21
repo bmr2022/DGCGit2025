@@ -15,16 +15,21 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillIntrument(string VoucherType);
         Task<ResponseResult> FillModeofAdjust(string VoucherType);
         Task<ResponseResult> FillCostCenterName();
-        Task<ResponseResult> FillEntryID();
+        Task<ResponseResult> FillEntryID(int YearCode,string VoucherDate);
         Task<ResponseResult> FillCurrency();
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode,string VoucherDate);
         Task<ResponseResult> SaveBankReceipt(BankReceiptModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);
         Task<BankReceiptModel> GetDashBoardDetailData(string FromDate, string ToDate);
         Task<BankReceiptModel> GetDashBoardSummaryData(string FromDate, string ToDate);
-        Task<ResponseResult> DeleteByID(int ID,int YearCode);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate);
         Task<ResponseResult> FillBankType(int AccountCode);
         Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTable DataTable);
         Task<BankReceiptModel> GetViewByID(int ID, int YearCode, string VoucherNo);
+        Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode);
+        Task<ResponseResult> FillSONO(string accountcode, string VoucherDate);
+        Task<ResponseResult> GetSODetail(int SONO, string accountcode, string VoucherDate);
+        Task<ResponseResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode);
+
     }
 }

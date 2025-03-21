@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -28,8 +29,8 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "LEDGER"));
-                SqlParams.Add(new SqlParameter("@Date", FromDate));
-                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                SqlParams.Add(new SqlParameter("@Date", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(ToDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPDayBook", SqlParams);
             }
             catch (Exception ex)
@@ -48,8 +49,8 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "VOUCHERTYPE"));
-                SqlParams.Add(new SqlParameter("@Date", FromDate));
-                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                SqlParams.Add(new SqlParameter("@Date", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(ToDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPDayBook", SqlParams);
             }
             catch (Exception ex)
@@ -68,6 +69,8 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+                DateTime currentDate = DateTime.Today;
+                DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand command = new SqlCommand("AccSPDayBook", connection)
@@ -76,8 +79,8 @@ namespace eTactWeb.Data.DAL
                     };
 
                     command.Parameters.AddWithValue("@flag", "DAYBOOK");
-                    command.Parameters.AddWithValue("@Date", FromDate);
-                    command.Parameters.AddWithValue("@ToDate", ToDate);
+                    command.Parameters.Add(new SqlParameter("@Date", ParseFormattedDate(FromDate)));
+                    command.Parameters.Add(new SqlParameter("@ToDate", ParseFormattedDate(ToDate)));
                     command.Parameters.AddWithValue("@LedgerHead", Ledger);
                     command.Parameters.AddWithValue("@amtcr", CrAmt);
                     command.Parameters.AddWithValue("@amtdr", DrAmt);
@@ -103,7 +106,7 @@ namespace eTactWeb.Data.DAL
                                                   VoucherType = row["VoucherType"] == DBNull.Value ? string.Empty : row["VoucherType"].ToString(),
                                                   DrAmt = row["DrAmt"] == DBNull.Value ? string.Empty : row["DrAmt"].ToString(),
                                                   CrAmt = row["CrAmt"] == DBNull.Value ? string.Empty : row["CrAmt"].ToString(),
-                                                  EntryDate = row["EntryDate"] == DBNull.Value ? string.Empty : row["EntryDate"].ToString(),
+                                                  EntryDate = row["Entry_Date"] == DBNull.Value ? string.Empty : row["Entry_Date"].ToString(),
                                                   Category = row["Category"] == DBNull.Value ? "N" : row["Category"].ToString(),
                                                   ParentHead = row["ParentHead"] == DBNull.Value ? "N" : row["ParentHead"].ToString(),
                                                   EnteredBy = row["EnteredBy"] == DBNull.Value ? "N" : row["EnteredBy"].ToString(),

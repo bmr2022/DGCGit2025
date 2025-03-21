@@ -87,7 +87,7 @@
                                             </a>
                                         </div>
                                         <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode"
+                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-EntryDate="@item.EntryDate"
                            data-itemcode="@item.ItemCode" data-yearcode="@item.YearCode" data-entryid="@item.EntryId"
                            data-slipdate="@item.SlipDate" data-slipno="@item.SlipNo" data-tostoreid="@item.ToStoreId"
                            data-towcid="@item.ToWCID" data-batchno="@item.Batchno" data-uniquebatchno="@item.UniqueBatchNo"
@@ -226,7 +226,7 @@ else
                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                         </span>
                         </a>*@
-                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode"
+                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" asp-route-EntryDate="@item.EntryDate" asp-route-ActualEntryBy="@item.ActualEntryBy" asp-route-MachineName ="@item.MachineName"
                            data-itemcode="@item.ItemCode" data-yearcode="@item.YearCode" data-entryid="@item.EntryId"
                            data-slipdate="@item.SlipDate" data-slipno="@item.SlipNo" data-tostoreid="@item.ToStoreId"
                            data-towcid="@item.ToWCID" data-batchno="@item.Batchno" data-uniquebatchno="@item.UniqueBatchNo"

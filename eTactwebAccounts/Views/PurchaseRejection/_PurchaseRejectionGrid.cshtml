@@ -56,12 +56,24 @@ else
             <td>@item.CostCenterId</td>
             <td>@item.DocAccountName<input type="hidden" value="@item.DocAccountCode" /></td>
             <td id="gridAmount-@Cntr">@item.ItemAmount</td>
+            <td>@item.StoreName<input type="hidden" value="@item.StoreId" /></td>
+            <td id="GridBatchNo-@Cntr">@item.Batchno</td>
+            <td id="GridUniqueBatchNo-@Cntr">@item.Uniquebatchno</td>
+            <td>@item.LotStock</td>
+            <td>@item.TotalStock</td>
             <td id="discPer-@Cntr">@item.DiscountPer</td>
             <td id="discAmt-@Cntr">@item.DiscountAmt</td>
-            <td>@item.StoreName<input type="hidden" value="@item.StoreId" /></td>
             <td>@item.ItemSize</td>
             <td>@item.ItemDescription</td>
             <td>@item.Remark</td>
+            <td>@item.MIRNo</td>
+            <td>@item.MIREntryID</td>
+            <td>@item.MIRYearCode</td>
+            <td>@item.MIRDate</td>
+            <td>@item.InprocessNo</td>
+            <td>@item.InprocessEntryID</td>
+            <td>@item.InprocessYearCode</td>
+            <td>@item.InprocessDate</td>
         </tr>
 
     }

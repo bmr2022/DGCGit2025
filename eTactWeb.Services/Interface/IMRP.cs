@@ -17,7 +17,7 @@ namespace eTactWeb.Services.Interface
         public Task<ResponseResult> NewEntryId(int YearCode);
         public Task<ResponseResult> GetFormRights(int UserID);
         public Task<ResponseResult> GetDashboardData(MRPDashboard model);
-        public Task<ResponseResult> DeleteByID(int ID, int YC, string MRPNo);
+        public Task<ResponseResult> DeleteByID(int ID, int YC, string MRPNo,string EntryByMachineName,int CreatedByEmpId);
         public Task<MRPMain> GetMRPDetailData(PendingMRP model);
         public Task<MRPMain> GetMRPFGRMDetailData(PendingMRP model);
         Task<ResponseResult> SaveMRPDetail(MRPMain model, DataTable MRPGrid, DataTable MRPSOGrid, DataTable MRPFGGrid);

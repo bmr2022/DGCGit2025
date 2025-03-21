@@ -20,6 +20,10 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _IssueNRGPDAL = new IssueNrgpDAL(configuration, iDataLogic);
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _IssueNRGPDAL.GetReportName();
+        }
         public async Task<ResponseResult> FillEntryandChallanNo(int YearCode, string RGPNRGP)
         {
             return await _IssueNRGPDAL.FillEntryandChallanNo(YearCode, RGPNRGP);

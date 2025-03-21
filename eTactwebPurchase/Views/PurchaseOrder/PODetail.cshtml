@@ -1041,7 +1041,7 @@
         }
         var isItemSelected = false;
         function FillItems() {
-
+             
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("FillItems")",
@@ -1049,7 +1049,7 @@
                 async:false,
                 data: { Type: $('#POTypeServItem').val(), ShowAllItem: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
                 success: function (result, status, error) {
-
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == "Success") {

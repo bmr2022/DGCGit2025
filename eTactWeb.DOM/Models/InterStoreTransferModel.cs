@@ -73,6 +73,7 @@ namespace eTactWeb.DOM.Models
         public string IssueToStoreWC { get; set; }
         public string FromStoreName { get; set; }
         public string Remark { get; set; }
+        public int ActualEntryBy { get; set; }
         public string ActualEntryByName { get; set; }
         public string ActualEntryDate { get; set; }
         public string LastUpdatedByName { get; set; }

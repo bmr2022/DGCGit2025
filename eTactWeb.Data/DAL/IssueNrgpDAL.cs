@@ -19,7 +19,25 @@ namespace eTactWeb.Data.DAL
         private IDataReader? Reader;
 
         //public static decimal BatchStockQty { get; private set; }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
 
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public IssueNrgpDAL(IConfiguration configuration, IDataLogic iDataLogic)
         {
             _IDataLogic = iDataLogic;
@@ -683,13 +701,15 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                var finStDt = new DateTime();
-                finStDt = Convert.ToDateTime(FinStartDate);
-                DateTime TransDt = DateTime.ParseExact(TransDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //var finStDt = new DateTime();
+                //finStDt = Convert.ToDateTime(FinStartDate);
+                //DateTime TransDt = DateTime.ParseExact(TransDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
-                SqlParams.Add(new SqlParameter("@FinStartDate", finStDt.ToString("yyyy/MM/dd").Replace("-", "/")));
-                SqlParams.Add(new SqlParameter("@transDate", TransDt.ToString("yyyy/MM/dd").Replace("-", "/")));
+                //SqlParams.Add(new SqlParameter("@FinStartDate", finStDt.ToString("yyyy/MM/dd").Replace("-", "/")));
+                SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
+                //SqlParams.Add(new SqlParameter("@transDate", TransDt.ToString("yyyy/MM/dd").Replace("-", "/")));
+                SqlParams.Add(new SqlParameter("@transDate", TransDate));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@batchno", BatchNo));
 
@@ -710,11 +730,13 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime ChallanDt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime ChallanDt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var ChallanDt =ParseFormattedDate(TillDate.ToString());
 
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@STORE_ID", StoreId));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", ChallanDt.ToString("yyyy/MM/dd")));
+                //  SqlParams.Add(new SqlParameter("@TILL_DATE", ChallanDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", ChallanDt));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(Flag, SqlParams);
             }
             catch (Exception ex)
@@ -731,10 +753,11 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime tilldt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime tilldt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@STORE_ID", StoreId));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", tilldt.ToString("yyyy/MM/dd")));
+                //SqlParams.Add(new SqlParameter("@TILL_DATE", tilldt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", TillDate));
                 SqlParams.Add(new SqlParameter("@BATCHNO", BatchNo));
                 SqlParams.Add(new SqlParameter("@Uniquebatchno", UniqueBatchNo));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(Flag, SqlParams);

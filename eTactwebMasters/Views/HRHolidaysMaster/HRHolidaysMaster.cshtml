@@ -1,0 +1,619 @@
+﻿@model eTactWeb.DOM.Models.HRHolidaysMasterModel;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="HRHolidaysMaster" asp-controller="HRHolidaysMaster" method="post" autocomplete="on" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+                <h5>
+                    <strong> Holidays Master </strong>
+                    <span class="d-flex float-end" style="margin-top:-2px;">
+                        <a asp-controller="HRHolidaysMaster" asp-action="HRHolidaysMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U")
+                                {
+                                    Model.Mode = "U";
+                                    <div class="col-auto">
+                                        <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+
+                                else
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body bg-light">
+                <div class="accordion shadow-lg" id="accordionItemCategory">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Holidays Master</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_HRHolidaysMasterDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_HRHolidaysMasterDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="HolidayId" class="form-label"> HolidayId</label>
+                                        <input asp-for="HolidayId" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="HolidayYear" class="form-label">HolidayYear</label>
+                                        <input asp-for="HolidayYear" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"  >
+                                        <label asp-for="Branch" class="form-label">Branch</label>
+                                        <input asp-for="Branch" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                        <label asp-for="HolidayName" class="form-label">HolidayName<label class="mandatoryField">*</label></label>
+                                        <input asp-for="HolidayName" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                <label asp-for="EffectiveFrom" class="form-label">EffectiveFrom<label class="mandatoryField">*</label></label>
+                                                <input asp-for="EffectiveFrom" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                                <label asp-for="HolidayEffTill" class="form-label">HolidayEffTill<label class="mandatoryField">*</label></label>
+                                                <input asp-for="HolidayEffTill" class="form-control" />
+                                    </div>
+                                        
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="HolidayType" class="form-label">HolidayType<label class="mandatoryField">*</label></label>
+                                        
+                                        <select asp-for="HolidayType" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.HolidayType">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.HolidayType" selected>@Model.HolidayType</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Country" class="form-label">Country </label>
+
+                                        <select asp-for="Country" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.Country">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.Country" selected>@Model.Country</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="State" class="form-label">State</label>
+                                        <input asp-for="StateId" class="form-control" type="hidden" value="@Model.StateId" />
+                                        <input asp-for="StateName" class="form-control" type="hidden" value="@Model.StateName" />
+                                        <select asp-for="State" class="form-control">
+                                            @* <option value="@Model.AccountCode">-Select-</option> *@
+                                            <option value="@Model.StateId">-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="@Model.StateId" selected>@Model.State</option>
+                                            }
+                                        </select>
+                                    </div>
+                                  
+                                    
+
+                                   
+
+                                   
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                     
+                                        <label asp-for="OverrideWeekOff" class="form-label">OverrideWeekOff</label>
+                                        <select asp-for="OverrideWeekOff" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                        
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="CompensatoryOffAllowed" class="form-label">CompensatoryOffAllowed</label>
+                                        <select asp-for="CompensatoryOffAllowed" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="PaidHoliday" class="form-label">PaidHoliday</label>
+                                        <select asp-for="PaidHoliday" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            <option value="YES" selected>YES</option>
+                                            <option value="NO">NO</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px; ">
+                                        <label asp-for="HalfDayFullDay" class="form-label">HalfDayFullDay</label>
+                                        <select asp-for="HalfDayFullDay" class="form-select">
+                                            <option value="" selected>-Select-</option>
+                                            <option value="HarfDay" >HarfDay</option>
+                                            <option value="FullDay">FullDay</option>
+                                        </select>
+                                    </div>
+
+                                   
+                                    <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Active" class="form-label">Active</label>
+                                        <select asp-for="Active" class="form-select">
+                                            <option value="" disabled>-Select-</option>
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO">NO</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="YES" selected>YES</option>
+                                                <option value="NO" disabled>NO</option>
+                                            }
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                        <label asp-for="Remark" class="form-label">Remark</label>
+                                        <input asp-for="Remark" class="form-control" />
+                                    </div>
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="EmployeeCategory" class="control-label">EmployeeCategory </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="EmployeeCategory" asp-items="@(new SelectList(Model.EmployeeCategoryList,"Value","Text"))"></select>
+                                    </div>
+
+                                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Department" class="control-label">Department </label>
+                                        <br />
+
+                                        <select class="form-select" multiple="multiple" asp-for="Department" asp-items="@(new SelectList(Model.DepartmentList,"Value","Text"))"></select>
+                                    </div>
+
+
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="EntryByMachine" class="form-label">Entered by Machine Name</label>
+                                        <input asp-for="EntryByMachine" class="form-control" readonly value="@Environment.MachineName" />
+                                    </div>
+
+                                    <div style="display:none">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="CreatedOn" class="form-label">CreatedOn</label>
+                                        <input asp-for="CreatedOn" class="form-control " value="@Model.CreatedOn" readonly />
+                                    </div>
+                                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                            <label asp-for="EntryDate" class="form-label">EntryDate</label>
+                                            <input asp-for="EntryDate" class="form-control " value="@Model.EntryDate" readonly />
+                                        </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedBy" class="form-label">UpdatedBy</label>
+                                        <input asp-for="UpdatedBy" class="form-control " value="@Model.UpdatedBy" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UpdatedOn" class="form-label">CreatedOn</label>
+                                        <input asp-for="UpdatedOn" class="form-control " value="@Model.UpdatedOn" readonly />
+                                    </div>
+                                    </div>
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress my-3 mb-3" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <div class="card-footer p-3">
+                    <div class="row justify-content-between g-2">
+                        <div class="card-header card-headerBG text-light bg-gradient">
+                            <h5>
+                                <strong> WeekOff Master</strong>
+                                <span class="d-flex float-end" style="margin-top:-2px;">
+
+                                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                                    <a asp-controller="HRWeekOffMaster" asp-action="HRWeekOffMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                                        Dashboard
+                                    </a>
+                                    <div class="row justify-content-between g-2">
+                                        <div class="col-auto">
+                                            @*  <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                                            <input asp-for="GroupNameBack" type="hidden" value="@Model.GroupNameBack" />
+                                            <input asp-for="LedgerNameBack" type="hidden" value="@Model.LedgerNameBack" />
+                                            <input asp-for="OpeningForYearBack" type="hidden" value="@Model.OpeningForYearBack" />
+                                            <input asp-for="PreviousAmountBack" type="hidden" value="@Model.PreviousAmountBack" />
+                                            <input asp-for="DrCrBack" type="hidden" value="@Model.DrCrBack" />
+                                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+
+                                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                                BACK
+                                            </a>
+                                        </div>
+                                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                                        {
+                                            <div class="col-auto">
+                                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                                    REFRESH
+                                                </a>
+                                            </div>
+                                            @if (Model.Mode == "U")
+                                            {
+                                                @*Model.Mode = "U";*@
+                                                <div class="col-auto">
+                                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                                    <button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                                        UPDATE
+                                                    </button>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-auto">
+                                                    <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                                        SUBMIT
+                                                    </button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </span>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <script>
+
+        $('.submitBTN').click(function (e) {
+            e.preventDefault();
+            $('form').submit();
+        });
+
+
+        $(document).ready(function () {
+
+            $("#EmployeeCategory").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+
+
+            });
+            $("#Department").multiselect({
+                // Bootstrap 5 compatibility
+                templates: {
+                    button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
+                },
+                enableFiltering: true,
+                includeSelectAllOption: true,
+                buttonWidth: 250,
+                enableCaseInsensitiveFiltering: true
+
+
+            });
+
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+
+                $('#HolidayEffTill').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            }
+            else {
+                $('#HolidayEffTill').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EffectiveFrom').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+            }
+
+            $('#State').select2();
+            $('#HolidayType').select2();
+            $('#Country').select2();
+            $('#OverrideWeekOff').select2();
+            $('#CompensatoryOffAllowed').select2();
+            $('#PaidHoliday').select2();
+            $('#HalfDayFullDay').select2();      
+            $('#Active').select2();
+
+            
+            $('#State').change(function () {
+
+                $('#StateId').val($('#State').val());
+                $('#StateName').val($('#State option:selected').text());
+                
+            });
+           
+            FillHolidatType();
+            FillHolidatCountry();
+            FillHolidatState();
+
+
+
+        });
+
+
+        if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+            FillEntryID();
+        }
+
+        function FillHolidatType() {
+            $.ajax({
+                url: '@Url.Action("GetHolidayType", "HRHolidaysMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var HolidayTypeDropdown = $('#HolidayType');
+                    var obj = $.parseJSON(response);
+                    HolidayTypeDropdown.empty();
+                    HolidayTypeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        HolidayTypeDropdown.append('<option value="' + item.Holiday + '">' + item.Holiday + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var HolidayType = '@Model.HolidayType';
+                        $('#HolidayType').val(HolidayType).trigger("change");
+                        $('#HolidayType').val(HolidayType);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillHolidatCountry() {
+            $.ajax({
+                url: '@Url.Action("GetHolidayCountry", "HRHolidaysMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var HolidayCountryDropdown = $('#Country');
+                    var obj = $.parseJSON(response);
+                    HolidayCountryDropdown.empty();
+                    HolidayCountryDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        HolidayCountryDropdown.append('<option value="' + item.Country + '">' + item.Country + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var Country = '@Model.Country';
+                        $('#Country').val(Country).trigger("change");
+                        $('#Country').val(Country);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillHolidatState() {
+            $.ajax({
+                url: '@Url.Action("GetHolidayState", "HRHolidaysMaster")',
+
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var HolidayStateDropdown = $('#State');
+                    var obj = $.parseJSON(response);
+                    HolidayStateDropdown.empty();
+                    HolidayStateDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        HolidayStateDropdown.append('<option value="' + item.Entry_Id + '">' + item.StateName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var State = '@Model.StateId';
+                        $('#State').val(State).trigger("change");
+                        $('#State').val(State);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+     
+        function FillEntryID() {
+            var yearcode = $('#HolidayYear').val();
+            $.ajax({
+                url: '@Url.Action("FillEntryId", "HRHolidaysMaster")',
+                type: 'POST',
+                async: false,
+                data:
+                {
+                    "yearcode": yearcode,
+                   
+                },
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                        $('#HolidayId').val(0);
+                        $('#HolidayId').val(obj.Result[0].HolidayEntryId);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function TotalNoOfRows() {
+            var Row = $('#divStockGrid tr').length;
+            var tdCount = $('#divStockGrid tr td').length;
+            if (tdCount >= 1) {
+                $('#lblTotalNoOfBelowItems').text(Row);
+            } else {
+                $('#lblTotalNoOfBelowItems').text(0);
+            }
+        }
+
+
+
+
+
+
+        var isEditAllowed = "false";
+
+
+        var editingNow = false;
+        function EditItemRow(SrNO) {
+
+            if (editingNow == false) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditItemRow")',
+                        type: "POST",
+                        data: { "SrNO": SrNO, "Mode": $('#Mode').val() },
+                    })
+                        .done(function (data, status, xhr) {
+                            editingNow = true;
+                            var obj = $.parseJSON(data);
+                            DeleteItemRow(SeqNo)
+                                .then(() => {
+                                    $('#MainPartCode').val(obj[0].MainPartCode).trigger('change');
+                                    $('#MainItemName').val(obj[0].MainItemName).trigger('change');
+                                    $('#AltPartCode').val(obj[0].AltPartCode).trigger('change');
+                                    $('#AltItemName').val(obj[0].AltItemName).trigger('change');
+                                    var currentSrNo = $('#SrNO').val();
+                                    var newSrNo = obj[0].SrNO;
+                                    if (currentSrNo !== newSrNo) {
+                                        $('#SrNO').val(newSrNo).trigger('change');
+                                    }
+
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                    $.notify("Item Updated from Grid", "info");
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+            sessionStorage.setItem('OpeningForYearBack', $('#OpeningForYearBack').val());
+            sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+            sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+
+
+    </script>
+
+
+}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+<style>
+     .mandatoryField {
+         color: red;
+         font-size: small;
+     }
+</style>
+

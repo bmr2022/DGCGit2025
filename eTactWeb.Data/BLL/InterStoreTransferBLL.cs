@@ -35,9 +35,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _InterStoreTransferDAL.GetPrevQty(EntryId,YearCode,ItemCode,uniqueBatchno);
         }
-        public async Task<ResponseResult> DeleteByID(int ID,int YC)
+        public async Task<ResponseResult> DeleteByID(int ID,int YC, string EntryDate, int ActualEntryBy, string MachineName)
         {
-            return await _InterStoreTransferDAL.DeleteByID(ID,YC);
+            return await _InterStoreTransferDAL.DeleteByID(ID,YC,EntryDate, ActualEntryBy, MachineName);
         }
         public async Task<ResponseResult> GetDashboardData(ISTDashboard model)
         {

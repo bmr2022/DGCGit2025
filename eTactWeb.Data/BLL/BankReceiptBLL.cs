@@ -45,9 +45,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.FillCostCenterName();
         } 
-        public async Task<ResponseResult> FillEntryID()
+        public async Task<ResponseResult> FillEntryID(int YearCode, string VoucherDate)
         {
-            return await _BankReceiptDAL.FillEntryID();
+            return await _BankReceiptDAL.FillEntryID(YearCode, VoucherDate);
         }
         public async Task<ResponseResult> FillCurrency()
         {
@@ -75,9 +75,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.GetDashBoardSummaryData(FromDate, ToDate);
         }
-        public async Task<ResponseResult> DeleteByID(int ID,int YearCode)
+        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
         {
-            return await _BankReceiptDAL.DeleteByID(ID,YearCode);
+            return await _BankReceiptDAL.DeleteByID(ID,YearCode,ActualEntryBy,EntryByMachine,ActualEntryDate);
         }
         public async Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTable DataTable)
         {
@@ -87,6 +87,23 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.GetViewByID(ID, YearCode, VoucherNo);
 
+        }
+        public async Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode)
+        {
+            return await _BankReceiptDAL.CheckAmountBeforeSave(VoucherDate, YearCode, AgainstVoucherYearCode,AgainstVoucherEntryId, AgainstVoucherNo, AccountCode);
+
+        }
+        public async Task<ResponseResult> FillSONO(string accountcode, string VoucherDate)
+        {
+            return await _BankReceiptDAL.FillSONO(accountcode, VoucherDate);
+        }
+        public async Task<ResponseResult> GetSODetail(int SONO, string accountcode, string VoucherDate)
+        {
+            return await _BankReceiptDAL.GetSODetail(SONO, accountcode, VoucherDate);
+        }
+        public async Task<ResponseResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode)
+        {
+            return await _BankReceiptDAL.GetSODate(SONO, accountcode, VoucherDate, SOYearCode);
         }
     }
 }

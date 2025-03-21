@@ -1,10 +1,11 @@
 ﻿using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
 using static eTactWeb.DOM.Models.Common;
-
+using Common = eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -21,6 +22,25 @@ namespace eTactWeb.Data.DAL
 
         private string DBConnectionString { get; }
 
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -65,8 +85,8 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetAddress"));
-                SqlParams.Add(new SqlParameter("@ID", Code));
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleOrder", SqlParams);
+                SqlParams.Add(new SqlParameter("@accountcode", Code));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
             {
@@ -116,7 +136,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT)
+        internal async Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT, DataTable AdjChallanDetailDT)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -124,41 +144,30 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
+                    model.LastUpdationDate = DateTime.Now.ToString("dd/MM/yyyy");
+                    var lastDt = Common.CommonFunc.ParseFormattedDate(model.LastUpdationDate);
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdationDate", DateTime.Today));
+                    SqlParams.Add(new SqlParameter("@LastUpdationDate", lastDt ?? string.Empty));
                 }
                 else
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
 
-                DateTime entDt = new DateTime();
-                DateTime SaleBillDate = new DateTime();
-                DateTime InvoiceTime = new DateTime();
-                DateTime performaInvDate = new DateTime();
-                DateTime RemovalDate = new DateTime();
-                DateTime RemovalTime = new DateTime();
-                DateTime ApprovalDate = new DateTime();
-                DateTime Shippingdate = new DateTime();
-                DateTime Canceldate = new DateTime();
-                DateTime ActualEntryDate = new DateTime();
-                DateTime LastUpdationDate = new DateTime();
-                DateTime ChallanDate = new DateTime();
-                DateTime SaleQuotDate = new DateTime();
-
-                entDt = ParseDate(model.SaleBillEntryDate);
-                SaleBillDate = ParseDate(model.SaleBillDate);
-                InvoiceTime = ParseDate(model.InvoiceTime);
-                performaInvDate = ParseDate(model.PerformaInvDate);
-                RemovalDate = ParseDate(model.RemovalDate);
-                ApprovalDate = ParseDate(model.ApprovDate);
-                Shippingdate = ParseDate(model.Shippingdate);
-                Canceldate = ParseDate(model.Canceldate);
-                ActualEntryDate = ParseDate(model.ActualEntryDate);
-                LastUpdationDate = ParseDate(model.LastUpdationDate);
-                ChallanDate = ParseDate(model.ChallanDate);
-                SaleQuotDate = ParseDate(model.SaleQuotDate);
+                var entDt = Common.CommonFunc.ParseFormattedDate(model.SaleBillEntryDate);
+                var SaleBillDate = Common.CommonFunc.ParseFormattedDate(model.SaleBillDate);
+                var InvoiceTime = Common.CommonFunc.ParseFormattedDate(model.InvoiceTime);
+                var performaInvDate = Common.CommonFunc.ParseFormattedDate(model.PerformaInvDate);
+                var RemovalDate = Common.CommonFunc.ParseFormattedDate(model.RemovalDate);
+                var ApprovalDate = Common.CommonFunc.ParseFormattedDate(model.ApprovDate);
+                var Shippingdate = Common.CommonFunc.ParseFormattedDate(model.Shippingdate);
+                var Canceldate = Common.CommonFunc.ParseFormattedDate(model.Canceldate);
+                var ActualEntryDate = Common.CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var LastUpdationDate = Common.CommonFunc.ParseFormattedDate(model.LastUpdationDate);
+                var ChallanDate = Common.CommonFunc.ParseFormattedDate(model.ChallanDate);
+                var SaleQuotDate = Common.CommonFunc.ParseFormattedDate(model.SaleQuotDate);
+                var RemovalTime = Common.CommonFunc.ParseFormattedDate(model.RemovalTime);
 
                 SqlParams.Add(new SqlParameter("@EntryId", model.SaleBillEntryId));
                 SqlParams.Add(new SqlParameter("@Yearcode", model.SaleBillYearCode));
@@ -256,6 +265,7 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@DRCRDATA", DrCrDetailDT));
                 SqlParams.Add(new SqlParameter("@AgainstRef", AdjDetailDT));
+                SqlParams.Add(new SqlParameter("@DTSSGridAdjust", AdjChallanDetailDT));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
 
@@ -268,13 +278,35 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillCustomerList(string ShowAllCustomer)
+        public async Task<ResponseResult> FillJWCustomerList(string SBJobwork, int yearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FILLCustomerList"));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", SBJobwork));
+                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> FillCustomerList(string SBJobwork, string ShowAllCustomer)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillCustomerList"));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", SBJobwork));
                 SqlParams.Add(new SqlParameter("@ShowAllCustomer", ShowAllCustomer));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
@@ -483,10 +515,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@partcode", partCode ?? ""));
                 SqlParams.Add(new SqlParameter("@SONO", sono ?? ""));
                 SqlParams.Add(new SqlParameter("@CustOrderNo", custOrderNo ?? ""));
-                SqlParams.Add(new SqlParameter("@SOYearCode", soYearCode ));
+                SqlParams.Add(new SqlParameter("@SOYearCode", soYearCode));
                 SqlParams.Add(new SqlParameter("@SchNo", schNo ?? ""));
                 SqlParams.Add(new SqlParameter("@SchYearCode", schYearCode));
-                SqlParams.Add(new SqlParameter("@CurrenctDate",date));
+                SqlParams.Add(new SqlParameter("@CurrenctDate", date));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpGetPendingSaleOrderForBilling", SqlParams);
             }
             catch (Exception ex)
@@ -620,19 +652,71 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> FillItems(string sono, int soYearCode, int accountCode, string showAll, string TypeItemServAssets)
+        public async Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string schNo, int schYearCode, string sbJobWork)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "ItemsList"));
-                SqlParams.Add(new SqlParameter("@ShowAll", showAll));
-                SqlParams.Add(new SqlParameter("@invoicedate", DateTime.Now));
+
+                SqlParams.Add(new SqlParameter("@Flag", "SaleOrderWiseItemsList"));
+                SqlParams.Add(new SqlParameter("@invoicedate", invoiceDate));
                 SqlParams.Add(new SqlParameter("@sono", sono));
                 SqlParams.Add(new SqlParameter("@SoYearCode", soYearCode));
                 SqlParams.Add(new SqlParameter("@accountcode", accountCode));
+                SqlParams.Add(new SqlParameter("@ScheduleNo", schNo));
+                SqlParams.Add(new SqlParameter("@ScheduleYearCode", schYearCode));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", sbJobWork));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll, string bomInd, string schNo, int schYearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "JWSaleBillItemList"));
+                SqlParams.Add(new SqlParameter("@ShowAll", showAll));
+                SqlParams.Add(new SqlParameter("@TypeItemServAssets", typeItemServAssets));
+                SqlParams.Add(new SqlParameter("@ScheduleNo", schNo));
+                SqlParams.Add(new SqlParameter("@ScheduleYearCode", schYearCode));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", "JOBWORK-SALEBILL"));
+                SqlParams.Add(new SqlParameter("@BOMInd", bomInd));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillItems(string showAll, string TypeItemServAssets, string sbJobwok)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "ItemList"));
+                SqlParams.Add(new SqlParameter("@ShowAll", showAll));
                 SqlParams.Add(new SqlParameter("@TypeItemServAssets", TypeItemServAssets));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", sbJobwok));
+
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -672,7 +756,98 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC,string machineName)
+        public async Task<List<CustomerJobWorkIssueAdjustDetail>> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        {
+            var model = new List<CustomerJobWorkIssueAdjustDetail>();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                EntryDate = Common.CommonFunc.ParseFormattedDate(EntryDate);
+                ChallanDate = Common.CommonFunc.ParseFormattedDate(ChallanDate);
+                SqlParams.Add(new SqlParameter("@yearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@FromFinStartDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@billchallandate", ChallanDate));
+                SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+                SqlParams.Add(new SqlParameter("@DTTItemGrid", adjustedData));
+
+                //var ResponseResult = await _IDataLogic.ExecuteDataSet("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
+                var ResponseResult = await _IDataLogic.ExecuteDataSet("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
+
+                if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
+                {
+                    PrepareAdjustChallanView(ResponseResult.Result);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+
+        //public List<CustomerJobWorkIssueAdjustDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
+        //{
+        //    List<CustomerJobWorkIssueAdjustDetail> result = new List<CustomerJobWorkIssueAdjustDetail>();
+
+        //    using (SqlConnection conn = new SqlConnection(DBConnectionString))
+        //    {
+        //        conn.Open();
+        //        EntryDate = Common.CommonFunc.ParseFormattedDate(EntryDate);
+        //        ChallanDate = Common.CommonFunc.ParseFormattedDate(ChallanDate);
+
+        //            using (SqlCommand cmd = new SqlCommand("SpCustomerJobworkAdjustedChallanInGrid", conn))
+        //            {
+        //                cmd.CommandType = CommandType.StoredProcedure;
+
+        //                //cmd.Parameters.AddWithValue("@Flag", "JOBWORKISSUESUMMARY");
+        //                cmd.Parameters.AddWithValue("@yearCode", YearCode);
+        //                cmd.Parameters.AddWithValue("@FinYearFromDate", EntryDate);
+        //                cmd.Parameters.AddWithValue("@billchallandate", ChallanDate);
+        //                cmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+        //                cmd.Parameters.AddWithValue("@DTTItemGrid", adjustedData);
+        //                //cmd.Parameters.AddWithValue("@BOMINd", item.BOMInd);
+        //                cmd.Parameters.AddWithValue("@RMItemCode", itemCode);
+        //                //cmd.Parameters.AddWithValue("@RMPartcode", item.PartCode);
+        //                //cmd.Parameters.AddWithValue("@RMItemNAme", item.ItemName);
+
+        //                try
+        //                {
+        //                    using (SqlDataReader reader = cmd.ExecuteReader())
+        //                    {
+        //                        while (reader.Read())
+        //                        {
+        //                            result.Add(new CustomerJobWorkIssueAdjustDetail
+        //                            {
+        //                                //CustomerName = reader["CustomerName"].ToString(),
+        //                                //PartCode = reader["RecPartcode"].ToString(),
+        //                                //ItemName = reader["RecItemName"].ToString(),
+        //                                //BOMInd = reader["BOMIND"].ToString(),
+        //                                //ChallanNo = reader["RecJWChallan"].ToString(),
+        //                                //YearCode = Convert.ToInt32(reader["RecChallanYearCode"]),
+        //                                //ChallanDate = DateTime.Parse(reader["RecChallandate"].ToString()).ToString("dd/MM/yyyy"),
+        //                                //RecQty = Convert.ToInt32(reader["RecQty"]),
+        //                                //IssQty = Convert.ToInt32(reader["IssQty"]),
+        //                                //AccPendQty = Convert.ToInt32(reader["ActualPendQty"]),
+        //                                //PendQty = Convert.ToInt32(reader["PendQty"]),
+        //                            });
+        //                        }
+        //                    }
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    Console.WriteLine($"Error: {ex.Message}");
+        //                    throw; // Rethrow exception to see the detailed error
+        //                }
+        //            }
+
+        //    }
+
+        //    return result;
+        //}
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName)
         {
             var ResponseResult = new ResponseResult();
             try
@@ -1038,6 +1213,42 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
+
+        private static List<CustomerJobWorkIssueAdjustDetail> PrepareAdjustChallanView(DataSet DS)
+        {
+            var ItemGrid = new List<CustomerJobWorkIssueAdjustDetail>();
+            DS.Tables[0].TableName = "CustomerJobWorkAdjustDetail";
+            int cnt = 0;
+
+            if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+            {
+                foreach (DataRow row in DS.Tables[1].Rows)
+                {
+                    ItemGrid.AddRange(new List<CustomerJobWorkIssueAdjustDetail>
+                        {
+                            new CustomerJobWorkIssueAdjustDetail
+                            {
+                                CustomerName = row["CustomerName"].ToString(),
+                                PartCode = row["RecPartcode"].ToString(),
+                                ItemName = row["RecItemName"].ToString(),
+                                BOMIND = row["BOMIND"].ToString(),
+                                ChallanNo = row["RecJWChallan"].ToString(),
+                                YearCode = Convert.ToInt32(row["RecChallanYearCode"]),
+                                ChallanDate = row["RecChallandate"].ToString(),
+                                RecQty = row["RecQty"] != DBNull.Value ? Convert.ToDecimal(row["RecQty"]) : 0,
+                                IssQty = row["IssQty"] != null ? Convert.ToDecimal(row["IssQty"]) : 0,
+                                AccPendQty = row["ActualPendQty"] != DBNull.Value ? Convert.ToDecimal(row["ActualPendQty"]) : 0,
+                                PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0
+                            }
+                        });
+                }
+
+            }
+
+            return ItemGrid;
+        }
+
+
 
     }
 }

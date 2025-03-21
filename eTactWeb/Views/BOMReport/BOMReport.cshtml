@@ -4,6 +4,23 @@
     ViewData["Title"] = "BOM Report";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
 <head>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
 
@@ -36,7 +53,7 @@
                                             <label class="form-label">From Date</label>
                                             <input asp-for="FromDate" class="form-control" />
                                         </div>
-                                        <div class="COL">
+                                        <div class="col">
                                             <label class="form-label">To Date</label>
                                             <input asp-for="ToDate" class="form-control" />
                                         </div>
@@ -49,6 +66,8 @@
                                         <option value="BOMTREE" selected>BOM TREE</option>
                                         <option value="BOMSTOCK">BOM STOCK</option>
                                         <option value="DirectBOM">Direct BOM</option>
+                                        <option value="BOMSTOCK(WITH SUB BOM)">BOMSTOCK(WITH SUB BOM)</option>
+                                        <option value="BOMSTOCK(DIRECT CHILD)">BOMSTOCK(DIRECT CHILD)</option>
                                     </select>
                                 </div>
                               
@@ -92,12 +111,12 @@
                                     <span asp-validation-for="StoreName" class="text-danger"></span>
                                 </div>
 
-                                @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="bomStokeCenter" style="display:none">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="bomStokeCenter" style="display:none">
                                     <label asp-for="WorkCenterName" class="form-label">Work Center Name</label>
                                     <select asp-for="WorkCenterName" class="form-select" style="width:190px;">
                                         <option value="@Model.WCID">-Select-</option>
                                     </select>
-                                </div> *@
+                                </div>
                                 <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -133,12 +152,10 @@
                                                 <partial name="_BOMReportGrid" />
                                             </div>
                                         </div>
-                                                <div class="d-flex justify-content-end mt-2">
-                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
-                                                        <label class="form-label">Total RMQty</label>
-                                                        <input id="totQty" class="form-control" readonly />
-                                                    </div>
-                                                </div>
+                                        <div class="d-flex justify-content-end mt-2" id="reportFields">
+                                                    
+                                                   
+                                        </div>
                                        
                                     </div>
 
@@ -162,7 +179,50 @@
         $(document).ready(function () {
             console.log("Ready");
             // GetServerDate();
-          
+
+            function loadReportFields(reportType) {
+                let html = '';
+
+                if (reportType === "BOMTREE") {
+                    html = `
+                                      <div class="d-flex flex-wrap">
+
+                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                       <label class="form-label">Total RMQty</label>
+                                                       <input id="totQty" class="form-control" readonly/>
+                                                 </div>
+                                     </div>
+
+                                `;
+                } else if (reportType === "BOMSTOCK(WITH SUB BOM)" || reportType === "BOMSTOCK(DIRECT CHILD)") {
+                    html = `
+                                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;">
+                                                                <label class="form-label">Total StoreStock</label>
+                                                                <input id="totStoreStock" class="form-control" readonly />
+                                                            </div>
+                                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                <label class="form-label">Total WIPStock</label>
+                                                                 <input id="totWIPStock" class="form-control" readonly />
+                                                            </div>
+                                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                <label class="form-label">Total Amount</label>
+                                                                <input id="totAmount" class="form-control" readonly />
+                                                            </div>
+                                `;
+                }
+
+                $("#reportFields").html(html);
+            }
+
+
+            $("#ReportType").change(function () {
+                let reportType = $(this).val();
+                loadReportFields(reportType);
+            });
+
+            // Load initial report type if set
+            loadReportFields($("#ReportType").val());
+
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
@@ -176,7 +236,7 @@
             $('#WorkCenterName').select2();
             $('#ReportType').select2();
             $('#BomRevNo').select2();
-             
+
             //GetBOMTree();
             //GetBomTreeDetailsData();
             FillFinishItemName();
@@ -205,12 +265,12 @@
         // Function to handle ReportType changes
         function handleReportType() {
             var reportType = $('#ReportType').val();
-
+             
             if (reportType === "BOMTREE" || reportType === "DirectBOM") {
                 GetBomTreeDetailsData(); // Call details function for BOMTREE and DirectBOM
                 $('#BomStokeStoreName').hide(); // Hide BOM STOCK fields
                 $('#bomStokeCenter').hide(); // Hide BOM STOCK fields
-            } else if (reportType === "BOMSTOCK") {
+            } else if (reportType === "BOMSTOCK" || reportType === "BOMSTOCK(WITH SUB BOM)" || reportType === "BOMSTOCK(DIRECT CHILD)") {
                 $('#BomStokeStoreName').show(); // Show BOM STOCK fields
                 $('#bomStokeCenter').show(); // Show BOM STOCK fields
                 if ($('#StoreName').val() === "") { // Assuming an input field for Center Name
@@ -590,13 +650,19 @@
             });
         }
         function countAllTotal() {
-
+             
             var rowCount = $('#divStockRegisterBody tr').length;
            
             var TotQty = 0;
+            var TotStoreStock = 0;
+            var TotWIPStock = 0;
+            var TotAmount = 0;
             for (var i = 1; i <= rowCount; i++) {
 
                 TotQty += $('#totQtyG-' + i).text() == '' ? 0 : parseFloat($('#totQtyG-' + i).text());
+                TotStoreStock += $('#totStoreStockG-' + i).text() == '' ? 0 : parseFloat($('#totStoreStockG-' + i).text());
+                TotWIPStock += $('#totWIPStockG-' + i).text() == '' ? 0 : parseFloat($('#totWIPStockG-' + i).text());
+                TotAmount += $('#totAmountG-' + i).text() == '' ? 0 : parseFloat($('#totAmountG-' + i).text());
                 //if(totAmount < 0){
                 //    $('#SAGridRow-' + i).css('background-color', 'red');
                 //}
@@ -604,6 +670,9 @@
 
 
             $('#totQty').val(isNaN(TotQty) ? 0 : TotQty.toFixed(2));
+            $('#totStoreStock').val(isNaN(TotStoreStock) ? 0 : TotStoreStock.toFixed(2));
+            $('#totWIPStock').val(isNaN(TotWIPStock) ? 0 : TotWIPStock.toFixed(2));
+            $('#totAmount').val(isNaN(TotAmount) ? 0 : TotAmount.toFixed(2));
         }
         var currentSearchColumn = null;
 
