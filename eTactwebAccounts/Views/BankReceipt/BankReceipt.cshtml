@@ -529,7 +529,7 @@
             $('#SubVoucherName').select2();
             $('#Currency').select2();
 
-            debugger;
+             ;
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
@@ -775,7 +775,7 @@
         }
 
         function FillEntryID() {
-            debugger;
+             ;
             var VoucherDate = $('#VoucherDate').val();
 
             if (VoucherDate) {
@@ -879,7 +879,7 @@
         }
 
         function FillSONO() {
-            debugger;
+             ;
 
             var accountcode = $('#AccountCode').val();
             var VoucherDate = $('#VoucherDate').val();
@@ -938,7 +938,7 @@
 
 
         function GetSOYear() {
-            debugger;
+             ;
             var SONO = $("#SONo").val();
             var accountcode = $("#AccountCode").val();
             var VoucherDate = $("#VoucherDate").val();
@@ -1257,7 +1257,7 @@
         }
 
         function FillCostCenterName() {
-            debugger;
+             ;
             $.ajax({
                 url: '@Url.Action("FillCostCenterName", "BankReceipt")',
                 type: 'POST',

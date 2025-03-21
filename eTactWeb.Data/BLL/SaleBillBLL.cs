@@ -140,9 +140,9 @@ namespace eTactWeb.Data.BLL
         {
             return await  _SaleBillDAL.GetAdjustedChallanDetailsData(adjustedData,  YearCode,  EntryDate, ChallanDate, AccountCode);
         }
-        //public async Task<ResponseResult> GetReportName()
-        //{
-        //    return await _SaleBillDAL.GetReportName();
-        //}
+        public async Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type,string InvoiceNo,int AccountCode)
+        {
+            return await _SaleBillDAL.GetReportData(EntryId, YearCode, Type,InvoiceNo,AccountCode);
+        }
     }
 }
