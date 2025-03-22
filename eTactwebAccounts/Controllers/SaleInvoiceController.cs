@@ -1112,13 +1112,8 @@ namespace eTactWeb.Controllers
 
             string my_connection_string;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-
-            // Create a list to hold the reports
             List<WebReport> reports = new List<WebReport>();
-
-            // Define the copy types
             string[] copyTypes = { "Original", "Duplicate", "Triplicate", "Office Copy" };
-
             foreach (var copyType in copyTypes)
             {
                 var webReport = new WebReport();
@@ -1126,8 +1121,6 @@ namespace eTactWeb.Controllers
                 var ReportName = _SaleBill.GetReportName();
                 webReport.Report.Dispose();
                 webReport.Report = new Report();
-
-                // Load the report from the database or use default
                 if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
                 {
                     webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
@@ -1136,24 +1129,14 @@ namespace eTactWeb.Controllers
                 {
                     webReport.Report.Load(webRootPath + "\\SaleBill.frx"); // default report
                 }
-
-                // Set parameters for the report
                 webReport.Report.SetParameterValue("entryparam", EntryId);
                 webReport.Report.SetParameterValue("yearparam", YearCode);
                 my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
                 webReport.Report.SetParameterValue("MyParameter", my_connection_string);
                 webReport.Report.SetParameterValue("copyType", copyType);
-
-                // Set the connection string for the data source
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-
-                // Set a parameter for the copy type
                 webReport.Report.SetParameterValue("copyType", copyType);
-
-                // Prepare the report
                 webReport.Report.Prepare();
-
-                // Initialize data sources
                 foreach (var dataSource in webReport.Report.Dictionary.DataSources)
                 {
                     if (dataSource is TableDataSource tableDataSource)
@@ -1162,12 +1145,8 @@ namespace eTactWeb.Controllers
                         tableDataSource.Init(); // Refresh the data source
                     }
                 }
-
-                // Add the report instance to the list
                 reports.Add(webReport);
             }
-
-            // Return the view with all reports
             return View(reports);
 
             //Additional CODE STARTS

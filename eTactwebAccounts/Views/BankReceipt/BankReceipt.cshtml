@@ -1365,7 +1365,7 @@
         }
 
         function PopUpForPendingVouchers(Action, SrNO) {
-            debugger
+             
             $('#CheckUnCheckAll').prop('checked', false);
             if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 $('#DisplayRoutingDetailModal').modal('hide');
@@ -1409,14 +1409,14 @@
         }
 
         function AdjustAmount() {
-
+            debugger
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var DRAmt = 0;
             var CRAmt = 0;
             var TotalDRAmt = 0;
             var TotalCrAmt = 0;
             for (var i = 1; i <= rowCount; i++) {
-
+                debugger
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
                     var drcr = $(`#PopUpType-${i}`).text().trim();
                     var DRAmtrow = parseFloat($(`#PopUpDrAmt-${i}`).text().trim());
@@ -1438,8 +1438,8 @@
                     TotalCrAmt += CRAmtrow;
                 }
             }
-            $('#PopDrAmt').val(DRAmt.toFixed(2));
-            $('#PopCrAmt').val(CRAmt.toFixed(2));
+            $('#PopDrAmt').val(CRAmt.toFixed(2));
+            $('#PopCrAmt').val(DRAmt.toFixed(2));
             $('#PopUpBalance').val((TotalDRAmt - TotalCrAmt).toFixed(2));
             $('#PopAdjustmentAmt').val((DRAmt - CRAmt).toFixed(2));
         }
@@ -1806,7 +1806,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-            debugger 
+              
             var RowCount = $('#divBankReceiptDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1818,7 +1818,7 @@
                     type: "POST",
                     data: { SrNO: SrNO },
                     success: function (data) {
-                        debugger
+                         
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
                         if (ModeOfAdjustment == "Against Ref") {
@@ -1897,10 +1897,10 @@
         })
 
         function CheckUnCheckCheck(i) {
-             
+              
             var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             if ($('#CheckUnCheck-' + i).is(':checked') == true) {
-                if(parseFloat($('#AdjustAmt-' +i).text()) == 0){
+                if(parseFloat($('#AdjustAmt-' +i).val()) == 0){
                     $('#AdjustAmt-' + i).val(($('#BalanceAmt-' + i).text()));
                     $('#BalanceAmt-' + i).text(0);
                 }

@@ -22,14 +22,7 @@
                             <label asp-for="Unit" class="form-label"></label>
                             <input asp-for="Unit" class="form-control" />
                         </div>
-                        <div class="col-lg-6 col-md-4 col-sm-6 col-xs-12">
-                            <label asp-for="CustJwAdjustmentMandatory" class="form-label">Cust Jw Adj Mandatory</label>
-                            <select asp-for="CustJwAdjustmentMandatory" class="form-control">
-                                <option value="">-Select-</option>
-                                <option value="Y">Yes</option>
-                                <option value="N">No</option>
-                            </select>
-                        </div>
+                        
                         
                     </div>
                 </div>
@@ -129,12 +122,21 @@
                     <label class="form-label">Remark</label>
                     <input asp-for="Remark" class="form-control" />
                 </div>
+                <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12" style="width:100px;">
+                    <label asp-for="CustJwAdjustmentMandatory" class="form-label">Cust Jw Adj Mandatory</label>
+                    <select asp-for="CustJwAdjustmentMandatory" class="form-control">
+                        <option value="">-Select-</option>
+                        <option value="Y">Yes</option>
+                        <option value="N">No</option>
+                    </select>
+                </div>
                 <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
                     <label asp-for="RunnerItemCode" class="form-label">Runner Item</label>
                     <select asp-for="RunnerItemCode" class="form-select" asp-items="@(new SelectList(Model.NameList,"Text","Value"))">
                         <option value="">-Select-</option>
                     </select>
                 </div>
+               
                 <div class="col-lg-6">
                     <div class="row g-2 gx-3">
                         <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
@@ -161,6 +163,7 @@
                             <label asp-for="MPNNo" class="form-label">MPN No</label>
                             <input asp-for="MPNNo" class="form-control" />
                         </div>
+                        
                     </div>
                 </div>
             </div>

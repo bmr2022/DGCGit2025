@@ -1,5 +1,75 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model eTactWeb.DOM.Models.MaterialConversionModel;
+@if (Model.MaterialConversionGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.MaterialConversionGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small " style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditItemRow(@item.SrNO);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNO);" asp-action="DeleteItemRow">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@Cntr</td>
+            <td>@item.OriginalPartCode<input type="hidden" asp-for="OriginalItemCode" /></td>
+            <td>@item.OriginalItemName<input type="hidden" asp-for="OriginalItemCode" /></td>
+            <td>@item.Unit</td>
+            <td>@item.OriginalQty</td>
+            <td>@item.AltItemName</td>
+            <td>@item.AltUnit</td>
+            <td>@item.AltOriginalQty</td>
+            <td>@item.OriginalStoreId</td>
+            <td>@item.AltStoreId</td>
+            <td>@item.OrginalWCID</td>
+            <td>@item.AltWCID</td>
+            <td>@item.BatchNo</td>
+            <td>@item.UniqueBatchNo</td>
+            <td>@item.BatchStock</td>
+            <td>@item.TotalStock</td>
+            <td>@item.AltStock</td>
+            <td>@item.PlanNo</td>
+            <td>@item.PlanYearCode</td>
+            <td>@item.PlanDate</td>
+            <td>@item.ProdSchNo</td>
+            <td>@item.ProdSchYearCode</td>
+            <td>@item.ProdSchDatetime</td>
+            <td>@item.OrigItemRate</td>
+            <td>@item.Remark</td>
+
+        </tr>
+    }
 }
