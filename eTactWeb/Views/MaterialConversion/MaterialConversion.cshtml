@@ -88,13 +88,13 @@
                                         <label asp-for="SlipDate" class="form-label">SlipDate</label>
                                         <input asp-for="SlipDate" class="form-control" readonly />
                                     </div>
-                                      <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                         <label asp-for="StoreName" class="form-label">StoreName</label>
                                         <select class="form-control" asp-for="StoreName">
                                             <option value="">-Select-</option>
                                         </select>
                                     </div>
-                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
                                         <label asp-for="WorkCenterName" class="form-label">WorkCenterName</label>
                                         <select class="form-control" asp-for="WorkCenterName">
                                             <option value="">-Select-</option>
@@ -122,7 +122,8 @@
                                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="GridLabels">
                                                             <tr>
                                                                 
-                                                                <th>OriginalItemCode</th>
+                                                                <th>OriginalItemName</th>
+                                                                <th>OriginalPartCode</th>
                                                                 <th>OriginalQty</th>
                                                                 <th>Unit</th>
                                                                 <th>AltItemCode</th>
@@ -152,10 +153,18 @@
                                                               
                                                                 
                                                                 <td>
-                                                                    <select class="form-select" asp-for="OriginalItemCode" style="width:100px;" onchange="FillCurrentBatchINStore(); GetTotalStockQty();">
-                                                                        <option value="" disabled selected>-Select-</option>
+                                                                    <input type="hidden" asp-for="OriginalItemCode" />
+                                                                    <select class="form-select" asp-for="OriginalPartCode" style="width:100px;">
+                                                                        <option value="">-Select-</option>
                                                                     </select>
                                                                 </td>
+                                                                 <td>
+                                                                    <input type="hidden" asp-for="OriginalItemCode" />
+                                                                    <select class="form-select" asp-for="OriginalItemName" style="width:100px;" >
+                                                                        <option value="">-Select-</option>
+                                                                    </select>
+                                                                </td>
+
                                                                 <td><input asp-for="OriginalQty" style="width:70px !important" /></td>
                                                                 <td><input asp-for="Unit" style="width:70px !important" /></td>
                                                                 <td>
@@ -199,7 +208,7 @@
 
                                             <div class="d-flex">
                                                 <div class="col-md-10">
-                                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
+                                                        <button type="button" id="GridButton" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
                                                         <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
                                                     </button>
                                                 </div>
@@ -219,8 +228,14 @@
                                                                         <th data-columnno="2" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
                                                                                 <i class="fa" aria-hidden="true"></i>
+                                                                            </span>OriginalPartCode
+                                                                        </th>
+                                                                         <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                                <i class="fa" aria-hidden="true"></i>
                                                                             </span>OriginalItemName
                                                                         </th>
+
                                                                         <th data-columnno="3" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
                                                                                 <i class="fa" aria-hidden="true"></i>
@@ -377,10 +392,7 @@
                                                     <label asp-for="ApprovedBy" class="form-label">ApprovedBy</label>
                                                     <input asp-for="ApprovedBy" class="form-control" readonly />
                                                 </div>
-                                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                    <label asp-for="ActualEntryDate" class="form-label">Actual Entered Date</label>
-                                                    <input asp-for="ActualEntryDate " class="form-control" readonly />
-                                                </div>
+                                                
                                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                     <label asp-for="CC" class="form-label">CC</label>
                                                     <input asp-for="CC " class="form-control" readonly />
@@ -493,6 +505,31 @@
 
             }
             //$('#BillNo').removeClass('Valid');
+            $('#OriginalPartCode').rules("remove", "required");
+            $('#OriginalItemName').rules("remove", "required");
+            $('#Unit').rules("remove", "required");
+            $('#OriginalQty').rules("remove", "required");
+            $('#AltItemName').rules("remove", "required");
+            $('#AltUnit').rules("remove", "required");
+            $('#AltOriginalQty').rules("remove", "required");
+            $('#OriginalStoreId').rules("remove", "required");
+            $('#AltStoreId').rules("remove", "required");
+            $('#OrginalWCID').rules("remove", "required");
+            $('#AltWCID').rules("remove", "required");
+            $('#BatchNo').rules("remove", "required");
+            $('#UniqueBatchNo').rules("remove", "required");
+            $('#BatchStock').rules("remove", "required");
+            $('#TotalStock').rules("remove", "required");
+            $('#AltStock').rules("remove", "required");
+            $('#PlanNo').rules("remove", "required");
+            $('#PlanYearCode').rules("remove", "required");
+            $('#PlanDate').rules("remove", "required");
+            $('#ProdSchNo').rules("remove", "required");
+            $('#ProdSchYearCode').rules("remove", "required");
+            $('#ProdSchDatetime').rules("remove", "required");
+            $('#OrigItemRate').rules("remove", "required");
+            $('#Remark').rules("remove", "required");
+
             $('#WONO').select2();
             $('#WOYear').select2();
             $('#RsNo').select2();
@@ -503,19 +540,39 @@
             $('#FromStore').select2();
             $('#AltPartCode').select2();
             $('#AltItemName').select2();
-            $('#AltItemName').select2();
             $('#ToStore').select2();
+            $('#StoreName').select2();
+            $('#WorkCenterName').select2();
 
             $('#totalRows').text($('#divStockRegisterBody tr').length);
-            FillLedgerName();
+            FillEntryID();
+            FillSlipNo();
+            FillBranch();
+            FillStoreName();
+            FillWorkCenterName();
+            GetOriginalPartCode();
+            GetOriginalItemName();
             // if ($("#Mode").val() !== "U") {
             //     FillLedgerName();
             // }
+
+            $('#OriginalItemName').change(function () {
+                if ($('#Mode').val() !== "U") {
+                    $('#OriginalItemCode').val($('#OriginalItemName').val());
+                }
+            });
+            $('#OriginalPartCode').change(function () {
+                if ($('#Mode').val() !== "U") {
+                    $('#OriginalItemCode').val($('#OriginalPartCode').val());
+                }
+            });
 
             var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 
             $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#ProdSchDatetime').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#PlanDate').datepicker({ dateFormat: 'dd/mm/yy' });
 
             if ($('#Mode').val() == "U") {
 
@@ -541,87 +598,213 @@
 
         });
 
-       
 
-       
-
-        function GetOpeningAmt() {
-
-            var OpeningYearCode = $('#OpeningYearCode').val();
-            var AccountCode = $('#AccountCode').val();
-            $('#AccountCode').val(AccountCode);
+        function GetOriginalPartCode() {
             $.ajax({
-                url: '@Url.Action("GetOpeningAmt", "LedgerPartyWiseOpening")',
+                url: '@Url.Action("GetOriginalPartCode", "MaterialConversion")', // Action that returns FillGroup data
                 type: 'POST',
-                data: {
-                    OpeningYearCode: OpeningYearCode,
-                    AccountCode: AccountCode
-                },
-                async: false,
-                success: function (data, status, xhr) {
-                    var obj = $.parseJSON(data);
-                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-
-
-                        $('#Balance').val(obj.Result[0].Amount || 0);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert('Failed to load opening amount.');
-                }
-            });
-        }
-        function GetOpeningAmtDRCR() {
-            var OpeningYearCode = $('#OpeningYearCode').val();
-            var AccountCode = $('#AccountCode').val();
-            $.ajax({
-                url: '@Url.Action("GetOpeningAmt", "LedgerPartyWiseOpening")',
-                type: 'POST',
-                data: {
-                    OpeningYearCode: OpeningYearCode,
-                    AccountCode: AccountCode
-                },
-                async: false,
-                success: function (data, status, xhr) {
-                    var obj = $.parseJSON(data);
-                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-
-                        $('#DRCR').val(obj.Result[0].DrCr || 0);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert('Failed to load opening amount.');
-                }
-            });
-        }
-       
-        function FillLedgerName() {
-            var OpeningYearCode = $('#OpeningYearCode').val();
-            var Mode = $('#Mode').val();
-            $.ajax({
-                url: '@Url.Action("FillLedgerName", "LedgerPartyWiseOpening")',
-                type: 'POST',
-                data: { OpeningYearCode: OpeningYearCode },
                 async: false,
                 success: function (response, status, error) {
-                    var StoreTypeDropdown = $('#LedgerName');
+
+                    var OrgPartCodeDropdown = $('#OriginalPartCode');
                     var obj = $.parseJSON(response);
-                    StoreTypeDropdown.empty();
-                    StoreTypeDropdown.append('<option value="">--Select--</option>');
-                    $.each(obj.Result, function (index, LedgerName) {
-                        StoreTypeDropdown.append('<option value="' + LedgerName.Account_Code + '">' + LedgerName.Account_Name + '</option>');
+                    OrgPartCodeDropdown.empty();
+                    OrgPartCodeDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, PartCode) {
+
+                        OrgPartCodeDropdown.append('<option value="' + PartCode.itemcode + '">' + PartCode.PartCode + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var OriginalPartCode = '@Model.OriginalPartCode';
+                        $('#OriginalPartCode').val(OriginalPartCode);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+
+        }
+
+        function GetOriginalItemName() {
+            $.ajax({
+                url: '@Url.Action("GetOriginalItemName", "MaterialConversion")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var OrgItemNameDropdown = $('#OriginalItemName');
+                    var obj = $.parseJSON(response);
+                    OrgItemNameDropdown.empty();
+                    OrgItemNameDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, ItemName) {
+                        OrgItemNameDropdown.append('<option value="' + ItemName.itemcode + '">' + ItemName.ItemName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var OriginalItemName = '@Model.OriginalItemName';
+                        $('#OriginalItemName').val(OriginalItemName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        $(document).on('select2:select', '#OriginalItemName,#OriginalPartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'OriginalItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+
+                var v = $('#' + ID).select2('val');
+                if (ID == "OriginalPartCode") {
+                    $("#OriginalItemName").val(v).trigger("change");
+                }
+
+                if (ID == "OriginalItemName") {
+                    $("#OriginalPartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+     
+
+
+        function FillEntryID() {
+
+            var YearCode = $('#OpeningYearCode').val();
+            $.ajax({
+                url: '@Url.Action("FillEntryID", "MaterialConversion")',
+                type: 'POST',
+                data: {
+                    YearCode: YearCode
+                },
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                            $('#EntryId').val(obj.Result[0].EntryId || 0);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load Entry Id.');
+                }
+            });
+        }
+        function FillSlipNo() {
+
+            var YearCode = $('#OpeningYearCode').val();
+            $.ajax({
+                url: '@Url.Action("FillEntryID", "MaterialConversion")',
+                type: 'POST',
+                data: {
+                    YearCode: YearCode
+                },
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                        $('#SlipNo').val(obj.Result[0].MatConvSlipNo || 0);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load Slip NO.');
+                }
+            });
+        }
+        function FillBranch() {
+
+            $.ajax({
+                url: '@Url.Action("FillBranch", "MaterialConversion")',
+                type: 'POST',
+             
+                async: false,
+                success: function (data, status, xhr) {
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                        $('#CC').val(obj.Result[0].Com_Name || 0);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load Slip NO.');
+                }
+            });
+        }
+
+        function FillStoreName() {
+            $.ajax({
+                url: '@Url.Action("FillStoreName", "MaterialConversion")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var StoreNameDropdown = $('#StoreName');
+                    var obj = $.parseJSON(response);
+                    StoreNameDropdown.empty();
+                    StoreNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, Store) {
+                        StoreNameDropdown.append('<option value="' + Store.store_name + '">' + Store.store_name + '</option>');
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                      
-                        //$('#LedgerName').val(LedgerName).trigger("change");
-                        $('#LedgerName').val(LedgerName);
-                        GetOpeningAmt();
+                        var StoreName = "@Model.StoreName"
+                        $('#StoreName').val(StoreName);
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                    alert('Failed to load StoreName .');
+                }
+            });
+        }
+        function FillWorkCenterName() {
+            $.ajax({
+                url: '@Url.Action("FillWorkCenterName", "MaterialConversion")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var WorkCenterNameDropdown = $('#WorkCenterName');
+                    var obj = $.parseJSON(response);
+                    WorkCenterNameDropdown.empty();
+                    WorkCenterNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, WorkCenter) {
+                        WorkCenterNameDropdown.append('<option value="' + WorkCenter.WorkCenterDescription + '">' + WorkCenter.WorkCenterDescription + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var WorkCenterName = "@Model.WorkCenterName"
+                        $('#WorkCenterName').val(WorkCenterName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load WorkCenterName .');
                 }
             });
         }
@@ -632,7 +815,58 @@
             $('#BillNo,#BillDate,#Type,#TransactionType,#DueDate,#Unit').val('');
         }
 
-      
+        $('#GridButton').click(function (e) {
+            e.preventDefault();
+            debugger
+            var SchData = {
+                OriginalPartCode: $('#OriginalPartCode').val(),
+                OriginalItemName: $('#OriginalItemName').val(),
+                Unit: $('#Unit').val(),
+                OriginalQty: $('#OriginalQty').val(),
+                AltItemName: $('#AltItemName').val(),
+                AltUnit: $('#AltUnit').val(),
+                AltOriginalQty: $('#AltOriginalQty').val(),
+                OriginalStoreId: $('#OriginalStoreId').val(),
+                AltStoreId: $('#AltStoreId').val(),
+                OrginalWCID: $('#OrginalWCID').val(),
+                AltWCID: $('#AltWCID').val(),
+                BatchNo: $('#BatchNo').val(),
+                UniqueBatchNo: $('#UniqueBatchNo').val(),
+                BatchStock: $('#BatchStock').val(),
+                TotalStock: $('#TotalStock').val(),
+                AltStock: $('#AltStock').val(),
+                PlanNo: $('#PlanNo').val(),
+                PlanYearCode: $('#PlanYearCode').val(),
+                PlanDate: $('#PlanDate').val(),
+                ProdSchNo: $('#ProdSchNo').val(),
+                ProdSchYearCode: $('#ProdSchYearCode').val(),
+                ProdSchDatetime: $('#ProdSchDatetime').val(),
+                OrigItemRate: $('#OrigItemRate').val(),
+                Remark: $('#Remark').val(),
+                OriginalItemCode: $('#OriginalItemCode').val(),
+               OriginalPartCode: $('#OriginalPartCode').find(":selected").text(),
+               OriginalItemName: $('#OriginalItemName').find(":selected").text(),
+                OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
+            };
+            console.log(SchData);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToGridData", "MaterialConversion")',
+                data: { model: SchData },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+
+                        $('#divStockGrid').html(result);
+                        TotalNoOfRows();
+                    } else if (xhr.status == 207) {
+                        $.notify('Duplicate Item...!', "info");
+                    }
+                },
+                error: function () {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
 
 
         function TotalNoOfRows() {
@@ -692,20 +926,33 @@
                     if (obj != null) {
                         EditEachItem = true;
 
-                        $('#BillNo').val(obj[0].BillNo).trigger("change");
-                        $('#BillDate').val(obj[0].BillDate).trigger("change");
-                        $('#BillYear').val(obj[0].BillYear).trigger("change");
-                        $('#BillNetAmt').val(obj[0].BillNetAmt).trigger("change");
-                        $('#PendAmt').val(obj[0].PendAmt).trigger("change");
-                        $('#Type').val(obj[0].Type).trigger("change");
-                        $('#TransactionType').val(obj[0].TransactionType).trigger("change");
-                        $('#DueDate').val(obj[0].DueDate).trigger("change");
+                        $('#OriginalPartCode').val(obj[0].OriginalPartCode).trigger("change.select2");
+                        $('#OriginalItemName').val(obj[0].OriginalItemName).trigger("change.select2");
+
+                        $('#OriginalItemCode').val(obj[0].OriginalItemCode).trigger("change");
                         $('#Unit').val(obj[0].Unit).trigger("change");
-                        //$('#EntryDate').val(obj[0].EntryDate).trigger("change");
-                        $('#U_S').val(obj[0].U_S).trigger("change");
-                        $('#Adjustment').val(obj[0].Adjustment).trigger("change");
-                        //$('#SrNO').val(obj[0].SrNO).trigger("change");
-                        // var currentSrNo = $('#SrNO').val();
+                        $('#OriginalQty').val(obj[0].OriginalQty).trigger("change");
+                        $('#AltItemName').val(obj[0].AltItemName).trigger("change");
+                        $('#AltUnit').val(obj[0].AltUnit).trigger("change");
+                        $('#AltOriginalQty').val(obj[0].AltOriginalQty).trigger("change");
+                        $('#OriginalStoreId').val(obj[0].OriginalStoreId).trigger("change");
+                        $('#AltStoreId').val(obj[0].AltStoreId).trigger("change");
+                        $('#OrginalWCID').val(obj[0].OrginalWCID).trigger("change");
+                        $('#AltWCID').val(obj[0].AltWCID).trigger("change");
+                        $('#BatchNo').val(obj[0].BatchNo).trigger("change");
+                        $('#UniqueBatchNo').val(obj[0].UniqueBatchNo).trigger("change");
+                        $('#BatchStock').val(obj[0].BatchStock).trigger("change");
+                        $('#TotalStock').val(obj[0].TotalStock).trigger("change");
+                        $('#AltStock').val(obj[0].AltStock).trigger("change");
+                        $('#PlanNo').val(obj[0].PlanNo).trigger("change");
+                        $('#PlanYearCode').val(obj[0].PlanYearCode).trigger("change");
+                        $('#PlanDate').val(obj[0].PlanDate).trigger("change");
+                        $('#ProdSchNo').val(obj[0].ProdSchNo).trigger("change");
+                        $('#ProdSchYearCode').val(obj[0].ProdSchYearCode).trigger("change");
+                        $('#ProdSchDatetime').val(obj[0].ProdSchDatetime).trigger("change");
+                        $('#OrigItemRate').val(obj[0].OrigItemRate).trigger("change");
+                        $('#Remark').val(obj[0].Remark).trigger("change");
+
                         // var newSrNo = obj[0].SrNO;
                         // if (currentSrNo !== newSrNo) {
                         //     $('#SrNO').val(newSrNo).trigger("change");
@@ -733,14 +980,7 @@
                 success: function (data, status, xhr) {
                     $('#divStockGrid').html(data);
                     $.notify("Process deleted from Grid", "info");
-                    // EditEachItem = false;
-                    // $('[id^=editItemGrid-]').css("pointer-events", "auto");
-                    // $('[id^=editItemGrid-]').css("cursor", "pointer");
-
-                    // setTimeout(function () {
-                    //     $('[id^=editItemGrid-]').css("pointer-events", "auto").css("cursor", "pointer");
-                    // }, 100);
-
+                  
                 },
                 error: function (response, status, xhr) {
 
@@ -752,50 +992,7 @@
                 }
             });
         }
-        //var editingNow = false;
-
-        // function EditItemRow(SrNO) {
-        //
-        //     if (!editingNow) {
-        //         return new Promise((resolve, reject) => {
-        //             $.ajax({
-        //                 url: '@Url.Action("EditItemRow")',
-        //                 type: "POST",
-        //                 data: { SeqNo: SrNO, Mode: "U" }
-        //             })
-        //                 .done(function (data) {
-        //                     editingNow = true;
-        //                     var obj = $.parseJSON(data);
-        //                     DeleteItemRow(SrNO)
-        //                         .then(() => {
-        //                             $('#BillNo').val(obj[0].BillNo).trigger('change');
-        //                             $('#BillDate').val(obj[0].BillDate).trigger('change');
-        //                             $('#BillYear').val(obj[0].BillYear).trigger('change');
-        //                             $('#BillNetAmt').val(obj[0].BillNetAmt).trigger('change');
-        //                             $('#PendAmt').val(obj[0].PendAmt).trigger('change');
-        //                             $('#Type').val(obj[0].Type).trigger('change');
-        //                             $('#TransactionType').val(obj[0].TransactionType).trigger('change');
-        //                             $('#DueDate').val(obj[0].DueDate).trigger('change');
-        //                             $('#Unit').val(obj[0].Unit).trigger('change');
-        //                             $('#EntryDate').val(obj[0].EntryDate).trigger('change');
-        //                             $('#U_S').val(obj[0].U_S).trigger('change');
-        //                             $('#Adjustment').val(obj[0].Adjustment).trigger('change');
-
-        //                             var currentSrNo = $('#SrNO').val();
-        //                             var newSrNo = obj[0].SrNO;
-        //                             if (currentSrNo !== newSrNo) {
-        //                                 $('#SrNO').val(newSrNo).trigger('change');
-        //                             }
-        //                         })
-        //                         .catch(reject);
-        //                 })
-        //                 .fail(reject);
-        //             $.notify("Item Updated from Grid", "info");
-        //         });
-        //     } else {
-        //         $.notify("Cannot edit as one item is already on above edit grid", "error");
-        //     }
-        // }
+       
 
         function PressBack() {
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
