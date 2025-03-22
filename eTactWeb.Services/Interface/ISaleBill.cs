@@ -29,6 +29,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd, string schNo, int schYearCode);
         Task<ResponseResult> FillStore();
         Task<ResponseResult> AllowTaxPassword();
+        Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type, string InvoiceNo, int AccountCode);
         Task<ResponseResult> FillSOPendQty(int saleBillEntryId, string saleBillNo, int saleBillYearCode,string sono, int soYearcode, string custOrderNo, int itemCode, int accountCode, string schNo, int schYearCode);
         Task<ResponseResult> SaveSaleBill(SaleBillModel model, DataTable SBGrid,DataTable TaxDetailDT,DataTable DrCrDetailDT,DataTable AdjDetailDT ,DataTable AdjChallanDetailDT);
         Task<ResponseResult> FILLSOScheduleDate(string sono, int accountCode, int soYearCode, string schNo, int schYearCode);
@@ -39,7 +40,7 @@ namespace eTactWeb.Services.Interface
         Task<SaleBillModel> GetViewByID(int ID, string Mode, int YC);
         Task<ResponseResult> DeleteByID(int ID, int YC, string machineName);
 
-        Task<List<CustomerJobWorkIssueAdjustDetail>> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
-        Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type, string InvoiceNo, int AccountCode);
+        Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
+        //Task<ResponseResult> GetReportName();
     }
 }
