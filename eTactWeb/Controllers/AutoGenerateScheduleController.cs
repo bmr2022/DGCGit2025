@@ -57,16 +57,22 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        //public async Task<JsonResult> GetAutoGenSchDetailData(string ReportType, string SchEffectivedate, string MrpNo, int MrpYearCode, int MrpEntryId, int CreatedBy, string CC, int UID, string MachineName)
+        //{
+        //    var JSON = await _IAutoGenerateSchedule.GetAutoGenSchDetailData( ReportType,  SchEffectivedate,  MrpNo,  MrpYearCode,  MrpEntryId,  CreatedBy,  CC,  UID,  MachineName);
+        //    string JsonString = JsonConvert.SerializeObject(JSON);
+        //    return Json(JsonString);
+        //}
 
         public async Task<IActionResult> GetAutoGenSchDetailData(string ReportType, string SchEffectivedate, string MrpNo, int MrpYearCode, int MrpEntryId, int CreatedBy, string CC, int UID, string MachineName)
         {
             var model = new AutoGenerateScheduleModel();
-            model = await _IAutoGenerateSchedule.GetAutoGenSchDetailData(ReportType,SchEffectivedate,MrpNo,MrpYearCode, MrpEntryId,  CreatedBy,  CC,  UID,  MachineName);
-            if(ReportType== "List Of Item For Schedule")
+            model = await _IAutoGenerateSchedule.GetAutoGenSchDetailData(ReportType, SchEffectivedate, MrpNo, MrpYearCode, MrpEntryId, CreatedBy, CC, UID, MachineName);
+            if (ReportType == "List Of Item For Schedule")
             {
-                return PartialView("_AutoGenSchListOfItem", model); 
+                return PartialView("_AutoGenSchListOfItem", model);
             }
-            if(ReportType== "Generate Purchase Schedule")
+            if (ReportType == "Generate Purchase Schedule")
             {
                 return PartialView("_AutoGenPurchaseSch", model);
             }

@@ -547,9 +547,9 @@ namespace eTactWeb.Controllers
             return PartialView("_SADetailDashboardGrid", model);
         }
 
-        public async Task<IActionResult> DeleteByID(int ID, int YC, int ItemCode, string PartCode, string ItemName, string StoreWorkCenter, string StoreName, string WCName, string FromDate, string ToDate, string SummaryDetail,int entryByEmp,string EntryByMachineName)
+        public async Task<IActionResult> DeleteByID(int ID, int YC, int ItemCode, string PartCode, string EntryDate,string ItemName, string StoreWorkCenter, string StoreName, string WCName, string FromDate, string ToDate, string SummaryDetail,int entryByEmp,string EntryByMachineName)
         {
-            var Result = await IStockAdjust.DeleteByID(ID, YC,entryByEmp,EntryByMachineName).ConfigureAwait(false);
+            var Result = await IStockAdjust.DeleteByID(ID, YC,entryByEmp,EntryByMachineName,EntryDate).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -561,7 +561,7 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-            return RedirectToAction("Dashboard", new { ItemCode = ItemCode, PartCode = PartCode, ItemName = ItemName, StoreWorkCenter = StoreWorkCenter, StoreName = StoreName, WCName = WCName, FromDate = FromDate, ToDate = ToDate, SummaryDetail = SummaryDetail, entryByEmp=entryByEmp,EntryByMachineName=EntryByMachineName });
+            return RedirectToAction("Dashboard", new { ItemCode = ItemCode, PartCode = PartCode, ItemName = ItemName, StoreWorkCenter = StoreWorkCenter, StoreName = StoreName, WCName = WCName, FromDate = ParseFormattedDate(FromDate), ToDate = ParseFormattedDate(ToDate), SummaryDetail = SummaryDetail, entryByEmp=entryByEmp,EntryByMachineName=EntryByMachineName });
         }
         public async Task<IActionResult> GetSearchData(SADashborad model)
         {

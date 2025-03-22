@@ -15,11 +15,12 @@
                 <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item_Name</th>
                 <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item_Code</th>
                 <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WorkCenter</th>
-                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PlanNoEntryId</th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PlanNoYearCode</th>
-                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdSchEntryid</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdSchYearCode</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WorkCenter</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom No</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PlanNoEntryId</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PlanNoYearCode</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdSchEntryid</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdSchYearCode</th>
 
             </tr>
         </thead>
@@ -55,7 +56,8 @@
                             <td id="totCrG-@Cntr">@item.Item_Name</td>
                             <td id="totBalG-@Cntr">@item.Item_Code</td>
                             <td id="PendingQty-@Cntr">@item.Qty</td>
-                            <td id="PendingWorkCenter-@Cntr">@item.WorkCenter<input type="hidden" asp-for="@item.WcId" value="@item.WcId"/></td>
+                            <td id="PendingWorkCenter-@Cntr">@item.WorkCenter<input id="PendingWcId-@Cntr" type="hidden" value="@item.WcId"/></td>
+                            <td id="PendingBomNo-@Cntr">@item.BomNo</td>
                             <td id="PendingPlanNoEntryId-@Cntr">@item.PlanNoEntryId</td>
                             <td id="PendingPlanNoYearCode-@Cntr">@item.PlanNoYearCode</td>
                             <td id="PendingProdSchEntryid-@Cntr">@item.ProdSchEntryid</td>

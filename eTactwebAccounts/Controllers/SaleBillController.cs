@@ -330,7 +330,7 @@ namespace eTactWeb.Controllers
         }
 
 
-        public static DataTable GetAdjustChallanDetailTable(List<CustomerJobWorkIssueAdjustDetail> model)
+        public static DataTable GetAdjustChallanDetailTable(List<CustomerInputJobWorkIssueAdjustDetail> model)
         {
             DataTable Table = new();
             Table.Columns.Add("ItemCode", typeof(int));
@@ -366,7 +366,7 @@ namespace eTactWeb.Controllers
                         Item.CustOrderNo ?? string.Empty,
                         Item.SOYearCode,
                         Item.SchNo ?? string.Empty,
-                        Item.SchYearcode,
+                        Item.SOYearCode,
                         Item.BOMIND ?? string.Empty,
                         Item.BOMNO,
                         Item.BOMEffDate == null ? string.Empty : ParseFormattedDate(Item.BOMEffDate) ,
@@ -381,7 +381,7 @@ namespace eTactWeb.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode, int itemCode)
+        public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerInputJobWorkIssueAdjustDetail> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode, int itemCode)
         {
             try
             {

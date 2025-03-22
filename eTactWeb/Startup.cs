@@ -167,6 +167,7 @@ namespace eTactWeb
             services.TryAddScoped<IOutStanding, OutStandingBLL>();
             services.TryAddScoped<IIndentRegister, IndentRegisterBLL>();
             services.TryAddScoped<IAutoGenerateSchedule, AutoGenerateScheduleBLL>();
+            services.TryAddScoped<IMaterialConversion, MaterialConversionBLL>();
 
 
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();

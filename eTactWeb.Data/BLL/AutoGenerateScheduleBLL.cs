@@ -33,10 +33,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _AutoGenerateScheduleDAL.GetMrpYearCode( SchEffectivedate, YearCode, MrpNo);
         }
+        //public async Task<ResponseResult> GetAutoGenSchDetailData(string ReportType, string SchEffectivedate, string MrpNo, int MrpYearCode, int MrpEntryId, int CreatedBy, string CC, int UID, string MachineName)
+        //{
+        //    return await _AutoGenerateScheduleDAL.GetAutoGenSchDetailData(ReportType, SchEffectivedate, MrpNo, MrpYearCode, MrpEntryId, CreatedBy, CC, UID, MachineName);
+        //}
 
         public async Task<AutoGenerateScheduleModel> GetAutoGenSchDetailData(string ReportType, string SchEffectivedate, string MrpNo, int MrpYearCode, int MrpEntryId, int CreatedBy, string CC, int UID, string MachineName)
         {
-            return await _AutoGenerateScheduleDAL.GetAutoGenSchDetailData(ReportType, SchEffectivedate, MrpNo, MrpYearCode, MrpEntryId, CreatedBy, CC,UID, MachineName);
+            return await _AutoGenerateScheduleDAL.GetAutoGenSchDetailData(ReportType, SchEffectivedate, MrpNo, MrpYearCode, MrpEntryId, CreatedBy, CC, UID, MachineName);
         }
     }
 }

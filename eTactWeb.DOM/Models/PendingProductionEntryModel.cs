@@ -22,6 +22,7 @@ namespace eTactWeb.DOM.Models
         public int ProdSchYearCode { get; set; }
         public string? WorkCenter { get; set; }
         public int WcId {  get; set; }
+        public int BomNo { get; set; }
         public IList<PendingProductionEntryModel> PendingProductionEntryGrid { get; set; }
 
     }

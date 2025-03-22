@@ -107,6 +107,7 @@ namespace eTactWeb.Controllers
 
             return View(MainModel); // Pass the model with old data to the view
         }
+
         public async Task<IActionResult> GetPendingProductionEntry(int Yearcode)
         {
             var model = new PendingProductionEntryModel();
@@ -256,6 +257,7 @@ namespace eTactWeb.Controllers
                     MainModel.ProdPlan = PendingProductionEntryModel.PlanNo;
                     MainModel.ProdPlanYear = PendingProductionEntryModel.PlanNoYearCode;
                     MainModel.ProdPlanDate = PendingProductionEntryModel.PlanNoDate;
+                    MainModel.BOMNo = PendingProductionEntryModel.BomNo;
                 }
                 //_MemoryCache.Set("KeyMIRGrid", MainModel1, cacheEntryOptions);
             }
@@ -357,7 +359,7 @@ namespace eTactWeb.Controllers
                             return View("Error", Result);
                         }
                     }
-                    return RedirectToAction(nameof(ProductionEntry));
+                    return RedirectToAction(nameof(ProductionEntryDashboard));
                 }
             }
             catch (Exception ex)
