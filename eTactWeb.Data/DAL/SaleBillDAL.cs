@@ -42,7 +42,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type,string InvoiceNo,int AccountCode)
+        public async Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type, string InvoiceNo, int AccountCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -800,7 +800,7 @@ namespace eTactWeb.Data.DAL
                 if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
                 //if (ResponseResult != null && ResponseResult.Tables.Count > 0 && ResponseResult.Tables.Cast<DataTable>().Any(table => table.Rows.Count > 0))
                 {
-                   model =  PrepareAdjustChallanView(ResponseResult.Result);
+                    model = PrepareAdjustChallanView(ResponseResult.Result);
                 }
             }
             catch (Exception ex)
@@ -1245,6 +1245,9 @@ namespace eTactWeb.Data.DAL
 
             var ItemGrid = new List<CustomerJobWorkIssueAdjustDetail>();
             var bomItemGrid = new List<BomCustomerJWIssChallanADJ>();
+            var bomInputItemGrid = new List<CustomerInputJobWorkIssueAdjustDetail>();
+            var custJobWorkChallanAdjGrid = new List<CustomerJobWorkChallanAdj>();
+            //var custJobWorkChallanAdjmodel = new CustomerJobWorkChallanAdj();
             DS.Tables[0].TableName = "CustomerJobWorkAdjustDetail";
             int cnt = 0;
 
@@ -1263,6 +1266,7 @@ namespace eTactWeb.Data.DAL
                                  RecPartCode  = row["RecPartCode"].ToString(),
                                  RecItemName  = row["RecItemName"].ToString(),
                                  RecItemCode  = Convert.ToInt32(row["RecItemCode"]),
+                                 IssuedItemCode  = Convert.ToInt32(row["IssuedItemCode"]),
                                  BomNo  = row["BomNo"].ToString(),
                                  BomDate  = row["BOMDate"].ToString(),
                                  BomStatus  = row["BomStatus"].ToString(),
@@ -1280,13 +1284,65 @@ namespace eTactWeb.Data.DAL
                                  Rate = Convert.ToSingle(row["Rate"]),
                                  OriginalRecQty = Convert.ToSingle(row["OriginalRecQty"]),
                                  IdealScrap = row["IdealScrap"].ToString(),
-                                 IssuedScrap = row["IssuedScrap"].ToString()
+                                 IssuedScrap = row["IssuedScrap"].ToString(),
                             }
                         });
+
+                    custJobWorkChallanAdjGrid.AddRange(new List<CustomerJobWorkChallanAdj>
+                    {
+                        new CustomerJobWorkChallanAdj()
+                        {
+                             CustJwRecEntryId = row["EntryIdRecJw"] != DBNull.Value ? Convert.ToInt32(row["EntryIdRecJw"]) : 0,
+                            CustJwRecYearCode = row["RecYearCode"] != DBNull.Value ? Convert.ToInt32(row["RecYearCode"]) : 0,
+                            CustJwRecChallanNo = row["RecJWChallanNo"].ToString(),
+                             EntryDate = string.Empty,
+                             CustJwRecEntryDate = row["ChallanDate"].ToString(),
+                            RecItemCode  = row["RecItemCode"] != DBNull.Value ?  Convert.ToInt32(row["RecItemCode"]) : 0,
+
+                             CustJwIssEntryid = 0,
+                             CustJwIssYearCode = 0,
+                             CustJwIssChallanNo = string.Empty,
+                             CustJwIssChallanDate = string.Empty,
+                             AccountCode = 0,
+                            // FinishItemCode = row["RecJWChallanNo"].ToString(),
+
+                            AdjQty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToSingle(row["ActualAdjQty"]) : 0,
+                            CC = string.Empty,
+                            UID = 0,
+                            AdjFormType = string.Empty,
+
+                            TillDate = row["ChallanDate"]?.ToString(),
+                            TotIssQty = row["IssueQty"] != DBNull.Value ? Convert.ToSingle(row["IssueQty"]) : 0,
+                            PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0 ,
+                            BOMQty = row["BomQty"] != DBNull.Value ?  Convert.ToSingle(row["BomQty"]) :0,
+                            BomRevNo = row["BomNo"] != DBNull.Value ? Convert.ToInt32(row["BomNo"]) : 0,
+                            BOMRevDate = row["BomDate"]?.ToString(),
+                            ProcessID = 0,
+                            //BOMInd = row["BomStatus"].ToString(), 
+                            IssQty = row["IssueQty"] != DBNull.Value ?  Convert.ToSingle(row["IssueQty"]) : 0,
+                            TotadjQty = row["ActualAdjQty"] != DBNull.Value ?  Convert.ToSingle(row["ActualAdjQty"]) : 0,
+                            TotalIssQty = row["OriginalRecQty"] != DBNull.Value ? Convert.ToSingle(row["OriginalRecQty"]) : 0,
+                            TotalRecQty = row["QtyToBeRec"] != DBNull.Value ? Convert.ToSingle(row["QtyToBeRec"]) : 0,
+
+                            RunnerItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
+                            ScrapItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
+                            IdealScrapQty = row["IdealScrap"] != DBNull.Value ? Convert.ToSingle(row["IdealScrap"]) : 0,
+                            IssuedScrapQty = row["IssuedScrap"] != DBNull.Value ?  Convert.ToSingle(row["IssuedScrap"]) : 0,
+                            PreRecChallanNo = row["RecJWChallanNo"].ToString(),
+                            ScrapqtyagainstRcvqty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToSingle(row["ActualAdjQty"]) : 0,
+
+                            Recbatchno = row["Batchno"].ToString(),
+                            Recuniquebatchno = row["UniqueBatchno"].ToString(),
+                            Issbatchno = row["Batchno"].ToString(),
+                            Issuniquebatchno = row["UniqueBatchno"].ToString(),
+                            ScrapAdjusted = row["BomStatus"].ToString()
+                        }
+                    });
                 }
                 model.CustomerJobWorkIssueAdjustDetails = ItemGrid;
+                model.CustomerJobWorkChallanAdj = custJobWorkChallanAdjGrid;
             }
-            
+
             if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
             {
                 foreach (DataRow row in DS.Tables[1].Rows)
@@ -1309,10 +1365,31 @@ namespace eTactWeb.Data.DAL
                                   FullyAdjusted = row["FullyAdjusted"].ToString()
                             }
                         });
+
+
                 }
                 model.BomCustomerJWIssChallanAdj = bomItemGrid;
-
             }
+
+
+
+
+            //var custJobWorkModel = model.CustomerJobWorkChallanAdj.FirstOrDefault(x => bomItemGrid.Select(i => i.ItemCode).Contains(x.RecItemCode));
+            //if (custJobWorkModel is not null)
+            //{
+            //    custJobWorkModel.BOMInd = row["BOMIND"].ToString();
+            //    custJobWorkModel.FinishItemCode = Convert.ToInt32(row["FinishItemCode"]);
+            //}
+            //model.CustomerJobWorkChallanAdj = custJobWorkChallanAdjGrid;
+
+
+            //var bomCust = model.BomCustomerJWIssChallanAdj.FirstOrDefault(x => model.CustomerJobWorkIssueAdjustDetails.Select(c => c.IssuedItemCode).Contains(x.ItemCode));
+            //foreach (var item in model.CustomerJobWorkChallanAdj)
+            //{
+            //    item.BOMInd = bomCust.BOMIND;
+            //    item.FinishItemCode = bomCust.FinishedItemCode;
+
+            //}
 
             return model;
         }
