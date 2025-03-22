@@ -459,7 +459,7 @@
 											<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
 										</button>
 									</div>
-									@if (Model.Mode == "SOA" || Model.Mode == "SSA")
+									@if (Model.Mode != "SOA" || Model.Mode != "SSA")
 									{
 										<div class="col-auto">
 											<button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
@@ -669,6 +669,22 @@
 											<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
 										</button>
 									</div>
+									@if (Model.Mode != "SOA" || Model.Mode != "SSA")
+									{
+										<div class="col-auto">
+											<button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
+												<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
+											</button>
+										</div>
+										<div class="col-auto">
+											<input class="form-control" type="file" id="ExcelFile" />
+										</div>
+										<div class="col-auto">
+											<button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
+												<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+											</button>
+										</div>
+									}
 									<div class="col-lg-3 col-md-3 col-sm-3 text-center ImportExcel">
 
 										<div class="input_container">
@@ -1111,13 +1127,19 @@
 				}, 1000);
 			}
 		});
+		 document.querySelector("#files").onchange = function () {
+            const fileName = this.files[0]?.name;
+            const label = document.querySelector("label[for=files]");
+            label.innerText = fileName ?? "Import Excel";
+        };
+
 
 		 function ExportSaleOrderFormate() {
-            ;
+            
 			$('#divSaleItemGrid').empty();
             var wb = XLSX.utils.book_new();
 
-            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit", "Ori. MRP", "PO No.", "Date"] });
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit","Rate", "Ori. MRP", "PO No.", "Date"] });
 
             //ws['!ref'] = 'A1:I1';
 
@@ -1396,13 +1418,18 @@
 
 
 		function UploadExcel() {
+			 ;
 			var fileInput = $('#ExcelFile');
 			var file = fileInput.prop("files")[0];
 
 			var formData = new FormData();
 			formData.append("excelFile", file);
-			formData.append("Currency", $('#CurrencyID').find(":selected").text());
-
+			formData.append("Flag", "SALEORDER");
+			//formData.append("PoNo",$('#PONo').val());
+			//formData.append("POYearcode",$('#YearCode').val());
+			//formData.append("AccountCode",$('#AccountCode').val());
+			//formData.append("SchNo","");
+			//formData.append("SchYearCode",0);
 			var Err = 0;
 
 			if ($('#ExcelFile').val() == '') {
@@ -1424,6 +1451,9 @@
 					if (result == "Duplicate") {
 
 						$.notify("Duplicate Item Not allowed", "error");
+					}
+					else if (result == "Not Done") {
+						$.notify("Pend Qty cannot be less than 0!Please Try again!", "error");
 					}
 					else if (result == "Partcode not available") {
 						$.notify("Imported Partcode is not available, Please check!!!", "error");

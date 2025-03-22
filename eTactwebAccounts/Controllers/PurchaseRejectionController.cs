@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using System.Data;
+using System.Net;
 
 namespace eTactWeb.Controllers
 {
@@ -68,6 +69,374 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("PurchaseRejection", JsonConvert.SerializeObject(model));
             return View(model);
         }
+        [HttpPost]
+        [Route("{controller}/Index")]
+        public async Task<IActionResult> PurchaseRejection(AccPurchaseRejectionModel model)
+        {
+            try
+            {
+                var PRGrid = new DataTable();
+                DataTable DTAgainstBillDetail = new();
+                DataTable TaxDetailDT = null;
+                DataTable AdjDetailDT = null;
+                DataTable DrCrDetailDT = null;
+                _MemoryCache.TryGetValue("PurchaseRejectionModel", out AccPurchaseRejectionModel MainModel);
+                _MemoryCache.TryGetValue("KeyPurchaseRejectionPopupGrid", out List<AccPurchaseRejectionAgainstBillDetail> PurchaseRejectionAgainstBillDetail);
+
+                _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out IList<AccPurchaseRejectionDetail> PurchaseRejectionDetail);
+                _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+                _MemoryCache.TryGetValue("KeyDrCrGrid", out List<DbCrModel> DrCrGrid);
+                if (PurchaseRejectionDetail == null)
+                {
+                    ModelState.Clear();
+                    ModelState.TryAddModelError("PurchaseRejectionDetail", "Purchase Rejection Grid Should Have Atleast 1 Item...!");
+                    return View("PurchaseRejection", model);
+                }
+                else if (PurchaseRejectionDetail == null)
+                {
+                    ModelState.Clear();
+                    ModelState.TryAddModelError("TaxDetail", "Tax Grid Should Have Atleast 1 Item...!");
+                    return View("PurchaseRejection", model);
+                }
+                else
+                {
+                    model.CC = HttpContext.Session.GetString("Branch");
+                    //model.ActualEnteredBy   = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                    model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    if (model.Mode == "U")
+                    {
+                        model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+                        PRGrid = GetDetailTable(PurchaseRejectionDetail, MainModel);
+                    }
+                    else
+                    {
+                        model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                        PRGrid = GetDetailTable(PurchaseRejectionDetail, MainModel);
+                    }
+
+                    if (TaxGrid != null && TaxGrid.Count > 0)
+                    {
+                        TaxDetailDT = GetTaxDetailTable(TaxGrid);
+                    }
+                    if (DTAgainstBillDetail != null)
+                    {
+                        DTAgainstBillDetail = GetAgainstDetailTable(PurchaseRejectionAgainstBillDetail, MainModel);
+                    }
+                    if (DrCrGrid != null && DrCrGrid.Count > 0)
+                    {
+
+                        DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
+                    }
+
+                    if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                    {
+                        AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.PurchaseRejEntryId, model.PurchaseRejYearCode, model.AccountCode);
+                    }
+                    string serverFolderPath = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "SaleBill");
+                    if (!Directory.Exists(serverFolderPath))
+                    {
+                        Directory.CreateDirectory(serverFolderPath);
+                    }
+
+                    var Result = await _purchRej.SavePurchaseRejection(model, PRGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, DTAgainstBillDetail);
+
+                    if (Result != null)
+                    {
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                            _MemoryCache.Remove(PRGrid);
+
+                            var model1 = new SaleBillModel();
+                            model1.adjustmentModel = model1.adjustmentModel ?? new AdjustmentModel();
+
+                            model1.FinFromDate = HttpContext.Session.GetString("FromDate");
+                            model1.FinToDate = HttpContext.Session.GetString("ToDate");
+                            var yearCodeStr = HttpContext.Session.GetString("YearCode");
+                            model1.SaleBillYearCode = !string.IsNullOrEmpty(yearCodeStr) ? Convert.ToInt32(yearCodeStr) : 0;
+                            model1.CC = HttpContext.Session.GetString("Branch");
+                            var uidStr = HttpContext.Session.GetString("UID");
+                            model1.CreatedBy = !string.IsNullOrEmpty(uidStr) ? Convert.ToInt32(uidStr) : 0;
+                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                            _MemoryCache.Remove("KeyPurchaseRejectionGrid");
+                            _MemoryCache.Remove("PurchaseRejectionModel");
+
+                            //return View(model1);
+                            return RedirectToAction(nameof(PurchaseRejection), new { Id = 0, Mode = "", YC = 0 });
+                        }
+                        if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["202"] = "202";
+                            var model1 = new SaleBillModel();
+                            model1.adjustmentModel = new AdjustmentModel();
+                            model1.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
+                            model1.FinFromDate = HttpContext.Session.GetString("FromDate");
+                            model1.FinToDate = HttpContext.Session.GetString("ToDate");
+                            model1.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                            model1.CC = HttpContext.Session.GetString("Branch");
+                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                            model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                            _MemoryCache.Remove("KeyPurchaseRejectionGrid");
+                            _MemoryCache.Remove("PurchaseRejectionModel");
+                            return View(model1);
+                        }
+                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            var errNum = Result.Result.Message.ToString().Split(":")[1];
+                            model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
+                            if (errNum == " 2627")
+                            {
+                                ViewBag.isSuccess = false;
+                                TempData["2627"] = "2627";
+                                _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+
+                                return View(model);
+                            }
+
+                            ViewBag.isSuccess = false;
+                            TempData["500"] = "500";
+                            _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                            // return View("Error", Result);
+                            return View(model);
+                        }
+                        HttpContext.Session.SetString("PurchaseRejection", JsonConvert.SerializeObject(model));
+                    }
+
+                    return View(model);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException<PurchaseRejectionController>.WriteException(_logger, ex);
+
+
+                var _ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+
+                return View("Error", _ResponseResult);
+                //return View(model);
+            }
+        }
+        private static DataTable GetDetailTable(IList<AccPurchaseRejectionDetail> DetailList, AccPurchaseRejectionModel model)
+        {
+            var DTSSGrid = new DataTable();
+
+            DTSSGrid.Columns.Add("PurchaseRejEntryId", typeof(int));
+            DTSSGrid.Columns.Add("PurchaseRejYearCode", typeof(int));
+            DTSSGrid.Columns.Add("DebitNotePurchaseRejection", typeof(string));
+            DTSSGrid.Columns.Add("DocAccountCode", typeof(int));
+            DTSSGrid.Columns.Add("Itemcode", typeof(int));
+            DTSSGrid.Columns.Add("HSNNo", typeof(string));
+            DTSSGrid.Columns.Add("RejectedQty", typeof(float));
+            DTSSGrid.Columns.Add("Unit", typeof(string));
+            DTSSGrid.Columns.Add("AltQty", typeof(float));
+            DTSSGrid.Columns.Add("AltUnit", typeof(string));
+            DTSSGrid.Columns.Add("RejRate", typeof(float));
+            DTSSGrid.Columns.Add("AltRate", typeof(float));
+            DTSSGrid.Columns.Add("NoOfCase", typeof(float));
+            DTSSGrid.Columns.Add("DiscountPer", typeof(float));
+            DTSSGrid.Columns.Add("DiscountAmt", typeof(float));
+            DTSSGrid.Columns.Add("StoreId", typeof(int));
+            DTSSGrid.Columns.Add("Stockable", typeof(string));
+            DTSSGrid.Columns.Add("BatchNo", typeof(string));
+            DTSSGrid.Columns.Add("UniqueBatchNo", typeof(string));
+            DTSSGrid.Columns.Add("LotStock", typeof(string));
+            DTSSGrid.Columns.Add("TotalStock", typeof(string));
+            DTSSGrid.Columns.Add("ItemAmount", typeof(float));
+            DTSSGrid.Columns.Add("UnitRate", typeof(string));
+            DTSSGrid.Columns.Add("PurchBillQty", typeof(float));
+            DTSSGrid.Columns.Add("PurchBillRate", typeof(float));
+            DTSSGrid.Columns.Add("CostcenetrId", typeof(int));
+            DTSSGrid.Columns.Add("itemSize", typeof(string));
+            DTSSGrid.Columns.Add("ItemDescription", typeof(string));
+            DTSSGrid.Columns.Add("Remark", typeof(string));
+
+            foreach (var Item in DetailList)
+            {
+                string uniqueString = Guid.NewGuid().ToString();
+                DTSSGrid.Rows.Add(
+                    new object[]
+                    {
+                        //1,
+                        //2025,
+                        (model != null ? model.PurchaseRejEntryId : 0),
+                        (model != null ? model.PurchaseRejYearCode : 0),
+                        (model != null ? model.DebitNotePurchaseRejection : string.Empty),
+                        Item.DocAccountCode,
+                        Item.ItemCode,
+                        Item.HSNNo ?? string.Empty,
+                        Item.RejectedQty,
+                        Item.Unit ?? string.Empty,
+                        Item.AltQty,
+                        Item.AltUnit ?? string.Empty,
+                        Item.PRRate,
+                        Item.AltRate,
+                        Item.NoOfCase,
+                        Item.DiscountPer,
+                        Item.DiscountAmt,
+                        Item.StoreId,
+                        string.Empty,
+                        Item.Batchno, //BatchNo check once
+                        Item.Uniquebatchno, //UniqueBatchNo check once
+                        Item.LotStock,
+                        Item.TotalStock,
+                        Item.ItemAmount,
+                        Item.UnitRate ?? string.Empty,
+                        Item.BillQty,
+                        Item.BillRate,
+                        Item.CostCenterId,
+                        Item.ItemSize ?? string.Empty,
+                        Item.ItemDescription ?? string.Empty,
+                        Item.Remark ?? string.Empty
+                    });
+            }
+            DTSSGrid.Dispose();
+            return DTSSGrid;
+        }
+        private static DataTable GetAgainstDetailTable(IList<AccPurchaseRejectionAgainstBillDetail> DetailList, AccPurchaseRejectionModel model)
+        {
+            var DTSSGrid = new DataTable();
+
+            DTSSGrid.Columns.Add("PurchaseRejEntryId", typeof(int));
+            DTSSGrid.Columns.Add("PurchaseRejYearCode", typeof(int));
+            DTSSGrid.Columns.Add("PurchaseRejInvoiceNo", typeof(string));
+            DTSSGrid.Columns.Add("PurchaseRejVoucherNo", typeof(string));
+            //DTSSGrid.Columns.Add("AgainstSalebillBillNo", typeof(string));
+            //DTSSGrid.Columns.Add("AgainstSaleBillYearCode", typeof(int));
+            //DTSSGrid.Columns.Add("AgainstSaleBilldate", typeof(string));
+            //DTSSGrid.Columns.Add("AgainstSaleBillEntryId", typeof(int));
+            //DTSSGrid.Columns.Add("AgainstSalebillVoucherNo", typeof(string));
+            //DTSSGrid.Columns.Add("SaleBillTYpe", typeof(string));
+            DTSSGrid.Columns.Add("AgainstPurchasebillBillNo", typeof(string));
+            DTSSGrid.Columns.Add("AgainstPurchaseBillYearCode", typeof(int));
+            DTSSGrid.Columns.Add("AgainstPurchaseBilldate", typeof(string));
+            DTSSGrid.Columns.Add("AgainstPurchaseBillEntryId", typeof(int));
+            DTSSGrid.Columns.Add("AgainstPurchaseVoucherNo", typeof(string));
+            DTSSGrid.Columns.Add("PurchaseBilltype", typeof(string));
+            DTSSGrid.Columns.Add("DebitNoteItemCode", typeof(int));
+            DTSSGrid.Columns.Add("BillItemCode", typeof(int));
+            DTSSGrid.Columns.Add("BillQty", typeof(float));
+            DTSSGrid.Columns.Add("Unit", typeof(string));
+            DTSSGrid.Columns.Add("AltQty", typeof(float));
+            DTSSGrid.Columns.Add("AltUnit", typeof(string));
+            DTSSGrid.Columns.Add("BillRate", typeof(float));
+            DTSSGrid.Columns.Add("DiscountPer", typeof(float));
+            DTSSGrid.Columns.Add("DiscountAmt", typeof(float));
+            DTSSGrid.Columns.Add("Itemsize", typeof(string));
+            DTSSGrid.Columns.Add("Amount", typeof(float));
+            DTSSGrid.Columns.Add("PONO", typeof(string));
+            DTSSGrid.Columns.Add("PODate", typeof(string));
+            DTSSGrid.Columns.Add("POEntryId", typeof(int));
+            DTSSGrid.Columns.Add("POYearCode", typeof(int));
+            DTSSGrid.Columns.Add("PoRate", typeof(float));
+            DTSSGrid.Columns.Add("poammno", typeof(string));
+            //DTSSGrid.Columns.Add("SONO", typeof(string));
+            //DTSSGrid.Columns.Add("SOYearcode", typeof(int));
+            //DTSSGrid.Columns.Add("SODate", typeof(string));
+            //DTSSGrid.Columns.Add("CustOrderNo", typeof(string));
+            //DTSSGrid.Columns.Add("SOEntryId", typeof(int));
+            DTSSGrid.Columns.Add("BatchNo", typeof(string));
+            DTSSGrid.Columns.Add("UniqueBatchNo", typeof(string));
+
+            foreach (var Item in DetailList)
+            {
+                string uniqueString = Guid.NewGuid().ToString();
+                DTSSGrid.Rows.Add(
+                    new object[]
+                    {
+                     (model != null ? model.PurchaseRejEntryId : 0),
+                     (model != null ? model.PurchaseRejYearCode : 0),
+                    Item.PurchaseRejectionInvoiceNo,
+                    Item.PurchaseRejectionVoucherNo,
+                    //Item.AgainstSaleBillBillNo,
+                    //Item.AgainstSaleBillYearCode,
+                    //Item.AgainstSaleBillDate == null ? string.Empty : (Item.AgainstSaleBillDate.Split(" ")[0]),
+                    //Item.AgainstSaleBillEntryId,
+                    //Item.AgainstSaleBillVoucherNo,
+                    //Item.SaleBillType,
+                    Item.AgainstPurchaseBillBillNo,
+                    Item.AgainstPurchaseBillYearCode,
+                    Item.AgainstPurchaseBillDate == null ? string.Empty : (Item.AgainstPurchaseBillDate.Split(" ")[0]),
+                    Item.AgainstPurchaseBillEntryId,
+                    Item.AgainstPurchaseVoucherNo,
+                    Item.PurchaseBillType,
+                    Item.ItemCode, //DebitNoteItemCode
+                    Item.ItemCode, // BillItemCode
+                    Item.BillQty,
+                    Item.Unit,
+                    Item.AltQty,
+                    Item.AltUnit,
+                    Item.BillRate,
+                    Item.DiscountPer,
+                    Item.DiscountAmt,
+                    Item.ItemSize,
+                    Item.Amount,
+                    Item.PONO,
+                    Item.PODate == null ? string.Empty :(Item.PODate.Split(" ")[0]),
+                    Item.POEntryId,
+                    Item.POYearCode,
+                    Item.PoRate,
+                    Item.PoAmmNo,
+                   //Item.SONO,
+                   //Item.SOYearCode,
+                   //Item.SODate == null ? string.Empty : (Item.SODate.Split(" ")[0]),
+                   //Item.CustOrderNo,
+                   //Item.SOEntryId,
+                    Item.BatchNo,
+                    Item.UniqueBatchNo
+                    });
+            }
+            DTSSGrid.Dispose();
+            return DTSSGrid;
+        }
+        private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
+        {
+            DataTable Table = new();
+            Table.Columns.Add("TxSeqNo", typeof(int));
+            Table.Columns.Add("TxType", typeof(string));
+            Table.Columns.Add("TxItemCode", typeof(int));
+            Table.Columns.Add("TxTaxType", typeof(int));
+            Table.Columns.Add("TxAccountCode", typeof(int));
+            Table.Columns.Add("TxPercentg", typeof(float));
+            Table.Columns.Add("TxAdInTxable", typeof(string));
+            Table.Columns.Add("TxRoundOff", typeof(string));
+            Table.Columns.Add("TxAmount", typeof(float));
+            Table.Columns.Add("TxRefundable", typeof(string));
+            Table.Columns.Add("TxOnExp", typeof(float));
+            Table.Columns.Add("TxRemark", typeof(string));
+
+            foreach (TaxModel Item in TaxDetailList)
+            {
+                Table.Rows.Add(
+                    new object[]
+                    {
+                    Item.TxSeqNo,
+                    Item.TxType,
+                    Item.TxItemCode,
+                    Item.TxTaxType,
+                    Item.TxAccountCode,
+                    Item.TxPercentg,
+                    Item.TxAdInTxable,
+                    Item.TxRoundOff,
+                    Item.TxAmount,
+                    Item.TxRefundable,
+                    Item.TxOnExp,
+                    Item.TxRemark,
+                    });
+            }
+
+            return Table;
+        }
+
         public async Task<JsonResult> NewEntryId(int YearCode)
         {
             var JSON = await _purchRej.NewEntryId(YearCode);

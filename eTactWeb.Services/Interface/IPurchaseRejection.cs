@@ -18,5 +18,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetHSNUNIT(int itemCode);
         Task<ResponseResult> FillPurchaseRejectionPopUp(string DebitNotePurchaseRejection, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode, string showAllBill);
         Task<ResponseResult> FillDetailFromPopupGrid(DataTable model, int itemCode, int poopCt);
+        Task<ResponseResult> SavePurchaseRejection(AccPurchaseRejectionModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT, DataTable DTAgainstBillDetail);
     }
 }

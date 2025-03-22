@@ -380,7 +380,7 @@
     </form>
 </div>
 
-<div class="modal fade" id="DisplayRoutingDetailModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+<div class="modal fade" id="DisplayRoutingDetailModal">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -528,17 +528,11 @@
             $('#CostCenterName').select2();
             $('#SubVoucherName').select2();
             $('#Currency').select2();
-
-             ;
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
-          
-            
             FillCurrency();
             FillModeofAdjust();
-           //alculateTotalBalance();
-
             
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
@@ -591,15 +585,12 @@
             var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             var currentDate = new Date();
 
-            // Calculate minDate (3 months before today)
             var minDate = new Date();
             minDate.setMonth(minDate.getMonth() - 3);
 
-            // Calculate maxDate (3 months after today)
             var maxDate = new Date();
             maxDate.setMonth(maxDate.getMonth() + 3);
 
-            // Initialize Datepicker with min & max date
             $('#InsDate').datepicker({
                 dateFormat: 'dd/mm/yy',
                 minDate: minDate,
@@ -1374,7 +1365,7 @@
         }
 
         function PopUpForPendingVouchers(Action, SrNO) {
-
+             
             $('#CheckUnCheckAll').prop('checked', false);
             if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 $('#DisplayRoutingDetailModal').modal('hide');
@@ -1418,14 +1409,14 @@
         }
 
         function AdjustAmount() {
-
+            debugger
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var DRAmt = 0;
             var CRAmt = 0;
             var TotalDRAmt = 0;
             var TotalCrAmt = 0;
             for (var i = 1; i <= rowCount; i++) {
-
+                debugger
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
                     var drcr = $(`#PopUpType-${i}`).text().trim();
                     var DRAmtrow = parseFloat($(`#PopUpDrAmt-${i}`).text().trim());
@@ -1447,8 +1438,8 @@
                     TotalCrAmt += CRAmtrow;
                 }
             }
-            $('#PopDrAmt').val(DRAmt.toFixed(2));
-            $('#PopCrAmt').val(CRAmt.toFixed(2));
+            $('#PopDrAmt').val(CRAmt.toFixed(2));
+            $('#PopCrAmt').val(DRAmt.toFixed(2));
             $('#PopUpBalance').val((TotalDRAmt - TotalCrAmt).toFixed(2));
             $('#PopAdjustmentAmt').val((DRAmt - CRAmt).toFixed(2));
         }
@@ -1487,7 +1478,7 @@
         }
 
         function ChangeAdjustAmt(i) {
-
+             
             if ($('#AdjustAmt-' + i).val() > 0) {
                 $('#BalanceAmt-' + i).text(parseFloat($('#ActualBalance-' + i).text()) - parseFloat($('#AdjustAmt-' + i).val()));
                 $('#BalanceAmt-' + i).text(Math.round(parseFloat($('#BalanceAmt-' + i).text()) * 100) / 100);
@@ -1520,10 +1511,11 @@
             //     }
             // }
             // $('#PopAdjustmentAmt').val(DRAmt - CRAmt);
+            CheckUnCheckCheck(i);
         }
 
         function Validate_AdjustButton() {
-
+             
             var Err = 0;
             var RowCount = $('#lblcheckitem').text();
             if (RowCount <= 0) {
@@ -1536,7 +1528,7 @@
         }
 
         function AdjustButton() {
-
+             
             if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var ItemData = [];
@@ -1606,6 +1598,10 @@
                 }
             });
         }
+
+        $('#DisplayRoutingDetailModal').on('show.bs.modal', function () {
+            $(this).removeAttr('aria-hidden');
+        });
 
         function Validate_GridButton() {
 
@@ -1810,7 +1806,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-
+              
             var RowCount = $('#divBankReceiptDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1822,7 +1818,7 @@
                     type: "POST",
                     data: { SrNO: SrNO },
                     success: function (data) {
-
+                         
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
                         if (ModeOfAdjustment == "Against Ref") {
@@ -1901,11 +1897,13 @@
         })
 
         function CheckUnCheckCheck(i) {
-
+              
             var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             if ($('#CheckUnCheck-' + i).is(':checked') == true) {
-                $('#AdjustAmt-' + i).val(($('#BalanceAmt-' + i).text()));
-                $('#BalanceAmt-' + i).text(0);
+                if(parseFloat($('#AdjustAmt-' +i).val()) == 0){
+                    $('#AdjustAmt-' + i).val(($('#BalanceAmt-' + i).text()));
+                    $('#BalanceAmt-' + i).text(0);
+                }
                 var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
                 $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
             }
