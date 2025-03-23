@@ -264,7 +264,7 @@ namespace eTactWeb.Controllers
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
                 Item.ChequeDate = DateTime.Now.ToString("dd/MM/yy") ,
-                Item.ChequeClearDate =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.BankRECO =DateTime.Now.ToString("dd/MM/yy") ,
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,

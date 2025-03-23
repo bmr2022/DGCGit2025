@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using System.Data;
 using System.Globalization;
+using System.Reflection;
 
 namespace eTactWeb.Controllers;
 
@@ -1422,6 +1423,7 @@ public class SaleOrderController : Controller
 		Table.Columns.Add("Excessper", typeof(float));
 		Table.Columns.Add("ProjQty1", typeof(float));
 		Table.Columns.Add("ProjQty2", typeof(float));
+		Table.Columns.Add("deliverydate", typeof(DateTime));
 
 		DataTable TblSch = new();
 
@@ -1462,7 +1464,9 @@ public class SaleOrderController : Controller
 					Item.Rejper,
 					Item.Excessper,
 					Item.ProjQty1,
-					Item.ProjQty2
+					Item.ProjQty2,
+					Item.DeliveryDate == null ? "" : ParseFormattedDate(Item.DeliveryDate),
+
 				});
 
 			if (Item.DeliveryScheduleList != null && Item.DeliveryScheduleList.Count > 0)
@@ -1529,7 +1533,7 @@ public class SaleOrderController : Controller
 	//}
 
 	[HttpPost]
-	public IActionResult UploadExcel()
+	public async Task<IActionResult> UploadExcel()
 	{
 		try
 		{
@@ -1538,6 +1542,9 @@ public class SaleOrderController : Controller
 			{
 				return BadRequest("Invalid file. Please upload a valid Excel file.");
 			}
+
+			string validPartCodesString = Request.Form["validPartCodes"];
+			var validPartCodes = new HashSet<string>(validPartCodesString.Split(','), StringComparer.OrdinalIgnoreCase);
 
 			string path = Path.Combine(this._IWebHostEnvironment.WebRootPath, "Uploads");
 			if (!Directory.Exists(path))
@@ -1549,11 +1556,14 @@ public class SaleOrderController : Controller
 			string filePath = Path.Combine(path, fileName);
 			using (FileStream stream = new FileStream(filePath, FileMode.Create))
 			{
-				ExcelFile.CopyTo(stream);
+				await ExcelFile.CopyToAsync(stream);
 			}
 
 			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 			var SaleGridList = new List<ItemDetail>();
+			var MainModel = new SaleOrderModel();
+			var errors = new List<string>(); // List to collect validation errors
+
 			using (var package = new ExcelPackage(new FileInfo(filePath)))
 			{
 				ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
@@ -1563,9 +1573,6 @@ public class SaleOrderController : Controller
 				}
 
 				var rowCount = worksheet.Dimension.Rows;
-				
-
-				var Error = new Dictionary<string, string>();
 
 				for (int row = 2; row <= rowCount; row++)
 				{
@@ -1581,32 +1588,92 @@ public class SaleOrderController : Controller
 					if (isRowEmpty) continue;
 
 					var partCode = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
-					decimal qty = decimal.TryParse(worksheet.Cells[row, 6].Value?.ToString(), out decimal tempQty) ? tempQty : 0;
-					DateTime delDate = DateTime.TryParse(worksheet.Cells[row, 4].Value?.ToString(), out DateTime tempDelDate) ? tempDelDate : DateTime.MinValue;
 
+					// **Validate PartCode**
+					if (!validPartCodes.Contains(partCode))
+					{
+						errors.Add($"Invalid PartCode at row {row}: {partCode}");
+						continue;
+					}
+
+					// **Fetch Item Details from Database**
+					var response = await _ISaleOrder.GetExcelData(partCode);
+
+					if (response?.Result is not DataTable itemData || itemData.Rows.Count == 0)
+					{
+						errors.Add($"No data found for PartCode '{partCode}' at row {row}.");
+						continue;
+					}
+
+					string hsnNo = itemData.Rows[0]["HSNNo"].ToString();
+					string unit = itemData.Rows[0]["Unit"].ToString();
+					string altUnit = itemData.Rows[0]["AltUnit"].ToString();
+					string itemName = itemData.Rows[0]["Item_Name"].ToString();
+					int itemCode = Convert.ToInt32(itemData.Rows[0]["Item_Code"]);
+
+					string soType = Request.Form["SOType"];
+					bool isSOTypeClose = soType.Equals("Close", StringComparison.OrdinalIgnoreCase);
+
+					// **Quantity and Rate Validation**
+					decimal qty = isSOTypeClose
+						? decimal.TryParse(worksheet.Cells[row, 4].Value?.ToString(), out decimal tempQty) ? tempQty : 0
+						: 0;
+
+					decimal rate = decimal.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out decimal tempRate) ? tempRate : 0;
+
+					if (isSOTypeClose && qty <= 0)
+					{
+						errors.Add($"Qty should be greater than 0 at row {row} ");
+						continue; // Skip processing this row
+					}
+
+					// **Delivery Date Validation**
+					string deliveryDateStr = worksheet.Cells[row, 7].Value?.ToString();
+					DateTime? deliveryDate = null;
+					if (DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
+					{
+						if (tempDeliveryDate <= DateTime.Today)
+						{
+							errors.Add($"Delivery Date at row {row} must be greater than today ({DateTime.Today:dd/MMM/yyyy}).");
+						}
+						else
+						{
+							deliveryDate = tempDeliveryDate;
+						}
+					}
+
+					// **Calculate Amount (Qty * Rate)**
+					decimal amount = qty * rate;
+
+					// **Add to SaleGridList**
 					SaleGridList.Add(new ItemDetail
 					{
-						//PartCode = partCode.ToString(),
+						SeqNo = SaleGridList.Count + 1,
+						PartCode = itemCode,
+						PartText = partCode,
+						ItemCode = itemCode,
+						ItemText = itemName,
+						HSNNo = int.TryParse(hsnNo, out int tempHSN) ? tempHSN : 0, // Fetched from DB
 						Qty = qty,
-						PartText = worksheet.Cells[row, 1].Value?.ToString() ?? "",
-
-						Unit = worksheet.Cells[row, 2].Value?.ToString() ?? "",
-						//PartText = worksheet.Cells[row, 3].Value?.ToString() ?? "",
-						ItemText = worksheet.Cells[row, 9].Value?.ToString() ?? "",
-						HSNNo = int.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out int tempHSN) ? tempHSN : 0,
+						Unit = unit, // Fetched from DB
+						DeliveryDate = deliveryDate?.ToString("dd/MMM/yyyy") ?? "", // Store in required format
 						AltQty = decimal.TryParse(worksheet.Cells[row, 8].Value?.ToString(), out decimal tempAltQty) ? tempAltQty : 0,
-						AltUnit = worksheet.Cells[row, 9].Value?.ToString() ?? "",
-						Rate = decimal.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out decimal tempRate) ? tempRate : 0,
-						OtherRateCurr = decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempOtherRate) ? tempOtherRate : 0,
+						AltUnit = altUnit, // Fetched from DB
+						Rate = rate,
+						OtherRateCurr =rate,
+						StoreName = worksheet.Cells[row, 17].Value?.ToString() ?? "",
+						StockQty = decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempStockqty) ? tempStockqty : 0,
 						UnitRate = worksheet.Cells[row, 12].Value?.ToString() ?? "",
 						DiscPer = decimal.TryParse(worksheet.Cells[row, 13].Value?.ToString(), out decimal tempDiscPer) ? tempDiscPer : 0,
 						DiscRs = decimal.TryParse(worksheet.Cells[row, 14].Value?.ToString(), out decimal tempDiscRs) ? tempDiscRs : 0,
-						Amount = decimal.TryParse(worksheet.Cells[row, 15].Value?.ToString(), out decimal tempAmount) ? tempAmount : 0,
+						Amount = amount, // Auto-calculated value
 						TolLimit = decimal.TryParse(worksheet.Cells[row, 16].Value?.ToString(), out decimal tempTolLimit) ? tempTolLimit : 0,
 						Description = worksheet.Cells[row, 17].Value?.ToString() ?? "",
 						Remark = worksheet.Cells[row, 18].Value?.ToString() ?? "",
 						AmendmentNo = worksheet.Cells[row, 19].Value?.ToString() ?? "",
-						AmendmentDate = worksheet.Cells[row, 20].Value?.ToString() ?? "",
+						AmendmentDate = DateTime.TryParse(worksheet.Cells[row, 20].Value?.ToString(), out DateTime tempAmendDate)
+							? tempAmendDate.ToString("yyyy-MM-dd")
+							: DateTime.Now.ToString("yyyy-MM-dd"), // Defaults to today if empty
 						AmendmentReason = worksheet.Cells[row, 21].Value?.ToString() ?? "",
 						Color = worksheet.Cells[row, 22].Value?.ToString() ?? "",
 						Rejper = decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempRejper) ? tempRejper : 0,
@@ -1615,20 +1682,16 @@ public class SaleOrderController : Controller
 						ProjQty2 = decimal.TryParse(worksheet.Cells[row, 26].Value?.ToString(), out decimal tempProjQty2) ? tempProjQty2 : 0,
 					});
 				}
+
+				if (errors.Count > 0)
+				{
+					return BadRequest("Validation errors found:\n" + string.Join("\n", errors));
+				}
 			}
 
-
-			var MainModel = new SaleOrderModel();
-				MainModel.ItemDetailGrid = SaleGridList;
-				MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-				{
-					AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-					SlidingExpiration = TimeSpan.FromMinutes(55),
-					Size = 1024,
-				};
-				//IMemoryCache.Set("ItemList", MainModel.ItemDetailGrid, cacheEntryOptions);
-				return PartialView("_SaleItemGrid", MainModel);
-			
+			MainModel.ItemDetailGrid = SaleGridList;
+			HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(SaleGridList));
+			return PartialView("_SaleItemGrid", MainModel);
 		}
 		catch (Exception ex)
 		{

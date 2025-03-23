@@ -1000,6 +1000,7 @@
             if (saleBillDate > currentRemovalTime) {
                 $('#RemovalTime').datepicker("option", "minDate", saleBillDate);
             }
+
         });
 
         function PasswordCheck() {
@@ -1678,22 +1679,27 @@
             });
         }
 
-        // function ClearGrid() {
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "@Url.Action("ClearGrid")",
-        //         success: function (result, status, error) {
+        function ClearGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearGrid")",
+                success: function (result, status, error) {
 
-        //             $('#divSaleBillList').empty();
-        //             var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-        //             $('#divSaleBillList').html(NoData);
-        //             BasicTotal();
-        //         },
-        //         error: function (req, status, error) {
-        //             alert(error);
-        //         }
-        //     });
-        // }
+                    $('#divSaleBillList').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divSaleBillList').html(NoData);
+
+                    $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty').val(0);
+                    $('#LotStock,#TotalStock').val("");
+                    $('#BOMInd,#ProducedUnprod').val('');
+                    $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
+                    BasicTotal();
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
 
         function SetPartCodeItemName(ID) {
 
