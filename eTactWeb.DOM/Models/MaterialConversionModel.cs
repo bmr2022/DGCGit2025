@@ -17,6 +17,7 @@ namespace eTactWeb.DOM.Models
         public string SlipNo { get; set; }
         public string SlipDate { get; set; }
         public string StoreName { get; set; }
+        public string IssueToStoreWC { get; set; }
         public string WorkCenterName { get; set; }
         public string WONO { get; set; }
         public int WOYear { get; set; }

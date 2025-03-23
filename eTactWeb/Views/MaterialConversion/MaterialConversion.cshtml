@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.MaterialConversionModel;
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Material Conversion";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
@@ -88,7 +88,36 @@
                                         <label asp-for="SlipDate" class="form-label">SlipDate</label>
                                         <input asp-for="SlipDate" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+                                        <label asp-for="IssueToStoreWC" class="form-label" style="color: red;">Store/WC*</label>
+                                        <select class="form-select" asp-for="IssueToStoreWC">
+                                            <option value="">-Select-</option>
+                                            <option value="S">Store</option>
+                                            <option value="W">WorkCenter</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToStore" style="width:200px;">
+                                        <label asp-for="StoreName" class="control-label" style="color: red;"> StoreName*</label>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <input type="hidden" value="@Model.StoreName" id="hiddenToStoreId" />
+                                        }
+                                        <select class="form-select" asp-for="StoreName">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToWc" style="width:150px;" >
+                                        <label asp-for="WorkCenterName" class="control-label" style="color: red;"> WorkCenterName*</label>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <input type="hidden" value="@Model.WorkCenterName" id="hiddenToWCID" />
+
+                                        }
+                                        <select class="form-select" asp-for="WorkCenterName">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                   @*  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                         <label asp-for="StoreName" class="form-label">StoreName</label>
                                         <select class="form-control" asp-for="StoreName">
                                             <option value="">-Select-</option>
@@ -99,7 +128,7 @@
                                         <select class="form-control" asp-for="WorkCenterName">
                                             <option value="">-Select-</option>
                                         </select>
-                                    </div>
+                                    </div>    *@
 
 
                                     <div class="accordion-item" style="margin-top: 5px;">
@@ -122,29 +151,31 @@
                                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="GridLabels">
                                                             <tr>
                                                                 
-                                                                <th>OriginalItemName</th>
                                                                 <th>OriginalPartCode</th>
+                                                                <th>OriginalItemName</th>
                                                                 <th>OriginalQty</th>
                                                                 <th>Unit</th>
-                                                                <th>AltItemCode</th>
-                                                                <th>AltOriginalQty</th>
-                                                                <th>AltUnit</th>
-                                                                <th>OriginalStoreId</th>
-                                                                <th>AltStoreId</th>
-                                                                <th>OrginalWCID</th>
-                                                                <th>AltWCID</th>
+                                                                <th>OriginalStoreName</th>
+                                                                <th>OrginalWCName</th>
                                                                 <th>BatchNo</th>
                                                                 <th>UniqueBatchNo</th>
                                                                 <th>BatchStock</th>
                                                                 <th>TotalStock</th>
                                                                 <th>AltStock</th>
+                                                                <th>OrignalItemRate</th>
+                                                                <th>AltItemCode</th>
+                                                                <th>AltOriginalQty</th>
+                                                                <th>AltUnit</th>
+                                                                <th>AltStoreId</th>
+                                                                <th>AltWCID</th>
+                                                                
                                                                 <th>PlanNo</th>
                                                                 <th>PlanYearCode</th>
                                                                 <th>PlanDate</th>
                                                                 <th>ProdSchNo</th>
                                                                 <th>ProdSchYearCode</th>
                                                                 <th>ProdSchDatetime</th>
-                                                                <th>OrignalItemRate</th>
+                                                               
                                                                 <th>Remark</th>
                                                             </tr>
                                                         </thead>
@@ -153,48 +184,66 @@
                                                               
                                                                 
                                                                 <td>
-                                                                    <input type="hidden" asp-for="OriginalItemCode" />
-                                                                    <select class="form-select" asp-for="OriginalPartCode" style="width:100px;">
+                                                                    <input type="hidden" asp-for="OriginalItemCode" value="@Model.OriginalItemCode" />
+                                                                        <select class="form-select" asp-for="OriginalPartCode"  style="width:100px;">
                                                                         <option value="">-Select-</option>
+                                                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                                                            {
+                                                                                <option value="@Model.OriginalItemCode" selected>@Model.OriginalPartCode</option>
+                                                                            }
                                                                     </select>
                                                                 </td>
                                                                  <td>
-                                                                    <input type="hidden" asp-for="OriginalItemCode" />
-                                                                    <select class="form-select" asp-for="OriginalItemName" style="width:100px;" >
+                                                                        <input type="hidden" asp-for="OriginalItemCode" value="@Model.OriginalItemCode" />
+                                                                        <select class="form-select" asp-for="OriginalItemName"  style="width:100px;">
                                                                         <option value="">-Select-</option>
+                                                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                                                            {
+                                                                                <option value="@Model.OriginalItemCode" selected>@Model.OriginalItemName</option>
+                                                                            }
                                                                     </select>
                                                                 </td>
 
                                                                 <td><input asp-for="OriginalQty" style="width:70px !important" /></td>
                                                                 <td><input asp-for="Unit" style="width:70px !important" /></td>
+                                                                    <td><input asp-for="OriginalStoreId" /></td>
+                                                                    <td><input asp-for="OrginalWCID" /></td>
+                                                                    <td>
+                                                                        <select class="form-select" asp-for="BatchNo" style="width:250px;">
+                                                                            <option value="0">-Select-</option>
+                                                                        </select>
+                                                                    </td>
+                                                                     <td>
+                                                                        <select class="form-select" asp-for="UniqueBatchNo" style="width:250px;">
+                                                                            <option value="0">-Select-</option>
+                                                                        </select>
+                                                                    </td>
+
+                                                                    
                                                                 <td>
                                                                     <select class="form-select" asp-for="AltItemCode" style="width:160px;">
                                                                         <option value="0">-Select-</option>
                                                                     </select>
                                                                 </td>
+                                                                    <td><input asp-for="BatchStock" /></td>
+                                                                    <td><input asp-for="TotalStock" /></td>
+                                                                    <td><input asp-for="AltStock" /></td>
+                                                                    <td><input asp-for="OrigItemRate" /></td>
                                                                 <td><input asp-for="AltOriginalQty" /></td>
                                                                 <td><input asp-for="AltUnit" /></td>
-                                                                <td><input asp-for="OriginalStoreId" /></td>
+                                                                
                                                                 <td><input asp-for="AltStoreId" /></td>
-                                                                <td><input asp-for="OrginalWCID" /></td>
                                                                 <td><input asp-for="AltWCID" /></td>
+                                                                  
                                                                
-                                                                <td>
-                                                                    <select class="form-select" asp-for="BatchNo" style="width:250px;">
-                                                                        <option value="0">-Select-</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td><input asp-for="UniqueBatchNo" /></td>
-                                                                <td><input asp-for="BatchStock" /></td>
-                                                                <td><input asp-for="TotalStock" /></td>
-                                                                <td><input asp-for="AltStock" /></td>
+                                                               
                                                                 <td><input asp-for="PlanNo" /></td>
                                                                 <td><input asp-for="PlanYearCode" /></td>
                                                                 <td><input asp-for="PlanDate" /></td>
                                                                 <td><input asp-for="ProdSchNo" /></td>
                                                                 <td><input asp-for="ProdSchYearCode" /></td>
                                                                 <td><input asp-for="ProdSchDatetime" /></td>
-                                                                <td><input asp-for="OrigItemRate" /></td>
+                                                               
                                                                 <td><input asp-for="Remark" /></td>
 
                                                             </tr>
@@ -236,17 +285,58 @@
                                                                             </span>OriginalItemName
                                                                         </th>
 
-                                                                        <th data-columnno="3" data-sortorder="asc" class="sortCol">
-                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                                <i class="fa" aria-hidden="true"></i>
-                                                                            </span>Unit
-                                                                        </th>
+                                                                        
                                                                         <th data-columnno="4" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
                                                                                 <i class="fa" aria-hidden="true"></i>
                                                                             </span>OriginalQty
                                                                         </th>
-                                                                        <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                                                                    <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>Unit
+                                                                    </th>
+                                                                    <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>OriginalStoreName
+                                                                    </th>
+                                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>OrginalWCName
+                                                                    </th>
+                                                                    <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>BatchNo
+                                                                    </th>
+                                                                    <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>UniqueBatchNo
+                                                                    </th>
+                                                                    <th data-columnno="14" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>BatchStock
+                                                                    </th>
+                                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>TotalStock
+                                                                    </th>
+                                                                    <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>AltStock
+                                                                    </th>
+                                                                    <th data-columnno="23" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>OrigItemRate
+                                                                    </th>
+                                                                    <th data-columnno="5" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
                                                                                 <i class="fa" aria-hidden="true"></i>
                                                                             </span>AltItemName
@@ -262,50 +352,17 @@
                                                                             <i class="fa" aria-hidden="true"></i>
                                                                         </span>AltUnit
                                                                     </th>
-                                                                        <th data-columnno="8" data-sortorder="asc" class="sortCol">
-                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                                <i class="fa" aria-hidden="true"></i>
-                                                                            </span>OriginalStoreId
-                                                                        </th>
+                                                                      
                                                                         <th data-columnno="9" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
                                                                                 <i class="fa" aria-hidden="true"></i>
                                                                             </span>AltStoreId
                                                                         </th>
-                                                                        <th data-columnno="10" data-sortorder="asc" class="sortCol">
-                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                                <i class="fa" aria-hidden="true"></i>
-                                                                            </span>OrginalWCID
-                                                                        </th>
+                                                                        
                                                                         <th data-columnno="11" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
                                                                                 <i class="fa" aria-hidden="true"></i>
                                                                             </span>AltWCID
-                                                                        </th>
-                                                                        <th data-columnno="12" data-sortorder="asc" class="sortCol">
-                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                                <i class="fa" aria-hidden="true"></i>
-                                                                            </span>BatchNo
-                                                                        </th>
-                                                                        <th data-columnno="13" data-sortorder="asc" class="sortCol">
-                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                                <i class="fa" aria-hidden="true"></i>
-                                                                            </span>UniqueBatchNo
-                                                                        </th>
-                                                                        <th data-columnno="14" data-sortorder="asc" class="sortCol">
-                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                                <i class="fa" aria-hidden="true"></i>
-                                                                            </span>BatchStock
-                                                                        </th>
-                                                                        <th data-columnno="15" data-sortorder="asc" class="sortCol">
-                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                                <i class="fa" aria-hidden="true"></i>
-                                                                            </span>TotalStock
-                                                                        </th>
-                                                                        <th data-columnno="16" data-sortorder="asc" class="sortCol">
-                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                                <i class="fa" aria-hidden="true"></i>
-                                                                            </span>AltStock
                                                                         </th>
                                                                         <th data-columnno="17" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
@@ -337,11 +394,7 @@
                                                                                 <i class="fa" aria-hidden="true"></i>
                                                                             </span>ProdSchDatetime
                                                                         </th>
-                                                                        <th data-columnno="23" data-sortorder="asc" class="sortCol">
-                                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                                <i class="fa" aria-hidden="true"></i>
-                                                                            </span>OrigItemRate
-                                                                        </th>
+                                                                        
                                                                         <th data-columnno="24" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
                                                                                 <i class="fa" aria-hidden="true"></i>
@@ -543,6 +596,7 @@
             $('#ToStore').select2();
             $('#StoreName').select2();
             $('#WorkCenterName').select2();
+            $('#IssueToStoreWC').select2();
 
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             FillEntryID();
@@ -552,23 +606,16 @@
             FillWorkCenterName();
             GetOriginalPartCode();
             GetOriginalItemName();
+
+
+            
             // if ($("#Mode").val() !== "U") {
             //     FillLedgerName();
             // }
+          
 
-            $('#OriginalItemName').change(function () {
-                if ($('#Mode').val() !== "U") {
-                    $('#OriginalItemCode').val($('#OriginalItemName').val());
-                }
-            });
-            $('#OriginalPartCode').change(function () {
-                if ($('#Mode').val() !== "U") {
-                    $('#OriginalItemCode').val($('#OriginalPartCode').val());
-                }
-            });
-
-            var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+            // var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+            // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 
             $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
             $('#ProdSchDatetime').datepicker({ dateFormat: 'dd/mm/yy' });
@@ -595,10 +642,43 @@
                 }
                 $('form').submit();
             });
-
+          
         });
 
-
+        $('#IssueToStoreWC').change(function () {
+            $('#BatchNo').val('');
+            $('#UniqueBatchNo').val('');
+            $('#RecStoreStock').val(0);
+            if ($('#IssueToStoreWC').val() == 'S') {
+                FillStoreName();
+                $('#WorkCenterName').val('');
+                $('#WorkCenterName').prop("disabled", true);
+                $('#StoreName').prop("disabled", false);
+            } else {
+                FillWorkCenterName();
+                $('#StoreName').val('');
+                $('#StoreName').prop("disabled", true);
+                $('#WorkCenterName').prop("disabled", false);
+            }
+        });
+        $('#OriginalItemName').change(function () {
+            if ($('#Mode').val() !== "U") {
+                $('#OriginalItemCode').val($('#OriginalItemName').val());
+                FillStockBatchNo();
+            }
+           
+           // $('#OriginalItemCode').val($('#OriginalItemName').val());
+        });
+        $('#OriginalPartCode').change(function () {
+            if ($('#Mode').val() !== "U") {
+                $('#OriginalItemCode').val($('#OriginalPartCode').val());
+                FillStockBatchNo();
+            }
+            //$('#OriginalItemCode').val($('#OriginalPartCode').val());
+        });
+        $('#BatchNo').change(function () {
+                FillStockUniqueBatchNo();
+        });
         function GetOriginalPartCode() {
             $.ajax({
                 url: '@Url.Action("GetOriginalPartCode", "MaterialConversion")', // Action that returns FillGroup data
@@ -613,12 +693,12 @@
 
 
                     $.each(obj.Result, function (index, PartCode) {
-
+                        
                         OrgPartCodeDropdown.append('<option value="' + PartCode.itemcode + '">' + PartCode.PartCode + '</option>');
                     });
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
-                        var OriginalPartCode = '@Model.OriginalPartCode';
+                       
+                        var OriginalPartCode = '@Model.OriginalItemCode';
                         $('#OriginalPartCode').val(OriginalPartCode);
                     }
                 },
@@ -646,9 +726,10 @@
                     $.each(obj.Result, function (index, ItemName) {
                         OrgItemNameDropdown.append('<option value="' + ItemName.itemcode + '">' + ItemName.ItemName + '</option>');
                     });
+                  
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                        var OriginalItemName = '@Model.OriginalItemName';
+                        var OriginalItemName = '@Model.OriginalItemCode';
                         $('#OriginalItemName').val(OriginalItemName);
                     }
                 },
@@ -808,7 +889,120 @@
                 }
             });
         }
+        var UniqueBatchNo = [];
+        function FillStockBatchNo() {
+            debugger
+            var ItemCode = $('#OriginalItemCode').val();
+            var YearCode = $('#OpeningYearCode').val();
+            var StoreName = $('#StoreName').find(':selected').text();
+            var batchno = "";
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStockBatchNo")",
+                async: false,
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                success: function (result, status, error) {
 
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            UniqueBatchNo = [];
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="" selected>-Select-</option>');
+                            $('#UniqueBatchNo').empty();
+                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                //UniqueBatchNo.push({
+                                //    "Batchno": val.batchno,
+                                //    "UniqueBatchNo": val.UniqueBatchNo
+                                //});
+                                //$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
+                            });
+                           // GetBatchInventory();
+
+
+                            var itemArrayLength = itemBatchArray.length;
+                            if (itemArrayLength > 0) {
+                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
+                                    return item.itemcode === parseInt(ItemCode);
+                                });
+                                var selectList = $('#BatchNo');
+                                var SelectUBList = $('#UniqueBatchNo');
+                                selectList.find('option').each(function () {
+                                    var optionValue = $(this).val();
+
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.batchno === optionValue;
+                                    });
+
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+
+                                SelectUBList.find('option').each(function () {
+
+                                    var optionValue = $(this).val();
+
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.uniquebatchno === optionValue;
+                                    });
+
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+                            }
+
+
+
+                        } else {
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="" selected>-Select-</option>');
+                            $('#UniqueBatchNo').empty();
+                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillStockUniqueBatchNo() {
+            debugger
+            var ItemCode = $('#OriginalItemName').val();
+            var YearCode = $('#OpeningYearCode').val();
+            var StoreName = $('#StoreName').find(':selected').text();
+            //var ItemName = $('#ItemName').find(':selected').text();
+            var batchno = $('#BatchNo').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStockBatchNo")",
+                async: false,
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            $('#UniqueBatchNo').empty();
+                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" selected>' + val.UniqueBatchNo + '</option>');
+                            });
+                            //    GetBatchInventory();
+
+                        } else {
+                            $('#UniqueBatchNo').empty();
+                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                        }
+                    }
+                }
+            });
+        }
        
         function ClearItems() {
             $('#BillYear,#BillNetAmt,#PendAmt').val(0);
@@ -821,6 +1015,7 @@
             var SchData = {
                 OriginalPartCode: $('#OriginalPartCode').val(),
                 OriginalItemName: $('#OriginalItemName').val(),
+                OriginalItemCode: $('#OriginalItemCode').val(),
                 Unit: $('#Unit').val(),
                 OriginalQty: $('#OriginalQty').val(),
                 AltItemName: $('#AltItemName').val(),
@@ -843,7 +1038,7 @@
                 ProdSchDatetime: $('#ProdSchDatetime').val(),
                 OrigItemRate: $('#OrigItemRate').val(),
                 Remark: $('#Remark').val(),
-                OriginalItemCode: $('#OriginalItemCode').val(),
+                
                OriginalPartCode: $('#OriginalPartCode').find(":selected").text(),
                OriginalItemName: $('#OriginalItemName').find(":selected").text(),
                 OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
@@ -922,12 +1117,13 @@
                 type: "POST",
                 data: { SrNO: SrNO, Mode: "U" },
                 success: function (data) {
+                    debugger
                     var obj = $.parseJSON(data);
                     if (obj != null) {
                         EditEachItem = true;
 
-                        $('#OriginalPartCode').val(obj[0].OriginalPartCode).trigger("change.select2");
-                        $('#OriginalItemName').val(obj[0].OriginalItemName).trigger("change.select2");
+                        $('#OriginalPartCode').val(obj[0].OriginalPartCode).trigger("change");
+                        $('#OriginalItemName').val(obj[0].OriginalItemName).trigger("change");
 
                         $('#OriginalItemCode').val(obj[0].OriginalItemCode).trigger("change");
                         $('#Unit').val(obj[0].Unit).trigger("change");
