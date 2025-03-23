@@ -15,5 +15,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillWorkCenterName();
         Task<ResponseResult> GetOriginalPartCode();
         Task<ResponseResult> GetOriginalItemName();
+        Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno, string FinStartDate);
     }
 }

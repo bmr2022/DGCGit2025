@@ -432,7 +432,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDate));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ParseFormattedDate(ActualEntryDate)));
                 SqlParams.Add(new SqlParameter("@Vouchertype", "Bank-Receipt"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
@@ -594,9 +594,6 @@ namespace eTactWeb.Data.DAL
                         VoucherDocNo = row["VoucherDocNo"].ToString(),
                         EntryByMachine = row["EntryByMachine"].ToString(),
                         BillVouchNo = row["BillVouchNo"].ToString(),
-
-
-
                         VoucherDocDate = row["VoucherDocdate"].ToString(),
                         SubVoucherName = row["SubVoucherName"].ToString(),
                         Currency = row["Currency"].ToString(),
@@ -617,6 +614,7 @@ namespace eTactWeb.Data.DAL
                         AgainstVoucherRefNo = row["againstVoucherRefNo"].ToString(),
                         AgainstVoucherType = row["AgainstVoucherType"].ToString(),
                         AgainstVoucheryearCode = Convert.ToInt32(row["AgainstVoucheryearcode"].ToString()),
+                        AgainstVoucherNo = row["AgainstVoucherNo"].ToString(),
                         ChequeClearDate = row["chequeClearDate"].ToString(),
                         ChequePrintAC = row["ChequePrintAC"].ToString(),
                         PONo = row["PONo"].ToString(),
