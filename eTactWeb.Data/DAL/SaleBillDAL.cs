@@ -400,7 +400,7 @@ namespace eTactWeb.Data.DAL
                 return DateTime.Parse(dateString);
             }
         }
-        public async Task<ResponseResult> FillSONO(string billDate, string accountCode)
+        public async Task<ResponseResult> FillSONO(string billDate, string accountCode, string billType)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -409,6 +409,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "FILLSONO"));
                 SqlParams.Add(new SqlParameter("@billdate", ParseDate(billDate)));
                 SqlParams.Add(new SqlParameter("@Accountcode", accountCode));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", billType));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -813,65 +814,6 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        //public List<CustomerJobWorkIssueAdjustDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
-        //{
-        //    List<CustomerJobWorkIssueAdjustDetail> result = new List<CustomerJobWorkIssueAdjustDetail>();
-
-        //    using (SqlConnection conn = new SqlConnection(DBConnectionString))
-        //    {
-        //        conn.Open();
-        //        EntryDate = Common.CommonFunc.ParseFormattedDate(EntryDate);
-        //        ChallanDate = Common.CommonFunc.ParseFormattedDate(ChallanDate);
-
-        //            using (SqlCommand cmd = new SqlCommand("SpCustomerJobworkAdjustedChallanInGrid", conn))
-        //            {
-        //                cmd.CommandType = CommandType.StoredProcedure;
-
-        //                //cmd.Parameters.AddWithValue("@Flag", "JOBWORKISSUESUMMARY");
-        //                cmd.Parameters.AddWithValue("@yearCode", YearCode);
-        //                cmd.Parameters.AddWithValue("@FinYearFromDate", EntryDate);
-        //                cmd.Parameters.AddWithValue("@billchallandate", ChallanDate);
-        //                cmd.Parameters.AddWithValue("@AccountCode", AccountCode);
-        //                cmd.Parameters.AddWithValue("@DTTItemGrid", adjustedData);
-        //                //cmd.Parameters.AddWithValue("@BOMINd", item.BOMInd);
-        //                cmd.Parameters.AddWithValue("@RMItemCode", itemCode);
-        //                //cmd.Parameters.AddWithValue("@RMPartcode", item.PartCode);
-        //                //cmd.Parameters.AddWithValue("@RMItemNAme", item.ItemName);
-
-        //                try
-        //                {
-        //                    using (SqlDataReader reader = cmd.ExecuteReader())
-        //                    {
-        //                        while (reader.Read())
-        //                        {
-        //                            result.Add(new CustomerJobWorkIssueAdjustDetail
-        //                            {
-        //                                //CustomerName = reader["CustomerName"].ToString(),
-        //                                //PartCode = reader["RecPartcode"].ToString(),
-        //                                //ItemName = reader["RecItemName"].ToString(),
-        //                                //BOMInd = reader["BOMIND"].ToString(),
-        //                                //ChallanNo = reader["RecJWChallan"].ToString(),
-        //                                //YearCode = Convert.ToInt32(reader["RecChallanYearCode"]),
-        //                                //ChallanDate = DateTime.Parse(reader["RecChallandate"].ToString()).ToString("dd/MM/yyyy"),
-        //                                //RecQty = Convert.ToInt32(reader["RecQty"]),
-        //                                //IssQty = Convert.ToInt32(reader["IssQty"]),
-        //                                //AccPendQty = Convert.ToInt32(reader["ActualPendQty"]),
-        //                                //PendQty = Convert.ToInt32(reader["PendQty"]),
-        //                            });
-        //                        }
-        //                    }
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    Console.WriteLine($"Error: {ex.Message}");
-        //                    throw; // Rethrow exception to see the detailed error
-        //                }
-        //            }
-
-        //    }
-
-        //    return result;
-        //}
         internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName)
         {
             var ResponseResult = new ResponseResult();
@@ -1366,30 +1308,16 @@ namespace eTactWeb.Data.DAL
                             }
                         });
 
-
+                    var custJobWorkModel = model.CustomerJobWorkChallanAdj.FirstOrDefault(x => bomItemGrid.Select(i => i.ItemCode).Contains(x.RecItemCode));
+                    if (custJobWorkModel is not null)
+                    {
+                        custJobWorkModel.BOMInd = row["BOMIND"].ToString();
+                        custJobWorkModel.FinishItemCode = Convert.ToInt32(row["FinishItemCode"]);
+                    }
                 }
                 model.BomCustomerJWIssChallanAdj = bomItemGrid;
+                model.CustomerJobWorkChallanAdj = custJobWorkChallanAdjGrid;
             }
-
-
-
-
-            //var custJobWorkModel = model.CustomerJobWorkChallanAdj.FirstOrDefault(x => bomItemGrid.Select(i => i.ItemCode).Contains(x.RecItemCode));
-            //if (custJobWorkModel is not null)
-            //{
-            //    custJobWorkModel.BOMInd = row["BOMIND"].ToString();
-            //    custJobWorkModel.FinishItemCode = Convert.ToInt32(row["FinishItemCode"]);
-            //}
-            //model.CustomerJobWorkChallanAdj = custJobWorkChallanAdjGrid;
-
-
-            //var bomCust = model.BomCustomerJWIssChallanAdj.FirstOrDefault(x => model.CustomerJobWorkIssueAdjustDetails.Select(c => c.IssuedItemCode).Contains(x.ItemCode));
-            //foreach (var item in model.CustomerJobWorkChallanAdj)
-            //{
-            //    item.BOMInd = bomCust.BOMIND;
-            //    item.FinishItemCode = bomCust.FinishedItemCode;
-
-            //}
 
             return model;
         }

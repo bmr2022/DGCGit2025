@@ -62,7 +62,7 @@ namespace eTactWeb.Controllers
             _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
             _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
             _MemoryCache.TryGetValue("KeyDrCrGrid", out List<DbCrModel> DrCrGrid);
-            _MemoryCache.TryGetValue("KeyAdjChallanGrid", out List<CustomerInputJobWorkIssueAdjustDetail> AdjChallanGrid);
+            _MemoryCache.TryGetValue("KeyAdjChallanGrid", out List<CustomerJobWorkChallanAdj> AdjChallanGrid);
             if (saleBillDetail == null)
             {
                 ModelState.Clear();
@@ -96,7 +96,7 @@ namespace eTactWeb.Controllers
 
                 if (AdjChallanGrid != null && AdjChallanGrid.Count > 0)
                 {
-                    AdjChallanDetailDT = GetAdjustChallanDetailTable(AdjChallanGrid);
+                    AdjChallanDetailDT = GetCustomerJobWorkChallanAdjTable(AdjChallanGrid);
                 }
 
                 if (TaxGrid != null && TaxGrid.Count > 0)
@@ -292,7 +292,9 @@ namespace eTactWeb.Controllers
                     Size = 1024,
                 };
 
-                _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
+                _MemoryCache.Set("KeyAdjChallanGrid", result.CustomerJobWorkChallanAdj, cacheEntryOptions);
+
+
 
                 return PartialView("_CustomerJwisschallanAdjustment", result.CustomerJobWorkIssueAdjustDetails);
             }
@@ -322,7 +324,7 @@ namespace eTactWeb.Controllers
                     Size = 1024,
                 };
 
-                _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
+                _MemoryCache.Set("KeyAdjChallanGrid", result.CustomerJobWorkChallanAdj, cacheEntryOptions);
 
                 return PartialView("_BomCustJwisschallanAdjustment", result.BomCustomerJWIssChallanAdj);
             }
@@ -342,6 +344,7 @@ namespace eTactWeb.Controllers
             _MemoryCache.Remove("KeySaleBillGrid");
             _MemoryCache.Remove("SaleBillModel");
             _MemoryCache.Remove("KeyAdjGrid");
+            _MemoryCache.Remove("KeyAdjChallanGrid");
 
             // var model = await BindModel(MainModel);
 
@@ -672,7 +675,7 @@ namespace eTactWeb.Controllers
 
                     _MemoryCache.Set("KeySaleBillGrid", MainModel.saleBillDetails, cacheEntryOptions);
 
-                    MainModel = BindItem4Grid(MainModel);
+                    //MainModel = BindItem4Grid(MainModel);
                     MainModel.saleBillDetails = saleBillDetail;
                     MainModel.ItemDetailGrid = saleBillDetail;
                     _MemoryCache.Set("KeySaleBillGrid", MainModel.saleBillDetails, cacheEntryOptions);
@@ -702,6 +705,18 @@ namespace eTactWeb.Controllers
             _MemoryCache.Remove("SaleBillModel");
             var MainModel = new SaleBillModel();
             return PartialView("_SaleBillGrid", MainModel);
+        }
+        public IActionResult ClearCustomerJWGrid()
+        {
+            _MemoryCache.Remove("KeyAdjChallanGrid");
+            var MainModel = new AdjChallanDetail();
+            return PartialView("_CustomerJwisschallanAdjustment", MainModel.CustomerJobWorkIssueAdjustDetails);
+        }
+        public IActionResult ClearBomCustomerJWGrid()
+        {
+            _MemoryCache.Remove("KeyAdjChallanGrid");
+            var MainModel = new AdjChallanDetail();
+            return PartialView("_BomCustJwisschallanAdjustment", MainModel.BomCustomerJWIssChallanAdj);
         }
         private SaleBillModel BindItem4Grid(SaleBillModel model)
         {
@@ -1026,9 +1041,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillSONO(string billDate, string accountCode)
+        public async Task<JsonResult> FillSONO(string billDate, string accountCode,string billType)
         {
-            var JSON = await _SaleBill.FillSONO(billDate, accountCode);
+            var JSON = await _SaleBill.FillSONO(billDate, accountCode,billType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
