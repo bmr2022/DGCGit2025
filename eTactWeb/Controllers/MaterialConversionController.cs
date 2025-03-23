@@ -69,7 +69,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-         public async Task<JsonResult> GetOriginalItemName()
+        public async Task<JsonResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno)
+        {
+            var FinStartDate = HttpContext.Session.GetString("FromDate");
+            var JSON = await _IMaterialConversion.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno, FinStartDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetOriginalItemName()
          {
             var JSON = await _IMaterialConversion.GetOriginalItemName();
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -153,16 +160,18 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
             return Json(JsonString);
         }
+       
         public IActionResult DeleteItemRow(int SrNO, string Mode)
         {
             var MainModel = new MaterialConversionModel();
-           
+            if (Mode == "U")
+            {
                 _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out List<MaterialConversionModel> MaterialConversionGrid);
-                int Indx = SrNO - 1; ;
+                int Indx = SrNO - 1;
 
                 if (MaterialConversionGrid != null && MaterialConversionGrid.Count > 0)
                 {
-                MaterialConversionGrid.RemoveAt(Convert.ToInt32(Indx));
+                    MaterialConversionGrid.RemoveAt(Convert.ToInt32(Indx));
 
                     Indx = 0;
 
@@ -182,9 +191,37 @@ namespace eTactWeb.Controllers
 
                     _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
                 }
-          
+            }
+            else
+            {
+                _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out List<MaterialConversionModel> MaterialConversionGrid);
+                int Indx = SrNO;
 
-            return PartialView("_MaterialConversionGrid", MainModel);
+                if (MaterialConversionGrid != null && MaterialConversionGrid.Count > 0)
+                {
+                    MaterialConversionGrid.RemoveAt(Indx);
+
+                    Indx = 0;
+
+                    foreach (var item in MaterialConversionGrid)
+                    {
+                        Indx++;
+                        item.SrNO = Indx;
+                    }
+                    MainModel.MaterialConversionGrid = MaterialConversionGrid;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
+                }
+            }
+
+            return PartialView("MaterialConversion", MainModel);
         }
     }
 }

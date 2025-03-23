@@ -129,6 +129,31 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
          }
+        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno, string FinStartDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
 
+                var Date = DateTime.Now;
+                SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
+                SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
+                SqlParams.Add(new SqlParameter("@StorName", StoreName));
+                SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
+                SqlParams.Add(new SqlParameter("@transDate", Date));
+                SqlParams.Add(new SqlParameter("@batchno", batchno));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStore", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }
