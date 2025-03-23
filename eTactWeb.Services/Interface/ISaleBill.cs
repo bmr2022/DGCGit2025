@@ -20,7 +20,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillCustomerList(string SBJobwork, string ShowAllCustomer);
         Task<ResponseResult> GetDistance(int accountCode);
         Task<ResponseResult> FillDocument(string ShowAllDoc);
-        Task<ResponseResult> FillSONO(string billDate, string accountCode);
+        Task<ResponseResult> FillSONO(string billDate, string accountCode,string billType);
         Task<ResponseResult> FillConsigneeList(string showAllConsignee);
         Task<ResponseResult> FillSOYearCode(string sono,string accountCode);
         Task<ResponseResult> DisplaySODetail(string accountName, string itemName, string partCode, string sono, int soYearCode, string custOrderNo, string schNo, int schYearCode);

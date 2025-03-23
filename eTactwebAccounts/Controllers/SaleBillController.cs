@@ -769,9 +769,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillSONO(string billDate, string accountCode)
+        public async Task<JsonResult> FillSONO(string billDate, string accountCode, string billType)
         {
-            var JSON = await _SaleBill.FillSONO(billDate, accountCode);
+            var JSON = await _SaleBill.FillSONO(billDate, accountCode, billType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -786,6 +786,12 @@ namespace eTactWeb.Controllers
             var JSON = await _SaleBill.FillConsigneeList(showAllConsignee);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        public IActionResult ClearCustomerJWGrid()
+        {
+            _MemoryCache.Remove("KeyAdjChallanGrid");
+            var MainModel = new AdjChallanDetail();
+            return PartialView("_CustomerJwisschallanAdjustment", MainModel);
         }
         public async Task<JsonResult> FillSOYearCode(string sono, string accountCode)
         {
