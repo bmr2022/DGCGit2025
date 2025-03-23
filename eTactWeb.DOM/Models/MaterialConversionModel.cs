@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
     {
 
         public int EntryId { get; set; }
+        public int SrNO { get; set; }
         public string EntryDate { get; set; }
         public int OpeningYearCode { get; set; }
         public string SlipNo { get; set; }
@@ -74,11 +75,12 @@ namespace eTactWeb.DOM.Models
         public decimal AltStock { get; set; }
         public string PlanNo { get; set; }
         public int PlanYearCode { get; set; }
-        public DateTime PlanDate { get; set; }
+        public string PlanDate { get; set; }
         public string ProdSchNo { get; set; }
         public int ProdSchYearCode { get; set; }
-        public DateTime ProdSchDatetime { get; set; }
+        public string ProdSchDatetime { get; set; }
         public decimal OrigItemRate { get; set; }
+        public IList<MaterialConversionModel> MaterialConversionGrid { get; set; }
        
     }
 }

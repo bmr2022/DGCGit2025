@@ -250,12 +250,12 @@
 
                                     <div style="width:170px;">
                                         <label asp-for="DrAmt" class="form-label">Dr Amt</label>
-                                        <input asp-for="DrAmt"  class="form-control" readonly />
+                                        <input asp-for="DrAmt" class="form-control" readonly />
                                     </div>
 
                                     <div style="width:170px;">
                                         <label asp-for="CrAmt" class="form-label">Cr Amt</label>
-                                        <input asp-for="CrAmt"  class="form-control" readonly data-val="false" />
+                                        <input asp-for="CrAmt" class="form-control" readonly data-val="false" />
                                     </div>
 
                                     <div style="width:170px;">
@@ -380,7 +380,7 @@
     </form>
 </div>
 
-<div class="modal fade" id="DisplayRoutingDetailModal">
+<div class="modal fade" id="DisplayRoutingDetailModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -476,7 +476,7 @@
     <script>
 
         function Validate_Submit() {
-             
+
             var Err = 0;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -533,7 +533,7 @@
             FillIntrument();
             FillCurrency();
             FillModeofAdjust();
-            
+
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
             });
@@ -605,7 +605,12 @@
             var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-            $('#BankRECO').datepicker({ dateFormat: 'dd/mm/yy' });
+            //$('#BankRECO').datepicker({ dateFormat: 'dd/mm/yy' });
+            var BankRecoDate = $('#BankRECO').val();
+            if (BankRecoDate === "01/01/1900") {
+                $('#BankRECO').val("");
+            }
+
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
             }
@@ -692,7 +697,7 @@
                     FillSONO();
                 }
 
-               
+
             }
             $("#SONo").on("change", function () {
                 GetSOYear();
@@ -702,7 +707,7 @@
                 checkModeOfAdjustment();
             });
 
-            
+
 
             // Initial check on page load
             checkModeOfAdjustment();
@@ -712,7 +717,7 @@
 
             let drTotal = 0;
             let crTotal = 0;
-            
+
             const rowCount = $('#divBankReceiptDetail tr').length;
             for (let i = 1; i <= rowCount; i++) {
 
@@ -721,7 +726,7 @@
 
                 if (drcr.toLowerCase() === "dr") {
                     drTotal += AdjAmt;
-                    
+
 
                 } else if (drcr.toLowerCase() === "cr") {
                     crTotal += AdjAmt;
@@ -766,7 +771,7 @@
         }
 
         function FillEntryID() {
-             ;
+            ;
             var VoucherDate = $('#VoucherDate').val();
 
             if (VoucherDate) {
@@ -823,7 +828,7 @@
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 
                         $('#Balance').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
-                       // $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
+                        // $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
                         $('#DRCR').val(obj.Result[0].TypeDrCr);
                     }
                     else {
@@ -870,7 +875,7 @@
         }
 
         function FillSONO() {
-             ;
+            ;
 
             var accountcode = $('#AccountCode').val();
             var VoucherDate = $('#VoucherDate').val();
@@ -929,7 +934,7 @@
 
 
         function GetSOYear() {
-             ;
+            ;
             var SONO = $("#SONo").val();
             var accountcode = $("#AccountCode").val();
             var VoucherDate = $("#VoucherDate").val();
@@ -984,7 +989,7 @@
 
 
                         $("#SOYear").prop("disabled", false).val(SOYear.SOYearCode).trigger("input");
-                       // $("#SoDate").prop("disabled", false).val(SoDate.SODate).trigger("input");
+                        // $("#SoDate").prop("disabled", false).val(SoDate.SODate).trigger("input");
                         if (SoDate.SODate) {
                             var dateObj = new Date(SoDate.SODate);
                             var formattedDate = ("0" + dateObj.getDate()).slice(-2) + "/" +
@@ -1103,7 +1108,7 @@
         }
 
         function CheckAmountBeforeSave(i) {
-             
+
             $.ajax({
                 url: '@Url.Action("CheckAmountBeforeSave", "BankReceipt")',
                 type: 'POST',
@@ -1248,7 +1253,7 @@
         }
 
         function FillCostCenterName() {
-             ;
+            ;
             $.ajax({
                 url: '@Url.Action("FillCostCenterName", "BankReceipt")',
                 type: 'POST',
@@ -1364,7 +1369,7 @@
             return `${parts[2]}-${parts[1]}-${parts[0]}`;
         }
 
-        function PopUpForPendingVouchers(Action, SrNO) {
+        function PopUpForPendingVouchers(Action, SrNO, amount) {
             debugger
             $('#CheckUnCheckAll').prop('checked', false);
             if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
@@ -1386,13 +1391,18 @@
                 data: { "DataTable": DataTable },
                 success: function (data, status, xhr) {
                     if (data != null) {
-
+                        debugger
                         $('#divDisplayPopupForPendingVouchersDetail').empty();
                         $('#divDisplayPopupForPendingVouchersDetail').append(data);
                         CheckUnCheckEdit();
                         var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
                         var TdRow = $('#divDisplayPopupForPendingVouchersDetail tr td').length;
 
+                        if(amount != undefined){
+                            for (i = 1; i <= RowCount; i++) {
+                                $('#AdjustAmt-' + i).val(amount);
+                            }
+                        }
                         if (TdRow > 1) {
                             $('#lblroutingtotal').text(RowCount);
                         }
@@ -1400,6 +1410,7 @@
                             $('#divDisplayPopupForPendingVouchersDetail').empty();
                         }
                     }
+
                     AdjustAmount();
                 },
                 error: function (xhr, status, error) {
@@ -1438,8 +1449,8 @@
                     TotalCrAmt += CRAmtrow;
                 }
             }
-            $('#PopDrAmt').val(DRAmt.toFixed(2));
-            $('#PopCrAmt').val(CRAmt.toFixed(2));
+            $('#PopDrAmt').val(CRAmt.toFixed(2));
+            $('#PopCrAmt').val(DRAmt.toFixed(2));
             $('#PopUpBalance').val((TotalDRAmt - TotalCrAmt).toFixed(2));
             $('#PopAdjustmentAmt').val((DRAmt - CRAmt).toFixed(2));
         }
@@ -1478,7 +1489,7 @@
         }
 
         function ChangeAdjustAmt(i) {
-             
+
             if ($('#AdjustAmt-' + i).val() > 0) {
                 $('#BalanceAmt-' + i).text(parseFloat($('#ActualBalance-' + i).text()) - parseFloat($('#AdjustAmt-' + i).val()));
                 $('#BalanceAmt-' + i).text(Math.round(parseFloat($('#BalanceAmt-' + i).text()) * 100) / 100);
@@ -1515,7 +1526,7 @@
         }
 
         function Validate_AdjustButton() {
-             
+
             var Err = 0;
             var RowCount = $('#lblcheckitem').text();
             if (RowCount <= 0) {
@@ -1528,7 +1539,7 @@
         }
 
         function AdjustButton() {
-             
+
             if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var ItemData = [];
@@ -1598,10 +1609,6 @@
                 }
             });
         }
-
-        $('#DisplayRoutingDetailModal').on('show.bs.modal', function () {
-            $(this).removeAttr('aria-hidden');
-        });
 
         function Validate_GridButton() {
 
@@ -1742,7 +1749,7 @@
             const adjAmt = parseFloat(SchData.AdjustmentAmt) || 0;
             if (SchData.Type.toLowerCase() === "dr") {
                 SchData.DrAmt = adjAmt.toFixed(2);
-               
+
                 SchData.CrAmt = "0.00";
             } else if (SchData.Type.toLowerCase() === "cr") {
                 SchData.CrAmt = adjAmt.toFixed(2);
@@ -1806,7 +1813,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-            debugger 
+            debugger
             var RowCount = $('#divBankReceiptDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1821,6 +1828,7 @@
                         debugger
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
+                        PopUpForPendingVouchers("EditMode", SrNO, obj[0].AdjustmentAmt);
                         if (ModeOfAdjustment == "Against Ref") {
                             $('#LedgerName').val(obj[0].AccountCode).trigger("change");
                             $('#AccountCode').val(obj[0].AccountCode);
@@ -1828,8 +1836,7 @@
                             $('#InsNo').val(obj[0].InsNo);
                             $('#InsDate').val(obj[0].InsDate);
                             $('#ModeOfAdjustment').val(obj[0].ModeOfAdjustment).trigger("change");
-                            $('#SeqNo').val(obj[0].SeqNo);
-                            PopUpForPendingVouchers("EditMode", SrNO);
+                            $('#SeqNo').val(obj[0].SeqNo);  
                             CheckUnCheckEdit();
                         }
                         else {
@@ -1897,10 +1904,10 @@
         })
 
         function CheckUnCheckCheck(i) {
-             
+
             var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             if ($('#CheckUnCheck-' + i).is(':checked') == true) {
-                if(parseFloat($('#AdjustAmt-' +i).text()) == 0){
+                if (parseFloat($('#AdjustAmt-' + i).val()) == 0) {
                     $('#AdjustAmt-' + i).val(($('#BalanceAmt-' + i).text()));
                     $('#BalanceAmt-' + i).text(0);
                 }

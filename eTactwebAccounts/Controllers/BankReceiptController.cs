@@ -264,7 +264,7 @@ namespace eTactWeb.Controllers
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
                 Item.ChequeDate = DateTime.Now.ToString("dd/MM/yy") ,
-                Item.ChequeClearDate =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.BankRECO =DateTime.Now.ToString("dd/MM/yy") ,
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,
@@ -618,7 +618,7 @@ namespace eTactWeb.Controllers
                             item.SeqNo = ProductionEntryDetail.Count + 1;
 
                             // Swap Type values
-                           // item.Type = item.Type.ToLower() == "dr" ? "DR" : "CR";
+                            item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
 
                             // Add new item to list
                             ProductionEntryDetail.Add(item);

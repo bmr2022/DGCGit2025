@@ -293,6 +293,7 @@ namespace eTactWeb.DOM.Models
         public string RecPartCode { get; set; }
         public string RecItemName { get; set; }
         public int RecItemCode { get; set; }
+        public int IssuedItemCode { get; set; }
         public string BomNo { get; set; }
         public string BomDate { get; set; }
         public string BomStatus { get; set; }
@@ -353,9 +354,53 @@ namespace eTactWeb.DOM.Models
         public string FullyAdjusted { get; set; }
     }
 
+    public class CustomerJobWorkChallanAdj
+    {
+        public string? EntryDate { get; set; }
+        public int? CustJwRecEntryId { get; set; }
+        public int? CustJwRecYearCode { get; set; }
+        public string CustJwRecChallanNo { get; set; }
+        public string? CustJwRecEntryDate { get; set; }
+        public int RecItemCode { get; set; }
+        public int? CustJwIssEntryid { get; set; }
+        public int? CustJwIssYearCode { get; set; }
+        public string CustJwIssChallanNo { get; set; }
+        public string? CustJwIssChallanDate { get; set; }
+        public int? AccountCode { get; set; }
+        public int? FinishItemCode { get; set; }
+        public float? AdjQty { get; set; }
+        public string CC { get; set; }
+        public int? UID { get; set; }
+        public string AdjFormType { get; set; }
+        public string? TillDate { get; set; }
+        public float? TotIssQty { get; set; }
+        public float? PendQty { get; set; }
+        public float? BOMQty { get; set; }
+        public int? BomRevNo { get; set; }
+        public string? BOMRevDate { get; set; }
+        public int? ProcessID { get; set; }
+        public string BOMInd { get; set; }
+        public float? IssQty { get; set; }
+        public float? TotadjQty { get; set; }
+        public float? TotalIssQty { get; set; }
+        public float? TotalRecQty { get; set; }
+        public int? RunnerItemCode { get; set; }
+        public int? ScrapItemCode { get; set; }
+        public float? IdealScrapQty { get; set; }
+        public float? IssuedScrapQty { get; set; }
+        public string PreRecChallanNo { get; set; }
+        public float? ScrapqtyagainstRcvqty { get; set; }
+        public string Recbatchno { get; set; }
+        public string Recuniquebatchno { get; set; }
+        public string Issbatchno { get; set; }
+        public string Issuniquebatchno { get; set; }
+        public string ScrapAdjusted { get; set; }
+    }
+
     public class AdjChallanDetail
     {
         public List<CustomerJobWorkIssueAdjustDetail> CustomerJobWorkIssueAdjustDetails { get; set; }
         public List<BomCustomerJWIssChallanADJ> BomCustomerJWIssChallanAdj { get; set; }
+        public List<CustomerJobWorkChallanAdj> CustomerJobWorkChallanAdj { get; set; }
     }
 }
