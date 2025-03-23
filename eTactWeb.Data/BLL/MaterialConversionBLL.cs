@@ -44,6 +44,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialConversionDAL.GetOriginalItemName();
         }
-
+        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno, string FinStartDate)
+        {
+            return await _MaterialConversionDAL.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno, FinStartDate);
+        }
     }
 }

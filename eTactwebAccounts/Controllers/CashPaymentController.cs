@@ -611,18 +611,20 @@ namespace eTactwebAccounts.Controllers
                 {
                     if (item != null)
                     {
-                        bool isDuplicate = ProductionEntryDetail.Any(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
-                        if (!isDuplicate)  // Only add if not duplicate
+                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
+                        if (existingItem != null)
                         {
-                            // Assign sequence number correctly
-                            item.SeqNo = ProductionEntryDetail.Count + 1;
-
-                            // Swap Type values
-                            item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
-
-                            // Add new item to list
-                            ProductionEntryDetail.Add(item);
+                            ProductionEntryDetail.Remove(existingItem);
                         }
+
+                        // Assign sequence number correctly
+                        item.SeqNo = ProductionEntryDetail.Count + 1;
+
+                        // Swap Type values
+                        item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
+
+                        // Add new item to list
+                        ProductionEntryDetail.Add(item);
                     }
                 }
 

@@ -45,8 +45,8 @@ else
                 }
             </td>
             <td>@Cntr</td>
-            <td>@item.OriginalPartCode<input type="hidden" asp-for="OriginalItemCode" /></td>
-            <td>@item.OriginalItemName<input type="hidden" asp-for="OriginalItemCode" /></td>
+            <td>@item.OriginalPartCode<input type="hidden" asp-for="OriginalItemCode" value="@item.OriginalItemCode" /></td>
+            <td>@item.OriginalItemName<input type="hidden" asp-for="OriginalItemCode" value="@item.OriginalItemCode"/></td>
             <td>@item.Unit</td>
             <td>@item.OriginalQty</td>
             <td>@item.AltItemName</td>
