@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -56,8 +57,8 @@ namespace eTactWeb.Data.DAL
                     DateTime currentDate = DateTime.Today;
                     DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                     command.Parameters.AddWithValue("@flag", "VoucherDetail");
-                    command.Parameters.Add(new SqlParameter("fromDate", firstDateOfMonth.ToString("yyyy/MM/dd")));
-                    command.Parameters.Add(new SqlParameter("@ToDate", currentDate.ToString("yyyy/MM/dd")));
+                    command.Parameters.Add(new SqlParameter("fromDate", ParseFormattedDate(FromDate)));
+                    command.Parameters.Add(new SqlParameter("@ToDate", ParseFormattedDate(ToDate)));
                     command.Parameters.AddWithValue("@ACCOUNTCODE", AccountCode);
                     command.Parameters.AddWithValue("@ReportType", ReportType);
 
