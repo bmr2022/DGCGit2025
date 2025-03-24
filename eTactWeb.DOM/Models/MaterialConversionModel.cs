@@ -17,8 +17,11 @@ namespace eTactWeb.DOM.Models
         public string SlipNo { get; set; }
         public string SlipDate { get; set; }
         public string StoreName { get; set; }
+        public int StoreId { get; set; }
+        public int WcId { get; set; }
         public string IssueToStoreWC { get; set; }
         public string WorkCenterName { get; set; }
+        public string AltWorkCenterName { get; set; }
         public string WONO { get; set; }
         public int WOYear { get; set; }
         public string RsNo { get; set; }
@@ -69,6 +72,7 @@ namespace eTactWeb.DOM.Models
         public int AltStoreId { get; set; }
         public int OrginalWCID { get; set; }
         public int AltWCID { get; set; }
+        public string AltStoreName { get; set; }
         public string BatchNo { get; set; }
         public string UniqueBatchNo { get; set; }
         public decimal BatchStock { get; set; }
