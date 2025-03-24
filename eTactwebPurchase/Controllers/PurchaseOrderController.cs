@@ -21,6 +21,7 @@ using System.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Controllers;
 
@@ -61,7 +62,7 @@ public class PurchaseOrderController : Controller
         var webReport = new WebReport();
 
         var ReportName = IPurchaseOrder.GetReportName();
-        if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+        if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
         {
             webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
         }
@@ -1441,13 +1442,15 @@ public class PurchaseOrderController : Controller
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 //var itemCatCode = IStockAdjust.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
-                var itemCode = IPurchaseOrder.GetItemCode(worksheet.Cells[row, 3].Value.ToString());
+                var itemCode = IPurchaseOrder.GetItemCode(worksheet.Cells[row, 1].Value.ToString());
                 var partcode = 0;
                 var itemCodeValue = 0;
+                var itemname = "";
                 if (itemCode.Result.Result != null)
                 {
                     partcode = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
                     itemCodeValue = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
+                    itemname = itemCode.Result.Result.Rows.Count <= 0 ? 0 : itemCode.Result.Result.Rows[0].ItemArray[1];
                 }
 
                 if (partcode == 0)
@@ -1455,74 +1458,94 @@ public class PurchaseOrderController : Controller
                     return Json("Partcode not available");
                 }
                 // for pending qty validation -- still need to change
-                var POQty = Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString());
+                var POQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString());
+
+
+
+                string poType = Request.Form["POType"];
+                bool isPOTypeClose = poType.Equals("Close", StringComparison.OrdinalIgnoreCase);
+
+                // **Quantity and Rate Validation**
+                decimal qty = isPOTypeClose
+                    ? decimal.TryParse(worksheet.Cells[row, 4].Value?.ToString(), out decimal tempQty) ? tempQty : 0
+                    : 0;
+                var DisRs = Convert.ToDecimal(worksheet.Cells[row, 7].Value);
+
+                if (isPOTypeClose && qty <= 0)
+                {
+                    return Json("Qty is less Then 0");
+                }
+                else if(!isPOTypeClose)
+                {
+                    DisRs = 0;
+                }
 
 
                 //for altunit conversion
-                var altUnitConversion = AltUnitConversion(partcode, 0, Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()));
+                var altUnitConversion = AltUnitConversion(partcode, 0, Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString()));
                 JObject AltUnitCon = JObject.Parse(altUnitConversion.Result.Value.ToString());
                 decimal altUnitValue = (decimal)AltUnitCon["Result"][0]["AltUnitValue"];
 
                 var pendQty = GetPendQty(pono, poYearcode, itemCodeValue, AccountCode, SchNo, SchYearCode, Flag);
 
-                JObject AltPendQTy = JObject.Parse(pendQty.Result.Value.ToString());
-                JToken recqtyToken = AltPendQTy["Result"]["Table"][0]["RECQTY"];
-                JToken poRateToken = AltPendQTy["Result"]["Table"][0]["PORATE"];
+                //JObject AltPendQTy = JObject.Parse(pendQty.Result.Value.ToString());
+                //JToken recqtyToken = AltPendQTy["Result"]["Table"][0]["RECQTY"];
+                //JToken poRateToken = AltPendQTy["Result"]["Table"][0]["PORATE"];
 
                 var GetExhange = GetExchangeRate(Currency);
 
-                JObject AltRate = JObject.Parse(GetExhange.Result.Value.ToString());
-                decimal AltRateToken = (decimal)AltRate["Result"][0]["Rate"];
-                var RateInOther = Convert.ToDecimal(worksheet.Cells[row, 14].Value) * AltRateToken;
+                //JObject AltRate = JObject.Parse(GetExhange.Result.Value.ToString());
+                //decimal AltRateToken = (decimal)AltRate["Result"][0]["Rate"];
+                //var RateInOther = Convert.ToDecimal(worksheet.Cells[row, 14].Value) * AltRateToken;
 
-                decimal recqtyValue = recqtyToken.Value<decimal>();
-                decimal poRateValue = poRateToken.Value<decimal>();
-                decimal AltPendQTyValue = Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()) - recqtyValue;
+                //decimal recqtyValue = recqtyToken.Value<decimal>();
+                //decimal poRateValue = poRateToken.Value<decimal>();
+                //decimal AltPendQTyValue = Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()) - recqtyValue;
 
-                var DisRs = POQty * Convert.ToDecimal(worksheet.Cells[row, 14].Value) * (Convert.ToDecimal(worksheet.Cells[row, 18].Value.ToString()) / 100);
-                var Amount = (POQty * Convert.ToDecimal(worksheet.Cells[row, 14].Value)) - DisRs;
+               
+                var Amount = (qty * Convert.ToDecimal(worksheet.Cells[row, 3].Value)) - DisRs;
 
-                if (AltPendQTyValue < 0)
-                {
-                    return Json("Not Done");
-                }
+                //if (AltPendQTyValue < 0)
+                //{
+                //    return Json("Not Done");
+                //}
 
                 data.Add(new POItemDetail()
                 {
                     SeqNo = cnt++,
-                    PartText = worksheet.Cells[row, 3].Value.ToString(),
-                    ItemText = worksheet.Cells[row, 4].Value.ToString(),
+                    PartText = worksheet.Cells[row, 1].Value?.ToString() ?? string.Empty,
+                    ItemText = itemname,
                     ItemCode = itemCodeValue,
                     PartCode = partcode,
-                    HSNNo = Convert.ToInt32(worksheet.Cells[row, 5].Value.ToString()),
-                    POQty = Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString()),
-                    Unit = worksheet.Cells[row, 7].Value.ToString(),
+                    HSNNo = Convert.ToInt32(worksheet.Cells[row, 2].Value?.ToString() ?? "0"),
+                    POQty = qty,
+                    Unit = worksheet.Cells[row, 5].Value?.ToString() ?? string.Empty,
                     AltPOQty = altUnitValue,
-                    AltUnit = worksheet.Cells[row, 9].Value.ToString(),
-                    PendQty = Convert.ToDecimal(AltPendQTyValue.ToString("F2")),
-                    AltPendQty = Convert.ToDecimal(worksheet.Cells[row, 11].Value.ToString()),
-                    PkgStd = Convert.ToDecimal(worksheet.Cells[row, 12].Value.ToString()),
-                    Process = Convert.ToInt32(worksheet.Cells[row, 13].Value.ToString()),
-                    Rate = Convert.ToDecimal(worksheet.Cells[row, 14].Value.ToString()),
-                    OldRate = poRateValue,
-                    OtherRateCurr = RateInOther,
-                    UnitRate = worksheet.Cells[row, 17].Value.ToString(),
-                    DiscPer = Convert.ToDecimal(worksheet.Cells[row, 18].Value.ToString()),
-                    DiscRs = Convert.ToDecimal(DisRs.ToString("F2")),
-                    Amount = Convert.ToDecimal(Amount.ToString("F2")),
-                    TolLimitQty = Convert.ToDecimal(worksheet.Cells[row, 21].Value.ToString()),
-                    TolLimitPercent = Convert.ToDecimal(worksheet.Cells[row, 22].Value.ToString()),
-                    SizeDetail = worksheet.Cells[row, 23].Value == null ? "" : worksheet.Cells[row, 23].Value.ToString(),
-                    TxRemark = worksheet.Cells[row, 24].Value == null ? "" : worksheet.Cells[row, 24].Value.ToString(),
-                    Description = worksheet.Cells[row, 25].Value == null ? "" : worksheet.Cells[row, 25].Value.ToString(),
-                    AdditionalRate = Convert.ToDecimal(worksheet.Cells[row, 26].Value.ToString()),
-                    Color = worksheet.Cells[row, 27].Value == null ? "" : worksheet.Cells[row, 27].Value.ToString(),
-                    CostCenter = Convert.ToInt32(worksheet.Cells[row, 28].Value.ToString()),
-                    FirstMonthTentQty = Convert.ToDecimal(worksheet.Cells[row, 29].Value.ToString()),
-                    SecMonthTentQty = Convert.ToDecimal(worksheet.Cells[row, 30].Value.ToString()),
-                    AmendmentNo = Convert.ToInt32(worksheet.Cells[row, 31].Value.ToString()),
-                    AmendmentDate = worksheet.Cells[row, 31].Value == null ? "" : worksheet.Cells[row, 32].Value.ToString(),
-                    AmendmentReason = worksheet.Cells[row, 32].Value == null ? "" : worksheet.Cells[row, 33].Value.ToString(),
+                    AltUnit = worksheet.Cells[row, 11].Value?.ToString() ?? string.Empty,
+                    PendQty = Convert.ToDecimal(worksheet.Cells[row, 11].Value?.ToString() ?? "0"),
+                    AltPendQty = Convert.ToDecimal(worksheet.Cells[row, 11].Value?.ToString() ?? "0"),
+                    PkgStd = Convert.ToDecimal(worksheet.Cells[row, 12].Value?.ToString() ?? "0"),
+                    Process = Convert.ToInt32(worksheet.Cells[row, 13].Value?.ToString() ?? "0"),
+                    Rate = Convert.ToDecimal(worksheet.Cells[row, 3].Value?.ToString() ?? "0"),
+                    OldRate = Convert.ToDecimal(worksheet.Cells[row, 3].Value?.ToString() ?? "0"),
+                    OtherRateCurr = Convert.ToDecimal(worksheet.Cells[row, 3].Value?.ToString() ?? "0"),
+                    UnitRate = worksheet.Cells[row, 17].Value?.ToString() ?? string.Empty,
+                    DiscPer = Convert.ToDecimal(worksheet.Cells[row, 6].Value?.ToString() ?? "0"),
+                    DiscRs = Convert.ToDecimal(worksheet.Cells[row, 7].Value?.ToString() ?? "0"),
+                    Amount = Amount,
+                    TolLimitQty = Convert.ToDecimal(worksheet.Cells[row, 21].Value?.ToString() ?? "0"),
+                    TolLimitPercent = Convert.ToDecimal(worksheet.Cells[row, 22].Value?.ToString() ?? "0"),
+                    SizeDetail = worksheet.Cells[row, 23].Value?.ToString() ?? string.Empty,
+                    TxRemark = worksheet.Cells[row, 24].Value?.ToString() ?? string.Empty,
+                    Description = worksheet.Cells[row, 25].Value?.ToString() ?? string.Empty,
+                    AdditionalRate = Convert.ToDecimal(worksheet.Cells[row, 26].Value?.ToString() ?? "0"),
+                    Color = worksheet.Cells[row, 27].Value?.ToString() ?? string.Empty,
+                    CostCenter = Convert.ToInt32(worksheet.Cells[row, 28].Value?.ToString() ?? "0"),
+                    FirstMonthTentQty = Convert.ToDecimal(worksheet.Cells[row, 29].Value?.ToString() ?? "0"),
+                    SecMonthTentQty = Convert.ToDecimal(worksheet.Cells[row, 30].Value?.ToString() ?? "0"),
+                    AmendmentNo = Convert.ToInt32(worksheet.Cells[row, 31].Value?.ToString() ?? "0"),
+                    AmendmentDate = worksheet.Cells[row, 32].Value?.ToString() ?? string.Empty,
+                    AmendmentReason = worksheet.Cells[row, 33].Value?.ToString() ?? string.Empty,
                 });
             }
         }

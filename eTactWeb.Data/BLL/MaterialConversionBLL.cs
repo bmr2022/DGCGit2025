@@ -44,9 +44,21 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialConversionDAL.GetOriginalItemName();
         }
+        public async Task<ResponseResult> GetUnitAltUnit(int ItemCode)
+        {
+            return await _MaterialConversionDAL.GetUnitAltUnit(ItemCode);
+        }
         public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno, string FinStartDate)
         {
             return await _MaterialConversionDAL.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno, FinStartDate);
+        }
+        public async Task<ResponseResult> GetAltPartCode(int MainItemcode)
+        {
+            return await _MaterialConversionDAL.GetAltPartCode(MainItemcode);
+        }
+        public async Task<ResponseResult> GetAltItemName(int MainItemcode)
+        {
+            return await _MaterialConversionDAL.GetAltItemName(MainItemcode);
         }
     }
 }

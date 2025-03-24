@@ -64,9 +64,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.FillDocument(ShowAllDoc);
         }
-        public async Task<ResponseResult> FillSONO(string billDate, string accountCode)
+        public async Task<ResponseResult> FillSONO(string billDate, string accountCode, string billType)
         {
-            return await _SaleBillDAL.FillSONO(billDate,accountCode);
+            return await _SaleBillDAL.FillSONO(billDate,accountCode,billType);
         }
         public async Task<ResponseResult> FillConsigneeList(string showAllConsignee)
         {

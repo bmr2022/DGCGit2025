@@ -4,6 +4,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Controllers
 {
@@ -29,10 +30,10 @@ namespace eTactWeb.Controllers
         public async Task<ActionResult> MaterialConversion()
         {
             var model = new MaterialConversionModel();
-          
+
             model.OpeningYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-           
+
             model.ActualEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             model.ApprovedBy = HttpContext.Session.GetString("EmpName");
             model.CC = HttpContext.Session.GetString("Branch");
@@ -44,7 +45,7 @@ namespace eTactWeb.Controllers
             var JSON = await _IMaterialConversion.FillEntryID(YearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
-        } 
+        }
         public async Task<JsonResult> FillBranch()
         {
             var JSON = await _IMaterialConversion.FillBranch();
@@ -63,7 +64,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-         public async Task<JsonResult> GetOriginalPartCode()
+        public async Task<JsonResult> GetOriginalPartCode()
         {
             var JSON = await _IMaterialConversion.GetOriginalPartCode();
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -77,70 +78,131 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         public async Task<JsonResult> GetOriginalItemName()
-         {
+        {
             var JSON = await _IMaterialConversion.GetOriginalItemName();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
-         }
+        }
         public IActionResult AddToGridData(MaterialConversionModel model)
         {
             try
             {
-                    _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out IList<MaterialConversionModel> MaterialConversionGrid);
+                _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out IList<MaterialConversionModel> MaterialConversionGrid);
 
-                    var MainModel = new MaterialConversionModel();
-                    var WorkOrderPGrid = new List<MaterialConversionModel>();
-                    var OrderGrid = new List<MaterialConversionModel>();
-                    var ssGrid = new List<MaterialConversionModel>();
+                var MainModel = new MaterialConversionModel();
+                var WorkOrderPGrid = new List<MaterialConversionModel>();
+                var OrderGrid = new List<MaterialConversionModel>();
+                var ssGrid = new List<MaterialConversionModel>();
 
-                    if (model != null)
+                if (model != null)
+                {
+                    if (MaterialConversionGrid == null)
                     {
-                        if (MaterialConversionGrid == null)
-                        {
-                            model.SrNO = 1;
-                            OrderGrid.Add(model);
-                        }
-                        else
-                        {
-                            if (MaterialConversionGrid.Any(x => (x.OriginalPartCode == model.OriginalPartCode)))
-                            {
-                                return StatusCode(207, "Duplicate");
-                            }
-                            else
-                            {
-                                //count = WorkOrderProcessGrid.Count();
-                                model.SrNO = MaterialConversionGrid.Count + 1;
-                                OrderGrid = MaterialConversionGrid.Where(x => x != null).ToList();
-                                ssGrid.AddRange(OrderGrid);
-                                OrderGrid.Add(model);
-
-                            }
-
-                        }
-
-                        MainModel.MaterialConversionGrid = OrderGrid;
-
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
+                        model.SrNO = 1;
+                        OrderGrid.Add(model);
                     }
                     else
                     {
-                        ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+                        if (MaterialConversionGrid.Any(x => (x.OriginalPartCode == model.OriginalPartCode)))
+                        {
+                            return StatusCode(207, "Duplicate");
+                        }
+                        else
+                        {
+                            //count = WorkOrderProcessGrid.Count();
+                            model.SrNO = MaterialConversionGrid.Count + 1;
+                            OrderGrid = MaterialConversionGrid.Where(x => x != null).ToList();
+                            ssGrid.AddRange(OrderGrid);
+                            OrderGrid.Add(model);
+
+                        }
+
                     }
-                    return PartialView("_MaterialConversionGrid", MainModel);
-                
+
+                    MainModel.MaterialConversionGrid = OrderGrid;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
+                }
+                else
+                {
+                    ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+                }
+                return PartialView("_MaterialConversionGrid", MainModel);
+
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+        //public IActionResult DeleteItemRow(string SrNO)
+        //{
+        //    bool exists = false;
+        //    var model = new MaterialConversionModel();
+        //    //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+        //    int Indx = Convert.ToInt32(SrNO) - 1;
+
+        //    if (_MemoryCache.TryGetValue("KeyMaterialConversionGrid", out List<MaterialConversionModel> MaterialConversionGrid) != null)
+        //    {
+        //        model.MaterialConversionGrid = MaterialConversionGrid;
+
+        //        if (MaterialConversionGrid.Any(x => (x.OriginalPartCode == model.OriginalPartCode)))
+        //        {
+        //            return StatusCode(207, "Duplicate");
+        //        }
+        //        model.MaterialConversionGrid.RemoveAt(Convert.ToInt32(Indx));
+
+        //        Indx = 0;
+
+        //        foreach (MaterialConversionModel item in model.MaterialConversionGrid)
+        //        {
+        //            Indx++;
+        //            item.SrNO = Indx;
+        //        }
+        //        //model.ItemNetAmount = model.ItemDetailGrid.Sum(x => x.Amount);
+
+        //    }
+        //    return PartialView("_MaterialConversionGrid", model);
+        //}
+
+        //public IActionResult EditItemRow(MaterialConversionModel model)
+        //{
+        //    bool exists = false;
+        //    object Result = string.Empty;
+
+        //    int Indx = Convert.ToInt32(model.SrNO) - 1;
+
+        //    if (_MemoryCache.TryGetValue("KeyMaterialConversionGrid", out List<MaterialConversionModel> MaterialConversionGrid) != null)
+        //    {
+        //        //_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+        //        model.MaterialConversionGrid = MaterialConversionGrid;
+
+        //        if (MaterialConversionGrid.Any(x => (x.OriginalPartCode == model.OriginalPartCode)))
+        //        {
+        //            return StatusCode(207, "Duplicate");
+        //        }
+        //        Result = model.MaterialConversionGrid.Where(m => m.SrNO == model.SrNO).ToList();
+        //        model.MaterialConversionGrid.RemoveAt(Convert.ToInt32(Indx));
+
+        //        Indx = 0;
+        //        foreach (MaterialConversionModel item in model.MaterialConversionGrid)
+        //        {
+        //            Indx++;
+        //            item.SrNO = Indx;
+        //        }
+
+        //    }
+
+        //    return Json(JsonConvert.SerializeObject(Result));
+        //}
         public IActionResult EditItemRow(int SrNO, string Mode)
         {
             IList<MaterialConversionModel> MaterialConversionModelGrid = new List<MaterialConversionModel>();
@@ -160,7 +222,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
             return Json(JsonString);
         }
-       
+
         public IActionResult DeleteItemRow(int SrNO, string Mode)
         {
             var MainModel = new MaterialConversionModel();
@@ -192,36 +254,54 @@ namespace eTactWeb.Controllers
                     _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
                 }
             }
-            else
-            {
-                _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out List<MaterialConversionModel> MaterialConversionGrid);
-                int Indx = SrNO;
+            //else
+            //{
+            //    _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out List<MaterialConversionModel> MaterialConversionGrid);
+            //    int Indx = SrNO;
 
-                if (MaterialConversionGrid != null && MaterialConversionGrid.Count > 0)
-                {
-                    MaterialConversionGrid.RemoveAt(Indx);
+            //    if (MaterialConversionGrid != null && MaterialConversionGrid.Count > 0)
+            //    {
+            //        MaterialConversionGrid.RemoveAt(Indx);
 
-                    Indx = 0;
+            //        Indx = 0;
 
-                    foreach (var item in MaterialConversionGrid)
-                    {
-                        Indx++;
-                        item.SrNO = Indx;
-                    }
-                    MainModel.MaterialConversionGrid = MaterialConversionGrid;
+            //        foreach (var item in MaterialConversionGrid)
+            //        {
+            //            Indx++;
+            //            item.SrNO = Indx;
+            //        }
+            //        MainModel.MaterialConversionGrid = MaterialConversionGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
+            //        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            //        {
+            //            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            //            SlidingExpiration = TimeSpan.FromMinutes(55),
+            //            Size = 1024,
+            //        };
 
-                    _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
-                }
-            }
+            //        _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
+            //    }
+            //}
 
-            return PartialView("MaterialConversion", MainModel);
+            return PartialView("_MaterialConversionGrid", MainModel);
+        }
+        public async Task<JsonResult> GetUnitAltUnit(int ItemCode)
+        {
+            var JSON = await _IMaterialConversion.GetUnitAltUnit(ItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetAltPartCode(int MainItemcode)
+        {
+            var JSON = await _IMaterialConversion.GetAltPartCode(MainItemcode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetAltItemName(int MainItemcode)
+        {
+            var JSON = await _IMaterialConversion.GetAltItemName(MainItemcode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
     }
 }

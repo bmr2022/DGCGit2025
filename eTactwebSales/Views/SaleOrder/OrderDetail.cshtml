@@ -620,7 +620,7 @@
 										<label asp-for="AltUnit" class="form-label">Alt Unit</label>
 										<input asp-for="AltUnit" class="form-control" value="NA" readonly="readonly" aria-readonly="readonly" />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
 										<label asp-for="Rate" class="form-label" style="color:  red;">Rate*</label>
 										<input asp-for="Rate" type="number" step="any" min="0" class="form-control" onkeyup="CalculateRate();" />
 									</div>
@@ -632,7 +632,7 @@
 										<label asp-for="OtherRateCurr" class="form-label">Rate In FX</label>
 										<input asp-for="OtherRateCurr" type="number" step="any" min="0" class="form-control" />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:70px" >
 										<label asp-for="DiscPer" class="form-label">Disc %</label>
 										<input asp-for="DiscPer" type="number" step="any" class="form-control" value="0" min="0" max="100" onchange="CalculateRate();" />
 									</div>
@@ -670,12 +670,12 @@
 										<label asp-for="DeliveryDate" class="form-label">DeliveryDate</label>
 										<input asp-for="DeliveryDate" class="form-control" readonly  />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
+									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center" style="width:150px">
 										<button type="button" class="ItemBtn btn btn-sm btn-outline-danger mt-3">
 											<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
 										</button>
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
+									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center" style="width:130px">
 										<div class="form-check form-switch d-flex justify-content-center mt-2">
 											<input asp-for="SH" class="form-check-input" type="checkbox" role="switch" />
 										</div>
@@ -690,7 +690,7 @@
 										</div>
 									</div>
 									
-									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
+									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center" style="width:130px">
 										<button type="button" class="Schedule btn btn-sm btn-outline-success mt-3">
 											<i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> SCHEDULE
 										</button>
@@ -1142,7 +1142,19 @@
             label.innerText = fileName ?? "Import Excel";
         };
 
+		document.querySelectorAll(".number").forEach(input => {
+			input.addEventListener("input", function () {
+				// Allow only digits (0-9), no negative sign (-) or non-numeric characters
+				this.value = this.value.replace(/[^0-9]/g, '');
+			});
 
+			input.addEventListener("keydown", function (event) {
+				// Disallow negative sign (-), exponential (e), and other unwanted keys
+				if (event.key === '-' || event.key === 'e' || event.key === '+' || event.key === '.') {
+					event.preventDefault();
+				}
+			});
+		});
 		 function ExportSaleOrderFormate() {
             
 			$('#divSaleItemGrid').empty();
@@ -2048,8 +2060,8 @@
 		//    //}
 		//});
 
-		$(document).on('click', '.submitBTN,#submitBTNFooter', function (e) {
-			 
+		$(document).on('click', '#submitBTN,#submitBTNFooter', function (e) {
+			debugger;
 			$('#TypeOfSave').val("NPS");
 			e.preventDefault();
 			var soGrid = $('#divSaleItemGrid tr td').length;
@@ -2828,7 +2840,7 @@
 				if (isNaN(parseFloat($('#Qty').val())) || parseFloat($('#Qty').val()) == 0 || parseFloat($('#Qty').val()) < 0) 
 				{
 					AddErrorCls('Qty');
-					$.notify('Qty cannot be 0.', "error");
+					$.notify('Qty cannot be 0 or less then 0.', "error");
 					return;
 				} else {
 					RemoveErrorCls('Qty');
@@ -2838,7 +2850,7 @@
 			if (isNaN(parseFloat($('#Rate').val())) || parseFloat($('#Rate').val()) == 0 || parseFloat($('#Rate').val()) < -1) 
 			{
 				AddErrorCls('Rate');
-				$.notify('Rate cannot be 0.', "error");
+				$.notify('Rate cannot be 0 or less Then 0 ).', "error");
 				return;
 			}
 			else 
@@ -2865,6 +2877,15 @@
 			}
 			else 
 			{
+				RemoveErrorCls('DiscPer');
+			}
+
+			if ( parseInt($('#DiscPer').val()) > 100) {
+				AddErrorCls('DiscPer');
+				$.notify('DiscPer cannot be Greater Then 100.', "error");
+				return;
+			}
+			else {
 				RemoveErrorCls('DiscPer');
 			}
 

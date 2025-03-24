@@ -188,6 +188,7 @@ namespace eTactWeb
             services.TryAddTransient<IRouting,RoutingBLL>();
             services.TryAddTransient<IWorkOrder,WorkOrderBLL>();
             services.TryAddTransient<IPOApproval,POApprovalBLL>();
+            services.TryAddTransient<IPOCancel, POCancelBLL>();
             services.TryAddTransient<ISOApproval,SOApprovalBLL>();
             services.TryAddTransient<IPSApproval,PSApprovalBLL>();
             services.TryAddTransient<ISSApproval,SSApprovalBLL>();
