@@ -98,6 +98,7 @@ namespace eTactWeb.DOM.Models
         public string? CustJwAdjustmentMandatory { get; set; }
         public string? StockableNonStockable { get; set; }
         public string? VendJwAdjustmentMandatory { get; set; }
+        public string? BomRevNo {  get; set; }
     }
     public class SaleBillModel : SaleBillDetail
     {

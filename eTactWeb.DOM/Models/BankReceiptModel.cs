@@ -144,6 +144,8 @@ namespace eTactWeb.DOM.Models
         public decimal PopUpBalance {  get; set; }
         public decimal PopDrAmt { get; set; }
         public decimal PopCrAmt { get; set; }
+        public decimal TotalPopDrAmt { get; set; }
+        public decimal TotalPopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
     }
     public class PopUpDataTable
