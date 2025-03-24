@@ -36,7 +36,7 @@ else
                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
-                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNO);" asp-action="DeleteItemRow">
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNO);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -47,29 +47,31 @@ else
             <td>@Cntr</td>
             <td>@item.OriginalPartCode<input type="hidden" asp-for="OriginalItemCode" value="@item.OriginalItemCode" /></td>
             <td>@item.OriginalItemName<input type="hidden" asp-for="OriginalItemCode" value="@item.OriginalItemCode"/></td>
-            <td>@item.Unit</td>
-            <td>@item.OriginalQty</td>
-            <td>@item.AltItemName</td>
-            <td>@item.AltUnit</td>
-            <td>@item.AltOriginalQty</td>
-            <td>@item.OriginalStoreId</td>
-            <td>@item.AltStoreId</td>
-            <td>@item.OrginalWCID</td>
-            <td>@item.AltWCID</td>
+
+            <td>@item.StoreName<input type="hidden" asp-for="StoreId" value="@item.StoreId" /></td>
+            <td>@item.WorkCenterName</td>
             <td>@item.BatchNo</td>
             <td>@item.UniqueBatchNo</td>
             <td>@item.BatchStock</td>
             <td>@item.TotalStock</td>
+            <td>@item.OriginalQty</td>
+            <td>@item.Unit</td>
             <td>@item.AltStock</td>
+            
+            <td>@item.AltPartCode</td>
+            <td>@item.AltItemName</td>
+            <td>@item.AltStoreName</td>
+            <td>@item.AltWorkCenterName</td>
+            <td>@item.AltOriginalQty</td>
+            <td>@item.AltUnit</td>
             <td>@item.PlanNo</td>
             <td>@item.PlanYearCode</td>
             <td>@item.PlanDate</td>
             <td>@item.ProdSchNo</td>
             <td>@item.ProdSchYearCode</td>
             <td>@item.ProdSchDatetime</td>
-            <td>@item.OrigItemRate</td>
             <td>@item.Remark</td>
-
+            <td>@item.OrigItemRate</td>
         </tr>
     }
 }

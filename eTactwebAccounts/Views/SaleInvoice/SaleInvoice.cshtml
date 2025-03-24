@@ -2789,16 +2789,18 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-            if ($('#SONO').find(':selected').data('sotype') == "OPEN") {
                 debugger
                 if ($('#SONO').val() == '') {
                     if ($('#SaleBillJobwork').val() == 'J') {
                         JWItemList($('#TypeItemServAssets').val());
                     }
                 } else {
-                    FillSOWiseItems();
+                    debugger
+                    if ($('#SONO').find(':selected').data('sotype') == 'CLOSE') {
+                        FillSOWiseItems();
+                    }
                 }
-            }
+            
 
             FILLCustomerOrderAndSPDate();
             FillSOItemRate();
@@ -3163,11 +3165,24 @@
                         var obj = $.parseJSON(result);
                         $('#Schdate').val("");
                         $('#Schdate').val(obj.Result[0].ScheduleDate);
+                        
+                        // if ($('#SaleBillJobwork').val() == 'J') {
+                        //     JWItemList($('#TypeItemServAssets').val());
+                        // } else {
+                        //     if ($('#SONO').find(':selected').data('sotype') == 'OPEN') {
+                        //         FillSOWiseItems();
+                        //     }
+                        // }
 
-                        if ($('#SaleBillJobwork').val() == 'J') {
-                            JWItemList($('#TypeItemServAssets').val());
+                        if ($('#SONO').val() == '') {
+                            if ($('#SaleBillJobwork').val() == 'J') {
+                                JWItemList($('#TypeItemServAssets').val());
+                            }
                         } else {
-                            FillSOWiseItems();
+                            debugger
+                            if ($('#SONO').find(':selected').data('sotype') == 'OPEN') {
+                                FillSOWiseItems();
+                            }
                         }
                     }
                 }
