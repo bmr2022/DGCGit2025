@@ -14,6 +14,7 @@ using eTactWeb.DOM.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
+using System.Drawing.Printing;
 
 namespace eTactWeb.Controllers;
 
@@ -75,7 +76,13 @@ public class ItemMasterController : Controller
         ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
         ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
         HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
-        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo,UniversalPartCode, Flag);
+        
+        var allData = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo,UniversalPartCode, Flag);
+        model.TotalRecords = allData.Count();
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+        model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
         model.Item_Name = Item_Name;
         model.PartCode = PartCode;
         model.ParentName = ParentCode;
