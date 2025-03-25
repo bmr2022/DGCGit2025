@@ -64,11 +64,13 @@
                                     {
                                         @if (yearCode >= item.YearCode)
                                         {
+                                            <div id="editCursorDiv-@Cntr">
                                             <td style="text-align:center;">
                                                 <a class="table-link link-primary" onclick="location.href='@Url.Action("PODetail",new{Mode="POA",ID=item.EntryID,YC=item.YearCode})'">
                                                     <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
                                                 </a>
                                             </td>
+                                             </div>
                                         }
                                         else
                                         {

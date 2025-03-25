@@ -120,7 +120,7 @@
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
 
-                                <div class="card-body overflow-auto pb-0">
+                                <div class="card-body overflow-auto pb-0 jobWorkChalln">
                                     <div class="table-responsive" style="max-height:150px;">
                                         <table class="table table-hover table-bordered table-striped" id="poTable">
                                             <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
@@ -193,7 +193,7 @@
                                 </div>
                             </div>
                             <div class="card">
-                                <div class="card-body overflow-auto pb-0">
+                                <div class="card-body overflow-auto pb-0 jobWorkChalln">
                                     <table class="table table-hover table-bordered table-striped IssueNRGPTb">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                             <tr>
@@ -418,7 +418,7 @@
     <script>
 
         $(document).ready(function () {
-
+            debugger
             GetServerDate();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
@@ -483,7 +483,7 @@
             AutoComplete("vehicleNo", "vehicleNo");
             AutoComplete("TransporterName", "TransporterName");
 
-
+            debugger
             var InvDate = parseDateToFormat($('#SaleBillDate').val().split(" ")[0]);
 
             // var parts = InvDate.split('/');

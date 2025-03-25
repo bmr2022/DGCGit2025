@@ -190,6 +190,7 @@ namespace eTactWeb
             services.TryAddTransient<IPOApproval,POApprovalBLL>();
             services.TryAddTransient<IPOCancel, POCancelBLL>();
             services.TryAddTransient<ISOApproval,SOApprovalBLL>();
+            services.TryAddTransient<ISOCancel, SOCancelBLL>();
             services.TryAddTransient<IPSApproval,PSApprovalBLL>();
             services.TryAddTransient<ISSApproval,SSApprovalBLL>();
             services.TryAddTransient<IStockAdjustment, StockAdjustmentBLL>();

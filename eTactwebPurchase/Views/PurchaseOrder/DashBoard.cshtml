@@ -221,6 +221,7 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#PODashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -242,6 +243,7 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#PODashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);

@@ -59,12 +59,14 @@
                                 <th>@Cntr</th>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
+                                        <div id="viewCursorDiv-@Cntr">
                                         <a class="table-link link-success" asp-action="SaleSchedule" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
+                                        </div>
                                         @if (item.SchApproved == "Y")
                                         {
                                             <a class="table-link link-primary noCursor">
@@ -81,6 +83,7 @@
                                             </a>
                                         }else if (item.SchApproved == "N" || item.SchYear == yearCode.ToString())
                                         {
+                                            <div id="editCursorDiv-@Cntr">
                                             <div id="editCursor-@Cntr">
                                                 <a class="table-link link-primary" asp-action="SaleSchedule" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear">
                                                     <span class="fa-stack">
@@ -89,6 +92,8 @@
                                                     </span>
                                                 </a>
                                             </div>
+                                            </div>
+                                            <div id="deleteCursorDiv-@Cntr">
                                             <div class="deleteCursor-@Cntr">
                                                 <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryID" onclick="confirmdelete(event)" asp-route-YC="@item.SchYear">
                                                     <span class="fa-stack">
@@ -96,6 +101,7 @@
                                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                                     </span>
                                                 </a>
+                                            </div>
                                             </div>
                                         }
                                     </div>
