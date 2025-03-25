@@ -1685,7 +1685,7 @@ public class SaleOrderController : Controller
 
 				if (errors.Count > 0)
 				{
-					return BadRequest("Validation errors found:\n" + string.Join("\n", errors));
+					return BadRequest( string.Join("\n", errors));
 				}
 			}
 
