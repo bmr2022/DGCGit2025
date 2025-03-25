@@ -43,6 +43,27 @@
                 </div>
             </div>
         </div>
+        <div class="pagination">
+            @if (Model.PageNumber > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
+                </li>
+            }
+            @for (int i = 1; i <= Math.Ceiling((double)Model.TotalRecords / Model.PageSize); i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+                </li>
+            }
+
+            @if (Model.PageNumber < Math.Ceiling((double)Model.TotalRecords / Model.PageSize))
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+                </li>
+            }
+        </div>
     </form>
 </div>
 
@@ -112,7 +133,7 @@
             //output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
 
             //});
-            GetSearchData();
+            //GetSearchData();
             GetFormRights();
         });
 
@@ -249,8 +270,8 @@
                         $('#divDashboardGrid').empty();
                         $('.ShowAllDiv').empty();
                         $('.ShowAllDiv').append(data);
-                        var dashGrid = $('#divDashboardGrid tr').length;
-                        $('#totalRows').text(dashGrid);
+                        // var dashGrid = $('#divDashboardGrid tr').length;
+                        // $('#totalRows').text(dashGrid);
                         GetFormRights();
                     },
                     error: function (response) {
@@ -410,3 +431,33 @@
     <script src="~/Scripts/table2excel.js"></script>
 
 }
+
+<style>
+    .pagination {
+        display: flex;
+        flex-wrap: wrap; /* Multiple lines ma pagination break thashe */
+        justify-content: center; /* Center ma avshe */
+        gap: 4px; /* Buttons vachche spacing */
+        max-width: 500px; /* Optional: Width limit muki shako */
+        margin: auto;
+    }
+
+        .pagination a {
+            color: black;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border: 1px solid #ddd;
+        }
+
+            .pagination a.active {
+                background-color: #4CAF50;
+                color: white;
+                border: 1px solid #4CAF50;
+            }
+
+            .pagination a:hover:not(.active) {
+                background-color: #ddd;
+            }
+
+</style>

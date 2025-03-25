@@ -1388,9 +1388,9 @@
             }
             var DataTable = {};
             if (Action == "AddMode") {
-                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#LedgerName').val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val() }
+                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#LedgerName').val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#AccEntryId').val(), "AccYearCode": $('#YearCode').val() }
             } else {
-                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#AccountCode-' + SrNO).val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val() };
+                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#AccountCode-' + SrNO).val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#AccEntryId').val(), "AccYearCode": $('#YearCode').val() };
             }
             $.ajax({
                 url: '@Url.Action("PopUpForPendingVouchers", "BankReceipt")',
@@ -1530,12 +1530,12 @@
         }
 
         function AdjustButton() {
-             
+            debugger
             if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var ItemData = [];
             for (var i = 1; i <= rowCount + 1; i++) {
-
+                debugger
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
                      
                     var type = $('#PopUpType-' + i).text().trim().toLowerCase();
@@ -1545,9 +1545,9 @@
                     var CrAmt = "0.00";
 
                     if (type === "dr") {
-                        DrAmt = adjAmt.toFixed(2);
-                    } else if (type === "cr") {
                         CrAmt = adjAmt.toFixed(2);
+                    } else if (type === "cr") {
+                        DrAmt = adjAmt.toFixed(2);
                     }
                     ItemData.push({
                         "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
