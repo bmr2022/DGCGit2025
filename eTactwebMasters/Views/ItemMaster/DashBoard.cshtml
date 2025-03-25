@@ -50,10 +50,29 @@
                     <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
                 </li>
             }
-            @for (int i = 1; i <= Math.Ceiling((double)Model.TotalRecords / Model.PageSize); i++)
+
+            @if (Model.PageNumber > 3)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = 1, pageSize = Model.PageSize })">1</a>
+                </li>
+                <li class="page-item disabled"><a class="page-link">...</a></li>
+            }
+
+            @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize)); i++)
             {
                 <li class="page-item @(i == Model.PageNumber ? "active" : "")">
                     <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+                </li>
+            }
+
+            @if (Model.PageNumber < Math.Ceiling((double)Model.TotalRecords / Model.PageSize) - 2)
+            {
+                <li class="page-item disabled"><a class="page-link">...</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Math.Ceiling((double)Model.TotalRecords / Model.PageSize), pageSize = Model.PageSize })">
+                        @(Math.Ceiling((double)Model.TotalRecords / Model.PageSize))
+                    </a>
                 </li>
             }
 
@@ -435,29 +454,48 @@
 <style>
     .pagination {
         display: flex;
-        flex-wrap: wrap; /* Multiple lines ma pagination break thashe */
-        justify-content: center; /* Center ma avshe */
-        gap: 4px; /* Buttons vachche spacing */
-        max-width: 500px; /* Optional: Width limit muki shako */
-        margin: auto;
+        justify-content: center;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+        margin: 20px auto;
+        gap: 5px; /* Space between buttons */
+        white-space: nowrap; /* Keeps it in a single line */
     }
 
-        .pagination a {
-            color: black;
-            padding: 8px 16px;
-            text-decoration: none;
-            transition: background-color 0.3s;
-            border: 1px solid #ddd;
-        }
+    .page-item {
+        display: inline-block;
+    }
 
-            .pagination a.active {
-                background-color: #4CAF50;
-                color: white;
-                border: 1px solid #4CAF50;
-            }
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        text-decoration: none;
+        color: black;
+        border: 1px solid #ddd;
+        font-size: 16px;
+        background-color: white;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
 
-            .pagination a:hover:not(.active) {
-                background-color: #ddd;
-            }
+    .page-item.active .page-link {
+        background-color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .page-item.disabled .page-link {
+        background-color: #f0f0f0;
+        color: #999;
+        cursor: default;
+    }
+
+    .page-link:hover:not(.disabled):not(.active) {
+        background-color: #ddd;
+    }
 
 </style>

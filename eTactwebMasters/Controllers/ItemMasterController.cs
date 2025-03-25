@@ -51,20 +51,7 @@ public class ItemMasterController : Controller
         return Json(Result);
     }
 
-    // [AcceptVerbs("GET", "POST")]
-    //private List<ItemMasterModel> GetCachedItems(int pageNumber, int pageSize)
-    //{
-    //    return _MemoryCache.GetOrCreate($"AllItems_Page{pageNumber}_Size{pageSize}", entry =>
-    //    {
-    //        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-    //        return _context.Items
-    //            .Skip((pageNumber - 1) * pageSize) // Skip items from previous pages
-    //            .Take(pageSize) // Take only the required number of items
-    //            .ToList();
-    //    });
-    //}
-
-    public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue,string UniversalPartCode="")
+    public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue,string UniversalPartCode="",int pageNumber=1,int pageSize=100)
     {
         ItemMasterModel model = new ItemMasterModel
         {
