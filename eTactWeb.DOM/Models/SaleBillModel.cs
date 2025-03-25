@@ -98,7 +98,7 @@ namespace eTactWeb.DOM.Models
         public string? CustJwAdjustmentMandatory { get; set; }
         public string? StockableNonStockable { get; set; }
         public string? VendJwAdjustmentMandatory { get; set; }
-        public string? BomRevNo {  get; set; }
+        public int? BomNo {  get; set; }
     }
     public class SaleBillModel : SaleBillDetail
     {
@@ -257,6 +257,7 @@ namespace eTactWeb.DOM.Models
             new() { Value = "N", Text = "No" },
         };
 
+        public List<CustomerJobWorkChallanAdj> CustomerJobWorkChallanAdj { get; set; }
         public IList<SelectListItem> YesNoList
         {
             get => _YesNo;

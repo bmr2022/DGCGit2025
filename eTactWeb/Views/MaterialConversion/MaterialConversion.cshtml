@@ -92,7 +92,7 @@
                                         <label asp-for="IssueToStoreWC" class="form-label" style="color: red;">Store/WC*</label>
                                         <select class="form-select" asp-for="IssueToStoreWC">
                                             <option value="">-Select-</option>
-                                            <option value="S">Store</option>
+                                            <option value="S" selected>Store</option>
                                             <option value="W">WorkCenter</option>
                                         </select>
                                     </div>
@@ -243,6 +243,7 @@
                                                                             <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
+                                                                                <input type="hidden" value="@Model.AltItemCode" />
                                                                                 <option value="@Model.AltItemCode" selected>@Model.AltPartCode</option>
                                                                             }
                                                                         </select>
@@ -253,6 +254,7 @@
                                                                             <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
+                                                                                <input type="hidden" value="@Model.AltItemCode" />
                                                                                 <option value="@Model.AltItemCode" selected>@Model.AltItemName</option>
                                                                             }
                                                                         </select>
@@ -411,7 +413,7 @@
                                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol">
                                                                         <span style="padding:5px;margin:5px" class="sort-icon">
                                                                             <i class="fa" aria-hidden="true"></i>
-                                                                        </span>AltOriginalQty
+                                                                        </span>AltQty
                                                                     </th>
                                                                     <th data-columnno="6" data-sortorder="asc" class="sortCol">
                                                                         <span style="padding:5px;margin:5px" class="sort-icon">
@@ -471,7 +473,7 @@
                                         </div>
                                         <div class="row g-2 gx-3">
                                             <div class="col-12 text-center">
-                                                <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign"></i><span id="lblItemNetAmount"></span></strong>
+                                               
                                                 <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
                                             </div>
                                         </div>
@@ -609,10 +611,7 @@
         $(document).ready(function () {
             if ($('#Mode').val() === "U") {
 
-                $('#AccountCode').val($('#LedgerName').val());
-
-                countAllTotal();
-                ClearItems();
+                //ClearItems();
 
             }
             //$('#BillNo').removeClass('Valid');
@@ -655,8 +654,10 @@
             $('#StoreName').select2();
             $('#WorkCenterName').select2();
             $('#IssueToStoreWC').select2();
+            $('#AltStoreName').select2();
+            $('#AltWorkCenterName').select2();
 
-            $('#totalRows').text($('#divStockRegisterBody tr').length);
+            $('#totalRows').text($('#divStockGrid tr').length);
             FillEntryID();
             FillSlipNo();
             FillBranch();
@@ -664,13 +665,15 @@
             FillWorkCenterName();
             GetOriginalPartCode();
             GetOriginalItemName();
+            AltFillStoreName();
+            FillAltWorkCenterName();
 
             GetUnitAltUnit($('#OriginalItemCode').val());
-            
+
             // if ($("#Mode").val() !== "U") {
             //     FillLedgerName();
             // }
-          
+
 
             // var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
             // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
@@ -685,25 +688,29 @@
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 
                 $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            }
+            } 
 
             var previousValue = $("#LedgerName").val(); // Store initial value
 
-            $("#OriginalQty").on("input", function () {
+            $("#OriginalQty, #AltOriginalQty, #AltStock").on("input", function () {
                 let value = $(this).val();
 
-               
+
                 if (!/^\d*$/.test(value)) {
-                    $(this).val(value.replace(/[^0-9]/g, "")); 
+                    $(this).val(value.replace(/[^0-9]/g, ""));
                     $.notify("Only numbers (0-9) are allowed!", "error");
                 }
 
-               
+
                 if (value.startsWith("-")) {
-                    $(this).val(""); 
+                    $(this).val("");
                     $.notify("Negative values are not allowed!", "error");
                 }
             });
+             $('input[name="OriginalQty"]').on('input', function () {
+            var originalQty = $(this).val();
+            $('input[name="AltOriginalQty"]').val(originalQty);
+        });
 
             $('.submitBTN').click(function (e) {
                 validateBalance();
@@ -712,7 +719,30 @@
                 }
                 $('form').submit();
             });
-          
+            FillStockBatchNo();
+            FillTotalStock();
+            GetUnitAltUnit($('#OriginalItemCode').val());
+            FillStockUniqueBatchNo();
+            FillLotStock();
+            if ($('#IssueToStoreWC').val() == 'S') {
+                FillStoreName();
+                $('#WorkCenterName').val('');
+                $('#WorkCenterName').prop("disabled", true);
+                $('#AltWorkCenterName').val('');
+                $('#AltWorkCenterName').prop("disabled", true);
+
+                $('#StoreName').prop("disabled", false);
+                $('#AltStoreName').prop("disabled", false);
+            } else {
+                FillWorkCenterName();
+                $('#StoreName').val('');
+                $('#StoreName').prop("disabled", true);
+                $('#AltStoreName').val('');
+                $('#AltStoreName').prop("disabled", true);
+
+                $('#WorkCenterName').prop("disabled", false);
+                $('#AltWorkCenterName').prop("disabled", false);
+            }
         });
 
         $('#IssueToStoreWC').change(function () {
@@ -723,41 +753,69 @@
                 FillStoreName();
                 $('#WorkCenterName').val('');
                 $('#WorkCenterName').prop("disabled", true);
+                $('#AltWorkCenterName').val('');
+                $('#AltWorkCenterName').prop("disabled", true);
+
                 $('#StoreName').prop("disabled", false);
+                $('#AltStoreName').prop("disabled", false);
             } else {
                 FillWorkCenterName();
                 $('#StoreName').val('');
                 $('#StoreName').prop("disabled", true);
+                $('#AltStoreName').val('');
+                $('#AltStoreName').prop("disabled", true);
+
                 $('#WorkCenterName').prop("disabled", false);
+                $('#AltWorkCenterName').prop("disabled", false);
             }
         });
         $('#OriginalItemName').change(function () {
             if ($('#Mode').val() !== "U") {
                 $('#OriginalItemCode').val($('#OriginalItemName').val());
-                FillStockBatchNo();
                 FillTotalStock();
                 GetUnitAltUnit($('#OriginalItemCode').val());
             }
+                FillStockBatchNo();
            
            // $('#OriginalItemCode').val($('#OriginalItemName').val());
         });
         $('#OriginalPartCode').change(function () {
             if ($('#Mode').val() !== "U") {
                 $('#OriginalItemCode').val($('#OriginalPartCode').val());
-                FillStockBatchNo();
                 FillTotalStock();
                 GetUnitAltUnit($('#OriginalItemCode').val());
             }
+                FillStockBatchNo();
             //$('#OriginalItemCode').val($('#OriginalPartCode').val());
         });
+         $('#AltItemName').change(function () {
+            if ($('#Mode').val() !== "U") {
+                $('#AltItemCode').val($('#AltItemName').val());
+            }
+           
+           // $('#OriginalItemCode').val($('#OriginalItemName').val());
+        });
+        $('#AltPartCode').change(function () {
+            if ($('#Mode').val() !== "U") {
+                $('#AltItemCode').val($('#AltPartCode').val());
+            }
+            //$('#OriginalItemCode').val($('#OriginalPartCode').val());
+        });
+
          $('#StoreName').change(function () {
             if ($('#Mode').val() !== "U") {
                 $('#StoreId').val($('#StoreName').val());
               
                // FillLotStock();
-                FillStockBatchNo();
                 FillTotalStock();
             }
+                FillStockBatchNo();
+         });
+        $('#AltStoreName').change(function () {
+            if ($('#Mode').val() !== "U") {
+                $('#AltStoreId').val($('#AltStoreName').val());
+            }
+               
          });
 
         $('#BatchNo').change(function () {
@@ -871,6 +929,18 @@
             GetAltItemName();
         })
 
+        $('#OriginalQty').on('input', function () {
+            var originalQty = parseFloat($(this).val()) || 0;
+            var batchStock = parseFloat($('#BatchStock').val()) || 0;
+            var totalStock = parseFloat($('#TotalStock').val()) || 0;
+
+          
+            if (originalQty > batchStock || originalQty > totalStock) {
+                $.notify("Original Quantity cannot be greater than Batch Stock or Total Stock!", "error");
+                $(this).val(''); 
+            }
+        });
+
         function GetAltPartCode() {
 
             var MainItemcode = $('#OriginalPartCode').val();
@@ -893,7 +963,7 @@
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var GroupCode = '@Model.AltPartCode';
+                        var GroupCode = '@Model.AltItemCode';
                         $('#AltPartCode').val(GroupCode).trigger("change");
                     }
                 },
@@ -954,11 +1024,9 @@
                     $.each(obj.Result, function (index, item) {
                         ledgerDropdown.append('<option value="' + item.itemcode + '">' + item.ItemName + '</option>');
                     });
-
-                    // Automatically select AltPartCode if required
-                    var groupCode = $('#AltItemName').val();
-                    if (groupCode && ($('#Mode').val() == "U" || $('#Mode').val() == "V")) {
-                        ledgerDropdown.trigger("change");
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var GroupCode = '@Model.AltItemCode';
+                        $('#AltItemName').val(GroupCode).trigger("change");
                     }
                 },
                 error: function (xhr, status, error) {
@@ -1044,7 +1112,7 @@
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                        var StoreName = "@Model.StoreName"
+                        var StoreName = "@Model.StoreId"
                         $('#StoreName').val(StoreName);
                     }
                 },
@@ -1053,6 +1121,32 @@
                 }
             });
         }
+         function AltFillStoreName() {
+            $.ajax({
+                url: '@Url.Action("FillStoreName", "MaterialConversion")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var AltStoreNameDropdown = $('#AltStoreName');
+                    var obj = $.parseJSON(response);
+                    AltStoreNameDropdown.empty();
+                    AltStoreNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, Store) {
+                        AltStoreNameDropdown.append('<option value="' + Store.EntryID + '">' + Store.store_name + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var StoreName = "@Model.AltStoreId"
+                        $('#AltStoreName').val(StoreName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load StoreName .');
+                }
+            });
+        }
+
         function FillWorkCenterName() {
             $.ajax({
                 url: '@Url.Action("FillWorkCenterName", "MaterialConversion")',
@@ -1077,10 +1171,35 @@
                     alert('Failed to load WorkCenterName .');
                 }
             });
+        } 
+        function FillAltWorkCenterName() {
+            $.ajax({
+                url: '@Url.Action("FillWorkCenterName", "MaterialConversion")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var AltWorkCenterNameDropdown = $('#AltWorkCenterName');
+                    var obj = $.parseJSON(response);
+                    AltWorkCenterNameDropdown.empty();
+                    AltWorkCenterNameDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, WorkCenter) {
+                        AltWorkCenterNameDropdown.append('<option value="' + WorkCenter.WorkCenterDescription + '">' + WorkCenter.WorkCenterDescription + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var WorkCenterName = "@Model.AltWorkCenterName"
+                        $('#WorkCenterName').val(WorkCenterName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load WorkCenterName .');
+                }
+            });
         }
         var UniqueBatchNo = [];
         function FillStockBatchNo() {
-            debugger
+            
             var ItemCode = $('#OriginalItemCode').val();
             var YearCode = $('#OpeningYearCode').val();
             var StoreName = $('#StoreName').find(':selected').text();
@@ -1103,15 +1222,8 @@
 
                             $.each(obj.Result, function (index, val) {
                                 $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
-                                //UniqueBatchNo.push({
-                                //    "Batchno": val.batchno,
-                                //    "UniqueBatchNo": val.UniqueBatchNo
-                                //});
-                                //$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
                             });
-                           // GetBatchInventory();
-
-
+                          
                             var itemArrayLength = itemBatchArray.length;
                             if (itemArrayLength > 0) {
                                 var itemsWithCode16 = itemBatchArray.filter(function (item) {
@@ -1159,7 +1271,7 @@
         }
 
         function FillStockUniqueBatchNo() {
-            debugger
+           
             var ItemCode = $('#OriginalItemName').val();
             var YearCode = $('#OpeningYearCode').val();
             var StoreName = $('#StoreName').find(':selected').text();
@@ -1241,7 +1353,7 @@
             });
         }
         function GetUnitAltUnit(ItemCode) {
-            debugger
+            
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetUnitAltUnit")",
@@ -1262,31 +1374,63 @@
             });
         }
         function ClearItems() {
-            $('#BillYear,#BillNetAmt,#PendAmt').val(0);
-            $('#BillNo,#BillDate,#Type,#TransactionType,#DueDate,#Unit').val('');
+
+            $('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,   #Remark').val('');
+            $('#OriginalPartCode,#OriginalItemName,#OriginalItemCode,#StoreName,#WorkCenterName,#AltItemName, #AltPartCode, #AltItemCode').val("").trigger("change");
+            
+            $('#BatchStock, #TotalStock, #AltStock, #OrigItemRate, #OriginalItemCode, #OriginalQty, #AltOriginalQty,#AltStoreName,#AltWorkCenterName').val(0);
+
+          
+           // $('select').prop('selectedIndex', 0);
         }
+
 
         $('#GridButton').click(function (e) {
             e.preventDefault();
-             
+
+           var issueToStoreWC = $('#IssueToStoreWC').val();
+            var originalPartCode = $('#OriginalPartCode').val().trim();
+            var originalItemName = $('#OriginalItemName').val().trim();
+            var originalItemCode = $('#OriginalItemCode').val().trim();
+            var altItemName = $('#AltItemName').val().trim();
+            var altPartCode = $('#AltPartCode').val().trim();
+            var AltItemCode = $('#AltItemCode').val().trim();
+            var altUnit = $('#AltUnit').val().trim();
+            var unit = $('#Unit').val().trim();
+            var originalQty = $('#OriginalQty').val().trim();
+
+            if (!issueToStoreWC) {
+                $.notify("Please select Store/WC before adding to the grid!", "error");
+                return; 
+            }
+            if (!originalPartCode || !originalItemName || !originalItemCode ||
+                !altItemName || !altPartCode || !altUnit || !unit || !originalQty || !AltItemCode) {
+                $.notify("All fields are required to add data to the grid!", "error");
+                return; 
+            }
+
             var SchData = {
                 OriginalPartCode: $('#OriginalPartCode').val(),
                 OriginalItemName: $('#OriginalItemName').val(),
                 OriginalItemCode: $('#OriginalItemCode').val(),
-                StoreName: $('#StoreName').val(),
+                StoreName: $('#StoreName').val()||'',
                 StoreId: $('#StoreId').val(),
-                WorkCenterName: $('#WorkCenterName').val(),
+                WorkCenterName: $('#WorkCenterName').val()||'',
                 WcId: $('#WcId').val(),
                 Unit: $('#Unit').val(),
                 OriginalQty: $('#OriginalQty').val(),
                 AltItemName: $('#AltItemName').val(),
-                AltItemName: $('#AltItemName').val(),
+                AltPartCode: $('#AltPartCode').val(),
+                AltItemCode: $('#AltItemCode').val(),
                 AltUnit: $('#AltUnit').val(),
                 AltOriginalQty: $('#AltOriginalQty').val(),
                 OriginalStoreId: $('#OriginalStoreId').val(),
+               
                 AltStoreId: $('#AltStoreId').val(),
+                AltStoreName: $('#AltStoreName').val(),
                 OrginalWCID: $('#OrginalWCID').val(),
                 AltWCID: $('#AltWCID').val(),
+                AltWorkCenterName: $('#AltWorkCenterName').val(),
                 BatchNo: $('#BatchNo').val(),
                 UniqueBatchNo: $('#UniqueBatchNo').val(),
                 BatchStock: $('#BatchStock').val(),
@@ -1300,9 +1444,14 @@
                 ProdSchDatetime: $('#ProdSchDatetime').val(),
                 OrigItemRate: $('#OrigItemRate').val(),
                 Remark: $('#Remark').val(),
-                
-               OriginalPartCode: $('#OriginalPartCode').find(":selected").text(),
-               OriginalItemName: $('#OriginalItemName').find(":selected").text(),
+                OriginalPartCode: $('#OriginalPartCode').find(":selected").text(),
+                OriginalItemName: $('#OriginalItemName').find(":selected").text(),
+                AltItemName: $('#AltItemName').find(":selected").text(),
+                AltPartCode: $('#AltPartCode').find(":selected").text(),
+                WorkCenterName: $('#WorkCenterName').find(":selected").text(),
+                StoreName: $('#StoreName').find(":selected").text(),
+                AltStoreName: $('#AltStoreName').find(":selected").text(),
+                AltWorkCenterName: $('#AltWorkCenterName').find(":selected").text(),
                 //OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
             };
             console.log(SchData);
@@ -1315,6 +1464,7 @@
 
                         $('#divStockGrid').html(result);
                         TotalNoOfRows();
+                        ClearItems();
                     } else if (xhr.status == 207) {
                         $.notify('Duplicate Item...!', "info");
                     }
@@ -1329,7 +1479,7 @@
         function TotalNoOfRows() {
             var Row = $('#divStockGrid tr').length;
             var tdCount = $('#divStockGrid tr td').length;
-            $('#lblTotalNoOfBelowItems').text(tdCount >= 1 ? Row : 0);
+            $('#lblItemCount').text(tdCount >= 1 ? Row : 0);
         }
         function ClearGrid() {
             $.ajax({
@@ -1386,15 +1536,17 @@
 
                         $('#OriginalPartCode').val(obj[0].OriginalItemCode).trigger("change");
                         $('#OriginalItemName').val(obj[0].OriginalItemCode).trigger("change");
-
                         $('#OriginalItemCode').val(obj[0].OriginalItemCode).trigger("change");
                         $('#Unit').val(obj[0].Unit).trigger("change");
                         $('#OriginalQty').val(obj[0].OriginalQty).trigger("change");
-                        $('#AltItemName').val(obj[0].AltItemName).trigger("change");
+                        $('#AltItemName').val(obj[0].AltItemCode).trigger("change");
+                        $('#AltPartCode').val(obj[0].AltItemCode).trigger("change");
+                        $('#AltItemCode').val(obj[0].AltItemCode).trigger("change");
                         $('#AltUnit').val(obj[0].AltUnit).trigger("change");
                         $('#AltOriginalQty').val(obj[0].AltOriginalQty).trigger("change");
                         $('#OriginalStoreId').val(obj[0].OriginalStoreId).trigger("change");
-                        $('#AltStoreId').val(obj[0].AltStoreId).trigger("change");
+                        $('#StoreName').val(obj[0].StoreId).trigger("change");
+                        $('#AltStoreName').val(obj[0].AltStoreId).trigger("change");
                         $('#OrginalWCID').val(obj[0].OrginalWCID).trigger("change");
                         $('#AltWCID').val(obj[0].AltWCID).trigger("change");
                         $('#BatchNo').val(obj[0].BatchNo).trigger("change");
