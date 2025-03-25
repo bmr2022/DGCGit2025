@@ -1433,6 +1433,7 @@ public class PurchaseOrderController : Controller
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         List<POItemDetail> data = new List<POItemDetail>();
+        var errors = new List<string>();
 
         using (var stream = excelFile.OpenReadStream())
         using (var package = new ExcelPackage(stream))
@@ -1446,16 +1447,23 @@ public class PurchaseOrderController : Controller
                 var partcode = 0;
                 var itemCodeValue = 0;
                 var itemname = "";
-                if (itemCode.Result.Result != null)
+                if (itemCode.Result.Result != null && itemCode.Result.Result.Rows.Count > 0)
                 {
-                    partcode = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
-                    itemCodeValue = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
-                    itemname = itemCode.Result.Result.Rows.Count <= 0 ? 0 : itemCode.Result.Result.Rows[0].ItemArray[1];
+                    partcode = Convert.ToInt32(itemCode.Result.Result.Rows[0].ItemArray[0]);
+                    itemCodeValue = Convert.ToInt32(itemCode.Result.Result.Rows[0].ItemArray[0]);
+                    itemname = itemCode.Result.Result.Rows[0].ItemArray[1]?.ToString() ?? "Unknown Item"; // Ensure string conversion
+                }
+                else
+                {
+                    partcode = 0;
+                    itemCodeValue = 0;
+                    itemname = "Unknown Item"; // Set default name if not found
                 }
 
                 if (partcode == 0)
                 {
-                    return Json("Partcode not available");
+                    errors.Add($"Invalid PartCode at row {row}");
+                    continue;
                 }
                 // for pending qty validation -- still need to change
                 var POQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString());
@@ -1473,7 +1481,8 @@ public class PurchaseOrderController : Controller
 
                 if (isPOTypeClose && qty <= 0)
                 {
-                    return Json("Qty is less Then 0");
+                    errors.Add($"Qty is less then 0 at row: {row}");
+                    continue;
                 }
                 else if(!isPOTypeClose)
                 {
@@ -1482,9 +1491,9 @@ public class PurchaseOrderController : Controller
 
 
                 //for altunit conversion
-                var altUnitConversion = AltUnitConversion(partcode, 0, Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString()));
-                JObject AltUnitCon = JObject.Parse(altUnitConversion.Result.Value.ToString());
-                decimal altUnitValue = (decimal)AltUnitCon["Result"][0]["AltUnitValue"];
+                //var altUnitConversion = AltUnitConversion(partcode, 0, Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString()));
+                //JObject AltUnitCon = JObject.Parse(altUnitConversion.Result.Value.ToString());
+                //decimal altUnitValue = (decimal)AltUnitCon["Result"][0]["AltUnitValue"];
 
                 var pendQty = GetPendQty(pono, poYearcode, itemCodeValue, AccountCode, SchNo, SchYearCode, Flag);
 
@@ -1520,7 +1529,7 @@ public class PurchaseOrderController : Controller
                     HSNNo = Convert.ToInt32(worksheet.Cells[row, 2].Value?.ToString() ?? "0"),
                     POQty = qty,
                     Unit = worksheet.Cells[row, 5].Value?.ToString() ?? string.Empty,
-                    AltPOQty = altUnitValue,
+                    AltPOQty = qty,
                     AltUnit = worksheet.Cells[row, 11].Value?.ToString() ?? string.Empty,
                     PendQty = Convert.ToDecimal(worksheet.Cells[row, 11].Value?.ToString() ?? "0"),
                     AltPendQty = Convert.ToDecimal(worksheet.Cells[row, 11].Value?.ToString() ?? "0"),
@@ -1547,6 +1556,11 @@ public class PurchaseOrderController : Controller
                     AmendmentDate = worksheet.Cells[row, 32].Value?.ToString() ?? string.Empty,
                     AmendmentReason = worksheet.Cells[row, 33].Value?.ToString() ?? string.Empty,
                 });
+            }
+
+            if (errors.Count > 0)
+            {
+                return BadRequest(string.Join("\n", errors));
             }
         }
 

@@ -388,7 +388,7 @@
 											<input asp-for="IN1" class="form-check-input" type="checkbox" role="switch" />
 										</div>
 										<div class="col-xl-12">
-											<select class="form-select" style="height:190px;width:290px;" asp-for="ItemCode" asp-items="@(new SelectList(Model.ItemNameList,"Text","Value"))">
+											<select class="form-select" style="width:290px;" asp-for="ItemCode" asp-items="@(new SelectList(Model.ItemNameList,"Text","Value"))">
 												<option value="0">-Select-</option>
 											</select>
 										</div>
@@ -459,7 +459,7 @@
 											<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
 										</button>
 									</div>
-									@if (Model.Mode != "SOA" || Model.Mode != "SSA")
+									@if (Model.Mode == "SOA" || Model.Mode == "SSA")
 									{
 										<div class="col-auto">
 											<button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
@@ -1136,11 +1136,11 @@
 				}, 1000);
 			}
 		});
-		 document.querySelector("#files").onchange = function () {
+		/*  document.querySelector("#files").onchange = function () {
             const fileName = this.files[0]?.name;
             const label = document.querySelector("label[for=files]");
             label.innerText = fileName ?? "Import Excel";
-        };
+        }; */
 
 		document.querySelectorAll(".number").forEach(input => {
 			input.addEventListener("input", function () {

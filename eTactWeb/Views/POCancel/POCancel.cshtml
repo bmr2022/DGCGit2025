@@ -39,17 +39,17 @@
                                 </div>
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
-                                <label asp-for="ApprovalType" class="form-label">Approval Type</label>
-                                <select class="form-select" asp-for="ApprovalType">
+                                <label asp-for="CancelationType" class="form-label">Cancelation Type</label>
+                                <select class="form-select" asp-for="CancelationType">
                                     <option value="" disabled>-Select-</option>
-                                    <option value="firstLvlApproval" selected>List of unapproved 1st level</option>
-                                    <option value="finalApproval">List of Unapproved final level</option>
-                                    <option value="amdApproval">List of unapproved amendment level</option>
-                                    <option value="firstLvlUnApp">List of Approved 1st Level</option>
-                                    <option value="finalUnApp">List of Approved final level</option>
-                                    @*<option value="amdUnApp">List of approved amendment level</option>*@
+                                    <option value="LISTOFUNCANCELEDPO" selected>List Of Uncanceled PO</option>
+                                    <option value="LISTOFCANCELEDPO">List Of Canceled PO</option>
+                                    <option value="LISTOFACTIVEPO">List Of Active PO</option>
+                                    <option value="LISTOFDEACTIVEPO">List Of Deactive PO</option>
+                                
+                                    
                                 </select>
-                                <input type="hidden" id="approvalType" value="First Level Approval" />
+                                <input type="hidden" id="CancelationType" value="First Level Approval" />
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="PONo" class="form-label">PO NO</label>
@@ -127,7 +127,7 @@
 {
     <script>
         $(function () {
-
+           
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             function formatDate(date) {
@@ -149,48 +149,49 @@
             GetInitialData();
             GetAllowedAction();
             GetURLforSession();
+            GetSearchData();
 
         });
 
         function GetURLforSession() {
 
             var currentURL = window.location.href;
-            if (currentURL.includes("type")) {
-                var approvalType = decodeURIComponent(currentURL.split("type=")[1]);
-                if (approvalType.includes('Unapproving Amendment Level')) {
-                    $('#ApprovalType').val('amdUnApp').change();
-                    GetSearchData();
-                }
-                if (approvalType.includes('Approving Amendment Level')) {
-                    $('#ApprovalType').val('amdApproval').change();
-                    GetSearchData();
+            // if (currentURL.includes("type")) {
+            //     var CancelationType = decodeURIComponent(currentURL.split("type=")[1]);
+            //     if (CancelationType.includes('Unapproving Amendment Level')) {
+            //         $('#CancelationType').val('amdUnApp').change();
+            //         GetSearchData();
+            //     }
+            //     if (CancelationType.includes('Approving Amendment Level')) {
+            //         $('#CancelationType').val('amdApproval').change();
+            //         GetSearchData();
 
-                }
-                if (approvalType.includes('First Level Approval')) {
-                    $('#ApprovalType').val('firstLvlApproval').change();
-                    GetSearchData();
+            //     }
+            //     if (CancelationType.includes('First Level Approval')) {
+            //         $('#CancelationType').val('firstLvlApproval').change();
+            //         GetSearchData();
 
-                }
-                if (approvalType.includes('Approving Final Level')) {
-                    $('#ApprovalType').val('finalApproval').change();
-                    GetSearchData();
+            //     }
+            //     if (CancelationType.includes('Approving Final Level')) {
+            //         $('#CancelationType').val('finalApproval').change();
+            //         GetSearchData();
 
-                }
-                if (approvalType.includes('Unapproving first Level')) {
-                    $('#ApprovalType').val('firstLvlUnApp').change();
-                    GetSearchData();
+            //     }
+            //     if (CancelationType.includes('Unapproving first Level')) {
+            //         $('#CancelationType').val('firstLvlUnApp').change();
+            //         GetSearchData();
 
-                }
-                if (approvalType.includes('Unapproving Final Level')) {
-                    $('#ApprovalType').val('finalUnApp').change();
-                    GetSearchData();
+            //     }
+            //     if (CancelationType.includes('Unapproving Final Level')) {
+            //         $('#CancelationType').val('finalUnApp').change();
+            //         GetSearchData();
 
-                }
+            //     }
 
-            }
-            else {
-                //do nothing
-            }
+            // }
+            // else {
+            //     //do nothing
+            // }
         }
 
         function GetAllowedAction() {
@@ -213,27 +214,27 @@
                             if (action.includes('FinalLevelApproval')) {
                                 //do nothing
                             } else {
-                                $("#ApprovalType option[value='finalApproval']").prop("disabled", true);
+                                $("#CancelationType option[value='finalApproval']").prop("disabled", true);
                             }
                             if (action.includes('AmendmentApproval')) {
                                 //do nothing
                             } else {
-                                $("#ApprovalType option[value='amdApproval']").prop("disabled", true);
+                                $("#CancelationType option[value='amdApproval']").prop("disabled", true);
                             }
                             if (action.includes('FirstLevelApproval')) {
                                 //do nothing
                             } else {
-                                $("#ApprovalType option[value='firstLvlApproval']").prop("disabled", true);
+                                $("#CancelationType option[value='firstLvlApproval']").prop("disabled", true);
 
                             } if (action.includes('FirstLevelUnapproval')) {
                                 //do nothing
                             } else {
-                                $("#ApprovalType option[value='firstLvlUnApp']").prop("disabled", true);
+                                $("#CancelationType option[value='firstLvlUnApp']").prop("disabled", true);
 
                             } if (action.includes('FinalLevelUnapproval')) {
                                 //do nothing
                             } else {
-                                $("#ApprovalType option[value='finalUnApp']").prop("disabled", true);
+                                $("#CancelationType option[value='finalUnApp']").prop("disabled", true);
 
                             }
                         }
@@ -256,7 +257,7 @@
                             var html = '';
                             $('#divPOAppGrid').empty();
                             var ammEffDate = "";
-                            var ApprovalType = $('#approvalType').val();
+                            var CancelationType = $('#CancelationType').val();
                             for (var i = 0; i < obj.Result.Table.length; i++) {
                                 if (obj.Result.Table[i].AmmEffDate == null) {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate;
@@ -264,8 +265,8 @@
                                 else {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
                                 }
-                                // html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "U" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + ApprovalType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
-                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "U" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="fa fa-cog"  href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + ApprovalType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
+                                // html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "U" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + CancelationType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "U" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="fa fa-cog"  href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + CancelationType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
 
                             }
                             $('#divPOAppGrid').append(html);
@@ -290,7 +291,7 @@
                             var html = '';
                             $('#divPOAppGrid').empty();
                             var ammEffDate = "";
-                            var ApprovalType = $('#approvalType').val();
+                            var CancelationType = $('#CancelationType').val();
                             for (var i = 0; i < obj.Result.Table.length; i++) {
                                 if (obj.Result.Table[i].AmmEffDate == null) {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate;
@@ -298,7 +299,7 @@
                                 else {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
                                 }
-                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + ApprovalType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + CancelationType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
 
                             }
                             $('#divPOAppGrid').append(html);
@@ -326,7 +327,7 @@
                             var html = '';
                             $('#divPOAppGrid').empty();
                             var ammEffDate = "";
-                            var ApprovalType = $('#approvalType').val();
+                            var CancelationType = $('#CancelationType').val();
                             for (var i = 0; i < obj.Result.Table.length; i++) {
                                 if (obj.Result.Table[i].AmmEffDate == null) {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate;
@@ -334,7 +335,7 @@
                                 else {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
                                 }
-                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + ApprovalType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + CancelationType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
 
                             }
                             $('#divPOAppGrid').append(html);
@@ -362,7 +363,7 @@
                             var html = '';
                             $('#divPOAppGrid').empty();
                             var ammEffDate = "";
-                            var ApprovalType = $('#approvalType').val();
+                            var CancelationType = $('#CancelationType').val();
                             for (var i = 0; i < obj.Result.Table.length; i++) {
                                 if (obj.Result.Table[i].AmmEffDate == null) {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate;
@@ -370,7 +371,7 @@
                                 else {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
                                 }
-                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + ApprovalType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + CancelationType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
 
                             }
                             $('#divPOAppGrid').append(html);
@@ -395,7 +396,7 @@
                             var html = '';
                             $('#divPOAppGrid').empty();
                             var ammEffDate = "";
-                            var ApprovalType = $('#approvalType').val();
+                            var CancelationType = $('#CancelationType').val();
                             for (var i = 0; i < obj.Result.Table.length; i++) {
                                 if (obj.Result.Table[i].AmmEffDate == null) {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate;
@@ -403,7 +404,7 @@
                                 else {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
                                 }
-                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + ApprovalType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + CancelationType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
 
                             }
                             $('#divPOAppGrid').append(html);
@@ -428,7 +429,7 @@
                             var html = '';
                             $('#divPOAppGrid').empty();
                             var ammEffDate = "";
-                            var ApprovalType = $('#approvalType').val();
+                            var CancelationType = $('#CancelationType').val();
                             for (var i = 0; i < obj.Result.Table.length; i++) {
                                 if (obj.Result.Table[i].AmmEffDate == null) {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate;
@@ -436,7 +437,7 @@
                                 else {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
                                 }
-                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + ApprovalType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + CancelationType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
 
                             }
                             $('#divPOAppGrid').append(html);
@@ -449,21 +450,22 @@
         }
 
         function GetSearchData() {
+            debugger;
             //var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
-                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), ApprovalType: $('#ApprovalType').val(), PONO: $('#PONo').val(), VendorName: $('#VendorName').val() },
+                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), CancelationType: $('#CancelationType').val(), PONO: $('#PONo').val(), VendorName: $('#VendorName').val() },
                 success: function (data) {
-                    $('#divPOAppGrid').empty();
-                    $('#divPOAppGrid').append('<tr class="text-center"><td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td></tr>');
+                    $('#divPOCancelGrid').empty();
+                    $('#divPOCancelGrid').append('<tr class="text-center"><td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td></tr>');
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             var html = '';
-                            $('#divPOAppGrid').empty();
+                            $('#divPOCancelGrid').empty();
                             var ammEffDate = "";
-                            var ApprovalType = $('#approvalType').val();
+                            var CancelationType = $('#CancelationType').val();
                             for (var i = 0; i < obj.Result.Table.length; i++) {
                                 if (obj.Result.Table[i].AmmEffDate == null) {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate;
@@ -471,11 +473,11 @@
                                 else {
                                     ammEffDate = obj.Result.Table[i].AmmEffDate.split("T")[0];
                                 }
-                                // html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + ApprovalType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
-                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "U" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="fa fa-cog"  href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + ApprovalType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
+                                // html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "V" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="tooltip-link1" href="/POApproval/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + CancelationType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
+                                html += '<tr id="' + i + '"><td style="text-align:center;white-space: nowrap;"><div id="container"  style="display: flex;"><div id="viewCursorDiv"><a class="tooltip-link" href="/PurchaseOrder/Index?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&Mode=' + "U" + '" style="height:30px !important;"><span class="fa-stack" ><i class="fa fa-eye" aria-hidden="true"></i></span></a></div><div id="viewCursorDiv"><a class="fa fa-cog"  href="/POCancel/ShowPODetail?ID=' + obj.Result.Table[i].EntryID + '&YC=' + obj.Result.Table[i].YearCode + '&PONo=' + obj.Result.Table[i].PONo + '&TypeOfApproval=' + CancelationType + '"><span class="fa-stack" ><i style="color:red !important;" class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" aria-hidden="true"></i></span></a></div></div></td><td id="VendorName' + i + '" >' + obj.Result.Table[i].Vendor + '</td><td style="width: 100px!important; " id="PONo' + i + '">' + obj.Result.Table[i].PONo + '</td><td style="width: 80px!important; " id="PODate' + i + '">' + obj.Result.Table[i].PODate.split("T")[0] + '</td><td style="width: 80px!important; " id="WEF' + i + '">' + obj.Result.Table[i].WEF.split("T")[0] + '</td><td style="width: 80px!important; " id="OrderType' + i + '">' + obj.Result.Table[i].OrderType + '</td><td style="width: 50px!important; " id="POType' + i + '">' + obj.Result.Table[i].POType + '</td><td style="width: 120px!important; " id="POFor' + i + '">' + obj.Result.Table[i].POFor + '</td><td style="width: 80px!important; " id="PoCloseDate' + i + '">' + obj.Result.Table[i].POCloseDate.split("T")[0] + '</td><td style="width: 50px!important; " id="ItemServAssets' + i + '">' + obj.Result.Table[i].POTypeServItem + '</td><td style="width: 50px!important; " id="AmmNo' + i + '">' + obj.Result.Table[i].AmmNo + '</td><td style="width: 80px!important; " id="AmmEffDate' + i + '">' + ammEffDate + '</td><td id="ShipTo' + i + '">' + obj.Result.Table[i].ShipTo + '</td><td style="width: 50px!important; " id="BasicAmount' + i + '">' + obj.Result.Table[i].basicamount + '</td><td style="width: 50px!important; " id="NetAmount' + i + '">' + obj.Result.Table[i].NetAmount + '</td><td  style="width: 50px!important; " id="EntryID' + i + '">' + obj.Result.Table[i].EntryID + '</td><td style="width: 50px!important; " id="YearCode' + i + '">' + obj.Result.Table[i].YearCode + '</td><td style="width: 300px!important; " id="VendorAddress' + i + '" >' + obj.Result.Table[i].VendorAddress + '</td></tr>';
 
                             }
-                            $('#divPOAppGrid').append(html);
+                            $('#divPOCancelGrid').append(html);
                             GetTotalRows();
                         }
                     }
@@ -548,36 +550,7 @@
             });
         }
 
-        $('#ApprovalType').change(function () {
-            if ($(this).val() == 'finalApproval') {
-                $('#approvalType').val('Approving Final Level');
-                //GetFinalApprovalPO();
-            }
-            else if ($(this).val() == 'firstLvlApproval') {
-                $('#approvalType').val('Approving First Level');
-
-                //GetInitialData();
-            } else if ($(this).val() == 'finalUnApp') {
-                $('#approvalType').val('Unapproving Final Level');
-
-                //GetFinalUnApprovalPO();
-            } else if ($(this).val() == 'firstLvlUnApp') {
-                $('#approvalType').val('Unapproving first Level');
-
-                //GetFirstLvlUnApprovalPO();
-            } else if ($(this).val() == 'amdUnApp') {
-                $('#approvalType').val('Unapproving Amendment Level');
-
-                //GetAmmUnApprovalPO();
-            }
-            else {
-                $('#approvalType').val('Approving Amendment Level');
-
-                //GetAmmApprovalPO();
-            }
-
-            $('#VendorName,#PONo').val('');
-        });
+       
 
         $('#sendToExcel').click(function () {
             $('#poAppTable').table2excel({

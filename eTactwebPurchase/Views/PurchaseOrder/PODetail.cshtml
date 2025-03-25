@@ -812,7 +812,7 @@
             $('#divPOItemList').empty();
             var wb = XLSX.utils.book_new();
 
-            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "HSNNO", "Rate", "Qty", "Unit", "Dis%", "DisAmt","Delivery Date", "description"] });
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "HSNNO", "Rate", "Qty", "Unit", "Dis%", "DisAmt", "description"] });
 
             //ws['!ref'] = 'A1:I1';
 
@@ -875,7 +875,15 @@
                         calculateTotalAmount();
                         GetTaxPartItem();
                     }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        $.notify(xhr.responseText, "error"); // Show error message if part code is invalid
+                    } else {
+                        $.notify("An unexpected error occurred. Please try again.", "error");
+                    }
                 }
+
             });
 
             function calculateTotalAmount() {

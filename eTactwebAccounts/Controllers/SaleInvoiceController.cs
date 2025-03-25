@@ -934,6 +934,7 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("CostCenterid", typeof(int));
             DTSSGrid.Columns.Add("ProdUnProduced", typeof(string));
             DTSSGrid.Columns.Add("BOMInd", typeof(string));
+            DTSSGrid.Columns.Add("BomNo", typeof(int));
             DTSSGrid.Columns.Add("CustJWmanadatory", typeof(string));
             DTSSGrid.Columns.Add("StockableNonStockable", typeof(string));
             //DateTime DeliveryDt = new DateTime();
@@ -1003,6 +1004,7 @@ namespace eTactWeb.Controllers
                     Item.CostCenterId,
                     Item.ProducedUnprod ?? string.Empty,
                     Item.BOMInd ?? string.Empty,
+                    Item.BomNo,
                     Item.CustJwAdjustmentMandatory ?? string.Empty,
                     Item.StockableNonStockable ?? string.Empty,
                     });
