@@ -94,7 +94,7 @@ else
                                                 </a>
                                             </div>
                                         }
-                                        @if (@item.Approved == "Y" || item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || item.YearCode == yearCode)
+                                        @if (@item.Approved == "Y" || item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || item.YearCode != yearCode)
                                         {
                                             <div>
                                                 <a class="table-link link-primary noCursor">
