@@ -49,7 +49,7 @@ else
             <td>@item.OriginalItemName<input type="hidden" asp-for="OriginalItemCode" value="@item.OriginalItemCode"/></td>
 
             <td>@item.StoreName<input type="hidden" asp-for="StoreId" value="@item.StoreId" /></td>
-            <td>@item.WorkCenterName</td>
+            <td>@item.WorkCenterName<input type="hidden" asp-for="WcId" value="@item.WcId" /></td>
             <td>@item.BatchNo</td>
             <td>@item.UniqueBatchNo</td>
             <td>@item.BatchStock</td>
@@ -57,11 +57,11 @@ else
             <td>@item.OriginalQty</td>
             <td>@item.Unit</td>
             <td>@item.AltStock</td>
-            
-            <td>@item.AltPartCode</td>
-            <td>@item.AltItemName</td>
-            <td>@item.AltStoreName</td>
-            <td>@item.AltWorkCenterName</td>
+
+            <td>@item.AltPartCode<input type="hidden" asp-for="AltItemCode" value="@item.AltItemCode" /></td>
+            <td>@item.AltItemName<input type="hidden" asp-for="AltItemCode" value="@item.AltItemCode" /></td>
+            <td>@item.AltStoreName<input type="hidden" asp-for="AltStoreId" value="@item.AltStoreId" /></td>
+            <td>@item.AltWorkCenterName<input type="hidden" asp-for="AltWCID" value="@item.AltWCID" /></td>
             <td>@item.AltOriginalQty</td>
             <td>@item.AltUnit</td>
             <td>@item.PlanNo</td>
@@ -70,8 +70,8 @@ else
             <td>@item.ProdSchNo</td>
             <td>@item.ProdSchYearCode</td>
             <td>@item.ProdSchDatetime</td>
-            <td>@item.Remark</td>
             <td>@item.OrigItemRate</td>
+            <td>@item.Remark</td>
         </tr>
     }
 }
