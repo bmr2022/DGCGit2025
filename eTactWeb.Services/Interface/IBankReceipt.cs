@@ -22,7 +22,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);
         Task<BankReceiptModel> GetDashBoardDetailData(string FromDate, string ToDate);
         Task<BankReceiptModel> GetDashBoardSummaryData(string FromDate, string ToDate);
-        Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate,string VoucherType);
         Task<ResponseResult> FillBankType(int AccountCode);
         Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTable DataTable);
         Task<BankReceiptModel> GetViewByID(int ID, int YearCode, string VoucherNo);

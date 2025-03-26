@@ -1378,7 +1378,7 @@
         }
 
         function PopUpForPendingVouchers(Action, SrNO) {
-
+            debugger
             $('#CheckUnCheckAll').prop('checked', false);
             if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 $('#DisplayRoutingDetailModal').modal('hide');
@@ -1399,7 +1399,7 @@
                 data: { "DataTable": DataTable },
                 success: function (data, status, xhr) {
                     if (data != null) {
-
+                        debugger
                         $('#divDisplayPopupForPendingVouchersDetail').empty();
                         $('#divDisplayPopupForPendingVouchersDetail').append(data);
                         CheckUnCheckEdit();

@@ -1,4 +1,5 @@
 ﻿using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -59,6 +60,18 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetAltItemName(int MainItemcode)
         {
             return await _MaterialConversionDAL.GetAltItemName(MainItemcode);
+        }
+        public async Task<ResponseResult> SaveMaterialConversion(MaterialConversionModel model, DataTable GIGrid)
+        {
+            return await _MaterialConversionDAL.SaveMaterialConversion(model, GIGrid);
+        }
+        public async Task<ResponseResult> GetDashboardData(MaterialConversionModel model)
+        {
+            return await _MaterialConversionDAL.GetDashboardData(model);
+        }
+        public async Task<MaterialConversionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _MaterialConversionDAL.GetDashboardDetailData( FromDate,  ToDate,  ReportType);
         }
     }
 }
