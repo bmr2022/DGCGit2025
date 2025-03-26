@@ -66,9 +66,9 @@ public class ItemMasterController : Controller
         
         var allData = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo,UniversalPartCode, Flag);
         model.TotalRecords = allData.Count();
-        //model.PageNumber = pageNumber;
-        //model.PageSize = pageSize;
-      //  model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+        model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
         model.Item_Name = Item_Name;
         model.PartCode = PartCode;
