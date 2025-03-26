@@ -780,6 +780,27 @@ public class SaleOrderController : Controller
 		return Json(JsonString);
 	}
 
+	public async Task<IActionResult> CheckOrderNo(int year, int accountcode)
+	{
+		var response = await _ISaleOrder.CheckOrderNo(year, accountcode);
+		List<string> soNumbersList = new List<string>();
+
+		if (response?.Result is DataTable dt)
+		{
+			foreach (DataRow row in dt.Rows)
+			{
+				soNumbersList.Add(row["CustOrderNo"].ToString());
+			}
+		}
+
+		return Json(new { Success = true, SONumbers = soNumbersList });
+	}
+
+
+
+
+
+
 	public async Task<JsonResult> GetAltQty(int ItemCode, float UnitQty, float ALtQty)
 	{
 		var JSON = await _ISaleOrder.GetAltQty(ItemCode, UnitQty, ALtQty);
