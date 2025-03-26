@@ -22,6 +22,7 @@ public interface ISaleSchedule
 
     Task<string> GetSONO(int AccountCode);
     Task<ResponseResult> GetFormRights(int uId);
+    Task<ResponseResult> GetFormRightsAmen(int uId);
 
 
     Task<string> GetSOYear(int AccountCode, int SONO);

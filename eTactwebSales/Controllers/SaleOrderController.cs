@@ -253,7 +253,14 @@ public class SaleOrderController : Controller
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
-	public async Task<JsonResult> NewEntryId(int YearCode)
+    public async Task<JsonResult> GetFormRightsAmm()
+    {
+        var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        var JSON = await _ISaleOrder.GetFormRightsAmm(userID);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> NewEntryId(int YearCode)
 	{
 		var JSON = await _ISaleOrder.NewEntryId(YearCode);
 		string JsonString = JsonConvert.SerializeObject(JSON);

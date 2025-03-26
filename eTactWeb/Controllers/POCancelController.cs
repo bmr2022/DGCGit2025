@@ -51,5 +51,45 @@ namespace eTactWeb.Controllers
             //string JsonString = JsonConvert.SerializeObject(JSON);
             return View(MainModel);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SaveCancelation(int EntryId, int YC, string PONO, string type)
+        {
+            int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _IPOCancel.SaveCancelation(EntryId, YC, PONO, type, EmpID);
+            if (Result != null)
+            {
+                if (Result.StatusText == "Success")
+                {
+                    var status = "";
+                    var message = "";
+
+                    var ds = (DataSet)Result.Result;
+                    if (ds.Tables.Count > 0)
+                    {
+                        var dt = ds.Tables[0];
+                        if (dt.Rows.Count > 0)
+                        {
+                            status = Convert.ToString(dt.Rows[0][0]);
+                            if (dt.Columns.Count > 1)
+                                message = dt.Rows[0][1].ToString();
+                        }
+                    }
+
+
+                    var model1 = new POCancelModel();
+                    ViewBag.isSuccess = true;
+                    if (string.IsNullOrEmpty(message))
+                        TempData["200"] = "200";
+                    else
+                    {
+                        TempData["302"] = message;
+                    }
+                    return RedirectToAction("POCancel",model1);
+                }
+            }
+            var model = new POCancelModel();
+            return RedirectToAction("POCancel",model);
+        }
     }
 }

@@ -115,5 +115,50 @@ namespace eTactWeb.Data.DAL
             return MainModel;
         }
 
+        public async Task<ResponseResult> SaveCancelation(int EntryId, int YC, string PONO, string type, int EmpID)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                if (type == "LISTOFUNCANCELEDPO")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "CANCELPO"));
+
+                }
+                if (type == "LISTOFCANCELEDPO")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "UNCANCELPO"));
+
+                }
+                if (type == "LISTOFDEACTIVEPO")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "ACTIVATEPO"));
+
+                }
+                if (type == "LISTOFACTIVEPO")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "DEACTIVATEPO"));
+
+                }
+                
+                SqlParams.Add(new SqlParameter("@POEntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@Poyearcode", YC));
+                SqlParams.Add(new SqlParameter("@PoNo", PONO));
+                SqlParams.Add(new SqlParameter("@ApprovalDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@EmpId", EmpID));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ApproveUnapprovePurchaseOrder", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
     }
 }

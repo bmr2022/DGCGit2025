@@ -30,5 +30,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _POCancelDAL.ShowPODetail(ID, YC, PoNo, TypeOfCancle);
         }
+
+        public async Task<ResponseResult> SaveCancelation(int EntryId, int YC, string PONO, string type, int EmpID)
+        {
+            return await _POCancelDAL.SaveCancelation(EntryId, YC, PONO, type, EmpID);
+        }
     }
 }

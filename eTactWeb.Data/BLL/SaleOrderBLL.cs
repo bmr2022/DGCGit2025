@@ -38,6 +38,10 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.GetFormRights(userID);
     }
+    public async Task<ResponseResult> GetFormRightsAmm(int userID)
+    {
+        return await _SaleOrderDAL.GetFormRightsAmm(userID);
+    }
     public async Task<ResponseResult> NewEntryId(int YearCode)
     {
         return await _SaleOrderDAL.NewEntryId(YearCode);

@@ -255,6 +255,13 @@ public class SaleScheduleController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
+    public async Task<JsonResult> GetFormRightsAmen()
+    {
+        var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        var JSON = await ISaleSchedule.GetFormRightsAmen(userID);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
 
     public async Task<IActionResult> Dashboard()
     {

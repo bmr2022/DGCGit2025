@@ -10,7 +10,7 @@
     string empName = HttpContextAccessor.HttpContext.Session.GetString("EmpName");
     string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
     int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
-    string CancelationType = HttpContextAccessor.HttpContext.Request.Query["CancelationType"];
+    string typeOfApproval = HttpContextAccessor.HttpContext.Request.Query["typeOfApproval"];
     int EntryID = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["ID"]);
     int YC = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["YC"]);
     string PONO = HttpContextAccessor.HttpContext.Request.Query["PONo"];
@@ -24,7 +24,26 @@
                 <div class="row">
                     <div class="col-xl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <input id="approvePO" type="checkbox" style="margin-left:30px;width:15px !important;height:15px !important;" />
-                        <label class="form-label" style="display: inline-block;"><strong>Click for @CancelationType</strong></label>
+
+                        @if (@typeOfApproval == "LISTOFUNCANCELEDPO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for Cancel PO</strong></label>
+                        }
+                        else if (typeOfApproval == "LISTOFCANCELEDPO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for UnCancel PO</strong></label>
+
+                        }
+                        else if (typeOfApproval == "LISTOFACTIVEPO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for DeActivate PO</strong></label>
+
+                        }
+                        else if (typeOfApproval == "LISTOFDEACTIVEPO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for Activate PO</strong></label>
+
+                        }
                     </div>
                     <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <label class="form-label">Cancle Date</label>
@@ -38,7 +57,7 @@
                     </div>
                     <div class="col-xl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <div class="d-flex justify-content-right">
-                            <a class="btn btn-sm btn-outline-info" style="height:30px;width:100px;margin-top:15px !important;" asp-controller="POApproval" asp-action="SaveApproval" asp-route-EntryId="@EntryID" asp-route-YC="@YC" asp-route-PONO="@PONO" asp-route-type="@CancelationType" onclick="checkCondition(event)">
+                            <a class="btn btn-sm btn-outline-info" style="height:30px;width:100px;margin-top:15px !important;" asp-controller="POCancel" asp-action="SaveCancelation" asp-route-EntryId="@EntryID" asp-route-YC="@YC" asp-route-PONO="@PONO" asp-route-type="@typeOfApproval" onclick="checkCondition(event)">
                                 <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>SAVE
                             </a>
                         </div>
@@ -121,8 +140,13 @@
                                 <tr id="dashTableGridRow-@Cntr">
 
                                     <th>
-                                        @Cntr
-                                        
+                                        @Cntr<input type="hidden" id="typeOfApp-@Cntr" value="@item.TypeOfCancel" />
+                                        <input type="hidden" id="typeOfAppr" value="@typeOfApproval" />
+                                        <input type="hidden" id="Approvedd" value="@item.Approved" />
+                                        <input type="hidden" id="firstlvlApp" value="@item.Approval1Levelapproved" />
+                                        <input type="hidden" id="AmmApprove" value="@item.ApproveAmm" />
+
+
 
                                     </th>
                                     <td>@PONO</td>
@@ -233,35 +257,15 @@
 
         function checkCondition(event) {
 
-            if ($('#sessionYC').text() < $('#poYC').val()) {
-                event.preventDefault();
-                $.notify("You cannot approve/unapprove past year's PO", "error");
-                return false;
-            }
-            else if ($('#typeOfAppr').val().includes('first Level')) {
-                if ($('#Approvedd').val() == 'Y') {
-                    event.preventDefault();
-                    $.notify("You cannot approve/unapprove PO whose final level is already approved", "error");
-                    return false;
-                }
-            } else if ($('#typeOfAppr').val().includes('Final Level')) {
-                if ($('#AmmApprove').val() == 'Y') {
-                    event.preventDefault();
-                    $.notify("You cannot approve/unapprove PO whose amendment is already approved", "error");
-                    return false;
-                }
-            }
-            else {
-
                 if ($('#approvePO').is(":checked")) {
                     return true;
                 }
                 else {
                     event.preventDefault();
-                    $.notify("Please check for approval/unapproval", "error");
+                    $.notify("Please check for Update", "error");
                     return false;
                 }
-            }
+            
         }
     </script>
 }
