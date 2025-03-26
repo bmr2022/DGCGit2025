@@ -63,7 +63,7 @@
                     }
                     else
                     {
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient saleorderDashBoard" style="margin-right:5px;">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -294,7 +294,7 @@
                                 </a>
                             </div>
                         }
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient saleorderDashBoard" style="margin-right:5px;">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -1542,6 +1542,13 @@
                                     $('#UpdateButton').prop("disabled", true);
                                     $('.card-footer #UpdateButton').prop("disabled", true);
                                     $('.PartialSave').prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".saleorderDashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
                                 }
                             }
                         }

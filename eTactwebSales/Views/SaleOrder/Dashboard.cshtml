@@ -148,7 +148,7 @@
                     <partial name="_SODashboardGrid" />
                 </div>
             </div>
-            <div class="row g-2 gx-3">
+            <div class="row g-2 gx-3 totalrows">
                 <div class="col-12 text-center">
                     <strong>Total No Of Rows : <span id="lblTotalNoOfItems"></span></strong>
                 </div>
@@ -368,6 +368,9 @@
                                                                                         </span>
                                                                                     </a>`);
                                 }
+                            $("#divDashboardGrid").css("display", "none");
+                            $(".totalrows").css("display", "none");
+                            $("#SParam").hide();
                         } else {
                         console.log(obj);
                         var optAll = obj.Result.Table[0].OptAll;
@@ -410,6 +413,11 @@
                                                                                         </span>
                                                                                     </a>`);
                                 }
+                            }
+                            if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
                             }
                         }
                         }

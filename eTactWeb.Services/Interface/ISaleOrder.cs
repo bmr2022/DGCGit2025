@@ -28,6 +28,7 @@ namespace eTactWeb.Services.Interface
 
         Task<SaleOrderDashboard> GetDashboardData(string EndDate);
         Task<ResponseResult> GetFormRights(int userID);
+        Task<ResponseResult> GetFormRightsAmm(int userID);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> NewAmmEntryId(int YearCode);
 

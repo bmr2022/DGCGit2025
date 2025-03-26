@@ -12,5 +12,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetSearchData(string FromDate, string ToDate, string CancelationType, string PONO, string VendorName, int EmpId, string UID);
 
         Task<List<POCancleDetail>> ShowPODetail(int ID, int YearCode, string PoNo, string TypeOfCancle);
+
+        Task<ResponseResult> SaveCancelation(int EntryId, int YC, string PONO, string type, int EmpID);
     }
 }
