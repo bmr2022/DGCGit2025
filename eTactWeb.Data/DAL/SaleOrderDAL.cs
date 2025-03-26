@@ -171,7 +171,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> CheckOrderNo(int year, int accountcode)
+        public async Task<ResponseResult> CheckOrderNo(int year, int accountcode, int entryid, string custorderno)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -180,7 +180,9 @@ namespace eTactWeb.Data.DAL
 				SqlParams.Add(new SqlParameter("@flag", "CheckOrderNo"));
 				SqlParams.Add(new SqlParameter("@AccountCode", accountcode));
                 SqlParams.Add(new SqlParameter("@YearCode", year));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
+				SqlParams.Add(new SqlParameter("@entryid", entryid));
+				SqlParams.Add(new SqlParameter("@CustOrderNo", custorderno));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
             }
             catch (Exception ex)
             {
