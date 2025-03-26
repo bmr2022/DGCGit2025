@@ -529,7 +529,7 @@
             $('#SubVoucherName').select2();
             $('#Currency').select2();
 
-            debugger;
+             ;
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
@@ -858,7 +858,7 @@
         }
 
         function FillSONO() {
-            debugger;
+             ;
 
             var accountcode = $('#AccountCode').val();
             var VoucherDate = $('#VoucherDate').val();
@@ -917,7 +917,7 @@
 
 
         function GetSOYear() {
-            debugger;
+             ;
             var SONO = $("#SONo").val();
             var accountcode = $("#AccountCode").val();
             var VoucherDate = $("#VoucherDate").val();
@@ -1236,7 +1236,7 @@
         }
 
         function FillCostCenterName() {
-            debugger;
+             ;
             $.ajax({
                 url: '@Url.Action("FillCostCenterName", "BankReceipt")',
                 type: 'POST',
@@ -1353,7 +1353,7 @@
         }
 
         function PopUpForPendingVouchers(Action, SrNO) {
-
+            debugger
             $('#CheckUnCheckAll').prop('checked', false);
             if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 $('#DisplayRoutingDetailModal').modal('hide');
@@ -1374,7 +1374,7 @@
                 data: { "DataTable": DataTable },
                 success: function (data, status, xhr) {
                     if (data != null) {
-
+                        debugger
                         $('#divDisplayPopupForPendingVouchersDetail').empty();
                         $('#divDisplayPopupForPendingVouchersDetail').append(data);
                         CheckUnCheckEdit();
@@ -1777,7 +1777,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-
+            debugger
             var RowCount = $('#divBankReceiptDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1789,7 +1789,7 @@
                     type: "POST",
                     data: { SrNO: SrNO },
                     success: function (data) {
-
+                        debugger
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
                         if (ModeOfAdjustment == "Against Ref") {

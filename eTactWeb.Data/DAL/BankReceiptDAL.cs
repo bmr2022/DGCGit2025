@@ -183,7 +183,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillEntryID(int YearCode)
+        public async Task<ResponseResult> FillEntryID(int YearCode,string VoucherDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -192,6 +192,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
                 SqlParams.Add(new SqlParameter("@yearcode", YearCode));
+                SqlParams.Add(new SqlParameter("@VoucherDate", ParseFormattedDate(VoucherDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -420,7 +421,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID,int YearCode,int ActualEntryBy,string EntryByMachine,string ActualEntryDate)
+        public async Task<ResponseResult> DeleteByID(int ID,int YearCode,int ActualEntryBy,string EntryByMachine,string ActualEntryDate, string VoucherType)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -432,6 +433,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDate));
+                SqlParams.Add(new SqlParameter("@Vouchertype", VoucherType));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)

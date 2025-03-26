@@ -4036,7 +4036,7 @@
         })
 
         function FillBomNo() {
-            debugger
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillBomNo")",
@@ -4044,7 +4044,7 @@
                 data: { ItemCode: parseInt($('#FGItemCode').val()) },
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var BomEffecDate = obj.Result[0].EffectiveDate;

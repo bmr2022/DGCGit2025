@@ -108,7 +108,7 @@
             $('#Type').select2();
 
             $("#Type").change(function () {
-                debugger
+                 
                 var selectedType = $(this).val();
                 localStorage.setItem("selectedType", selectedType); 
                 GetDetailData();
@@ -116,7 +116,7 @@
 
         });
         $(function () {
-            debugger
+             
             if ($('#gateDashboardtable tr').length < 1) {
                 var dashGrid = 0;
                 $('#totalRows').text(dashGrid);
@@ -192,7 +192,7 @@
             }
         });
         function GetDetailData() {
-            debugger
+             
             var data = $('#SParam').serialize();
             //var Type = $('#Type').val();
             console.log("Data:", data);
