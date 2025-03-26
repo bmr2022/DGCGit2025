@@ -245,12 +245,12 @@ namespace eTactWeb.Controllers
                         {
                 Item.AccEntryId ,
                 Item.YearCode ,
-                Item.EntryDate=DateTime.Now.ToString("dd/MM/yy") ,
+                Item.EntryDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.DocEntryId ,
                 Item.VoucherDocNo ?? string.Empty,
                 Item.BillVouchNo ?? string.Empty,
-                Item.VoucherDocDate=DateTime.Now.ToString("dd/MM/yy") ,
-                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MM/yy") ,
+                Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
                 Item.SeqNo ,
@@ -263,8 +263,8 @@ namespace eTactWeb.Controllers
                 Item.CrAmt ,
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
-                Item.ChequeDate = DateTime.Now.ToString("dd/MM/yy") ,
-                Item.BankRECO =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.ChequeDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.BankRECO =DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,
@@ -277,14 +277,14 @@ namespace eTactWeb.Controllers
                 Item.AgainstVoucherNo ?? string.Empty,
                 Item.AgainstBillno ?? string.Empty,
                 Item.PONo ?? string.Empty,
-                Item.PoDate =DateTime.Now.ToString("dd/MM/yy"),
+                Item.PoDate =DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.POYear ,
                 Item.SONo ,
                 Item.CustOrderNo ?? string.Empty,
-                Item.SoDate  ,
+                Item.SoDate  =DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.SOYear ,
                 Item.ApprovedBy,
-                Item.ApprovedDate = DateTime.Now.ToString("dd/MM/yy"),
+                Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.Approved ,
                 Item.AccountNarration ?? string.Empty,
                 Item.CurrencyId ,
@@ -297,14 +297,14 @@ namespace eTactWeb.Controllers
                 Item.EmpCode ,
                 Item.DeptCode,
                 Item.MRNO ?? string.Empty,
-                Item.MRNDate =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.MRNDate =DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.MRNYearCode ,
                 Item.CostCenterId ,
                 Item.PaymentMode ?? string.Empty,
                 Item.EntryTypebankcashLedger ?? string.Empty,
                 Item.TDSApplicable ?? string.Empty,
                 Item.TDSChallanNo ?? string.Empty,
-                Item.TDSChallanDate = DateTime.Now.ToString("dd/MM/yy") ,
+                Item.TDSChallanDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.PreparedByEmpId ,
                 Item.CGSTAccountCode ,
                 Item.CGSTPer ,
@@ -320,9 +320,9 @@ namespace eTactWeb.Controllers
                 Item.BalanceSheetClosed ?? string.Empty,
                 Item.ProjectNo ,
                 Item.ProjectYearcode ,
-                Item.ProjectDate = DateTime.Now.ToString("dd/MM/yy"),
+                Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.ActualEntryby ,
-                Item.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy"),
+                Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.UpdatedBy ,
                 Item.UpdatedOn ,
                 Item.EntryByMachine ?? string.Empty,
@@ -394,7 +394,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<JsonResult> FillSONO(string accountcode, string VoucherDate)
         {
             var JSON = await _IBankReceipt.FillSONO(accountcode, VoucherDate);
@@ -611,7 +610,7 @@ namespace eTactWeb.Controllers
                 {
                     if (item != null)
                     {
-                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
+                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
                         if (existingItem != null)
                         {
                             ProductionEntryDetail.Remove(existingItem);
