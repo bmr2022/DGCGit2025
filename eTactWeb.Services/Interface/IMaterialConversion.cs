@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eTactWeb.DOM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,12 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetAltPartCode(int MainItemcode);
         Task<ResponseResult> GetAltItemName(int MainItemcode);
         Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno, string FinStartDate);
+
+        Task<ResponseResult> SaveMaterialConversion(MaterialConversionModel model, DataTable GIGrid);
+
+        Task<ResponseResult> GetDashboardData(MaterialConversionModel model);
+        Task<MaterialConversionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
+
+
     }
 }

@@ -1,0 +1,231 @@
+﻿@model eTactWeb.DOM.Models.MaterialConversionModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+    <thead class="bg-gradient card-headerBG text-light">
+        <tr>
+            <th>Sr#</th>
+            <th>Action</th>
+            <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry ID
+            </th>
+
+            <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Slip No
+            </th>
+
+            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Slip Date
+            </th>
+
+            <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Store Workcenter
+            </th>
+
+            <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Orig Part Code
+            </th>
+
+            <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Orig Item Name
+            </th>
+
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Original Qty
+            </th>
+
+            <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Unit
+            </th>
+
+            <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Orig Store Name
+            </th>
+
+            <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Orig Workcenter
+            </th>
+
+            <th data-columnno="11" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Alt Part Code
+            </th>
+
+            <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Alt Item Name
+            </th>
+
+            <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Alt Original Qty
+            </th>
+
+            <th data-columnno="14" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Alt Unit
+            </th>
+
+            <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Alt Store Name
+            </th>
+
+            <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Alt Workcenter
+            </th>
+
+            <th data-columnno="17" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Batch No
+            </th>
+
+            <th data-columnno="18" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Unique Batch No
+            </th>
+
+            <th data-columnno="19" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Batch Stock
+            </th>
+
+            <th data-columnno="20" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Total Stock
+            </th>
+
+            <th data-columnno="21" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Alt Stock
+            </th>
+
+            <th data-columnno="22" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Orig Item Rate
+            </th>
+
+            <th data-columnno="23" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Remark
+            </th>
+
+            <th data-columnno="24" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Employee
+            </th>
+
+            <th data-columnno="25" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry Date
+            </th>
+
+            <th data-columnno="26" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By Employee
+            </th>
+
+         
+            <th data-columnno="28" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By Machine
+            </th>
+
+            <th data-columnno="29" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> MatConv Year Code
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="DashboardGrid">
+        @{
+            var @Cntr = 0;
+            if (Model.MaterialConversionGrid == null || Model.MaterialConversionGrid.Count == 0)
+            {
+                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                foreach (var item in Model.MaterialConversionGrid)
+                {
+                    Cntr = Cntr + 1;
+                    <tr onclick="selection(this)">
+                        <th>@Cntr</th>
+                        <td style="text-align:center;white-space: nowrap;">
+                            <div id="container">
+                                <div id="printData-@Cntr">
+                                    <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.OpeningYearCode">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="viewCursorDiv-@Cntr">
+                                    <a class="table-link link-success" asp-action="InterStoreTransfer" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.OpeningYearCode" onclick="BackButtonData(event,'@item.EntryId','@item.OpeningYearCode');">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="editCursorDiv-@Cntr">
+
+                                    <a class="table-link link-primary" asp-action="MaterialConversion" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.OpeningYearCode">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="deleteCursorDiv-@Cntr">
+                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.OpeningYearCode" asp-route-EntryDate="@item.EntryDate">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                }
+                               
+                            </div>
+                        </td>
+
+                        <td>@item.EntryId</td>
+                        <td>@item.SlipNo</td>
+                        <td>@item.SlipDate</td>
+                        <td>@item.IssueToStoreWC</td>
+                        <td>@item.OriginalPartCode</td>
+                        <td>@item.OriginalItemName</td>
+                        <td>@item.OriginalQty</td>
+                        <td>@item.Unit</td>
+                        <td>@item.StoreName</td>
+                        <td>@item.WorkCenterName</td>
+                        <td>@item.AltPartCode</td>
+                        <td>@item.AltItemName</td>
+                        <td>@item.AltOriginalQty</td>
+                        <td>@item.AltUnit</td>
+                        <td>@item.AltStoreName</td>
+                        <td>@item.AltWorkCenterName</td>
+                        <td>@item.BatchNo</td>
+                        <td>@item.UniqueBatchNo</td>
+                        <td>@item.BatchStock</td>
+                        <td>@item.TotalStock</td>
+                        <td>@item.AltStock</td>
+                        <td>@item.OrigItemRate</td>
+                        <td>@item.Remark</td>
+                        <td>@item.ApprovedByEmpName</td>
+                        <td>@item.ActualEntryDate</td>
+                        <td>@item.UpdatedByEmpId</td>
+                        <td>@item.EntryByMachine</td>
+                        <td>@item.OpeningYearCode</td>
+
+
+
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+</style>

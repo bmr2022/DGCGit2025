@@ -51,9 +51,10 @@ namespace eTactWeb.DOM.Models
         public string MatConvSlipDate { get; set; }
         public string StoreWorkcenter { get; set; }
         public string Remarks { get; set; }
-        public string ApprovedBy { get; set; }
+        public int ApprovedBy { get; set; }
+        public string ApprovedByEmpName { get; set; }
         public string Uid { get; set; }
-        public string CC { get; set; }
+        public string cc { get; set; }
         public int ActualEntryByEmpid { get; set; }
         public string ActualEntryDate { get; set; }
         public int? UpdatedByEmpId { get; set; }
@@ -86,6 +87,13 @@ namespace eTactWeb.DOM.Models
         public string ProdSchDatetime { get; set; }
         public decimal OrigItemRate { get; set; }
         public IList<MaterialConversionModel> MaterialConversionGrid { get; set; }
+
+        //DashBoard
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string Searchbox { get; set; }
+        public string ReportType { get; set; }
+
        
     }
 }
