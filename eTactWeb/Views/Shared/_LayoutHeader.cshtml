@@ -73,6 +73,18 @@
                                 </ul>
                             </li>
                             <li>
+                                <a class="dropdown-item" href="#">Cancel PO &raquo; </a>
+                                <ul class="submenu dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-action="POCancel" asp-controller="POCancel" asp-route-ID="0" id="POCancel">
+                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>PO Cancel Form
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="POCancel" />
+
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="#">Purchase Sch & Amendment Approval &raquo; </a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
@@ -93,6 +105,18 @@
                                             <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="So Approval" />
+
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Cancel SO &raquo; </a>
+                                <ul class="submenu dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item SOCancel" asp-action="SOCancel" asp-controller="SOCancel" asp-route-ID="0">
+                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Cancel SO 
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="Cancel SO" />
 
                                     </li>
                                 </ul>
@@ -804,7 +828,7 @@
                                 <a class="dropdown-item" href="#">Operation Master &raquo;</a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="OperationMaster" asp-route-ID="0" asp-controller="OperationMaster" id="OperationMaster">
+                                        <a class="dropdown-item" asp-action="Form" asp-route-ID="0" asp-controller="ProcessMaster" id="OperationMaster">
                                             <i class="fa-regular fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> New Operation
                                         </a>
 
@@ -1109,8 +1133,16 @@
                                 </ul>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">Pending MRP for PO &raquo;</a>
+                                <a class="dropdown-item" href="#">Auto Generate Schedule &raquo;</a>
                                 <ul class="submenu dropdown-menu">
+                                <li>
+
+                                    <a class="dropdown-item" asp-action="AutoGenerateSchedule" asp-controller="AutoGenerateSchedule" id="PendingMRP">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        Aut Generate Schedule
+                                    </a>
+                                </li>
                                 </ul>
                             </li>
                             <li>
@@ -1404,14 +1436,14 @@
                                 <ul class="submenu dropdown-menu">
                                     <li>
 
-                                        <a class="dropdown-item" asp-action="JobWorkIssue" asp-controller="JobWorkIssue" id="MaterialConversion">
+                                    <a class="dropdown-item" asp-action="MaterialConversion" asp-controller="MaterialConversion" id="MaterialConversion">
                                             <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                                style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
-                                            New Conversion
+                                        Material Conversion
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item MaterialConversion" asp-action="MRNDashboard" asp-controller="MaterialReceipt">
+                                    <a class="dropdown-item MaterialConversion" asp-action="MaterialConversionDashboard" asp-controller="MaterialConversion">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Material Conversion" />

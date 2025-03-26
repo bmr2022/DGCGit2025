@@ -41,6 +41,9 @@ namespace eTactWeb.DOM.Models
             new() { Value = "Y", Text = "Yes" },
             new() { Value = "N", Text = "No" },
         };
+        public int TotalRecords {  get; set; }
+        public int PageNumber {  get; set; }
+        public int PageSize { get; set; }
         public string? EntryByMachineName { get;set; }
         public string? Act { get; set; }
         public string? VoltageVlue { get; set; }

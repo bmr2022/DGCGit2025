@@ -41,6 +41,30 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type, string InvoiceNo, int AccountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@ENTRYID", EntryId));
+                SqlParams.Add(new SqlParameter("@YEARCODE", YearCode));
+                SqlParams.Add(new SqlParameter("@BillTYpe", Type));
+                SqlParams.Add(new SqlParameter("@INVOICENO", InvoiceNo));
+                SqlParams.Add(new SqlParameter("@accountcode", AccountCode));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPHSNBILLREPORT", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -376,7 +400,7 @@ namespace eTactWeb.Data.DAL
                 return DateTime.Parse(dateString);
             }
         }
-        public async Task<ResponseResult> FillSONO(string billDate, string accountCode)
+        public async Task<ResponseResult> FillSONO(string billDate, string accountCode, string billType)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -385,6 +409,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "FILLSONO"));
                 SqlParams.Add(new SqlParameter("@billdate", ParseDate(billDate)));
                 SqlParams.Add(new SqlParameter("@Accountcode", accountCode));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", billType));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -756,9 +781,9 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        public async Task<List<CustomerJobWorkIssueAdjustDetail>> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
+        public async Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
         {
-            var model = new List<CustomerJobWorkIssueAdjustDetail>();
+            var model = new AdjChallanDetail();
             try
             {
                 var SqlParams = new List<dynamic>();
@@ -771,11 +796,12 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DTTItemGrid", adjustedData));
 
                 //var ResponseResult = await _IDataLogic.ExecuteDataSet("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
-                var ResponseResult = await _IDataLogic.ExecuteDataTable("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
+                var ResponseResult = await _IDataLogic.ExecuteDataSet("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
 
                 if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
+                //if (ResponseResult != null && ResponseResult.Tables.Count > 0 && ResponseResult.Tables.Cast<DataTable>().Any(table => table.Rows.Count > 0))
                 {
-                    PrepareAdjustChallanView(ResponseResult.Result);
+                    model = PrepareAdjustChallanView(ResponseResult.Result);
                 }
             }
             catch (Exception ex)
@@ -788,65 +814,6 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        //public List<CustomerJobWorkIssueAdjustDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode,int itemCode)
-        //{
-        //    List<CustomerJobWorkIssueAdjustDetail> result = new List<CustomerJobWorkIssueAdjustDetail>();
-
-        //    using (SqlConnection conn = new SqlConnection(DBConnectionString))
-        //    {
-        //        conn.Open();
-        //        EntryDate = Common.CommonFunc.ParseFormattedDate(EntryDate);
-        //        ChallanDate = Common.CommonFunc.ParseFormattedDate(ChallanDate);
-
-        //            using (SqlCommand cmd = new SqlCommand("SpCustomerJobworkAdjustedChallanInGrid", conn))
-        //            {
-        //                cmd.CommandType = CommandType.StoredProcedure;
-
-        //                //cmd.Parameters.AddWithValue("@Flag", "JOBWORKISSUESUMMARY");
-        //                cmd.Parameters.AddWithValue("@yearCode", YearCode);
-        //                cmd.Parameters.AddWithValue("@FinYearFromDate", EntryDate);
-        //                cmd.Parameters.AddWithValue("@billchallandate", ChallanDate);
-        //                cmd.Parameters.AddWithValue("@AccountCode", AccountCode);
-        //                cmd.Parameters.AddWithValue("@DTTItemGrid", adjustedData);
-        //                //cmd.Parameters.AddWithValue("@BOMINd", item.BOMInd);
-        //                cmd.Parameters.AddWithValue("@RMItemCode", itemCode);
-        //                //cmd.Parameters.AddWithValue("@RMPartcode", item.PartCode);
-        //                //cmd.Parameters.AddWithValue("@RMItemNAme", item.ItemName);
-
-        //                try
-        //                {
-        //                    using (SqlDataReader reader = cmd.ExecuteReader())
-        //                    {
-        //                        while (reader.Read())
-        //                        {
-        //                            result.Add(new CustomerJobWorkIssueAdjustDetail
-        //                            {
-        //                                //CustomerName = reader["CustomerName"].ToString(),
-        //                                //PartCode = reader["RecPartcode"].ToString(),
-        //                                //ItemName = reader["RecItemName"].ToString(),
-        //                                //BOMInd = reader["BOMIND"].ToString(),
-        //                                //ChallanNo = reader["RecJWChallan"].ToString(),
-        //                                //YearCode = Convert.ToInt32(reader["RecChallanYearCode"]),
-        //                                //ChallanDate = DateTime.Parse(reader["RecChallandate"].ToString()).ToString("dd/MM/yyyy"),
-        //                                //RecQty = Convert.ToInt32(reader["RecQty"]),
-        //                                //IssQty = Convert.ToInt32(reader["IssQty"]),
-        //                                //AccPendQty = Convert.ToInt32(reader["ActualPendQty"]),
-        //                                //PendQty = Convert.ToInt32(reader["PendQty"]),
-        //                            });
-        //                        }
-        //                    }
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    Console.WriteLine($"Error: {ex.Message}");
-        //                    throw; // Rethrow exception to see the detailed error
-        //                }
-        //            }
-
-        //    }
-
-        //    return result;
-        //}
         internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName)
         {
             var ResponseResult = new ResponseResult();
@@ -877,6 +844,7 @@ namespace eTactWeb.Data.DAL
             var ItemGrid = new List<SaleBillDetail>();
             var SaleBillGrid = new List<SaleBillDetail>();
             var TaxGrid = new List<TaxModel>();
+            var customerJWAdj = new List<CustomerJobWorkChallanAdj>();
             var DRCRGrid = new List<DbCrModel>();
             var adjustGrid = new List<AdjustmentModel>();
             DS.Tables[0].TableName = "saleBillModel";
@@ -884,6 +852,7 @@ namespace eTactWeb.Data.DAL
             DS.Tables[2].TableName = "saleBillTaxDetail";
             DS.Tables[3].TableName = "DRCRDetail";
             DS.Tables[4].TableName = "AdjustmentDetail";
+            DS.Tables[5].TableName = "CustomerAdjDetail";
             int cnt = 0;
 
             model.SaleBillEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleBillEntryId"]);
@@ -1203,6 +1172,56 @@ namespace eTactWeb.Data.DAL
                     cnt1++;
                 }
 
+                if (DS.Tables.Count != 0 && DS.Tables[5].Rows.Count > 0)
+                {
+                    foreach (DataRow row in DS.Tables[5].Rows)
+                    {
+                        customerJWAdj.Add(new CustomerJobWorkChallanAdj
+                        {
+                            EntryDate = row["EntryDate"]?.ToString(),
+                            CustJwRecEntryId = row["CustJwRecEntryId"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecEntryId"]) : 0,
+                            CustJwRecYearCode = row["CustJwRecYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecYearCode"]) : 0,
+                            CustJwRecChallanNo = row["CustJwRecChallanNo"]?.ToString(),
+                            CustJwRecEntryDate = row["CustJwRecEntryDate"]?.ToString(),
+                            RecItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
+                            CustJwIssEntryid = row["CustJwIssEntryid"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssEntryid"]) : 0,
+                            CustJwIssYearCode = row["CustJwIssYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssYearCode"]) : 0,
+                            CustJwIssChallanNo = row["CustJwIssChallanNo"]?.ToString(),
+                            CustJwIssChallanDate = row["CustJwIssChallanDate"]?.ToString(),
+                            AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
+                            FinishItemCode = row["FinishItemCode"] != DBNull.Value ? Convert.ToInt32(row["FinishItemCode"]) : 0,
+                            AdjQty = row["AdjQty"] != DBNull.Value ? Convert.ToSingle(row["AdjQty"]) : 0,
+                            CC = row["CC"]?.ToString(),
+                            UID = row["UID"] != DBNull.Value ? Convert.ToInt32(row["UID"]) : 0,
+                            AdjFormType = row["AdjFormType"]?.ToString(),
+                            TillDate = row["TillDate"]?.ToString(),
+                            TotIssQty = row["TotIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotIssQty"]) : 0,
+                            PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0,
+                            BOMQty = row["BOMQty"] != DBNull.Value ? Convert.ToSingle(row["BOMQty"]) : 0,
+                            BomRevNo = row["BomRevNo"] != DBNull.Value ?  Convert.ToInt32(row["BomRevNo"]): 0,
+                            BOMRevDate = row["BOMRevDate"]?.ToString(),
+                            ProcessID = row["ProcessID"] != DBNull.Value ? Convert.ToInt32(row["ProcessID"]) : 0,
+                            BOMInd = row["BOMInd"]?.ToString(),
+                            IssQty = row["IssQty"] != DBNull.Value ? Convert.ToSingle(row["IssQty"]) : 0,
+                            TotadjQty = row["TotadjQty"] != DBNull.Value ? Convert.ToSingle(row["TotadjQty"]) : 0,
+                            TotalIssQty = row["TotalIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotalIssQty"]) : 0,
+                            TotalRecQty = row["TotalRecQty"] != DBNull.Value ? Convert.ToSingle(row["TotalRecQty"]) : 0,
+                            RunnerItemCode = row["RunnerItemCode"] != DBNull.Value ?  Convert.ToInt32(row["RunnerItemCode"]): 0,
+                            ScrapItemCode = row["ScrapItemCode"] != DBNull.Value ? Convert.ToInt32(row["ScrapItemCode"]) : 0,
+                            IdealScrapQty = row["IdealScrapQty"] != DBNull.Value ?  Convert.ToSingle(row["IdealScrapQty"]) : 0,
+                            IssuedScrapQty = row["IssuedScrapQty"] != DBNull.Value ? Convert.ToSingle(row["IssuedScrapQty"]) : 0,
+                            PreRecChallanNo = row["PreRecChallanNo"]?.ToString(),
+                            ScrapqtyagainstRcvqty = row["ScrapqtyagainstRcvqty"] != DBNull.Value ?  Convert.ToSingle(row["ScrapqtyagainstRcvqty"]) : 0,
+                            Recbatchno = row["Recbatchno"]?.ToString(),
+                            Recuniquebatchno = row["Recuniquebatchno"]?.ToString(),
+                            Issbatchno = row["Issbatchno"]?.ToString(),
+                            Issuniquebatchno = row["Issuniquebatchno"]?.ToString(),
+                            ScrapAdjusted = row["ScrapAdjusted"]?.ToString()
+                        });
+                    }
+                    model.CustomerJobWorkChallanAdj = customerJWAdj;
+                }
+
                 if (model.adjustmentModel == null)
                 {
                     model.adjustmentModel = new AdjustmentModel();
@@ -1214,41 +1233,145 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-        private static List<CustomerJobWorkIssueAdjustDetail> PrepareAdjustChallanView(DataSet DS)
+        private static AdjChallanDetail PrepareAdjustChallanView(DataSet DS)
         {
+            var model = new AdjChallanDetail();
+
             var ItemGrid = new List<CustomerJobWorkIssueAdjustDetail>();
+            var bomItemGrid = new List<BomCustomerJWIssChallanADJ>();
+            var bomInputItemGrid = new List<CustomerInputJobWorkIssueAdjustDetail>();
+            var custJobWorkChallanAdjGrid = new List<CustomerJobWorkChallanAdj>();
+            //var custJobWorkChallanAdjmodel = new CustomerJobWorkChallanAdj();
             DS.Tables[0].TableName = "CustomerJobWorkAdjustDetail";
             int cnt = 0;
 
-            if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+            if (DS.Tables.Count != 0 && DS.Tables[0].Rows.Count > 0)
             {
-                foreach (DataRow row in DS.Tables[1].Rows)
+                foreach (DataRow row in DS.Tables[0].Rows)
                 {
                     ItemGrid.AddRange(new List<CustomerJobWorkIssueAdjustDetail>
                         {
                             new CustomerJobWorkIssueAdjustDetail
                             {
-                                CustomerName = row["CustomerName"].ToString(),
-                                PartCode = row["RecPartcode"].ToString(),
-                                ItemName = row["RecItemName"].ToString(),
-                                BOMIND = row["BOMIND"].ToString(),
-                                ChallanNo = row["RecJWChallan"].ToString(),
-                                YearCode = Convert.ToInt32(row["RecChallanYearCode"]),
-                                ChallanDate = row["RecChallandate"].ToString(),
-                                RecQty = row["RecQty"] != DBNull.Value ? Convert.ToSingle(row["RecQty"]) : 0,
-                                IssQty = row["IssQty"] != null ? Convert.ToSingle(row["IssQty"]) : 0,
-                                AccPendQty = row["ActualPendQty"] != DBNull.Value ? Convert.ToSingle(row["ActualPendQty"]) : 0,
-                                PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0
+                                 EntryIdRecJW  = Convert.ToInt32(row["EntryIdRecJw"]),
+                                 RecJWChallanNo  = row["RecJWChallanNo"].ToString(),
+                                 RecYearCode  = Convert.ToInt32(row["RecYearCode"]),
+                                 ChallanDate  = row["ChallanDate"].ToString(),
+                                 RecPartCode  = row["RecPartCode"].ToString(),
+                                 RecItemName  = row["RecItemName"].ToString(),
+                                 RecItemCode  = Convert.ToInt32(row["RecItemCode"]),
+                                 IssuedItemCode  = Convert.ToInt32(row["IssuedItemCode"]),
+                                 BomNo  = row["BomNo"].ToString(),
+                                 BomDate  = row["BOMDate"].ToString(),
+                                 BomStatus  = row["BomStatus"].ToString(),
+                                 PendQty  = Convert.ToSingle(row["PendQty"]),
+                                 IssuePartCode  = row["IssuePartcode"].ToString(),
+                                 IssueItemName = row["IssueItemName"].ToString(),
+                                 BomQty = Convert.ToSingle(row["bomqty"]),
+                                 Through = row["through"].ToString(),
+                                 QtyToBeRec = Convert.ToSingle(row["QtyToBeRec"]),
+                                 ActualAdjQty = Convert.ToSingle(row["ActualAdjQty"]),
+                                 Batchno = row["batchno"].ToString(),
+                                 UniqueBatchno = row["uniquebatchno"].ToString(),
+                                 SeqNo = Convert.ToInt32(row["seqno"]),
+                                 IssueQty = Convert.ToSingle(row["IssueQty"]),
+                                 Rate = Convert.ToSingle(row["Rate"]),
+                                 OriginalRecQty = Convert.ToSingle(row["OriginalRecQty"]),
+                                 IdealScrap = row["IdealScrap"].ToString(),
+                                 IssuedScrap = row["IssuedScrap"].ToString(),
                             }
                         });
-                }
 
+                    custJobWorkChallanAdjGrid.AddRange(new List<CustomerJobWorkChallanAdj>
+                    {
+                        new CustomerJobWorkChallanAdj()
+                        {
+                             CustJwRecEntryId = row["EntryIdRecJw"] != DBNull.Value ? Convert.ToInt32(row["EntryIdRecJw"]) : 0,
+                            CustJwRecYearCode = row["RecYearCode"] != DBNull.Value ? Convert.ToInt32(row["RecYearCode"]) : 0,
+                            CustJwRecChallanNo = row["RecJWChallanNo"].ToString(),
+                             EntryDate = string.Empty,
+                             CustJwRecEntryDate = row["ChallanDate"].ToString(),
+                            RecItemCode  = row["RecItemCode"] != DBNull.Value ?  Convert.ToInt32(row["RecItemCode"]) : 0,
+
+                             CustJwIssEntryid = 0,
+                             CustJwIssYearCode = 0,
+                             CustJwIssChallanNo = string.Empty,
+                             CustJwIssChallanDate = string.Empty,
+                             AccountCode = 0,
+                            // FinishItemCode = row["RecJWChallanNo"].ToString(),
+
+                            AdjQty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToSingle(row["ActualAdjQty"]) : 0,
+                            CC = string.Empty,
+                            UID = 0,
+                            AdjFormType = string.Empty,
+
+                            TillDate = row["ChallanDate"]?.ToString(),
+                            TotIssQty = row["IssueQty"] != DBNull.Value ? Convert.ToSingle(row["IssueQty"]) : 0,
+                            PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0 ,
+                            BOMQty = row["BomQty"] != DBNull.Value ?  Convert.ToSingle(row["BomQty"]) :0,
+                            BomRevNo = row["BomNo"] != DBNull.Value ? Convert.ToInt32(row["BomNo"]) : 0,
+                            BOMRevDate = row["BomDate"]?.ToString(),
+                            ProcessID = 0,
+                            //BOMInd = row["BomStatus"].ToString(), 
+                            IssQty = row["IssueQty"] != DBNull.Value ?  Convert.ToSingle(row["IssueQty"]) : 0,
+                            TotadjQty = row["ActualAdjQty"] != DBNull.Value ?  Convert.ToSingle(row["ActualAdjQty"]) : 0,
+                            TotalIssQty = row["OriginalRecQty"] != DBNull.Value ? Convert.ToSingle(row["OriginalRecQty"]) : 0,
+                            TotalRecQty = row["QtyToBeRec"] != DBNull.Value ? Convert.ToSingle(row["QtyToBeRec"]) : 0,
+
+                            RunnerItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
+                            ScrapItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
+                            IdealScrapQty = row["IdealScrap"] != DBNull.Value ? Convert.ToSingle(row["IdealScrap"]) : 0,
+                            IssuedScrapQty = row["IssuedScrap"] != DBNull.Value ?  Convert.ToSingle(row["IssuedScrap"]) : 0,
+                            PreRecChallanNo = row["RecJWChallanNo"].ToString(),
+                            ScrapqtyagainstRcvqty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToSingle(row["ActualAdjQty"]) : 0,
+
+                            Recbatchno = row["Batchno"].ToString(),
+                            Recuniquebatchno = row["UniqueBatchno"].ToString(),
+                            Issbatchno = row["Batchno"].ToString(),
+                            Issuniquebatchno = row["UniqueBatchno"].ToString(),
+                            ScrapAdjusted = row["BomStatus"].ToString()
+                        }
+                    });
+                }
+                model.CustomerJobWorkIssueAdjustDetails = ItemGrid;
+                model.CustomerJobWorkChallanAdj = custJobWorkChallanAdjGrid;
             }
 
-            return ItemGrid;
+            if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+            {
+                foreach (DataRow row in DS.Tables[1].Rows)
+                {
+                    bomItemGrid.AddRange(new List<BomCustomerJWIssChallanADJ>
+                        {
+                            new BomCustomerJWIssChallanADJ
+                            {
+                                 FGPartCode = row["FGPartCode"].ToString(),
+                                  FGItemName = row["FGitemName"].ToString(),
+                                  FinishedItemCode = Convert.ToInt32(row["FinishItemCode"]),
+                                  RMItemName = row["RMItemName"].ToString(),
+                                  RMPartCode = row["RmPartCode"].ToString(),
+                                  ItemCode = Convert.ToInt32(row["item_code"]),
+                                  Qty = Convert.ToSingle(row["Qty"]),
+                                  ActualPendQty = Convert.ToSingle(row["ActualPendQty"]),
+                                  PendToAdjust = Convert.ToSingle(row["PendToadjust"]),
+                                  BOMIND = row["BOMIND"].ToString(),
+                                  ProdUnprod = row["ProdUnprod"].ToString(),
+                                  FullyAdjusted = row["FullyAdjusted"].ToString()
+                            }
+                        });
+
+                    var custJobWorkModel = model.CustomerJobWorkChallanAdj.FirstOrDefault(x => bomItemGrid.Select(i => i.ItemCode).Contains(x.RecItemCode));
+                    if (custJobWorkModel is not null)
+                    {
+                        custJobWorkModel.BOMInd = row["BOMIND"].ToString();
+                        custJobWorkModel.FinishItemCode = Convert.ToInt32(row["FinishItemCode"]);
+                    }
+                }
+                model.BomCustomerJWIssChallanAdj = bomItemGrid;
+                model.CustomerJobWorkChallanAdj = custJobWorkChallanAdjGrid;
+            }
+
+            return model;
         }
-
-
-
     }
 }

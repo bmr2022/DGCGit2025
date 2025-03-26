@@ -3,7 +3,6 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
-
 namespace eTactWeb.Data.BLL;
 
 public class SaleOrderBLL : ISaleOrder
@@ -17,8 +16,12 @@ public class SaleOrderBLL : ISaleOrder
         _SaleOrderDAL = new SaleOrderDAL(configuration, dataLogicDAL);
         _DataLogicDAL = dataLogicDAL;
     }
+	public async Task<string> GetSOItem(int AccountCode, int SONO, int Year, int ItemCode)
+	{
+		return await _SaleOrderDAL.GetSOItem(AccountCode, SONO, Year, ItemCode);
+	}
 
-    public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag)
+	public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag)
     {
         return await _SaleOrderDAL.DeleteByID(ID, YearCode, Flag);
     }
@@ -34,6 +37,10 @@ public class SaleOrderBLL : ISaleOrder
     public async Task<ResponseResult> GetFormRights(int userID)
     {
         return await _SaleOrderDAL.GetFormRights(userID);
+    }
+    public async Task<ResponseResult> GetFormRightsAmm(int userID)
+    {
+        return await _SaleOrderDAL.GetFormRightsAmm(userID);
     }
     public async Task<ResponseResult> NewEntryId(int YearCode)
     {
@@ -97,7 +104,12 @@ public class SaleOrderBLL : ISaleOrder
         return await _SaleOrderDAL.GetItemPartCode(Code, Flag);
     }
 
-    public async Task<ResponseResult> GetPartyList(string Check)
+	public async Task<ResponseResult> GetExcelData(string Code)
+	{
+		return await _SaleOrderDAL.GetExcelData(Code);
+	}
+
+	public async Task<ResponseResult> GetPartyList(string Check)
     {
         return await _SaleOrderDAL.GetPartyList(Check);
     }

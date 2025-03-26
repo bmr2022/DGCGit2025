@@ -6,11 +6,14 @@ namespace eTactWeb.Services.Interface
     public interface ISaleOrder
     {
         Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag);
+		
 
-        Task<ResponseResult> GetAddress(string Code);
+		Task<ResponseResult> GetAddress(string Code);
         Task<ResponseResult> GetFillCurrency(string CTRL);
+		Task<string> GetSOItem(int AccountCode, int SONO, int Year, int ItemCode);
 
-        Task<SaleOrderDashboard> GetAmmDashboardData();
+
+		Task<SaleOrderDashboard> GetAmmDashboardData();
         Task<ResponseResult> GetTotalStockList(int store, int Itemcode);
         Task<ResponseResult> GetAllowMultiBuyerProp();
         Task<ResponseResult> GetCurrency(string Currency);
@@ -25,12 +28,15 @@ namespace eTactWeb.Services.Interface
 
         Task<SaleOrderDashboard> GetDashboardData(string EndDate);
         Task<ResponseResult> GetFormRights(int userID);
+        Task<ResponseResult> GetFormRightsAmm(int userID);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> NewAmmEntryId(int YearCode);
 
         Task<ResponseResult> GetItemPartCode(string Code, string Flag);
 
-        Task<ResponseResult> GetPartyList(string Check);
+		Task<ResponseResult> GetExcelData(string Code);
+
+		Task<ResponseResult> GetPartyList(string Check);
         Task<ResponseResult> GetItemCode(string PartCode);
 
         Task<ResponseResult> GetQuotData(string Code, string Flag);

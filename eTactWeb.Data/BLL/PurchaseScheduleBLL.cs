@@ -16,6 +16,14 @@ public class PurchaseScheduleBLL : IPurchaseSchedule
     private PurchaseScheduleDAL? _PurchaseScheduleDAL { get; }
     //private PurchaseScheduleDAL? _PurchaseScheduleDAL { get; }
 
+    public async Task<ResponseResult> FillMRPNo()
+    {
+        return await _PurchaseScheduleDAL.FillMRPNo();
+    }
+    public async Task<ResponseResult> FillMRPDetail(string MRPNo)
+    {
+        return await _PurchaseScheduleDAL.FillMRPDetail(MRPNo);
+    }
     public async Task<DataSet> BindAllDropDown()
     {
         return await _PurchaseScheduleDAL.BindAllDropDown();

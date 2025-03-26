@@ -3,6 +3,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.SqlServer.Server;
+using Newtonsoft.Json;
 using System.Globalization;
 using static eTactWeb.DOM.Models.Common;
 
@@ -25,7 +26,32 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
         }
-        public async Task<ResponseResult> GetFormRights(int userID)
+
+		internal async Task<string> GetSOItem(object AccountCode, object SONO, object Year, int ItemCode)
+		{
+			var JsonString = string.Empty;
+			try
+			{
+				var SqlParams = new List<dynamic>();
+
+				SqlParams.Add(new SqlParameter("@Flag", "SOITEM"));
+				SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+				SqlParams.Add(new SqlParameter("@SONO", SONO));
+				SqlParams.Add(new SqlParameter("@YearCode", Year));
+				SqlParams.Add(new SqlParameter("@ID", ItemCode));
+				var ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleSchedule", SqlParams);
+				JsonString = JsonConvert.SerializeObject(ResponseResult);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return JsonString;
+		}
+		public async Task<ResponseResult> GetFormRights(int userID)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -34,6 +60,27 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
                 SqlParams.Add(new SqlParameter("@EmpId", userID));
                 SqlParams.Add(new SqlParameter("@MainMenu", "Sales Order"));
+                //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetFormRightsAmm(int userID)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+                SqlParams.Add(new SqlParameter("@EmpId", userID));
+                SqlParams.Add(new SqlParameter("@MainMenu", "Sale Order Amendment"));
                 //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
@@ -322,7 +369,56 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetItemCode(string PartCode)
+
+		public async Task<ResponseResult> GetExcelData(string Code)
+		{
+			var oDataTable = new DataTable();
+
+			try
+			{
+				using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+				{
+					using (SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection))
+					{
+						oCmd.CommandType = CommandType.StoredProcedure;
+						oCmd.Parameters.AddWithValue("@Flag", "GetExcelItemDate");
+						oCmd.Parameters.AddWithValue("@PartCode", Code);
+						await myConnection.OpenAsync();
+						using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+						{
+							oDataAdapter.Fill(oDataTable);
+						}
+
+						if (oDataTable.Rows.Count > 0)
+						{
+							_ResponseResult = new ResponseResult()
+							{
+								StatusCode = HttpStatusCode.OK,
+								StatusText = "Success",
+								Result = oDataTable
+							};
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+			finally
+			{
+				if (oDataTable != null)
+				{
+					oDataTable.Dispose();
+				}
+			}
+			return _ResponseResult;
+		}
+
+
+		public async Task<ResponseResult> GetItemCode(string PartCode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -1267,8 +1363,9 @@ namespace eTactWeb.Data.DAL
                                     SeqNo = Convert.ToInt32(row["SeqNo"]),
                                     AltQty = Convert.ToDecimal(row["AltQty"]),
                                     AltUnit = row["AltUnit"].ToString(),
-                                    AmendmentDate = row["AmendmentDate"].ToString(),
-                                    AmendmentNo = row["AmendmentNo"].ToString(),
+                                    
+									AmendmentDate = Convert.ToDateTime(row["AmendmentDate"]).ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture),
+									AmendmentNo = row["AmendmentNo"].ToString(),
                                     AmendmentReason = row["AmendmentReason"].ToString(),
                                     Amount = Convert.ToDecimal(row["Amount"]),
                                     Color = row["Color"].ToString(),
@@ -1293,6 +1390,8 @@ namespace eTactWeb.Data.DAL
                                     TolLimit = Convert.ToDecimal(row["TolLimit"]),
                                     Unit = row["Unit"].ToString(),
                                     UnitRate = row["UnitRate"].ToString(),
+                                    DeliveryDate = Convert.ToDateTime(row["DeliveryDate"]).ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture),
+
                                     DeliveryScheduleList = listObject.Where(x => x.DPartCode == Convert.ToInt32(row["ItemCode"])).ToList(),
                                 });
 
@@ -1512,6 +1611,7 @@ namespace eTactWeb.Data.DAL
                                     TxAmount = Convert.ToDecimal(row["Amount"]),
                                     TxRefundable = row["TaxRefundable"].ToString(),
                                     TxRemark = row["Remarks"].ToString(),
+                                    
                                 });
                             }
                             model.TaxDetailGridd = _TaxList;

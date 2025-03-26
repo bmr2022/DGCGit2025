@@ -414,7 +414,7 @@
             else {
                 GetServerDate();
                 FillLoadTOWorkcenter();
-
+                
                 if ($('#IssueToStoreWC').val() == 'S') {
                     $('#FromStoreId').val($('#hiddenFromStoreId').val());
                     $('#ToStoreId').val($('#hiddenToStoreId').val());
@@ -1054,7 +1054,7 @@
         }
 
         function FillTotalStock() {
-
+            debugger
             var ItemCode = $('#ItemCode').val();
             var Storeid = $('#FromStoreId').val();
             $.ajax({

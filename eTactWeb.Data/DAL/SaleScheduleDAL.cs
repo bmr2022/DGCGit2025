@@ -103,8 +103,30 @@ internal class SaleScheduleDAL
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
             SqlParams.Add(new SqlParameter("@EmpId", userId));
-            SqlParams.Add(new SqlParameter("@MainMenu", "Sale"));
-            SqlParams.Add(new SqlParameter("@SubMenu", "Sale Schedule"));
+            SqlParams.Add(new SqlParameter("@MainMenu", "Sale Schedule"));
+           // SqlParams.Add(new SqlParameter("@SubMenu", "Sale Schedule"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+
+    public async Task<ResponseResult> GetFormRightsAmen(int userId)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+            SqlParams.Add(new SqlParameter("@EmpId", userId));
+            SqlParams.Add(new SqlParameter("@MainMenu", "Sale Schedule Amendment"));
+            // SqlParams.Add(new SqlParameter("@SubMenu", "Sale Schedule"));
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
         }

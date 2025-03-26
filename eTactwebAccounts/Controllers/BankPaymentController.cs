@@ -130,7 +130,7 @@ namespace eTactwebAccounts.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(BankPaymentDashBoard));
+                return RedirectToAction(nameof(BankPayment));
 
             }
             catch (Exception ex)
@@ -381,9 +381,9 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillEntryID(int YearCode)
+        public async Task<JsonResult> FillEntryID(int YearCode,string VoucherDate)
         {
-            var JSON = await _IBankPayment.FillEntryID(YearCode);
+            var JSON = await _IBankPayment.FillEntryID(YearCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -611,18 +611,20 @@ namespace eTactwebAccounts.Controllers
                 {
                     if (item != null)
                     {
-                        bool isDuplicate = ProductionEntryDetail.Any(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
-                        if (!isDuplicate)  // Only add if not duplicate
+                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
+                        if (existingItem != null)
                         {
-                            // Assign sequence number correctly
-                            item.SeqNo = ProductionEntryDetail.Count + 1;
-
-                            // Swap Type values
-                            item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
-
-                            // Add new item to list
-                            ProductionEntryDetail.Add(item);
+                            ProductionEntryDetail.Remove(existingItem);
                         }
+
+                        // Assign sequence number correctly
+                        item.SeqNo = ProductionEntryDetail.Count + 1;
+
+                        // Swap Type values
+                        item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
+
+                        // Add new item to list
+                        ProductionEntryDetail.Add(item);
                     }
                 }
 
@@ -641,9 +643,19 @@ namespace eTactwebAccounts.Controllers
         {
             var MainModel = new BankPaymentModel();
             _MemoryCache.TryGetValue("KeyBankPaymentGrid", out IList<BankPaymentModel> GridDetail);
-            var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
-            string JsonString = JsonConvert.SerializeObject(SAGrid);
+           
+
+            IEnumerable<BankPaymentModel> SSGrid = GridDetail;
+            if (GridDetail != null)
+            {
+                SSGrid = GridDetail.Where(x => x.SeqNo == SrNO);
+            }
+            string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
+
+            //var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
+            //string JsonString = JsonConvert.SerializeObject(SAGrid);
+            //return Json(JsonString);
         }
         public IActionResult DeleteItemRow(int SeqNo, string PopUpData)
         {

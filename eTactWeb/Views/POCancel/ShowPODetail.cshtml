@@ -1,0 +1,278 @@
+﻿@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@{
+    ViewData["Title"] = "PS Approval";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
+    string empName = HttpContextAccessor.HttpContext.Session.GetString("EmpName");
+    string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
+    int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+    string typeOfApproval = HttpContextAccessor.HttpContext.Request.Query["typeOfApproval"];
+    int EntryID = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["ID"]);
+    int YC = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["YC"]);
+    string PONO = HttpContextAccessor.HttpContext.Request.Query["PONo"];
+
+}
+<div class="card-body">
+    <div class="card overflow-auto">
+        <div class="card-body">
+            <form id="SParam">
+                <center><h4>Cancel/UnCancel</h4></center>
+                <div class="row">
+                    <div class="col-xl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <input id="approvePO" type="checkbox" style="margin-left:30px;width:15px !important;height:15px !important;" />
+
+                        @if (@typeOfApproval == "LISTOFUNCANCELEDPO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for Cancel PO</strong></label>
+                        }
+                        else if (typeOfApproval == "LISTOFCANCELEDPO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for UnCancel PO</strong></label>
+
+                        }
+                        else if (typeOfApproval == "LISTOFACTIVEPO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for DeActivate PO</strong></label>
+
+                        }
+                        else if (typeOfApproval == "LISTOFDEACTIVEPO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for Activate PO</strong></label>
+
+                        }
+                    </div>
+                    <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Cancle Date</label>
+                        <input id="cancelDate" style="display: inline-block;" class="form-control" />
+                    </div>
+                    <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Cancel By</label>
+                        <input type="hidden" id="CancleById" value="@EmpID" />
+                        <input type="hidden" id="poYC" value="@YC" />
+                        <input id="cancelBy" style="display: inline-block;" readonly value="@empName" class="form-control" />
+                    </div>
+                    <div class="col-xl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div class="d-flex justify-content-right">
+                            <a class="btn btn-sm btn-outline-info" style="height:30px;width:100px;margin-top:15px !important;" asp-controller="POCancel" asp-action="SaveCancelation" asp-route-EntryId="@EntryID" asp-route-YC="@YC" asp-route-PONO="@PONO" asp-route-type="@typeOfApproval" onclick="checkCondition(event)">
+                                <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>SAVE
+                            </a>
+                        </div>
+                        <div class="d-flex" style="margin-left:-550px;margin-top:10px;">
+                            <label class="color-box" style="background-color: red;"></label><label style="margin-left:5px;margin-top:-5px;">Rate > OldRate</label>
+                            <label class="color-box" style="background-color: blue;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Rate < OldRate</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="card-body">
+    <div class="card overflow-auto">
+        <div class="card-body" id="divDashboardGrid">
+            <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0">
+                <thead class="bg-gradient card-headerBG text-light">
+                    <tr>
+
+                        <th>Sr#</th>
+                        <th>Po No</th>
+                        <th>PoDate</th>
+                        <th>WEF Date</th>
+                        <th>Order Type</th>
+                        <th>Rate</th>
+                        <th>Old rate</th>
+                        <th>Po For</th>
+                        <th>Party Name</th>
+                        <th>Item Name</th>
+                        <th>Part Code</th>
+                        <th>HSN No</th>
+                        <th>Po Qty</th>
+                        <th>Unit</th>
+                        <th>Alt Po Qty</th>
+                        <th>Alt Unit</th>
+                        <th>Tol Limit Per</th>
+                        <th>Tol Limit Qty</th>
+                        <th>UnitRate</th>
+                        <th>Rate In other curr</th>
+                        <th>DiscPer</th>
+                        <th>Disc Rs</th>
+                        <th>Amount</th>
+                        <th>Addtional Rate</th>
+                        <th>PoTypeServItem</th>
+                        <th>Po Type</th>
+                        <th>Remark</th>
+                        <th>Description</th>
+                        <th>Pend Qty</th>
+                        <th>Pend Alt Qty</th>
+                        <th>Process</th>
+                        <th>Ammendment No</th>
+                        <th>Ammendment Date</th>
+                        <th>Ammendment Reason</th>
+                        <th>First Month Tent Qty</th>
+                        <th>Sec Month Tent Qty</th>
+                        <th>Size Detail</th>
+                        <th>Colour</th>
+                        <th>Cost Center</th>
+                        <th>Active</th>
+                        <th>RateApplicableOnUnit</th>
+                        <th>Pkg Std</th>
+                        <th>Entry ID</th>
+                        <th>Year Code</th>
+                    </tr>
+                </thead>
+                <tbody id="gateDashboardtable">
+                    @{
+                        var @Cntr = 0;
+                        if (Model == null || Model.Count == 0)
+                        {
+                            <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model)
+                            {
+
+                                Cntr = Cntr + 1;
+                                <tr id="dashTableGridRow-@Cntr">
+
+                                    <th>
+                                        @Cntr<input type="hidden" id="typeOfApp-@Cntr" value="@item.TypeOfCancel" />
+                                        <input type="hidden" id="typeOfAppr" value="@typeOfApproval" />
+                                        <input type="hidden" id="Approvedd" value="@item.Approved" />
+                                        <input type="hidden" id="firstlvlApp" value="@item.Approval1Levelapproved" />
+                                        <input type="hidden" id="AmmApprove" value="@item.ApproveAmm" />
+
+
+
+                                    </th>
+                                    <td>@PONO</td>
+                                    <td>@item.PoDate.Split(" ")[0]</td>
+                                    <td>@item.WEF.Split(" ")[0]</td>
+                                    <td>@item.OrderType</td>
+                                    @if (item.Rate > item.OldRate)
+                                    {
+                                        <td style="color:red;font-weight:bold;" id="rateRow-@Cntr">@item.Rate</td>
+                                        <td style="color:red;font-weight:bold;" id="oldrateRow-@Cntr">@item.OldRate</td>
+                                    }
+                                    else if (item.Rate < item.OldRate)
+                                    {
+                                        <td style="color:blue;font-weight:bold;" id="rateRow-@Cntr">@item.Rate</td>
+                                        <td style="color:blue;font-weight:bold;" id="oldrateRow-@Cntr">@item.OldRate</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="color:black;">@item.Rate</td>
+                                        <td style="color:black;">@item.OldRate</td>
+                                    }
+                                    <td>@item.POFor</td>
+                                    <td style="background-color: #e09ef0;">@item.PartyName</td>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.PartCode</td>
+                                    <td>@item.HSNNo</td>
+                                    <td>@item.POQty</td>
+                                    <td>@item.Unit</td>
+                                    <td>@item.AltPoQty</td>
+                                    <td>@item.AltUnit</td>
+                                    <td>@item.TolLimitPer</td>
+                                    <td>@item.TolLimitQty</td>
+                                    <td>@item.UnitRate</td>
+                                    <td>@item.RateInOther</td>
+                                    <td>@item.DiscPer</td>
+                                    <td>@item.DiscRs</td>
+                                    <td>@item.Amount</td>
+                                    <td>@item.AdditionalRate</td>
+                                    <td>@item.PoTypeServItem</td>
+                                    <td>@item.POType</td>
+                                    <td>@item.Remark</td>
+                                    <td>@item.Description</td>
+                                    <td>@item.PendQty</td>
+                                    <td>@item.PendAltQty</td>
+                                    <td>@item.Process</td>
+                                    <td>@item.AmmendmentNo</td>
+                                    <td>@item.AmmendmentDate</td>
+                                    <td>@item.AmmendmentReason</td>
+                                    <td>@item.FirstMonthTentQty</td>
+                                    <td>@item.SecMonthTentQty</td>
+                                    <td>@item.SizeDetail</td>
+                                    <td>@item.Colour</td>
+                                    <td>@item.CostCenter</td>
+                                    <td>@item.Active</td>
+                                    <td>@item.RateApplicableOnUnit</td>
+                                    <td>@item.PkgStd</td>
+                                    <td>@item.EntryID</td>
+                                    <td>@item.YearCode</td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#cancelDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#cancelDate').datepicker("option", "minDate", 'now');
+            $('#cancelDate').datepicker("option", "maxDate", 'now');
+            allowApprovingUnApproving();
+            colorRates();
+        });
+
+        function allowApprovingUnApproving() {
+            if ($('#typeOfAppr').val().includes('Final Level')) {
+
+            }
+        }
+
+        function colorRates() {
+            var size = $('#gateDashboardtable tr').length;
+
+            for (var i = 1; i <= size; i++) {
+                var curRowTds = $('#dashTableGridRow-' + i).find('td');
+                if (parseInt($('#rateRow-' + i).text()) > parseInt($('#oldrateRow-' + i).text())) {
+                    curRowTds.css("color", "red");
+                    curRowTds.css("font-weight", "bolder");
+                    $('#rateRow-' + i).css("color", "red");
+                    $('#oldrateRow-' + i).css("color", "red");
+                } else if (parseInt($('#rateRow-' + i).text()) < parseInt($('#oldrateRow-' + i).text())) {
+                    curRowTds.css("color", "green");
+                    curRowTds.css("font-weight", "bolder");
+                    $('#rateRow-' + i).css("color", "blue");
+                    $('#oldrateRow-' + i).css("color", "blue");
+                } else {
+                    curRowTds.css("color", "black");
+                    $('#rateRow-' + i).css("color", "black");
+                    $('#oldrateRow-' + i).css("color", "black");
+                }
+            }
+
+        }
+
+        function checkCondition(event) {
+
+                if ($('#approvePO').is(":checked")) {
+                    return true;
+                }
+                else {
+                    event.preventDefault();
+                    $.notify("Please check for Update", "error");
+                    return false;
+                }
+            
+        }
+    </script>
+}
+
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>

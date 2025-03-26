@@ -32,7 +32,7 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> BankReceipt(int ID, string Mode,int YearCode,string VoucherNo)
+        public async Task<ActionResult> BankReceipt(int ID, string Mode, int YearCode, string VoucherNo)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
 
@@ -54,7 +54,7 @@ namespace eTactWeb.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
-                MainModel = await _IBankReceipt.GetViewByID(ID,YearCode,VoucherNo).ConfigureAwait(false);
+                MainModel = await _IBankReceipt.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.ID = ID;
                 MainModel.VoucherNo = VoucherNo;
@@ -130,7 +130,7 @@ namespace eTactWeb.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(BankReceiptDashBoard));
+                return RedirectToAction(nameof(BankReceipt));
 
             }
             catch (Exception ex)
@@ -236,7 +236,7 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("EntryByMachine", typeof(string));
                 GIGrid.Columns.Add("OursalespersonId", typeof(int));
                 GIGrid.Columns.Add("SubVoucherName", typeof(string));
-                
+
 
                 foreach (var Item in DetailList)
                 {
@@ -264,7 +264,7 @@ namespace eTactWeb.Controllers
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
                 Item.ChequeDate = DateTime.Now.ToString("dd/MM/yy") ,
-                Item.ChequeClearDate =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.BankRECO =DateTime.Now.ToString("dd/MM/yy") ,
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,
@@ -328,7 +328,7 @@ namespace eTactWeb.Controllers
                 Item.EntryByMachine ?? string.Empty,
                 Item.OursalespersonId ,
                 Item.SubVoucher ?? string.Empty,
-             
+
 
                         });
                 }
@@ -413,14 +413,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId,string AgainstVoucherNo, int AccountCode)
+        public async Task<JsonResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode)
         {
-            var JSON = await _IBankReceipt.CheckAmountBeforeSave(VoucherDate,YearCode,AgainstVoucherYearCode,AgainstVoucherEntryId, AgainstVoucherNo, AccountCode);
+            var JSON = await _IBankReceipt.CheckAmountBeforeSave(VoucherDate, YearCode, AgainstVoucherYearCode, AgainstVoucherEntryId, AgainstVoucherNo, AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public IActionResult AddBankReceiptDetail(BankReceiptModel model)
-        { 
+        {
             try
             {
                 if (model.Mode == "U")
@@ -529,9 +529,9 @@ namespace eTactWeb.Controllers
 
                                 }
                             }
-                            else if(model.ModeOfAdjustment.ToLower() == "advance")
+                            else if (model.ModeOfAdjustment.ToLower() == "advance")
                             {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) &&(x.ModeOfAdjustment == model.ModeOfAdjustment)))
+                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
                                 {
                                     return StatusCode(208, "Duplicate");
                                 }
@@ -611,18 +611,20 @@ namespace eTactWeb.Controllers
                 {
                     if (item != null)
                     {
-                        bool isDuplicate = ProductionEntryDetail.Any(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
-                        if (!isDuplicate)  // Only add if not duplicate
+                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
+                        if (existingItem != null)
                         {
-                            // Assign sequence number correctly
-                            item.SeqNo = ProductionEntryDetail.Count + 1;
-
-                            // Swap Type values
-                            item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
-
-                            // Add new item to list
-                            ProductionEntryDetail.Add(item);
+                            ProductionEntryDetail.Remove(existingItem);
                         }
+
+                        // Assign sequence number correctly
+                        item.SeqNo = ProductionEntryDetail.Count + 1;
+
+                        // Swap Type values
+                        item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
+
+                        // Add new item to list
+                        ProductionEntryDetail.Add(item);
                     }
                 }
 
@@ -757,7 +759,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate,string VoucherType)
         {
-            var Result = await _IBankReceipt.DeleteByID(ID, YearCode,ActualEntryBy,EntryByMachine,ActualEntryDate, VoucherType);
+            var Result = await _IBankReceipt.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

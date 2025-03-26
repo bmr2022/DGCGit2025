@@ -49,7 +49,7 @@
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     @if (Model.Mode == "SSA")
                     {
-                        <a asp-action="SSAmendmentList" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                        <a asp-action="SSAmendmentList" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2 ">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -60,7 +60,7 @@
                     }
                     else
                     {
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2 saleorderDashBoard">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -203,7 +203,7 @@
                                         <label asp-for="DeliveryAddress" class="control-label">Delivery Address</label>
                                         <input asp-for="DeliveryAddress" class="form-control" readonly disabled />
                                     </div>
-                                    <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                  
                                         <input type="hidden" value="" id="ManualMonthSplit" name="ManualMonthSplit">
                                         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex justify-content-end">
                                             <input type="radio" id="ManEntryImport" name="SaleSchGrid" value="Manual" checked class="me-1">
@@ -217,7 +217,7 @@
                                             <input type="radio" id="MonthlyEntry" name="SaleSchGrid" value="Month" class="me-1">
                                             <label class="control-label">Monthly Entry</label>
                                         </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -756,7 +756,7 @@
                         }
                         else
                         {
-                            <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                            <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2 saleorderDashBoard">
                                 <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                 Dashboard
                             </a>
@@ -906,7 +906,7 @@
         $(document).ready(function () {
              
             GetServerDate();
-            //GetFormRights();
+            GetFormRights();
             //$('#ScheduleDate').prop('readonly', true);
             var today = new (Date);
             $('#ManualMonthSplit').val('Manual');
@@ -2374,6 +2374,49 @@
             $('#SchEffTillDate').datepicker("option", "minDate", formattedDate);
 
         }
+
+
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("button[type='submit'").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("button[type='submit'").prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".saleorderDashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
+
 
 
         // function GetFormRights() {

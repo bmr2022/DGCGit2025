@@ -63,7 +63,7 @@
                     }
                     else
                     {
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient saleorderDashBoard" style="margin-right:5px;">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -109,8 +109,32 @@
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="card">
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left:1100px">
+                                <div class="d-flex justify-content-end mb-2">
+
+                                    
+                                        <div class="col-auto" style="display:none">
+                                            <button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
+                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
+                                            </button>
+                                        </div>
+                                        <div class="col-auto  me-3">
+                                            <input class="form-control" type="file" id="ExcelFile" />
+                                        </div>
+                                        <div class="col-auto  me-3">
+                                            <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
+                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                                            </button>
+                                        </div>
+
+
+
+                                    <div class="col-md-2 me-3">
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+                                    <a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportPOFormate();">
+                                        <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        IMPORT FORMAT
+                                    </a>
                                 </div>
 
                                 <div class="card-body overflow-auto pb-0">
@@ -270,7 +294,7 @@
                                 </a>
                             </div>
                         }
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient saleorderDashBoard" style="margin-right:5px;">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -428,6 +452,7 @@
 
         $(document).ready(function () {
 
+            
             if ($('#OrderType').val() == 'Import') {
                 $('#Rate').prop("disabled", true);
                 $('#OtherRateCurr').prop("disabled", false);
@@ -673,6 +698,8 @@
                 });
             }
 
+            
+
             $('#EntryDate').datepicker("option", "minDate", formattedDate1);
             $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
             var today = new (Date);
@@ -780,6 +807,20 @@
             });
         });
 
+        function ExportPOFormate() {
+
+            $('#divPOItemList').empty();
+            var wb = XLSX.utils.book_new();
+
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "HSNNO", "Rate", "Qty", "Unit", "Dis%", "DisAmt", "description"] });
+
+            //ws['!ref'] = 'A1:I1';
+
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "ImportPurchaseOrderFormat.xlsx");
+        }
+
         function UploadExcel() {
             var fileInput = $('#ExcelFile');
             var file = fileInput.prop("files")[0];
@@ -793,6 +834,8 @@
             formData.append("Flag", "PURCHASEORDER");
             formData.append("Currency", $('#Currency').find(":selected").text());
             formData.append("excelFile", fileInput.prop("files")[0]);
+
+            formData.append("POType", $("#POType").val());
 
 
             var Err = 0;
@@ -823,12 +866,38 @@
                     else if (result == "Partcode not available") {
                         $.notify("Imported Partcode is not available, Please check!!!", "error");
                     }
+                    else if (result == "Qty is less Then 0") {
+                        $.notify("Qty Should be Greater Then 0 , Please check!!!", "error");
+                    }
                     else {
                         $('#divPOItemList').empty();
                         $('#divPOItemList').html(result);
+                        calculateTotalAmount();
+                        GetTaxPartItem();
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        $.notify(xhr.responseText, "error"); // Show error message if part code is invalid
+                    } else {
+                        $.notify("An unexpected error occurred. Please try again.", "error");
                     }
                 }
+
             });
+
+            function calculateTotalAmount() {
+                var totalAmount = 0;
+
+                // Loop through all amount values in the grid and sum them
+                $('.GridAmount').each(function () {
+                    var amount = parseFloat($(this).text().trim()) || 0;
+                    totalAmount += amount;
+                });
+
+                // Update total amount label
+                $('#lblItemNetAmount').text(totalAmount.toFixed(2));
+            }
         }
 
         function GetPendQty() {
@@ -1473,6 +1542,13 @@
                                     $('#UpdateButton').prop("disabled", true);
                                     $('.card-footer #UpdateButton').prop("disabled", true);
                                     $('.PartialSave').prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".saleorderDashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
                                 }
                             }
                         }
@@ -3014,6 +3090,14 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    @*<script src="~/Scripts/table2excel.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
 
 }

@@ -35,7 +35,7 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-       public async Task<ActionResult> LedgerOpeningEntry(int ID,int EntryByEmpId, int YC,string DrCr, string GlobalSearch,string LedgerName,string YearCode, float Amount, string GroupName,string Mode,int AccountCode,int GroupAccountCode,string CC, string Account_Name, string FromDate = "",string ToDate = "")
+        public async Task<ActionResult> LedgerOpeningEntry(int ID, int EntryByEmpId, int YC, string DrCr, string GlobalSearch, string LedgerName, string YearCode, float Amount, string GroupName, string Mode, int AccountCode, int GroupAccountCode, string CC, string Account_Name, string FromDate = "", string ToDate = "")
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
 
@@ -98,7 +98,7 @@ namespace eTactWeb.Controllers
 
             return View(MainModel); // Pass the model with old data to the view
         }
-       
+
         [Route("{controller}/Index")]
         [HttpPost]
         public async Task<IActionResult> LedgerOpeningEntry(LedgerOpeningEntryModel model)
@@ -108,34 +108,35 @@ namespace eTactWeb.Controllers
 
                 _MemoryCache.TryGetValue("KeyLedgerOpeningEntryGrid", out List<LedgerOpeningEntryGridModel> LedgerOpeningEntryGrid);
 
-              
-                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-                    var Result = await _ILedgerOpeningEntry.SaveWorkOrderProcess(model);
-                    if (Result != null)
+                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
+                var Result = await _ILedgerOpeningEntry.SaveWorkOrderProcess(model);
+                if (Result != null)
+                {
+                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                     {
-                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-                        {
-                            ViewBag.isSuccess = true;
-                            TempData["200"] = "200";
-                            _MemoryCache.Remove("KeyLedgerOpeningEntryGrid"); 
-                        }
-                        else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
-                        {
-                            ViewBag.isSuccess = true;
-                            TempData["202"] = "202";
-                        }
-                        else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                        {
-                            ViewBag.isSuccess = false;
-                            TempData["500"] = "500";
-                            _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                            return View("Error", Result);
-                        }
+                        ViewBag.isSuccess = true;
+                        TempData["200"] = "200";
+                        TempData.Keep("200");
+                        _MemoryCache.Remove("KeyLedgerOpeningEntryGrid");
                     }
+                    else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["202"] = "202";
+                    }
+                    else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ViewBag.isSuccess = false;
+                        TempData["500"] = "500";
+                        _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+                        return View("Error", Result);
+                    }
+                }
 
-                    return RedirectToAction(nameof(LedgerOpeningEntryDashBoard));
-             
+                return RedirectToAction(nameof(LedgerOpeningEntry));
+
             }
             catch (Exception ex)
             {
@@ -151,7 +152,7 @@ namespace eTactWeb.Controllers
             }
         }
 
-      
+
         public async Task<LedgerOpeningEntryModel> BindModels(LedgerOpeningEntryModel model)
         {
             if (model == null)
@@ -166,19 +167,19 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> GetGroupByAccountCode(int AccountCode)
         {
-            var JSON = await _ILedgerOpeningEntry.GetGroupByAccountCode( AccountCode);
+            var JSON = await _ILedgerOpeningEntry.GetGroupByAccountCode(AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetLedgerByAccountCode(int AccountCode, int OpeningForYear, string ActualEntryDate)
+        public async Task<JsonResult> GetAmountAndType(int AccountCode, int OpeningForYear, string ActualEntryDate)
         {
-            var JSON = await _ILedgerOpeningEntry.GetLedgerByAccountCode(AccountCode, OpeningForYear, ActualEntryDate);
+            var JSON = await _ILedgerOpeningEntry.GetAmountAndType(AccountCode, OpeningForYear, ActualEntryDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> GetLedgersByGroup(string groupAccountCode)
         {
-            var JSON = await _ILedgerOpeningEntry.GetLedgersByGroup( groupAccountCode);
+            var JSON = await _ILedgerOpeningEntry.GetLedgersByGroup(groupAccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -195,7 +196,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        
+
         private static DataTable GetDetailTable(IList<LedgerOpeningEntryGridModel> DetailList)
         {
             try
@@ -220,7 +221,7 @@ namespace eTactWeb.Controllers
              Item.SrNO == 0 ? 0 : Item.SrNO,
              Item.PreviousAmount == 0 ?0:Item.PreviousAmount,
              Item.DrCr== null ? "":Item.DrCr,
-             
+
 
                         });
                 }
@@ -256,7 +257,7 @@ namespace eTactWeb.Controllers
                     if (DS != null)
                     {
                         var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryByEmpId",
-                            "GroupName","LedgerName", "ClosingYearCode","AccountCode", "DrCr",
+                            "GroupName", "LedgerName", "ClosingYearCode", "AccountCode", "DrCr",
                             "Amount", "CC", "EntryByEmployee", "ActualEntryDate",
                             "UpdatedByEmployee", "GroupAccountCode", "Updationdate", "EntryByMachine");
 
@@ -281,7 +282,7 @@ namespace eTactWeb.Controllers
         {
             //model.Mode = "Search";
             var model = new LedgerOpeningEntryDashBoardGridModel();
-            model = await _ILedgerOpeningEntry.GetDashboardDetailData( GroupName,  LedgerName, PreviousAmount,  DrCr);
+            model = await _ILedgerOpeningEntry.GetDashboardDetailData(GroupName, LedgerName, PreviousAmount, DrCr);
             return PartialView("_LedgerOpeningEntryDashBoardGrid", model);
         }
         public async Task<IActionResult> DeleteByID(int YC, int AC, string EntryByMachine = "", string FromDate = "", string ToDate = "", string Searchbox = "", string GroupName = "", string LedgerName = "", string ClosingYearCode = "", string DrCr = "", string Amount = "", string CC = "", string EntryByEmployee = "", string ActualEntryDate = "", string UpdatedByEmployee = "", string Updationdate = "")

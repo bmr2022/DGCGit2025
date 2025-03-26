@@ -69,5 +69,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.FillDetailFromPopupGrid(model, itemCode, popCt);
         }
+        public async Task<ResponseResult> SavePurchaseRejection(AccPurchaseRejectionModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT, DataTable DTAgainstBillDetail)
+        {
+            return await _purchRejDAL.SavePurchaseRejection(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, DTAgainstBillDetail);
+        }
     }
 }

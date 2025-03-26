@@ -98,6 +98,7 @@ namespace eTactWeb.DOM.Models
         public string? CustJwAdjustmentMandatory { get; set; }
         public string? StockableNonStockable { get; set; }
         public string? VendJwAdjustmentMandatory { get; set; }
+        public int? BomNo {  get; set; }
     }
     public class SaleBillModel : SaleBillDetail
     {
@@ -256,6 +257,7 @@ namespace eTactWeb.DOM.Models
             new() { Value = "N", Text = "No" },
         };
 
+        public List<CustomerJobWorkChallanAdj> CustomerJobWorkChallanAdj { get; set; }
         public IList<SelectListItem> YesNoList
         {
             get => _YesNo;
@@ -263,36 +265,144 @@ namespace eTactWeb.DOM.Models
         }
     }
 
-    public class CustomerJobWorkIssueAdjustDetail
+    public class CustomerInputJobWorkIssueAdjustDetail
     {
         public int ItemCode { get; set; }
-        public string? Unit { get; set; }
-        public int BillQty { get; set; }
-        public int JWRate { get; set; }
+        public string Unit { get; set; }
+        public float BillQty { get; set; }
+        public float JWRate { get; set; }
         public int ProcessId { get; set; }
-        public string? SONO { get; set; }
-        public string? CustOrderNo { get; set; }
+        public string SONO { get; set; }
+        public string CustOrderNo { get; set; }
         public int SOYearCode { get; set; }
-        public string? SchNo { get; set; }
-        public int SchYearcode { get; set; }
-        public string? BOMIND { get; set; }
-        public int BOMNO { get; set; }
-        public string? BOMEffDate { get; set; }
-        public string? Produnprod { get; set; }
-        public string? fromChallanOrSalebill { get; set; }
-        public string? ItemAdjustmentRequired { get; set; }
+        public string SchNo { get; set; }
+        public int SchYearCode { get; set; }
+        public string BOMIND { get; set; }
+        public string BOMNO { get; set; }
+        public string BOMEffDate { get; set; }
+        public string Produnprod { get; set; }
+        public string fromChallanOrSalebill { get; set; }
+        public string ItemAdjustmentRequired { get; set; }
+        public int SchYearcode {  get; set; }
+    }
 
-        // output
-
-        public string? CustomerName { get; set; }
-        public string? PartCode { get; set; }
-        public string? ItemName { get; set; }
-        public string? ChallanNo { get; set; }
-        public int YearCode { get; set; }
-        public string? ChallanDate { get; set; }
-        public float RecQty { get; set; }
-        public float IssQty { get; set; }
-        public float AccPendQty { get; set; }
+    public class CustomerJobWorkIssueAdjustDetail
+    {
+        public int EntryIdRecJW { get; set; }
+        public string RecJWChallanNo { get; set; }
+        public int RecYearCode { get; set; }
+        public string ChallanDate { get; set; }
+        public string RecPartCode { get; set; }
+        public string RecItemName { get; set; }
+        public int RecItemCode { get; set; }
+        public int IssuedItemCode { get; set; }
+        public string BomNo { get; set; }
+        public string BomDate { get; set; }
+        public string BomStatus { get; set; }
         public float PendQty { get; set; }
+        public string IssuePartCode { get; set; }
+        public string IssueItemName{ get; set; }
+        public float BomQty{ get; set; }
+        public string Through{ get; set; }
+        public float QtyToBeRec{ get; set; }
+        public float ActualAdjQty{ get; set; }
+        public string Batchno{ get; set; }
+        public string UniqueBatchno{ get; set; }
+        public int SeqNo{ get; set; }
+        public float IssueQty{ get; set; }
+        public float Rate{ get; set; }
+        public float OriginalRecQty{ get; set; }
+        public string IdealScrap{ get; set; }
+        public string IssuedScrap{ get; set; }
+        public string CustomerName { get; set; }
+        public string PartCode {  get; set; }
+        public string ItemName {  get; set; }
+        public string BOMIND { get; set; }
+        public string ChallanNo {  get; set; }
+        public int YearCode {  get; set; }
+        public decimal RecQty {  get; set; }
+        public decimal IssQty { get; set; }
+        public decimal AccPendQty { get; set; }
+        public decimal ItemCode { get; set; }
+        public string Unit {  get; set; }
+        public decimal BillQty {  get; set; }
+        public decimal JWRate { get; set; }
+        public int ProcessId {  get; set; }
+        public string SONO { get; set; }
+        public int SOYearCode { get; set; }
+        public string SchNo { get; set; }
+        public string CustOrderNo { get; set; }
+        public int SchYearcode {  get; set; }
+        public string BOMNO {  get; set; }
+        public string BOMEffDate {  get; set; }
+        public string Produnprod { get; set; }
+        public string fromChallanOrSalebill {  get; set; }
+        public string ItemAdjustmentRequired {  get; set; }
+    }
+
+    public class BomCustomerJWIssChallanADJ
+    {
+        public string FGPartCode { get; set; }
+        public string FGItemName { get; set; }
+        public int FinishedItemCode { get; set; }
+        public string RMItemName { get; set; }
+        public int ItemCode { get; set; }
+        public string RMPartCode { get; set; }
+        public float Qty { get; set; }
+        public float ActualPendQty { get; set; }
+        public float PendToAdjust { get; set; }
+        public string BOMIND { get; set; }
+        public string ProdUnprod { get; set; }
+        public string FullyAdjusted { get; set; }
+    }
+
+    public class CustomerJobWorkChallanAdj
+    {
+        public string? EntryDate { get; set; }
+        public int? CustJwRecEntryId { get; set; }
+        public int? CustJwRecYearCode { get; set; }
+        public string CustJwRecChallanNo { get; set; }
+        public string? CustJwRecEntryDate { get; set; }
+        public int RecItemCode { get; set; }
+        public int? CustJwIssEntryid { get; set; }
+        public int? CustJwIssYearCode { get; set; }
+        public string CustJwIssChallanNo { get; set; }
+        public string? CustJwIssChallanDate { get; set; }
+        public int? AccountCode { get; set; }
+        public int? FinishItemCode { get; set; }
+        public float? AdjQty { get; set; }
+        public string CC { get; set; }
+        public int? UID { get; set; }
+        public string AdjFormType { get; set; }
+        public string? TillDate { get; set; }
+        public float? TotIssQty { get; set; }
+        public float? PendQty { get; set; }
+        public float? BOMQty { get; set; }
+        public int? BomRevNo { get; set; }
+        public string? BOMRevDate { get; set; }
+        public int? ProcessID { get; set; }
+        public string BOMInd { get; set; }
+        public float? IssQty { get; set; }
+        public float? TotadjQty { get; set; }
+        public float? TotalIssQty { get; set; }
+        public float? TotalRecQty { get; set; }
+        public int? RunnerItemCode { get; set; }
+        public int? ScrapItemCode { get; set; }
+        public float? IdealScrapQty { get; set; }
+        public float? IssuedScrapQty { get; set; }
+        public string PreRecChallanNo { get; set; }
+        public float? ScrapqtyagainstRcvqty { get; set; }
+        public string Recbatchno { get; set; }
+        public string Recuniquebatchno { get; set; }
+        public string Issbatchno { get; set; }
+        public string Issuniquebatchno { get; set; }
+        public string ScrapAdjusted { get; set; }
+    }
+
+    public class AdjChallanDetail
+    {
+        public List<CustomerJobWorkIssueAdjustDetail> CustomerJobWorkIssueAdjustDetails { get; set; }
+        public List<BomCustomerJWIssChallanADJ> BomCustomerJWIssChallanAdj { get; set; }
+        public List<CustomerJobWorkChallanAdj> CustomerJobWorkChallanAdj { get; set; }
     }
 }

@@ -20,7 +20,7 @@
                         PRINT VOUCHER
                     </a>
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
-                       asp-controller="SaleInvoice" asp-route-EntryId="@Model.SaleBillEntryId" asp-route-YearCode="@Model.SaleBillYearCode">
+                       asp-controller="SaleInvoice" asp-route-EntryId="@Model.SaleBillEntryId" asp-route-YearCode="@Model.SaleBillYearCode" asp-route-Type="SALEBILL" asp-route-InvoiceNo="@Model.SaleBillNo" asp-route-AccountCode="@Model.AccountCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT INVOICE
                     </a>
@@ -120,7 +120,7 @@
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
 
-                                <div class="card-body overflow-auto pb-0">
+                                <div class="card-body overflow-auto pb-0 jobWorkChalln">
                                     <div class="table-responsive" style="max-height:150px;">
                                         <table class="table table-hover table-bordered table-striped" id="poTable">
                                             <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
@@ -147,6 +147,7 @@
                                                     <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique BatchNo</th>
                                                     <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Year</th>
                                                     <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch YC</th>
+                                                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Rev No</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                                                     <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Lot Stock</th>
                                                     <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
@@ -192,29 +193,67 @@
                                 </div>
                             </div>
                             <div class="card">
-                                <div class="card-body overflow-auto pb-0">
+                                <div class="card-body overflow-auto pb-0 jobWorkChalln">
                                     <table class="table table-hover table-bordered table-striped IssueNRGPTb">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                             <tr>
-                                                <th>Action</th>
                                                 <th>SR#</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustomerName</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecPartCode</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecItemName</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BOMIND</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RECJWIChallan</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecChallanYearCode</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecChallanDate</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecQty</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssQty</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualPendty</th>
-                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendQty</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryId Rec Jw</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec JW Challan no</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec YearCode</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Date</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecPartCode</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecItemName</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BomNo</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Date</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Status</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Qty</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssuePartCode</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssueItemName</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BomQty</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty ToRec</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty ToRec</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualAdjQty</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UniqueBatchNo</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssQty</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OriginalRecQty</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IdealScrap</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="12"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssuedScrap</th>
 
                                             </tr>
                                         </thead>
                                         <tbody id="divCustJobWorkISsueSummary">
                                             @* <partial name="_JOBWORKISSUESUMMARY" /> *@
                                             @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueAdjustDetail>())
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped IssueNRGPTb">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>SR#</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG PartCode</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG ItemName</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rm ItemName</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rm PartCode</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualPendQty</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendToAdjust</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="9"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BOMIND</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="10"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdUnProd</th>
+                                                <th class="sortCol" data-sortorder="asc" data-columnno="11"><span style="padding:5px; margin:5px;" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Fully Adjusted</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divBomCustJobWorkISsueSummary">
+                                            @* <partial name="_JOBWORKISSUESUMMARY" /> *@
+                                            @await Html.PartialAsync("_BomCustJwisschallanAdjustment", new List<BomCustomerJWIssChallanADJ>())
                                         </tbody>
                                     </table>
                                 </div>
@@ -468,6 +507,18 @@
             // $('#NetTotal').val(txAmt);
             // $('#AdjPendAmt').val($('#NetTotal').val());
 
+            $('#ProducedUnprod').rules("remove", "required");
+            $('#BOMInd').rules("remove", "required");
+            $('#SONO').rules("remove", "required");
+            $('#SOYearCode').rules("remove", "required");
+            $('#CustOrderNo').rules("remove", "required");
+            $('#Qty').rules("remove", "required");
+            $('#RateInOtherCurr').rules("remove", "required");
+            $('#NoofPcs').rules("remove", "required");
+            $('#Amount').rules("remove", "required");
+            $('#DiscountAmt').rules("remove", "required");
+            $('#DiscountPer').rules("remove", "required");
+            $('#Batchno').rules("remove", "required");
             $('#SOPendQty').rules("remove", "required");
             $('#AltUnit').rules("remove", "required");
             $('#SaleBillEntryId').rules("remove", "required");
@@ -603,7 +654,7 @@
             document.getElementById('RemovalTime').value = hours + ':' + minutes;
         });
 
-                function formatDate(dateString) {
+        function formatDate(dateString) {
             const [day, month, year] = dateString.split('/'); // Split dd/MM/yyyy
             return `${month}/${day}/${year}`; // Reformat to MM/dd/yyyy
         }
@@ -633,7 +684,7 @@
         });
 
         $('#SaleBillJobwork').change(function () {
-            
+
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
                 $('.gridHiddenField').show();
@@ -661,11 +712,11 @@
                     "AccountCode": $('#AccountCode').val()
                 },
                 success: function (result, status, xhr) {
-                     $('#divPendingChallanDisplayGrid').empty();
-                     if (result != null) {
-                     // if (result && result.Result && result.Result.length > 0) 
-                     // {
-                      // if (result && result.Result && Array.isArray(result.Result) && result.Result.length > 0) {
+                    $('#divPendingChallanDisplayGrid').empty();
+                    if (result != null) {
+                        // if (result && result.Result && result.Result.length > 0)
+                        // {
+                        // if (result && result.Result && Array.isArray(result.Result) && result.Result.length > 0) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
 
@@ -691,8 +742,8 @@
                         } else {
                             $('#divPendingChallanDisplayGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
                         }
-                    } else{
-                         alert('No data or result is not as expected!');
+                    } else {
+                        alert('No data or result is not as expected!');
                     }
                 }
             });
@@ -724,14 +775,14 @@
 
             if (!ValidateAdjDetail()) return;
             var YearCode = $('#SaleBillYearCode').val();
-            var EntryDate = $('#ChallanDate').val();
+            var EntryDate = $('#FinFromDate').val();
             var ChallanDate = $('#ChallanDate').val();
             var AccountCode = $('#AccountCode').val();
             var itemCode = $('#ItemCode').val();
             var adjustedData = [];
 
             $("#divSaleBillList").each(function () {
-                
+
                 var row = $(this);
                 var rowData = {
                     // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
@@ -746,7 +797,7 @@
                     SchNo: row.find("td:eq(8)").text().trim(),
                     SchYearcode: row.find("td:eq(20)").text().trim(),
                     BOMIND: row.find("td:eq(3)").text().trim(), // BOMIND
-                    BOMNO: "", //BomNo
+                    BOMNO: $('#BomRevNo').val(), //BomNo
                     BOMEffDate: "", //Bom Eff Date
                     Produnprod: row.find("td:eq(4)").text().trim(),
                     fromChallanOrSalebill: "",
@@ -774,10 +825,10 @@
                 // dataType: "html",
                 async: false,
                 success: function (data) {
-
                     $('#divCustJobWorkISsueSummary').html(data);
                     var dashGrid = $('#divCustJobWorkISsueSummary').length ? $('#divCustJobWorkISsueSummary').length : 0;
                     $('#totalRows').text(dashGrid);
+                    BomAdjustChallanGrid();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -787,6 +838,100 @@
                 }
             });
         });
+
+
+        function fillBomRevNo() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetBomRevNo", "ReqThroughBom")",
+                async: false,
+                data: { ItemCode: $('#ItemCode').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#BomRevNo').empty();
+                            $('#BOMEffDate').val('');
+                            $.each(obj.Result, function (index, val) {
+                                $('#BomRevNo').append('<option value="' + val.bomno + '">' + val.bomno + '</option>');
+                            });
+                        }
+                    }
+                }
+
+            });
+        }
+
+        function BomAdjustChallanGrid() {
+            event.preventDefault();
+
+            if (!ValidateAdjDetail()) return;
+            var YearCode = $('#SaleBillYearCode').val();
+            var EntryDate = $('#FinFromDate').val();
+            var ChallanDate = $('#ChallanDate').val();
+            var AccountCode = $('#AccountCode').val();
+            var itemCode = $('#ItemCode').val();
+            var adjustedData = [];
+
+            $("#divSaleBillList").each(function () {
+
+                var row = $(this);
+                var rowData = {
+                    // ProduceUnproduce: row.find("td:eq(2)").text().trim(),
+                    ItemCode: row.find("td:eq(1) input").val(), // ItemCode
+                    Unit: row.find("td:eq(21)").text().trim(),
+                    BillQty: row.find("td:eq(12)").text().trim(),
+                    JWRate: row.find("td:eq(13)").text().trim(),
+                    ProcessId: row.find("td:eq(29) input").val(), // ProcoessId
+                    SONO: row.find("td:eq(5)").text().trim(),
+                    CustOrderNo: row.find("td:eq(7)").text().trim(),
+                    SOYearCode: row.find("td:eq(19)").text().trim(),
+                    SchNo: row.find("td:eq(8)").text().trim(),
+                    SchYearcode: row.find("td:eq(20)").text().trim(),
+                    BOMIND: row.find("td:eq(3)").text().trim(), // BOMIND
+                    BOMNO: $('#BomRevNo').val(), //BomNo
+                    BOMEffDate: "", //Bom Eff Date
+                    Produnprod: row.find("td:eq(4)").text().trim(),
+                    fromChallanOrSalebill: "",
+                    ItemAdjustmentRequired: ""
+                };
+
+                adjustedData.push(rowData);
+            });
+
+            console.log("Adustdata:", adjustedData);
+
+            $.ajax({
+                url: "@Url.Action("GetBomAdjustedChallanDetailsData")",
+                type: "POST",
+                // contentType: "application/json; charset=utf-8",
+                // data: JSON.stringify(adjustedData),
+                data: {
+                    "model": adjustedData,
+                    "YearCode": YearCode,
+                    "EntryDate": EntryDate,
+                    "ChallanDate": ChallanDate,
+                    "AccountCode": AccountCode,
+                    "ItemCode": itemCode
+                },
+                // dataType: "html",
+                async: false,
+                success: function (data) {
+
+                    $('#divBomCustJobWorkISsueSummary').html(data);
+                    var dashGrid = $('#divBomCustJobWorkISsueSummary').length ? $('#divBomCustJobWorkISsueSummary').length : 0;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
 
         $('#soDetailExcel').click(function () {
             const table = document.querySelector(".poPopUpData");
@@ -885,14 +1030,6 @@
             $('#divAdjItemList').html(NoData);
             CalculateAdjAmt('NetTotal');
             DueDateCalculation();
-        });
-
-        $('#SaleBillDate').change(function () {
-            var saleBillDate = parseDateToFormat($(this).val());
-            var RemovalTime = $('#RemovalTime').val();
-            if (saleBillDate > currentRemovalTime) {
-                $('#RemovalTime').datepicker("option", "minDate", saleBillDate);
-            }
         });
 
         function PasswordCheck() {
@@ -1027,6 +1164,13 @@
                 }
             });
             FillDistance();
+            FillSONO();
+
+            ClearGrid();
+            btnClearTax();
+            ClearAdjustmentGrid();
+            ClearDRCRGrid();
+            ClearCustomerJWGrid();
         });
 
         $("#PaymentTerm").on("input", function (e) {
@@ -1106,6 +1250,7 @@
             }
 
             // FillSOSchedule();
+            fillBomRevNo();
             FillCurrentBatchINStore();
             // $('#StoreId').val(0);
             FillSOPendQty();
@@ -1301,7 +1446,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-                            
+
                             $('#SOPendQty').val("");
                             $('#SOPendQty').val(obj.Result[0].PendQty);
                             $('#Qty').val("");
@@ -1362,7 +1507,7 @@
             var batchNoo = $('#Batchno').val();
             var uniquebatchnoo = $('#Uniquebatchno').val();
             var sono = parseInt($('#SONO').val());
-            
+
             var SchData = {
                 "SONO": parseInt($('#SONO').val()),
                 "SOYearCode": $('#SOYearCode').val(),
@@ -1418,6 +1563,7 @@
                 "CustomerPartCode": $('#CustomerPartCode').val(),
                 "SchdeliveryDate": $('#SchdeliveryDate').val(),
                 "BOMInd": $('#BOMInd').val(),
+                "BomRevNo": $('#BomRevNo').val(),
                 "ProducedUnprod": $('#ProducedUnprod').val(),
                 "SeqNo": parseInt($('#SeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#SeqNo').val()),
                 "CustJwAdjustmentMandatory": $('#CustJwAdjustmentMandatory').val(),
@@ -1503,7 +1649,7 @@
                                     $('#saleBillRow-' + i).css("background-color", "#fab9e1");
                                 }
                             }
-                            
+
                             $('.gridHiddenField').show();
                         } else {
                             $('.gridHiddenField').hide();
@@ -1571,22 +1717,27 @@
             });
         }
 
-        // function ClearGrid() {
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "@Url.Action("ClearGrid")",
-        //         success: function (result, status, error) {
+        function ClearGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearGrid")",
+                success: function (result, status, error) {
 
-        //             $('#divSaleBillList').empty();
-        //             var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-        //             $('#divSaleBillList').html(NoData);
-        //             BasicTotal();
-        //         },
-        //         error: function (req, status, error) {
-        //             alert(error);
-        //         }
-        //     });
-        // }
+                    $('#divSaleBillList').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divSaleBillList').html(NoData);
+
+                    $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty').val(0);
+                    $('#LotStock,#TotalStock').val("");
+                    $('#BOMInd,#ProducedUnprod').val('');
+                    $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
+                    BasicTotal();
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
 
         function SetPartCodeItemName(ID) {
 
@@ -1649,9 +1800,10 @@
         }
 
         function FillSOWiseItems() {
+            var sbJobWork = $('#SaleBillJobwork').val() == 'J' ? "JOBWORK-SALEBILL" : "SaleBill";
             $.ajax({
                 type: "POST",
-                data: { "invoiceDate": $('#SaleBillDate').val(), "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "schNo": $('#SchNo').val(), "schYearCode": $('#SaleSchYearCode').val(), "sbJobWork": "SaleBill" },
+                data: { "invoiceDate": $('#SaleBillDate').val(), "sono": $('#SONO').val(), "soYearCode": $('#SOYearCode').val(), "accountCode": $('#AccountCode').val(), "schNo": $('#SchNo').val(), "schYearCode": $('#SaleSchYearCode').val(), "sbJobWork": sbJobWork },
                 url: "@Url.Action("FillSOWiseItems")",
                 dataType: "json",
                 async: false,
@@ -2014,12 +2166,12 @@
         }
 
         $('#SubmitButton').click(function () {
-            
+
             $("form").submit();
         })
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-
+            debugger
             e.preventDefault();
 
             if (!ValidateSubmit()) return;
@@ -2037,21 +2189,24 @@
                 $.notify('StateCode is mandatory...!', "error");
             }
             else if ($('#SaleBillJobwork').val() == 'J') {
-                if($('#divCustJobWorkISsueSummary tr td').length <= 1){
+                if ($('#divCustJobWorkISsueSummary tr td').length <= 1) {
                     $.notify('Customer job work issue grid must be 1 row...!', "error");
+                }
+                else {
+                    $("form").submit();
                 }
             }
             else if ($('#GSTRegistered').val() == 'Y') {
                 if ($('#divTaxGrid tr td').length <= 1) {
                     $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                 } else {
-                    // $("form").submit();
                     $('#exampleModal').modal('show')
+                    $("form").submit();
                 }
             }
             else {
                 $('#exampleModal').modal('show')
-                //$("form").submit();
+                $("form").submit();
             }
         });
 
@@ -2505,11 +2660,11 @@
         }
 
         function FillSONO() {
-
+            var saleBillType = $('#SaleBillJobwork').val() == 'J' ? "JOBWORK-SALEBILL" : "SALEBILL";
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillSONO")",
-                data: { "billDate": $("#SaleBillDate").val(), "accountCode": $('#AccountCode').val() },
+                data: { "billDate": $("#SaleBillDate").val(), "accountCode": $('#AccountCode').val(), "billType": saleBillType },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -2634,19 +2789,18 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-            if ($('#SONO').find(':selected').data('sotype') == "OPEN") {
-                if ($('#SaleBillJobwork').val() == 'J') {
-                    JWItemList($('#TypeItemServAssets').val());
+                debugger
+                if ($('#SONO').val() == '') {
+                    if ($('#SaleBillJobwork').val() == 'J') {
+                        JWItemList($('#TypeItemServAssets').val());
+                    }
                 } else {
-                    FillSOWiseItems();
+                    debugger
+                    if ($('#SONO').find(':selected').data('sotype') == 'CLOSE') {
+                        FillSOWiseItems();
+                    }
                 }
-            } else {
-                if ($('#SaleBillJobwork').val() == 'J') {
-                    JWItemList($('#TypeItemServAssets').val());
-                } else {
-                    FillSOWiseItems();
-                }
-            }
+            
 
             FILLCustomerOrderAndSPDate();
             FillSOItemRate();
@@ -2686,7 +2840,7 @@
                             });
                         }
                     }
-                    
+
                     $('#SchNo,#SaleSchYearCode,#SOPendQty,#Rate').val(0);
                     $('#PartCode,#ItemCode').val(0).trigger("change");
                     $('#Batchno,#Uniquebatchno').val("");
@@ -2714,7 +2868,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    
+
                     $('#Uniquebatchno').empty();
                     $('#Uniquebatchno').append('<option value="0" selected>-Select-</option>');
                     if (result != null) {
@@ -2952,7 +3106,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#SchNo').empty();
@@ -3011,11 +3165,24 @@
                         var obj = $.parseJSON(result);
                         $('#Schdate').val("");
                         $('#Schdate').val(obj.Result[0].ScheduleDate);
+                        
+                        // if ($('#SaleBillJobwork').val() == 'J') {
+                        //     JWItemList($('#TypeItemServAssets').val());
+                        // } else {
+                        //     if ($('#SONO').find(':selected').data('sotype') == 'OPEN') {
+                        //         FillSOWiseItems();
+                        //     }
+                        // }
 
-                        if ($('#SaleBillJobwork').val() == 'J') {
-                            JWItemList($('#TypeItemServAssets').val());
+                        if ($('#SONO').val() == '') {
+                            if ($('#SaleBillJobwork').val() == 'J') {
+                                JWItemList($('#TypeItemServAssets').val());
+                            }
                         } else {
-                            FillSOWiseItems();
+                            debugger
+                            if ($('#SONO').find(':selected').data('sotype') == 'OPEN') {
+                                FillSOWiseItems();
+                            }
                         }
                     }
                 }
@@ -3082,7 +3249,7 @@
                     $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#ApprovDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    // $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "minDate", FinFromDate);
+                    $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "minDate", FinFromDate);
                     // $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
 
                     var saleBillEntryDate = parseDateToFormat($('#SaleBillEntryDate').val());
@@ -3127,8 +3294,46 @@
         }
 
         $('#SaleBillDate').change(function () {
+            ClearGrid();
+            btnClearTax();
+            ClearAdjustmentGrid();
+            ClearDRCRGrid();
+            ClearCustomerJWGrid();
+
             $('#AdjDueDate').datepicker("option", "minDate", ($('#SaleBillDate').val()).split(" ")[0]);
+            var saleBillDate = parseDateToFormat($(this).val());
+            var RemovalTime = $('#RemovalTime').val();
+            if (saleBillDate > RemovalTime) {
+                $('#RemovalTime').datepicker("option", "minDate", saleBillDate);
+            }
+
         });
+
+        $('#RemovalDate').change(function () {
+            ClearGrid();
+            btnClearTax();
+            ClearAdjustmentGrid();
+            ClearDRCRGrid();
+            ClearCustomerJWGrid();
+        });
+
+        function ClearCustomerJWGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearCustomerJWGrid")",
+                success: function (result, status, error) {
+                    debugger
+                    $('#divCustJobWorkISsueSummary').empty();
+                    $('#divBomCustJobWorkISsueSummary').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divCustJobWorkISsueSummary').html(NoData);
+                    $('#divBomCustJobWorkISsueSummary').html(NoData);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
 
         function PressBack() {
 

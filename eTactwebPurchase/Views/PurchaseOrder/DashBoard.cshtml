@@ -139,6 +139,11 @@
                                                                                                 </span>
                                                                                             </a>`);
                             }
+                            
+                                $("#divDashboardGrid").css("display", "none");
+                                $(".totalrows").css("display", "none");
+                                $("#SParam").hide();
+                           
                         }else{
 
                         console.log(obj);
@@ -183,6 +188,11 @@
                                                                                     </a>`);
                                 }
                             }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
+                                }
                         }
                         }
                     }
@@ -221,6 +231,7 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#PODashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -242,6 +253,7 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#PODashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
