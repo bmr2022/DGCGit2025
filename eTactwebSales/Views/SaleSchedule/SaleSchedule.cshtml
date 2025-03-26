@@ -49,7 +49,7 @@
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     @if (Model.Mode == "SSA")
                     {
-                        <a asp-action="SSAmendmentList" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                        <a asp-action="SSAmendmentList" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2 ">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -60,7 +60,7 @@
                     }
                     else
                     {
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2 saleorderDashBoard">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -756,7 +756,7 @@
                         }
                         else
                         {
-                            <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2">
+                            <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient me-2 saleorderDashBoard">
                                 <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                 Dashboard
                             </a>
@@ -2397,6 +2397,13 @@
                             if (!optAll) {
                                 if (!optSave) {
                                     $("button[type='submit'").prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".saleorderDashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
                                 }
                             }
                         }

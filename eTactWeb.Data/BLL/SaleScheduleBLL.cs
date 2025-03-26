@@ -23,6 +23,10 @@ public class SaleScheduleBLL : ISaleSchedule
     {
         return await _SaleScheduleDAL.GetFormRights(ID);
     }
+    public async Task<ResponseResult> GetFormRightsAmen(int ID)
+    {
+        return await _SaleScheduleDAL.GetFormRightsAmen(ID);
+    }
     public async Task<ResponseResult> DeleteByID(int ID, int YC)
     {
         return await _SaleScheduleDAL.DeleteByID(ID, YC);

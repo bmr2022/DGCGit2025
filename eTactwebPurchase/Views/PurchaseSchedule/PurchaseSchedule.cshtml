@@ -28,7 +28,7 @@
             <h5>
                 <strong>@ViewData["Title"] - @Model.YearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient saleorderDashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -376,7 +376,7 @@
                 <h5>
                     <strong>@ViewData["Title"] - @Model.YearCode</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient saleorderDashBoard">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -1043,7 +1043,15 @@
                                 if (!optSave) {
                                     $("button[type='submit']").prop("disabled", true);
                                 }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".saleorderDashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
+                                }
                             }
+                           
                         }
                     }
                 },

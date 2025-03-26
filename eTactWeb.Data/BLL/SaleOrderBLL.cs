@@ -21,7 +21,12 @@ public class SaleOrderBLL : ISaleOrder
 		return await _SaleOrderDAL.GetSOItem(AccountCode, SONO, Year, ItemCode);
 	}
 
-	public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag)
+    public async Task<ResponseResult> CheckOrderNo(int year, int accountcode)
+    {
+        return await _SaleOrderDAL.CheckOrderNo( year,  accountcode);
+    }
+
+    public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag)
     {
         return await _SaleOrderDAL.DeleteByID(ID, YearCode, Flag);
     }
@@ -37,6 +42,10 @@ public class SaleOrderBLL : ISaleOrder
     public async Task<ResponseResult> GetFormRights(int userID)
     {
         return await _SaleOrderDAL.GetFormRights(userID);
+    }
+    public async Task<ResponseResult> GetFormRightsAmm(int userID)
+    {
+        return await _SaleOrderDAL.GetFormRightsAmm(userID);
     }
     public async Task<ResponseResult> NewEntryId(int YearCode)
     {

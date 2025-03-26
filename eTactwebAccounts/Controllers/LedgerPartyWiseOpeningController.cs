@@ -43,7 +43,15 @@ namespace eTactWeb.Controllers
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.EntryDate = DateTime.Now.ToString();
-            MainModel.OpeningYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            //MainModel.OpeningYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+            int financialYearStart = (currentMonth < 4) ? currentYear - 1 : currentYear;
+            MainModel.OpeningYearCode = financialYearStart - 1;
+
+
+
             MainModel.ActualEntryByEmp = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.EntryByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = DateTime.Now;

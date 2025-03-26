@@ -9,6 +9,8 @@ namespace eTactWeb.Services.Interface
 		
 
 		Task<ResponseResult> GetAddress(string Code);
+
+        Task<ResponseResult> CheckOrderNo(int year,int accountcode);
         Task<ResponseResult> GetFillCurrency(string CTRL);
 		Task<string> GetSOItem(int AccountCode, int SONO, int Year, int ItemCode);
 
@@ -28,6 +30,7 @@ namespace eTactWeb.Services.Interface
 
         Task<SaleOrderDashboard> GetDashboardData(string EndDate);
         Task<ResponseResult> GetFormRights(int userID);
+        Task<ResponseResult> GetFormRightsAmm(int userID);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> NewAmmEntryId(int YearCode);
 

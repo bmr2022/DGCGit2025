@@ -104,7 +104,7 @@
     {
     <script>
         $(function () {
-
+            GetFormRights();
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             function formatDate(date) {
@@ -125,6 +125,118 @@
             AutoComplete('VSALESCHEDULE', 'CustOrderNo', 'CustomerOrderNo', null);
             AutoComplete('VSALESCHEDULE', 'ItemName', 'ItemName', null);
         });
+
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRightsAmen")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#viewCursorDiv-' + i).empty();
+                                $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                        <span class="fa-stack">
+                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                        </span>
+                                                                                    </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#editCursorDiv-' + i).empty();
+                                $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                <span class="fa-stack">
+                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                </span>
+                                                                            </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#deleteCursorDiv-' + i).empty();
+                                $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                <span class="fa-stack">
+                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                </span>
+                                                                            </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#deleteCursorDiv-' + i).empty();
+                                $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                <span class="fa-stack">
+                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                </span>
+                                                                            </a>`);
+                            }
+
+                            $("#divSSDashboardGrid").css("display", "none");
+                            $(".griddata").css("display", "none");
+                            $("#SParam").hide();
+
+                        } else {
+
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            if (!optAll) {
+                                if (!optView) {
+
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#viewCursorDiv-' + i).empty();
+                                        $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                <span class="fa-stack">
+                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                </span>
+                                                                            </a>`);
+                                    }
+                                }
+                                if (!optUpdate) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#editCursorDiv-' + i).empty();
+                                        $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                <span class="fa-stack">
+                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                </span>
+                                                                            </a>`);
+                                    }
+                                }
+                                if (!optDelete) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#deleteCursorDiv-' + i).empty();
+                                        $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                <span class="fa-stack">
+                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                </span>
+                                                                            </a>`);
+                                    }
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divSSDashboardGrid").css("display", "none");
+                                    $(".griddata").css("display", "none");
+                                    $("#SParam").hide();
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
 
         function GetAmmSearchData() {
             var AmmType = $('#AmmType').val();

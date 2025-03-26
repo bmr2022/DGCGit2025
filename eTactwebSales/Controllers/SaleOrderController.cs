@@ -253,7 +253,14 @@ public class SaleOrderController : Controller
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
-	public async Task<JsonResult> NewEntryId(int YearCode)
+    public async Task<JsonResult> GetFormRightsAmm()
+    {
+        var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        var JSON = await _ISaleOrder.GetFormRightsAmm(userID);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> NewEntryId(int YearCode)
 	{
 		var JSON = await _ISaleOrder.NewEntryId(YearCode);
 		string JsonString = JsonConvert.SerializeObject(JSON);
@@ -772,6 +779,27 @@ public class SaleOrderController : Controller
 		string JsonString = JsonConvert.SerializeObject(JSON);
 		return Json(JsonString);
 	}
+
+	public async Task<IActionResult> CheckOrderNo(int year, int accountcode)
+	{
+		var response = await _ISaleOrder.CheckOrderNo(year, accountcode);
+		List<string> soNumbersList = new List<string>();
+
+		if (response?.Result is DataTable dt)
+		{
+			foreach (DataRow row in dt.Rows)
+			{
+				soNumbersList.Add(row["CustOrderNo"].ToString());
+			}
+		}
+
+		return Json(new { Success = true, SONumbers = soNumbersList });
+	}
+
+
+
+
+
 
 	public async Task<JsonResult> GetAltQty(int ItemCode, float UnitQty, float ALtQty)
 	{

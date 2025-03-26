@@ -192,7 +192,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
                 SqlParams.Add(new SqlParameter("@yearcode", YearCode));
-                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
+                SqlParams.Add(new SqlParameter("@VoucherDate", ParseFormattedDate(VoucherDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -421,7 +421,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID,int YearCode,int ActualEntryBy,string EntryByMachine,string ActualEntryDate)
+        public async Task<ResponseResult> DeleteByID(int ID,int YearCode,int ActualEntryBy,string EntryByMachine,string ActualEntryDate, string VoucherType)
         {
             var _ResponseResult = new ResponseResult();
             try

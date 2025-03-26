@@ -5,7 +5,7 @@
 }
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="LedgerPartyWiseOpening" asp-controller="LedgerPartyWiseOpening" method="post" autocomplete="on" class="form-horizontal">
+    <form asp-action="MaterialConversion" asp-controller="MaterialConversion" method="post" autocomplete="on" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h5>
@@ -182,7 +182,7 @@
                                                                         <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
-                                                                                <input type="hidden" value="@Model.OriginalItemCode" />
+                                                                                @* <input type="hidden" value="@Model.OriginalItemCode" /> *@
                                                                                 <option value="@Model.OriginalItemCode" selected>@Model.OriginalPartCode</option>
                                                                             }
                                                                     </select>
@@ -193,7 +193,7 @@
                                                                         <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
-                                                                                <input type="hidden" value="@Model.OriginalItemCode" />
+                                                                                @* <input type="hidden" value="@Model.OriginalItemCode" /> *@
                                                                                 <option value="@Model.OriginalItemCode" selected>@Model.OriginalItemName</option>
                                                                             }
                                                                     </select>
@@ -204,7 +204,7 @@
                                                                         <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
-                                                                                <input type="hidden" value="@Model.StoreId" id="hiddenToStoreId" />
+                                                                               @*  <input type="hidden" value="@Model.StoreId" id="hiddenToStoreId" /> *@
                                                                                 <option value="@Model.StoreId" selected>@Model.StoreName</option>
                                                                             }
                                                                     </select>
@@ -215,7 +215,7 @@
                                                                         <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
-                                                                                <input type="hidden" value="@Model.WorkCenterName" id="hiddenToWCID" />
+                                                                                @* <input type="hidden" value="@Model.WorkCenterName" id="hiddenToWCID" /> *@
                                                                                 <option value="@Model.WcId" selected>@Model.WorkCenterName</option>
                                                                             }
                                                                     </select>
@@ -243,7 +243,7 @@
                                                                             <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
-                                                                                <input type="hidden" value="@Model.AltItemCode" />
+                                                                               @*  <input type="hidden" value="@Model.AltItemCode" /> *@
                                                                                 <option value="@Model.AltItemCode" selected>@Model.AltPartCode</option>
                                                                             }
                                                                         </select>
@@ -254,7 +254,7 @@
                                                                             <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
-                                                                                <input type="hidden" value="@Model.AltItemCode" />
+                                                                                @* <input type="hidden" value="@Model.AltItemCode" /> *@
                                                                                 <option value="@Model.AltItemCode" selected>@Model.AltItemName</option>
                                                                             }
                                                                         </select>
@@ -265,7 +265,7 @@
                                                                             <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
-                                                                                <input type="hidden" value="@Model.AltStoreId" id="hiddenToStoreId" />
+                                                                                @* <input type="hidden" value="@Model.AltStoreId" id="hiddenToStoreId" /> *@
                                                                                 <option value="@Model.AltStoreId" selected>@Model.AltStoreName</option>
                                                                             }
                                                                         </select>
@@ -276,7 +276,7 @@
                                                                             <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
-                                                                                <input type="hidden" value="@Model.AltWorkCenterName" id="hiddenToWCID" />
+                                                                               @*  <input type="hidden" value="@Model.AltWorkCenterName" id="hiddenToWCID" /> *@
                                                                                 <option value="@Model.AltWCID" selected>@Model.AltWorkCenterName</option>
                                                                             }
                                                                         </select>
@@ -503,13 +503,17 @@
                                                 </div>
                                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                     <label asp-for="ApprovedBy" class="form-label">ApprovedBy</label>
-                                                    <input asp-for="ApprovedBy" class="form-control" readonly />
+                                                    <input type="hidden" asp-for="ApprovedBy"/>
+                                                    <input asp-for="ApprovedByEmpName" class="form-control" readonly />
                                                 </div>
                                                 
+                                                  
+                                               
                                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                                    <label asp-for="CC" class="form-label">CC</label>
-                                                    <input asp-for="CC " class="form-control" readonly />
+                                                    <label asp-for="cc" class="form-label">CC</label>
+                                                <input asp-for="cc " class="form-control" value="@Model.cc" readonly />
                                                 </div>
+
                                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                     <label asp-for="ActualEntryByEmpid" class="form-label">ActualEntryByEmpid</label>
                                                     <input asp-for="ActualEntryByEmpid " class="form-control" readonly />
@@ -551,7 +555,7 @@
                             <span class="d-flex float-end" style="margin-top:-2px;">
 
                                 @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                                <a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -615,22 +619,34 @@
 
             }
             //$('#BillNo').removeClass('Valid');
+            $('#SlipDate').rules("remove", "required");
+            $('#Uid').rules("remove", "required");
+            $('#UpdationDate').rules("remove", "required");
+            $('#UpdatedByEmpId').rules("remove", "required");
+
+            $('#OriginalItemCode').rules("remove", "required");
             $('#OriginalPartCode').rules("remove", "required");
             $('#OriginalItemName').rules("remove", "required");
-            $('#Unit').rules("remove", "required");
-            $('#OriginalQty').rules("remove", "required");
-            $('#AltItemName').rules("remove", "required");
-            $('#AltUnit').rules("remove", "required");
-            $('#AltOriginalQty').rules("remove", "required");
-            $('#OriginalStoreId').rules("remove", "required");
-            $('#AltStoreId').rules("remove", "required");
-            $('#OrginalWCID').rules("remove", "required");
-            $('#AltWCID').rules("remove", "required");
+            $('#StoreId').rules("remove", "required");
+            $('#StoreName').rules("remove", "required");
+            $('#WcId').rules("remove", "required");
+            $('#WorkCenterName').rules("remove", "required");
             $('#BatchNo').rules("remove", "required");
             $('#UniqueBatchNo').rules("remove", "required");
             $('#BatchStock').rules("remove", "required");
             $('#TotalStock').rules("remove", "required");
+            $('#OriginalQty').rules("remove", "required");
+            $('#Unit').rules("remove", "required");
             $('#AltStock').rules("remove", "required");
+            $('#AltPartCode').rules("remove", "required");
+            $('#AltItemCode').rules("remove", "required");
+            $('#AltItemName').rules("remove", "required");
+            $('#AltStoreId').rules("remove", "required");
+            $('#AltStoreName').rules("remove", "required");
+            $('#AltWCID').rules("remove", "required");
+            $('#AltWorkCenterName').rules("remove", "required");
+            $('#AltOriginalQty').rules("remove", "required");
+            $('#AltUnit').rules("remove", "required");
             $('#PlanNo').rules("remove", "required");
             $('#PlanYearCode').rules("remove", "required");
             $('#PlanDate').rules("remove", "required");
@@ -639,6 +655,7 @@
             $('#ProdSchDatetime').rules("remove", "required");
             $('#OrigItemRate').rules("remove", "required");
             $('#Remark').rules("remove", "required");
+
 
             $('#WONO').select2();
             $('#WOYear').select2();
@@ -675,20 +692,29 @@
             // }
 
 
-            // var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-            // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+            setFormattedDate();
+            $('#GridButton').click(function (e) {
+                setFormattedDate();
+            });
+            // var today = new Date();
+            // var day = ('0' + today.getDate()).slice(-2); 
+            // var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            // var month = monthNames[today.getMonth()]; 
+            // var year = today.getFullYear(); 
 
-            $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#ProdSchDatetime').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#PlanDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            // var formattedDate = day + '/' + month + '/' + year;
 
-            if ($('#Mode').val() == "U") {
+            // $('#ProdSchDatetime').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
+            // $('#PlanDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
+            // $('#ActualEntryDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
+            // $('#SlipDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
+            // if ($('#Mode').val() == "U") {
 
-                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+            //     var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+            //     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 
-                $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            } 
+            //     $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            // } 
 
             var previousValue = $("#LedgerName").val(); // Store initial value
 
@@ -708,15 +734,15 @@
                 }
             });
              $('input[name="OriginalQty"]').on('input', function () {
-            var originalQty = $(this).val();
-            $('input[name="AltOriginalQty"]').val(originalQty);
-        });
+                var originalQty = $(this).val();
+                $('input[name="AltOriginalQty"]').val(originalQty);
+             });
 
             $('.submitBTN').click(function (e) {
-                validateBalance();
-                if (!validateBalance()) {
-                    e.preventDefault();
-                }
+                debugger
+                console.log("SubmitButton Click");
+                e.preventDefault();
+                //$(this).off('click');
                 $('form').submit();
             });
             FillStockBatchNo();
@@ -744,6 +770,19 @@
                 $('#AltWorkCenterName').prop("disabled", false);
             }
         });
+        function setFormattedDate() {
+            var today = new Date();
+            var day = ('0' + today.getDate()).slice(-2);
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var month = monthNames[today.getMonth()];
+            var year = today.getFullYear();
+
+            var formattedDate = day + '/' + month + '/' + year;
+
+            $('#ProdSchDatetime, #PlanDate, #ActualEntryDate, #SlipDate')
+                .datepicker({ dateFormat: 'dd/M/yy' })
+                .val(formattedDate);
+        }
 
         $('#IssueToStoreWC').change(function () {
             $('#BatchNo').val('');
