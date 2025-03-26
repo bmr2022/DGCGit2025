@@ -780,20 +780,11 @@ public class SaleOrderController : Controller
 		return Json(JsonString);
 	}
 
-	public async Task<IActionResult> CheckOrderNo(int year, int accountcode)
+	public async Task<JsonResult> CheckOrderNo(int year, int accountcode, int entryid, string custorderno)
 	{
-		var response = await _ISaleOrder.CheckOrderNo(year, accountcode);
-		List<string> soNumbersList = new List<string>();
-
-		if (response?.Result is DataTable dt)
-		{
-			foreach (DataRow row in dt.Rows)
-			{
-				soNumbersList.Add(row["CustOrderNo"].ToString());
-			}
-		}
-
-		return Json(new { Success = true, SONumbers = soNumbersList });
+		var JSON = await _ISaleOrder.CheckOrderNo( year,  accountcode,  entryid,  custorderno);
+		string JsonString = JsonConvert.SerializeObject(JSON);
+		return Json(JsonString);
 	}
 
 
