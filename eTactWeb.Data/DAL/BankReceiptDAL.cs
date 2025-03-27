@@ -54,10 +54,6 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Accountcode", AccountCode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", ParseDate(VoucherDate)));
 
-                //ParseDate(billDate)
-                //SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
-                //SqlParams.Add(new SqlParameter("@VoucherDate", vchDt));
-
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -584,7 +580,7 @@ namespace eTactWeb.Data.DAL
                 {
                     ItemList.Add(new BankReceiptModel
                     {
-                        SeqNo = Convert.ToInt32(row["seqno"].ToString()),
+                        SrNO = Convert.ToInt32(row["seqno"].ToString()),
                         AccEntryId = Convert.ToInt32(row["AccEntryId"].ToString()),
                         YearCode = Convert.ToInt32(row["AccYearCode"].ToString()),
                         CostCenterId = Convert.ToInt32(row["costcenterid"].ToString()),
@@ -632,7 +628,7 @@ namespace eTactWeb.Data.DAL
                         Type = row["DRCRTYPE"].ToString(),
                     });
                 }
-                model.BankReceiptGrid = ItemList;
+                model.BankReceiptGrid = ItemList.OrderBy(x => x.SrNO).ToList();
             }
 
             return model;
