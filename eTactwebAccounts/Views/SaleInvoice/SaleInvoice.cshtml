@@ -120,7 +120,7 @@
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
 
-                                <div class="card-body overflow-auto pb-0 jobWorkChalln">
+                                <div class="card-body overflow-auto pb-0">
                                     <div class="table-responsive" style="max-height:150px;">
                                         <table class="table table-hover table-bordered table-striped" id="poTable">
                                             <thead class="bg-gradient card-headerBG text-light small" id="poThead" style="white-space:nowrap">
@@ -226,7 +226,7 @@
                                         </thead>
                                         <tbody id="divCustJobWorkISsueSummary">
                                             @* <partial name="_JOBWORKISSUESUMMARY" /> *@
-                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", new List<CustomerJobWorkIssueAdjustDetail>())
+                                            @await Html.PartialAsync("_CustomerJwisschallanAdjustment", Model.CustomerJobWorkChallanAdj)
                                         </tbody>
                                     </table>
                                 </div>
@@ -234,7 +234,7 @@
 
                             <div class="card">
                                 <div class="card-body overflow-auto pb-0">
-                                    <table class="table table-hover table-bordered table-striped IssueNRGPTb">
+                                    <table class="table table-hover table-bordered table-striped IssueNRGPTb jobWorkChalln">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                             <tr>
                                                 <th>SR#</th>
@@ -253,7 +253,7 @@
                                         </thead>
                                         <tbody id="divBomCustJobWorkISsueSummary">
                                             @* <partial name="_JOBWORKISSUESUMMARY" /> *@
-                                            @await Html.PartialAsync("_BomCustJwisschallanAdjustment", new List<BomCustomerJWIssChallanADJ>())
+                                            @await Html.PartialAsync("_BomCustJwisschallanAdjustment",  new List<BomCustomerJWIssChallanADJ>())
                                         </tbody>
                                     </table>
                                 </div>
@@ -418,7 +418,7 @@
     <script>
 
         $(document).ready(function () {
-            debugger
+            
             GetServerDate();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
@@ -430,9 +430,7 @@
                 $('#DT').prop("checked", true);
                 $('#PN1').prop("checked", true);
                 // FillCustomerList("Y");
-
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
-
                 var taxRowCount = $('#divTaxGrid tr').length;
 
                 var txSum = 0;
@@ -456,7 +454,7 @@
 
             $('#AdjNewRefNo').val($('#SaleBillNo').val());
             $('#AdjDescription').val($('#SaleBillNo').val());
-
+            
             AllowTaxPassword();
             $('#Unit').prop("readonly", true);
             $('#AltUnit').prop("readonly", true);
@@ -483,7 +481,7 @@
             AutoComplete("vehicleNo", "vehicleNo");
             AutoComplete("TransporterName", "TransporterName");
 
-            debugger
+            
             var InvDate = parseDateToFormat($('#SaleBillDate').val().split(" ")[0]);
 
             // var parts = InvDate.split('/');
@@ -496,7 +494,7 @@
 
             GetTaxPartItem();
 
-            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); FillCurrency(); FillSONO(); }
+            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); FillCurrency(); FillSONO(); BomAdjustChallanGrid(); }
 
             DueDateCalculation();
 
@@ -631,7 +629,7 @@
             $('#SchdeliveryDate').rules("remove", "required");
             $('#CustOrderNo').rules("remove", "required");
             $('#DistanceKM ').rules("remove", "required");
-
+            
             var rowCount = $('#divSaleBillList tr').length;
             for (var i = 1; i <= rowCount; i++) {
                 var itemCodee = parseInt($('#GridIC-' + i).val());
@@ -757,13 +755,8 @@
                 return false;
             }
 
-            if ($('#PartCode').val() == 0) {
-                $.notify('please enter PartCode...!', "error");
-                return false;
-            }
-
-            if ($('#ItemCode').val() == 0) {
-                $.notify('please enter ItemName...!', "error");
+            if ($('#divSaleBillList tr td').length <= 1) {
+                $.notify('please fill item grids...!', "error");
                 return false;
             }
 
@@ -825,6 +818,7 @@
                 // dataType: "html",
                 async: false,
                 success: function (data) {
+                    
                     $('#divCustJobWorkISsueSummary').html(data);
                     var dashGrid = $('#divCustJobWorkISsueSummary').length ? $('#divCustJobWorkISsueSummary').length : 0;
                     $('#totalRows').text(dashGrid);
@@ -865,7 +859,7 @@
         }
 
         function BomAdjustChallanGrid() {
-            event.preventDefault();
+            // event.preventDefault();
 
             if (!ValidateAdjDetail()) return;
             var YearCode = $('#SaleBillYearCode').val();
@@ -1582,6 +1576,7 @@
                 },
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
+                        
                         $('#divSaleBillList').html(result);
                         var rowCount = $('#divSaleBillList tr').length;
 
@@ -1722,7 +1717,7 @@
                 type: "POST",
                 url: "@Url.Action("ClearGrid")",
                 success: function (result, status, error) {
-
+                    
                     $('#divSaleBillList').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divSaleBillList').html(NoData);
@@ -2171,7 +2166,7 @@
         })
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-            debugger
+            
             e.preventDefault();
 
             if (!ValidateSubmit()) return;
@@ -2370,6 +2365,7 @@
                     async: false,
                     data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
                     success: function (data, status, xhr) {
+                        
                         $('#divSaleBillList').html(data);
 
                         BasicTotal();
@@ -2789,13 +2785,13 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-                debugger
+                
                 if ($('#SONO').val() == '') {
                     if ($('#SaleBillJobwork').val() == 'J') {
                         JWItemList($('#TypeItemServAssets').val());
                     }
                 } else {
-                    debugger
+                    
                     if ($('#SONO').find(':selected').data('sotype') == 'CLOSE') {
                         FillSOWiseItems();
                     }
@@ -3179,7 +3175,7 @@
                                 JWItemList($('#TypeItemServAssets').val());
                             }
                         } else {
-                            debugger
+                            
                             if ($('#SONO').find(':selected').data('sotype') == 'OPEN') {
                                 FillSOWiseItems();
                             }
@@ -3322,7 +3318,6 @@
                 type: "POST",
                 url: "@Url.Action("ClearCustomerJWGrid")",
                 success: function (result, status, error) {
-                    debugger
                     $('#divCustJobWorkISsueSummary').empty();
                     $('#divBomCustJobWorkISsueSummary').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
