@@ -34,8 +34,8 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<ActionResult> BankReceipt(int ID, string Mode, int YearCode, string VoucherNo)
         {
-            _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-
+            _MemoryCache.Remove("KeyBankReceiptGrid");
+            _MemoryCache.Remove("KeyBankReceiptGridEdit");
             TempData.Clear();
             var MainModel = new BankReceiptModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
@@ -44,45 +44,20 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-            if (MainModel.Mode == "U")
-            {
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedOn = DateTime.Now;
-            }
-
-            _MemoryCache.Remove("KeyBankReceiptGrid");
-
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _IBankReceipt.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.ID = ID;
                 MainModel.VoucherNo = VoucherNo;
-
-                if (Mode == "U")
-                {
-                    //MainModel.UpdatedByEmp = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    //MainModel.LastUpdatedBy = HttpContext.Session.GetString("EmpName");
-                    //MainModel.UpdationDate = DateTime.Now.ToString();
-                    //MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
-                    //MainModel.ActualEntryByEmp = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                    //MainModel.EffectiveDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
-
-                }
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTime.Now.AddMinutes(60),
                     SlidingExpiration = TimeSpan.FromMinutes(55),
                     Size = 1024
                 };
-                _MemoryCache.Set("KeyBankReceiptGrid", MainModel.BankReceiptGrid, cacheEntryOptions);
+                _MemoryCache.Set("KeyBankReceiptGridEdit", MainModel.BankReceiptGrid, cacheEntryOptions);
             }
-
-            else
-            {
-                // MainModel = await BindModels(MainModel);
-            }
-
             return View(MainModel);
         }
         [HttpPost]
@@ -94,14 +69,14 @@ namespace eTactWeb.Controllers
             {
                 var GIGrid = new DataTable();
                 _MemoryCache.TryGetValue("KeyBankReceiptGrid", out List<BankReceiptModel> BankReceiptGrid);
-
+                _MemoryCache.TryGetValue("KeyBankReceiptGridEdit", out List<BankReceiptModel> BankReceiptGridEdit);
 
                 model.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEntryBy = HttpContext.Session.GetString("UID");
                 if (model.Mode == "U")
                 {
                     //model.UpdatedOn = DateTime.Now;
-                    GIGrid = GetDetailTable(BankReceiptGrid);
+                    GIGrid = GetDetailTable(BankReceiptGridEdit);
                 }
                 else
                 {
@@ -120,6 +95,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
+                        _MemoryCache.Remove("KeyBankReceiptGridEdit");
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -382,7 +358,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillEntryID(int YearCode,string VoucherDate)
+        public async Task<JsonResult> FillEntryID(int YearCode, string VoucherDate)
         {
             var JSON = await _IBankReceipt.FillEntryID(YearCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -422,10 +398,10 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                if (model.Mode == "U")
+                if (model.Mode == "U" || model.Mode == "V")
                 {
 
-                    _MemoryCache.TryGetValue("KeyBankReceiptGrid", out IList<BankReceiptModel> BankReceiptGrid);
+                    _MemoryCache.TryGetValue("KeyBankReceiptGridEdit", out IList<BankReceiptModel> BankReceiptGrid);
 
                     var MainModel = new BankReceiptModel();
                     var WorkOrderPGrid = new List<BankReceiptModel>();
@@ -442,27 +418,70 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (model.ModeOfAdjustment.ToLower() == "new ref")
+                            if (model.BankType.ToLower() == "bank")
                             {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName)))
+                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
+                                {
+                                    return StatusCode(210, "Duplicate");
+                                }
+                                else
+                                {
+                                    model.SrNO = BankReceiptGrid.Count + 1;
+                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(OrderGrid);
+                                    OrderGrid.Add(model);
+
+                                }
+                            }
+                            else if (model.ModeOfAdjustment.ToLower() == "new ref")
+                            {
+                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
                                 {
                                     return StatusCode(207, "Duplicate");
                                 }
+                                else
+                                {
+                                    model.SrNO = BankReceiptGrid.Count + 1;
+                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(OrderGrid);
+                                    OrderGrid.Add(model);
+
+                                }
                             }
-
-                            else
+                            else if (model.ModeOfAdjustment.ToLower() == "advance")
                             {
-                                //count = WorkOrderProcessGrid.Count();
-                                model.SrNO = BankReceiptGrid.Count + 1;
-                                OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
-                                ssGrid.AddRange(OrderGrid);
-                                OrderGrid.Add(model);
+                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+                                {
+                                    return StatusCode(208, "Duplicate");
+                                }
+                                else
+                                {
+                                    model.SrNO = BankReceiptGrid.Count + 1;
+                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(OrderGrid);
+                                    OrderGrid.Add(model);
 
+                                }
+                            }
+                            else if (model.ModeOfAdjustment.ToLower() == "against ref")
+                            {
+                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
+                                {
+                                    return StatusCode(209, "Duplicate");
+                                }
+                                else
+                                {
+                                    model.SrNO = BankReceiptGrid.Count + 1;
+                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(OrderGrid);
+                                    OrderGrid.Add(model);
+
+                                }
                             }
 
                         }
 
-                        MainModel.BankReceiptGrid = OrderGrid.OrderBy(x=>x.SrNO).ToList();
+                        MainModel.BankReceiptGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -471,7 +490,7 @@ namespace eTactWeb.Controllers
                             Size = 1024,
                         };
 
-                        _MemoryCache.Set("KeyBankReceiptGrid", MainModel.BankReceiptGrid, cacheEntryOptions);
+                        _MemoryCache.Set("KeyBankReceiptGridEdit", MainModel.BankReceiptGrid, cacheEntryOptions);
                     }
                     else
                     {
@@ -500,7 +519,7 @@ namespace eTactWeb.Controllers
                         {
                             if (model.BankType.ToLower() == "bank")
                             {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && x.BankType == "Bank"))
+                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
                                 {
                                     return StatusCode(210, "Duplicate");
                                 }
@@ -560,7 +579,7 @@ namespace eTactWeb.Controllers
                             }
                         }
 
-                        MainModel.BankReceiptGrid = OrderGrid.OrderBy(x=>x.SrNO).ToList();
+                        MainModel.BankReceiptGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -583,54 +602,99 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddBankReceiptAdjustDetail(List<BankReceiptModel> model)
+        public IActionResult AddBankReceiptAdjustDetail(List<BankReceiptModel> model,string Mode)
         {
             try
             {
                 var MainModel = new BankReceiptModel();
                 var ProductionEntryDetail = new List<BankReceiptModel>();
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                if (Mode != "U" && Mode != "V")
                 {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-                // Retrieve existing cached data
-                _MemoryCache.TryGetValue("KeyBankReceiptGrid", out List<BankReceiptModel> ProductionEntryItemDetail);
-
-                // If cache exists, use it; otherwise, initialize a new list
-                if (ProductionEntryItemDetail != null)
-                {
-                    ProductionEntryDetail = ProductionEntryItemDetail;
-                }
-
-                foreach (var item in model)
-                {
-                    if (item != null)
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
-                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
-                        if (existingItem != null)
-                        {
-                            ProductionEntryDetail.Remove(existingItem);
-                        }
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
 
-                        // Assign sequence number correctly
-                        item.SrNO = ProductionEntryDetail.Count + 1;
+                    // Retrieve existing cached data
+                    _MemoryCache.TryGetValue("KeyBankReceiptGrid", out List<BankReceiptModel> ProductionEntryItemDetail);
 
-                        // Swap Type values
-                        item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
-
-                        // Add new item to list
-                        ProductionEntryDetail.Add(item);
+                    // If cache exists, use it; otherwise, initialize a new list
+                    if (ProductionEntryItemDetail != null)
+                    {
+                        ProductionEntryDetail = ProductionEntryItemDetail;
                     }
+
+                    foreach (var item in model)
+                    {
+                        if (item != null)
+                        {
+                            var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
+                            if (existingItem != null)
+                            {
+                                ProductionEntryDetail.Remove(existingItem);
+                            }
+
+                            // Assign sequence number correctly
+                            item.SrNO = ProductionEntryDetail.Count + 1;
+
+                            // Swap Type values
+                            item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
+
+                            // Add new item to list
+                            ProductionEntryDetail.Add(item);
+                        }
+                    }
+
+                    // Update the main model and cache
+                    MainModel.BankReceiptGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
+                    _MemoryCache.Set("KeyBankReceiptGrid", MainModel.BankReceiptGrid, cacheEntryOptions);
                 }
+                else
+                {
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
 
-                // Update the main model and cache
-                MainModel.BankReceiptGrid = ProductionEntryDetail.OrderBy(x=>x.SrNO).ToList();
-                _MemoryCache.Set("KeyBankReceiptGrid", MainModel.BankReceiptGrid, cacheEntryOptions);
+                    // Retrieve existing cached data
+                    _MemoryCache.TryGetValue("KeyBankReceiptGridEdit", out List<BankReceiptModel> ProductionEntryItemDetail);
 
+                    // If cache exists, use it; otherwise, initialize a new list
+                    if (ProductionEntryItemDetail != null)
+                    {
+                        ProductionEntryDetail = ProductionEntryItemDetail;
+                    }
+
+                    foreach (var item in model)
+                    {
+                        if (item != null)
+                        {
+                            var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
+                            if (existingItem != null)
+                            {
+                                ProductionEntryDetail.Remove(existingItem);
+                            }
+
+                            // Assign sequence number correctly
+                            item.SrNO = ProductionEntryDetail.Count + 1;
+
+                            // Swap Type values
+                            item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
+
+                            // Add new item to list
+                            ProductionEntryDetail.Add(item);
+                        }
+                    }
+
+                    // Update the main model and cache
+                    MainModel.BankReceiptGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
+                    _MemoryCache.Set("KeyBankReceiptGridEdit", MainModel.BankReceiptGrid, cacheEntryOptions);
+                }
                 return PartialView("_BankReceiptGrid", MainModel);
             }
             catch (Exception ex)
@@ -638,15 +702,26 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> EditItemRows(int SrNO)
+        public async Task<JsonResult> EditItemRows(int SrNO, string Mode)
         {
-            var MainModel = new BankReceiptModel();
-            _MemoryCache.TryGetValue("KeyBankReceiptGrid", out IList<BankReceiptModel> GridDetail);
-            var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
-            string JsonString = JsonConvert.SerializeObject(SAGrid);
-            return Json(JsonString);
+            if (Mode != "U" && Mode != "V")
+            {
+                var MainModel = new BankReceiptModel();
+                _MemoryCache.TryGetValue("KeyBankReceiptGrid", out IList<BankReceiptModel> GridDetail);
+                var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
+                string JsonString = JsonConvert.SerializeObject(SAGrid);
+                return Json(JsonString);
+            }
+            else
+            {
+                var MainModel = new BankReceiptModel();
+                _MemoryCache.TryGetValue("KeyBankReceiptGridEdit", out IList<BankReceiptModel> GridDetail);
+                var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
+                string JsonString = JsonConvert.SerializeObject(SAGrid);
+                return Json(JsonString);
+            }
         }
-        public IActionResult DeleteItemRow(int SeqNo, string PopUpData)
+        public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData)
         {
             if (PopUpData == "PopUpData")
             {
@@ -680,29 +755,60 @@ namespace eTactWeb.Controllers
             else
             {
                 var MainModel = new BankReceiptModel();
-                _MemoryCache.TryGetValue("KeyBankReceiptGrid", out List<BankReceiptModel> BankReceiptGrid);
-                int Indx = Convert.ToInt32(SeqNo) - 1;
-
-                if (BankReceiptGrid != null && BankReceiptGrid.Count > 0)
+                if (Mode != "U" && Mode != "V")
                 {
-                    BankReceiptGrid.RemoveAt(Convert.ToInt32(Indx));
-                    Indx = 0;
+                    _MemoryCache.TryGetValue("KeyBankReceiptGrid", out List<BankReceiptModel> BankReceiptGrid);
+                    int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                    foreach (var item in BankReceiptGrid)
+                    if (BankReceiptGrid != null && BankReceiptGrid.Count > 0)
                     {
-                        Indx++;
-                        item.SrNO = Indx;
+                        BankReceiptGrid.RemoveAt(Convert.ToInt32(Indx));
+                        Indx = 0;
+
+                        foreach (var item in BankReceiptGrid)
+                        {
+                            Indx++;
+                            item.SrNO = Indx;
+                        }
+                        MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
+
+                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                            SlidingExpiration = TimeSpan.FromMinutes(55),
+                            Size = 1024,
+                        };
+
+                        _MemoryCache.Set("KeyBankReceiptGrid", MainModel.BankReceiptGrid, cacheEntryOptions);
                     }
-                    MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
+                }
+                else
+                {
+                    
+                    _MemoryCache.TryGetValue("KeyBankReceiptGridEdit", out List<BankReceiptModel> BankReceiptGrid);
+                    int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    if (BankReceiptGrid != null && BankReceiptGrid.Count > 0)
                     {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
+                        BankReceiptGrid.RemoveAt(Convert.ToInt32(Indx));
+                        Indx = 0;
 
-                    _MemoryCache.Set("KeyBankReceiptGrid", MainModel.BankReceiptGrid, cacheEntryOptions);
+                        foreach (var item in BankReceiptGrid)
+                        {
+                            Indx++;
+                            item.SrNO = Indx;
+                        }
+                        MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
+
+                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                            SlidingExpiration = TimeSpan.FromMinutes(55),
+                            Size = 1024,
+                        };
+
+                        _MemoryCache.Set("KeyBankReceiptGridEdit", MainModel.BankReceiptGrid, cacheEntryOptions);
+                    }
                 }
                 return PartialView("_BankReceiptGrid", MainModel);
             }
@@ -711,6 +817,8 @@ namespace eTactWeb.Controllers
         {
             try
             {
+                _MemoryCache.Remove("KeyBankReceiptGrid");
+                _MemoryCache.Remove("KeyBankReceiptGridEdit");
                 var model = new BankReceiptModel();
                 FromDate = HttpContext.Session.GetString("FromDate");
                 ToDate = HttpContext.Session.GetString("ToDate");
@@ -733,12 +841,16 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate)
         {
+            _MemoryCache.Remove("KeyBankReceiptGrid");
+            _MemoryCache.Remove("KeyBankReceiptGridEdit");
             var model = new BankReceiptModel();
             model = await _IBankReceipt.GetDashBoardDetailData(FromDate, ToDate);
             return PartialView("_BankReceiptDashBoardDetailGrid", model);
         }
         public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate)
         {
+            _MemoryCache.Remove("KeyBankReceiptGrid");
+            _MemoryCache.Remove("KeyBankReceiptGridEdit");
             var model = new BankReceiptModel();
             model = await _IBankReceipt.GetDashBoardSummaryData(FromDate, ToDate);
             return PartialView("_BankReceiptDashBoardGrid", model);
@@ -756,9 +868,9 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyBankReceiptGridPopUpData", model.BankReceiptGrid, cacheEntryOptions);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate,string VoucherType)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType)
         {
-            var Result = await _IBankReceipt.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate,VoucherType);
+            var Result = await _IBankReceipt.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate, VoucherType);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

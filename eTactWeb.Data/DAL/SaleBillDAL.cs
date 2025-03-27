@@ -70,9 +70,11 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var billDate = Common.CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@SaleBillEntryDate", billDate));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
             }
             catch (Exception ex)
@@ -200,8 +202,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@InvNo", model.SaleBillNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@InvoiceDate", SaleBillDate == default ? string.Empty : SaleBillDate));
                 SqlParams.Add(new SqlParameter("@InvoiceTime", model.InvoiceTime ?? string.Empty));
-                //SqlParams.Add(new SqlParameter("@SaleBillJobwork", model.SaleBillJobwork ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@SaleBillJobwork", "S"));
+                SqlParams.Add(new SqlParameter("@SaleBillJobwork", model.SaleBillJobwork ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@ExportInvoiceNo", model.ExportInvoiceNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@PerformaInvNo", model.PerformaInvNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@PerformaInvDate", performaInvDate == default ? string.Empty : performaInvDate));
@@ -1176,7 +1177,7 @@ namespace eTactWeb.Data.DAL
                 {
                     foreach (DataRow row in DS.Tables[5].Rows)
                     {
-                        customerJWAdj.Add(new CustomerJobWorkChallanAdj
+                        customerJWAdj.Add(new CustomerJobWorkChallanAdj //
                         {
                             EntryDate = row["EntryDate"]?.ToString(),
                             CustJwRecEntryId = row["CustJwRecEntryId"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecEntryId"]) : 0,
