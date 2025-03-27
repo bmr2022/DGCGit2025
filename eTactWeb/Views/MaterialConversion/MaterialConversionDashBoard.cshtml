@@ -24,6 +24,7 @@
                         <div class="row">
 
                             <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
+                                <input type="hidden" asp-for="@Model.ActualEntryByEmpid" value="@Model.ActualEntryByEmpid" />
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">From Date</label>
@@ -352,7 +353,15 @@
             });
 
         }
+        function confirmEdit(event) {
 
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val();
+            window.location.href = linkUrl;
+
+        }
 
         $("#btnGridExcel").click(function () {
             const table = document.querySelector(".ISTDashboard");

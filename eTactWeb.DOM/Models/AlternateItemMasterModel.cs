@@ -8,7 +8,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-    public class AlternateItemMasterModel: AlternateItemMasterGridModel
+    public class AlternateItemMasterModel : AlternateItemMasterGridModel
     {
         public int FGItemCode { get; set; }
         public int MainItemCode { get; set; }
@@ -55,7 +55,7 @@ namespace eTactWeb.DOM.Models
         public float MatchingFactorPercentage { get; set; }
         public string effectivedate { get; set; }
         public int ActualEntryByEmp { get; set; }
-        public string ActualEntryDate { get; set; }
+       // public string ActualEntryDate { get; set; }
         public int UpdatedByEmp { get; set; }
         public string UpdationDate { get; set; }
         public string MachineName { get; set; }
