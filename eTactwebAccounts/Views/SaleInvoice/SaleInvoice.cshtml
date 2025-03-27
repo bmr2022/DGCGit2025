@@ -2171,7 +2171,7 @@
         })
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-            debugger
+             
             e.preventDefault();
 
             if (!ValidateSubmit()) return;
@@ -2789,13 +2789,13 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-                debugger
+                 
                 if ($('#SONO').val() == '') {
                     if ($('#SaleBillJobwork').val() == 'J') {
                         JWItemList($('#TypeItemServAssets').val());
                     }
                 } else {
-                    debugger
+                     
                     if ($('#SONO').find(':selected').data('sotype') == 'CLOSE') {
                         FillSOWiseItems();
                     }
@@ -3179,7 +3179,7 @@
                                 JWItemList($('#TypeItemServAssets').val());
                             }
                         } else {
-                            debugger
+                             
                             if ($('#SONO').find(':selected').data('sotype') == 'OPEN') {
                                 FillSOWiseItems();
                             }
@@ -3322,7 +3322,7 @@
                 type: "POST",
                 url: "@Url.Action("ClearCustomerJWGrid")",
                 success: function (result, status, error) {
-                    debugger
+                     
                     $('#divCustJobWorkISsueSummary').empty();
                     $('#divBomCustJobWorkISsueSummary').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';

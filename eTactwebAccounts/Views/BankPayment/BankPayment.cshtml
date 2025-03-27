@@ -188,7 +188,7 @@
                         </div>
                         <div class="card">
                             <div class="card-body overflow-auto pb-0">
-                                <div style="overflow-x:auto; overflow-y:auto; max-height:340px; border:1px solid #ccc;">
+                                <div style="overflow-x:auto; overflow-y:auto; max-height:190px; border:1px solid #ccc;">
                                     <table class="table table-hover table-bordered table-striped">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                             <tr>
@@ -196,25 +196,24 @@
                                                 <th>Sr NO</th>
                                                 <th>Ledger Name</th>
                                                 <th>Balance&nbsp;DR/CR</th>
-                                                <th>Intrument</th>
-                                                <th>Intrument No</th>
-                                                <th>Intrument Date</th>
-                                                <th>Mode of Adjustment</th>
+                                                <th title="Instrument">Inst</th>
+                                                <th title="Intrument No">Inst No</th>
+                                                <th title="Intrument Date">Inst Date</th>
+                                                <th title="Mode of Adjustment">Mode of Adj</th>
                                                 <th>Amount&nbsp;Type</th>
                                                 <th>Amount (OC)</th>
-                                                <th>Cost Center Name</th>
-                                                <th>Party-Wise Narration</th>
-                                               
-                                                <th>PO No</th>
-                                                <th>PO Date</th>
-                                                <th>PO Year</th>
-                                                <th>Against Voucher No</th>
-                                                <th>Against Voucher Code</th>
-                                                <th>Against Voucher Date</th>
-                                                <th>Against Voucher Type</th>
-                                                <th>Against Voucher Entry ID</th>
-                                                <th>Voucher Bill Amount</th>
-                                                <th>Pending Bill Amount</th>
+                                                <th>Cost Center</th>
+                                                <th>Party-Wise Narr</th>
+                                                <th title="Customer Order No">Cust Order No</th>
+                                                <th>Sales Order Date</th>
+                                                <th>Sales Order Year</th>
+                                                <th title="Against Voucher No">Agst Vch No</th>
+                                                <th title="Against Voucher Code">Agst Vch Code</th>
+                                                <th title="Against Voucher Date">Agst Vch Date</th>
+                                                <th title="Against Voucher Type">Agst Vch Type</th>
+                                                <th title="Against Voucher Entry ID">Agst Vch ID</th>
+                                                <th title="Voucher Bill Amount">Vch Bill Amt</th>
+                                                <th title="Pending Bill Amount">Pending Bill Amt</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divBankPaymentDetail">
@@ -525,14 +524,11 @@
             FillCostCenterName();
             FillSubVoucherName();
             FillIntrument();
-           
             FillCurrency();
-
             FillModeofAdjust();
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
             });
-            //alculateTotalBalance();
             $('#LedgerName').rules("remove", "required");
             $('#DRCR').rules("remove", "required");
             $('#Intrument').rules("remove", "required");
@@ -581,22 +577,15 @@
             $('#PONo').rules("remove", "required");
             $('#PoDate').rules("remove", "required");
             $('#POYear').rules("remove", "required");
-           
-
-            // Initialize Datepicker with min & max date
-            
 
             $('#BankRECO').datepicker({ dateFormat: 'dd/mm/yy' });
 
-           
                 var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 var currentDate = new Date();
 
-                // Calculate minDate (3 months before today)
                 var minDate = new Date();
                 minDate.setMonth(minDate.getMonth() - 3);
 
-                // Calculate maxDate (3 months after today)
                 var maxDate = new Date();
                 maxDate.setMonth(maxDate.getMonth() + 3);
                 $('#InsDate').datepicker({
@@ -635,8 +624,7 @@
 
             function checkModeOfAdjustment() {
 
-                const modeOfAdjustment = $("#ModeOfAdjustment").val(); // Assuming this is the ID of the field
-                // Show/Hide Advance Fields
+                const modeOfAdjustment = $("#ModeOfAdjustment").val();
                 if (modeOfAdjustment === "Advance") {
                     $("#advanceFieldsSOYear").show();
                     $("#advanceFieldsSeqNo").show();
@@ -655,7 +643,6 @@
                     $('#PoDate').prop('disabled', false);
                     $('#POYear').prop('disabled', false);
                 }
-                // Show/Hide Against Fields
                 else if (modeOfAdjustment === "Against Ref") {
                     if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                         $('#DisplayRoutingDetailModal').modal('hide');
@@ -683,7 +670,6 @@
                         PopUpForPendingVouchers("AddMode");
                     }
                 }
-                // Hide all fields for other values
                 else {
                     $("#advanceFieldsSOYear").hide();
                     $("#advanceFieldsSeqNo").hide();
@@ -713,7 +699,6 @@
                 checkModeOfAdjustment();
             });
 
-            // Initial check on page load
             checkModeOfAdjustment();
         });
 
@@ -752,6 +737,12 @@
             $('#POYear').val('');
         }
 
+        $("#AdjustmentAmt").on("keydown", function (event) {
+            if (event.key.toLowerCase() === 'e' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+
         $('#LedgerName').change(function () {
 
             $('#AccountCode').val($('#LedgerName').val())
@@ -759,8 +750,6 @@
             CheckBankType();
             AdjustAmountForAddToGridForDRCR();
         });
-
-
 
         FillLedgerName();
 
@@ -785,7 +774,6 @@
                     var monthNumber = parseInt(dateParts[1], 10); // Convert month to number
                     var year = dateParts[2]; // Get year
 
-                    // Convert month number to short month name (e.g., "Jan", "Feb", "Mar")
                     var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                     var monthShort = monthNames[monthNumber - 1]; // Get short month name
 
@@ -793,7 +781,7 @@
                     VoucherDate = `${day}/${monthShort}/${year}`;
                 } else {
                     console.error("Invalid date format:", VoucherDate);
-                    return; // Stop execution if format is incorrect
+                    return;
                 }
             }
             $.ajax({
@@ -832,7 +820,6 @@
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 
                         $('#Balance').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
-                        //$('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
                         $('#DRCR').val(obj.Result[0].TypeDrCr);
                     }
                     else {
@@ -1460,7 +1447,7 @@
                 $.ajax({
                     url: '@Url.Action("DeleteItemRow")',
                     type: "POST",
-                    data: { "SeqNo": SeqNo, "PopUpData": PopUpData },
+                    data: { "SeqNo": SeqNo, "PopUpData": PopUpData, "Mode": $('#Mode').val() },
                     async: false,
                     success: function (data) {
 
@@ -1563,6 +1550,7 @@
                         "InsDate": $('#InsDate').val(),
                         "CurrencyId": parseInt($('#CurrencyId').val()),
                         "ActualEntryDate": $('#ActualEntryDate').val(),
+                        "Mode": $('#Mode').val(),
                         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
                         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
@@ -1727,6 +1715,7 @@
                 "EntryByMachine": $('#EntryByMachine').val(),
                 "CurrencyId": parseInt($('#CurrencyId').val()),
                 "ActualEntryDate": $('#ActualEntryDate').val(),
+                "Mode": $('#Mode').val(),
                 "Type": $('#Type').find(":selected").text() == '-Select-' ? '' : $('#Type').find(":selected").text(),
                 "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
                 "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
@@ -1772,7 +1761,7 @@
         };
 
         function AdjustAmountForAddToGridForDRCR() {
-
+             
             var RowCount = $('#divBankPaymentDetail tr').length;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -1784,13 +1773,13 @@
                     }
                 }
                 else {
-                    if ($('#Type-' + i).text() == "DR") {
-                        if ($('#Type').val() == "CR") {
+                    if ($('#Type-' + i).text().toLowerCase() == "dr") {
+                        if ($('#Type').val().toLowerCase() == "cr") {
                             $('#AdjustmentAmt').val(difference)
                         }
                     }
-                    if ($('#Type-' + i).text() == "CR") {
-                        if ($('#Type').val() == "DR") {
+                    if ($('#Type-' + i).text().toLowerCase() == "cr") {
+                        if ($('#Type').val().toLowerCase() == "dr") {
                             $('#AdjustmentAmt').val(difference)
                         }
                     }
@@ -1801,7 +1790,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-             ;
+            debugger
             var RowCount = $('#divBankPaymentDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1811,9 +1800,9 @@
                 $.ajax({
                     url: '@Url.Action("EditItemRows", "BankPayment")',
                     type: "POST",
-                    data: { SrNO: SrNO },
+                    data: { SrNO: SrNO, "Mode": $('#Mode').val() },
                     success: function (data) {
-
+                        debugger
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
                         if (!ModeOfAdjustment) {
@@ -1873,6 +1862,7 @@
                             }
                         }
                         DeleteItemRow(SrNO);
+                        AdjustAmountForAddToGridForDRCR();
                     },
                     error: function (response) {
                         $.notify(response.responseText, "error");
