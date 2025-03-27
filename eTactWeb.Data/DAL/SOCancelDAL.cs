@@ -132,5 +132,42 @@ namespace eTactWeb.Data.DAL
         }
 
 
+        public async Task<ResponseResult> SaveActivation(int EntryId, int YC, string SONO, string CustOrderNo, string type, int EmpID)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                if (type == "LISTOFActiveSO")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "DEACTIVESO"));
+
+                }
+               
+                if (type == "LISTOFDeActiveSO")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "ACTIVESO"));
+
+                }
+
+                SqlParams.Add(new SqlParameter("@SOEntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@Soyearcode", YC));
+                SqlParams.Add(new SqlParameter("@SoNo", SONO));
+                SqlParams.Add(new SqlParameter("@ApprovalDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@Approvedby", EmpID));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ApproveUnapproveSaleOrder", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+
     }
 }
