@@ -34,14 +34,13 @@ namespace eTactwebAccounts.Controllers
         [HttpGet]
         public async Task<ActionResult> BankPayment(int ID, string Mode, int YearCode, string VoucherNo)
         {
-            _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-
+            _MemoryCache.Remove("KeyBankPaymentGrid");
+            _MemoryCache.Remove("KeyBankPaymentGridEdit");
             TempData.Clear();
             var MainModel = new BankPaymentModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
-            //MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
             if (MainModel.Mode == "U")
@@ -50,8 +49,6 @@ namespace eTactwebAccounts.Controllers
                 MainModel.UpdatedOn = DateTime.Now;
             }
 
-            _MemoryCache.Remove("KeyBankPaymentGrid");
-
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
                 MainModel = await _IBankPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
@@ -59,28 +56,13 @@ namespace eTactwebAccounts.Controllers
                 MainModel.ID = ID;
                 MainModel.VoucherNo = VoucherNo;
 
-                if (Mode == "U")
-                {
-                    //MainModel.UpdatedByEmp = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    //MainModel.LastUpdatedBy = HttpContext.Session.GetString("EmpName");
-                    //MainModel.UpdationDate = DateTime.Now.ToString();
-                    //MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
-                    //MainModel.ActualEntryByEmp = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                    //MainModel.EffectiveDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
-
-                }
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTime.Now.AddMinutes(60),
                     SlidingExpiration = TimeSpan.FromMinutes(55),
                     Size = 1024
                 };
-                _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
-            }
-
-            else
-            {
-                // MainModel = await BindModels(MainModel);
+                _MemoryCache.Set("KeyBankPaymentGridEdit", MainModel.BankPaymentGrid, cacheEntryOptions);
             }
 
             return View(MainModel);
@@ -95,13 +77,13 @@ namespace eTactwebAccounts.Controllers
             {
                 var GIGrid = new DataTable();
                 _MemoryCache.TryGetValue("KeyBankPaymentGrid", out List<BankPaymentModel> BankPaymentGrid);
-
+                _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out List<BankPaymentModel> BankPaymentGridEdit);
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 if (model.Mode == "U")
                 {
                     model.UpdatedOn = DateTime.Now;
-                    GIGrid = GetDetailTable(BankPaymentGrid);
+                    GIGrid = GetDetailTable(BankPaymentGridEdit);
                 }
                 else
                 {
@@ -114,12 +96,13 @@ namespace eTactwebAccounts.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("KeyBankReceiptGrid");
+                        _MemoryCache.Remove("KeyBankPaymentGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
+                        _MemoryCache.Remove("KeyBankPaymentGridEdit");
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -135,7 +118,6 @@ namespace eTactwebAccounts.Controllers
             }
             catch (Exception ex)
             {
-                // Log and return the error
                 LogException<BankPaymentController>.WriteException(_logger, ex);
                 var ResponseResult = new ResponseResult
                 {
@@ -423,10 +405,10 @@ namespace eTactwebAccounts.Controllers
         {
             try
             {
-                if (model.Mode == "U")
+                if (model.Mode == "U" || model.Mode == "V")
                 {
 
-                    _MemoryCache.TryGetValue("KeyBankPaymentGrid", out IList<BankPaymentModel> BankPaymentGrid);
+                    _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out IList<BankPaymentModel> BankPaymentGrid);
 
                     var MainModel = new BankPaymentModel();
                     var WorkOrderPGrid = new List<BankPaymentModel>();
@@ -443,24 +425,66 @@ namespace eTactwebAccounts.Controllers
                         }
                         else
                         {
-                            if (model.ModeOfAdjustment.ToLower() == "new ref")
+                            if (model.BankType.ToLower() == "bank")
                             {
-                                if (BankPaymentGrid.Any(x => (x.LedgerName == model.LedgerName)))
+                                if (BankPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
+                                {
+                                    return StatusCode(210, "Duplicate");
+                                }
+                                else
+                                {
+                                    model.SrNO = BankPaymentGrid.Count + 1;
+                                    OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(OrderGrid);
+                                    OrderGrid.Add(model);
+
+                                }
+                            }
+                            else if (model.ModeOfAdjustment.ToLower() == "new ref")
+                            {
+                                if (BankPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
                                 {
                                     return StatusCode(207, "Duplicate");
                                 }
-                            }
+                                else
+                                {
+                                    model.SrNO = BankPaymentGrid.Count + 1;
+                                    OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(OrderGrid);
+                                    OrderGrid.Add(model);
 
-                            else
+                                }
+                            }
+                            else if (model.ModeOfAdjustment.ToLower() == "advance")
                             {
-                                //count = WorkOrderProcessGrid.Count();
-                                model.SrNO = BankPaymentGrid.Count + 1;
-                                OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
-                                ssGrid.AddRange(OrderGrid);
-                                OrderGrid.Add(model);
+                                if (BankPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+                                {
+                                    return StatusCode(208, "Duplicate");
+                                }
+                                else
+                                {
+                                    model.SrNO = BankPaymentGrid.Count + 1;
+                                    OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(OrderGrid);
+                                    OrderGrid.Add(model);
 
+                                }
                             }
+                            else if (model.ModeOfAdjustment.ToLower() == "against ref")
+                            {
+                                if (BankPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
+                                {
+                                    return StatusCode(209, "Duplicate");
+                                }
+                                else
+                                {
+                                    model.SrNO = BankPaymentGrid.Count + 1;
+                                    OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(OrderGrid);
+                                    OrderGrid.Add(model);
 
+                                }
+                            }
                         }
 
                         MainModel.BankPaymentGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
@@ -472,7 +496,7 @@ namespace eTactwebAccounts.Controllers
                             Size = 1024,
                         };
 
-                        _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
+                        _MemoryCache.Set("KeyBankPaymentGridEdit", MainModel.BankPaymentGrid, cacheEntryOptions);
                     }
                     else
                     {
@@ -501,7 +525,7 @@ namespace eTactwebAccounts.Controllers
                         {
                             if (model.BankType.ToLower() == "bank")
                             {
-                                if (BankPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && x.BankType == "Bank"))
+                                if (BankPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
                                 {
                                     return StatusCode(210, "Duplicate");
                                 }
@@ -584,54 +608,98 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddBankPaymentAdjustDetail(List<BankPaymentModel> model)
+        public IActionResult AddBankPaymentAdjustDetail(List<BankPaymentModel> model, string Mode)
         {
             try
             {
                 var MainModel = new BankPaymentModel();
                 var ProductionEntryDetail = new List<BankPaymentModel>();
-
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                if (Mode != "U" && Mode != "V")
                 {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-                // Retrieve existing cached data
-                _MemoryCache.TryGetValue("KeyBankPaymentGrid", out List<BankPaymentModel> ProductionEntryItemDetail);
-
-                // If cache exists, use it; otherwise, initialize a new list
-                if (ProductionEntryItemDetail != null)
-                {
-                    ProductionEntryDetail = ProductionEntryItemDetail;
-                }
-
-                foreach (var item in model)
-                {
-                    if (item != null)
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
-                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
-                        if (existingItem != null)
-                        {
-                            ProductionEntryDetail.Remove(existingItem);
-                        }
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
 
-                        // Assign sequence number correctly
-                        item.SrNO = ProductionEntryDetail.Count + 1;
+                    // Retrieve existing cached data
+                    _MemoryCache.TryGetValue("KeyBankPaymentGrid", out List<BankPaymentModel> ProductionEntryItemDetail);
 
-                        // Swap Type values
-                        item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
-
-                        // Add new item to list
-                        ProductionEntryDetail.Add(item);
+                    // If cache exists, use it; otherwise, initialize a new list
+                    if (ProductionEntryItemDetail != null)
+                    {
+                        ProductionEntryDetail = ProductionEntryItemDetail;
                     }
+
+                    foreach (var item in model)
+                    {
+                        if (item != null)
+                        {
+                            var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
+                            if (existingItem != null)
+                            {
+                                ProductionEntryDetail.Remove(existingItem);
+                            }
+
+                            // Assign sequence number correctly
+                            item.SrNO = ProductionEntryDetail.Count + 1;
+
+                            // Swap Type values
+                            item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
+
+                            // Add new item to list
+                            ProductionEntryDetail.Add(item);
+                        }
+                    }
+
+                    // Update the main model and cache
+                    MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
+                    _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
                 }
+                else
+                {
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
 
-                // Update the main model and cache
-                MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
-                _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
+                    // Retrieve existing cached data
+                    _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out List<BankPaymentModel> ProductionEntryItemDetail);
 
+                    // If cache exists, use it; otherwise, initialize a new list
+                    if (ProductionEntryItemDetail != null)
+                    {
+                        ProductionEntryDetail = ProductionEntryItemDetail;
+                    }
+
+                    foreach (var item in model)
+                    {
+                        if (item != null)
+                        {
+                            var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
+                            if (existingItem != null)
+                            {
+                                ProductionEntryDetail.Remove(existingItem);
+                            }
+
+                            // Assign sequence number correctly
+                            item.SrNO = ProductionEntryDetail.Count + 1;
+
+                            // Swap Type values
+                            item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
+
+                            // Add new item to list
+                            ProductionEntryDetail.Add(item);
+                        }
+                    }
+
+                    // Update the main model and cache
+                    MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
+                    _MemoryCache.Set("KeyBankPaymentGridEdit", MainModel.BankPaymentGrid, cacheEntryOptions);
+                }
                 return PartialView("_BankPaymentGrid", MainModel);
             }
             catch (Exception ex)
@@ -639,21 +707,38 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> EditItemRows(int SrNO)
+        public async Task<JsonResult> EditItemRows(int SrNO, string Mode)
         {
-            var MainModel = new BankPaymentModel();
-            _MemoryCache.TryGetValue("KeyBankPaymentGrid", out IList<BankPaymentModel> GridDetail);
-
-
-            IEnumerable<BankPaymentModel> SSGrid = GridDetail;
-            if (GridDetail != null)
+            if (Mode != "U" && Mode != "V")
             {
-                SSGrid = GridDetail.Where(x => x.SrNO == SrNO);
+                var MainModel = new BankPaymentModel();
+                _MemoryCache.TryGetValue("KeyBankPaymentGrid", out IList<BankPaymentModel> GridDetail);
+
+
+                IEnumerable<BankPaymentModel> SSGrid = GridDetail;
+                if (GridDetail != null)
+                {
+                    SSGrid = GridDetail.Where(x => x.SrNO == SrNO);
+                }
+                string JsonString = JsonConvert.SerializeObject(SSGrid);
+                return Json(JsonString);
             }
-            string JsonString = JsonConvert.SerializeObject(SSGrid);
-            return Json(JsonString);
+            else
+            {
+                var MainModel = new BankPaymentModel();
+                _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out IList<BankPaymentModel> GridDetail);
+
+
+                IEnumerable<BankPaymentModel> SSGrid = GridDetail;
+                if (GridDetail != null)
+                {
+                    SSGrid = GridDetail.Where(x => x.SrNO == SrNO);
+                }
+                string JsonString = JsonConvert.SerializeObject(SSGrid);
+                return Json(JsonString);
+            } 
         }
-        public IActionResult DeleteItemRow(int SeqNo, string PopUpData)
+        public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData)
         {
             if (PopUpData == "PopUpData")
             {
@@ -687,30 +772,60 @@ namespace eTactwebAccounts.Controllers
             else
             {
                 var MainModel = new BankPaymentModel();
-                _MemoryCache.TryGetValue("KeyBankPaymentGrid", out List<BankPaymentModel> BankPaymentGrid);
-                int Indx = Convert.ToInt32(SeqNo) - 1;
-
-                if (BankPaymentGrid != null && BankPaymentGrid.Count > 0)
+                if (Mode != "U" && Mode != "V")
                 {
-                    BankPaymentGrid.RemoveAt(Convert.ToInt32(Indx));
-                    Indx = 0;
+                    _MemoryCache.TryGetValue("KeyBankPaymentGrid", out List<BankPaymentModel> BankPaymentGrid);
+                    int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                    foreach (var item in BankPaymentGrid)
+                    if (BankPaymentGrid != null && BankPaymentGrid.Count > 0)
                     {
-                        Indx++;
-                        item.SrNO = Indx;
+                        BankPaymentGrid.RemoveAt(Convert.ToInt32(Indx));
+                        Indx = 0;
+
+                        foreach (var item in BankPaymentGrid)
+                        {
+                            Indx++;
+                            item.SrNO = Indx;
+                        }
+                        MainModel.BankPaymentGrid = BankPaymentGrid.OrderBy(x => x.SrNO).ToList();
+
+                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                            SlidingExpiration = TimeSpan.FromMinutes(55),
+                            Size = 1024,
+                        };
+
+                        _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
                     }
-                    MainModel.BankPaymentGrid = BankPaymentGrid.OrderBy(x => x.SrNO).ToList();
-
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
                 }
+                else
+                {
+                    _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out List<BankPaymentModel> BankPaymentGrid);
+                    int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                    if (BankPaymentGrid != null && BankPaymentGrid.Count > 0)
+                    {
+                        BankPaymentGrid.RemoveAt(Convert.ToInt32(Indx));
+                        Indx = 0;
+
+                        foreach (var item in BankPaymentGrid)
+                        {
+                            Indx++;
+                            item.SrNO = Indx;
+                        }
+                        MainModel.BankPaymentGrid = BankPaymentGrid.OrderBy(x => x.SrNO).ToList();
+
+                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                            SlidingExpiration = TimeSpan.FromMinutes(55),
+                            Size = 1024,
+                        };
+
+                        _MemoryCache.Set("KeyBankPaymentGridEdit", MainModel.BankPaymentGrid, cacheEntryOptions);
+                    }
+                }   
                 return PartialView("_BankPaymentGrid", MainModel);
             }
         }
@@ -720,6 +835,8 @@ namespace eTactwebAccounts.Controllers
         {
             try
             {
+                _MemoryCache.Remove("KeyBankPaymentGrid");
+                _MemoryCache.Remove("KeyBankPaymentGridEdit");
                 var model = new BankPaymentModel();
                 FromDate = HttpContext.Session.GetString("FromDate");
                 ToDate = HttpContext.Session.GetString("ToDate");

@@ -738,7 +738,7 @@
              });
 
             $('.submitBTN').click(function (e) {
-                debugger
+                 
                 console.log("SubmitButton Click");
                 e.preventDefault();
                 //$(this).off('click');
@@ -1565,7 +1565,7 @@
                 type: "POST",
                 data: { SrNO: SrNO, Mode: "U" },
                 success: function (data) {
-                    debugger
+                     
                     var obj = $.parseJSON(data);
                     if (obj != null) {
                         EditEachItem = true;

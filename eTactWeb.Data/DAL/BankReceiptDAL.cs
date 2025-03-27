@@ -603,7 +603,7 @@ namespace eTactWeb.Data.DAL
                         AdjustmentAmtOthCur = Convert.ToDouble(row["AmountInOtherCurr"].ToString()),
                         InsNo = row["instrumentno"].ToString(),
                         Intrument = row["instrument"].ToString(),
-                        InsDate = row["instrumentdate"].ToString(),
+                        InsDate = Convert.ToDateTime(row["instrumentdate"]).ToString("dd/MMM/yyyy"),
                         ChequeDate = row["chequeDate"].ToString(),
                         ModeOfAdjustment = row["ModeOfAdjustment"].ToString(),
                         AgainstVoucherEntryId = Convert.ToInt32(row["AgainstVoucherEntryId"].ToString()),

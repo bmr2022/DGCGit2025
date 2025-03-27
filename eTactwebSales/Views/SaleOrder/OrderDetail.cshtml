@@ -1501,7 +1501,7 @@
 
 
 /* 		function UploadExcel() {
-			debugger;
+			 ;
 			var fileInput = $('#ExcelFile');
 			var file = fileInput.prop("files")[0];
 
@@ -2126,7 +2126,7 @@
 		//});
 
 		$(document).on('click', '#submitBTN,#submitBTNFooter', function (e) {
-			debugger;
+			 ;
 			$('#TypeOfSave').val("NPS");
 			e.preventDefault();
 			var soGrid = $('#divSaleItemGrid tr td').length;
@@ -2304,7 +2304,7 @@
 		}
 
 		async function GetItemPartCode(ID) {
-			debugger;
+			 ;
 			$.getJSON({
 				url: "@Url.Action("GetItemPartCode")",
 				data: { Code: $('#' + ID).val() },
