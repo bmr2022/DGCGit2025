@@ -511,7 +511,7 @@
                                                
                                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                     <label asp-for="cc" class="form-label">CC</label>
-                                                <input asp-for="cc " class="form-control" value="@Model.cc" readonly />
+                                                    <input asp-for="cc " class="form-control" value="@Model.cc" readonly />
                                                 </div>
 
                                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -613,10 +613,9 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            if ($('#Mode').val() === "U") {
+            if ($('#Mode').val() !== "U") {
 
-                //ClearItems();
-
+                FillEntryID();
             }
             //$('#BillNo').removeClass('Valid');
             $('#SlipDate').rules("remove", "required");
@@ -675,7 +674,7 @@
             $('#AltWorkCenterName').select2();
 
             $('#totalRows').text($('#divStockGrid tr').length);
-            FillEntryID();
+           
             FillSlipNo();
             FillBranch();
             FillStoreName();
@@ -779,7 +778,7 @@
 
             var formattedDate = day + '/' + month + '/' + year;
 
-            $('#ProdSchDatetime, #PlanDate, #ActualEntryDate, #SlipDate')
+            $('#ProdSchDatetime, #PlanDate, #ActualEntryDate, #SlipDate,#UpdationDate')
                 .datepicker({ dateFormat: 'dd/M/yy' })
                 .val(formattedDate);
         }
@@ -809,51 +808,53 @@
             }
         });
         $('#OriginalItemName').change(function () {
-            if ($('#Mode').val() !== "U") {
+            debugger
+            
                 $('#OriginalItemCode').val($('#OriginalItemName').val());
                 FillTotalStock();
                 GetUnitAltUnit($('#OriginalItemCode').val());
-            }
+            
                 FillStockBatchNo();
+                setFormattedDate();
            
            // $('#OriginalItemCode').val($('#OriginalItemName').val());
         });
         $('#OriginalPartCode').change(function () {
-            if ($('#Mode').val() !== "U") {
+           
                 $('#OriginalItemCode').val($('#OriginalPartCode').val());
                 FillTotalStock();
                 GetUnitAltUnit($('#OriginalItemCode').val());
-            }
+           
                 FillStockBatchNo();
             //$('#OriginalItemCode').val($('#OriginalPartCode').val());
         });
          $('#AltItemName').change(function () {
-            if ($('#Mode').val() !== "U") {
+           
                 $('#AltItemCode').val($('#AltItemName').val());
-            }
+            
            
            // $('#OriginalItemCode').val($('#OriginalItemName').val());
         });
         $('#AltPartCode').change(function () {
-            if ($('#Mode').val() !== "U") {
+           
                 $('#AltItemCode').val($('#AltPartCode').val());
-            }
+           
             //$('#OriginalItemCode').val($('#OriginalPartCode').val());
         });
 
          $('#StoreName').change(function () {
-            if ($('#Mode').val() !== "U") {
+            
                 $('#StoreId').val($('#StoreName').val());
               
                // FillLotStock();
                 FillTotalStock();
-            }
+           
                 FillStockBatchNo();
          });
         $('#AltStoreName').change(function () {
-            if ($('#Mode').val() !== "U") {
+           
                 $('#AltStoreId').val($('#AltStoreName').val());
-            }
+           
                
          });
 
@@ -983,9 +984,7 @@
         function GetAltPartCode() {
 
             var MainItemcode = $('#OriginalPartCode').val();
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                var MainItemcode = '@Model.OriginalPartCode'
-            }
+           
             $.ajax({
                 url: '@Url.Action("GetAltPartCode", "MaterialConversion")',
                 type: 'GET',
@@ -1047,9 +1046,7 @@
 
         function GetAltItemName() {
             var MainItemcode = $('#OriginalPartCode').val();
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                var MainItemcode = '@Model.OriginalPartCode'
-            }
+          
             $.ajax({
                 url: '@Url.Action("GetAltItemName", "MaterialConversion")',
                 type: 'GET',

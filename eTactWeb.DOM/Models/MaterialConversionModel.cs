@@ -58,6 +58,7 @@ namespace eTactWeb.DOM.Models
         public int ActualEntryByEmpid { get; set; }
         public string ActualEntryDate { get; set; }
         public int? UpdatedByEmpId { get; set; }
+        public string? UpdatedByEmpName { get; set; }
         public string? UpdationDate { get; set; }
         public string EntryByMachine { get; set; }
 
