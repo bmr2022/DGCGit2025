@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.BankPaymentModel;
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Bank Payment";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
@@ -1381,9 +1381,9 @@
             }
             var DataTable = {};
             if (Action == "AddMode") {
-                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#LedgerName').val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val() }
+                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#LedgerName').val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#AccEntryId').val(), "AccYearCode": $('#YearCode').val() }
             } else {
-                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#AccountCode-' + SrNO).val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val() };
+                DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#AccountCode-' + SrNO).val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#AccEntryId').val(), "AccYearCode": $('#YearCode').val() };
             }
             $.ajax({
                 url: '@Url.Action("PopUpForPendingVouchers", "BankPayment")',
@@ -1870,9 +1870,9 @@
                                     $('#editItemGrid-' + i).css("pointer-events", "none");
                                     $('#editItemGrid-' + i).css("cursor", "not-allowed");
                                 }
-                                DeleteItemRow(SrNO);
                             }
                         }
+                        DeleteItemRow(SrNO);
                     },
                     error: function (response) {
                         $.notify(response.responseText, "error");

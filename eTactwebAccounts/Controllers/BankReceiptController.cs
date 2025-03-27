@@ -253,7 +253,7 @@ namespace eTactWeb.Controllers
                 Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
-                Item.SeqNo ,
+                Item.SrNO ,
                 Item.AccountCode,
                 Item.BankCashAccountCode ,
                 Item.AccountGroupType ?? string.Empty,
@@ -437,7 +437,7 @@ namespace eTactWeb.Controllers
                     {
                         if (BankReceiptGrid == null)
                         {
-                            model.SeqNo = 1;
+                            model.SrNO = 1;
                             OrderGrid.Add(model);
                         }
                         else
@@ -453,7 +453,7 @@ namespace eTactWeb.Controllers
                             else
                             {
                                 //count = WorkOrderProcessGrid.Count();
-                                model.SeqNo = BankReceiptGrid.Count + 1;
+                                model.SrNO = BankReceiptGrid.Count + 1;
                                 OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                 ssGrid.AddRange(OrderGrid);
                                 OrderGrid.Add(model);
@@ -462,7 +462,7 @@ namespace eTactWeb.Controllers
 
                         }
 
-                        MainModel.BankReceiptGrid = OrderGrid;
+                        MainModel.BankReceiptGrid = OrderGrid.OrderBy(x=>x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -493,7 +493,7 @@ namespace eTactWeb.Controllers
                     {
                         if (BankReceiptGrid == null)
                         {
-                            model.SeqNo = 1;
+                            model.SrNO = 1;
                             OrderGrid.Add(model);
                         }
                         else
@@ -506,7 +506,7 @@ namespace eTactWeb.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankReceiptGrid.Count + 1;
+                                    model.SrNO = BankReceiptGrid.Count + 1;
                                     OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -521,7 +521,7 @@ namespace eTactWeb.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankReceiptGrid.Count + 1;
+                                    model.SrNO = BankReceiptGrid.Count + 1;
                                     OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -536,7 +536,7 @@ namespace eTactWeb.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankReceiptGrid.Count + 1;
+                                    model.SrNO = BankReceiptGrid.Count + 1;
                                     OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -551,7 +551,7 @@ namespace eTactWeb.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankReceiptGrid.Count + 1;
+                                    model.SrNO = BankReceiptGrid.Count + 1;
                                     OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -560,7 +560,7 @@ namespace eTactWeb.Controllers
                             }
                         }
 
-                        MainModel.BankReceiptGrid = OrderGrid;
+                        MainModel.BankReceiptGrid = OrderGrid.OrderBy(x=>x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -617,7 +617,7 @@ namespace eTactWeb.Controllers
                         }
 
                         // Assign sequence number correctly
-                        item.SeqNo = ProductionEntryDetail.Count + 1;
+                        item.SrNO = ProductionEntryDetail.Count + 1;
 
                         // Swap Type values
                         item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
@@ -628,7 +628,7 @@ namespace eTactWeb.Controllers
                 }
 
                 // Update the main model and cache
-                MainModel.BankReceiptGrid = ProductionEntryDetail;
+                MainModel.BankReceiptGrid = ProductionEntryDetail.OrderBy(x=>x.SrNO).ToList();
                 _MemoryCache.Set("KeyBankReceiptGrid", MainModel.BankReceiptGrid, cacheEntryOptions);
 
                 return PartialView("_BankReceiptGrid", MainModel);
@@ -642,7 +642,7 @@ namespace eTactWeb.Controllers
         {
             var MainModel = new BankReceiptModel();
             _MemoryCache.TryGetValue("KeyBankReceiptGrid", out IList<BankReceiptModel> GridDetail);
-            var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
+            var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
             string JsonString = JsonConvert.SerializeObject(SAGrid);
             return Json(JsonString);
         }
@@ -664,7 +664,7 @@ namespace eTactWeb.Controllers
                         Indx++;
                         // item.SequenceNo = Indx;
                     }
-                    MainModel.BankReceiptGrid = BankReceiptGrid;
+                    MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
@@ -691,9 +691,9 @@ namespace eTactWeb.Controllers
                     foreach (var item in BankReceiptGrid)
                     {
                         Indx++;
-                        // item.SequenceNo = Indx;
+                        item.SrNO = Indx;
                     }
-                    MainModel.BankReceiptGrid = BankReceiptGrid;
+                    MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {

@@ -1816,7 +1816,7 @@
                     type: "POST",
                     data: { SrNO: SrNO },
                     success: function (data) {
-                         
+                        
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
 
@@ -1866,9 +1866,10 @@
                                     $('#editItemGrid-' + i).css("pointer-events", "none");
                                     $('#editItemGrid-' + i).css("cursor", "not-allowed");
                                 }
-                                DeleteItemRow(SrNO);
+                               
                             }
                         }
+                        DeleteItemRow(SrNO);
                     },
                     error: function (response) {
                         $.notify(response.responseText, "error");
