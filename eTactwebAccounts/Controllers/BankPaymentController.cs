@@ -54,7 +54,7 @@ namespace eTactwebAccounts.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
-               MainModel = await _IBankPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
+                MainModel = await _IBankPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.ID = ID;
                 MainModel.VoucherNo = VoucherNo;
@@ -244,15 +244,15 @@ namespace eTactwebAccounts.Controllers
                         {
                 Item.AccEntryId ,
                 Item.YearCode ,
-                Item.EntryDate=DateTime.Now.ToString("dd/MM/yy") ,
+                Item.EntryDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.DocEntryId ,
                 Item.VoucherDocNo ?? string.Empty,
                 Item.BillVouchNo ?? string.Empty,
-                Item.VoucherDocDate=DateTime.Now.ToString("dd/MM/yy") ,
-                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MM/yy") ,
+                Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
-                Item.SeqNo ,
+                Item.SrNO ,
                 Item.AccountCode,
                 Item.BankCashAccountCode ,
                 Item.AccountGroupType ?? string.Empty,
@@ -262,8 +262,8 @@ namespace eTactwebAccounts.Controllers
                 Item.CrAmt ,
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
-                Item.ChequeDate = DateTime.Now.ToString("dd/MM/yy") ,
-                Item.ChequeClearDate =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.ChequeDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.ChequeClearDate =DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,
@@ -276,14 +276,14 @@ namespace eTactwebAccounts.Controllers
                 Item.AgainstVoucherNo ?? string.Empty,
                 Item.AgainstBillno ?? string.Empty,
                 Item.PONo ?? string.Empty,
-                Item.PoDate =DateTime.Now.ToString("dd/MM/yy"),
+                Item.PoDate =DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.POYear ,
                 Item.SONo ,
                 Item.CustOrderNo ?? string.Empty,
-                Item.SoDate  ,
+                Item.SoDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.SOYear ,
                 Item.ApprovedBy,
-                Item.ApprovedDate = DateTime.Now.ToString("dd/MM/yy"),
+                Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.Approved ,
                 Item.AccountNarration ?? string.Empty,
                 Item.CurrencyId ,
@@ -296,14 +296,14 @@ namespace eTactwebAccounts.Controllers
                 Item.EmpCode ,
                 Item.DeptCode,
                 Item.MRNO ?? string.Empty,
-                Item.MRNDate =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.MRNDate =DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.MRNYearCode ,
                 Item.CostCenterId ,
                 Item.PaymentMode ?? string.Empty,
                 Item.EntryTypebankcashLedger ?? string.Empty,
                 Item.TDSApplicable ?? string.Empty,
                 Item.TDSChallanNo ?? string.Empty,
-                Item.TDSChallanDate = DateTime.Now.ToString("dd/MM/yy") ,
+                Item.TDSChallanDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.PreparedByEmpId ,
                 Item.CGSTAccountCode ,
                 Item.CGSTPer ,
@@ -319,9 +319,9 @@ namespace eTactwebAccounts.Controllers
                 Item.BalanceSheetClosed ?? string.Empty,
                 Item.ProjectNo ,
                 Item.ProjectYearcode ,
-                Item.ProjectDate = DateTime.Now.ToString("dd/MM/yy"),
+                Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.ActualEntryBy ,
-                Item.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy"),
+                Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.UpdatedBy ,
                 Item.UpdatedOn ,
                 Item.EntryByMachine ?? string.Empty,
@@ -381,7 +381,7 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillEntryID(int YearCode,string VoucherDate)
+        public async Task<JsonResult> FillEntryID(int YearCode, string VoucherDate)
         {
             var JSON = await _IBankPayment.FillEntryID(YearCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -396,19 +396,19 @@ namespace eTactwebAccounts.Controllers
 
         public async Task<JsonResult> FillPONO(string accountcode, string VoucherDate)
         {
-            var JSON = await _IBankPayment.FillPONO( accountcode, VoucherDate);
+            var JSON = await _IBankPayment.FillPONO(accountcode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPODetail(int PONO,string accountcode, string VoucherDate)
+        public async Task<JsonResult> GetPODetail(int PONO, string accountcode, string VoucherDate)
         {
-            var JSON = await _IBankPayment.GetPODetail(PONO,  accountcode,  VoucherDate);
+            var JSON = await _IBankPayment.GetPODetail(PONO, accountcode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> GetPODate(int PONO, string accountcode, string VoucherDate, string POYearCode)
         {
-            var JSON = await _IBankPayment.GetPODate(PONO, accountcode, VoucherDate,POYearCode);
+            var JSON = await _IBankPayment.GetPODate(PONO, accountcode, VoucherDate, POYearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -438,7 +438,7 @@ namespace eTactwebAccounts.Controllers
                     {
                         if (BankPaymentGrid == null)
                         {
-                            model.SeqNo = 1;
+                            model.SrNO = 1;
                             OrderGrid.Add(model);
                         }
                         else
@@ -454,7 +454,7 @@ namespace eTactwebAccounts.Controllers
                             else
                             {
                                 //count = WorkOrderProcessGrid.Count();
-                                model.SeqNo = BankPaymentGrid.Count + 1;
+                                model.SrNO = BankPaymentGrid.Count + 1;
                                 OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
                                 ssGrid.AddRange(OrderGrid);
                                 OrderGrid.Add(model);
@@ -463,7 +463,7 @@ namespace eTactwebAccounts.Controllers
 
                         }
 
-                        MainModel.BankPaymentGrid = OrderGrid;
+                        MainModel.BankPaymentGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -494,7 +494,7 @@ namespace eTactwebAccounts.Controllers
                     {
                         if (BankPaymentGrid == null)
                         {
-                            model.SeqNo = 1;
+                            model.SrNO = 1;
                             OrderGrid.Add(model);
                         }
                         else
@@ -507,7 +507,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankPaymentGrid.Count + 1;
+                                    model.SrNO = BankPaymentGrid.Count + 1;
                                     OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -522,7 +522,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankPaymentGrid.Count + 1;
+                                    model.SrNO = BankPaymentGrid.Count + 1;
                                     OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -537,7 +537,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankPaymentGrid.Count + 1;
+                                    model.SrNO = BankPaymentGrid.Count + 1;
                                     OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -552,7 +552,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankPaymentGrid.Count + 1;
+                                    model.SrNO = BankPaymentGrid.Count + 1;
                                     OrderGrid = BankPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -561,7 +561,7 @@ namespace eTactwebAccounts.Controllers
                             }
                         }
 
-                        MainModel.BankPaymentGrid = OrderGrid;
+                        MainModel.BankPaymentGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -611,14 +611,14 @@ namespace eTactwebAccounts.Controllers
                 {
                     if (item != null)
                     {
-                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
+                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
                         if (existingItem != null)
                         {
                             ProductionEntryDetail.Remove(existingItem);
                         }
 
                         // Assign sequence number correctly
-                        item.SeqNo = ProductionEntryDetail.Count + 1;
+                        item.SrNO = ProductionEntryDetail.Count + 1;
 
                         // Swap Type values
                         item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
@@ -629,7 +629,7 @@ namespace eTactwebAccounts.Controllers
                 }
 
                 // Update the main model and cache
-                MainModel.BankPaymentGrid = ProductionEntryDetail;
+                MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
                 _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
 
                 return PartialView("_BankPaymentGrid", MainModel);
@@ -643,19 +643,15 @@ namespace eTactwebAccounts.Controllers
         {
             var MainModel = new BankPaymentModel();
             _MemoryCache.TryGetValue("KeyBankPaymentGrid", out IList<BankPaymentModel> GridDetail);
-           
+
 
             IEnumerable<BankPaymentModel> SSGrid = GridDetail;
             if (GridDetail != null)
             {
-                SSGrid = GridDetail.Where(x => x.SeqNo == SrNO);
+                SSGrid = GridDetail.Where(x => x.SrNO == SrNO);
             }
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
-
-            //var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
-            //string JsonString = JsonConvert.SerializeObject(SAGrid);
-            //return Json(JsonString);
         }
         public IActionResult DeleteItemRow(int SeqNo, string PopUpData)
         {
@@ -673,9 +669,9 @@ namespace eTactwebAccounts.Controllers
                     foreach (var item in BankPaymentGrid)
                     {
                         Indx++;
-                        // item.SequenceNo = Indx;
+                        item.SrNO = Indx;
                     }
-                    MainModel.BankPaymentGrid = BankPaymentGrid;
+                    MainModel.BankPaymentGrid = BankPaymentGrid.OrderBy(x => x.SrNO).ToList();
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
@@ -702,9 +698,9 @@ namespace eTactwebAccounts.Controllers
                     foreach (var item in BankPaymentGrid)
                     {
                         Indx++;
-                        // item.SequenceNo = Indx;
+                        item.SrNO = Indx;
                     }
-                    MainModel.BankPaymentGrid = BankPaymentGrid;
+                    MainModel.BankPaymentGrid = BankPaymentGrid.OrderBy(x => x.SrNO).ToList();
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {

@@ -5,7 +5,7 @@
 }
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="Features_Options" asp-controller="Features_Options" method="post" class="form-horizontal">
+    <form id="UpdateForm" asp-action="Features_Options" asp-controller="Features_Options" method="post" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h5>
@@ -38,13 +38,28 @@
             <div class="card-body bg-light">
                 <div class="accordion shadow-lg" id="accordionItemCategory">
                     @* ItemDetail *@
+                    <input type="hidden" id="TypeInput" name="Type" asp-for="Type" value="" />
                     <div class="accordion-item" id="ItemDetailSection" >
-                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                        @* <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
-                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail" data-type="ItemDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Item Detail</strong>
                                 <small class="p-3"></small>
                                 <span style="height:25px; margin-left:900px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Item Detail
+                                   
+                                </span>
+                            </button>
+                        </h2> *@
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#B_ItemCategoryDetail" aria-expanded="true" aria-controls="B_ItemCategoryDetail"
+                                    data-type="ItemDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Item Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:900px;" type="submit"
+                                      class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update Item Detail
                                 </span>
@@ -85,17 +100,32 @@
                     </div>
                     @* PurchaseDetail *@
                     <div class="accordion-item" id="PurchaseDetailSection" >
-                        <h2 class="accordion-header" id="H_SAGrid">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                        @* <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" data-type="PurchaseDetail">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Purchase Detail</strong>
                                 <small class="p-3"></small>
                                 <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update Purchase Detail
+                                    <input type="hidden" asp-for="Type" value="PurchaseDetail">
                                 </span>
                             </button>
                         </h2>
-
+ *@
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" data-type="PurchaseDetail">
+                                <strong style="text-transform:uppercase">
+                                    <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"></i>Purchase Detail
+                                </strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:800px;" type="submit"
+                                      class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Purchase Detail
+                                </span>
+                            </button>
+                        </h2>
                         <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3" id="_ItemGrid">
@@ -182,11 +212,11 @@
                     <div class="accordion-item" id="SaleOrderDetailSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
-                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                    data-type="SaleOrderDetail" aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>sale order Detail</strong>
                                 <small class="p-3"></small>
                                
-                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update SO Detail
                                 </span>
@@ -242,15 +272,17 @@
                     @* Gate Entry Detail *@
                     <div class="accordion-item" id="GateEntryDetailSection">
                         <h2 class="accordion-header" id="H_SAGrid">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid"
+                                    data-type="GateEntryDetail" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Gate Entry Detail</strong>
                            
                             <small class="p-3"></small>
 
-                            <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                            <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                 <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                 Update GateEntry Detail
                             </span>
+                                
                             </button>
                         </h2>
 
@@ -298,13 +330,14 @@
                     <div class="accordion-item" id="MRNDetailSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
-                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                    data-type="MRNDetail" aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>MRN/MRIR Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update MRN Detail
                                 </span>
+                                
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -345,13 +378,14 @@
                     @* Common *@
                     <div class="accordion-item" id="CommonSection">
                         <h2 class="accordion-header" id="H_SAGrid">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" data-type="CommonDetail" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Common Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update Common Detail
                                 </span>
+                                
                             </button>
                         </h2>
 
@@ -410,13 +444,14 @@
                     <div class="accordion-item" id="RquisitionSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
-                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                    data-type="RequisitionDetail" aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Requisition Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update Requisition Detail
                                 </span>
+                                
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -455,13 +490,14 @@
                     @* vend jw iss rec *@
                     <div class="accordion-item" id="VendJwIssRecSection">
                         <h2 class="accordion-header" id="H_SAGrid">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient"  data-type="RequisitionDetail" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>vend jw iss rec Detail</strong>
                                 <small class="p-3"></small>
                                 <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update VendJwIssRec Detail
                                 </span>
+                                <input type="hidden" asp-for="Type" value="VendJwIssRecDetail" />
                             </button>
                         </h2>
 
@@ -509,13 +545,14 @@
                     <div class="accordion-item" id="StockAdjSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
-                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                    data-type="StockAdjDetail" aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Stock Adjustmnent Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update StockAdj Detail
                                 </span>
+                                
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -545,13 +582,14 @@
                     @* issue with bom & with bom *@
                     <div class="accordion-item" id="IssWithBomSection">
                         <h2 class="accordion-header" id="H_SAGrid">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" data-type="IssWithBomDetail" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue WithBom Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update IssWithBom Detail
                                 </span>
+                              
                             </button>
                         </h2>
 
@@ -605,13 +643,14 @@
                     <div class="accordion-item" id="IssChallanSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
-                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                    data-type="IssRecChallanDetail" aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Issue RecChallan Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update Iss&Re Challan Detail
                                 </span>
+                               
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -642,13 +681,14 @@
                     @* cust jobwork *@
                     <div class="accordion-item" id="CustJobWorkSection">
                         <h2 class="accordion-header" id="H_SAGrid">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" data-type="JustJobWorkDetail" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Cust jobwork Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update CustJobWork Detail
                                 </span>
+                                <input type="hidden" asp-for="Type" value="" />
                             </button>
                         </h2>
 
@@ -681,13 +721,14 @@
                     <div class="accordion-item" id="PrintReportSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
-                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                    data-type="PrintReportDetail" aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Print Report Name  Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update PrintReport Detail
                                 </span>
+                              
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -763,14 +804,16 @@
                     @* production entry *@
                     <div class="accordion-item" id="ProdEntrySection">
                         <h2 class="accordion-header" id="H_SAGrid">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient"
+                                    data-type="ProdEntryDetail" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Production Entry Detail</strong>
                             
                             <small class="p-3"></small>
-                            <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                            <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                 <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                 Update ProdEntryDetail
                             </span>
+                                
                             </button>
                         </h2>
 
@@ -848,13 +891,14 @@
                     <div class="accordion-item" id="ProdPlanSchSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
-                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                    data-type="ProdPlanSchDetail" aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Prod Plan&Sch Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update ProdPlan&SchDetail
                                 </span>
+                               
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -891,13 +935,15 @@
                     @* transfer material from wc & rec in store *@
                     <div class="accordion-item" id="TransMtrFromWcRec">
                         <h2 class="accordion-header" id="H_SAGrid">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient"
+                                    data-type="TransMtrFromWcRec" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                 <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i> TransMtrFrom WcRec Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:600px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:600px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update TransFromWcRecDetail
                                 </span>
+                             
                             </button>
                         </h2>
 
@@ -928,14 +974,15 @@
                     @* sale bill *@
                     <div class="accordion-item" id="SaleBillSection">
                         <h2 class="accordion-header" id="H_ItemCategoryDetail">
-                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                            <button class="accordion-button text-light pnl1BG bg-gradient" data-type="SaleBillDetail" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
                                     aria-expanded="true" aria-controls="B_ItemCategoryDetail">
                                 <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Sale Bill Detail</strong>
                                 <small class="p-3"></small>
-                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     Update SaleBill Detail
                                 </span>
+                               
                             </button>
                         </h2>
                         <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
@@ -1193,6 +1240,29 @@
                 //FillCostCenterID();
             }
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".UpdateButton").forEach(button => {
+                button.addEventListener("click", function (event) {
+                    // Find the closest button that has the `data-type` attribute
+                    let parentButton = this.closest("button");
+                    if (parentButton) {
+                        let typeValue = parentButton.getAttribute("data-type");
+                        console.log("Selected Type:", typeValue); // Debugging
+
+                        // Store the type value in a hidden input field
+                        let hiddenInput = document.getElementById("TypeInput");
+                        if (hiddenInput) {
+                            hiddenInput.value = typeValue;
+                        }
+
+                        // Submit the form automatically
+                        document.getElementById("UpdateForm").submit();
+                    }
+                });
+            });
+        });
+
 
         function TotalNoOfRows() {
             var Row = $('#divStockGrid tr').length;
