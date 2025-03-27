@@ -97,7 +97,7 @@
                             <td>@item.LedgerName</td>
                             <td>@item.VoucherNo</td>
                             <td>
-                                @(DateTime.TryParse(item.VoucherDocDate, out var voucherDate) ? voucherDate.ToString("dd/MMM/yyyy") : "-")
+                                @(DateTime.TryParse(item.VoucherDate, out var voucherDate) ? voucherDate.ToString("dd/MMM/yyyy") : "-")
                             </td>
                             <td>@item.DrAmt</td>
                             <td>@item.CrAmt</td>
