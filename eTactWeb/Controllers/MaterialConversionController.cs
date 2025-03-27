@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Threading.Tasks.Dataflow;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
+using static Grpc.Core.Metadata;
 
 namespace eTactWeb.Controllers
 {
@@ -30,20 +31,93 @@ namespace eTactWeb.Controllers
             this.iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
-        public async Task<ActionResult> MaterialConversion()
+        public async Task<ActionResult> MaterialConversion(int ID,int YC,string Mode,
+            int StoreId, int  AltStoreId, int OrginalWCID, int AltWCID, int ActualEntryByEmpid, int UpdatedByEmpId, int PlanYearCode, int ProdSchYearCode,
+        decimal OriginalQty, decimal AltOriginalQty, decimal AltStock, decimal BatchStock, decimal TotalStock, decimal OrigItemRate,
+        string  StoreName, string OriginalItemCode, string OriginalPartCode, string OriginalItemName, string Unit, string WorkCenterName, string AltStoreName, string AltWorkCenterName, string AltPartCode, string AltItemName, string AltUnit, string BatchNo,
+        string UniqueBatchNo, string Remark, string EntryByMachine, string PlanNo, string PlanDate,
+        string ProdSchNo, string ProdSchDatetime, string ActualEntryDate, string UpdationDate,string FromDate,string ToDate)
         {
-            var model = new MaterialConversionModel();
+            var MainModel = new MaterialConversionModel();
 
-            model.OpeningYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            MainModel.OpeningYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-            model.ActualEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            model.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            model.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
-            model.cc = HttpContext.Session.GetString("Branch");
+            MainModel.ActualEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
+            MainModel.cc = HttpContext.Session.GetString("Branch");
             //model.ActualEntryDate = DateTime.Now.ToString("dd/MM/yyyy");
+            _MemoryCache.Remove("MaterialConversionGrid");
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            {
 
-            return View(model);
+                //Retrieve the old data by AccountCode and populate the model with existing values
+                MainModel = await _IMaterialConversion.GetViewByID(ID, YC,FromDate,ToDate).ConfigureAwait(false);
+                MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.EntryId = ID;
+                MainModel.OpeningYearCode = YC;
+                MainModel.StoreId = StoreId;
+                MainModel.StoreName = StoreName;
+                MainModel.OriginalItemCode = OriginalItemCode;
+                MainModel.OriginalPartCode = OriginalPartCode;
+                MainModel.OriginalItemName = OriginalItemName;
+                MainModel.OriginalQty = OriginalQty;
+                MainModel.Unit = Unit;
+                MainModel.WorkCenterName = WorkCenterName;
+
+                MainModel.AltStoreId = AltStoreId;
+                MainModel.AltStoreName = AltStoreName;
+                MainModel.OrginalWCID = OrginalWCID;
+                MainModel.AltWCID = AltWCID;
+                MainModel.AltWorkCenterName = AltWorkCenterName;
+                MainModel.AltPartCode = AltPartCode;
+                MainModel.AltItemName = AltItemName;
+                MainModel.AltOriginalQty = AltOriginalQty;
+                MainModel.AltUnit = AltUnit;
+                MainModel.AltStock = AltStock;
+
+                MainModel.BatchNo = BatchNo;
+                MainModel.UniqueBatchNo = UniqueBatchNo;
+                MainModel.BatchStock = BatchStock;
+                MainModel.TotalStock = TotalStock;
+
+                MainModel.OrigItemRate = OrigItemRate;
+                MainModel.Remark = Remark;
+                MainModel.ActualEntryByEmpid = ActualEntryByEmpid;
+                MainModel.ActualEntryDate = ActualEntryDate;
+                MainModel.UpdatedByEmpId = UpdatedByEmpId;
+                MainModel.UpdationDate = UpdationDate;
+                MainModel.EntryByMachine = EntryByMachine;
+
+                MainModel.PlanNo = PlanNo;
+                MainModel.PlanYearCode = PlanYearCode;
+                MainModel.PlanDate = PlanDate;
+                MainModel.ProdSchNo = ProdSchNo;
+                MainModel.ProdSchYearCode = ProdSchYearCode;
+                MainModel.ProdSchDatetime = ProdSchDatetime;
+
+
+                if (Mode == "U")
+                {
+                    MainModel.UpdatedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    MainModel.UpdatedByEmpName = HttpContext.Session.GetString("EmpName");
+                    MainModel.UpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+                    MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+                    MainModel.ActualEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                    MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+                    MainModel.cc = HttpContext.Session.GetString("Branch");
+                }
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024
+                };
+                _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
+            }
+
+            return View(MainModel);
         }
 
         [HttpPost]
@@ -103,7 +177,7 @@ namespace eTactWeb.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(MaterialConversion));
+                return RedirectToAction(nameof(MaterialConversionDashBoard));
 
             }
             catch (Exception ex)
@@ -371,6 +445,7 @@ namespace eTactWeb.Controllers
             DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
             model.FromDate = new DateTime(yearCode, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
             model.ToDate = new DateTime(yearCode + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
+            model.ActualEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             model.ReportType = "SUMMARY";
             var Result = await _IMaterialConversion.GetDashboardData(model);
 
@@ -411,6 +486,29 @@ namespace eTactWeb.Controllers
             }
             return null;
            
+        }
+        public async Task<IActionResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
+        {
+            var Result = await _IMaterialConversion.DeleteByID(EntryId, YearCode, EntryDate, EntryByempId);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("MaterialConversionDashBoard");
+
         }
     }
 }

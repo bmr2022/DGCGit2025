@@ -190,11 +190,12 @@ namespace eTactWeb.Controllers
         }
         [HttpPost]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> Features_Options(Features_OptionsModel model)
+        public async Task<IActionResult> Features_Options(Features_OptionsModel model,string Type)
         {
             try
             {
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                Type=model.Type;
 
                 var Result = await _IFeatures_Options.SaveFeatures_Options(model);
                 if (Result != null)

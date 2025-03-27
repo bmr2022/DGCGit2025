@@ -3,6 +3,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,15 +34,23 @@ namespace eTactWeb.Data.DAL
                 if (model.Mode == "U" || model.Mode == "V")
                 {
                     //sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
-                    //sqlParams.Add(new SqlParameter("@EffectiveDate", model.EffectiveDate));
-                    //sqlParams.Add(new SqlParameter("@ActualEntryByEmp", model.ActualEntryByEmp));
-                    //sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
-                    //sqlParams.Add(new SqlParameter("@MachineName", model.MachineName ?? Environment.MachineName));
-                    //sqlParams.Add(new SqlParameter("@MainItemcode", GetMainItemCodeFromGIGrid(GIGrid))); 
-                    //sqlParams.Add(new SqlParameter("@AlternateItemCode", model.AlternateItemCode)); 
-                    //sqlParams.Add(new SqlParameter("@UpdatedByEmp", model.UpdatedByEmp));
-                    //sqlParams.Add(new SqlParameter("@UpdationDate", DateTime.Now));
-                    //sqlParams.Add(new SqlParameter("@ProcGrid", GIGrid));
+                    sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    sqlParams.Add(new SqlParameter("@MatConvEntryId", model.EntryId));
+                    sqlParams.Add(new SqlParameter("@YearCode", model.OpeningYearCode));
+                    sqlParams.Add(new SqlParameter("@MatConvSlipNo", model.SlipNo));
+                    sqlParams.Add(new SqlParameter("@MatConvSlipDate", model.SlipDate));
+                    sqlParams.Add(new SqlParameter("@StoreWorkcenter", model.IssueToStoreWC));
+                    sqlParams.Add(new SqlParameter("@Remarks", model.Remarks));
+                    sqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy));
+                    sqlParams.Add(new SqlParameter("@Uid", model.Uid));
+                    sqlParams.Add(new SqlParameter("@cc", model.cc));
+                    sqlParams.Add(new SqlParameter("@ActualEntryByEmpid", model.ActualEntryByEmpid));
+                    sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
+                    sqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedByEmpId));
+                    sqlParams.Add(new SqlParameter("@UpdationDate", model.UpdationDate));
+                    sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
+
+                    sqlParams.Add(new SqlParameter("@dt", GIGrid));
                 }
                 else
                 {
@@ -263,6 +272,188 @@ namespace eTactWeb.Data.DAL
                 oDataSet.Dispose();
             }
             return model;
+        }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                SqlParams.Add(new SqlParameter("@MatConvEntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                //SqlParams.Add(new SqlParameter("@ActualEntryDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.ParseExact(EntryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd/MMM/yyyy")));
+
+
+                SqlParams.Add(new SqlParameter("@ActualEntryByEmpid", EntryByempId));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpMaterialConversionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<MaterialConversionModel> GetViewByID(int ID, int YC,string FromDate,string ToDate)
+        {
+            var model = new MaterialConversionModel();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "VIEWBYID"));
+                SqlParams.Add(new SqlParameter("@MatConvEntryId", ID));
+                SqlParams.Add(new SqlParameter("@YearCode", YC));
+                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
+                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SpMaterialConversionMainDetail", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(_ResponseResult.Result, ref model);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+        private static MaterialConversionModel PrepareView(DataSet DS, ref MaterialConversionModel? model)
+        {
+            try
+            {
+                var ItemList = new List<MaterialConversionModel>();
+                var DetailList = new List<MaterialConversionModel>();
+                DS.Tables[0].TableName = "MaterialConversion";
+                DS.Tables[1].TableName = "MaterialConversionDetail";
+                int cnt = 0;
+
+                model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["MatConvEntryId"].ToString());
+                model.OpeningYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["MatConvYearCode"].ToString());
+                model.SlipNo = DS.Tables[0].Rows[0]["MatConvSlipNo"].ToString();
+              
+                model.IssueToStoreWC = DS.Tables[0].Rows[0]["StoreWorkcenter"].ToString();
+                model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString();
+                model.ApprovedByEmpName = DS.Tables[0].Rows[0]["ActualEmployee"].ToString();
+                
+                model.UpdatedByEmpName = DS.Tables[0].Rows[0]["UpdatedByEmployee"].ToString();
+                
+                model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
+                model.SlipDate = DS.Tables[0].Rows[0]["MatConvSlipDate"] != DBNull.Value? Convert.ToDateTime(DS.Tables[0].Rows[0]["MatConvSlipDate"]).ToString("dd/MM/yyyy"): string.Empty;
+                model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]).ToString("dd/MM/yyyy"): string.Empty;
+                //model.UpdationDate = DS.Tables[0].Rows[0]["UpdationDate"] != DBNull.Value? Convert.ToDateTime(DS.Tables[0].Rows[0]["UpdationDate"]).ToString("dd/MM/yyyy"): string.Empty;
+
+                if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+                {
+                    foreach (DataRow row in DS.Tables[1].Rows)
+                    {
+                        ItemList.Add(new MaterialConversionModel
+                        {
+                            //EntryId = Convert.ToInt32(DS.Tables[1].Rows[1]["MatConvEntryId"].ToString()),
+                            //OpeningYearCode = Convert.ToInt32(DS.Tables[1].Rows[1]["MatConvYearCode"].ToString()),
+                            //StoreId = Convert.ToInt32(DS.Tables[1].Rows[1]["OriginalStoreId"].ToString()),
+                            //StoreName = DS.Tables[1].Rows[1]["OrigStoreName"].ToString(),
+                            //OriginalItemCode = DS.Tables[1].Rows[1]["OriginalItemCode"].ToString(),
+                            //OriginalPartCode = DS.Tables[1].Rows[1]["OrigPartCode"].ToString(),
+                            //OriginalItemName = DS.Tables[1].Rows[1]["OrigItemName"].ToString(),
+                            //OriginalQty = Convert.ToDecimal(DS.Tables[1].Rows[1]["OriginalQty"].ToString()),
+                            //Unit = DS.Tables[1].Rows[1]["Unit"].ToString(),
+                            //WorkCenterName = DS.Tables[1].Rows[1]["OrigWorkcenetr"].ToString(),
+
+                            //AltStoreId = Convert.ToInt32(DS.Tables[1].Rows[1]["AltStoreId"].ToString()),
+                            //AltStoreName = DS.Tables[1].Rows[1]["AltStoreName"].ToString(),
+                            //OrginalWCID = Convert.ToInt32(DS.Tables[1].Rows[1]["OrginalWCID"].ToString()),
+                            //AltWCID = Convert.ToInt32(DS.Tables[1].Rows[1]["AltWCID"].ToString()),
+                            //AltWorkCenterName = DS.Tables[1].Rows[1]["AltWorkcenetr"].ToString(),
+                            //AltPartCode = DS.Tables[1].Rows[1]["AltPartCode"].ToString(),
+                            //AltItemName = DS.Tables[1].Rows[1]["AltItemName"].ToString(),
+                            //AltOriginalQty = Convert.ToDecimal(DS.Tables[1].Rows[1]["AltOriginalQty"].ToString()),
+                            //AltUnit = DS.Tables[1].Rows[1]["AltUnit"].ToString(),
+                            //AltStock = Convert.ToDecimal(DS.Tables[1].Rows[1]["AltStock"].ToString()),
+
+                            //BatchNo = DS.Tables[0].Rows[0]["BatchNo"].ToString(),
+                            //UniqueBatchNo = DS.Tables[0].Rows[0]["Uniquebatchno"].ToString(),
+                            //BatchStock = Convert.ToDecimal(DS.Tables[0].Rows[0]["BatchStock"].ToString()),
+                            //TotalStock = Convert.ToDecimal(DS.Tables[0].Rows[0]["TotalStock"].ToString()),
+
+                            //OrigItemRate = Convert.ToDecimal(DS.Tables[1].Rows[1]["OrigItemRate"].ToString()),
+                            //Remark = DS.Tables[1].Rows[1]["Remark"].ToString(),
+                            //ApprovedByEmpName =DS.Tables[1].Rows[1]["ActualEmployee"].ToString(),
+                            //ActualEntryDate = DS.Tables[1].Rows[1]["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                            //UpdatedByEmpName =DS.Tables[1].Rows[1]["UpdatedByEmployee"].ToString(),
+                            //UpdationDate = DS.Tables[1].Rows[1]["UpdationDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["UpdationDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                            //EntryByMachine = DS.Tables[1].Rows[1]["EntryByMachine"].ToString(),
+
+                            //PlanNo =DS.Tables[1].Rows[1]["PlanNo"].ToString(),
+                            //PlanYearCode = Convert.ToInt32(DS.Tables[1].Rows[1]["PlanYearCode"].ToString()),
+                            //PlanDate = DS.Tables[1].Rows[1]["PlanDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["PlanDate"]).ToString("dd/MM/yyyy") : string.Empty,
+                            //ProdSchNo = DS.Tables[1].Rows[1]["ProdSchNo"].ToString(),
+                            //ProdSchYearCode = Convert.ToInt32(DS.Tables[1].Rows[1]["ProdSchYearCode"].ToString()),
+                            //ProdSchDatetime = DS.Tables[1].Rows[1]["ProdSchDatetime"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ProdSchDatetime"]).ToString("dd/MM/yyyy") : string.Empty,
+                           
+                            EntryId = Convert.ToInt32(row["MatConvEntryId"].ToString()),
+
+                            OpeningYearCode = Convert.ToInt32(row["MatConvYearCode"].ToString()),
+                            StoreId = Convert.ToInt32(row["OriginalStoreId"].ToString()),
+                            StoreName = row["OrigStoreName"].ToString(),
+                            OriginalItemCode = row["OriginalItemCode"].ToString(),
+                            OriginalPartCode = row["OrigPartCode"].ToString(),
+                            OriginalItemName = row["OrigItemName"].ToString(),
+                            OriginalQty = Convert.ToDecimal(row["OriginalQty"].ToString()),
+                            Unit = row["Unit"].ToString(),
+                            WorkCenterName = row["OrigWorkcenetr"].ToString(),
+
+                            AltStoreId = Convert.ToInt32(row["AltStoreId"].ToString()),
+                            AltStoreName = row["AltStoreName"].ToString(),
+                            OrginalWCID = Convert.ToInt32(row["OrginalWCID"].ToString()),
+                            AltWCID = Convert.ToInt32(row["AltWCID"].ToString()),
+                            AltWorkCenterName = row["AltWorkcenetr"].ToString(),
+                            AltPartCode = row["AltPartCode"].ToString(),
+                            AltItemName = row["AltItemName"].ToString(),
+                            AltOriginalQty = Convert.ToDecimal(row["AltOriginalQty"].ToString()),
+                            AltUnit = row["AltUnit"].ToString(),
+                            AltStock = Convert.ToDecimal(row["AltStock"].ToString()),
+
+                            BatchNo = row["BatchNo"].ToString(),
+                            UniqueBatchNo = row["Uniquebatchno"].ToString(),
+                            BatchStock = Convert.ToDecimal(row["BatchStock"].ToString()),
+                            TotalStock = Convert.ToDecimal(row["TotalStock"].ToString()),
+
+                            OrigItemRate = Convert.ToDecimal(row["OrigItemRate"].ToString()),
+                            Remark = row["Remark"].ToString(),
+                            ApprovedByEmpName = row["ActualEmployee"].ToString(),
+
+                            ActualEntryDate = row["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(row["ActualEntryDate"]).ToString("dd/MMM/yyyy") : string.Empty,
+                            UpdatedByEmpName = row["UpdatedByEmployee"].ToString(),
+                            UpdationDate = row["UpdationDate"] != DBNull.Value ? Convert.ToDateTime(row["UpdationDate"]).ToString("dd/MMM/yyyy") : string.Empty,
+
+                            EntryByMachine = row["EntryByMachine"].ToString(),
+
+                            PlanNo = row["PlanNo"].ToString(),
+                            PlanYearCode = Convert.ToInt32(row["PlanYearCode"].ToString()),
+                            PlanDate = row["PlanDate"] != DBNull.Value ? Convert.ToDateTime(row["PlanDate"]).ToString("dd/MMM/yyyy") : string.Empty,
+                            ProdSchNo = row["ProdSchNo"].ToString(),
+                            ProdSchYearCode = Convert.ToInt32(row["ProdSchYearCode"].ToString()),
+                            ProdSchDatetime = row["ProdSchDatetime"] != DBNull.Value ? Convert.ToDateTime(row["ProdSchDatetime"]).ToString("dd/MMM/yyyy") : string.Empty,
+
+                        });
+                    }
+                    model.MaterialConversionGrid = ItemList;
+                }
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
         public async Task<ResponseResult> FillWorkCenterName()
          {

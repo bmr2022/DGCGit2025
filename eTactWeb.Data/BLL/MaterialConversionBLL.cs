@@ -73,5 +73,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialConversionDAL.GetDashboardDetailData( FromDate,  ToDate,  ReportType);
         }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
+        {
+            return await _MaterialConversionDAL.DeleteByID(EntryId, YearCode, EntryDate, EntryByempId);
+        }
+        public async Task<MaterialConversionModel> GetViewByID(int ID, int YC, string FromDate, string ToDate)
+        {
+            return await _MaterialConversionDAL.GetViewByID(ID, YC,FromDate,ToDate);
+        }
     }
 }

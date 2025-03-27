@@ -677,8 +677,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 
-                if (model.Mode == "U" || model.Mode == "V")
-                {
+             
                     if (model.Type == "ItemDetail")
                     {
 
@@ -859,7 +858,6 @@ namespace eTactWeb.Data.DAL
 
                         }
 
-                }
 
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("Sp_FeaturesOptions", SqlParams);
