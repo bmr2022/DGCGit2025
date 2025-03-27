@@ -53,10 +53,6 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Accountcode", AccountCode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", ParseDate(VoucherDate)));
 
-                //ParseDate(billDate)
-                //SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
-                //SqlParams.Add(new SqlParameter("@VoucherDate", vchDt));
-
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -269,7 +265,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Payment"));
                 SqlParams.Add(new SqlParameter("@yearcode", YearCode));
-                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate)); 
+                SqlParams.Add(new SqlParameter("@VoucherDate", ParseFormattedDate(VoucherDate))); 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -542,7 +538,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@summDetail", DataTable.SumDetail);
                     oCmd.Parameters.AddWithValue("@Accountcode", DataTable.AccountCode);
                     oCmd.Parameters.AddWithValue("@yearcode", DataTable.YearCode);
-                    oCmd.Parameters.AddWithValue("@VoucherDate", DataTable.VoucherDate);
+                    oCmd.Parameters.AddWithValue("@VoucherDate", ParseFormattedDate(DataTable.VoucherDate));
                     oCmd.Parameters.AddWithValue("@AccEntryid", DataTable.AccEntryId);
                     oCmd.Parameters.AddWithValue("@Accyearcode", DataTable.AccYearCode);
                     await myConnection.OpenAsync();
@@ -663,7 +659,7 @@ namespace eTactWeb.Data.DAL
                 {
                     ItemList.Add(new BankPaymentModel
                     {
-                        SeqNo = Convert.ToInt32(row["seqno"].ToString()),
+                        SrNO = Convert.ToInt32(row["seqno"].ToString()),
                         AccEntryId = Convert.ToInt32(row["AccEntryId"].ToString()),
                         YearCode = Convert.ToInt32(row["AccYearCode"].ToString()),
                         CostCenterId = Convert.ToInt32(row["costcenterid"].ToString()),
@@ -681,11 +677,9 @@ namespace eTactWeb.Data.DAL
                         BillVouchNo = row["BillVouchNo"].ToString(),
                         DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
                         CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
-
                         AdjustmentAmt = Convert.ToDecimal(row["AmountInOtherCurr"].ToString()),
                         AdjustmentAmtOthCur = Convert.ToDouble(row["AmountInOtherCurr"].ToString()),
                         ChequeDate = row["chequeDate"].ToString(),
-                        
                         ModeOfAdjustment = row["ModeOfAdjustment"].ToString(),
                         AgainstVoucherEntryId = Convert.ToInt32(row["AgainstVoucherEntryId"].ToString()),
                         AgainstVoucherRefNo = row["againstVoucherRefNo"].ToString(),
@@ -712,7 +706,7 @@ namespace eTactWeb.Data.DAL
 
                     });
                 }
-                model.BankPaymentGrid = ItemList;
+                model.BankPaymentGrid = ItemList.OrderBy(x => x.SrNO).ToList();
             }
 
             return model;

@@ -25,6 +25,8 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> GetDashboardData(MaterialConversionModel model);
         Task<MaterialConversionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
+        Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId);
+        Task<MaterialConversionModel> GetViewByID(int ID, int YC,string FromDate,string TODate);
 
 
     }

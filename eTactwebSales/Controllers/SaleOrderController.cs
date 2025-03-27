@@ -780,6 +780,18 @@ public class SaleOrderController : Controller
 		return Json(JsonString);
 	}
 
+	public async Task<JsonResult> CheckOrderNo(int year, int accountcode, int entryid, string custorderno)
+	{
+		var JSON = await _ISaleOrder.CheckOrderNo( year,  accountcode,  entryid,  custorderno);
+		string JsonString = JsonConvert.SerializeObject(JSON);
+		return Json(JsonString);
+	}
+
+
+
+
+
+
 	public async Task<JsonResult> GetAltQty(int ItemCode, float UnitQty, float ALtQty)
 	{
 		var JSON = await _ISaleOrder.GetAltQty(ItemCode, UnitQty, ALtQty);

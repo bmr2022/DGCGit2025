@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.BankReceiptModel;
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Bank Receipt";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
@@ -1378,7 +1378,7 @@
         }
 
         function PopUpForPendingVouchers(Action, SrNO) {
-
+            debugger
             $('#CheckUnCheckAll').prop('checked', false);
             if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 $('#DisplayRoutingDetailModal').modal('hide');
@@ -1399,7 +1399,7 @@
                 data: { "DataTable": DataTable },
                 success: function (data, status, xhr) {
                     if (data != null) {
-
+                        debugger
                         $('#divDisplayPopupForPendingVouchersDetail').empty();
                         $('#divDisplayPopupForPendingVouchersDetail').append(data);
                         CheckUnCheckEdit();
@@ -1816,7 +1816,7 @@
                     type: "POST",
                     data: { SrNO: SrNO },
                     success: function (data) {
-                         
+                        
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
 
@@ -1866,9 +1866,10 @@
                                     $('#editItemGrid-' + i).css("pointer-events", "none");
                                     $('#editItemGrid-' + i).css("cursor", "not-allowed");
                                 }
-                                DeleteItemRow(SrNO);
+                               
                             }
                         }
+                        DeleteItemRow(SrNO);
                     },
                     error: function (response) {
                         $.notify(response.responseText, "error");

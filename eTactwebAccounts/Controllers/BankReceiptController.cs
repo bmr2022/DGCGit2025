@@ -245,15 +245,15 @@ namespace eTactWeb.Controllers
                         {
                 Item.AccEntryId ,
                 Item.YearCode ,
-                Item.EntryDate=DateTime.Now.ToString("dd/MM/yy") ,
+                Item.EntryDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.DocEntryId ,
                 Item.VoucherDocNo ?? string.Empty,
                 Item.BillVouchNo ?? string.Empty,
-                Item.VoucherDocDate=DateTime.Now.ToString("dd/MM/yy") ,
-                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MM/yy") ,
+                Item.VoucherDocDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
-                Item.SeqNo ,
+                Item.SrNO ,
                 Item.AccountCode,
                 Item.BankCashAccountCode ,
                 Item.AccountGroupType ?? string.Empty,
@@ -263,8 +263,8 @@ namespace eTactWeb.Controllers
                 Item.CrAmt ,
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
-                Item.ChequeDate = DateTime.Now.ToString("dd/MM/yy") ,
-                Item.BankRECO =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.ChequeDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.BankRECO =DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,
@@ -277,14 +277,14 @@ namespace eTactWeb.Controllers
                 Item.AgainstVoucherNo ?? string.Empty,
                 Item.AgainstBillno ?? string.Empty,
                 Item.PONo ?? string.Empty,
-                Item.PoDate =DateTime.Now.ToString("dd/MM/yy"),
+                Item.PoDate =DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.POYear ,
                 Item.SONo ,
                 Item.CustOrderNo ?? string.Empty,
-                Item.SoDate  ,
+                Item.SoDate  =DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.SOYear ,
                 Item.ApprovedBy,
-                Item.ApprovedDate = DateTime.Now.ToString("dd/MM/yy"),
+                Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.Approved ,
                 Item.AccountNarration ?? string.Empty,
                 Item.CurrencyId ,
@@ -297,14 +297,14 @@ namespace eTactWeb.Controllers
                 Item.EmpCode ,
                 Item.DeptCode,
                 Item.MRNO ?? string.Empty,
-                Item.MRNDate =DateTime.Now.ToString("dd/MM/yy") ,
+                Item.MRNDate =DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.MRNYearCode ,
                 Item.CostCenterId ,
                 Item.PaymentMode ?? string.Empty,
                 Item.EntryTypebankcashLedger ?? string.Empty,
                 Item.TDSApplicable ?? string.Empty,
                 Item.TDSChallanNo ?? string.Empty,
-                Item.TDSChallanDate = DateTime.Now.ToString("dd/MM/yy") ,
+                Item.TDSChallanDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.PreparedByEmpId ,
                 Item.CGSTAccountCode ,
                 Item.CGSTPer ,
@@ -320,9 +320,9 @@ namespace eTactWeb.Controllers
                 Item.BalanceSheetClosed ?? string.Empty,
                 Item.ProjectNo ,
                 Item.ProjectYearcode ,
-                Item.ProjectDate = DateTime.Now.ToString("dd/MM/yy"),
+                Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.ActualEntryby ,
-                Item.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy"),
+                Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.UpdatedBy ,
                 Item.UpdatedOn ,
                 Item.EntryByMachine ?? string.Empty,
@@ -382,7 +382,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillEntryID(int YearCode, string VoucherDate)
+        public async Task<JsonResult> FillEntryID(int YearCode,string VoucherDate)
         {
             var JSON = await _IBankReceipt.FillEntryID(YearCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -394,7 +394,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<JsonResult> FillSONO(string accountcode, string VoucherDate)
         {
             var JSON = await _IBankReceipt.FillSONO(accountcode, VoucherDate);
@@ -438,7 +437,7 @@ namespace eTactWeb.Controllers
                     {
                         if (BankReceiptGrid == null)
                         {
-                            model.SeqNo = 1;
+                            model.SrNO = 1;
                             OrderGrid.Add(model);
                         }
                         else
@@ -454,7 +453,7 @@ namespace eTactWeb.Controllers
                             else
                             {
                                 //count = WorkOrderProcessGrid.Count();
-                                model.SeqNo = BankReceiptGrid.Count + 1;
+                                model.SrNO = BankReceiptGrid.Count + 1;
                                 OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                 ssGrid.AddRange(OrderGrid);
                                 OrderGrid.Add(model);
@@ -463,7 +462,7 @@ namespace eTactWeb.Controllers
 
                         }
 
-                        MainModel.BankReceiptGrid = OrderGrid;
+                        MainModel.BankReceiptGrid = OrderGrid.OrderBy(x=>x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -494,7 +493,7 @@ namespace eTactWeb.Controllers
                     {
                         if (BankReceiptGrid == null)
                         {
-                            model.SeqNo = 1;
+                            model.SrNO = 1;
                             OrderGrid.Add(model);
                         }
                         else
@@ -507,7 +506,7 @@ namespace eTactWeb.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankReceiptGrid.Count + 1;
+                                    model.SrNO = BankReceiptGrid.Count + 1;
                                     OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -522,7 +521,7 @@ namespace eTactWeb.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankReceiptGrid.Count + 1;
+                                    model.SrNO = BankReceiptGrid.Count + 1;
                                     OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -537,7 +536,7 @@ namespace eTactWeb.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankReceiptGrid.Count + 1;
+                                    model.SrNO = BankReceiptGrid.Count + 1;
                                     OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -552,7 +551,7 @@ namespace eTactWeb.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = BankReceiptGrid.Count + 1;
+                                    model.SrNO = BankReceiptGrid.Count + 1;
                                     OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -561,7 +560,7 @@ namespace eTactWeb.Controllers
                             }
                         }
 
-                        MainModel.BankReceiptGrid = OrderGrid;
+                        MainModel.BankReceiptGrid = OrderGrid.OrderBy(x=>x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -611,14 +610,14 @@ namespace eTactWeb.Controllers
                 {
                     if (item != null)
                     {
-                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
+                        var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
                         if (existingItem != null)
                         {
                             ProductionEntryDetail.Remove(existingItem);
                         }
 
                         // Assign sequence number correctly
-                        item.SeqNo = ProductionEntryDetail.Count + 1;
+                        item.SrNO = ProductionEntryDetail.Count + 1;
 
                         // Swap Type values
                         item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
@@ -629,7 +628,7 @@ namespace eTactWeb.Controllers
                 }
 
                 // Update the main model and cache
-                MainModel.BankReceiptGrid = ProductionEntryDetail;
+                MainModel.BankReceiptGrid = ProductionEntryDetail.OrderBy(x=>x.SrNO).ToList();
                 _MemoryCache.Set("KeyBankReceiptGrid", MainModel.BankReceiptGrid, cacheEntryOptions);
 
                 return PartialView("_BankReceiptGrid", MainModel);
@@ -643,7 +642,7 @@ namespace eTactWeb.Controllers
         {
             var MainModel = new BankReceiptModel();
             _MemoryCache.TryGetValue("KeyBankReceiptGrid", out IList<BankReceiptModel> GridDetail);
-            var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
+            var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
             string JsonString = JsonConvert.SerializeObject(SAGrid);
             return Json(JsonString);
         }
@@ -665,7 +664,7 @@ namespace eTactWeb.Controllers
                         Indx++;
                         // item.SequenceNo = Indx;
                     }
-                    MainModel.BankReceiptGrid = BankReceiptGrid;
+                    MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
@@ -692,9 +691,9 @@ namespace eTactWeb.Controllers
                     foreach (var item in BankReceiptGrid)
                     {
                         Indx++;
-                        // item.SequenceNo = Indx;
+                        item.SrNO = Indx;
                     }
-                    MainModel.BankReceiptGrid = BankReceiptGrid;
+                    MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
@@ -757,9 +756,9 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyBankReceiptGridPopUpData", model.BankReceiptGrid, cacheEntryOptions);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate,string VoucherType)
         {
-            var Result = await _IBankReceipt.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate);
+            var Result = await _IBankReceipt.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate,VoucherType);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

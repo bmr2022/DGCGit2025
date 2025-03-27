@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.LedgerPartyWiseOpeningModel;
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Ledger PartyWise Opening";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
@@ -106,6 +106,10 @@
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
                                         <label asp-for="Balance" class="form-label"> Balance</label>
                                         <input asp-for="Balance" class="form-control" type="text" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
+                                        <label asp-for="DRCR" class="form-label"> Status</label>
+                                        <input asp-for="DRCR" class="form-control" type="text" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:80px;">
                                         @* <label asp-for="DRCR" class="form-label" style="width:60px;">DR/CR</label>
@@ -365,16 +369,18 @@
                 GetAllDataAccountCodeWise();
             });
 
-            $('.submitBTN').click(function (e) {
-                validateBalance();
-                if (!validateBalance()) {
-                    e.preventDefault();
-                }
-                $('form').submit();
-            });
+            
 
         });
 
+        $('.submitBTN').click(function (e) {
+            
+                e.preventDefault();
+                if (!validateBalance()) return;
+                $('form').submit();
+
+            
+        });
         function validateBalance() {
 
             if ($("#LedgerName").val() == "") {
@@ -400,9 +406,12 @@
 
         const today = new Date();
 
+        const yearCode = parseInt($('#OpeningYearCode').val()); // Get the year from YearCode field
+        const maxAllowedDate = new Date(yearCode, 11, 31); // Set maxDate to December 31 of the YearCode
+
         $('#BillDate').datepicker({
             dateFormat: 'dd/mm/yy',
-            maxDate: today,
+            maxDate: maxAllowedDate,
             onSelect: function (dateText) {
                 const billDate = $.datepicker.parseDate('dd/mm/yy', dateText);
                 let billYear = "";
@@ -431,7 +440,6 @@
                 }
 
                 $('#BillYear').val(billYear);
-
             }
         }
         $(document).on('change', '#BillDate', function () {
@@ -485,7 +493,18 @@
             GetOpeningAmtDRCR();
         });
 
-        $('#BillDate').change(function () {
+        $('#BillNo').focusout(function () {
+            debugger;
+            var BillNetAmt;
+            var TotNetAmt = $('#TotNetAmt').val().trim();
+            var Balance = $('#Balance').val().trim();
+
+            if (TotNetAmt != 0) {
+
+                BillNetAmt = parseFloat(Balance) - parseFloat(TotNetAmt);
+                $("#BillNetAmt").val(BillNetAmt);
+                $("#PendAmt").val(BillNetAmt);
+            }
 
         });
 
@@ -676,11 +695,17 @@
         function ClearItems() {
             $('#BillYear,#BillNetAmt,#PendAmt').val(0);
             $('#BillNo,#BillDate,#Type,#TransactionType,#DueDate,#Unit').val('');
+
+            
+
+
+
         }
 
         $(document).on('click', '#GridButton', function () {
+            debugger;
             console.log('Add to Grid button clicked');
-
+            countAllTotal();
             var BillNo = $('#BillNo').val().trim();
             var BillDate = $('#BillDate').val().trim();
             var BillYear = $('#BillYear').val().trim();
@@ -690,12 +715,24 @@
             var TransactionType = $('#TransactionType').val().trim();
             var DueDate = $('#DueDate').val().trim();
             var Unit = $('#Unit').val().trim();
+            var TotDrAmt = $('#TotDrAmt').val().trim();
+            var TotCrAmt = $('#TotCrAmt').val().trim();
+            var TotNetAmt = $('#TotNetAmt').val().trim();
+            var Balance = $('#Balance').val().trim();
 
             if (!BillNo || !BillDate || !BillYear || !BillNetAmt || !PendAmt || !Type || !TransactionType || !DueDate || !Unit ||
                 BillNetAmt == "0" || PendAmt == "0") {
                 $.notify('Fill All Data For Add in Grid', "error");
                 return;
             }
+
+            if (parseFloat(BillNetAmt) > parseFloat(Balance)) {
+                $.notify('amt Can not Be Greater Then Balance', "error");
+                return;
+            }
+
+            
+            
 
             var seqnoarray = [];
             $('#divStockGrid tr').each(function () {
@@ -736,6 +773,9 @@
                         $.notify('Process Added To Grid', "success");
                         TotalNoOfRows();
                         countAllTotal();
+                        ClearItems();
+                       // BillNetAmt = parseFloat(Balance) - parseFloat(BillNetAmt)
+
                     } else if (xhr.status == 207) {
                         $.notify('Duplicate Item...!', "info");
                     }
@@ -863,34 +903,62 @@
                 }
             });
         }
-        async function DeleteItemRow(SrNO) {
 
-            $.ajax({
-                url: '@Url.Action("DeleteItemRow")',
-                type: "POST",
-                data: { SrNO: SrNO, Mode: "U" },
-                success: function (data, status, xhr) {
-                    $('#divStockGrid').html(data);
-                    $.notify("Process deleted from Grid", "info");
-                    // EditEachItem = false;
-                    // $('[id^=editItemGrid-]').css("pointer-events", "auto");
-                    // $('[id^=editItemGrid-]').css("cursor", "pointer");
+        isEditOperationAllowed = "false";
+        function DeleteItemRow(SrNO) {
+            ;
 
-                    // setTimeout(function () {
-                    //     $('[id^=editItemGrid-]').css("pointer-events", "auto").css("cursor", "pointer");
-                    // }, 100);
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Action("DeleteItemRow")',
+                    type: "POST",
+                    data: { "SrNO": SrNO, "Mode": $('#Mode').val() },
+                    success: function (data) {
 
-                },
-                error: function (response, status, xhr) {
-
-                    $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
-                },
-                failure: function (response, status, xhr) {
-                    alert(response.responseText);
-                    $.notify(response.responseText, "error");
-                }
+                        $('#divStockGrid').html(data);
+                        $.notify("Item Deleted from Grid", "info");
+                        isEditOperationAllowed = "true";
+                        resolve();
+                    },
+                    error: function (response) {
+                        reject(response.responseText);
+                    }
+                });
             });
         }
+
+
+
+
+
+        // async function DeleteItemRow(SrNO) {
+
+        //     $.ajax({
+        //         url: '@Url.Action("DeleteItemRow")',
+        //         type: "POST",
+        //         data: { SrNO: SrNO, Mode: "U" },
+        //         success: function (data, status, xhr) {
+        //             $('#divStockGrid').html(data);
+        //             $.notify("Process deleted from Grid", "info");
+        //             // EditEachItem = false;
+        //             // $('[id^=editItemGrid-]').css("pointer-events", "auto");
+        //             // $('[id^=editItemGrid-]').css("cursor", "pointer");
+
+        //             // setTimeout(function () {
+        //             //     $('[id^=editItemGrid-]').css("pointer-events", "auto").css("cursor", "pointer");
+        //             // }, 100);
+
+        //         },
+        //         error: function (response, status, xhr) {
+
+        //             $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
+        //         },
+        //         failure: function (response, status, xhr) {
+        //             alert(response.responseText);
+        //             $.notify(response.responseText, "error");
+        //         }
+        //     });
+        // }
         //var editingNow = false;
 
         // function EditItemRow(SrNO) {

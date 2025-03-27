@@ -89,7 +89,7 @@
                                     <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
                                     <input type="hidden" asp-for="SubVoucherID" />
                                     <select class="form-control" asp-for="SubVoucherName" style="width:130px;">
-                                        <option value="">Cash-Payment</option>
+                                        @* <option value="">Cash-Payment</option> *@
                                         <option value="Cash-Payment">Cash-Payment</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
@@ -97,7 +97,7 @@
                                         }
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:170px;">
                                     <label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
                                     <input asp-for="VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
@@ -1185,7 +1185,7 @@
                     var SubVoucherNameDropdown = $('#SubVoucherName');
                     var obj = $.parseJSON(response);
                     SubVoucherNameDropdown.empty();
-                    SubVoucherNameDropdown.append('<option value="">Bank-Payment</option>');
+                    // SubVoucherNameDropdown.append('<option value="">Bank-Payment</option>');
                     $.each(obj.Result, function (index, SubVoucherName) {
                         SubVoucherNameDropdown.append('<option value="' + SubVoucherName.SubVoucherName + '">' + SubVoucherName.SubVoucherName + '</option>');
                     });

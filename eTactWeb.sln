@@ -18,21 +18,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactWeb.Data", "eTactWeb.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactWeb.DOM", "eTactWeb.DOM\eTactWeb.DOM.csproj", "{62139ABF-D977-4400-B187-8342335AD2C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTactwebMasters", "eTactwebMasters\eTactwebMasters.csproj", "{9561F482-4A27-4512-A44C-D5BA403F2A60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebMasters", "eTactwebMasters\eTactwebMasters.csproj", "{9561F482-4A27-4512-A44C-D5BA403F2A60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTactwebInventory", "eTactwebInventory\eTactwebInventory.csproj", "{FE4E39FB-DE39-CD86-A28E-3AA7F1EA9B99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebInventory", "eTactwebInventory\eTactwebInventory.csproj", "{FE4E39FB-DE39-CD86-A28E-3AA7F1EA9B99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTactProduction", "eTactProduction\eTactProduction.csproj", "{7A525EB9-9DA8-A306-6315-8CA5D8CA51DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactProduction", "eTactProduction\eTactProduction.csproj", "{7A525EB9-9DA8-A306-6315-8CA5D8CA51DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTactwebPurchase", "eTactwebPurchase\eTactwebPurchase.csproj", "{BF5CF16D-23AF-F91A-981E-8F9A2A1A83F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebPurchase", "eTactwebPurchase\eTactwebPurchase.csproj", "{BF5CF16D-23AF-F91A-981E-8F9A2A1A83F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTactwebSales", "eTactwebSales\eTactwebSales.csproj", "{E851B55F-9A77-0AD3-75F9-75C4181718BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebSales", "eTactwebSales\eTactwebSales.csproj", "{E851B55F-9A77-0AD3-75F9-75C4181718BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTactwebQuality", "eTactwebQuality\eTactwebQuality.csproj", "{E4EE2DB7-347C-1303-DA34-28BA30957B8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebQuality", "eTactwebQuality\eTactwebQuality.csproj", "{E4EE2DB7-347C-1303-DA34-28BA30957B8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTactwebAccounts", "eTactwebAccounts\eTactwebAccounts.csproj", "{E74FBB3E-8E6A-CC14-1DCB-A5B3499CB1B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebAccounts", "eTactwebAccounts\eTactwebAccounts.csproj", "{E74FBB3E-8E6A-CC14-1DCB-A5B3499CB1B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eTactwebHR", "eTactwebHR\eTactwebHR.csproj", "{3712CADF-2D32-F887-D3D8-48D52AA2D00B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebHR", "eTactwebHR\eTactwebHR.csproj", "{3712CADF-2D32-F887-D3D8-48D52AA2D00B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

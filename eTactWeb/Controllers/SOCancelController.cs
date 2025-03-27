@@ -50,5 +50,49 @@ namespace eTactWeb.Controllers
             MainModel = await _ISOCancel.ShowSODetail(ID, YC, SONo).ConfigureAwait(true);
             return View(MainModel);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> SaveActivation(int EntryId, int YC, string SONo, string CustOrderNo, string type, string SONum, string CustOrderNum, string VendorNm)
+        {
+            int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _ISOCancel.SaveActivation(EntryId, YC, SONo, CustOrderNo, type, EmpID).ConfigureAwait(true);
+            if (Result != null)
+            {
+                if (Result.StatusText == "Success")
+                {
+                    var status = "";
+                    var message = "";
+
+                    var ds = (DataSet)Result.Result;
+                    if (ds.Tables.Count > 0)
+                    {
+                        var dt = ds.Tables[0];
+                        if (dt.Rows.Count > 0)
+                        {
+                            status = Convert.ToString(dt.Rows[0][0]);
+                            if (dt.Columns.Count > 1)
+                                message = dt.Rows[0][1].ToString();
+                        }
+                    }
+
+
+                    var model1 = new SOApprovalModel();
+                    ViewBag.isSuccess = true;
+                    if (string.IsNullOrEmpty(message))
+                        TempData["200"] = "200";
+                    else
+                    {
+                        TempData["302"] = message;
+                    }
+                    //return RedirectToAction("SOApproval", new { type = type, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm });
+                    return Json(new { redirectUrl = Url.Action("SOCancel", new { type = type, YC = YC, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm }) });
+                }
+            }
+            var model = new SOApprovalModel();
+            //return RedirectToAction("SOApproval", new { type = type, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm });
+            return Json(new { redirectUrl = Url.Action("SOCancel", new { type = type, YC = YC, CustOrderNo = CustOrderNum, SONO = SONum, VendorName = VendorNm }) });
+        }
+
     }
 }

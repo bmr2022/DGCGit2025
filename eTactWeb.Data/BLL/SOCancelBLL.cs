@@ -29,5 +29,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _SOCancelDAL.ShowSODetail(ID, YC, SoNo);
         }
+
+        public async Task<ResponseResult> SaveActivation(int EntryId, int YC, string SONO, string CustOrderNo, string type, int EmpID)
+        {
+            return await _SOCancelDAL.SaveActivation(EntryId, YC, SONO, CustOrderNo, type, EmpID);
+        }
     }
 }

@@ -170,6 +170,31 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> CheckOrderNo(int year, int accountcode, int entryid, string custorderno)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@flag", "CheckOrderNo"));
+				SqlParams.Add(new SqlParameter("@AccountCode", accountcode));
+                SqlParams.Add(new SqlParameter("@YearCode", year));
+				SqlParams.Add(new SqlParameter("@entryid", entryid));
+				SqlParams.Add(new SqlParameter("@CustOrderNo", custorderno));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+
         public async Task<ResponseResult> GetCurrency(string Currency)
         {
             var _ResponseResult = new ResponseResult();

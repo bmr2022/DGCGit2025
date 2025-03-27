@@ -34,7 +34,16 @@
                 <div class="row">
                     <div class="col-xl-3 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <input id="approvePO" type="checkbox" style="margin-left:30px;width:15px !important;height:15px !important;" />
-                        <label class="form-label" style="display: inline-block;"><strong>Click for @typeOfApproval</strong></label>
+
+                        @if(@typeOfApproval=="LISTOFActiveSO")
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for DeActive SO</strong></label>
+                        }
+                        else
+                        {
+                            <label class="form-label" style="display: inline-block;"><strong>Click for Active SO</strong></label>
+
+                        }
                     </div>
                     <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                         <label class="form-label">Approve Date</label>
@@ -168,7 +177,7 @@
                 $.ajax({
                     type: "GET",
                     data: { "EntryId": @EntryID, "YC": @YC, "SONO": @SONO, "CustOrderNo": custOrderNo, "type": type, "SONum": SONum, "CustOrderNum": CustOrderNum, "VendorNm": VendorNm, "VendorName": VendorName },
-                    url: "@Url.Action("SaveApproval", "SOApproval")",
+                    url: "@Url.Action("SaveActivation", "SOCancel")",
                     success: function (response, status, error) {
 
                         if (response.redirectUrl) {
