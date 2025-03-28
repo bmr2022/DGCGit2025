@@ -51,7 +51,7 @@ namespace eTactWeb.Controllers
             MainModel.OpeningYearCode = financialYearStart - 1;
 
 
-
+            
             MainModel.ActualEntryByEmp = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.EntryByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = DateTime.Now;
@@ -59,6 +59,7 @@ namespace eTactWeb.Controllers
             _MemoryCache.Remove("KeyLedgerPartyWiseOpeningGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
+                
                 MainModel = await _ILedgerPartyWiseOpening.GetViewByID(OpeningYearCode, LedgerOpnEntryId).ConfigureAwait(false);
                 MainModel.EntryId = ID;
                 MainModel.Mode = Mode;
@@ -158,7 +159,14 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
-        public async Task<JsonResult> GetAllDataAccountCodeWise(int OpeningYearCode, int AccountCode)
+
+		public async Task<JsonResult> FillEntryId()
+		{
+			var JSON = await _ILedgerPartyWiseOpening.FillEntryId();
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+		public async Task<JsonResult> GetAllDataAccountCodeWise(int OpeningYearCode, int AccountCode)
         {
             var model = new LedgerPartyWiseOpeningModel();
             model = await _ILedgerPartyWiseOpening.GetAllDataAccountCodeWise(OpeningYearCode, AccountCode);
