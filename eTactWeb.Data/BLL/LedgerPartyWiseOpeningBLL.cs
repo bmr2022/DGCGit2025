@@ -21,7 +21,12 @@ namespace eTactWeb.Data.BLL
             _LedgerPartyWiseOpeningDAL = new LedgerPartyWiseOpeningDAL(config, dataLogicDAL);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<ResponseResult> FillLedgerName(int OpeningYearCode)
+
+		public async Task<ResponseResult> FillEntryId()
+		{
+			return await _LedgerPartyWiseOpeningDAL.FillEntryId();
+		}
+		public async Task<ResponseResult> FillLedgerName(int OpeningYearCode)
         {
             return await _LedgerPartyWiseOpeningDAL.FillLedgerName(OpeningYearCode);
         }

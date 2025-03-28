@@ -295,8 +295,8 @@ namespace eTactWeb.Controllers
                 _MemoryCache.Set("KeyAdjChallanGrid", result.CustomerJobWorkChallanAdj, cacheEntryOptions);
 
 
-
-                return PartialView("_CustomerJwisschallanAdjustment", result.CustomerJobWorkIssueAdjustDetails);
+                // result.CustomerJobWorkIssueAdjustDetails
+                return PartialView("_CustomerJwisschallanAdjustment", result.CustomerJobWorkChallanAdj);
             }
             catch (Exception ex)
             {

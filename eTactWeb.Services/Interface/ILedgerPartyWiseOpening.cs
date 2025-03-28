@@ -10,7 +10,8 @@ namespace eTactWeb.Services.Interface
 {
     public interface ILedgerPartyWiseOpening
     {
-        Task<ResponseResult> FillLedgerName(int OpeningYearCode);
+		Task<ResponseResult> FillEntryId();
+		Task<ResponseResult> FillLedgerName(int OpeningYearCode);
         Task<ResponseResult> FillAccountNameForDashBoard();
         Task<ResponseResult> FillInvoiceForDashBoard();
         Task<ResponseResult> GetOpeningAmt(int OpeningYearCode, int AccountCode);
