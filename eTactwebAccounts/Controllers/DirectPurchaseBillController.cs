@@ -1183,14 +1183,14 @@ namespace eTactWeb.Controllers
                     if (MainModel.InvDate != null)
                     {
                         InvoiceDate = DateTime.Parse(MainModel.InvDate, new CultureInfo("en-GB"));
-                        InvoiceDt = ParseFormattedDate(InvoiceDate.ToString());
+                        InvoiceDt = InvoiceDate.ToString("dd/MMM/yyyy");
                     }
                     else
                     {
-                        InvoiceDt = ParseFormattedDate(DateTime.Today.ToString());
+                        InvoiceDt = DateTime.Now.ToString("dd/MMM/yyyy");
                     }
-                    challanDt = ParseFormattedDate(DateTime.Today.ToString());
-                    BankVoucherDt = ParseFormattedDate(DateTime.Today.ToString());
+                    challanDt = DateTime.Now.ToString("dd/MMM/yyyy");
+                    BankVoucherDt = DateTime.Now.ToString("dd/MMM/yyyy");
 
                     Table.Rows.Add(
                         new object[]
