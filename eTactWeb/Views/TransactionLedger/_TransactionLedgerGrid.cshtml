@@ -55,7 +55,7 @@
                                         var VoucherType = item.VoucherType;
                                         switch (VoucherType.ToUpper())
                                         {
-                                            case "BANK-RECEIPt":
+                                            case "BANK-RECEIPT":
                                                 ControllerName = "BankReceipt";
                                                 ActionName = "BankReceipt";
                                                 break;
@@ -75,9 +75,13 @@
                                                 ControllerName = "SaleInvoice";
                                                 ActionName ="SaleInvoice";
                                                 break;
+                                            case "PURCHASE-BILL":
+                                                ControllerName = "PurchaseBill";
+                                                ActionName ="PurchaseBill";
+                                                break;
                                         }
                                         <div id="viewCursorDiv-@Cntr">
-                                            <a class="table-link link-success" asp-route-ID="@item.AccEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo">
+                                            <a class="table-link link-success" asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -85,7 +89,7 @@
                                             </a>
                                         </div>
                                         <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="@ActionName" asp-controller="@ControllerName" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo">
+                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="@ActionName" asp-controller="@ControllerName" asp-route-Mode="U" asp-route-ID="@item.DocEntryId" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

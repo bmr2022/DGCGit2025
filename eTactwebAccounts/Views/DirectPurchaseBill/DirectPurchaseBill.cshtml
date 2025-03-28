@@ -2145,6 +2145,7 @@
         // });
 
         $('.ItemBtn').click(function () {
+            debugger
             let IsError = 0;
 
             $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
@@ -2267,6 +2268,15 @@
             }
             else {
                 RemoveErrorCls('Amount');
+            }
+
+            if ($('#BillQty').val() <= 0) {
+                $.notify("BillQty is required", "error");
+                AddErrorCls('BillQty');
+                IsError = 1;
+            }
+            else {
+                RemoveErrorCls('BillQty');
             }
 
             if ($('#Description').val() == null || $('#Description').val() == undefined || $('#Description').val() == '') {
