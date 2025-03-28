@@ -350,7 +350,7 @@ namespace eTactWeb.Controllers
                             if (errNum == " 2627")
                             {
                                 ViewBag.isSuccess = false;
-                                ViewBag.ResponseResult = Result.StatusCode + "Occurred while saving data";
+                                ViewBag.ResponseResult = Result.StatusCode + "Occurred while saving data" + Result.Result;
                                 TempData["2627"] = "2627";
                                 _Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                                 var model2 = await BindModels(model);
@@ -366,7 +366,7 @@ namespace eTactWeb.Controllers
                             }
                             else
                             {
-                                ViewBag.ResponseResult = Result.StatusCode + "Occurred while saving data";
+                                ViewBag.ResponseResult = Result.StatusCode + "Occurred while saving data" + Result.Result;
                                 TempData["500"] = "500";
                                 model = await BindModels(model);
                                 model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();

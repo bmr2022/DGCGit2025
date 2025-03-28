@@ -474,7 +474,7 @@
                                         <div class="row g-2 gx-3">
                                             <div class="col-12 text-center">
                                                
-                                                <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+                                                <strong>TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
                                             </div>
                                         </div>
                                     </div>
@@ -616,7 +616,10 @@
             if ($('#Mode').val() !== "U") {
 
                 FillEntryID();
+                TotalNoOfRows();
             }
+
+            $('#BatchNo').css('background-color', 'rgb(248 255 178)');
             //$('#BillNo').removeClass('Valid');
             $('#SlipDate').rules("remove", "required");
             $('#Uid').rules("remove", "required");
@@ -836,7 +839,7 @@
            // $('#OriginalItemCode').val($('#OriginalItemName').val());
         });
         $('#AltPartCode').change(function () {
-           
+            
                 $('#AltItemCode').val($('#AltPartCode').val());
            
             //$('#OriginalItemCode').val($('#OriginalPartCode').val());
@@ -963,10 +966,12 @@
             }
         }
 
-
         $('#OriginalPartCode').change(function () {
-            GetAltPartCode();
+            if ($("#Mode").val() !== "U") {
+                GetAltPartCode();
             GetAltItemName();
+            }
+            
         })
 
         $('#OriginalQty').on('input', function () {
@@ -1554,7 +1559,7 @@
         var EditEachItem = false;
 
         function EditItemRow(SrNO) {
-
+            debugger
             if (EditEachItem) {
                 $.notify('Cannot edit item while another item is being added to the grid!', "error");
                 return;
@@ -1569,17 +1574,17 @@
                     var obj = $.parseJSON(data);
                     if (obj != null) {
                         EditEachItem = true;
-
+                        
                         $('#OriginalPartCode').val(obj[0].OriginalItemCode).trigger("change");
                         $('#OriginalItemName').val(obj[0].OriginalItemCode).trigger("change");
-                        $('#OriginalItemCode').val(obj[0].OriginalItemCode).trigger("change");
-                        $('#Unit').val(obj[0].Unit).trigger("change");
-                        $('#OriginalQty').val(obj[0].OriginalQty).trigger("change");
+                        $('#OriginalItemCode').val(obj[0].OriginalItemCode);
+                        $('#Unit').val(obj[0].Unit);
+                        $('#OriginalQty').val(obj[0].OriginalQty);
                         $('#AltItemName').val(obj[0].AltItemCode).trigger("change");
                         $('#AltPartCode').val(obj[0].AltItemCode).trigger("change");
-                        $('#AltItemCode').val(obj[0].AltItemCode).trigger("change");
-                        $('#AltUnit').val(obj[0].AltUnit).trigger("change");
-                        $('#AltOriginalQty').val(obj[0].AltOriginalQty).trigger("change");
+                        $('#AltItemCode').val(obj[0].AltItemCode);
+                        $('#AltUnit').val(obj[0].AltUnit);
+                        $('#AltOriginalQty').val(obj[0].AltOriginalQty);
                         $('#OriginalStoreId').val(obj[0].OriginalStoreId).trigger("change");
                         $('#StoreName').val(obj[0].StoreId).trigger("change");
                         $('#AltStoreName').val(obj[0].AltStoreId).trigger("change");

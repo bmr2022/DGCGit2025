@@ -195,6 +195,33 @@
                 </div>
             </div>
         </div>
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>@ViewData["Title"] - @Model.YearCode</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
+                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PurchVouchNo="@Model.PurchVouchNo">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT VOUCHER
+                    </a>
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
+                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PurchVouchNo="@Model.PurchVouchNo">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT INVOICE
+                    </a>
+                    @if (Model.Mode == "U" && Model.Mode != "POC" && Model.Mode != "V")
+                    {
+                    }
+
+                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+
+                    <partial name="_FormsButton" />
+                </span>
+            </h5>
+        </div>
     </form>
 </div>
 

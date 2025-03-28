@@ -193,6 +193,7 @@ namespace eTactWeb.Data.DAL
                                                         select new MaterialConversionModel
                                                         {
                                                             EntryId = dr["MatConvEntryId"] != DBNull.Value ? Convert.ToInt32(dr["MatConvEntryId"]) : 0,
+                                                            seqno = dr["seqno"] != DBNull.Value ? Convert.ToInt32(dr["seqno"]) : 0,
                                                             SlipNo = dr["MatConvSlipNo"] != DBNull.Value ? Convert.ToString(dr["MatConvSlipNo"]) : string.Empty,
                                                             SlipDate = dr["MatConvSlipDate"] != DBNull.Value ? Convert.ToDateTime(dr["MatConvSlipDate"]).ToString("dd/MM/yyyy") : string.Empty,
                                                             IssueToStoreWC = dr["StoreWorkcenter"] != DBNull.Value ? Convert.ToString(dr["StoreWorkcenter"]) : string.Empty,
@@ -220,6 +221,7 @@ namespace eTactWeb.Data.DAL
                                                         select new MaterialConversionModel
                                                         {
                                                             EntryId = dr["MatConvEntryId"] != DBNull.Value ? Convert.ToInt32(dr["MatConvEntryId"]) : 0,
+                                                            seqno = dr["seqno"] != DBNull.Value ? Convert.ToInt32(dr["seqno"]) : 0,
                                                             SlipNo = dr["MatConvSlipNo"] != DBNull.Value ? Convert.ToString(dr["MatConvSlipNo"]) : string.Empty,
                                                             SlipDate = dr["MatConvSlipDate"] != DBNull.Value ? Convert.ToDateTime(dr["MatConvSlipDate"]).ToString("dd/MM/yyyy") : string.Empty,
                                                             IssueToStoreWC = dr["StoreWorkcenter"] != DBNull.Value ? Convert.ToString(dr["StoreWorkcenter"]) : string.Empty,
@@ -400,9 +402,9 @@ namespace eTactWeb.Data.DAL
                             //ProdSchDatetime = DS.Tables[1].Rows[1]["ProdSchDatetime"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ProdSchDatetime"]).ToString("dd/MM/yyyy") : string.Empty,
                            
                             EntryId = Convert.ToInt32(row["MatConvEntryId"].ToString()),
-
                             OpeningYearCode = Convert.ToInt32(row["MatConvYearCode"].ToString()),
                             StoreId = Convert.ToInt32(row["OriginalStoreId"].ToString()),
+                            seqno = Convert.ToInt32(row["seqno"].ToString()),
                             StoreName = row["OrigStoreName"].ToString(),
                             OriginalItemCode = row["OriginalItemCode"].ToString(),
                             OriginalPartCode = row["OrigPartCode"].ToString(),
