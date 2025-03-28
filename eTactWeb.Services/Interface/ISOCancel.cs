@@ -12,5 +12,6 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> GetSearchData(string FromDate, string ToDate, string CancelType, string Uid, int Empid, string SONO, string AccountName, string CustOrderNo);
         Task<List<SoCancelDetail>> ShowSODetail(int ID, int YearCode, string SoNo);
+        Task<ResponseResult> SaveActivation(int EntryId, int YC, string SONO, string CustOrderNo, string type, int EmpID);
     }
 }

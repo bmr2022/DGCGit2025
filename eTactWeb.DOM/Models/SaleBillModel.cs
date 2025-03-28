@@ -257,6 +257,7 @@ namespace eTactWeb.DOM.Models
             new() { Value = "N", Text = "No" },
         };
 
+        //public List<CustomerJobWorkChallanAdj> CustomerJobWorkChallanAdj { get; set; }
         public List<CustomerJobWorkChallanAdj> CustomerJobWorkChallanAdj { get; set; }
         public IList<SelectListItem> YesNoList
         {

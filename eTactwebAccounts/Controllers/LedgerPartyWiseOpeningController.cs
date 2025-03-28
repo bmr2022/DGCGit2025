@@ -344,10 +344,20 @@ namespace eTactWeb.Controllers
             {
                 _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail);
 
+                int Indx = Convert.ToInt32(SrNO) - 1;
+
                 if (LedgerPartyWiseOpeningDetail != null && LedgerPartyWiseOpeningDetail.Count > 0)
                 {
-                    LedgerPartyWiseOpeningDetail.RemoveAll(x => x.SrNO == SrNO);
 
+                    LedgerPartyWiseOpeningDetail.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in LedgerPartyWiseOpeningDetail)
+                    {
+                        Indx++;
+                        item.SrNO = Indx;
+                    }
                     MainModel.LedgerPartyWiseOpeningDetails = LedgerPartyWiseOpeningDetail;
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -358,15 +368,26 @@ namespace eTactWeb.Controllers
                     };
 
                     _MemoryCache.Set("KeyLedgerPartyWiseOpeningGrid", MainModel.LedgerPartyWiseOpeningDetails, cacheEntryOptions);
+
+
+                    
                 }
             }
             else
             {
                 _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail);
-
+                int Indx = Convert.ToInt32(SrNO) - 1;
                 if (LedgerPartyWiseOpeningDetail != null && LedgerPartyWiseOpeningDetail.Count > 0)
-                {   
-                    LedgerPartyWiseOpeningDetail.RemoveAll(x => x.SrNO == SrNO);
+                {
+                    LedgerPartyWiseOpeningDetail.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in LedgerPartyWiseOpeningDetail)
+                    {
+                        Indx++;
+                        item.SrNO = Indx;
+                    }
                     MainModel.LedgerPartyWiseOpeningDetails = LedgerPartyWiseOpeningDetail;
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -377,6 +398,10 @@ namespace eTactWeb.Controllers
                     };
 
                     _MemoryCache.Set("KeyLedgerPartyWiseOpeningGrid", MainModel.LedgerPartyWiseOpeningDetails, cacheEntryOptions);
+
+
+
+                   
                 }
             }
 

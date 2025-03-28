@@ -373,7 +373,10 @@ namespace eTactWeb.Controllers
             model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
+
+            model.CustomerJobWorkChallanAdj = model.CustomerJobWorkChallanAdj == null ? new List<CustomerJobWorkChallanAdj>() : model.CustomerJobWorkChallanAdj;
             _MemoryCache.Set("KeySaleBillGrid", model.saleBillDetails, cacheEntryOptions);
+            _MemoryCache.Set("KeyAdjChallanGrid", model.CustomerJobWorkChallanAdj, cacheEntryOptions);
             _MemoryCache.Set("KeyAdjGrid", model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel, DateTimeOffset.Now.AddMinutes(60));
             _MemoryCache.Set("SaleBillModel", model, cacheEntryOptions);
             _MemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));

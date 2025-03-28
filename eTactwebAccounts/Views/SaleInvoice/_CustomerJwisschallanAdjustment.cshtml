@@ -1,4 +1,4 @@
-﻿@model List<eTactWeb.DOM.Models.CustomerJobWorkIssueAdjustDetail>
+﻿@model List<eTactWeb.DOM.Models.CustomerJobWorkChallanAdj>
 
 @{
     @if (Model == null || Model.Count == 0)
@@ -15,30 +15,25 @@
             Cntr = Cntr + 1;
             <tr id="@Cntr" class="small" id="divUnMain" style="white-space:nowrap">
                 <td>@Cntr</td>
-                <td>@item.EntryIdRecJW</td>
-                <td>@item.RecJWChallanNo</td>
-                <td>@item.RecYearCode</td>
-                <td>@item.ChallanDate</td>
-                <td>@item.RecPartCode</td>
-                <td>@item.RecItemName<input type="hidden" value="@item.RecItemCode"/></td>
-                <td>@item.BomNo</td>
-                <td>@item.BomDate</td>
-                <td>@item.BomStatus</td>
+                <td>@item.CustJwRecEntryId</td>
+                <td>@item.CustJwRecChallanNo</td>
+                <td>@item.CustJwRecYearCode</td> @* Rec YearCode *@
+                <td>@item.CustJwIssChallanDate</td> @* Challan Date *@
+                <td>@item.RecItemCode</td> @* ItemName and PartCode *@
+                <td>@item.BomRevNo</td>
+                <td>@item.BOMRevDate</td> 
                 <td>@item.PendQty</td>
-                <td>@item.IssuePartCode</td>
-                <td>@item.IssueItemName</td>
-                <td>@item.BomQty</td>
-                <td>@item.Through</td>
-                <td>@item.QtyToBeRec</td>
-                <td>@item.ActualAdjQty</td>
-                <td>@item.Batchno</td>
-                <td>@item.UniqueBatchno</td>
-                <td>@item.IssueQty</td>
-                <td>@item.Rate</td>
-                <td>@item.OriginalRecQty</td>
-                <td>@item.IdealScrap</td>
-                <td>@item.IssuedScrap</td>
-
+                <td>@item.BOMQty</td>
+                <td>@item.IssQty</td> @* qtyTobeIss *@
+                <td>@item.AdjQty</td> @*ActualAdjQty*@
+                <td>@item.Issbatchno</td>
+                <td>@item.Issuniquebatchno</td>
+                <td>@item.IssuedScrapQty</td> @*IssQty*@
+                <td>@item.TotalRecQty</td> @* OrginialRecQty *@
+                <td>@item.IdealScrapQty</td>
+                <td>@item.IssuedScrapQty</td>
+                @*Bomstuatus , recpartcode , recitemname, issuepartcode, issueditemname, issueditemcode
+                        ,Rate*@
             </tr>
         }
     }

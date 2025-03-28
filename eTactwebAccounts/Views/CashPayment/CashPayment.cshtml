@@ -191,7 +191,7 @@
                         </div>
                         <div class="card">
                             <div class="card-body overflow-auto pb-0">
-                                <div style="overflow-x:auto; overflow-y:auto; max-height:340px; border:1px solid #ccc;">
+                                <div style="overflow-x:auto; overflow-y:auto; max-height:190px; border:1px solid #ccc;">
                                     <table class="table table-hover table-bordered table-striped">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                             <tr>
@@ -199,28 +199,24 @@
                                                 <th>Sr NO</th>
                                                 <th>Ledger Name</th>
                                                 <th>Balance&nbsp;DR/CR</th>
-                                                <th>Intrument</th>
-                                                <th>Intrument No</th>
-                                                <th>Intrument Date</th>
-                                                <th>Mode of Adjustment</th>
+                                                <th title="Instrument">Inst</th>
+                                                <th title="Intrument No">Inst No</th>
+                                                <th title="Intrument Date">Inst Date</th>
+                                                <th title="Mode of Adjustment">Mode of Adj</th>
                                                 <th>Amount&nbsp;Type</th>
                                                 <th>Amount (OC)</th>
-                                                <th>Cost Center Name</th>
-                                                <th>Party-Wise Narration</th>
-                                                <th>Customer Order No</th>
+                                                <th>Cost Center</th>
+                                                <th>Party-Wise Narr</th>
+                                                <th title="Customer Order No">Cust Order No</th>
                                                 <th>Sales Order Date</th>
-
                                                 <th>Sales Order Year</th>
-                                                <th>PO No</th>
-                                                <th>PO Date</th>
-                                                <th>PO Year</th>
-                                                <th>Against Voucher No</th>
-                                                <th>Against Voucher Code</th>
-                                                <th>Against Voucher Date</th>
-                                                <th>Against Voucher Type</th>
-                                                <th>Against Voucher Entry ID</th>
-                                                <th>Voucher Bill Amount</th>
-                                                <th>Pending Bill Amount</th>
+                                                <th title="Against Voucher No">Agst Vch No</th>
+                                                <th title="Against Voucher Code">Agst Vch Code</th>
+                                                <th title="Against Voucher Date">Agst Vch Date</th>
+                                                <th title="Against Voucher Type">Agst Vch Type</th>
+                                                <th title="Against Voucher Entry ID">Agst Vch ID</th>
+                                                <th title="Voucher Bill Amount">Vch Bill Amt</th>
+                                                <th title="Pending Bill Amount">Pending Bill Amt</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divCashPaymentDetail">
@@ -634,7 +630,12 @@
                     $(this).val('');
                 }
             });
-            
+
+            $("#AdjustmentAmt").on("keydown", function (event) {
+                if (event.key.toLowerCase() === 'e' || event.key === '-') {
+                    event.preventDefault();
+                }
+            });
 
             function checkModeOfAdjustment() {
 
@@ -1459,7 +1460,7 @@
                 $.ajax({
                     url: '@Url.Action("DeleteItemRow")',
                     type: "POST",
-                    data: { "SeqNo": SeqNo, "PopUpData": PopUpData },
+                    data: { "SeqNo": SeqNo, "PopUpData": PopUpData, "Mode": $('#Mode').val() },
                     async: false,
                     success: function (data) {
 
@@ -1551,6 +1552,7 @@
                         "InsDate": $('#InsDate').val(),
                         "CurrencyId": parseInt($('#CurrencyId').val()),
                         "ActualEntryDate": $('#ActualEntryDate').val(),
+                        "Mode": $('#Mode').val(),
                         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
                         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
@@ -1739,6 +1741,7 @@
                 "EntryByMachine": $('#EntryByMachine').val(),
                 "CurrencyId": parseInt($('#CurrencyId').val()),
                 "ActualEntryDate": $('#ActualEntryDate').val(),
+                "Mode": $('#Mode').val(),
                 "Type": $('#Type').find(":selected").text() == '-Select-' ? '' : $('#Type').find(":selected").text(),
                 "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
                 "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
@@ -1823,7 +1826,7 @@
                 $.ajax({
                     url: '@Url.Action("EditItemRows", "CashPayment")',
                     type: "POST",
-                    data: { SrNO: SrNO },
+                    data: { SrNO: SrNO, "Mode": $('#Mode').val() },
                     success: function (data) {
 
                         var obj = $.parseJSON(data);
@@ -1874,9 +1877,10 @@
                                     $('#editItemGrid-' + i).css("pointer-events", "none");
                                     $('#editItemGrid-' + i).css("cursor", "not-allowed");
                                 }
-                                DeleteItemRow(SrNO);
                             }
                         }
+                        DeleteItemRow(SrNO);
+                        AdjustAmountForAddToGridForDRCR();
                     },
                     error: function (response) {
                         $.notify(response.responseText, "error");

@@ -205,7 +205,7 @@
                         </div>
                         <div class="card">
                             <div class="card-body overflow-auto pb-0">
-                                <div style="overflow-x:auto; overflow-y:auto; max-height:340px; border:1px solid #ccc;">
+                                <div style="overflow-x:auto; overflow-y:auto; max-height:190px; border:1px solid #ccc;">
                                     <table class="table table-hover table-bordered table-striped">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                             <tr>
@@ -213,24 +213,24 @@
                                                 <th>Sr NO</th>
                                                 <th>Ledger Name</th>
                                                 <th>Balance&nbsp;DR/CR</th>
-                                                <th>Intrument</th>
-                                                <th>Intrument No</th>
-                                                <th>Intrument Date</th>
-                                                <th>Mode of Adjustment</th>
+                                                <th title="Instrument">Inst</th>
+                                                <th title="Intrument No">Inst No</th>
+                                                <th title="Intrument Date">Inst Date</th>
+                                                <th title="Mode of Adjustment">Mode of Adj</th>
                                                 <th>Amount&nbsp;Type</th>
                                                 <th>Amount (OC)</th>
-                                                <th>Cost Center Name</th>
-                                                <th>Party-Wise Narration</th>
-                                                <th>Customer Order No</th>
+                                                <th>Cost Center</th>
+                                                <th>Party-Wise Narr</th>
+                                                <th title="Customer Order No">Cust Order No</th>
                                                 <th>Sales Order Date</th>
                                                 <th>Sales Order Year</th>
-                                                <th>Against Voucher No</th>
-                                                <th>Against Voucher Code</th>
-                                                <th>Against Voucher Date</th>
-                                                <th>Against Voucher Type</th>
-                                                <th>Against Voucher Entry ID</th>
-                                                <th>Voucher Bill Amount</th>
-                                                <th>Pending Bill Amount</th>
+                                                <th title="Against Voucher No">Agst Vch No</th>
+                                                <th title="Against Voucher Code">Agst Vch Code</th>
+                                                <th title="Against Voucher Date">Agst Vch Date</th>
+                                                <th title="Against Voucher Type">Agst Vch Type</th>
+                                                <th title="Against Voucher Entry ID">Agst Vch ID</th>
+                                                <th title="Voucher Bill Amount">Vch Bill Amt</th>
+                                                <th title="Pending Bill Amount">Pending Bill Amt</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divBankReceiptDetail">
@@ -882,6 +882,12 @@
             });
         }
 
+        $("#AdjustmentAmt").on("keydown", function (event) {
+            if (event.key.toLowerCase() === 'e' || event.key === '-') {
+                event.preventDefault();
+            }
+        });
+
         function FillSONO() {
             ;
 
@@ -1378,7 +1384,7 @@
         }
 
         function PopUpForPendingVouchers(Action, SrNO) {
-            debugger
+             
             $('#CheckUnCheckAll').prop('checked', false);
             if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 $('#DisplayRoutingDetailModal').modal('hide');
@@ -1399,7 +1405,7 @@
                 data: { "DataTable": DataTable },
                 success: function (data, status, xhr) {
                     if (data != null) {
-                        debugger
+                         
                         $('#divDisplayPopupForPendingVouchersDetail').empty();
                         $('#divDisplayPopupForPendingVouchersDetail').append(data);
                         CheckUnCheckEdit();
@@ -1423,7 +1429,7 @@
         }
 
         function AdjustAmount() {
-             
+
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var DRAmt = 0;
             var CRAmt = 0;
@@ -1432,7 +1438,7 @@
             for (var i = 1; i <= rowCount; i++) {
 
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
-                    var drcr = $(`#PopUpType-${i}`).text().trim();                  
+                    var drcr = $(`#PopUpType-${i}`).text().trim();
 
                     if (drcr.toLowerCase() === "dr") {
                         var DRAmtrow = parseFloat($(`#AdjustAmt-${i}`).val());
@@ -1464,11 +1470,12 @@
         var isEditAllowed = "false";
 
         function DeleteItemRow(SeqNo, PopUpData) {
+             
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: '@Url.Action("DeleteItemRow")',
                     type: "POST",
-                    data: { "SeqNo": SeqNo, "PopUpData": PopUpData },
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val(), "PopUpData": PopUpData },
                     async: false,
                     success: function (data) {
 
@@ -1495,7 +1502,7 @@
         }
 
         function ChangeAdjustAmt(i) {
-             
+
             if ($('#AdjustAmt-' + i).val() > 0) {
                 $('#BalanceAmt-' + i).text(parseFloat($('#ActualBalance-' + i).text()) - parseFloat($('#AdjustAmt-' + i).val()));
                 $('#BalanceAmt-' + i).text(Math.round(parseFloat($('#BalanceAmt-' + i).text()) * 100) / 100);
@@ -1530,14 +1537,14 @@
         }
 
         function AdjustButton() {
-            debugger
+             
             if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var ItemData = [];
             for (var i = 1; i <= rowCount + 1; i++) {
-                debugger
+                 
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
-                     
+
                     var type = $('#PopUpType-' + i).text().trim().toLowerCase();
                     var adjAmt = parseFloat($('#AdjustAmt-' + i).val()) || 0; // Convert to float, default to 0
 
@@ -1572,6 +1579,7 @@
                         "InsDate": $('#InsDate').val(),
                         "CurrencyId": parseInt($('#CurrencyId').val()),
                         "ActualEntryDate": $('#ActualEntryDate').val(),
+                        "Mode": $('#Mode').val(),
                         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
                         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
@@ -1582,7 +1590,7 @@
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddBankReceiptAdjustDetail", "BankReceipt")',
-                data: { model: ItemData },
+                data: { model: ItemData, "Mode": $('#Mode').val() },
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#DisplayRoutingDetailModal').modal('hide');
@@ -1602,7 +1610,7 @@
         }
 
         function Validate_GridButton() {
-
+             
             var Err = 0;
             if ($('#Type').val() == "") {
                 AddErrorCls('Type');
@@ -1729,6 +1737,7 @@
                 "EntryByMachine": $('#EntryByMachine').val(),
                 "CurrencyId": parseInt($('#CurrencyId').val()),
                 "ActualEntryDate": $('#ActualEntryDate').val(),
+                "Mode": $('#Mode').val(),
                 "Type": $('#Type').find(":selected").text() == '-Select-' ? '' : $('#Type').find(":selected").text(),
                 "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
                 "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
@@ -1814,9 +1823,9 @@
                 $.ajax({
                     url: '@Url.Action("EditItemRows", "BankReceipt")',
                     type: "POST",
-                    data: { SrNO: SrNO },
+                    data: { SrNO: SrNO, "Mode": $('#Mode').val() },
                     success: function (data) {
-                        
+
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
 
@@ -1866,10 +1875,11 @@
                                     $('#editItemGrid-' + i).css("pointer-events", "none");
                                     $('#editItemGrid-' + i).css("cursor", "not-allowed");
                                 }
-                               
+
                             }
                         }
                         DeleteItemRow(SrNO);
+                        AdjustAmountForAddToGridForDRCR();
                     },
                     error: function (response) {
                         $.notify(response.responseText, "error");
@@ -1897,7 +1907,7 @@
         })
 
         function CheckUnCheckCheck(i) {
-             
+
             var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             if ($('#CheckUnCheck-' + i).is(':checked') == true) {
                 if (parseFloat($('#AdjustAmt-' + i).val()) == 0) {
@@ -1921,7 +1931,7 @@
         }
 
         function CheckUnCheckEdit() {
-               
+
             var RowCount = $('#divBankReceiptDetail tr').length;
             var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var selectedRows = 0;

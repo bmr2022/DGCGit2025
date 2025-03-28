@@ -1396,6 +1396,7 @@
             return true;
         }
 
+        var sum = 0;
         $('.ItemBtn').click(function (e) {
 
             AddToItemsGrid(e);
@@ -1494,11 +1495,11 @@
                         $('#SONO').focus();
                         ClearAdjustmentGrid();
                         var rowCount = $('#divAddPurchaseRejectionList tr').length;
-
+                        sum = 0;
                         for (var i = 1; i <= rowCount; i++) {
 
                             sum += parseFloat($('#gridAmount-' + i).text() == '.00' ? 0 : $('#gridAmount-' + i).text());
-                        }
+                        }   
 
                         $('#ItemNetAmount').val(sum);
 
