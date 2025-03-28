@@ -340,6 +340,21 @@
                 ClearItems();
 
             }
+
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                FillEntryID();
+            }
+            $('#BillNo').rules("remove", "required");
+            $('#BillDate').rules("remove", "required");
+            $('#BillYear').rules("remove", "required");
+            $('#BillNetAmt').rules("remove", "required");
+            $('#PendAmt').rules("remove", "required");
+            $('#Type').rules("remove", "required");
+            $('#TransactionType').rules("remove", "required");
+            $('#DueDate').rules("remove", "required");
+            $('#Unit').rules("remove", "required");
+
+
             $('#BillNo').removeClass('Valid');
             $('#LedgerName').select2();
             $('#Type').select2();
@@ -372,6 +387,27 @@
             
 
         });
+
+        function FillEntryID() {
+            debugger;
+            $.ajax({
+                url: '@Url.Action("FillEntryId", "LedgerPartyWiseOpening")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, xhr) {
+                    console.log(data);
+                    var obj = $.parseJSON(data);
+                    if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                        $('#EntryId').val(0);
+                        $('#EntryId').val(obj.Result[0].EntryId);
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
 
         $('.submitBTN').click(function (e) {
             
@@ -500,13 +536,18 @@
             var Balance = $('#Balance').val().trim();
 
             if (TotNetAmt != 0) {
-
                 BillNetAmt = parseFloat(Balance) - parseFloat(TotNetAmt);
-                $("#BillNetAmt").val(BillNetAmt);
-                $("#PendAmt").val(BillNetAmt);
-            }
 
+                if (BillNetAmt >= 0) {  // Only set values if BillNetAmt is non-negative
+                    $("#BillNetAmt").val(BillNetAmt);
+                    $("#PendAmt").val(BillNetAmt);
+                } else {
+                    $("#BillNetAmt").val(""); // Clear or keep it unchanged
+                    $("#PendAmt").val("");
+                }
+            }
         });
+
 
 
 
@@ -659,6 +700,7 @@
                             Mode: "U",
                             ID: EntryId,
                             OpeningYearCode: OpeningYearCode,
+                            LedgerOpnEntryId: EntryId,
                             //AccBookTransEntryId: AccBookTransEntryId,
                             //AccBookTransYearCode: AccBookTransYearCode,
                             AccountCode: AccountCode,
@@ -694,7 +736,9 @@
         }
         function ClearItems() {
             $('#BillYear,#BillNetAmt,#PendAmt').val(0);
-            $('#BillNo,#BillDate,#Type,#TransactionType,#DueDate,#Unit').val('');
+
+            $('#Type').prop('selectedIndex', 0).trigger("change");
+            $('#BillNo,#BillDate,#TransactionType,#DueDate').val('');
 
             
 
@@ -705,7 +749,7 @@
         $(document).on('click', '#GridButton', function () {
              ;
             console.log('Add to Grid button clicked');
-            countAllTotal();
+            
             var BillNo = $('#BillNo').val().trim();
             var BillDate = $('#BillDate').val().trim();
             var BillYear = $('#BillYear').val().trim();
@@ -720,20 +764,53 @@
             var TotNetAmt = $('#TotNetAmt').val().trim();
             var Balance = $('#Balance').val().trim();
 
-            if (!BillNo || !BillDate || !BillYear || !BillNetAmt || !PendAmt || !Type || !TransactionType || !DueDate || !Unit ||
-                BillNetAmt == "0" || PendAmt == "0") {
-                $.notify('Fill All Data For Add in Grid', "error");
+            if ( !BillDate ) {
+                $.notify('Fill BillDate For Add in Grid', "error");
                 return;
             }
-
-            if (parseFloat(BillNetAmt) > parseFloat(Balance)) {
-                $.notify('amt Can not Be Greater Then Balance', "error");
+            if ( !BillYear ) {
+                $.notify('Fill Bill Year For Add in Grid', "error");
                 return;
             }
-
+            if (!BillNo) {
+                $.notify('Fill BillNo For Add in Grid', "error");
+                return;
+            }
+            if ( !BillNetAmt ) {
+                $.notify('Fill BillNetAmt For Add in Grid', "error");
+                return;
+            }
+            if (!PendAmt ) {
+                $.notify('Fill PendAmt For Add in Grid', "error");
+                return;
+            }
+            if ( !Type ) {
+                $.notify('Fill Type For Add in Grid', "error");
+                return;
+            }
+            if (  !TransactionType ) {
+                $.notify('Fill TransactionType For Add in Grid', "error");
+                return;
+            }
+            if (  !DueDate) {
+                $.notify('Fill DueDate For Add in Grid', "error");
+                return;
+            }
+            if (!Unit) {
+                $.notify('Fill Unit For Add in Grid', "error");
+                return;
+            }
+            if ( BillNetAmt == "0" ) {
+                $.notify('BillNetAmt can not be 0', "error");
+                return;
+            }
+            if ( PendAmt == "0") {
+                $.notify('PendAmt can not be 0', "error");
+                    return;
+            }
             
-            
 
+          
             var seqnoarray = [];
             $('#divStockGrid tr').each(function () {
                 var seqnoText = $(this).find('td[id^=SrNO]').text();
@@ -919,6 +996,7 @@
                         $.notify("Item Deleted from Grid", "info");
                         isEditOperationAllowed = "true";
                         resolve();
+                        countAllTotal();
                     },
                     error: function (response) {
                         reject(response.responseText);

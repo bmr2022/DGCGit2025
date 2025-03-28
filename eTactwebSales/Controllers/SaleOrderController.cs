@@ -304,7 +304,16 @@ public class SaleOrderController : Controller
 		model.StoreList = await _IDataLogic.GetDropDownList("Store_Master", "SP_GetDropDownList");
 		model.SaleDocTypeList = await _IDataLogic.GetDropDownList("SALEDOC", "SP_GetDropDownList");
 		model.PreparedByList = await _IDataLogic.GetDropDownList("EmpNameNCode", "SP_GetDropDownList");
-		model.AccountList = await _IDataLogic.GetDropDownList("PARTYNAMELIST", "F", "SP_GetDropDownList");
+
+		if (model.Mode != "U")
+		{
+			model.AccountList = await _IDataLogic.GetDropDownList("PARTYNAMELIST", "F", "SP_GetDropDownList");
+		}
+		else
+		{
+			model.AccountList = await _IDataLogic.GetDropDownList("PARTYNAMELIST", "T", "SP_GetDropDownList");
+
+		}
 		model.ResponsibleSalesPersonList = await _IDataLogic.GetDropDownList("EmpNameNCode", "SP_GetDropDownList");
 		model.PartCodeList = await _IDataLogic.GetDropDownList("FINISHEDGOODS", "CODELIST", "SP_GetDropDownList");
 		model.ItemNameList = await _IDataLogic.GetDropDownList("FINISHEDGOODS", "NAMELIST", "SP_GetDropDownList");

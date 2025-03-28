@@ -291,7 +291,25 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<LedgerPartyWiseOpeningModel> GetViewByID(int OpeningYearCode, int LedgerOpnEntryId)
+
+		public async Task<ResponseResult> FillEntryId()
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@flag", "NewEntryId"));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+			return _ResponseResult;
+		}
+		public async Task<LedgerPartyWiseOpeningModel> GetViewByID(int OpeningYearCode, int LedgerOpnEntryId)
         {
             var model = new LedgerPartyWiseOpeningModel();
             try
@@ -326,7 +344,7 @@ namespace eTactWeb.Data.DAL
                 DS.Tables[0].TableName = "AccLedgerBillWiseOpening";
                 int cnt = 0;
 
-                model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnEntryId"].ToString());
+                //model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnEntryId"].ToString());
                 //model.OpeningYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["LedgerOpnYearCode"].ToString());
                 //model.ActualEntryDate = DS.Tables[0].Rows[0]["LedgerOpnEntryDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(DS.Tables[0].Rows[0]["LedgerOpnEntryDate"]);
                 //model.Balance = Convert.ToInt32(DS.Tables[0].Rows[0]["OpeningAmt"].ToString());
