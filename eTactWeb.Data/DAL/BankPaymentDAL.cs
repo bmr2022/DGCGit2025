@@ -684,6 +684,7 @@ namespace eTactWeb.Data.DAL
                         AgainstVoucherEntryId = Convert.ToInt32(row["AgainstVoucherEntryId"].ToString()),
                         AgainstVoucherRefNo = row["againstVoucherRefNo"].ToString(),
                         AgainstVoucherType = row["AgainstVoucherType"].ToString(),
+                        AgainstVoucherNo = row["AgainstVoucherNo"].ToString(),
                         AgainstVoucheryearCode = Convert.ToInt32(row["AgainstVoucheryearcode"].ToString()),
                         ChequeClearDate = row["chequeClearDate"].ToString(),
                         ChequePrintAC = row["ChequePrintAC"].ToString(),
