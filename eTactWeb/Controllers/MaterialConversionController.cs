@@ -48,7 +48,7 @@ namespace eTactWeb.Controllers
             MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.cc = HttpContext.Session.GetString("Branch");
             //model.ActualEntryDate = DateTime.Now.ToString("dd/MM/yyyy");
-            _MemoryCache.Remove("MaterialConversionGrid");
+            _MemoryCache.Remove("KeyMaterialConversionGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
 
@@ -222,6 +222,7 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("ProdSchdatetime", typeof(DateTime));
                 GIGrid.Columns.Add("OrigItemRate", typeof(float));
                 GIGrid.Columns.Add("Remark", typeof(string));
+                GIGrid.Columns.Add("Seqno", typeof(long));
 
                 foreach (var Item in DetailList)
                 {
@@ -251,6 +252,7 @@ namespace eTactWeb.Controllers
                             Item.ProdSchDatetime =   Item.ProdSchDatetime,
                             Item.OrigItemRate == null ? 0f : Item.OrigItemRate,
                             Item.Remark == null ? "" : Item.Remark,
+                            Item.seqno == null ? "" : Item.seqno,
 
                         });
                 }
@@ -320,7 +322,7 @@ namespace eTactWeb.Controllers
                 {
                     if (MaterialConversionGrid == null)
                     {
-                        model.SrNO = 1;
+                        model.seqno = 1;
                         OrderGrid.Add(model);
                     }
                     else
@@ -332,7 +334,7 @@ namespace eTactWeb.Controllers
                         else
                         {
                             //count = WorkOrderProcessGrid.Count();
-                            model.SrNO = MaterialConversionGrid.Count + 1;
+                            model.seqno = MaterialConversionGrid.Count + 1;
                             OrderGrid = MaterialConversionGrid.Where(x => x != null).ToList();
                             ssGrid.AddRange(OrderGrid);
                             OrderGrid.Add(model);
@@ -379,7 +381,7 @@ namespace eTactWeb.Controllers
             IEnumerable<MaterialConversionModel> SSBreakdownGrid = MaterialConversionModelGrid;
             if (MaterialConversionModelGrid != null)
             {
-                SSBreakdownGrid = MaterialConversionModelGrid.Where(x => x.SrNO == SrNO);
+                SSBreakdownGrid = MaterialConversionModelGrid.Where(x => x.seqno == SrNO);
             }
             string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
             return Json(JsonString);
@@ -402,7 +404,7 @@ namespace eTactWeb.Controllers
                     foreach (var item in MaterialConversionGrid)
                     {
                         Indx++;
-                        item.SrNO = Indx;
+                        item.seqno = Indx;
                     }
                     MainModel.MaterialConversionGrid = MaterialConversionGrid;
 
@@ -443,8 +445,18 @@ namespace eTactWeb.Controllers
             var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             DateTime now = DateTime.Now;
             DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
-            model.FromDate = new DateTime(yearCode, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
-            model.ToDate = new DateTime(yearCode + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
+            Dictionary<int, string> monthNames = new Dictionary<int, string>
+            {
+                {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+                {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+            };
+
+            model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+            model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+            //DateTime now = DateTime.Now;
+            //DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            //model.FromDate = new DateTime(yearCode, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+            //model.ToDate = new DateTime(yearCode + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
             model.ActualEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             model.ReportType = "SUMMARY";
             var Result = await _IMaterialConversion.GetDashboardData(model);

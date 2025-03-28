@@ -25,14 +25,15 @@
 
                             <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
                                 <input type="hidden" asp-for="@Model.ActualEntryByEmpid" value="@Model.ActualEntryByEmpid" />
+                                <input type="hidden" asp-for="@Model.seqno" value="@Model.seqno" />
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">From Date</label>
-                                        <input asp-for="FromDate"  class="form-control" />
+                                        <input asp-for="FromDate"  class="form-control" readonly/>
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
-                                        <input asp-for="ToDate"  class="form-control" />
+                                        <input asp-for="ToDate" class="form-control" readonly />
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +111,8 @@
             // var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
 
             $('#ReportType').select2();
-
+             
+            GetDetailData();
             function applyBackgroundColor() {
 
                 var reportType = $('#ReportType').val();
@@ -164,18 +166,8 @@
             AutoComplete('VWorkorderMainDetail', 'PartCode', 'PartCode', null);
             AutoComplete('VWorkorderMainDetail', 'ItemName', 'ItemName', null);
 
-            if (fromDateBack != null && fromDateBack != '') {
-
-                $('#FromDate').val(fromDateBack);
-                $('#ToDate').val(toDateBack);
-                $('#BatchNo').val(BatchNoBack);
-                $('#SlipNo').val(SlipNoBack);
-                $('#PartCode').val(PartCodeBack);
-                $('#ItemName').val(ItemNameBack);
-                $('#search-box').val(GlobalSearchBack);
-                $('#SummaryDetail').val(DashboardTypeBack);
-            }
-        GetDetailData();
+            
+        
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 
             sessionStorage.removeItem('FromDateBack');
@@ -190,6 +182,7 @@
         });
 
         function GetDetailData() {
+             
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
             var reportType = $('#ReportType').val();
@@ -204,6 +197,8 @@
                 success: function (data) {
 
                     $('#divDashboardGrid').empty().append(data);
+                    var totalRows = $('#divDashboardGrid tr').length;
+                    $('#totalRows').text(totalRows);
                     // RowCount();
                 },
                 error: function (response) {

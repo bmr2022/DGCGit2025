@@ -60,16 +60,9 @@
                             <th>@Cntr</th>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
-                                    <div id="printData-@Cntr">
-                                    <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.OpeningYearCode">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
+                                   
                                     <div id="viewCursorDiv-@Cntr">
-                                    <a class="table-link link-success" asp-action="InterStoreTransfer" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.OpeningYearCode"  onclick="BackButtonData(event,'@item.EntryId','@item.OpeningYearCode');">
+                                    <a class="table-link link-success" asp-action="MaterialConversion" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.OpeningYearCode" onclick="BackButtonData(event,'@item.EntryId','@item.OpeningYearCode');">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -116,6 +109,7 @@
             }
         </tbody>
     </table>
+        <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
 
 
 <style>
