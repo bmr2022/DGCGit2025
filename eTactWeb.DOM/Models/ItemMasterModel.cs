@@ -54,7 +54,7 @@ namespace eTactWeb.DOM.Models
 
         [Display(Name = "Alt. Unit")]
         public string? AlternateUnit { get; set; }
-
+        public string SearchQuery {  get; set; }
         public string? SwitchAll { get; set; }
         public IList<TextValue>? AltUnitList { get; set; }
         public string? BinNo { get; set; }

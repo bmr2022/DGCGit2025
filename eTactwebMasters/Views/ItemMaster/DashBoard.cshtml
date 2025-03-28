@@ -34,415 +34,385 @@
 
             </div>
             <div class="card-footer d-flex justify-content-between align-items-center">
-    <div>
-        <button type="button" class="btn btn-link bg-graident" onclick="back();">
-            <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK
-        </button>
-    </div>
-    <ul class="pagination d-flex align-items-center">
-                    @if (Model.PageNumber > 1)
-                    {
-                <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
-                </li>
-                    }
+                <div>
+                    <button type="button" class="btn btn-link bg-graident" onclick="back();">
+                        <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK
+                    </button>
+                </div>
+                @if (Model.TotalRecords > Model.PageSize)
+                {
+                    <ul class="pagination d-flex align-items-center">
+                        @if (Model.PageNumber > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link pagination-link" data-page="@(@Model.PageNumber - 1)" href="javascript:void(0)">Previous</a>
+                            </li>
+                        }
 
-                    @if (Model.PageNumber > 3)
-                    {
-                <li class="page-item"><a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = 1, pageSize = Model.PageSize })">1</a></li>
-                <li class="page-item disabled"><a class="page-link">...</a></li>
-                    }
+                        @if (Model.PageNumber > 3)
+                        {
+                            <li class="page-item">
+                                <a class="page-link pagination-link" data-page="1" href="javascript:void(0)">1</a>
+                            </li>
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                        }
 
-                    @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize)); i++)
-                    {
-                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
-                </li>
-                    }
+                        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize)); i++)
+                        {
+                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                <a class="page-link pagination-link" data-page="@i" href="javascript:void(0)">@i</a>
+                            </li>
+                        }
 
-                    @if (Model.PageNumber < Math.Ceiling((double)Model.TotalRecords / Model.PageSize) - 2)
-                    {
-                <li class="page-item disabled"><a class="page-link">...</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Math.Ceiling((double)Model.TotalRecords / Model.PageSize), pageSize = Model.PageSize })">
-                                @(Math.Ceiling((double)Model.TotalRecords / Model.PageSize))
-                    </a>
-                </li>
-                    }
+                        @if (Model.PageNumber < Math.Ceiling((double)Model.TotalRecords / Model.PageSize) - 2)
+                        {
+                            <li class="page-item disabled"><a class="page-link">...</a></li>
+                            <li class="page-item">
+                                <a class="page-link pagination-link" data-page="@Math.Ceiling((double)Model.TotalRecords / Model.PageSize)" href="javascript:void(0)">
+                                    @(Math.Ceiling((double)Model.TotalRecords / Model.PageSize))
+                                </a>
+                            </li>
+                        }
 
-                    @if (Model.PageNumber < Math.Ceiling((double)Model.TotalRecords / Model.PageSize))
-                    {
-                <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
-                </li>
-                    }
-    </ul>
-</div>
+                        @if (Model.PageNumber < Math.Ceiling((double)Model.TotalRecords / Model.PageSize))
+                        {
+                            <li class="page-item">
+                                <a class="page-link pagination-link" data-page="@(@Model.PageNumber + 1)" href="javascript:void(0)">Next</a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
     </form>
 </div>
 
 @section Scripts
 {
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    var dashGrid = $('#divDashboardGrid tr').length;
-                    $('#totalRows').text(dashGrid);
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var dashGrid = $('#divDashboardGrid tr').length;
+            $('#totalRows').text(dashGrid);
 
-                    AutoComplete('VItemMaster', 'Item_Name', 'Item_Name', null);
-                    AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
-                    AutoComplete('Item_Master', 'UniversalPartCode', 'UniversalPartCode', null);
-                    AutoComplete('VItemMaster', 'HSNNO', 'HsnNo', null);
-                    AutoComplete('VItemMaster', 'ParentName', 'ParentGroupname', null);
-                    AutoComplete('Item_Master_Type', 'ItemTypeName', 'Type_Item', null);
+            AutoComplete('VItemMaster', 'Item_Name', 'Item_Name', null);
+            AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
+            AutoComplete('Item_Master', 'UniversalPartCode', 'UniversalPartCode', null);
+            AutoComplete('VItemMaster', 'HSNNO', 'HsnNo', null);
+            AutoComplete('VItemMaster', 'ParentName', 'ParentGroupname', null);
+            AutoComplete('Item_Master_Type', 'ItemTypeName', 'Type_Item', null);
 
-                    //$("#IMData").tablesorter();
+            GetFormRights();
+        });
 
-                    //$("#IMData").tablesorter({
-                    //theme : "bootstrap",
+        function confirmDelete(event, IC) {
 
-                    //widthFixed: true,
+            event.preventDefault();
 
-                    //// widget code contained in the jquery.tablesorter.widgets.js file
-                    //// use the zebra stripe widget if you plan on hiding any rows (filter widget)
-                    //// the uitheme widget is NOT REQUIRED!
-                    //widgets : [ "filter", "columns", "zebra" ],
+            if (confirm("Are you sure you want to delete this entry?")) {
 
-                    //widgetOptions : {
-                    //// using the default zebra striping class name, so it actually isn't included in the theme variable above
-                    //// this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
-                    //zebra : ["even", "odd"],
+                var linkUrl = $(event.currentTarget).attr("href");
+                linkUrl = linkUrl + "?ID=" + parseInt(IC) + "&ParentName=" + $('#ParentName').val() + "&POServType=" + $('#POServType').val() + "&HSNNO=" + $('#HSNNO').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#Item_Name').val();
+                window.location.href = linkUrl;
+            }
+        }
 
-                    //// class names added to columns when sorted
-                    //columns: [ "primary", "secondary", "tertiary" ],
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                async: false,
+                success: function (data) {
 
-                    //// reset filters button
-                    //filter_reset : ".reset",
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#viewCursorDiv-' + i).empty();
+                                $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#editCursorDiv-' + i).empty();
+                                $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                                                        <span class="fa-stack">
+                                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                        </span>
+                                                                                                                    </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#deleteCursorDiv-' + i).empty();
+                                $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                                                        <span class="fa-stack">
+                                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                        </span>
+                                                                                                                    </a>`);
+                            }
 
-                    //// extra css class name (string or array) added to the filter element (input or select)
-                    //filter_cssFilter: [
-                    //'form-control',
-                    //'form-control',
-                    //'form-control custom-select', // select needs custom class names :(
-                    //'form-control',
-                    //'form-control',
-                    //'form-control',
-                    //'form-control'
-                    //]}
-                    //})
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#savebtn").css("pointer-events", "none");
+                                } else {
+                                    $("#savebtn").css("pointer-events", "");
+                                }
+                                if (!optView) {
 
-                    //.tablesorterPager({
-
-                    //// target the pager markup - see the HTML block below
-                    //container: $(".ts-pager"),
-
-                    //// target the pager page select dropdown - choose a page
-                    //cssGoto  : ".pagenum",
-
-                    //// remove rows from the table to speed up the sort of large tables.
-                    //// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
-                    //removeRows: false,
-
-                    //// output string - default is '{page}/{totalPages}';
-                    //// possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
-                    //output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
-
-                    //});
-                    //GetSearchData();
-                    GetFormRights();
-                });
-
-                function confirmDelete(event, IC) {
-
-                    // Prevent the default behavior (navigating to the URL defined in "asp-action" attribute) initially
-                    event.preventDefault();
-
-                    // Perform any necessary actions or checks here before navigating to the controller action
-                    // For example, you can show a confirmation dialog
-                    if (confirm("Are you sure you want to delete this entry?")) {
-                        // If the user confirms, navigate to the controller action using window.location.href
-
-                        var linkUrl = $(event.currentTarget).attr("href");
-                        linkUrl = linkUrl + "?ID=" + parseInt(IC) + "&ParentName=" + $('#ParentName').val() + "&POServType=" + $('#POServType').val() + "&HSNNO=" + $('#HSNNO').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#Item_Name').val();
-                        window.location.href = linkUrl;
-                    }
-                }
-
-                function GetFormRights() {
-                    $.ajax({
-                        url: "@Url.Action("GetFormRights")",
-                        type: "POST",
-                        async: false,
-                        success: function (data) {
-
-                            if (data != null) {
-                                var obj = $.parseJSON(data);
-                                if (obj.Result.Table.length == 0) {
-                                    var rowCounter = $('#divDashboardGrid tr').length;
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#viewCursorDiv-' + i).empty();
                                         $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                                     }
+                                }
+                                if (!optUpdate) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#editCursorDiv-' + i).empty();
                                         $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                                     }
+                                }
+                                if (!optDelete) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#deleteCursorDiv-' + i).empty();
                                         $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
-                                    }
-
-                                } else {
-                                    console.log(obj);
-                                    var optAll = obj.Result.Table[0].OptAll;
-                                    var optSave = obj.Result.Table[0].OptSave;
-                                    var optUpdate = obj.Result.Table[0].OptUpdate;
-                                    var optDelete = obj.Result.Table[0].OptDelete;
-                                    var optView = obj.Result.Table[0].OptView;
-                                    var rowCounter = $('#divDashboardGrid tr').length;
-                                    if (!optAll) {
-                                        if(!optSave){
-                                            $("#savebtn").css("pointer-events", "none");
-                                        }else{
-                                            $("#savebtn").css("pointer-events", "");
-                                        }
-                                        if (!optView) {
-
-                                            for (var i = 0; i < rowCounter; i++) {
-                                                $('#viewCursorDiv-' + i).empty();
-                                                $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
-                                            }
-                                        }
-                                        if (!optUpdate) {
-                                            for (var i = 0; i < rowCounter; i++) {
-                                                $('#editCursorDiv-' + i).empty();
-                                                $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
-                                            }
-                                        }
-                                        if (!optDelete) {
-                                            for (var i = 0; i < rowCounter; i++) {
-                                                $('#deleteCursorDiv-' + i).empty();
-                                                $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
-                                            }
-                                        }
+                                                                                                                <span class="fa-stack">
+                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                </span>
+                                                                                                            </a>`);
                                     }
                                 }
                             }
-                        },
-                        error: function (errMsg) {
-                            $.notify(errMsg, { position: "top center", className: "error" });
                         }
-                    });
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        $('#sendToExcel').click(function () {
+            $("#IMData").table2excel({
+                filename: "IMData.xls"
+            });
+        });
+
+
+        function GetSearchData() {
+            $('#ShowAllSwitch').prop("checked", false)
+            //var data = $('#SParam').serialize();
+            if ($(this).is(':checked') == true) {
+                $.ajax({
+                    url: '@Url.Action("GetAllColumns")',
+                    type: "POST",
+                    async: false,
+                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), Flag: "Search" },
+                    success: function (data) {
+                        $('#divDashboardGrid').empty();
+                        $('.ShowAllDiv').empty();
+                        $('.ShowAllDiv').append(data);
+                        // var dashGrid = $('#divDashboardGrid tr').length;
+                        // $('#totalRows').text(dashGrid);
+                        GetFormRights();
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+            else {
+                $.ajax({
+                    url: '@Url.Action("GetSearchData")',
+                    type: "POST",
+                    async: false,
+                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), Flag: "Search" },
+                    success: function (data) {
+                        $('#divDashboardGrid').empty();
+                        $('.ShowAllDiv').empty();
+                        $('.ShowAllDiv').append(data);
+                        var dashGrid = $('#divDashboardGrid tr').length;
+                        $('#totalRows').text(dashGrid);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        }
+
+        $("#search-box").on("input", function () {
+             
+            var searchString = $(this).val().trim();
+
+            $.ajax({
+                url: "/ItemMaster/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString },
+                success: function (data) {
+                     
+                    $('#divDashboardGrid').empty();
+                    $('.ShowAllDiv').empty();
+                    $('.ShowAllDiv').append(data);
+                    var dashGrid = $('#divDashboardGrid tr').length;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function () {
+                    alert("Error fetching search results.");
+                }
+            });
+        });
+
+        // var currentSearchColumn = null;
+        // $("#search-box").on("keyup", function () {
+        //     var value = $(this).val().toLowerCase();
+        //     $("#divDashboardGrid tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
+
+
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        // });
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#IMData');
+            var rows = table.find('#divDashboardGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text().trim();
+                var bValue = $(b).find('td').eq(columnIndex).text().trim();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
                 }
 
-                $('#sendToExcel').click(function () {
-                    $("#IMData").table2excel({
-                        filename: "IMData.xls"
-                    });
-                });
-
-
-                function GetSearchData() {
-                    $('#ShowAllSwitch').prop("checked", false)
-                    //var data = $('#SParam').serialize();
-                    if ($(this).is(':checked') == true) {
-                        $.ajax({
-                            url: '@Url.Action("GetAllColumns")',
-                            type: "POST",
-                            async: false,
-                            data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), Flag: "Search" },
-                            success: function (data) {
-                                $('#divDashboardGrid').empty();
-                                $('.ShowAllDiv').empty();
-                                $('.ShowAllDiv').append(data);
-                                // var dashGrid = $('#divDashboardGrid tr').length;
-                                // $('#totalRows').text(dashGrid);
-                                GetFormRights();
-                            },
-                            error: function (response) {
-                                alert(response.responseText);
-                            },
-                            failure: function (response) {
-                                alert(response.responseText);
-                            }
-                        });
-                    }
-                    else {
-                        $.ajax({
-                            url: '@Url.Action("GetSearchData")',
-                            type: "POST",
-                            async: false,
-                            data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), UniversalPartCode: $('#UniversalPartCode').val(), Flag: "Search" },
-                            success: function (data) {
-                                $('#divDashboardGrid').empty();
-                                $('.ShowAllDiv').empty();
-                                $('.ShowAllDiv').append(data);
-                                var dashGrid = $('#divDashboardGrid tr').length;
-                                $('#totalRows').text(dashGrid);
-                            },
-                            error: function (response) {
-                                alert(response.responseText);
-                            },
-                            failure: function (response) {
-                                alert(response.responseText);
-                            }
-                        });
-                    }
-                }
-
-                var currentSearchColumn = null;
-                $("#search-box").on("keyup", function () {
-                    var value = $(this).val().toLowerCase();
-                    $("#divDashboardGrid tr").filter(function () {
-                        if (currentSearchColumn !== null) {
-                            var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                            $(this).toggle(columnText.indexOf(value) > -1);
-                        } else {
-                            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                        }
-                    });
-                });
-
-
-                $(document).on("click", "th[data-columnno]", function () {
-                    currentSearchColumn = $(this).data('columnno');
-                    $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-                });
-
-                $(document).on("click", ".sortCol", function () {
-                     ;
-                    var $column = $(this).parent().closest("th");
-                    var colno = $(this).data('columnno');
-                    var currentOrder = $(this).data('sortorder');
-
-                    $('.sortCol').css('color', 'white');
-                    if (currentOrder === 'asc') {
-                        sortTable(colno, false);
-                        $(this).data('sortorder', 'desc');
-                        $(this).css('color', 'yellow'); // Visual indication of descending order
-                        //$(this).css('font-size', 'larger'); // Visual indication of descending order
-                        $(this).find('i:first').removeClass('fa-arrow-up');
-                        $(this).find('i:first').addClass('fa-arrow-down');
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
                     } else {
-                        sortTable(colno, true);
-                        $(this).data('sortorder', 'asc');
-                        $(this).css('color', 'yellow');
-                        // $(this).css('font-size', 'larger'); // Visual indication of ascending order
-                        $(this).find('i:first').removeClass('fa-arrow-down');
-                        $(this).find('i:first').addClass('fa-arrow-up');
+                        return bValue - aValue;
                     }
-                });
-                function sortTable(columnIndex, ascending) {
-
-                    var table = $('#IMData');
-                    var rows = table.find('#divDashboardGrid > tr').toArray();
-
-                    rows.sort(function (a, b) {
-                        var aValue = $(a).find('td').eq(columnIndex).text().trim();
-                        var bValue = $(b).find('td').eq(columnIndex).text().trim();
-
-                        var aIntValue = 0;
-                        var bIntValue = 0;
-                        if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
-                            aIntValue = parseInt(aValue, 10);
-                            bIntValue = parseInt(bValue, 10);
-                        }
-
-                        if (aIntValue > 0) {
-                            if (ascending) {
-                                return aValue - bValue;
-                            } else {
-                                return bValue - aValue;
-                            }
-                        } else {
-                            if (ascending) {
-                                return aValue.localeCompare(bValue);
-                            } else {
-                                return bValue.localeCompare(aValue);
-                            }
-                        }
-                    });
-
-                    $.each(rows, function (index, row) {
-                        table.children('#divDashboardGrid').append(row);
-                    });
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
                 }
+            });
 
-                $('#ShowAllSwitch').change(function () {
-                    if ($(this).is(':checked') == true) {
-                        $.ajax({
-                            url: '@Url.Action("GetAllColumns")',
-                            type: "POST",
-                            data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), Flag: "Search" },
-                            success: function (data) {
+            $.each(rows, function (index, row) {
+                table.children('#divDashboardGrid').append(row);
+            });
+        }
 
-                                $('#divDashboardGrid').empty();
-                                $('.ShowAllDiv').empty();
-                                $('.ShowAllDiv').append(data);
-                                var dashGrid = $('#divDashboardGrid tr').length;
-                                $('#totalRows').text(dashGrid);
-                            },
-                            error: function (response) {
-                                alert(response.responseText);
-                            },
-                            failure: function (response) {
-                                alert(response.responseText);
-                            }
-                        });
+        $('#ShowAllSwitch').change(function () {
+            if ($(this).is(':checked') == true) {
+                $.ajax({
+                    url: '@Url.Action("GetAllColumns")',
+                    type: "POST",
+                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), Flag: "Search" },
+                    success: function (data) {
+
+                        $('#divDashboardGrid').empty();
+                        $('.ShowAllDiv').empty();
+                        $('.ShowAllDiv').append(data);
+                        var dashGrid = $('#divDashboardGrid tr').length;
+                        $('#totalRows').text(dashGrid);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
                     }
-                    else {
-                        $.ajax({
-                            url: '@Url.Action("GetSearchData")',
-                            type: "POST",
-                            data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), Flag: "Search" },
-                            success: function (data) {
-                                $('#divDashboardGrid').empty();
-                                $('.ShowAllDiv').empty();
-                                $('.ShowAllDiv').append(data);
-                                var dashGrid = $('#divDashboardGrid tr').length;
-                                $('#totalRows').text(dashGrid);
-                            },
-                            error: function (response) {
-                                alert(response.responseText);
-                            },
-                            failure: function (response) {
-                                alert(response.responseText);
-                            }
-                        });
-                    }
-
                 });
-            </script>
-            <script src="~/Scripts/table2excel.js"></script>
+            }
+            else {
+                $.ajax({
+                    url: '@Url.Action("GetSearchData")',
+                    type: "POST",
+                    data: { Item_Name: $('#Item_Name').val(), PartCode: $('#PartCode').val(), ParentCode: $('#ParentName').val(), ItemType: $('#POServType').val(), HsnNo: $('#HSNNO').val(), Flag: "Search" },
+                    success: function (data) {
+                        $('#divDashboardGrid').empty();
+                        $('.ShowAllDiv').empty();
+                        $('.ShowAllDiv').append(data);
+                        var dashGrid = $('#divDashboardGrid tr').length;
+                        $('#totalRows').text(dashGrid);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+
+        });
+    </script>
+    <script src="~/Scripts/table2excel.js"></script>
 
 }
 

@@ -1581,7 +1581,7 @@
         }
 
         function Validate_GridButton() {
-
+             
             var Err = 0;
             if ($('#Type').val() == "") {
                 AddErrorCls('Type');
@@ -1624,7 +1624,7 @@
                 RemoveErrorCls('ModeOfAdjustment');
             }
             if ($('#BankType').val() == "Bank") {
-                if ($("#Balance").val() < $("#AdjustmentAmt").val()) {
+                if (parseFloat($("#Balance").val()) < parseFloat($("#AdjustmentAmt").val())) {
                     AddErrorCls('Balance');
                     $.notify("Not have enough balance For the payment", "error");
                     Err = 1;
@@ -1684,6 +1684,7 @@
         }
 
         function GridButton() {
+             
             if (!Validate_GridButton()) return;
             var SchData = {
                 "AccountCode": $('#AccountCode').val(),
@@ -1790,7 +1791,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-            debugger
+             
             var RowCount = $('#divBankPaymentDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1802,7 +1803,7 @@
                     type: "POST",
                     data: { SrNO: SrNO, "Mode": $('#Mode').val() },
                     success: function (data) {
-                        debugger
+                         
                         var obj = $.parseJSON(data);
                         var ModeOfAdjustment = obj[0].ModeOfAdjustment;
                         if (!ModeOfAdjustment) {
