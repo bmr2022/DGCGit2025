@@ -764,11 +764,51 @@
             var TotNetAmt = $('#TotNetAmt').val().trim();
             var Balance = $('#Balance').val().trim();
 
-            if (!BillNo || !BillDate || !BillYear || !BillNetAmt || !PendAmt || !Type || !TransactionType || !DueDate || !Unit ||
-                BillNetAmt == "0" || PendAmt == "0") {
-                $.notify('Fill All Data For Add in Grid', "error");
+            if ( !BillDate ) {
+                $.notify('Fill BillDate For Add in Grid', "error");
                 return;
             }
+            if ( !BillYear ) {
+                $.notify('Fill Bill Year For Add in Grid', "error");
+                return;
+            }
+            if (!BillNo) {
+                $.notify('Fill BillNo For Add in Grid', "error");
+                return;
+            }
+            if ( !BillNetAmt ) {
+                $.notify('Fill BillNetAmt For Add in Grid', "error");
+                return;
+            }
+            if (!PendAmt ) {
+                $.notify('Fill PendAmt For Add in Grid', "error");
+                return;
+            }
+            if ( !Type ) {
+                $.notify('Fill Type For Add in Grid', "error");
+                return;
+            }
+            if (  !TransactionType ) {
+                $.notify('Fill TransactionType For Add in Grid', "error");
+                return;
+            }
+            if (  !DueDate) {
+                $.notify('Fill DueDate For Add in Grid', "error");
+                return;
+            }
+            if (!Unit) {
+                $.notify('Fill Unit For Add in Grid', "error");
+                return;
+            }
+            if ( BillNetAmt == "0" ) {
+                $.notify('BillNetAmt can not be 0', "error");
+                return;
+            }
+            if ( PendAmt == "0") {
+                $.notify('PendAmt can not be 0', "error");
+                    return;
+            }
+            
 
           
             var seqnoarray = [];
