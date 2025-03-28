@@ -43,7 +43,7 @@ public class ItemMasterController : Controller
     [HttpPost]
     public JsonResult AutoComplete(string ColumnName, string prefix)
     {
-        IList<Common.TextValue> iList = _IDataLogic.AutoComplete("Item_Master", ColumnName,"","",0,0);
+        IList<Common.TextValue> iList = _IDataLogic.AutoComplete("Item_Master", ColumnName, "", "", 0, 0);
         var Result = (from item in iList where item.Text.Contains(prefix) select new { item.Text })
             .Distinct()
             .ToList();
@@ -51,7 +51,7 @@ public class ItemMasterController : Controller
         return Json(Result);
     }
 
-    public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue,string UniversalPartCode="",int pageNumber=1,int pageSize=500)
+    public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue, string UniversalPartCode = "", int pageNumber = 1, int pageSize = 500)
     {
         ItemMasterModel model = new ItemMasterModel
         {
@@ -63,8 +63,17 @@ public class ItemMasterController : Controller
         ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
         ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
         HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
-        
-        var allData = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo,UniversalPartCode, Flag);
+
+        var allData = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, Flag);
+
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
+        _MemoryCache.Set("KeyItemListSearch", allData, cacheEntryOptions);
+
         model.TotalRecords = allData.Count();
         model.PageNumber = pageNumber;
         model.PageSize = pageSize;
@@ -82,7 +91,7 @@ public class ItemMasterController : Controller
 
         return View(model);
     }
-    public async Task<IActionResult> GetSearchData(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo,string UniversalPartCode, string Flag)
+    public async Task<IActionResult> GetSearchData(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string UniversalPartCode, string Flag)
     {
         ItemMasterModel model = new ItemMasterModel();
         model.SwitchAll = "false";
@@ -92,10 +101,10 @@ public class ItemMasterController : Controller
         ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
         ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
         HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
-        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo,UniversalPartCode, "Search");
+        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, "Search");
         return PartialView("_IMGrid", model);
     }
-    public async Task<IActionResult> GetAllColumns(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo,string UniversalPartCode, string Flag)
+    public async Task<IActionResult> GetAllColumns(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string UniversalPartCode, string Flag)
     {
         ItemMasterModel model = new ItemMasterModel();
         model.SwitchAll = "true";
@@ -104,7 +113,7 @@ public class ItemMasterController : Controller
         ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
         ParentCode = ParentCode == "0" || ParentCode == null ? null : ParentCode;
         HsnNo = HsnNo == "0" || HsnNo == null ? null : HsnNo;
-        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo,UniversalPartCode, "Search");
+        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, "Search");
         return PartialView("_IMGridAllColumns", model);
     }
     public async Task<JsonResult> GetFormRights()
@@ -116,7 +125,7 @@ public class ItemMasterController : Controller
     }
     public async Task<JsonResult> GetPartCode(int ParentCode, int ItemType)
     {
-        var JSON = await _IItemMaster.GetPartCode(ParentCode,ItemType);
+        var JSON = await _IItemMaster.GetPartCode(ParentCode, ItemType);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
@@ -137,6 +146,35 @@ public class ItemMasterController : Controller
         var JSON = await _IItemMaster.GetProdInWorkcenter();
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
+    }
+    [HttpGet]
+    public IActionResult GlobalSearch(string searchString,int pageNumber=1,int pageSize=500)
+    {
+        ItemMasterModel model = new ItemMasterModel();
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return PartialView("_IMGrid", new List<ItemMasterModel>());
+        }
+
+        if (!_MemoryCache.TryGetValue("KeyItemListSearch", out IList<ItemMasterModel> itemViewModel) || itemViewModel == null)
+        {
+            return PartialView("_IMGrid", new List<ItemMasterModel>());
+        }
+
+        var filteredResults = itemViewModel
+       .Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+       .ToList();
+
+        model.TotalRecords = filteredResults.Count;
+        model.MasterList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+
+        return PartialView("_IMGrid", model);
     }
 
     public async Task<IActionResult> DeleteItemByID(int ID, string ParentName, string POServType, string HSNNO, string PartCode, string ItemName)
@@ -164,7 +202,7 @@ public class ItemMasterController : Controller
         //    ViewBag.isSuccess = false;
         //    TempData["423"] = "423";
         //}
-        return RedirectToAction("Dashboard", new {Item_Name=ItemName,PartCode= PartCode,ParentCode = ParentName,ItemType = POServType, HsnNo = HSNNO, Flag = "" });
+        return RedirectToAction("Dashboard", new { Item_Name = ItemName, PartCode = PartCode, ParentCode = ParentName, ItemType = POServType, HsnNo = HSNNO, Flag = "" });
         //return RedirectToAction(nameof(Dashboard));
     }
 

@@ -11,7 +11,7 @@ namespace eTactWeb.DOM.Models
     {
 
         public int EntryId { get; set; }
-        public int SrNO { get; set; }
+        public int seqno { get; set; }
         public string EntryDate { get; set; }
         public int OpeningYearCode { get; set; }
         public string SlipNo { get; set; }
