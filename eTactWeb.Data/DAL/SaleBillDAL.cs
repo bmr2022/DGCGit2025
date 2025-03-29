@@ -1297,7 +1297,10 @@ namespace eTactWeb.Data.DAL
                              EntryDate = string.Empty,
                              CustJwRecEntryDate = row["ChallanDate"].ToString(),
                             RecItemCode  = row["RecItemCode"] != DBNull.Value ?  Convert.ToInt32(row["RecItemCode"]) : 0,
-
+                            RecItemName = row["RecItemName"].ToString() ,
+                            RecPartCode = row["RecPartCode"].ToString() ,
+                            FGItemName = row["IssueItemName"].ToString() ,
+                            FGPartCode = row["IssuePartcode"].ToString() ,
                              CustJwIssEntryid = 0,
                              CustJwIssYearCode = 0,
                              CustJwIssChallanNo = string.Empty,

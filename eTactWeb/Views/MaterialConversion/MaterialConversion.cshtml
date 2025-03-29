@@ -141,24 +141,24 @@
                                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="GridLabels">
                                                             <tr>
                                                                 
-                                                                <th>OriginalPartCode</th>
-                                                                <th>OriginalItemName</th>
-                                                                <th>Org.StoreName</th>
-                                                                <th>Org.WCName</th>
-                                                                <th>BatchNo</th>
-                                                                <th>UniqueBatchNo</th>
-                                                                <th>BatchStock</th>
-                                                                <th>TotalStock</th>
-                                                                <th>OriginalQty</th>
-                                                                <th>Unit</th>
-                                                                <th>AltStock</th>
-                                                               
-                                                                <th>AltPartCode</th>
-                                                                <th>AltItemName</th>
-                                                                <th>AltStoreName</th>
-                                                                <th>AltWorkCenterName</th>
-                                                                <th>AltOriginalQty</th>
-                                                                <th>AltUnit</th>
+                                                                <th style="color:yellow">OriginalPartCode*</th>
+                                                                    <th style="color:yellow">OriginalItemName*</th>
+                                                                    <th style="color:yellow">Org.StoreName*</th>
+                                                                    <th>Org.WCName</th>
+                                                                    <th style="color:yellow">BatchNo*</th>
+                                                                    <th style="color:yellow">UniqueBatchNo*</th>
+                                                                    <th style="color:yellow">BatchStock*</th>
+                                                                    <th style ="color:yellow">TotalStock*</thstyle>
+                                                                    <th style="color:yellow">OriginalQty*</th>
+                                                                    <th style="color:yellow">Unit*</th>
+
+                                                                    <th style="color:yellow">AltPartCode*</th>
+                                                                    <th style="color:yellow">AltItemName*</th>
+                                                                    <th style="color:yellow">AltStock*</th>
+                                                                    <th style="color:yellow">AltStoreName*</th>
+                                                                    <th style="color:yellow">AltWorkCenterName*</th>
+                                                                    <th style="color:yellow">AltQty*</th>
+                                                                    <th >AltUnit</th>
                                                                 <th>PlanNo</th>
                                                                 <th>PlanYearCode</th>
                                                                 <th>PlanDate</th>
@@ -235,7 +235,7 @@
                                                                     <td><input asp-for="TotalStock" style="width:80px;" readonly/></td>
                                                                     <td><input asp-for="OriginalQty" style="width:70px !important" /></td>
                                                                     <td><input asp-for="Unit" style="width:70px !important" readonly/></td>
-                                                                    <td><input asp-for="AltStock" style="width:80px;" /></td>
+                                                                  
                                                                    
                                                                     <td>
                                                                         <input type="hidden" asp-for="AltItemCode" value="@Model.AltItemCode" />
@@ -259,6 +259,7 @@
                                                                             }
                                                                         </select>
                                                                     </td>
+                                                                    <td><input asp-for="AltStock" style="width:80px;" /></td>
                                                                     <td>
                                                                         <input type="hidden" asp-for="AltStoreId" value="@Model.AltStoreId" />
                                                                         <select class="form-select" asp-for="AltStoreName" style="width:200px;">
@@ -380,11 +381,6 @@
                                                                             <i class="fa" aria-hidden="true"></i>
                                                                         </span>Unit
                                                                     </th>
-                                                                    <th data-columnno="16" data-sortorder="asc" class="sortCol">
-                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                            <i class="fa" aria-hidden="true"></i>
-                                                                        </span>AltStock
-                                                                    </th>
                                                                    
                                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
@@ -396,10 +392,15 @@
                                                                                 <i class="fa" aria-hidden="true"></i>
                                                                             </span>AltItemName
                                                                     </th>
-                                                                        
-                                                                       
-                                                                      
-                                                                        <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                                                                    <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                                                                        <span style="padding:5px;margin:5px" class="sort-icon">
+                                                                            <i class="fa" aria-hidden="true"></i>
+                                                                        </span>AltStock
+                                                                    </th>
+
+
+
+                                                                    <th data-columnno="9" data-sortorder="asc" class="sortCol">
                                                                             <span style="padding:5px;margin:5px" class="sort-icon">
                                                                                 <i class="fa" aria-hidden="true"></i>
                                                                             </span>AltStoreName
@@ -619,6 +620,8 @@
                 TotalNoOfRows();
             }
 
+            
+
             $('#BatchNo').css('background-color', 'rgb(248 255 178)');
             //$('#BillNo').removeClass('Valid');
             $('#SlipDate').rules("remove", "required");
@@ -749,6 +752,7 @@
             });
             FillStockBatchNo();
             FillTotalStock();
+            FillAltStock();
             GetUnitAltUnit($('#OriginalItemCode').val());
             FillStockUniqueBatchNo();
             FillLotStock();
@@ -815,6 +819,7 @@
             
                 $('#OriginalItemCode').val($('#OriginalItemName').val());
                 FillTotalStock();
+            FillAltStock();
                 GetUnitAltUnit($('#OriginalItemCode').val());
             
                 FillStockBatchNo();
@@ -826,6 +831,7 @@
            
                 $('#OriginalItemCode').val($('#OriginalPartCode').val());
                 FillTotalStock();
+            FillAltStock();
                 GetUnitAltUnit($('#OriginalItemCode').val());
            
                 FillStockBatchNo();
@@ -851,6 +857,7 @@
               
                // FillLotStock();
                 FillTotalStock();
+            FillAltStock();
            
                 FillStockBatchNo();
          });
@@ -966,18 +973,13 @@
             }
         }
 
-        $('#OriginalPartCode').change(function () {
-            if ($("#Mode").val() !== "U") {
-                GetAltPartCode();
-            GetAltItemName();
-            }
-            
-        })
+       
 
         $('#OriginalQty').on('input', function () {
             var originalQty = parseFloat($(this).val()) || 0;
             var batchStock = parseFloat($('#BatchStock').val()) || 0;
             var totalStock = parseFloat($('#TotalStock').val()) || 0;
+           
 
           
             if (originalQty > batchStock || originalQty > totalStock) {
@@ -1075,7 +1077,13 @@
                 }
             });
         }
-
+        $('#OriginalPartCode').change(function () {
+          
+                GetAltPartCode();
+                GetAltItemName();
+           
+          
+        })
         function FillEntryID() {
 
             var YearCode = $('#OpeningYearCode').val();
@@ -1239,77 +1247,118 @@
             });
         }
         var UniqueBatchNo = [];
-        function FillStockBatchNo() {
+        // function FillStockBatchNo() {
             
+        //     var ItemCode = $('#OriginalItemCode').val();
+        //     var YearCode = $('#OpeningYearCode').val();
+        //     var StoreName = $('#StoreName').find(':selected').text();
+        //     var batchno = "";
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "@Url.Action("FillStockBatchNo")",
+        //         async: false,
+        //         data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+        //         success: function (result, status, error) {
+
+        //             if (result != null) {
+        //                 var obj = $.parseJSON(result);
+        //                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                     UniqueBatchNo = [];
+        //                     $('#BatchNo').empty();
+        //                     $('#BatchNo').append('<option value="" selected>-Select-</option>');
+        //                     $('#UniqueBatchNo').empty();
+        //                     $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+
+        //                     $.each(obj.Result, function (index, val) {
+        //                         $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+        //                     });
+                          
+        //                     var itemArrayLength = itemBatchArray.length;
+        //                     if (itemArrayLength > 0) {
+        //                         var itemsWithCode16 = itemBatchArray.filter(function (item) {
+        //                             return item.itemcode === parseInt(ItemCode);
+        //                         });
+        //                         var selectList = $('#BatchNo');
+        //                         var SelectUBList = $('#UniqueBatchNo');
+        //                         selectList.find('option').each(function () {
+        //                             var optionValue = $(this).val();
+
+        //                             var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+        //                                 return item.batchno === optionValue;
+        //                             });
+
+        //                             if (existsInItemsWithCode16) {
+        //                                 $(this).remove();
+        //                             }
+        //                         });
+
+        //                         SelectUBList.find('option').each(function () {
+
+        //                             var optionValue = $(this).val();
+
+        //                             var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+        //                                 return item.uniquebatchno === optionValue;
+        //                             });
+
+        //                             if (existsInItemsWithCode16) {
+        //                                 $(this).remove();
+        //                             }
+        //                         });
+        //                     }
+
+
+
+        //                 } else {
+        //                     $('#BatchNo').empty();
+        //                     $('#BatchNo').append('<option value="" selected>-Select-</option>');
+        //                     $('#UniqueBatchNo').empty();
+        //                     $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+        //                 }
+        //             }
+        //         }
+        //     });
+        // }
+
+        function FillStockBatchNo() {
+            debugger
             var ItemCode = $('#OriginalItemCode').val();
             var YearCode = $('#OpeningYearCode').val();
             var StoreName = $('#StoreName').find(':selected').text();
+            var WorkCenterName = $('#WorkCenterName').find(':selected').text();
             var batchno = "";
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillStockBatchNo")",
                 async: false,
-                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "WorkCenterName": WorkCenterName, "YearCode": YearCode, "batchno": batchno },
                 success: function (result, status, error) {
-
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            UniqueBatchNo = [];
                             $('#BatchNo').empty();
                             $('#BatchNo').append('<option value="" selected>-Select-</option>');
-                            $('#UniqueBatchNo').empty();
-                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
 
+                            // Append batch numbers
                             $.each(obj.Result, function (index, val) {
-                                $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                if (index === 0) {
+                                    // First value is selectable
+                                    $('#BatchNo').append('<option value="' + val.batchno + '" >' + val.batchno + '</option>');
+                                } else {
+                                    // Other values are disabled (not selectable)
+                                    $('#BatchNo').append('<option value="' + val.batchno + '" disabled>' + val.batchno + '</option>');
+                                }
                             });
-                          
-                            var itemArrayLength = itemBatchArray.length;
-                            if (itemArrayLength > 0) {
-                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
-                                    return item.itemcode === parseInt(ItemCode);
-                                });
-                                var selectList = $('#BatchNo');
-                                var SelectUBList = $('#UniqueBatchNo');
-                                selectList.find('option').each(function () {
-                                    var optionValue = $(this).val();
-
-                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
-                                        return item.batchno === optionValue;
-                                    });
-
-                                    if (existsInItemsWithCode16) {
-                                        $(this).remove();
-                                    }
-                                });
-
-                                SelectUBList.find('option').each(function () {
-
-                                    var optionValue = $(this).val();
-
-                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
-                                        return item.uniquebatchno === optionValue;
-                                    });
-
-                                    if (existsInItemsWithCode16) {
-                                        $(this).remove();
-                                    }
-                                });
-                            }
-
-
 
                         } else {
                             $('#BatchNo').empty();
                             $('#BatchNo').append('<option value="" selected>-Select-</option>');
-                            $('#UniqueBatchNo').empty();
-                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
                         }
                     }
                 }
             });
         }
+
 
         function FillStockUniqueBatchNo() {
            
@@ -1367,6 +1416,28 @@
                 }
             });
         }
+        function FillAltStock() {
+
+            var ItemCode = $('#OriginalItemName').val();
+            var Storeid = $('#StoreId').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillTotalStock", "StockAdjustment")",
+                async: false,
+                data: { "ItemCode": ItemCode, "Storeid": Storeid },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#AltStock').val(0);
+                            $('#AltStock').val(obj.Result[0].STOCK);
+                        }
+                        //  ChangeAltQty();
+                    }
+                }
+            });
+        }
 
         var BatchStock = 0;
         function FillLotStock() {
@@ -1417,7 +1488,7 @@
         function ClearItems() {
 
             $('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,   #Remark').val('');
-            $('#OriginalPartCode,#OriginalItemName,#OriginalItemCode,#StoreName,#WorkCenterName,#AltItemName, #AltPartCode, #AltItemCode').val("").trigger("change");
+            $('#OriginalPartCode,#AltStoreName,#OriginalItemName,#OriginalItemCode,#StoreName,#WorkCenterName,#AltItemName, #AltPartCode, #AltItemCode').val("").trigger("change");
             
             $('#BatchStock, #TotalStock, #AltStock, #OrigItemRate, #OriginalItemCode, #OriginalQty, #AltOriginalQty,#AltStoreName,#AltWorkCenterName').val(0);
 
@@ -1429,6 +1500,8 @@
         $('#GridButton').click(function (e) {
             e.preventDefault();
 
+            var missingFields = [];
+
            var issueToStoreWC = $('#IssueToStoreWC').val();
             var originalPartCode = $('#OriginalPartCode').val().trim();
             var originalItemName = $('#OriginalItemName').val().trim();
@@ -1436,20 +1509,38 @@
             var altItemName = $('#AltItemName').val().trim();
             var altPartCode = $('#AltPartCode').val().trim();
             var AltItemCode = $('#AltItemCode').val().trim();
-            var altUnit = $('#AltUnit').val().trim();
+            var StoreName = $('#StoreName').val().trim();
+            var AltStoreName = $('#AltStoreName').val();
+            //var altUnit = $('#AltUnit').val().trim();
             var unit = $('#Unit').val().trim();
             var originalQty = $('#OriginalQty').val().trim();
+
+            if (!originalPartCode) missingFields.push("Original Part Code");
+            if (!originalItemName) missingFields.push("Original Item Name");
+            if (!originalItemCode) missingFields.push("Original Item Code");
+            if (!altItemName) missingFields.push("Alt Item Name");
+            if (!altPartCode) missingFields.push("Alt Part Code");
+            if (!AltItemCode) missingFields.push("Alt Item Code");
+            //if (!altUnit) missingFields.push("Alt Unit");
+            if (!unit) missingFields.push("Unit");
+            if (!originalQty) missingFields.push("Original Quantity");
+            if (!StoreName) missingFields.push("StoreName");
+            if (!AltStoreName) missingFields.push("AltStoreName");
 
             if (!issueToStoreWC) {
                 $.notify("Please select Store/WC before adding to the grid!", "error");
                 return; 
             }
-            if (!originalPartCode || !originalItemName || !originalItemCode ||
-                !altItemName || !altPartCode || !altUnit || !unit || !originalQty || !AltItemCode) {
-                $.notify("All fields are required to add data to the grid!", "error");
-                return; 
+            // if (!originalPartCode || !originalItemName || !originalItemCode ||
+            //     !altItemName || !altPartCode || !altUnit || !unit || !originalQty || !AltItemCode) {
+            //     $.notify("All fields are required to add data to the grid!", "error");
+            //     return; 
+            // }
+            if (missingFields.length > 0) {
+                var message = "The following fields are required:\n" + missingFields.join(", ");
+                $.notify(message, "error");
+                return;
             }
-
             var SchData = {
                 OriginalPartCode: $('#OriginalPartCode').val(),
                 OriginalItemName: $('#OriginalItemName').val(),
@@ -1631,6 +1722,7 @@
                 success: function (data, status, xhr) {
                     $('#divStockGrid').html(data);
                     $.notify("Process deleted from Grid", "info");
+                    EditEachItem = false;
                   
                 },
                 error: function (response, status, xhr) {

@@ -31,6 +31,11 @@ else if (Model.ReportMode == "ITEMWISECONSOLIDATED")
 {
     <partial name="_POItemWiseConsolidatedReport" />
 }
+else if (Model.ReportMode == "PRICEHISTORY")
+{
+    <partial name="_POPriceHistoryReport" />
+}
+
 else
 {
     <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
@@ -121,7 +126,7 @@ else
                                 <td>@item.UniqueBatchno</td>
                                 <td>@item.ItemGroup</td>
                                 <td>@item.ItemCategory</td>
-                                <td>@item.POYear</td>
+                                <td>@item.POYearCode</td>
                                 <td>@item.SchYear</td>
                                 <td>@item.DOMESTICIMPORT</td>
                             </tr>

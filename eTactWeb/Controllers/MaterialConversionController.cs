@@ -235,7 +235,7 @@ namespace eTactWeb.Controllers
                             Item.AltItemCode == null ? 0 : Item.AltItemCode,
                             Item.AltUnit == null ? "" : Item.AltUnit,
                             Item.AltOriginalQty == null ? 0f : Item.AltOriginalQty,
-                            Item.OriginalStoreId == null ? 0 : Item.OriginalStoreId,
+                            Item.StoreId == null ? 0 : Item.StoreId,
                             Item.AltStoreId == null ? 0 : Item.AltStoreId,
                             Item.WcId == null ? 0 : Item.WcId,
                             Item.AltWCID == null ? 0 : Item.AltWCID,
@@ -294,10 +294,10 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno)
+        public async Task<JsonResult> FillStockBatchNo(int ItemCode, string StoreName,string WorkCenterName, int YearCode, string batchno)
         {
             var FinStartDate = HttpContext.Session.GetString("FromDate");
-            var JSON = await _IMaterialConversion.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno, FinStartDate);
+            var JSON = await _IMaterialConversion.FillStockBatchNo(ItemCode, StoreName, WorkCenterName, YearCode, batchno, FinStartDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

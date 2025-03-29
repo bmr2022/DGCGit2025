@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -8,9 +9,9 @@ namespace eTactWeb.Data.BLL;
 
 public class SaleScheduleBLL : ISaleSchedule
 {
-    public SaleScheduleBLL(IConfiguration configuration, IDataLogic iDataLogic)
+    public SaleScheduleBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
-        _SaleScheduleDAL = new SaleScheduleDAL(configuration, iDataLogic);
+        _SaleScheduleDAL = new SaleScheduleDAL(configuration, iDataLogic,connectionStringService);
     }
 
     private SaleScheduleDAL? _SaleScheduleDAL { get; }

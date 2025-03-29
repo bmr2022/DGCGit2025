@@ -19,7 +19,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetUnitAltUnit(int ItemCode);
         Task<ResponseResult> GetAltPartCode(int MainItemcode);
         Task<ResponseResult> GetAltItemName(int MainItemcode);
-        Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno, string FinStartDate);
+        Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName,string WorkCenterName, int YearCode, string batchno, string FinStartDate);
 
         Task<ResponseResult> SaveMaterialConversion(MaterialConversionModel model, DataTable GIGrid);
 
