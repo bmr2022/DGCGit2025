@@ -117,6 +117,29 @@ public class PurchaseScheduleDAL
         return _ResponseResult;
     }
 
+    public async Task<ResponseResult> GetFormRightsAmm(int userId)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+            SqlParams.Add(new SqlParameter("@EmpId", userId));
+            SqlParams.Add(new SqlParameter("@MainMenu", "Purchase Schedule Amendment"));
+            //SqlParams.Add(new SqlParameter("@SubMenu", "Purchase Schedule"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+
+
     public async Task<ResponseResult> DeleteByID(int ID, int YC, int createdBy, string entryByMachineName)
     {
         var _ResponseResult = new ResponseResult();

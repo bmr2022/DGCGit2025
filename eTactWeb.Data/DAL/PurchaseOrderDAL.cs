@@ -69,6 +69,28 @@ public class PurchaseOrderDAL
         }
         return _ResponseResult;
     }
+
+    public async Task<ResponseResult> GetFormRightsAmm(int userId)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+            SqlParams.Add(new SqlParameter("@EmpId", userId));
+            SqlParams.Add(new SqlParameter("@MainMenu", "Purchase Order Amendment"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+
     public async Task<ResponseResult> GetPendQty(string PONo, int POYearCode, int ItemCode, int AccountCode, string SchNo, int SchYearCode, string Flag)
     {
         var _ResponseResult = new ResponseResult();

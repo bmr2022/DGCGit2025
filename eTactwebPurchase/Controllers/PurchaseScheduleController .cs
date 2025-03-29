@@ -127,7 +127,15 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-      
+
+    public async Task<JsonResult> GetFormRightsAmm()
+    {
+        var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        var JSON = await IPurchaseSchedule.GetFormRightsAmm(userID);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+
     public IActionResult ClearGrid()
     {
         IMemoryCache.Remove("KeyPurchaseScheduleGrid");

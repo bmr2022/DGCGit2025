@@ -33,6 +33,11 @@ public class PurchaseScheduleBLL : IPurchaseSchedule
         return await _PurchaseScheduleDAL.GetFormRights(ID);
     }
 
+    public async Task<ResponseResult> GetFormRightsAmm(int ID)
+    {
+        return await _PurchaseScheduleDAL.GetFormRightsAmm(ID);
+    }
+
     public async Task<ResponseResult> DeleteByID(int ID, int YC, int createdBy, string entryByMachineName)
     {
         return await _PurchaseScheduleDAL.DeleteByID(ID, YC,createdBy,entryByMachineName);
