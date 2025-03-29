@@ -33,6 +33,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _PurchaseOrderDAL.GetFormRights(ID);
         }
+        public async Task<ResponseResult> GetFormRightsAmm(int ID)
+        {
+            return await _PurchaseOrderDAL.GetFormRightsAmm(ID);
+        }
         public async Task<ResponseResult> GetPendQty(string PONo, int POYearCode, int ItemCode, int AccountCode, string SchNo, int SchYearCode, string Flag)
         {
             return await _PurchaseOrderDAL.GetPendQty(PONo, POYearCode, ItemCode, AccountCode, SchNo, SchYearCode, Flag);

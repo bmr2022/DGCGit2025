@@ -209,6 +209,14 @@ public class PurchaseOrderController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
+
+    public async Task<JsonResult> GetFormRightsAmm()
+    {
+        var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        var JSON = await IPurchaseOrder.GetFormRightsAmm(userID);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     public async Task<JsonResult> FillItems(string Type, string ShowAllItem)
     {
         var JSON = await IPurchaseOrder.FillItems(Type, ShowAllItem);

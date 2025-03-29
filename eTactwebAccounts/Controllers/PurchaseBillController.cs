@@ -557,7 +557,7 @@ public class PurchaseBillController : Controller
     // GET: PurchaseOrderController
     [HttpGet]
     [Route("{controller}/Index")]
-    public async Task<IActionResult> PurchaseBill(int ID, int YC, string Mode, string? flag, string? FlagMRNJWCHALLAN, string? Mrnno, int? mrnyearcode, int? accountcode, string FromDate = "", string ToDate = "", string DashboardType = "", string MRNType = "", string DocumentName = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string MRNNo = "", string GateNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
+    public async Task<IActionResult> PurchaseBill(int ID, int YearCode, string Mode, string? flag, string? FlagMRNJWCHALLAN, string? Mrnno, int? mrnyearcode, int? accountcode, string FromDate = "", string ToDate = "", string DashboardType = "", string MRNType = "", string DocumentName = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string MRNNo = "", string GateNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
     {
         IMemoryCache.Remove("PBTaxGrid");
         IMemoryCache.Remove("KeyTaxGrid");
@@ -579,11 +579,11 @@ public class PurchaseBillController : Controller
 
         if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
         {
-            MainModel = await IPurchaseBill.GetViewByID(ID, YC, "ViewByID").ConfigureAwait(false);
+            MainModel = await IPurchaseBill.GetViewByID(ID, YearCode, "ViewByID").ConfigureAwait(false);
             MainModel.Mode = Mode;
             MainModel.TDSMode = Mode;
             MainModel.ID = ID;
-            MainModel.YearCode = YC;
+            MainModel.YearCode = YearCode;
             MainModel = await BindModels(MainModel).ConfigureAwait(false);
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {

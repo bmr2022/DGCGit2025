@@ -37,6 +37,7 @@ public interface IPurchaseSchedule
 
     Task<PurchaseSubScheduleModel> GetViewByID(int ID, int YearCode,string Mode);
     Task<ResponseResult> GetFormRights(int uId);
+    Task<ResponseResult> GetFormRightsAmm(int uId);
 
     Task<ResponseResult> SavePurchSchedule(PurchaseSubScheduleModel model, DataTable DTSSGrid);
 }

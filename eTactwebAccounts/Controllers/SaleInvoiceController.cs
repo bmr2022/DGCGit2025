@@ -295,8 +295,8 @@ namespace eTactWeb.Controllers
                 _MemoryCache.Set("KeyAdjChallanGrid", result.CustomerJobWorkChallanAdj, cacheEntryOptions);
 
 
-
-                return PartialView("_CustomerJwisschallanAdjustment", result.CustomerJobWorkIssueAdjustDetails);
+                // result.CustomerJobWorkIssueAdjustDetails
+                return PartialView("_CustomerJwisschallanAdjustment", result.CustomerJobWorkChallanAdj);
             }
             catch (Exception ex)
             {
@@ -335,7 +335,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YC, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
+        public async Task<IActionResult> SaleInvoice(int ID, string Mode, int YearCode, string dashboardType = "", string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = "", string performaInvNo = "", string saleQuoteNo = "", string domExportNEPZ = "", string Searchbox = "", string summaryDetail = "")
         {
             var model = new SaleBillModel(); // Create a new model instance for the view
 
@@ -358,7 +358,7 @@ namespace eTactWeb.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
-                model = await _SaleBill.GetViewByID(ID, Mode, YC);
+                model = await _SaleBill.GetViewByID(ID, Mode, YearCode);
                 model.Mode = Mode;
                 model.ID = ID;
             }

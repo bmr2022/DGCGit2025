@@ -19,12 +19,15 @@
                 <td>@item.CustJwRecChallanNo</td>
                 <td>@item.CustJwRecYearCode</td> @* Rec YearCode *@
                 <td>@item.CustJwIssChallanDate</td> @* Challan Date *@
-                <td>@item.RecItemCode</td> @* ItemName and PartCode *@
+                <td>@item.RecPartCode<input type="hidden" id="recItemCodeGrid-@Cntr" value="@item .RecItemCode"/></td> @* PartCode *@
+                <td>@item.RecItemName</td> @* ItemName *@
                 <td>@item.BomRevNo</td>
                 <td>@item.BOMRevDate</td> 
                 <td>@item.PendQty</td>
+                <td>@item.FGPartCode <input type="hidden" id="fgItemCodeGrid-@Cntr" value="@item.FinishItemCode"/> </td> @*Issue PartCode*@
+                <td>@item.FGItemName</td> @*Issue ItemName*@
                 <td>@item.BOMQty</td>
-                <td>@item.IssQty</td> @* qtyTobeIss *@
+                <td>@item.IssQty</td> @* qtyTobeIss-rec *@
                 <td>@item.AdjQty</td> @*ActualAdjQty*@
                 <td>@item.Issbatchno</td>
                 <td>@item.Issuniquebatchno</td>

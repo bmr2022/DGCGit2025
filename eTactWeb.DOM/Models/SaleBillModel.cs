@@ -365,12 +365,16 @@ namespace eTactWeb.DOM.Models
         public string CustJwRecChallanNo { get; set; }
         public string? CustJwRecEntryDate { get; set; }
         public int RecItemCode { get; set; }
+        public string? RecItemName { get; set; }
+        public string? RecPartCode{ get; set; }
         public int? CustJwIssEntryid { get; set; }
         public int? CustJwIssYearCode { get; set; }
         public string CustJwIssChallanNo { get; set; }
         public string? CustJwIssChallanDate { get; set; }
         public int? AccountCode { get; set; }
         public int? FinishItemCode { get; set; }
+        public string? FGPartCode { get; set; }
+        public string? FGItemName { get; set; }
         public float? AdjQty { get; set; }
         public string CC { get; set; }
         public int? UID { get; set; }

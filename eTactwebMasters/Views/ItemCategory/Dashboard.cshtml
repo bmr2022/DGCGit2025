@@ -63,7 +63,7 @@
         $(document).ready(function () {
             AutoComplete('Item_Master_Type', 'Category_Name', 'Main_Category_Type', null);
             AutoComplete('Item_Master_Type', 'Type_Item', 'Type_Item', null);
-
+           // GetFormRights1();
             GetFormRights();
             var dashGrid = $('#ItemcatBody tr').length;
             $('#totalRows').text(dashGrid);
@@ -73,6 +73,58 @@
         //AutoComplete('VAccountHeadMaster', 'SalesPersonName', 'salesperson_name', null);
         //AutoComplete('VAccountHeadMaster', 'City', 'City', null);
         //AutoComplete('VAccountHeadMaster', 'State', 'State', null);
+        // function GetFormRights1() {
+
+        //     $.ajax({
+        //         url: "@Url.Action("GetFormRights")",
+        //         type: "POST",
+        //         success: function (data) {
+
+        //             if (data != null) {
+        //                 var obj = $.parseJSON(data);
+        //                 if (obj.Result.Table.length == 0) {
+        //                     $("#SaleOrder")
+        //                         .addClass("disabled-link")
+        //                         .on("click", function (e) {
+        //                             e.preventDefault(); // Prevents clicking the link
+        //                         });
+        //                     $("#SaleOrderDashBoard")
+        //                         .addClass("disabled-link")
+        //                         .on("click", function (e) {
+        //                             e.preventDefault(); // Prevents clicking the link
+        //                         });
+        //                 } else {
+        //                     console.log(obj);
+        //                     var optAll = obj.Result.Table[0].OptAll;
+        //                     var optSave = obj.Result.Table[0].OptSave;
+        //                     var optUpdate = obj.Result.Table[0].OptUpdate;
+        //                     var optDelete = obj.Result.Table[0].OptDelete;
+        //                     var optView = obj.Result.Table[0].OptView;
+        //                     if (!optAll) {
+        //                         //$("#hidesoForm").hide();
+        //                         if (!optSave) {
+        //                             $("button[type='submit'").prop("disabled", true);
+        //                         }
+        //                         if (!(optUpdate || optDelete || optView)) {
+        //                             $("#SaleOrderDashBoard")
+        //                                 .addClass("disabled-link")
+        //                                 .on("click", function (e) {
+        //                                     e.preventDefault(); // Prevents clicking the link
+        //                                 });
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         error: function (errMsg) {
+        //             $.notify(errMsg, { position: "top center", className: "error" });
+        //         }
+        //     });
+        // }
+
+
+
+
         function GetFormRights() {
              
             $.ajax({
@@ -260,5 +312,16 @@
         }
     </script>
     <script src="~/Scripts/table2excel.js"></script>
+    <script src="~/Scripts/CheckUserRights.js"></script>
 
 }
+
+<style>
+    .disabled-link {
+        pointer-events: none; /* Prevents clicking */
+        color: gray !important; /* Changes text color */
+        cursor: not-allowed; /* Shows disabled cursor */
+        opacity: 0.6; /* Makes it look disabled */
+        text-decoration: none !important; /* Removes underline */
+    }
+</style>

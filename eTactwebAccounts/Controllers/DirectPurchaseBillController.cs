@@ -15,6 +15,7 @@ using NuGet.Packaging;
 using OfficeOpenXml;
 using System.Diagnostics;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 using System.Net;
 using System.Data;
 using System.Globalization;
@@ -1182,14 +1183,14 @@ namespace eTactWeb.Controllers
                     if (MainModel.InvDate != null)
                     {
                         InvoiceDate = DateTime.Parse(MainModel.InvDate, new CultureInfo("en-GB"));
-                        InvoiceDt = InvoiceDate.ToString("yyyy/MM/dd");
+                        InvoiceDt = InvoiceDate.ToString("dd/MMM/yyyy");
                     }
                     else
                     {
-                        InvoiceDt = DateTime.Today.ToString();
+                        InvoiceDt = DateTime.Now.ToString("dd/MMM/yyyy");
                     }
-                    challanDt = DateTime.Today.ToString();
-                    BankVoucherDt = DateTime.Today.ToString();
+                    challanDt = DateTime.Now.ToString("dd/MMM/yyyy");
+                    BankVoucherDt = DateTime.Now.ToString("dd/MMM/yyyy");
 
                     Table.Rows.Add(
                         new object[]

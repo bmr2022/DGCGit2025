@@ -888,7 +888,7 @@
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item SaleOrder" asp-action="Dashboard" asp-controller="SaleOrder">
+                                        <a class="dropdown-item SaleOrder" asp-action="Dashboard" asp-controller="SaleOrder" id="SaleOrderDashBoard">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Sales Order" />
@@ -912,7 +912,7 @@
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item SaleOrderAmendment" asp-action="SOAmmCompleted" asp-controller="SaleOrder">
+                                    <a class="dropdown-item SaleOrderAmendment" asp-action="SOAmmCompleted" asp-controller="SaleOrder" id="SaleOrderAmendmentDashBoard">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Sale Order Amendment" />
@@ -932,7 +932,7 @@
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item SaleSchedule" asp-action="Dashboard" asp-controller="SaleSchedule">
+                                    <a class="dropdown-item SaleSchedule" asp-action="Dashboard" asp-controller="SaleSchedule" id="SaleScheduleDashBoard">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Sale Schedule" />
@@ -952,7 +952,7 @@
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item SaleScheduleAmendment" asp-action="SSAmmCompleted" asp-controller="SaleSchedule">
+                                    <a class="dropdown-item SaleScheduleAmendment" asp-action="SSAmmCompleted" asp-controller="SaleSchedule" id="SaleScheduleAmendmentDash">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Sale Schedule Amendment" />
@@ -1037,7 +1037,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item PO" asp-controller="PurchaseOrder" asp-action="DashBoard">
+                                        <a class="dropdown-item PO" asp-controller="PurchaseOrder" asp-action="DashBoard" id="PODashBoard">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> PO DashBoard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="PO" />
@@ -1059,12 +1059,12 @@
                                 <a class="dropdown-item" href="#">Purchase Schedule &raquo;</a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="PurchaseSchedule" asp-controller="PurchaseSchedule" id="Dashboard">
+                                    <a class="dropdown-item" asp-action="PurchaseSchedule" asp-controller="PurchaseSchedule" id="PurchaseSchedule">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> New Schedule
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item Dashboard" asp-action="Dashboard" asp-controller="PurchaseSchedule">
+                                        <a class="dropdown-item Dashboard" asp-action="Dashboard" asp-controller="PurchaseSchedule" id="PurchaseScheduleDashBoard">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="PurchaseSchedule" />
@@ -1081,7 +1081,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item PurchaseOrderAmendment" asp-action="POAmmCompleted" asp-controller="PurchaseOrder">
+                                    <a class="dropdown-item PurchaseOrderAmendment" asp-action="POAmmCompleted" asp-controller="PurchaseOrder" id="PurchaseOrderAmendmentdash">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Purchase Order Amendment" />
@@ -1093,12 +1093,12 @@
                                 <a class="dropdown-item" href="#">Purchase Schedule Amendment &raquo;</a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="PSAmendmentList" asp-controller="PurchaseSchedule" itemid="PurchaseScheduleAmendment">
+                                        <a class="dropdown-item" asp-action="PSAmendmentList" asp-controller="PurchaseSchedule" id="PurchaseScheduleAmendment">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> New PS Amendment
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item PurchaseScheduleAmendment" asp-action="POAmmCompleted" asp-controller="PurchaseOrder">
+                                        <a class="dropdown-item PurchaseScheduleAmendment" asp-action="POAmmCompleted" asp-controller="PurchaseOrder" id="PurchaseScheduleAmendmentdash">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Purchase Schedule Amendment" />

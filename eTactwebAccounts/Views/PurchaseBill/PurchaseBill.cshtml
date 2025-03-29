@@ -995,6 +995,7 @@
                 }).fail(function () {
                     alert("error");
                 }).always(function () {
+                     CalculateAdjAmt('NetTotal');
                 });
             }
         });
@@ -1341,7 +1342,7 @@
                 if ($('#AllowDocNameChange').val() == "N" || $('#AllowDocNameChange').val() == "" || $('#AllowDocNameChange').val() == null) {
                     $('#errormessage').hide();
                     $('#AllowDocNameChangeBox').modal("show");
-                } else if ($('#AllowInvoiceNoChange').val() == "Y") {
+                } else if ($('#AllowDocNameChange').val() == "Y") {
                     let counter = 1; // Start counter for ID
                     let selectElement;
                     while ((selectElement = document.getElementById(`MainItemGrid-DocName-${counter}`)) !== null) {
@@ -2237,6 +2238,7 @@
                 }).fail(function () {
                     alert("error");
                 }).always(function () {
+                    CalculateAdjAmt('NetTotal');
                 });
             }
         });
@@ -2352,6 +2354,7 @@
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
                         btnClearTDS();
+                        CalculateAdjAmt('NetTotal');
                         $.notify('Item Deleted From Grid.', "success");
                         isEditAllowed = "true";
                     }
