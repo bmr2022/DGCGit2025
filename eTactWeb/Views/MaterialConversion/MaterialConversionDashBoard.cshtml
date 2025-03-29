@@ -48,10 +48,7 @@
                                 </select>
 
                             </div>
-                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-1">
-                                <label asp-for="SlipNo" class="form-label">Slip No</label>
-                                <input asp-for="SlipNo" class="form-control" />
-                            </div>
+                           
                            
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
@@ -101,15 +98,7 @@
     <script>
         $(document).ready(function () {
 
-            // var fromDateBack = sessionStorage.getItem('FromDateBack');
-            // var toDateBack = sessionStorage.getItem('ToDateBack');
-            // var SlipNoBack = sessionStorage.getItem('SlipNoBack');
-            // var BatchNoBack = sessionStorage.getItem('BatchNoBack');
-            // var PartCodeBack = sessionStorage.getItem('PartCodeBack');
-            // var ItemNameBack = sessionStorage.getItem('ItemNameBack');
-            // var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
-            // var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
-
+         
             $('#ReportType').select2();
              
             GetDetailData();
@@ -118,16 +107,10 @@
                 var reportType = $('#ReportType').val();
 
                 $("#DashboardGrid tr").each(function () {
-                    if (reportType == "Aging(Detail)") {
+                    if (reportType == "DETAIL") {
                         $(this).css("background-color", "#e5ccff");
                     }
-                    // else if (reportType == "BatchWise Stock+WIP Valuation") {
-                    //     $(this).css("background-color", "#fff0b3");
-                    // }
-
-                    else {
-                        $(this).css("background-color", "antiquewhite");
-                    }
+                   
                 });
             }
 
@@ -136,12 +119,10 @@
                 $("#DashboardGrid tr").each(function () {
                     var reportType = $('#ReportType').val();
 
-                    if (reportType == "Aging(Detail)") {
+                    if (reportType == "DETAIL") {
                         $(this).css("background-color", "#e5ccff");
                     }
-                    // else if (reportType == "BatchWise Stock+WIP Valuation") {
-                    //     $(this).css("background-color", "#fff0b3"); // Light Yellow
-                    // }
+                   
 
                 });
                 $(this).css({ 'background-color': '#00bcd4' });

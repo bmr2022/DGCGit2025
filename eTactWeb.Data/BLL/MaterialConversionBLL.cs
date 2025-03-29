@@ -49,9 +49,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialConversionDAL.GetUnitAltUnit(ItemCode);
         }
-        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno, string FinStartDate)
+        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName,string WorkCenterName, int YearCode, string batchno, string FinStartDate)
         {
-            return await _MaterialConversionDAL.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno, FinStartDate);
+            return await _MaterialConversionDAL.FillStockBatchNo(ItemCode, StoreName, WorkCenterName, YearCode, batchno, FinStartDate);
         }
         public async Task<ResponseResult> GetAltPartCode(int MainItemcode)
         {

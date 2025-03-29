@@ -28,7 +28,7 @@ namespace eTactWeb.DOM.Models
         public string Account_name { get; set; }
         public string DOMESTICIMPORT { get; set; }
         public string PONO { get; set; }
-        public int POYear { get; set; }
+        public int POYearCode { get; set; }
         public string PODate { get; set; }
         public string POtype { get; set; }
         public string POclosedate { get; set; }
@@ -47,6 +47,7 @@ namespace eTactWeb.DOM.Models
         public string MRNDATE { get; set; }
         public string GateNo { get; set; }
         public int GateYearCode { get; set; }
+        public int POEntryId { get; set; }
         public string GateDate { get; set; }
         public string BillQty { get; set; }
         public string RECQty { get; set; }
