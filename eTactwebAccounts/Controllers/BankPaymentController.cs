@@ -97,11 +97,13 @@ namespace eTactwebAccounts.Controllers
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
                         _MemoryCache.Remove("KeyBankPaymentGrid");
+                        _MemoryCache.Remove("KeyBankPaymentGridEdit");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
+                        _MemoryCache.Remove("KeyBankPaymentGrid");
                         _MemoryCache.Remove("KeyBankPaymentGridEdit");
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -338,7 +340,6 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<JsonResult> FillBankType(int AccountCode)
         {
             var JSON = await _IBankPayment.FillBankType(AccountCode);
@@ -375,7 +376,6 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<JsonResult> FillPONO(string accountcode, string VoucherDate)
         {
             var JSON = await _IBankPayment.FillPONO(accountcode, VoucherDate);
@@ -400,7 +400,6 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public IActionResult AddBankPaymentDetail(BankPaymentModel model)
         {
             try
@@ -643,7 +642,7 @@ namespace eTactwebAccounts.Controllers
                             }
 
                             // Assign sequence number correctly
-                            item.SrNO = ProductionEntryDetail.Count + 1;
+                            //item.SrNO = ProductionEntryDetail.Count + 1;
 
                             // Swap Type values
                             item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
@@ -652,7 +651,10 @@ namespace eTactwebAccounts.Controllers
                             ProductionEntryDetail.Add(item);
                         }
                     }
-
+                    for (int i = 0; i < ProductionEntryDetail.Count; i++)
+                    {
+                        ProductionEntryDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
+                    }
                     // Update the main model and cache
                     MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
                     _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
@@ -686,7 +688,7 @@ namespace eTactwebAccounts.Controllers
                             }
 
                             // Assign sequence number correctly
-                            item.SrNO = ProductionEntryDetail.Count + 1;
+                            //item.SrNO = ProductionEntryDetail.Count + 1;
 
                             // Swap Type values
                             item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
@@ -695,7 +697,10 @@ namespace eTactwebAccounts.Controllers
                             ProductionEntryDetail.Add(item);
                         }
                     }
-
+                    for (int i = 0; i < ProductionEntryDetail.Count; i++)
+                    {
+                        ProductionEntryDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
+                    }
                     // Update the main model and cache
                     MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
                     _MemoryCache.Set("KeyBankPaymentGridEdit", MainModel.BankPaymentGrid, cacheEntryOptions);
@@ -829,8 +834,6 @@ namespace eTactwebAccounts.Controllers
                 return PartialView("_BankPaymentGrid", MainModel);
             }
         }
-
-
         public async Task<IActionResult> BankPaymentDashBoard(string FromDate, string ToDate)
         {
             try

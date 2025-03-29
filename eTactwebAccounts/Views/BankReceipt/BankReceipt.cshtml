@@ -540,7 +540,7 @@
             FillSubVoucherName();
             FillIntrument();
             FillCurrency();
-            FillModeofAdjust();
+            BindModeOfAdjust();
 
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
@@ -757,10 +757,19 @@
             $('#PartyWiseNaration').val('');
         }
 
+        function BindModeOfAdjust() {
+            $('#ModeOfAdjustment').append(`
+                            <option selected value="New Ref">New Ref</option>
+                            <option value="Advance">Advance</option>
+                            <option value="Against Ref">Against Ref</option>
+                        `);
+        }
+
         $('#LedgerName').change(function () {
 
             $('#AccountCode').val($('#LedgerName').val())
             GetLedgerBalance();
+            BindModeOfAdjust();
             CheckBankType();
             AdjustAmountForAddToGridForDRCR();
         });
@@ -1240,7 +1249,7 @@
             });
         }
 
-        function FillModeofAdjust() {
+        /* function FillModeofAdjust() {
             $.ajax({
                 url: '@Url.Action("FillModeofAdjust", "BankReceipt")',
                 type: 'POST',
@@ -1264,7 +1273,7 @@
                     alert('Failed to load ledger names.');
                 }
             });
-        }
+        } */
 
         function FillCostCenterName() {
             ;
@@ -1384,7 +1393,7 @@
         }
 
         function PopUpForPendingVouchers(Action, SrNO) {
-             
+
             $('#CheckUnCheckAll').prop('checked', false);
             if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 $('#DisplayRoutingDetailModal').modal('hide');
@@ -1405,7 +1414,7 @@
                 data: { "DataTable": DataTable },
                 success: function (data, status, xhr) {
                     if (data != null) {
-                         
+
                         $('#divDisplayPopupForPendingVouchersDetail').empty();
                         $('#divDisplayPopupForPendingVouchersDetail').append(data);
                         CheckUnCheckEdit();
@@ -1419,7 +1428,6 @@
                             $('#divDisplayPopupForPendingVouchersDetail').empty();
                         }
                     }
-
                     AdjustAmount();
                 },
                 error: function (xhr, status, error) {
@@ -1470,7 +1478,7 @@
         var isEditAllowed = "false";
 
         function DeleteItemRow(SeqNo, PopUpData) {
-             
+
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: '@Url.Action("DeleteItemRow")',
@@ -1531,18 +1539,26 @@
                 $.notify("Please check at least one row to adjust", "error");
                 Err = 1;
             }
+            if ($('#Balance').val() == 0) {
+                AddErrorCls('Balance');
+                $.notify("Balance is must be greater than 0.", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Balance');
+            }
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
             if (Err == 1) return false;
             return true;
         }
 
         function AdjustButton() {
-             
+
             if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var ItemData = [];
             for (var i = 1; i <= rowCount + 1; i++) {
-                 
+
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
 
                     var type = $('#PopUpType-' + i).text().trim().toLowerCase();
@@ -1610,7 +1626,7 @@
         }
 
         function Validate_GridButton() {
-             
+
             var Err = 0;
             if ($('#Type').val() == "") {
                 AddErrorCls('Type');
@@ -1643,6 +1659,14 @@
             }
             else {
                 RemoveErrorCls('AdjustmentAmt');
+            }
+            if ($('#Balance').val() == 0) {
+                AddErrorCls('Balance');
+                $.notify("Balance is must be greater than 0.", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Balance');
             }
             if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 AddErrorCls('ModeOfAdjustment');
@@ -1813,7 +1837,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-             
+
             var RowCount = $('#divBankReceiptDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1877,8 +1901,8 @@
                                 }
 
                             }
+                            DeleteItemRow(SrNO);
                         }
-                        DeleteItemRow(SrNO);
                         AdjustAmountForAddToGridForDRCR();
                     },
                     error: function (response) {

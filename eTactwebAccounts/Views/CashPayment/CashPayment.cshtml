@@ -530,7 +530,7 @@
             
             FillCurrency();
 
-            FillModeofAdjust();
+            //FillModeofAdjust();
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
             });
@@ -753,15 +753,22 @@
             $('#PartyWiseNaration').val('');
         }
 
+        function BindModeOfAdjust() {
+            $('#ModeOfAdjustment').append(`
+                                                    <option selected value="New Ref">New Ref</option>
+                                                    <option value="Advance">Advance</option>
+                                                    <option value="Against Ref">Against Ref</option>
+                                                `);
+        }
+
         $('#LedgerName').change(function () {
 
             $('#AccountCode').val($('#LedgerName').val())
             GetLedgerBalance();
             CheckBankType();
+            BindModeOfAdjust();
             AdjustAmountForAddToGridForDRCR();
         });
-
-
 
         FillLedgerName();
 
@@ -1230,31 +1237,31 @@
             });
         }
 
-        function FillModeofAdjust() {
-            $.ajax({
-                url: '@Url.Action("FillModeofAdjust", "CashPayment")',
-                type: 'POST',
-                async: false,
-                success: function (response, status, error) {
-                    var ModeOfAdjustmentDropdown = $('#ModeOfAdjustment');
-                    var obj = $.parseJSON(response);
-                    ModeOfAdjustmentDropdown.empty();
-                    //ModeOfAdjustmentDropdown.append('<option value="">--Select--</option>');
-                    $.each(obj.Result, function (index, MOAdj) {
-                        ModeOfAdjustmentDropdown.append('<option value="' + MOAdj.ModeOfAdjutment + '">' + MOAdj.ModeOfAdjutment + '</option>');
-                    });
+        // function FillModeofAdjust() {
+        //     $.ajax({
+        //         url: '@Url.Action("FillModeofAdjust", "CashPayment")',
+        //         type: 'POST',
+        //         async: false,
+        //         success: function (response, status, error) {
+        //             var ModeOfAdjustmentDropdown = $('#ModeOfAdjustment');
+        //             var obj = $.parseJSON(response);
+        //             ModeOfAdjustmentDropdown.empty();
+        //             //ModeOfAdjustmentDropdown.append('<option value="">--Select--</option>');
+        //             $.each(obj.Result, function (index, MOAdj) {
+        //                 ModeOfAdjustmentDropdown.append('<option value="' + MOAdj.ModeOfAdjutment + '">' + MOAdj.ModeOfAdjutment + '</option>');
+        //             });
 
-                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var ModeOfAdjustment = '@Model.ModeOfAdjustment';
-                        $('#ModeOfAdjustment').val(ModeOfAdjustment).trigger("change");
-                        $('#ModeOfAdjustment').val(ModeOfAdjustment);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
-                }
-            });
-        }
+        //             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+        //                 var ModeOfAdjustment = '@Model.ModeOfAdjustment';
+        //                 $('#ModeOfAdjustment').val(ModeOfAdjustment).trigger("change");
+        //                 $('#ModeOfAdjustment').val(ModeOfAdjustment);
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             alert('Failed to load ledger names.');
+        //         }
+        //     });
+        // }
 
         function FillCostCenterName() {
             $.ajax({
@@ -1529,14 +1536,25 @@
             for (var i = 1; i <= rowCount + 1; i++) {
 
                 if ($('#CheckUnCheck-' + i).is(':checked') == true) {
+                    var type = $('#PopUpType-' + i).text().trim().toLowerCase();
+                    var adjAmt = parseFloat($('#AdjustAmt-' + i).val()) || 0; // Convert to float, default to 0
+
+                    var DrAmt = "0.00";
+                    var CrAmt = "0.00";
+
+                    if (type === "dr") {
+                        CrAmt = adjAmt.toFixed(2);
+                    } else if (type === "cr") {
+                        DrAmt = adjAmt.toFixed(2);
+                    }
                     ItemData.push({
                         "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
                         "AccountCode": $('#AccountCode').val(),
                         "Type": $('#PopUpType-' + i).text(),
                         "Balance": $('#BalanceAmt-' + i).text(),
                         "DRCR": $('#PopUpType-' + i).text(),
-                        "DrAmt": $('#PopDrAmt').val(),
-                        "CrAmt": $('#PopCrAmt').val(),
+                        "DrAmt": DrAmt,
+                        "CrAmt": CrAmt,
                         "ActualEntryby": $('#ActualEntryBy').val(),
                         "EntryByMachine": $('#EntryByMachine').val(),
                         "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),

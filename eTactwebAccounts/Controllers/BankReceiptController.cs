@@ -647,7 +647,10 @@ namespace eTactWeb.Controllers
                             ProductionEntryDetail.Add(item);
                         }
                     }
-
+                    for (int i = 0; i < ProductionEntryDetail.Count; i++)
+                    {
+                        ProductionEntryDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
+                    }
                     // Update the main model and cache
                     MainModel.BankReceiptGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
                     _MemoryCache.Set("KeyBankReceiptGrid", MainModel.BankReceiptGrid, cacheEntryOptions);
@@ -681,7 +684,7 @@ namespace eTactWeb.Controllers
                             }
 
                             // Assign sequence number correctly
-                            item.SrNO = ProductionEntryDetail.Count + 1;
+                           // item.SrNO = ProductionEntryDetail.Count + 1;
 
                             // Swap Type values
                             item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
@@ -689,6 +692,10 @@ namespace eTactWeb.Controllers
                             // Add new item to list
                             ProductionEntryDetail.Add(item);
                         }
+                    }
+                    for (int i = 0; i < ProductionEntryDetail.Count; i++)
+                    {
+                        ProductionEntryDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
                     }
 
                     // Update the main model and cache

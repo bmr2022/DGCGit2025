@@ -525,7 +525,7 @@
             FillSubVoucherName();
             FillIntrument();
             FillCurrency();
-            FillModeofAdjust();
+            //FillModeofAdjust();
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
             });
@@ -743,11 +743,20 @@
             }
         });
 
+        function BindModeOfAdjust() {
+            $('#ModeOfAdjustment').append(`
+                                    <option selected value="New Ref">New Ref</option>
+                                    <option value="Advance">Advance</option>
+                                    <option value="Against Ref">Against Ref</option>
+                                `);
+        }
+
         $('#LedgerName').change(function () {
 
             $('#AccountCode').val($('#LedgerName').val())
             GetLedgerBalance();
             CheckBankType();
+            BindModeOfAdjust();
             AdjustAmountForAddToGridForDRCR();
         });
 
@@ -1523,9 +1532,9 @@
                     var CrAmt = "0.00";
 
                     if (type === "dr") {
-                        DrAmt = adjAmt.toFixed(2);
-                    } else if (type === "cr") {
                         CrAmt = adjAmt.toFixed(2);
+                    } else if (type === "cr") {
+                        DrAmt = adjAmt.toFixed(2);
                     }
                     ItemData.push({
                         "LedgerName": $('#LedgerName').find(":selected").text() == '--Select--' ? '' : $('#LedgerName').find(":selected").text(),
@@ -1548,11 +1557,22 @@
                         "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
                         "InsNo": $('#InsNo').val(),
                         "InsDate": $('#InsDate').val(),
+                        "SeqNo": $('#SeqNo').val(),
+                        "CustOrderNo": $('#CustOrderNo').val(),
+                        "SoDate": $('#SoDate').val(),
+                        "SOYear": $('#SOYear').val(),
+                        "PONo": $('#PONo').val(),
+                        "POYear": $('#POYear').val(),
+                        "PODate": $('#PoDate').val(),
                         "CurrencyId": parseInt($('#CurrencyId').val()),
+                        "ActualEntryby": $('#ActualEntryBy').val(),
+                        "EntryByMachine": $('#EntryByMachine').val(),
                         "ActualEntryDate": $('#ActualEntryDate').val(),
                         "Mode": $('#Mode').val(),
                         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
+                        "AdjustmentAmtOthCur": $('#AdjustmentAmtOthCur').val(),
+                        "PartyWiseNaration": $('#PartyWiseNaration').val(),
                         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
                         "CostCenterId": $('#CostCenterId').val(),
                     })
