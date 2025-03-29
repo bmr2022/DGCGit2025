@@ -511,7 +511,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
          }
-        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno, string FinStartDate)
+        public async Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName,string WorkCenterName, int YearCode, string batchno, string FinStartDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -522,6 +522,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
+                //SqlParams.Add(new SqlParameter("@WorkCenterName", WorkCenterName));
                 SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
                 SqlParams.Add(new SqlParameter("@transDate", Date));
                 SqlParams.Add(new SqlParameter("@batchno", batchno));

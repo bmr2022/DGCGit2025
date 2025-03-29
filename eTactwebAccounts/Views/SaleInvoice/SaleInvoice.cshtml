@@ -252,7 +252,7 @@
                                         </thead>
                                         <tbody id="divBomCustJobWorkISsueSummary">
                                             @* <partial name="_JOBWORKISSUESUMMARY" /> *@
-                                            @await Html.PartialAsync("_BomCustJwisschallanAdjustment",  new List<BomCustomerJWIssChallanADJ>())
+                                            @await Html.PartialAsync("_BomCustJwisschallanAdjustment", new List<BomCustomerJWIssChallanADJ>())
                                         </tbody>
                                     </table>
                                 </div>
@@ -417,7 +417,7 @@
     <script>
 
         $(document).ready(function () {
-             
+
             GetServerDate();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
@@ -453,7 +453,7 @@
 
             $('#AdjNewRefNo').val($('#SaleBillNo').val());
             $('#AdjDescription').val($('#SaleBillNo').val());
-            
+
             AllowTaxPassword();
             $('#Unit').prop("readonly", true);
             $('#AltUnit').prop("readonly", true);
@@ -480,7 +480,7 @@
             AutoComplete("vehicleNo", "vehicleNo");
             AutoComplete("TransporterName", "TransporterName");
 
-             
+
             var InvDate = parseDateToFormat($('#SaleBillDate').val().split(" ")[0]);
 
             // var parts = InvDate.split('/');
@@ -628,7 +628,7 @@
             $('#SchdeliveryDate').rules("remove", "required");
             $('#CustOrderNo').rules("remove", "required");
             $('#DistanceKM ').rules("remove", "required");
-            
+
             var rowCount = $('#divSaleBillList tr').length;
             for (var i = 1; i <= rowCount; i++) {
                 var itemCodee = parseInt($('#GridIC-' + i).val());
@@ -798,7 +798,7 @@
 
                 adjustedData.push(rowData);
             });
-            debugger
+            
             console.log("Adustdata:", adjustedData);
 
             $.ajax({
@@ -817,7 +817,7 @@
                 // dataType: "html",
                 async: false,
                 success: function (data) {
-                    
+
                     $('#divCustJobWorkISsueSummary').html(data);
                     var dashGrid = $('#divCustJobWorkISsueSummary').length ? $('#divCustJobWorkISsueSummary').length : 0;
                     $('#totalRows').text(dashGrid);
@@ -1500,7 +1500,7 @@
             var batchNoo = $('#Batchno').val();
             var uniquebatchnoo = $('#Uniquebatchno').val();
             var sono = parseInt($('#SONO').val());
-
+            
             var SchData = {
                 "SONO": parseInt($('#SONO').val()),
                 "SOYearCode": $('#SOYearCode').val(),
@@ -1560,7 +1560,7 @@
                 "ProducedUnprod": $('#ProducedUnprod').val(),
                 "SeqNo": parseInt($('#SeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#SeqNo').val()),
                 "CustJwAdjustmentMandatory": $('#CustJwAdjustmentMandatory').val(),
-                "StockableNonStockable": $('#StockableNonStockable').val(),
+                "StockableNonStockable": $('#ItemCode').find(':selected').data('stockable'),
                 "VendJwAdjustmentMandatory": $('#VendJwAdjustmentMandatory').val()
             }
 
@@ -1575,7 +1575,7 @@
                 },
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
-                        
+
                         $('#divSaleBillList').html(result);
                         var rowCount = $('#divSaleBillList tr').length;
 
@@ -1583,7 +1583,7 @@
 
                         $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty').val(0);
                         $('#LotStock,#TotalStock').val("");
-                        $('#BOMInd,#ProducedUnprod').val('');
+                        // $('#BOMInd,#ProducedUnprod').val('');
                         //$('#HSNNo').val("");
                         //$('#Unit,#AltUnit').val("");
                         $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
@@ -1716,7 +1716,7 @@
                 type: "POST",
                 url: "@Url.Action("ClearGrid")",
                 success: function (result, status, error) {
-                    
+
                     $('#divSaleBillList').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divSaleBillList').html(NoData);
@@ -2165,9 +2165,9 @@
         })
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-            
-            e.preventDefault();
 
+            e.preventDefault();
+            debugger
             if (!ValidateSubmit()) return;
 
             if ($('#divSaleBillList tr td').length <= 1) {
@@ -2183,12 +2183,51 @@
                 $.notify('StateCode is mandatory...!', "error");
             }
             else if ($('#SaleBillJobwork').val() == 'J') {
-                if ($('#divCustJobWorkISsueSummary tr td').length <= 1) {
-                    $.notify('Customer job work issue grid must be 1 row...!', "error");
+                debugger
+                var itemsStockableAndCustJw = [];
+                var rowCount = $('#divSaleBillList tr').length;
+                for (var i = 1; i <= rowCount; i++) {
+                    if ($('#stockableItems-' + i).text() == 'Y' || $('#custJWAdjMandatory-' + i).text() == 'Y') {
+                        itemsStockableAndCustJw.push($('#GridIC-' + i).val());
+                    }
                 }
-                else {
+
+                var custJWRowCount = $('#divCustJobWorkISsueSummary tr').length;
+                var bomCustJWRowCount = $('#divBomCustJobWorkISsueSummary tr').length;
+
+                var isCustJW = true;
+                var isBomCustJW = true;
+
+                for (var j = 1; j <= custJWRowCount; j++) {
+                    if ($('#recItemCodeGrid-' + j).val() != itemsStockableAndCustJw[j - 1]) {
+                        isCustJW = false;
+                        break;
+                    }
+                }
+
+                for (var k = 1; k <= bomCustJWRowCount; k++) {
+                    if ($('#fgItemCodeGrid-' + k).val() != itemsStockableAndCustJw[k - 1]) {
+                        isBomCustJW = false;
+                        break;
+                    }
+                }
+
+                if (!isCustJW) {
+                    if ($('#divCustJobWorkISsueSummary tr td').length <= 1) {
+                        $.notify('Customer job work issue grid must be 1 row...!', "error");
+                    }
+                } else {
                     $("form").submit();
                 }
+
+                if (!isBomCustJW) {
+                    if ($('#divBomCustJobWorkISsueSummary tr td').length <= 1) {
+                        $.notify('Bom customer job work issue grid must be 1 row...!', "error");
+                    }
+                } else {
+                    $("form").submit();
+                }
+
             }
             else if ($('#GSTRegistered').val() == 'Y') {
                 if ($('#divTaxGrid tr td').length <= 1) {
@@ -2221,6 +2260,7 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
+                            debugger
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
@@ -2243,7 +2283,7 @@
                                 } else {
                                     FillSOWiseItems();
                                 }
-
+                                debugger
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                                 $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                 FillCurrentBatchINStore();
@@ -2364,7 +2404,7 @@
                     async: false,
                     data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
                     success: function (data, status, xhr) {
-                        
+
                         $('#divSaleBillList').html(data);
 
                         BasicTotal();
@@ -2784,20 +2824,20 @@
 
         $('#SOYearCode').change(function () {
             $('#CustOrderNo').val('0');
-                 
-                
-                if ($('#SONO').val() == '') {
-                    if ($('#SaleBillJobwork').val() == 'J') {
-                        JWItemList($('#TypeItemServAssets').val());
-                    }
-                } else {
-                     
-                    
-                    if ($('#SONO').find(':selected').data('sotype') == 'CLOSE') {
-                        FillSOWiseItems();
-                    }
+
+
+            if ($('#SONO').val() == '') {
+                if ($('#SaleBillJobwork').val() == 'J') {
+                    JWItemList($('#TypeItemServAssets').val());
                 }
-            
+            } else {
+
+
+                if ($('#SONO').find(':selected').data('sotype') == 'CLOSE') {
+                    FillSOWiseItems();
+                }
+            }
+
 
             FILLCustomerOrderAndSPDate();
             FillSOItemRate();
@@ -3162,7 +3202,7 @@
                         var obj = $.parseJSON(result);
                         $('#Schdate').val("");
                         $('#Schdate').val(obj.Result[0].ScheduleDate);
-                        
+
                         // if ($('#SaleBillJobwork').val() == 'J') {
                         //     JWItemList($('#TypeItemServAssets').val());
                         // } else {
@@ -3176,7 +3216,7 @@
                                 JWItemList($('#TypeItemServAssets').val());
                             }
                         } else {
-                            
+
                             if ($('#SONO').find(':selected').data('sotype') == 'OPEN') {
                                 FillSOWiseItems();
                             }
@@ -3247,7 +3287,7 @@
                     $('#ApprovDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "minDate", FinFromDate);
-                    // $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
+                    $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
 
                     var saleBillEntryDate = parseDateToFormat($('#SaleBillEntryDate').val());
                     let dateParts = saleBillEntryDate.split("/");

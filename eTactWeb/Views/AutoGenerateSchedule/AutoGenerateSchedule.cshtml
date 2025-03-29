@@ -63,16 +63,12 @@
                                
                                
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="SchEffectivedate" class="form-label" style="width:180px;">SchEffectivedate</label>
+                                    <label asp-for="SchEffectivedate" class="form-label">EntryDate</label>
                                     <input asp-for="SchEffectivedate" class="form-control" readonly />
                                 </div>
-                               
-                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="MrpNo" class="form-label">Mrp No</label>
-                                    <select asp-for="MrpNo" class="form-select">
-                                        <option value="">-Select-</option>
-                                       
-                                    </select>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MrpEntryId" class="form-label" >EntryId</label>
+                                    <input asp-for="MrpEntryId" class="form-control" readonly />
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="MrpYearCode" class="form-label">Mrp YearCode</label>
@@ -81,13 +77,14 @@
 
                                     </select>
                                 </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="MrpEntryId" class="form-label">Mrp EntryId</label>
-                                    <select asp-for="MrpEntryId" class="form-select">
+                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="MrpNo" class="form-label">Mrp No</label>
+                                    <select asp-for="MrpNo" class="form-select">
                                         <option value="">-Select-</option>
-
+                                       
                                     </select>
                                 </div>
+                         
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
@@ -168,10 +165,9 @@
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
 
-
-            $('#SchEffectivedate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+            $('#SchEffectivedate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#ReportType').select2();
-            $('#MrpEntryId').select2();
+           
             $('#MrpYearCode').select2();
             $('#MrpNo').select2();
          
@@ -270,23 +266,16 @@
                     MrpNo: MrpNo,
                     YearCode: YearCode
                 },
-                async: false,
+                async: false,  
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-                        var MrpEntryIdDropdown = $('#MrpEntryId');
-                        var obj = $.parseJSON(response);
-                        MrpEntryIdDropdown.empty();
-                        MrpEntryIdDropdown.append('<option value="">--Select--</option>');
 
-                        $.each(obj.Result, function (index, MrpDp) {
-                            MrpEntryIdDropdown.append('<option value="' + MrpDp.MRPEntryid + '">' + MrpDp.MRPEntryid + '</option>');
-                        });
-
+                        $('#MrpEntryId').val(obj.Result[0].MRPEntryid || 0);
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to load opening amount.');
+                    alert('Failed to load EntryId.');
                 }
             });
         }

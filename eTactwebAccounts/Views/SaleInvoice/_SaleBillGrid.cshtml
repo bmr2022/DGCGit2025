@@ -95,9 +95,9 @@ else
             <td>@item.PacketsDetail</td>
             <td>@item.OtherDetail</td>
             <td>@item.ItemRemark</td>
-            <td class="gridHiddenField">@item.StockableNonStockable</td> @* stockable *@
-            <td class="gridHiddenField">@item.CustJwAdjustmentMandatory</td> @* cust *@
-            <td class="gridHiddenField">@item.VendJwAdjustmentMandatory</td> @* vend *@
+            <td id="stockableItems-@Cntr" class="gridHiddenField">@item.StockableNonStockable</td> @* stockable *@
+            <td id="custJWAdjMandatory-@Cntr" class="gridHiddenField">@item.CustJwAdjustmentMandatory</td> @* cust *@
+            <td id="vendJWAdjMandatory-@Cntr" class="gridHiddenField">@item.VendJwAdjustmentMandatory</td> @* vend *@
         </tr>
 
     }
