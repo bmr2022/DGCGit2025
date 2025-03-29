@@ -1444,14 +1444,14 @@ public class SaleOrderController : Controller
 		Table.Columns.Add("StoreName", typeof(string));
 		Table.Columns.Add("StockQty", typeof(int));
 		Table.Columns.Add("AmendmentNo", typeof(string));
-		Table.Columns.Add("AmendmentDate", typeof(DateTime));
+		Table.Columns.Add("AmendmentDate", typeof(string)); // datetime
 		Table.Columns.Add("AmendmentReason", typeof(string));
 		Table.Columns.Add("Color", typeof(string));
 		Table.Columns.Add("Rejper", typeof(float));
 		Table.Columns.Add("Excessper", typeof(float));
 		Table.Columns.Add("ProjQty1", typeof(float));
 		Table.Columns.Add("ProjQty2", typeof(float));
-		Table.Columns.Add("deliverydate", typeof(DateTime));
+		Table.Columns.Add("deliverydate", typeof(string)); // datetime
 
 		DataTable TblSch = new();
 
@@ -1470,21 +1470,21 @@ public class SaleOrderController : Controller
 					Item.SeqNo,
 					Item.ItemCode,
 					Item.HSNNo,
-					Item.Qty,
-					Item.Unit,
-					Item.AltQty,
-					Item.AltUnit,
-					Item.Rate,
-					Item.OtherRateCurr,
-					Item.UnitRate,
+					Convert.ToDecimal(Item.Qty.ToString("F4")),
+					Item.Unit.Trim(),
+                    Convert.ToDecimal(Item.AltQty.ToString("F4")),
+					Item.AltUnit.Trim(),
+                    Convert.ToDecimal(Item.Rate.ToString("F4")),
+                    Convert.ToDecimal(Item.OtherRateCurr.ToString("F4")),
+					Item.UnitRate.Trim(),
 					Item.DiscPer,
 					Item.DiscRs,
-					Item.Amount,
+                    Convert.ToDecimal(Item.Amount.ToString("F4")),
 					Item.TolLimit,
 					Item.Description,
 					Item.Remark,
 					Item.StoreName,
-					Item.StockQty,
+                    Convert.ToDecimal(Item.StockQty.ToString("F4")),
 					Item.AmendmentNo,
 					Item.AmendmentDate == null ? "" : ParseFormattedDate(Item.AmendmentDate),
 					Item.AmendmentReason,
@@ -1616,9 +1616,17 @@ public class SaleOrderController : Controller
 					if (isRowEmpty) continue;
 
 					var partCode = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
+					var validateUnit = (worksheet.Cells[row, 2].Value ?? string.Empty).ToString().Trim();
 
-					// **Validate PartCode**
-					if (!validPartCodes.Contains(partCode))
+					// **Validate Unit**
+                    if (validateUnit.Length > 3)
+                    {
+                        errors.Add($"Invalid Unit at row {row}: {validateUnit}");
+                        continue;
+                    }
+
+                    // **Validate PartCode**
+                    if (!validPartCodes.Contains(partCode))
 					{
 						errors.Add($"Invalid PartCode at row {row}: {partCode}");
 						continue;
