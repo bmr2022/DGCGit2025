@@ -132,7 +132,6 @@ namespace eTactwebAccounts.Controllers
                 return View("Error", ResponseResult);
             }
         }
-
         private static DataTable GetDetailTable(IList<CashPaymentModel> DetailList)
         {
             try
@@ -323,7 +322,6 @@ namespace eTactwebAccounts.Controllers
                 throw;
             }
         }
-
         public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
         {
             var JSON = await _ICashPayment.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
@@ -342,7 +340,6 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<JsonResult> FillBankType(int AccountCode)
         {
             var JSON = await _ICashPayment.FillBankType(AccountCode);
@@ -379,7 +376,6 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<JsonResult> FillPONO(string accountcode, string VoucherDate)
         {
             var JSON = await _ICashPayment.FillPONO(accountcode, VoucherDate);
@@ -404,7 +400,6 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public IActionResult AddCashPaymentDetail(CashPaymentModel model)
         {
             try
@@ -647,7 +642,7 @@ namespace eTactwebAccounts.Controllers
                             }
 
                             // Assign sequence number correctly
-                            item.SeqNo = ProductionEntryDetail.Count + 1;
+                            //item.SeqNo = ProductionEntryDetail.Count + 1;
 
                             // Swap Type values
                             item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
@@ -656,7 +651,10 @@ namespace eTactwebAccounts.Controllers
                             ProductionEntryDetail.Add(item);
                         }
                     }
-
+                    for (int i = 0; i < ProductionEntryDetail.Count; i++)
+                    {
+                        ProductionEntryDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
+                    }
                     // Update the main model and cache
                     MainModel.CashPaymentGrid = ProductionEntryDetail;
                     _MemoryCache.Set("KeyCashPaymentGrid", MainModel.CashPaymentGrid, cacheEntryOptions);
@@ -690,7 +688,7 @@ namespace eTactwebAccounts.Controllers
                             }
 
                             // Assign sequence number correctly
-                            item.SeqNo = ProductionEntryDetail.Count + 1;
+                            //item.SeqNo = ProductionEntryDetail.Count + 1;
 
                             // Swap Type values
                             item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
@@ -699,7 +697,10 @@ namespace eTactwebAccounts.Controllers
                             ProductionEntryDetail.Add(item);
                         }
                     }
-
+                    for (int i = 0; i < ProductionEntryDetail.Count; i++)
+                    {
+                        ProductionEntryDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
+                    }
                     // Update the main model and cache
                     MainModel.CashPaymentGrid = ProductionEntryDetail;
                     _MemoryCache.Set("KeyCashPaymentGridEdit", MainModel.CashPaymentGrid, cacheEntryOptions);
@@ -822,8 +823,6 @@ namespace eTactwebAccounts.Controllers
                 return PartialView("_CashPaymentGrid", MainModel);
             }
         }
-
-
         public async Task<IActionResult> CashPaymentDashBoard(string FromDate, string ToDate)
         {
             try

@@ -625,7 +625,9 @@ namespace eTactWeb.Data.DAL
                         VoucherRemark = row["VoucherRemark"].ToString(),
                         ActualEntryby =Convert.ToInt32(row["ActualEntryBy"].ToString()),
                         BankType = row["UnderGroup"].ToString(),
-                        Type = row["DRCRTYPE"].ToString(),
+                        DRCR = row["DRCRTYPE"].ToString(),
+                        Balance =  Convert.ToDecimal(row["BalanceAmt"].ToString()),
+                        Type = row["CRDDR"].ToString(),
                     });
                 }
                 model.BankReceiptGrid = ItemList.OrderBy(x => x.SrNO).ToList();
