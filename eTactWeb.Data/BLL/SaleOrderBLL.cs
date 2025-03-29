@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +12,9 @@ public class SaleOrderBLL : ISaleOrder
     private readonly IDataLogic _DataLogicDAL;
 
 
-    public SaleOrderBLL(IConfiguration configuration, IDataLogic dataLogicDAL)
+    public SaleOrderBLL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
     {
-        _SaleOrderDAL = new SaleOrderDAL(configuration, dataLogicDAL);
+        _SaleOrderDAL = new SaleOrderDAL(configuration, dataLogicDAL,connectionStringService);
         _DataLogicDAL = dataLogicDAL;
     }
 	public async Task<string> GetSOItem(int AccountCode, int SONO, int Year, int ItemCode)

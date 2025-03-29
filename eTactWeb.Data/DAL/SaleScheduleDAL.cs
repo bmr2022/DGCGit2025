@@ -15,9 +15,12 @@ namespace eTactWeb.Data.DAL;
 
 internal class SaleScheduleDAL
 {
-    public SaleScheduleDAL(IConfiguration configuration, IDataLogic iDataLogic)
+    private readonly ConnectionStringService _connectionStringService;
+    public SaleScheduleDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
-        DBConnectionString = configuration.GetConnectionString("eTactDB");
+        //DBConnectionString = configuration.GetConnectionString("eTactDB");
+        _connectionStringService = connectionStringService;
+        DBConnectionString = _connectionStringService.GetConnectionString();
         _IDataLogic = iDataLogic;
     }
 

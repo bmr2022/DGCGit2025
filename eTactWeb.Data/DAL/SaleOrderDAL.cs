@@ -15,15 +15,17 @@ namespace eTactWeb.Data.DAL
 
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString;
-
+        private readonly ConnectionStringService _connectionStringService;
         //private readonly IConfiguration? configuration;
 
         private dynamic? _ResponseResult;
 
-        public SaleOrderDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        public SaleOrderDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
 
