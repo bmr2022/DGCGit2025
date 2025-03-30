@@ -77,7 +77,7 @@ namespace eTactWeb.Controllers
         //}
 
         [HttpGet]
-        public async Task<IActionResult> SaleRejectionEdit(int ID, string Mode, int YC)
+        public async Task<IActionResult> SaleRejectionEdit(int ID, string Mode, int YearCode)
         {
             SaleRejectionModel model = new SaleRejectionModel();
             ViewData["Title"] = "Sale Rejection";
@@ -98,7 +98,7 @@ namespace eTactWeb.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
-                model = await _saleRejection.GetViewByID(ID, Mode, YC);
+                model = await _saleRejection.GetViewByID(ID, Mode, YearCode);
                 model.Mode = Mode;
                 model.ID = ID;
             }

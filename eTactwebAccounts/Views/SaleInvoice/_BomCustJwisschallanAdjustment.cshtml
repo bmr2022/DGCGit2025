@@ -14,15 +14,15 @@
         foreach (var item in Model)
         {
             Cntr = Cntr + 1;
-            <tr id="@Cntr" class="small" id="divUnMain" style="white-space:nowrap">
+            <tr id="@Cntr" class="small bomCustRowJW" id="divBomCustJWRow-@Cntr" style="white-space:nowrap">
                 <td>@Cntr</td>
                 <td> @item.FGPartCode </td>
-                <td> @item.FGItemName <input type="hidden" id="fgItemCodeGrid-@Cntr" value="@item.FinishedItemCode" /></td>
+                <td> @item.FGItemName <input type="hidden" id="fgBomItemCodeGrid-@Cntr" value="@item.FinishedItemCode" /></td>
                 <td> @item.RMItemName </td>
                 <td> @item.RMPartCode </td>
                 <td> @item.Qty </td>
                 <td> @item.ActualPendQty </td>
-                <td> @item.PendToAdjust </td>
+                <td id="pendToAdj"> @item.PendToAdjust </td>
                 <td> @item.BOMIND </td>
                 <td> @item.ProdUnprod </td>
                 <td> @item.FullyAdjusted </td>
