@@ -525,7 +525,7 @@
             FillSubVoucherName();
             FillIntrument();
             FillCurrency();
-            //FillModeofAdjust();
+            BindModeOfAdjust();
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
             });
@@ -620,7 +620,6 @@
                     $(this).val('');
                 }
             });
-
 
             function checkModeOfAdjustment() {
 
@@ -744,6 +743,7 @@
         });
 
         function BindModeOfAdjust() {
+            $('#ModeOfAdjustment').empty();
             $('#ModeOfAdjustment').append(`
                                     <option selected value="New Ref">New Ref</option>
                                     <option value="Advance">Advance</option>
@@ -755,8 +755,8 @@
 
             $('#AccountCode').val($('#LedgerName').val())
             GetLedgerBalance();
-            CheckBankType();
             BindModeOfAdjust();
+            CheckBankType();
             AdjustAmountForAddToGridForDRCR();
         });
 
@@ -1225,31 +1225,31 @@
             });
         }
 
-        function FillModeofAdjust() {
-            $.ajax({
-                url: '@Url.Action("FillModeofAdjust", "BankPayment")',
-                type: 'POST',
-                async: false,
-                success: function (response, status, error) {
-                    var ModeOfAdjustmentDropdown = $('#ModeOfAdjustment');
-                    var obj = $.parseJSON(response);
-                    ModeOfAdjustmentDropdown.empty();
-                    //ModeOfAdjustmentDropdown.append('<option value="">--Select--</option>');
-                    $.each(obj.Result, function (index, MOAdj) {
-                        ModeOfAdjustmentDropdown.append('<option value="' + MOAdj.ModeOfAdjutment + '">' + MOAdj.ModeOfAdjutment + '</option>');
-                    });
+        // function FillModeofAdjust() {
+        //     $.ajax({
+        //         url: '@Url.Action("FillModeofAdjust", "BankPayment")',
+        //         type: 'POST',
+        //         async: false,
+        //         success: function (response, status, error) {
+        //             var ModeOfAdjustmentDropdown = $('#ModeOfAdjustment');
+        //             var obj = $.parseJSON(response);
+        //             ModeOfAdjustmentDropdown.empty();
+        //             //ModeOfAdjustmentDropdown.append('<option value="">--Select--</option>');
+        //             $.each(obj.Result, function (index, MOAdj) {
+        //                 ModeOfAdjustmentDropdown.append('<option value="' + MOAdj.ModeOfAdjutment + '">' + MOAdj.ModeOfAdjutment + '</option>');
+        //             });
 
-                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var ModeOfAdjustment = '@Model.ModeOfAdjustment';
-                        $('#ModeOfAdjustment').val(ModeOfAdjustment).trigger("change");
-                        $('#ModeOfAdjustment').val(ModeOfAdjustment);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
-                }
-            });
-        }
+        //             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+        //                 var ModeOfAdjustment = '@Model.ModeOfAdjustment';
+        //                 $('#ModeOfAdjustment').val(ModeOfAdjustment).trigger("change");
+        //                 $('#ModeOfAdjustment').val(ModeOfAdjustment);
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             alert('Failed to load ledger names.');
+        //         }
+        //     });
+        // }
 
         function FillCostCenterName() {
             $.ajax({
