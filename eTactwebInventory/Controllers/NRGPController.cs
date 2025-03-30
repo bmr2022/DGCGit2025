@@ -202,6 +202,13 @@ namespace eTactWeb.Controllers
             //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
 
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IIssueNRGP.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string Type = "")
         {
             //string my_connection_string;

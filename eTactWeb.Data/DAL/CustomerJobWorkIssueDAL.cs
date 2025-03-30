@@ -27,7 +27,29 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
         }
-      
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+                SqlParams.Add(new SqlParameter("@EmpId", userID));
+                SqlParams.Add(new SqlParameter("@MainMenu", "Customer Jobwork Issue"));
+                //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
+
         public async Task<ResponseResult> GetPopUpData(int YearCode, string EntryDate, string ChallanDate, int AccountCode, string prodUnProd, string BOMINd, int RMItemCode, string Partcode)
         {
             var _ResponseResult = new ResponseResult();

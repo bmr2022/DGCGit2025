@@ -185,6 +185,15 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _ICustomerJWR.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         [Route("{controller}/Index")]
         [HttpGet]
         public async Task<IActionResult> CustomerJWR(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string MrnNo = "", string ChallanNo = "", string ItemName = "", string PartCode = "", string DashboardType = "", string Searchbox = "")

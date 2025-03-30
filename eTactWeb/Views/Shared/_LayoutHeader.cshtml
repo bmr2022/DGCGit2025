@@ -288,16 +288,16 @@
 
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="AlternateItemMaster" asp-route-ID="0" asp-controller="AlternateItemMaster">
+                                        <a class="dropdown-item" asp-action="AlternateItemMaster" asp-route-ID="0" asp-controller="AlternateItemMaster" id="AlternateItemMaster">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Alternate Item Master
                                         </a>
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-action="AlternateItemMasterDashBoard" asp-controller="AlternateItemMaster">
+                                        <a class="dropdown-item AlternateItemMaster" asp-action="AlternateItemMasterDashBoard" asp-controller="AlternateItemMaster">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Account Master" />
+                                        <input class="userRightsPermission" type="hidden" value="Alternate Item Master" />
 
                                     </li>
                                 </ul>
@@ -320,12 +320,13 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" asp-action="DashBoard" asp-controller="HRSalaryHeadMaster">
+                                                <a class="dropdown-item HRSalaryHeadMaster" asp-action="DashBoard" asp-controller="HRSalaryHeadMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
 
 
                                             </li>
+                                            <input class="userRightsPermission" type="hidden" value="HR Salary HeadMaster" />
 
 
 
@@ -341,12 +342,13 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" asp-action="HRWeekOffMasterDashBoard" asp-controller="HRWeekOffMaster">
+                                                <a class="dropdown-item HRWeekOffMaster" asp-action="HRWeekOffMasterDashBoard" asp-controller="HRWeekOffMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
 
 
                                             </li>
+                                            <input class="userRightsPermission" type="hidden" value="HR WeekOff Master" />
 
 
 
@@ -362,12 +364,13 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" asp-action="HRLeaveMasterDashBoard" asp-controller="HRLeaveMaster">
+                                                <a class="dropdown-item HRLeaveMaster" asp-action="HRLeaveMasterDashBoard" asp-controller="HRLeaveMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
 
 
                                             </li>
+                                            <input class="userRightsPermission" type="hidden" value="HR Leave Master" />
 
                                         </ul>
                                     </li>
@@ -381,11 +384,12 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" asp-action="HRPFESIMasterDashBoard" asp-controller="HRPFESIMaster">
+                                                <a class="dropdown-item HRPFESIMaster" asp-action="HRPFESIMasterDashBoard" asp-controller="HRPFESIMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
 
                                             </li>
+                                            <input class="userRightsPermission" type="hidden" value="HR PFESI Master" />
 
                                         </ul>
                                     </li>
@@ -399,11 +403,13 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" asp-action="HRHolidaysMasterDashBoard" asp-controller="HRHolidaysMaster">
+                                                <a class="dropdown-item HRHolidaysMaster" asp-action="HRHolidaysMasterDashBoard" asp-controller="HRHolidaysMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
 
                                             </li>
+                                            <input class="userRightsPermission" type="hidden" value="HR Holidays Master" />
+
 
                                         </ul>
                                     </li>
@@ -417,11 +423,12 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" asp-action="HRLeaveOpeningMasterDashBoard" asp-controller="HRLeaveOpeningMaster">
+                                                <a class="dropdown-item HRLeaveOpeningMaster" asp-action="HRLeaveOpeningMasterDashBoard" asp-controller="HRLeaveOpeningMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
 
                                             </li>
+                                            <input class="userRightsPermission" type="hidden" value="HR LeaveOpening Master" />
 
                                         </ul>
                                     </li>
@@ -435,11 +442,12 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" asp-action="HRLeaveApplicationMasterDashBoard" asp-controller="HRLeaveApplicationMaster">
+                                                <a class="dropdown-item HRLeaveApplicationMaster" asp-action="HRLeaveApplicationMasterDashBoard" asp-controller="HRLeaveApplicationMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
 
                                             </li>
+                                            <input class="userRightsPermission" type="hidden" value="HR LeaveApplication Master" />
 
                                         </ul>
                                     </li>
@@ -472,17 +480,17 @@
                                         <a class="dropdown-item" id="Account Master" href="#" style="background:#FFF8DC ; color :#000000">Primary Account Group Master &raquo;</a>
                                         <ul class="submenu dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <a class="dropdown-item" asp-action="PrimaryAccountGroupMaster" asp-route-ID="0" asp-controller="PrimaryAccountGroupMaster">
+                                                <a class="dropdown-item" asp-action="PrimaryAccountGroupMaster" asp-route-ID="0" asp-controller="PrimaryAccountGroupMaster" id="PrimaryAccountGroupMaster">
                                                     <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> New Primary Account Group Master
                                                 </a>
 
 
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" asp-action="PrimaryAccountGroupMasterDashBoard" asp-controller="PrimaryAccountGroupMaster">
+                                                <a class="dropdown-item PrimaryAccountGroupMaster" asp-action="PrimaryAccountGroupMasterDashBoard" asp-controller="PrimaryAccountGroupMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
-                                                <input class="userRightsPermission" type="hidden" value="Account Master" />
+                                                <input class="userRightsPermission" type="hidden" value="Primary Account GroupMaster" />
 
                                             </li>
                                        </ul>
@@ -549,17 +557,17 @@
                                         <a class="dropdown-item" href="#" style="background:#FFF8DC ; color : #000000">LedgerOpeningEntry &raquo;</a>
                                         <ul class="submenu dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item" asp-action="LedgerOpeningEntry" asp-route-ID="0" asp-controller="LedgerOpeningEntry" id="ItemCategory">
+                                                <a class="dropdown-item" asp-action="LedgerOpeningEntry" asp-route-ID="0" asp-controller="LedgerOpeningEntry" id="LedgerOpeningEntry">
                                                     <i class="fa-regular fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> New Ledger Opn
                                                 </a>
 
 
                                             </li>
                                             <li>
-                                                <a class="dropdown-item ItemCategory" asp-action="LedgerOpeningEntryDashBoard" asp-controller="LedgerOpeningEntry">
+                                                <a class="dropdown-item LedgerOpeningEntry" asp-action="LedgerOpeningEntryDashBoard" asp-controller="LedgerOpeningEntry">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
-                                                <input class="userRightsPermission" type="hidden" value="Item Category" />
+                                                <input class="userRightsPermission" type="hidden" value="Ledger Opening Entry" />
 
                                             </li>
                                         </ul>
@@ -568,15 +576,15 @@
                                         <a class="dropdown-item" href="#" style="background:#FFF8DC ; color : #000000">Ledger PartyWise Opening &raquo;</a>
                                         <ul class="submenu dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item" asp-action="LedgerPartyWiseOpening" asp-route-ID="0" asp-controller="LedgerPartyWiseOpening">
+                                                <a class="dropdown-item" asp-action="LedgerPartyWiseOpening" asp-route-ID="0" asp-controller="LedgerPartyWiseOpening" id="LedgerPartyWiseOpening">
                                                     <i class="fa-regular fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> Ledger PartyWise Opening
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item ItemCategory" asp-action="LedgerPartyWiseOpeningDashBoard" asp-controller="LedgerPartyWiseOpening">
+                                                <a class="dropdown-item LedgerPartyWiseOpening" asp-action="LedgerPartyWiseOpeningDashBoard" asp-controller="LedgerPartyWiseOpening">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
-                                                <input class="userRightsPermission" type="hidden" value="Item Category" />
+                                                <input class="userRightsPermission" type="hidden" value="Ledger PartyWise Opening" />
                                             </li>
                                         </ul>
                                     </li>
@@ -585,15 +593,15 @@
 
                                         <ul class="submenu dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item" asp-action="CostCenterMaster" asp-route-ID="0" asp-controller="CostCenterMaster">
+                                                <a class="dropdown-item" asp-action="CostCenterMaster" asp-route-ID="0" asp-controller="CostCenterMaster" id="CostCenterMaster">
                                                     <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Cost Center Master
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item " asp-action="CostCenterMasterDashBoard" asp-controller="CostCenterMaster">
+                                                <a class="dropdown-item CostCenterMaster" asp-action="CostCenterMasterDashBoard" asp-controller="CostCenterMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
-                                                <input class="userRightsPermission" type="hidden" value="Bank Master" />
+                                                <input class="userRightsPermission" type="hidden" value="CostCenter Master" />
 
                                             </li>
                                         </ul>
@@ -615,15 +623,15 @@
 
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="StoreMaster" asp-route-ID="0" asp-controller="StoreMaster">
+                                        <a class="dropdown-item" asp-action="StoreMaster" asp-route-ID="0" asp-controller="StoreMaster" id="StoreMaster">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Store Master
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item " asp-action="StoreMasterDashBoard" asp-controller="StoreMaster">
+                                        <a class="dropdown-item StoreMaster " asp-action="StoreMasterDashBoard" asp-controller="StoreMaster">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Bank Master" />
+                                        <input class="userRightsPermission" type="hidden" value="Store Master" />
 
                                     </li>
                                 </ul>
@@ -633,15 +641,15 @@
 
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="CurrencyMaster" asp-route-ID="0" asp-controller="CurrencyMaster">
+                                        <a class="dropdown-item" asp-action="CurrencyMaster" asp-route-ID="0" asp-controller="CurrencyMaster" id="CurrencyMaster">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Currency Master
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item " asp-action="CurrencyMasterDashBoard" asp-controller="CurrencyMaster">
+                                        <a class="dropdown-item CurrencyMaster" asp-action="CurrencyMasterDashBoard" asp-controller="CurrencyMaster">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Bank Master" />
+                                        <input class="userRightsPermission" type="hidden" value="Currency Master" />
 
                                     </li>
                                 </ul>
@@ -652,15 +660,15 @@
 
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="UnitMaster" asp-route-ID="0" asp-controller="UnitMaster">
+                                        <a class="dropdown-item" asp-action="UnitMaster" asp-route-ID="0" asp-controller="UnitMaster" id="UnitMaster">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Unit Master
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item " asp-action="UnitMasterDashBoard" asp-controller="UnitMaster">
+                                        <a class="dropdown-item UnitMaster" asp-action="UnitMasterDashBoard" asp-controller="UnitMaster">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Bank Master" />
+                                        <input class="userRightsPermission" type="hidden" value="Unit Master" />
 
                                     </li>
                                 </ul>
@@ -671,15 +679,15 @@
 
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="DepartmentMaster" asp-route-ID="0" asp-controller="DepartmentMaster">
+                                        <a class="dropdown-item" asp-action="DepartmentMaster" asp-route-ID="0" asp-controller="DepartmentMaster" id="DepartmentMaster">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Department Master
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item " asp-action="DepartmentMasterDashBoard" asp-controller="DepartmentMaster">
+                                        <a class="dropdown-item DepartmentMaster" asp-action="DepartmentMasterDashBoard" asp-controller="DepartmentMaster">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Bank Master" />
+                                        <input class="userRightsPermission" type="hidden" value="Department Master" />
 
                                     </li>
                                 </ul>
@@ -692,17 +700,17 @@
 
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="PartCodePartyWise" asp-route-ID="0" asp-controller="PartCodePartyWise" id="PartcodePartywise">
+                                        <a class="dropdown-item" asp-action="PartCodePartyWise" asp-route-ID="0" asp-controller="PartCodePartyWise" id="PartCodePartyWise">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Part Code Party Wise
                                         </a>
 
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item AccountMaster" asp-action="PartcodePartyWiseDashboard" asp-controller="PartCodePartyWise">
+                                        <a class="dropdown-item PartCodePartyWise" asp-action="PartcodePartyWiseDashboard" asp-controller="PartCodePartyWise">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Part Code Party Wise" />
+                                        <input class="userRightsPermission" type="hidden" value="PartCode Party Wise" />
 
                                     </li>
                                 </ul>
@@ -722,7 +730,7 @@
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item Bom" asp-action="ImportBom" asp-controller="Bom">
+                                        <a class="dropdown-item Bom" asp-action="ImportBom" asp-controller="Bom" id="Bom">
                                             <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> Import BOM
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Bom" />
@@ -767,17 +775,17 @@
                                 <a class="dropdown-item" href="#">Workcenter Master &raquo;</a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="WorkCenterMaster" asp-route-ID="0" asp-controller="WorkCenterMaster" id="WorkcenetrMaster">
+                                        <a class="dropdown-item" asp-action="WorkCenterMaster" asp-route-ID="0" asp-controller="WorkCenterMaster" id="WorkCenterMaster">
                                             <i class="fa-regular fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> New Workcenter
                                         </a>
 
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item WorkcenetrMaster" asp-action="DashBoard" asp-controller="WorkCenterMaster">
+                                        <a class="dropdown-item WorkCenterMaster" asp-action="DashBoard" asp-controller="WorkCenterMaster">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="WorkcenetrMaster" />
+                                        <input class="userRightsPermission" type="hidden" value="WorkCenter Master" />
 
                                     </li>
                                 </ul>
@@ -788,17 +796,17 @@
                                 <a class="dropdown-item" href="#">Machine Group Master &raquo;</a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" asp-action="LedgerOpeningEntry" asp-route-ID="0" asp-controller="LedgerOpeningEntry" id="ItemCategory">
+                                        <a class="dropdown-item" asp-action="LedgerOpeningEntry" asp-route-ID="0" asp-controller="LedgerOpeningEntry" id="MachineGroupMaster">
                                             <i class="fa-regular fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> New M/C Group
                                         </a>
 
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item ItemCategory" asp-action="LedgerOpeningDashBoard" asp-controller="LedgerOpeningEntry">
+                                        <a class="dropdown-item MachineGroupMaster" asp-action="LedgerOpeningDashBoard" asp-controller="LedgerOpeningEntry">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Item Category" />
+                                        <input class="userRightsPermission" type="hidden" value="Machine Group Master" />
 
                                     </li>
                                 </ul>
@@ -822,7 +830,7 @@
                                         <a class="dropdown-item MachineMaster" asp-action="MachineMasterDashboard" asp-controller="MachineMaster">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="MachineMaster" />
+                                        <input class="userRightsPermission" type="hidden" value="Machine Master" />
 
                                     </li>
                                 </ul>
@@ -844,7 +852,7 @@
                                         <a class="dropdown-item OperationMaster" asp-action="DashBoard" asp-controller="OperationMaster">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="OperationMaster" />
+                                        <input class="userRightsPermission" type="hidden" value="Operation Master" />
 
                                     </li>
                                 </ul>
@@ -1143,11 +1151,12 @@
                                 <ul class="submenu dropdown-menu">
                                 <li>
 
-                                    <a class="dropdown-item" asp-action="AutoGenerateSchedule" asp-controller="AutoGenerateSchedule" id="PendingMRP">
+                                    <a class="dropdown-item" asp-action="AutoGenerateSchedule" asp-controller="AutoGenerateSchedule" id="AutoGenerateSchedule">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         Aut Generate Schedule
                                     </a>
+                                    <input class="userRightsPermission" type="hidden" value="Auto Generate Schedule" />
                                 </li>
                                 </ul>
                             </li>
@@ -1251,17 +1260,17 @@
                                 <ul class="submenu dropdown-menu">
 
                                     <li>
-                                        <a class="dropdown-item" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="PendingProductionSchedule">
+                                    <a class="dropdown-item" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="IssueAgainstProdSchedule">
                                             <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                                style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                             Pending Production Schedule
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item IssueAgainstProdScheduleDashboard" asp-action="IssueAgainstProdScheduleDashboard" asp-controller="IssueAgainstProdSchedule" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
+                                    <a class="dropdown-item IssueAgainstProdSchedule" asp-action="IssueAgainstProdScheduleDashboard" asp-controller="IssueAgainstProdSchedule" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Work Order" />
+                                    <input class="userRightsPermission" type="hidden" value="IssueAgainstProdSchedule" />
 
                                     </li>
                                     <li>

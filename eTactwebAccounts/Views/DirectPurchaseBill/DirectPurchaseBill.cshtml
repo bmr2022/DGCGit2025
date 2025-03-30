@@ -11,6 +11,8 @@
 }
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="DirectPurchaseBill" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+        <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>@ViewData["Title"] - @Model.YearCode</strong>

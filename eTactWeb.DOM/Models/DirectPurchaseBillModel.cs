@@ -25,7 +25,8 @@ public class DPBDashBoard : TimeStamp
     public string? ItemName { get; set; }
     public string? PartCode { get; set; }
     public string? PaymentTerms { get; set; }
-
+    public string? FromDate1 { get; set; }
+    public string? ToDate1 { get; set; }
     public string? DPBDate { get; set; }
     public IList<TextValue>? PONoList { get; set; }
     public string? DPNTypeServItem { get; set; }
@@ -505,8 +506,19 @@ public class DirectPurchaseBillModel : DPBItemDetail
     public string? Approved { get; set; }
     public string? ApprovedDate { get; set; }
     public int? Approvedby { get; set; }
-  
 
+    public string FromDateBack { get; set; }
+    public string ToDateBack { get; set; }
+    public string TypeITEMSERVASSETSBack { get; set; }
+    public string DocumentTypeBack { get; set; }
+    public string DashboardTypeBack { get; set; }
+    public string PurchVouchNoBack { get; set; }
+    public string InvoiceNoBack { get; set; }
+    public string VendorNameBack { get; set; }
+    public string PartCodeBack { get; set; }
+    public string ItemNameBack { get; set; }
+    public string HSNNoBack { get; set; }
+    public string GlobalSearchBack { get; set; }
 
     public IList<SelectListItem> YesNoList
     {

@@ -23,7 +23,7 @@
                        asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day).ToString("dd/MM/yyyy")"
                        asp-route-Todate="@DateTime.Today.ToString("dd/MM/yyyy")"
                        asp-route-Flag="True"
-                       class="btn btn-sm btn-outline-light bg-gradient">
+                       class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -511,7 +511,7 @@
                         </div>
                     </div>
 
-                    <div class="card-header card-headerBG  text-light bg-gradient">
+                    <div class="card-footer card-header card-headerBG  text-light bg-gradient">
                         <h5>
                             <strong>Customer Job Work Issue</strong>
                             <span class="d-flex float-end" style="margin-top:-2px;">
@@ -525,7 +525,7 @@
                                    asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day).ToString("dd/MM/yyyy")"
                                    asp-route-Todate="@DateTime.Today.ToString("dd/MM/yyyy")"
                                    asp-route-Flag="True"
-                                   class="btn btn-sm btn-outline-light bg-gradient">
+                                   class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -575,7 +575,12 @@
 </div>
 
 <style>
-
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
+    }
 
     #TableGrid th,
     #TableGrid td {
@@ -650,6 +655,7 @@
             $('#Account_Code').val($('#CustomerName').val());
         });
         $(document).ready(function () {
+            GetFormRights();
             $('#ProduceUnproduce').rules("remove", "required");
             $('#BOMInd').rules("remove", "required");
             $('#SONO').rules("remove", "required");
@@ -887,6 +893,55 @@
 
             window.history.back();
         }
+
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("#submitBTN").prop("disabled", true);
+                            $('.card-footer #submitBTN').prop("disabled", true);
+                            $(".DashBoard")
+                                .addClass("disabled-link")
+                                .on("click", function (e) {
+                                    e.preventDefault(); // Prevents clicking the link
+                                });
+                        }
+                        else {
+                            // console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#submitBTN").prop("disabled", true);
+                                    $('.card-footer #submitBTN').prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".DashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
+
 
         function calculateTotals() {
             let totalChallanQty = 0;
