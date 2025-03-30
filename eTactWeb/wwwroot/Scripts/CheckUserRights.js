@@ -8,12 +8,66 @@ function disableLinks(selector) {
             e.preventDefault(); // Prevents navigation
         });
 }
+//function GetFormRightsSO() {
+
+//    $.ajax({
+//        url: "/SaleOrder/GetFormRights",
+//        type: "POST",
+        
+//        success: function (data) {
+
+//            if (data != null) {
+//                var obj = $.parseJSON(data);
+//                if (obj.Result.Table.length == 0) {
+//                    $("#SaleOrder")
+//                        .addClass("disabled-link")
+//                        .on("click", function (e) {
+//                            e.preventDefault(); // Prevents clicking the link
+//                        });
+//                    $("#SaleOrderDashBoard")
+//                        .addClass("disabled-link")
+//                        .on("click", function (e) {
+//                            e.preventDefault(); // Prevents clicking the link
+//                        });
+//                } else {
+//                    console.log(obj);
+//                    var optAll = obj.Result.Table[0].OptAll;
+//                    var optSave = obj.Result.Table[0].OptSave;
+//                    var optUpdate = obj.Result.Table[0].OptUpdate;
+//                    var optDelete = obj.Result.Table[0].OptDelete;
+//                    var optView = obj.Result.Table[0].OptView;
+//                    if (!optAll) {
+//                        //$("#hidesoForm").hide();
+//                        if (!optSave) {
+//                            $("#SaleOrder")
+//                                .addClass("disabled-link")
+//                                .on("click", function (e) {
+//                                    e.preventDefault(); // Prevents clicking the link
+//                                });
+//                        }
+//                        if (!(optUpdate || optDelete || optView)) {
+//                            $("#SaleOrderDashBoard")
+//                                .addClass("disabled-link")
+//                                .on("click", function (e) {
+//                                    e.preventDefault(); // Prevents clicking the link
+//                                });
+//                        }
+//                    }
+//                }
+//            }
+//        },
+//        error: function (errMsg) {
+//            $.notify(errMsg, { position: "top center", className: "error" });
+//        }
+//    });
+//}
+
 function GetFormRightsSO() {
 
     $.ajax({
-        url: "/SaleOrder/GetFormRights",
+        url: "/SaleOrder/GetAllFormRights",
         type: "POST",
-        
+
         success: function (data) {
 
             if (data != null) {
@@ -36,21 +90,27 @@ function GetFormRightsSO() {
                     var optUpdate = obj.Result.Table[0].OptUpdate;
                     var optDelete = obj.Result.Table[0].OptDelete;
                     var optView = obj.Result.Table[0].OptView;
+                    var MainMenu = obj.Result.Table[0].MainMenu;
                     if (!optAll) {
+
                         //$("#hidesoForm").hide();
                         if (!optSave) {
-                            $("#SaleOrder")
-                                .addClass("disabled-link")
-                                .on("click", function (e) {
-                                    e.preventDefault(); // Prevents clicking the link
-                                });
+                            if (MainMenu == "Sales Order") {
+                                $("#SaleOrder")
+                                    .addClass("disabled-link")
+                                    .on("click", function (e) {
+                                        e.preventDefault(); // Prevents clicking the link
+                                    });
+                            }
                         }
                         if (!(optUpdate || optDelete || optView)) {
-                            $("#SaleOrderDashBoard")
-                                .addClass("disabled-link")
-                                .on("click", function (e) {
-                                    e.preventDefault(); // Prevents clicking the link
-                                });
+                            if (MainMenu == "Sales Order") {
+                                $("#SaleOrderDashBoard")
+                                    .addClass("disabled-link")
+                                    .on("click", function (e) {
+                                        e.preventDefault(); // Prevents clicking the link
+                                    });
+                            }
                         }
                     }
                 }
@@ -61,6 +121,7 @@ function GetFormRightsSO() {
         }
     });
 }
+
 
 
 function GetFormRightsSOAmm() {
@@ -400,14 +461,14 @@ function GetFormRightsPOSchAmm() {
 
 $(document).ready(function () {
 
-    GetFormRightsSO();
-    GetFormRightsSOAmm();
-    GetFormRightsSaleSch();
-    GetFormRightsSaleSchAmm();
-    GetFormRightsPO();
-    GetFormRightsPOSch();
-    GetFormRightsPOAmm();
-    GetFormRightsPOSchAmm();
+    //GetFormRightsSO();
+    //GetFormRightsSOAmm();
+    //GetFormRightsSaleSch();
+    //GetFormRightsSaleSchAmm();
+    //GetFormRightsPO();
+    //GetFormRightsPOSch();
+    //GetFormRightsPOAmm();
+    //GetFormRightsPOSchAmm();
 
 });
 
