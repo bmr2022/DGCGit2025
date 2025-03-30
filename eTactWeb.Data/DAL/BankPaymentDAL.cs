@@ -642,9 +642,6 @@ namespace eTactWeb.Data.DAL
             model.DrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["DrAmt"].ToString());
             model.CrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["CrAmt"].ToString());
 
-            //model.DrAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["DrAmt"].ToString());
-            //model.CrAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["CrAmt"].ToString());
-
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
             {
                 model.UpdatedByEmp = DS.Tables[0].Rows[0]["UpdatedByEmp"].ToString();
