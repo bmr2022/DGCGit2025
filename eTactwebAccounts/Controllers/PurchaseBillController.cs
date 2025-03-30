@@ -24,6 +24,7 @@ using System.Net;
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using eTactWeb.Data.DAL;
 
 namespace eTactWeb.Controllers;
 
@@ -1195,6 +1196,7 @@ public class PurchaseBillController : Controller
         DataSet DS = new();
         DataTable Table = new();
 
+        #region
         Table.Columns.Add("PurchBillEntryID", typeof(int));
         Table.Columns.Add("PurchBillYearCode", typeof(int));
         Table.Columns.Add("SeqNo", typeof(int));
@@ -1253,19 +1255,34 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("AcceptedQty", typeof(float));
         Table.Columns.Add("ReworkQty", typeof(float));
         Table.Columns.Add("HoldQty", typeof(float));
+        #endregion
 
         foreach (PBItemDetail Item in itemDetailList)
         {
-            DateTime poDate = new DateTime();
-            DateTime schDate = new DateTime();
-            DateTime MIRDate = new DateTime();
-            DateTime ProjectDate = new DateTime();
-            DateTime AgainstImportInvDate = new DateTime();
+            DateTime poDate = new DateTime(2000, 1, 1);
+            DateTime schDate = new DateTime(2000, 1, 1);
+            DateTime MIRDate = new DateTime(2000, 1, 1);
+            DateTime ProjectDate = new DateTime(2000, 1, 1);
+            DateTime AgainstImportInvDate = new DateTime(2000, 1, 1);
             string poDt = "";
             string schDt = "";
             string mirDt = "";
             string projectDt = "";
             string againstImportInvDt = "";
+
+            #region Formats
+            string[] formats = {
+                "dd-MM-yyyy HH:mm:ss",
+                "dd/MM/yyyy HH:mm:ss",
+                "yyyy-MM-dd HH:mm:ss",
+                "MM/dd/yyyy HH:mm:ss",
+                "dd-MM-yyyy",
+                "dd/MM/yyyy",
+                "yyyy-MM-dd",
+                "MM/dd/yyyy"
+            };
+            #endregion
+
             if (Item.PODate != null)
             {
                 //poDate = DateTime.Parse(Item.PODate, new CultureInfo("en-GB"));
@@ -1289,7 +1306,8 @@ public class PurchaseBillController : Controller
             if (Item.MIRDATE != null)
             {
                 //MIRDate = DateTime.Parse(Item.MIRDATE, new CultureInfo("en-GB"));
-                DateTime.TryParse(Item.MIRDATE, CultureInfo.InvariantCulture, out MIRDate);
+                //DateTime.TryParse(Item.MIRDATE, CultureInfo.InvariantCulture, out MIRDate);
+                DateTime.TryParseExact(Item.MIRDATE, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out MIRDate);
                 mirDt = MIRDate.ToString("yyyy/MM/dd");
             }
             else
@@ -1384,7 +1402,7 @@ public class PurchaseBillController : Controller
         DS.Tables.Add(Table);
         return DS;
     }
-
+   
     private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
     {
         DataTable Table = new();
@@ -1468,15 +1486,30 @@ public class PurchaseBillController : Controller
         {
             foreach (TDSModel Item in TDSDetailList)
             {
-                DateTime InvoiceDate = new DateTime();
-                DateTime challanDate = new DateTime();
-                DateTime BankVoucherDate = new DateTime();
+                DateTime InvoiceDate = new DateTime(2000, 1, 1);
+                DateTime challanDate = new DateTime(2000, 1, 1);
+                DateTime BankVoucherDate = new DateTime(2000, 1, 1);
                 string InvoiceDt = "";
                 string challanDt = "";
                 string BankVoucherDt = "";
+
+                #region Formats
+                string[] formats = {
+                    "dd-MM-yyyy HH:mm:ss",
+                    "dd/MM/yyyy HH:mm:ss",
+                    "yyyy-MM-dd HH:mm:ss",
+                    "MM/dd/yyyy HH:mm:ss",
+                    "dd-MM-yyyy",
+                    "dd/MM/yyyy",
+                    "yyyy-MM-dd",
+                    "MM/dd/yyyy"
+                };
+                #endregion
+
                 if (MainModel.InvDate != null)
                 {
-                    DateTime.TryParse(MainModel.InvDate, CultureInfo.InvariantCulture, out InvoiceDate);
+                    DateTime.TryParseExact(MainModel.InvDate, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out InvoiceDate);
+                    //DateTime.TryParse(MainModel.InvDate, CultureInfo.InvariantCulture, out InvoiceDate);
                     InvoiceDt = InvoiceDate.ToString("yyyy/MM/dd");
                 }
                 else
