@@ -57,7 +57,7 @@ namespace eTactWeb.DOM.Models
         public decimal CrAmt { get; set; }
         public double VoucherAmt { get; set; }
         public IList<BankPaymentModel> BankPaymentGrid { get; set; }
-        public List<PopUpDataTable> DataTable { get; set; }
+        public List<PopUpDataTableAgainstRef> DataTable { get; set; }
         public int BooktrnsEntryId { get; set; }
         public int DocEntryId { get; set; }
         public string VoucherDocNo { get; set; }
@@ -146,6 +146,5 @@ namespace eTactWeb.DOM.Models
         public decimal PopDrAmt { get; set; }
         public decimal PopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
-        
     }
 }

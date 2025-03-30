@@ -1,10 +1,49 @@
-﻿@model eTactWeb.DOM.Models.BankReceiptModel;
+﻿@model eTactWeb.DOM.Models.JournalVoucherModel;
 @{
-    ViewData["Title"] = "Bank Receipt";
+    ViewData["Title"] = "Journal Voucher";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
+    #container {
+        display: flex;
+    }
 
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a !important;
@@ -106,8 +145,8 @@
                                     <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
                                     <input type="hidden" asp-for="SubVoucherID" />
                                     <select class="form-control" asp-for="SubVoucherName" style="width:130px;">
-                                        <option value="">BANK-RECEIPT</option>
-                                        <option value="Bank-Receipt">Bank-Receipt</option>
+                                        <option value="">Journal Voucher</option>
+                                        <option value="Journal-Voucher">Journal Voucher</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
                                             <option value="@Model.SubVoucherName" selected>@Model.SubVoucherName</option>
@@ -193,7 +232,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="divBankReceipt">
-                                                <partial name="_BankReceipt" />
+                                                <partial name="_JournalVoucher" />
                                             </tbody>
                                         </table>
                                     </div>
@@ -234,7 +273,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="divBankReceiptDetail">
-                                            <partial name="_BankReceiptGrid" />
+                                            <partial name="_JournalVoucherGrid" />
                                         </tbody>
                                     </table>
                                 </div>
@@ -479,7 +518,6 @@
     </div>
 </div>
 
-
 @section Scripts {
     <script>
 
@@ -541,6 +579,7 @@
             FillIntrument();
             FillCurrency();
             BindModeOfAdjust();
+            FillLedgerName();
 
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
@@ -759,10 +798,10 @@
 
         function BindModeOfAdjust() {
             $('#ModeOfAdjustment').append(`
-                            <option selected value="New Ref">New Ref</option>
-                            <option value="Advance">Advance</option>
-                            <option value="Against Ref">Against Ref</option>
-                        `);
+                                            <option selected value="New Ref">New Ref</option>
+                                            <option value="Advance">Advance</option>
+                                            <option value="Against Ref">Against Ref</option>
+                                        `);
         }
 
         $('#LedgerName').change(function () {
@@ -773,8 +812,6 @@
             CheckBankType();
             AdjustAmountForAddToGridForDRCR();
         });
-
-        FillLedgerName();
 
         function TotalNoOfRows() {
 
@@ -788,7 +825,7 @@
         }
 
         function FillEntryID() {
-            ;
+
             var VoucherDate = $('#VoucherDate').val();
 
             if (VoucherDate) {
@@ -810,7 +847,7 @@
                 }
             }
             $.ajax({
-                url: '@Url.Action("FillEntryID", "BankReceipt")',
+                url: '@Url.Action("FillEntryID", "JournalVoucher")',
                 type: 'POST',
                 data: { "YearCode": $('#YearCode').val(), "VoucherDate": VoucherDate },
                 async: false,
@@ -832,7 +869,7 @@
             var AccountCode = $('#AccountCode').val();
             var VoucherDate = $('#VoucherDate').val();
             $.ajax({
-                url: '@Url.Action("GetLedgerBalance", "BankReceipt")',
+                url: '@Url.Action("GetLedgerBalance", "JournalVoucher")',
                 type: 'POST',
                 data: {
                     OpeningYearCode: OpeningYearCode,
@@ -868,7 +905,7 @@
             var VoucherDate = $('#VoucherDate').val();
 
             $.ajax({
-                url: '@Url.Action("GetLedgerBalance", "BankReceipt")',
+                url: '@Url.Action("GetLedgerBalance", "JournalVoucher")',
                 type: 'POST',
                 data: {
                     OpeningYearCode: OpeningYearCode,
@@ -923,7 +960,7 @@
             }
 
             $.ajax({
-                url: '@Url.Action("FillSONO", "BankReceipt")',
+                url: '@Url.Action("FillSONO", "JournalVoucher")',
                 type: 'POST',
                 async: false,
                 data: {
@@ -955,7 +992,6 @@
             });
         }
 
-
         function GetSOYear() {
             ;
             var SONO = $("#SONo").val();
@@ -983,7 +1019,7 @@
             }
 
             $.ajax({
-                url: '@Url.Action("GetSODetail", "BankReceipt")',
+                url: '@Url.Action("GetSODetail", "JournalVoucher")',
                 type: 'GET',
                 data: {
                     SONO: SONO,
@@ -1061,7 +1097,7 @@
             }
 
             $.ajax({
-                url: '@Url.Action("GetPODate", "BankPayment")',
+                url: '@Url.Action("GetPODate", "JournalVoucher")',
                 type: 'GET',
                 data: {
                     PONO: PONO,
@@ -1105,7 +1141,7 @@
         function FillCurrency() {
 
             $.ajax({
-                url: '@Url.Action("FillCurrency", "BankReceipt")',
+                url: '@Url.Action("FillCurrency", "JournalVoucher")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
@@ -1133,7 +1169,7 @@
         function CheckAmountBeforeSave(i) {
 
             $.ajax({
-                url: '@Url.Action("CheckAmountBeforeSave", "BankReceipt")',
+                url: '@Url.Action("CheckAmountBeforeSave", "JournalVoucher")',
                 type: 'POST',
                 async: false,
                 data: { "VoucherDate": $('#VoucherDate').val(), "YearCode": $('#YearCode').val(), "AgainstVoucherYearCode": $('#AgainstVoucheryearCode-' + i).text(), "AgainstVoucherEntryId": $('#AgainstVoucherEntryId-' + i).text(), "AgainstVoucherNo": $('#AgainstVoucherNo-' + i).text(), "AccountCode": $('#AccountCode-' + i).val() },
@@ -1163,7 +1199,7 @@
 
             var Type = $('#Type').val();
             $.ajax({
-                url: '@Url.Action("FillLedgerName", "BankReceipt")',
+                url: '@Url.Action("FillLedgerName", "JournalVoucher")',
                 type: 'POST',
                 data: {
                     Type: Type
@@ -1195,7 +1231,7 @@
         function FillSubVoucherName() {
             var VoucherType = $('#VoucherType').val();
             $.ajax({
-                url: '@Url.Action("FillSubVoucherName", "BankReceipt")',
+                url: '@Url.Action("FillSubVoucherName", "JournalVoucher")',
                 type: 'POST',
                 data: {
                     VoucherType: VoucherType
@@ -1225,7 +1261,7 @@
 
         function FillIntrument() {
             $.ajax({
-                url: '@Url.Action("FillIntrument", "BankReceipt")',
+                url: '@Url.Action("FillIntrument", "JournalVoucher")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
@@ -1249,36 +1285,10 @@
             });
         }
 
-        /* function FillModeofAdjust() {
-            $.ajax({
-                url: '@Url.Action("FillModeofAdjust", "BankReceipt")',
-                type: 'POST',
-                async: false,
-                success: function (response, status, error) {
-                    var ModeOfAdjustmentDropdown = $('#ModeOfAdjustment');
-                    var obj = $.parseJSON(response);
-                    ModeOfAdjustmentDropdown.empty();
-                    //ModeOfAdjustmentDropdown.append('<option value="">--Select--</option>');
-                    $.each(obj.Result, function (index, MOAdj) {
-                        ModeOfAdjustmentDropdown.append('<option value="' + MOAdj.ModeOfAdjutment + '">' + MOAdj.ModeOfAdjutment + '</option>');
-                    });
-
-                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                        var ModeOfAdjustment = '@Model.ModeOfAdjustment';
-                        $('#ModeOfAdjustment').val(ModeOfAdjustment).trigger("change");
-                        $('#ModeOfAdjustment').val(ModeOfAdjustment);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
-                }
-            });
-        } */
-
         function FillCostCenterName() {
             ;
             $.ajax({
-                url: '@Url.Action("FillCostCenterName", "BankReceipt")',
+                url: '@Url.Action("FillCostCenterName", "JournalVoucher")',
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
@@ -1334,7 +1344,7 @@
         function CheckBankType() {
 
             $.ajax({
-                url: '@Url.Action("FillBankType", "BankReceipt")',
+                url: '@Url.Action("FillBankType", "JournalVoucher")',
                 type: 'POST',
                 async: false,
                 data: { "AccountCode": $('#AccountCode').val(), },
@@ -1408,7 +1418,7 @@
                 DataTable = { "VoucherType": $('#SubVoucherName').find(":selected").text(), "Flag": "PopupData", "SumDetail": "", "AccountCode": $('#AccountCode-' + SrNO).val(), "YearCode": $('#YearCode').val(), "VoucherDate": convertDateFormat($('#VoucherDate').val()), "AccEntryId": $('#AccEntryId').val(), "AccYearCode": $('#YearCode').val() };
             }
             $.ajax({
-                url: '@Url.Action("PopUpForPendingVouchers", "BankReceipt")',
+                url: '@Url.Action("PopUpForPendingVouchers", "JournalVoucher")',
                 type: 'POST',
                 async: false,
                 data: { "DataTable": DataTable },
@@ -1605,7 +1615,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("AddBankReceiptAdjustDetail", "BankReceipt")',
+                url: '@Url.Action("AddJournalVoucherAdjustDetail", "JournalVoucher")',
                 data: { model: ItemData, "Mode": $('#Mode').val() },
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
@@ -1781,7 +1791,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("AddBankReceiptDetail", "BankReceipt")',
+                url: '@Url.Action("AddJournalVoucherDetail", "JournalVoucher")',
                 data: { model: SchData },
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
@@ -1845,7 +1855,7 @@
             }
             else {
                 $.ajax({
-                    url: '@Url.Action("EditItemRows", "BankReceipt")',
+                    url: '@Url.Action("EditItemRows", "JournalVoucher")',
                     type: "POST",
                     data: { SrNO: SrNO, "Mode": $('#Mode').val() },
                     success: function (data) {
@@ -2033,50 +2043,3 @@
     <script src="~/Scripts/table2excel.js"></script>
 }
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<style>
-    #container {
-        display: flex;
-    }
-
-        #container > div {
-            flex: 1;
-            margin-right: 10px;
-        }
-
-    #GateDataTable {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    #dashGateThead th {
-        background-color: #127387;
-        position: sticky;
-        top: -2px;
-        z-index: 1;
-    }
-
-    tbody td {
-        /* Table cell styles */
-    }
-
-    .sort-icon {
-        padding: 5px;
-        margin: 5px;
-        vertical-align: top;
-    }
-
-    .ascCol {
-        font-size: 15px;
-        vertical-align: bottom;
-    }
-
-    .descCol {
-        font-size: 15px;
-        vertical-align: super;
-    }
-</style>
-
-
-
-

@@ -521,7 +521,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<BankPaymentModel> PopUpForPendingVouchers(PopUpDataTable DataTable)
+        public async Task<BankPaymentModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
             DataSet? oDataSet = new DataSet();
             var model = new BankPaymentModel();

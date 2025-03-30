@@ -7,7 +7,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-    public class CashPaymentModel : TimeStamp
+    public class JournalVoucherModel : TimeStamp
     {
         public int AccEntryId { get; set; }
         public string VoucherType { get; set; }
@@ -56,7 +56,7 @@ namespace eTactWeb.DOM.Models
         public decimal DrAmt { get; set; }
         public decimal CrAmt { get; set; }
         public double VoucherAmt { get; set; }
-        public IList<CashPaymentModel> CashPaymentGrid { get; set; }
+        public IList<JournalVoucherModel> JournalVoucherList { get; set; }
         public List<PopUpDataTableAgainstRef> DataTable { get; set; }
         public int BooktrnsEntryId { get; set; }
         public int DocEntryId { get; set; }
@@ -141,11 +141,10 @@ namespace eTactWeb.DOM.Models
         public string Searchbox { get; set; }
         public string? DashboardType { get; set; }
         public decimal PopUpBalance { get; set; }
-        public decimal TotalPopDrAmt {  get; set; }
-        public decimal TotalPopCrAmt {  get; set; }
         public decimal PopDrAmt { get; set; }
         public decimal PopCrAmt { get; set; }
+        public decimal TotalPopDrAmt { get; set; }
+        public decimal TotalPopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
-
     }
 }

@@ -28,7 +28,7 @@ namespace eTactWeb.Services.Interface
         Task<BankPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate);
         Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate);
         Task<ResponseResult> FillBankType(int AccountCode);
-        Task<BankPaymentModel> PopUpForPendingVouchers(PopUpDataTable DataTable);
+        Task<BankPaymentModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable);
         Task<BankPaymentModel> GetViewByID(int ID, int YearCode, string VoucherNo);
         Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode);
     }

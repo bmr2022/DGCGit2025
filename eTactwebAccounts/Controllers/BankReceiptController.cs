@@ -6,7 +6,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System.Data;
 using System.Net;
-using System.Runtime.Caching;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
 
@@ -862,7 +861,7 @@ namespace eTactWeb.Controllers
             model = await _IBankReceipt.GetDashBoardSummaryData(FromDate, ToDate);
             return PartialView("_BankReceiptDashBoardGrid", model);
         }
-        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTable DataTable)
+        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
             _MemoryCache.Remove("KeyBankReceiptGridPopUpData");
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions

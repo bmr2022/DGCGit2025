@@ -91,7 +91,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _CashPaymentDAL.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate);
         }
-        public async Task<CashPaymentModel> PopUpForPendingVouchers(PopUpDataTable DataTable)
+        public async Task<CashPaymentModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
             return await _CashPaymentDAL.PopUpForPendingVouchers(DataTable);
         }

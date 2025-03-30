@@ -872,7 +872,7 @@ namespace eTactwebAccounts.Controllers
             model = await _IBankPayment.GetDashBoardSummaryData(FromDate, ToDate);
             return PartialView("_BankPaymentDashBoardGrid", model);
         }
-        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTable DataTable)
+        public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
             _MemoryCache.Remove("KeyBankPaymentGridPopUpData");
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions

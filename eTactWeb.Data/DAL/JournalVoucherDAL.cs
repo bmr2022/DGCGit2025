@@ -8,17 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
-    public class CashPaymentDAL
+    public class JournalVoucherDAL
     {
-
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-
-        public CashPaymentDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        public JournalVoucherDAL(IConfiguration configuration, IDataLogic iDataLogic)
         {
             DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
@@ -52,10 +51,6 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Accountcode", AccountCode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", ParseDate(VoucherDate)));
 
-                //ParseDate(billDate)
-                //SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
-                //SqlParams.Add(new SqlParameter("@VoucherDate", vchDt));
-
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -74,7 +69,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillLedger"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "BankReceipt"));
                 SqlParams.Add(new SqlParameter("@type", Type));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
@@ -94,7 +89,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "SUBVOUCHER"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "BankReceipt"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -132,7 +127,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillIntrument"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "BankReceipt"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -151,7 +146,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillModeofAdjust"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "BankReceipt"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -163,84 +158,6 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
-        public async Task<ResponseResult> FillPONO(string accountcode, string VoucherDate)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "SHOWPOListFORADVANCEPAYMENT"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
-                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
-                SqlParams.Add(new SqlParameter("@accountcode", accountcode));
-                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
-
-
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
-
-            return _ResponseResult;
-        }
-
-        public async Task<ResponseResult> GetPODetail(int PONO, string accountcode, string VoucherDate)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "SHOWPOYearFORADVANCEPAYMENT"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
-                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
-                SqlParams.Add(new SqlParameter("@accountcode", accountcode));
-                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
-                SqlParams.Add(new SqlParameter("@PONO", PONO));
-
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
-
-            return _ResponseResult;
-        }
-
-
-        public async Task<ResponseResult> GetPODate(int PONO, string accountcode, string VoucherDate, string POYearCode)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "SHOWPODateFORADVANCEPAYMENT"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
-                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
-                SqlParams.Add(new SqlParameter("@accountcode", accountcode));
-                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
-                SqlParams.Add(new SqlParameter("@POYearCode", POYearCode));
-                SqlParams.Add(new SqlParameter("@PONO", PONO));
-
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
-
-            return _ResponseResult;
-        }
-
         public async Task<ResponseResult> FillCostCenterName()
         {
             var _ResponseResult = new ResponseResult();
@@ -266,9 +183,9 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
                 SqlParams.Add(new SqlParameter("@yearcode", YearCode));
-                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
+                SqlParams.Add(new SqlParameter("@VoucherDate", ParseFormattedDate(VoucherDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -298,7 +215,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> SaveCashPayment(CashPaymentModel model, DataTable GIGrid)
+        public async Task<ResponseResult> SaveBankReceipt(JournalVoucherModel model, DataTable GIGrid)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -309,13 +226,14 @@ namespace eTactWeb.Data.DAL
                 DateTime voucherDate = new DateTime();
                 DateTime InsDate = new DateTime();
 
-                entryDate = ParseDate(model.EntryDate);
+                entryDate =ParseDate(model.EntryDate);
                 actualEntryDate = ParseDate(model.ActualEntryDate);
                 model.BankRECO = DateTime.Now.ToString();
                 voucherDate = ParseDate(model.VoucherDate);
                 InsDate = ParseDate(model.InsDate);
 
                 var sqlParams = new List<dynamic>();
+                sqlParams.Add(new SqlParameter("@voucherNo", model.VoucherNo));
                 if (model.Mode == "U" || model.Mode == "V")
                 {
                     sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
@@ -327,10 +245,10 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.AccEntryId));
                 sqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
                 sqlParams.Add(new SqlParameter("@EntryDate", entryDate));
-                sqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
+                sqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
                 sqlParams.Add(new SqlParameter("@entrybymachine", model.EntryByMachine));
                 sqlParams.Add(new SqlParameter("@VoucherDate", voucherDate));
-                sqlParams.Add(new SqlParameter("@Subvoucher", "Cash-Payment"));
+                sqlParams.Add(new SqlParameter("@Subvoucher", "BANK-RECEIPT"));
                 sqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDate));
                 sqlParams.Add(new SqlParameter("@InstrumentNo", model.InsNo));
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
@@ -358,9 +276,9 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@summDetail", "Summary"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
-                SqlParams.Add(new SqlParameter("@fromdate", FromDate));
-                SqlParams.Add(new SqlParameter("@todate", ToDate));
+                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
                 responseResult = await _IDataLogic.ExecuteDataSet("AccSpVoucherEntry", SqlParams).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -371,10 +289,10 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<CashPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate)
+        public async Task<JournalVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate)
         {
             DataSet? oDataSet = new DataSet();
-            var model = new CashPaymentModel();
+            var model = new JournalVoucherModel();
             try
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
@@ -385,10 +303,9 @@ namespace eTactWeb.Data.DAL
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Detail");
-                    oCmd.Parameters.AddWithValue("@VoucherType", "Cash-Payment");
-                    oCmd.Parameters.AddWithValue("@fromdate", DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
-                    oCmd.Parameters.AddWithValue("@todate", DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
-
+                    oCmd.Parameters.AddWithValue("@VoucherType", "Bank-Receipt");
+                    oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
+                    oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -398,8 +315,8 @@ namespace eTactWeb.Data.DAL
                 }
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
-                    model.CashPaymentGrid = (from DataRow dr in oDataSet.Tables[0].Rows
-                                             select new CashPaymentModel
+                    model.JournalVoucherList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                             select new JournalVoucherModel
                                              {
                                                  LedgerName = dr["LedgerName"] != DBNull.Value ? dr["LedgerName"].ToString() : string.Empty,
                                                  //AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
@@ -419,6 +336,7 @@ namespace eTactWeb.Data.DAL
                                                  AccEntryId = dr["AccEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AccEntryId"]) : 0,
                                                  YearCode = dr["AccYearCode"] != DBNull.Value ? Convert.ToInt32(dr["AccYearCode"]) : 0,
                                                  EntryDate = dr["EntryDate"] != DBNull.Value ? dr["EntryDate"].ToString() : string.Empty
+
                                              }).ToList();
                 }
             }
@@ -434,10 +352,10 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<CashPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate)
+        public async Task<JournalVoucherModel> GetDashBoardSummaryData(string FromDate, string ToDate)
         {
             DataSet? oDataSet = new DataSet();
-            var model = new CashPaymentModel();
+            var model = new JournalVoucherModel();
             try
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
@@ -448,10 +366,9 @@ namespace eTactWeb.Data.DAL
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Summary");
-                    oCmd.Parameters.AddWithValue("@VoucherType", "Cash-Payment");
-                    oCmd.Parameters.AddWithValue("@fromdate", DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
-                    oCmd.Parameters.AddWithValue("@todate", DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
-
+                    oCmd.Parameters.AddWithValue("@VoucherType", "Bank-Receipt");
+                    oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
+                    oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -461,8 +378,8 @@ namespace eTactWeb.Data.DAL
                 }
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
-                    model.CashPaymentGrid = (from DataRow dr in oDataSet.Tables[0].Rows
-                                             select new CashPaymentModel
+                    model.JournalVoucherList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                             select new JournalVoucherModel
                                              {
                                                  AccEntryId = dr["AccEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AccEntryId"]) : 0,
                                                  YearCode = dr["AccYearCode"] != DBNull.Value ? Convert.ToInt32(dr["AccYearCode"]) : 0,
@@ -497,7 +414,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
+        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -508,7 +425,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDate));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ParseFormattedDate(ActualEntryDate)));
+                SqlParams.Add(new SqlParameter("@Vouchertype", "Bank-Receipt"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -523,10 +441,10 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<CashPaymentModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
+        public async Task<JournalVoucherModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
             DataSet? oDataSet = new DataSet();
-            var model = new CashPaymentModel();
+            var model = new JournalVoucherModel();
             try
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
@@ -552,8 +470,8 @@ namespace eTactWeb.Data.DAL
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
                     int count = 1;
-                    model.CashPaymentGrid = (from DataRow dr in oDataSet.Tables[0].Rows
-                                             select new CashPaymentModel
+                    model.JournalVoucherList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                             select new JournalVoucherModel
                                              {
                                                  SeqNo = count++,
                                                  YearCode = Convert.ToInt32(dr["YearCode"].ToString()),
@@ -588,15 +506,15 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        public async Task<CashPaymentModel> GetViewByID(int ID, int YearCode, string VoucherNo)
+        public async Task<JournalVoucherModel> GetViewByID(int ID, int YearCode, string VoucherNo)
         {
-            var model = new CashPaymentModel();
+            var model = new JournalVoucherModel();
             try
             {
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "ViewById"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
                 SqlParams.Add(new SqlParameter("@BooktrnsEntryId", ID));
                 SqlParams.Add(new SqlParameter("@yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@voucherNo", VoucherNo));
@@ -616,9 +534,9 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        private static CashPaymentModel PrepareView(DataSet DS, ref CashPaymentModel? model)
+        private static JournalVoucherModel PrepareView(DataSet DS, ref JournalVoucherModel? model)
         {
-            var ItemList = new List<CashPaymentModel>();
+            var ItemList = new List<JournalVoucherModel>();
             DS.Tables[0].TableName = "SSMain";
             DS.Tables[1].TableName = "SSDetail";
             int cnt = 1;
@@ -629,56 +547,67 @@ namespace eTactWeb.Data.DAL
             model.VoucherNo = DS.Tables[0].Rows[0]["VoucherNo"].ToString();
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.Currency = DS.Tables[0].Rows[0]["Currency"].ToString();
-            model.CurrencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
+            model.CurrencyId =Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
             model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
-            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
+            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryBy"].ToString();
             model.ActualEntryDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? DateTime.Now.ToString("dd/MM/yy") : DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
             model.DrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["DrAmt"].ToString());
             model.CrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["CrAmt"].ToString());
+            model.VoucherAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["CrAmt"].ToString());
+            //model.VoucherType = DS.Tables[0].Rows[0]["VoucherType"].ToString();
+            //model.VoucherDocNo = DS.Tables[0].Rows[0]["VoucherDocNo"].ToString();
+            //model.BillVouchNo = DS.Tables[0].Rows[0]["BillVouchNo"].ToString();
+            //model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
+
 
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
             {
                 model.UpdatedByEmp = DS.Tables[0].Rows[0]["UpdatedByEmp"].ToString();
 
                 model.UpdatedBy = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()) ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"]);
-                model.UpdatedOn = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdatedDate"]);
+                //model.UpdatedOn = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdatedDate"]);
             }
 
             if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
             {
                 foreach (DataRow row in DS.Tables[1].Rows)
                 {
-                    ItemList.Add(new CashPaymentModel
+                    ItemList.Add(new JournalVoucherModel
                     {
-                        SeqNo = Convert.ToInt32(row["seqno"].ToString()),
+                        SrNO = Convert.ToInt32(row["seqno"].ToString()),
                         AccEntryId = Convert.ToInt32(row["AccEntryId"].ToString()),
                         YearCode = Convert.ToInt32(row["AccYearCode"].ToString()),
                         CostCenterId = Convert.ToInt32(row["costcenterid"].ToString()),
                         CostCenterName = row["CostCenterName"].ToString(),
                         VoucherNo = row["VoucherNo"].ToString(),
+                        VoucherType = row["Vouchertype"].ToString(),
+                        VoucherDocNo = row["VoucherDocNo"].ToString(),
+                        EntryByMachine = row["EntryByMachine"].ToString(),
+                        BillVouchNo = row["BillVouchNo"].ToString(),
                         VoucherDocDate = row["VoucherDocdate"].ToString(),
                         SubVoucherName = row["SubVoucherName"].ToString(),
                         Currency = row["Currency"].ToString(),
+                        CurrencyId = Convert.ToInt32(row["CurrencyId"].ToString()),
                         CurrentValue = Convert.ToDecimal(row["CurrentValue"].ToString()),
                         LedgerName = row["LedgerName"].ToString(),
                         AccountCode = Convert.ToInt32(row["Accountcode"].ToString()),
-                        //DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
-                        //CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
+                        DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
+                        CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
                         AdjustmentAmt = Convert.ToDecimal(row["AmountInOtherCurr"].ToString()),
                         AdjustmentAmtOthCur = Convert.ToDouble(row["AmountInOtherCurr"].ToString()),
-                        ChequeDate = row["chequeDate"].ToString(),
                         InsNo = row["instrumentno"].ToString(),
                         Intrument = row["instrument"].ToString(),
-                        InsDate = DateTime.TryParse(row["instrumentdate"].ToString(), out DateTime insDate) ? insDate.ToString("dd/MM/yyyy") : row["instrumentdate"].ToString(),
+                        InsDate = Convert.ToDateTime(row["instrumentdate"]).ToString("dd/MMM/yyyy"),
+                        ChequeDate = row["chequeDate"].ToString(),
                         ModeOfAdjustment = row["ModeOfAdjustment"].ToString(),
                         AgainstVoucherEntryId = Convert.ToInt32(row["AgainstVoucherEntryId"].ToString()),
                         AgainstVoucherRefNo = row["againstVoucherRefNo"].ToString(),
                         AgainstVoucherType = row["AgainstVoucherType"].ToString(),
-                        AgainstVoucherNo = row["AgainstVoucherNo"].ToString(),
                         AgainstVoucheryearCode = Convert.ToInt32(row["AgainstVoucheryearcode"].ToString()),
+                        AgainstVoucherNo = row["AgainstVoucherNo"].ToString(),
                         ChequeClearDate = row["chequeClearDate"].ToString(),
                         ChequePrintAC = row["ChequePrintAC"].ToString(),
                         PONo = row["PONo"].ToString(),
@@ -691,13 +620,14 @@ namespace eTactWeb.Data.DAL
                         AccountNarration = row["AccountNarration"].ToString(),
                         Description = row["Description"].ToString(),
                         VoucherRemark = row["VoucherRemark"].ToString(),
-                        ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
+                        ActualEntryby =Convert.ToInt32(row["ActualEntryBy"].ToString()),
+                        BankType = row["UnderGroup"].ToString(),
                         DRCR = row["DRCRTYPE"].ToString(),
                         Balance =  Convert.ToDecimal(row["BalanceAmt"].ToString()),
                         Type = row["CRDDR"].ToString(),
                     });
                 }
-                model.CashPaymentGrid = ItemList;
+                model.JournalVoucherList = ItemList.OrderBy(x => x.SrNO).ToList();
             }
 
             return model;
@@ -727,6 +657,78 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillSONO(string accountcode, string VoucherDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "SHOWSOListFORADVANCEPAYMENT"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
+                SqlParams.Add(new SqlParameter("@accountcode", accountcode));
+                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetSODetail(int SONO, string accountcode, string VoucherDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "SHOWSOYearFORADVANCEPAYMENT"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
+                SqlParams.Add(new SqlParameter("@accountcode", accountcode));
+                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
+                SqlParams.Add(new SqlParameter("@SONO", SONO));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "SHOWSODateFORADVANCEPAYMENT"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
+                SqlParams.Add(new SqlParameter("@accountcode", accountcode));
+                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
+                SqlParams.Add(new SqlParameter("@POYearCode", SOYearCode));
+                SqlParams.Add(new SqlParameter("@PONO", SONO));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }
-

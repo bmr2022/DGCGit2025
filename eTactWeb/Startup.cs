@@ -234,7 +234,7 @@ namespace eTactWeb
             services.TryAddTransient<ICreditNote, CreditNoteBLL>();
             services.TryAddTransient<IBankReconciliation, BankReconciliationBLL>();
             services.TryAddTransient<IPurchaseRejection, PurchaseRejectionBLL>();
-
+            services.TryAddTransient<IJournalVoucher, JournalVoucherBLL>();
             services.TryAddTransient<IConnectionStringHelper, ConnectionStringHelper>();
             services.TryAddSingleton<ConnectionStringService>();
             services.AddScoped<UserContextService>();
