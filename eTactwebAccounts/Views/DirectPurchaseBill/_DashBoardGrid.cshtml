@@ -69,7 +69,7 @@ else
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
                                         <div id="viewCursorDiv-@Cntr">
-                                            <a class="table-link link-success" asp-action="DirectPurchaseBill" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                            <a class="table-link link-success" asp-action="DirectPurchaseBill" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YearCode="@item.YearCode">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -90,7 +90,7 @@ else
                                         else
                                         {
                                             <div id="editCursorDiv-@Cntr">
-                                                <a class="table-link link-primary" asp-action="DirectPurchaseBill" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode">
+                                                <a class="table-link link-primary" asp-action="DirectPurchaseBill" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YearCode="@item.YearCode">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
