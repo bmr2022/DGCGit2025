@@ -19,6 +19,8 @@ using static eTactWeb.Data.Common.CommonFunc;
 using System.Net;
 using System.Data;
 using System.Globalization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Drawing.Drawing2D;
 
 namespace eTactWeb.Controllers
 {
@@ -50,7 +52,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public  async Task <IActionResult> DirectPurchaseBill(int ID, int YC, string Mode)
+        public  async Task <IActionResult> DirectPurchaseBill(int ID, int YC, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "", string DashboardType = "", string DocumentType     = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
         {
             //IMemoryCache.Remove("PBTaxGrid");
             IMemoryCache.Remove("KeyTaxGrid");
@@ -67,7 +69,6 @@ namespace eTactWeb.Controllers
             MainModel.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.PreparedByName = HttpContext.Session.GetString("EmpName");
             MainModel.Branch = HttpContext.Session.GetString("Branch");
-
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -116,6 +117,20 @@ namespace eTactWeb.Controllers
                 MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
                 MainModel.UpdatedOn = DateTime.Now;
             }
+
+            MainModel.FromDateBack = FromDate;
+            MainModel.ToDateBack = ToDate;
+            MainModel.TypeITEMSERVASSETSBack = TypeITEMSERVASSETS != null && TypeITEMSERVASSETS != "0" && TypeITEMSERVASSETS != "undefined" ? TypeITEMSERVASSETS : "";
+            MainModel.DocumentTypeBack = DocumentType != null && DocumentType != "0" && DocumentType != "undefined" ? DocumentType : "";
+            MainModel.DashboardTypeBack = DashboardType != null && DashboardType != "0" && DashboardType != "undefined" ? DashboardType : "";
+            MainModel.PurchVouchNoBack = PurchVouchNo != null && PurchVouchNo != "0" && PurchVouchNo != "undefined" ? PurchVouchNo : "";
+            MainModel.InvoiceNoBack = InvoiceNo != null && InvoiceNo != "0" && InvoiceNo != "undefined" ? InvoiceNo : "";
+            MainModel.VendorNameBack = VendorName != null && VendorName != "0" && VendorName != "undefined" ? VendorName : "";
+            MainModel.PartCodeBack = PartCode != null && PartCode != "0" && PartCode != "undefined" ? PartCode : "";
+            MainModel.ItemNameBack = ItemName != null && ItemName != "0" && ItemName != "undefined" ? ItemName : "";
+            MainModel.HSNNoBack = HSNNo != null && HSNNo != "0" && HSNNo != "undefined" ? HSNNo : "";
+            MainModel.GlobalSearchBack = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
+
             IMemoryCache.Set("DirectPurchaseBill", MainModel, DateTimeOffset.Now.AddMinutes(60));
             IMemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd == null ? new List<TaxModel>() : MainModel.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
             IMemoryCache.Set("KeyTDSGrid", MainModel.TDSDetailGridd == null ? new List<TDSModel>() : MainModel.TDSDetailGridd, DateTimeOffset.Now.AddMinutes(60));
