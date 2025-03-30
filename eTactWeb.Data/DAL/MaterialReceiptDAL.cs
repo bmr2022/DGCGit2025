@@ -72,18 +72,18 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> GetFormRights(int userId)
+        public async Task<ResponseResult> GetFormRights(int userID)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
-                SqlParams.Add(new SqlParameter("@EmpId", userId));
-                SqlParams.Add(new SqlParameter("@MainMenu", "Inventory"));
-                SqlParams.Add(new SqlParameter("@SubMenu", "Material Receipt"));
+                SqlParams.Add(new SqlParameter("@EmpId", userID));
+                SqlParams.Add(new SqlParameter("@MainMenu", "Material Receipt Note"));
+                //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRN", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
             }
             catch (Exception ex)
             {

@@ -493,7 +493,7 @@
 
             GetTaxPartItem();
 
-            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); FillCurrency(); FillSONO(); BomAdjustChallanGrid(); }
+            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); FillCurrency(); FillSONO(); }
 
             DueDateCalculation();
 
@@ -506,10 +506,13 @@
 
             $('#ProducedUnprod').rules("remove", "required");
             $('#BOMInd').rules("remove", "required");
+            $('#BomNo').rules("remove", "required");
+            $('#SaleBillJobwork').rules("remove", "required");
             $('#SONO').rules("remove", "required");
             $('#SOYearCode').rules("remove", "required");
             $('#CustOrderNo').rules("remove", "required");
             $('#Qty').rules("remove", "required");
+            $('#AltQty').rules("remove", "required");
             $('#RateInOtherCurr').rules("remove", "required");
             $('#NoofPcs').rules("remove", "required");
             $('#Amount').rules("remove", "required");
@@ -697,7 +700,6 @@
         $('#pendingChallanList').click(function (event) {
             event.preventDefault();
             $('#PendingChallanListPopupModel').modal("show");
-            alert(parseDateToFormat($('#SaleBillDate').val()));
             $.ajax({
                 url: "@Url.Action("GetPopUpData", "CustomerJWI")",
                 type: 'GET',
@@ -748,6 +750,64 @@
             $('#PendingChallanListPopupModel').modal("hide");
         });
 
+
+        var currentSearchColumn = null;
+        $(document).on("click", "#divPendingChallanDisplayGrid th[data-columnno]", function () {
+
+            currentSearchColumn = $(this).data('columnno');
+            $("#pending-search-box").val('').trigger('keyup');
+        });
+
+        $("#pending-search-box").on("keyup", function () {
+
+            var value = $("#pending-search-box").val().toLowerCase();
+            $("#divPendingChallanDisplayGrid tr").filter(function () {
+                if (currentSearchColumn != null) {
+                    var rowContainsValue = false;
+                    $(this).find('td').eq(currentSearchColumn).each(function () {
+                        var columnInput = $(this).find('input, select');
+                        var columnInputValue = "";
+
+                        if (columnInput.is('input')) {
+                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+                        } else if (columnInput.is('select')) {
+                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+                        }
+
+                        if (columnInputValue.indexOf(value) > -1) {
+                            rowContainsValue = true;
+                            return false;
+                        }
+                    });
+
+                    $(this).toggle(rowContainsValue);
+
+                } else {
+                    var rowContainsValue = false;
+
+                    $(this).find('td').each(function () {
+
+                        var columnInput = $(this).find('input, select');
+                        var columnInputValue = "";
+
+                        if (columnInput.is('input')) {
+                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+                        } else if (columnInput.is('select')) {
+                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+                        }
+
+                        if (columnInputValue.indexOf(value) > -1) {
+                            rowContainsValue = true;
+                            return false;
+                        }
+
+                    });
+
+                    $(this).toggle(rowContainsValue);
+                }
+            });
+        });
+
         function ValidateAdjDetail() {
             if ($('#AccountCode').val() == 0) {
                 $.notify('please enter AccountCode...!', "error");
@@ -789,7 +849,7 @@
                     SchNo: row.find("td:eq(8)").text().trim(),
                     SchYearcode: row.find("td:eq(20)").text().trim(),
                     BOMIND: row.find("td:eq(3)").text().trim(), // BOMIND
-                    BOMNO: $('#BomRevNo').val(), //BomNo
+                    BOMNO: $('#BomNo').val(), //BomNo
                     BOMEffDate: "", //Bom Eff Date
                     Produnprod: row.find("td:eq(4)").text().trim(),
                     fromChallanOrSalebill: "",
@@ -798,7 +858,7 @@
 
                 adjustedData.push(rowData);
             });
-            
+
             console.log("Adustdata:", adjustedData);
 
             $.ajax({
@@ -845,10 +905,10 @@
 
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#BomRevNo').empty();
+                            $('#BomNo').empty();
                             $('#BOMEffDate').val('');
                             $.each(obj.Result, function (index, val) {
-                                $('#BomRevNo').append('<option value="' + val.bomno + '">' + val.bomno + '</option>');
+                                $('#BomNo').append('<option value="' + val.bomno + '">' + val.bomno + '</option>');
                             });
                         }
                     }
@@ -884,7 +944,7 @@
                     SchNo: row.find("td:eq(8)").text().trim(),
                     SchYearcode: row.find("td:eq(20)").text().trim(),
                     BOMIND: row.find("td:eq(3)").text().trim(), // BOMIND
-                    BOMNO: $('#BomRevNo').val(), //BomNo
+                    BOMNO: $('#BomNo').val(), //BomNo
                     BOMEffDate: "", //Bom Eff Date
                     Produnprod: row.find("td:eq(4)").text().trim(),
                     fromChallanOrSalebill: "",
@@ -912,7 +972,7 @@
                 // dataType: "html",
                 async: false,
                 success: function (data) {
-
+                    debugger
                     $('#divBomCustJobWorkISsueSummary').html(data);
                     var dashGrid = $('#divBomCustJobWorkISsueSummary').length ? $('#divBomCustJobWorkISsueSummary').length : 0;
                     $('#totalRows').text(dashGrid);
@@ -1500,7 +1560,7 @@
             var batchNoo = $('#Batchno').val();
             var uniquebatchnoo = $('#Uniquebatchno').val();
             var sono = parseInt($('#SONO').val());
-            
+
             var SchData = {
                 "SONO": parseInt($('#SONO').val()),
                 "SOYearCode": $('#SOYearCode').val(),
@@ -2163,6 +2223,26 @@
 
             $("form").submit();
         })
+        var itemsStockableAndCustJw = [];
+
+
+        function ValidateAdjChallanGrid(gridSelector, itemSelector) {
+            var rowCount = $(gridSelector + ' tr').length;
+            for (var j = 1; j <= rowCount; j++) {
+                var itemCode = $(itemSelector + j).val();
+                if (itemCode != "") {
+                    if (!itemsStockableAndCustJw.includes(itemCode)) {
+                        if (gridSelector == '#divBomCustJobWorkISsueSummary') {
+                            $.notify('Bom Customer JobWork must be 1 row...!', "error");
+                        } else {
+                            $.notify('Customer JobWork must be 1 row...!', "error");
+                        }
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
 
@@ -2184,51 +2264,29 @@
             }
             else if ($('#SaleBillJobwork').val() == 'J') {
                 debugger
-                var itemsStockableAndCustJw = [];
                 var rowCount = $('#divSaleBillList tr').length;
                 for (var i = 1; i <= rowCount; i++) {
-                    if ($('#stockableItems-' + i).text() == 'Y' || $('#custJWAdjMandatory-' + i).text() == 'Y') {
+                    var stockable = $('#stockableItems-' + i).text() === 'Y';
+                    var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
+                    if (stockable || custJWAdj) {
                         itemsStockableAndCustJw.push($('#GridIC-' + i).val());
                     }
                 }
 
-                var custJWRowCount = $('#divCustJobWorkISsueSummary tr').length;
-                var bomCustJWRowCount = $('#divBomCustJobWorkISsueSummary tr').length;
-
-                var isCustJW = true;
-                var isBomCustJW = true;
-
-                for (var j = 1; j <= custJWRowCount; j++) {
-                    if ($('#recItemCodeGrid-' + j).val() != itemsStockableAndCustJw[j - 1]) {
-                        isCustJW = false;
-                        break;
-                    }
+                var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
+                var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
+                var isPentoAdj = true;
+                if ($('.bomCustRowJW').find('#pendToAdj').filter(function () {
+                    return parseFloat($(this).text()) > 0;
+                }).length > 0) {
+                    isPentoAdj = false;
+                    $.notify('PendToAdj qty must be adjusted...!', "error");
                 }
 
-                for (var k = 1; k <= bomCustJWRowCount; k++) {
-                    if ($('#fgItemCodeGrid-' + k).val() != itemsStockableAndCustJw[k - 1]) {
-                        isBomCustJW = false;
-                        break;
-                    }
-                }
-
-                if (!isCustJW) {
-                    if ($('#divCustJobWorkISsueSummary tr td').length <= 1) {
-                        $.notify('Customer job work issue grid must be 1 row...!', "error");
-                    }
-                } else {
+                if (isCustJWValid && isBomCustJWValid && isPentoAdj) {
                     $("form").submit();
                 }
-
-                if (!isBomCustJW) {
-                    if ($('#divBomCustJobWorkISsueSummary tr td').length <= 1) {
-                        $.notify('Bom customer job work issue grid must be 1 row...!', "error");
-                    }
-                } else {
-                    $("form").submit();
-                }
-
-            }
+            } 
             else if ($('#GSTRegistered').val() == 'Y') {
                 if ($('#divTaxGrid tr td').length <= 1) {
                     $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
@@ -2544,8 +2602,8 @@
                 drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
                 crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
             }
-
-            if (drAmt != crAmt) {
+            debugger
+            if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
                 $.notify("Debit and Credit are not maintained...!", "error");
                 return false;
             }

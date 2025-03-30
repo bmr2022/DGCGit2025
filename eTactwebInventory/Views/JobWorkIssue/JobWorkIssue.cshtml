@@ -6,7 +6,12 @@
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
-
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
+    }
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a !important;
@@ -38,7 +43,7 @@
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT
                     </a>
-                    <a asp-action="JobworkDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="JobworkDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -713,7 +718,7 @@
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     PRINT
                                 </a>
-                                <a asp-action="JobworkDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                <a asp-action="JobworkDashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -867,6 +872,11 @@
                         if (obj.Result.Table.length == 0) {
                             $("#submitBTN").prop("disabled", true);
                             $('.card-footer #submitBTN').prop("disabled", true);
+                            $(".DashBoard")
+                                .addClass("disabled-link")
+                                .on("click", function (e) {
+                                    e.preventDefault(); // Prevents clicking the link
+                                });
                         }
                         else {
                             // console.log(obj);
@@ -879,6 +889,13 @@
                                 if (!optSave) {
                                     $("#submitBTN").prop("disabled", true);
                                     $('.card-footer #submitBTN').prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".DashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
                                 }
                             }
                         }

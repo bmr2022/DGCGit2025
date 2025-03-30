@@ -10,6 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IInterStoreTransfer
     {
+        Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> NewEntryId(int yearCode);
         Task<ResponseResult> FillPartCode(string ShowAllItems);
         Task<ResponseResult> FillItems(string ShowAllItems);

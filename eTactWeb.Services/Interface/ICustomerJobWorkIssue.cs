@@ -6,6 +6,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface ICustomerJobWorkIssue
     {
+        Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> GetNewEntry(int yearCode);
         Task<ResponseResult> GetCustomers(int yearCode);
         Task<ResponseResult> GetCustomerDetails(int AccountCode);

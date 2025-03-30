@@ -92,6 +92,13 @@ namespace eTactWeb.Controllers
             return View(MainModel);
         }
 
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await IInterStore.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public IActionResult DeleteItemRow(int SeqNo, string Mode)
         {
             var MainModel = new InterStoreTransferModel();
