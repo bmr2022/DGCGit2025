@@ -1,111 +1,102 @@
-﻿using eTactWeb.Data.Common;
+﻿using eTactWeb.Controllers;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using System.Data;
-using System.Net;
-using System.Runtime.Caching;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
+using System.Data;
+using System.Net;
 
 namespace eTactwebAccounts.Controllers
 {
-    public class CashPaymentController : Controller
+    public class JournalVoucherController : Controller
     {
         private readonly IDataLogic _IDataLogic;
-        public ICashPayment _ICashPayment { get; }
-
-        private readonly ILogger<CashPaymentController> _logger;
+        public IJournalVoucher _IJournalVoucher { get; }
+        private readonly ILogger<JournalVoucherController> _logger;
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public CashPaymentController(ILogger<CashPaymentController> logger, IDataLogic iDataLogic, ICashPayment iCashPayment, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public JournalVoucherController(ILogger<JournalVoucherController> logger, IDataLogic iDataLogic, IJournalVoucher IJournalVoucher, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
-            _ICashPayment = iCashPayment;
+            _IJournalVoucher = IJournalVoucher;
             _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> CashPayment(int ID, string Mode, int YearCode, string VoucherNo)
+        public async Task<ActionResult> JournalVoucher(int ID, string Mode, int YearCode, string VoucherNo)
         {
-            _MemoryCache.Remove("KeyCashPaymentGrid");
-            _MemoryCache.Remove("KeyCashPaymentGridEdit");
+            _MemoryCache.Remove("KeyJournalVoucherGrid");
+            _MemoryCache.Remove("KeyJournalVoucherGridEdit");
             TempData.Clear();
-            var MainModel = new CashPaymentModel();
+            var MainModel = new JournalVoucherModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-            if (MainModel.Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedOn = DateTime.Now;
-            }
-
-           
-
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
-            {
-               MainModel = await _ICashPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
+                MainModel = await _IJournalVoucher.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.ID = ID;
                 MainModel.VoucherNo = VoucherNo;
-
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTime.Now.AddMinutes(60),
                     SlidingExpiration = TimeSpan.FromMinutes(55),
                     Size = 1024
                 };
-                _MemoryCache.Set("KeyCashPaymentGridEdit", MainModel.CashPaymentGrid, cacheEntryOptions);
+                _MemoryCache.Set("KeyJournalVoucherGridEdit", MainModel.JournalVoucherList, cacheEntryOptions);
             }
-
             return View(MainModel);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> CashPayment(CashPaymentModel model)
+        public async Task<IActionResult> JournalVoucher(JournalVoucherModel model)
         {
             try
             {
                 var GIGrid = new DataTable();
-                _MemoryCache.TryGetValue("KeyCashPaymentGrid", out List<CashPaymentModel> CashPaymentGrid);
-                _MemoryCache.TryGetValue("KeyCashPaymentGridEdir", out List<CashPaymentModel> CashPaymentGridEdit);
+                _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out List<JournalVoucherModel> JournalVoucherGrid);
+                _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out List<JournalVoucherModel> JournalVoucherGridEdit);
 
-                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEntryBy = HttpContext.Session.GetString("UID");
                 if (model.Mode == "U")
                 {
-                    model.UpdatedOn = DateTime.Now;
-                    GIGrid = GetDetailTable(CashPaymentGridEdit);
+                    //model.UpdatedOn = DateTime.Now;
+                    GIGrid = GetDetailTable(JournalVoucherGridEdit);
                 }
                 else
                 {
-                    GIGrid = GetDetailTable(CashPaymentGrid);
+                    GIGrid = GetDetailTable(JournalVoucherGrid);
                 }
-                var Result = await _ICashPayment.SaveCashPayment(model, GIGrid);
+                var Result = await _IJournalVoucher.SaveBankReceipt(model, GIGrid);
                 if (Result != null)
                 {
                     if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("KeyCashPaymentGrid");
+                        _MemoryCache.Remove("KeyJournalVoucherGrid");
+                        _MemoryCache.Remove("KeyJournalVoucherGridEdit");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        _MemoryCache.Remove("KeyCashPaymentGridEdit");
+                        _MemoryCache.Remove("KeyJournalVoucherGrid");
+                        _MemoryCache.Remove("KeyJournalVoucherGridEdit");
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -115,14 +106,12 @@ namespace eTactwebAccounts.Controllers
                         return View("Error", Result);
                     }
                 }
-
-                return RedirectToAction(nameof(CashPaymentDashBoard));
-
+                return RedirectToAction(nameof(JournalVoucher));
             }
             catch (Exception ex)
             {
                 // Log and return the error
-                LogException<CashPaymentController>.WriteException(_logger, ex);
+                LogException<JournalVoucherController>.WriteException(_logger, ex);
                 var ResponseResult = new ResponseResult
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
@@ -132,7 +121,7 @@ namespace eTactwebAccounts.Controllers
                 return View("Error", ResponseResult);
             }
         }
-        private static DataTable GetDetailTable(IList<CashPaymentModel> DetailList)
+        private static DataTable GetDetailTable(IList<JournalVoucherModel> DetailList)
         {
             try
             {
@@ -222,6 +211,8 @@ namespace eTactwebAccounts.Controllers
                 GIGrid.Columns.Add("EntryByMachine", typeof(string));
                 GIGrid.Columns.Add("OursalespersonId", typeof(int));
                 GIGrid.Columns.Add("SubVoucherName", typeof(string));
+
+
                 foreach (var Item in DetailList)
                 {
                     GIGrid.Rows.Add(
@@ -237,7 +228,7 @@ namespace eTactwebAccounts.Controllers
                 Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
-                Item.SeqNo ,
+                Item.SrNO ,
                 Item.AccountCode,
                 Item.BankCashAccountCode ,
                 Item.AccountGroupType ?? string.Empty,
@@ -248,7 +239,7 @@ namespace eTactwebAccounts.Controllers
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
                 Item.ChequeDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.ChequeClearDate =DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.BankRECO =DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,
@@ -265,7 +256,7 @@ namespace eTactwebAccounts.Controllers
                 Item.POYear ,
                 Item.SONo ,
                 Item.CustOrderNo ?? string.Empty,
-                Item.SoDate = DateTime.Now.ToString("dd/MMM/yyyy"),
+                Item.SoDate  =DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.SOYear ,
                 Item.ApprovedBy,
                 Item.ApprovedDate = DateTime.Now.ToString("dd/MMM/yyyy"),
@@ -305,13 +296,15 @@ namespace eTactwebAccounts.Controllers
                 Item.ProjectNo ,
                 Item.ProjectYearcode ,
                 Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy"),
-                Item.ActualEntryBy ,
+                Item.ActualEntryby ,
                 Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.UpdatedBy ,
                 Item.UpdatedOn ,
                 Item.EntryByMachine ?? string.Empty,
                 Item.OursalespersonId ,
-                Item.SubVoucher ?? string.Empty
+                Item.SubVoucher ?? string.Empty,
+
+
                         });
                 }
                 GIGrid.Dispose();
@@ -324,169 +317,170 @@ namespace eTactwebAccounts.Controllers
         }
         public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
         {
-            var JSON = await _ICashPayment.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
+            var JSON = await _IJournalVoucher.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> FillLedgerName(string VoucherType, string Type)
         {
-            var JSON = await _ICashPayment.FillLedgerName(VoucherType, Type);
+            var JSON = await _IJournalVoucher.FillLedgerName(VoucherType, Type);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> FillSubVoucherName(string VoucherType)
         {
-            var JSON = await _ICashPayment.FillSubVoucherName(VoucherType);
+            var JSON = await _IJournalVoucher.FillSubVoucherName(VoucherType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> FillBankType(int AccountCode)
         {
-            var JSON = await _ICashPayment.FillBankType(AccountCode);
+            var JSON = await _IJournalVoucher.FillBankType(AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> FillIntrument(string VoucherType)
         {
-            var JSON = await _ICashPayment.FillIntrument(VoucherType);
+            var JSON = await _IJournalVoucher.FillIntrument(VoucherType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> FillModeofAdjust(string VoucherType)
         {
-            var JSON = await _ICashPayment.FillModeofAdjust(VoucherType);
+            var JSON = await _IJournalVoucher.FillModeofAdjust(VoucherType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> FillCostCenterName()
         {
-            var JSON = await _ICashPayment.FillCostCenterName();
+            var JSON = await _IJournalVoucher.FillCostCenterName();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillEntryID(int YearCode,string VoucherDate)
+        public async Task<JsonResult> FillEntryID(int YearCode, string VoucherDate)
         {
-            var JSON = await _ICashPayment.FillEntryID(YearCode, VoucherDate);
+            var JSON = await _IJournalVoucher.FillEntryID(YearCode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> FillCurrency()
         {
-            var JSON = await _ICashPayment.FillCurrency();
+            var JSON = await _IJournalVoucher.FillCurrency();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillPONO(string accountcode, string VoucherDate)
+        public async Task<JsonResult> FillSONO(string accountcode, string VoucherDate)
         {
-            var JSON = await _ICashPayment.FillPONO(accountcode, VoucherDate);
+            var JSON = await _IJournalVoucher.FillSONO(accountcode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPODetail(int PONO, string accountcode, string VoucherDate)
+        public async Task<JsonResult> GetSODetail(int SONO, string accountcode, string VoucherDate)
         {
-            var JSON = await _ICashPayment.GetPODetail(PONO, accountcode, VoucherDate);
+            var JSON = await _IJournalVoucher.GetSODetail(SONO, accountcode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPODate(int PONO, string accountcode, string VoucherDate, string POYearCode)
+        public async Task<JsonResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode)
         {
-            var JSON = await _ICashPayment.GetPODate(PONO, accountcode, VoucherDate, POYearCode);
+            var JSON = await _IJournalVoucher.GetSODate(SONO, accountcode, VoucherDate, SOYearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode)
         {
-            var JSON = await _ICashPayment.CheckAmountBeforeSave(VoucherDate, YearCode, AgainstVoucherYearCode, AgainstVoucherEntryId, AgainstVoucherNo, AccountCode);
+            var JSON = await _IJournalVoucher.CheckAmountBeforeSave(VoucherDate, YearCode, AgainstVoucherYearCode, AgainstVoucherEntryId, AgainstVoucherNo, AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult AddCashPaymentDetail(CashPaymentModel model)
+        public IActionResult AddJournalVoucherDetail(JournalVoucherModel model)
         {
             try
             {
                 if (model.Mode == "U" || model.Mode == "V")
                 {
 
-                    _MemoryCache.TryGetValue("KeyCashPaymentGridEdit", out IList<CashPaymentModel> CashPaymentGrid);
+                    _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out IList<JournalVoucherModel> JournalVoucherGrid);
 
-                    var MainModel = new CashPaymentModel();
-                    var WorkOrderPGrid = new List<CashPaymentModel>();
-                    var OrderGrid = new List<CashPaymentModel>();
-                    var ssGrid = new List<CashPaymentModel>();
+                    var MainModel = new JournalVoucherModel();
+                    var JournalVchGrid = new List<JournalVoucherModel>();
+                    var JournalGrid = new List<JournalVoucherModel>();
+                    var ssGrid = new List<JournalVoucherModel>();
 
                     var count = 0;
                     if (model != null)
                     {
-                        if (CashPaymentGrid == null)
+                        if (JournalVoucherGrid == null)
                         {
-                            model.SeqNo = 1;
-                            OrderGrid.Add(model);
+                            model.SrNO = 1;
+                            JournalGrid.Add(model);
                         }
                         else
                         {
                             if (model.BankType.ToLower() == "bank")
                             {
-                                if (CashPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
+                                if (JournalVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
                                 {
                                     return StatusCode(210, "Duplicate");
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
-                                    OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
+                                    model.SrNO = JournalVoucherGrid.Count + 1;
+                                    JournalGrid = JournalVoucherGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(JournalGrid);
+                                    JournalGrid.Add(model);
 
                                 }
                             }
                             else if (model.ModeOfAdjustment.ToLower() == "new ref")
                             {
-                                if (CashPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+                                if (JournalVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
                                 {
                                     return StatusCode(207, "Duplicate");
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
-                                    OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
+                                    model.SrNO = JournalVoucherGrid.Count + 1;
+                                    JournalGrid = JournalVoucherGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(JournalGrid);
+                                    JournalGrid.Add(model);
 
                                 }
                             }
                             else if (model.ModeOfAdjustment.ToLower() == "advance")
                             {
-                                if (CashPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+                                if (JournalVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
                                 {
                                     return StatusCode(208, "Duplicate");
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
-                                    OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
+                                    model.SrNO = JournalVoucherGrid.Count + 1;
+                                    JournalGrid = JournalVoucherGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(JournalGrid);
+                                    JournalGrid.Add(model);
 
                                 }
                             }
                             else if (model.ModeOfAdjustment.ToLower() == "against ref")
                             {
-                                if (CashPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
+                                if (JournalVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
                                 {
                                     return StatusCode(209, "Duplicate");
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
-                                    OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
+                                    model.SrNO = JournalVoucherGrid.Count + 1;
+                                    JournalGrid = JournalVoucherGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(JournalGrid);
+                                    JournalGrid.Add(model);
 
                                 }
                             }
+
                         }
 
-                        MainModel.CashPaymentGrid = OrderGrid;
+                        MainModel.JournalVoucherList = JournalGrid.OrderBy(x => x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -495,96 +489,96 @@ namespace eTactwebAccounts.Controllers
                             Size = 1024,
                         };
 
-                        _MemoryCache.Set("KeyCashPaymentGridEdit", MainModel.CashPaymentGrid, cacheEntryOptions);
+                        _MemoryCache.Set("KeyJournalVoucherGridEdit", MainModel.JournalVoucherList, cacheEntryOptions);
                     }
                     else
                     {
                         ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
                     }
-                    return PartialView("_CashPaymentGrid", MainModel);
+                    return PartialView("_JournalVoucherGrid", MainModel);
                 }
                 else
                 {
 
-                    _MemoryCache.TryGetValue("KeyCashPaymentGrid", out IList<CashPaymentModel> CashPaymentGrid);
+                    _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out IList<JournalVoucherModel> JournalVoucherGrid);
 
-                    var MainModel = new CashPaymentModel();
-                    var WorkOrderPGrid = new List<CashPaymentModel>();
-                    var OrderGrid = new List<CashPaymentModel>();
-                    var ssGrid = new List<CashPaymentModel>();
+                    var MainModel = new JournalVoucherModel();
+                    var JournalVchGrid = new List<JournalVoucherModel>();
+                    var JournalGrid = new List<JournalVoucherModel>();
+                    var ssGrid = new List<JournalVoucherModel>();
 
                     if (model != null)
                     {
-                        if (CashPaymentGrid == null)
+                        if (JournalVoucherGrid == null)
                         {
-                            model.SeqNo = 1;
-                            OrderGrid.Add(model);
+                            model.SrNO = 1;
+                            JournalGrid.Add(model);
                         }
                         else
                         {
                             if (model.BankType.ToLower() == "bank")
                             {
-                                if (CashPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && x.BankType == "Bank"))
+                                if (JournalVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
                                 {
                                     return StatusCode(210, "Duplicate");
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
-                                    OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
+                                    model.SrNO = JournalVoucherGrid.Count + 1;
+                                    JournalGrid = JournalVoucherGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(JournalGrid);
+                                    JournalGrid.Add(model);
 
                                 }
                             }
                             else if (model.ModeOfAdjustment.ToLower() == "new ref")
                             {
-                                if (CashPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+                                if (JournalVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
                                 {
                                     return StatusCode(207, "Duplicate");
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
-                                    OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
+                                    model.SrNO = JournalVoucherGrid.Count + 1;
+                                    JournalGrid = JournalVoucherGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(JournalGrid);
+                                    JournalGrid.Add(model);
 
                                 }
                             }
                             else if (model.ModeOfAdjustment.ToLower() == "advance")
                             {
-                                if (CashPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
+                                if (JournalVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
                                 {
                                     return StatusCode(208, "Duplicate");
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
-                                    OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
+                                    model.SrNO = JournalVoucherGrid.Count + 1;
+                                    JournalGrid = JournalVoucherGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(JournalGrid);
+                                    JournalGrid.Add(model);
 
                                 }
                             }
                             else if (model.ModeOfAdjustment.ToLower() == "against ref")
                             {
-                                if (CashPaymentGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
+                                if (JournalVoucherGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
                                 {
                                     return StatusCode(209, "Duplicate");
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
-                                    OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
+                                    model.SrNO = JournalVoucherGrid.Count + 1;
+                                    JournalGrid = JournalVoucherGrid.Where(x => x != null).ToList();
+                                    ssGrid.AddRange(JournalGrid);
+                                    JournalGrid.Add(model);
 
                                 }
                             }
                         }
 
-                        MainModel.CashPaymentGrid = OrderGrid;
+                        MainModel.JournalVoucherList = JournalGrid.OrderBy(x => x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -593,13 +587,13 @@ namespace eTactwebAccounts.Controllers
                             Size = 1024,
                         };
 
-                        _MemoryCache.Set("KeyCashPaymentGrid", MainModel.CashPaymentGrid, cacheEntryOptions);
+                        _MemoryCache.Set("KeyJournalVoucherGrid", MainModel.JournalVoucherList, cacheEntryOptions);
                     }
                     else
                     {
                         ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
                     }
-                    return PartialView("_CashPaymentGrid", MainModel);
+                    return PartialView("_JournalVoucherGrid", MainModel);
                 }
             }
             catch (Exception ex)
@@ -607,12 +601,13 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddCashPaymentAdjustDetail(List<CashPaymentModel> model,string Mode)
+        public IActionResult AddJournalVoucherAdjustDetail(List<JournalVoucherModel> model, string Mode)
         {
             try
             {
-                var MainModel = new CashPaymentModel();
-                var ProductionEntryDetail = new List<CashPaymentModel>();
+                var MainModel = new JournalVoucherModel();
+                var JournalVoucherDetail = new List<JournalVoucherModel>();
+
                 if (Mode != "U" && Mode != "V")
                 {
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -623,41 +618,41 @@ namespace eTactwebAccounts.Controllers
                     };
 
                     // Retrieve existing cached data
-                    _MemoryCache.TryGetValue("KeyCashPaymentGrid", out List<CashPaymentModel> ProductionEntryItemDetail);
+                    _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out List<JournalVoucherModel> JournalVoucherItemDetail);
 
                     // If cache exists, use it; otherwise, initialize a new list
-                    if (ProductionEntryItemDetail != null)
+                    if (JournalVoucherItemDetail != null)
                     {
-                        ProductionEntryDetail = ProductionEntryItemDetail;
+                        JournalVoucherDetail = JournalVoucherItemDetail;
                     }
 
                     foreach (var item in model)
                     {
                         if (item != null)
                         {
-                            var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
+                            var existingItem = JournalVoucherDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
                             if (existingItem != null)
                             {
-                                ProductionEntryDetail.Remove(existingItem);
+                                JournalVoucherDetail.Remove(existingItem);
                             }
 
                             // Assign sequence number correctly
-                            //item.SeqNo = ProductionEntryDetail.Count + 1;
+                            item.SrNO = JournalVoucherDetail.Count + 1;
 
                             // Swap Type values
                             item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
 
                             // Add new item to list
-                            ProductionEntryDetail.Add(item);
+                            JournalVoucherDetail.Add(item);
                         }
                     }
-                    for (int i = 0; i < ProductionEntryDetail.Count; i++)
+                    for (int i = 0; i < JournalVoucherDetail.Count; i++)
                     {
-                        ProductionEntryDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
+                        JournalVoucherDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
                     }
                     // Update the main model and cache
-                    MainModel.CashPaymentGrid = ProductionEntryDetail;
-                    _MemoryCache.Set("KeyCashPaymentGrid", MainModel.CashPaymentGrid, cacheEntryOptions);
+                    MainModel.JournalVoucherList = JournalVoucherDetail.OrderBy(x => x.SrNO).ToList();
+                    _MemoryCache.Set("KeyJournalVoucherGrid", MainModel.JournalVoucherList, cacheEntryOptions);
                 }
                 else
                 {
@@ -669,88 +664,88 @@ namespace eTactwebAccounts.Controllers
                     };
 
                     // Retrieve existing cached data
-                    _MemoryCache.TryGetValue("KeyCashPaymentGridEdit", out List<CashPaymentModel> ProductionEntryItemDetail);
+                    _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out List<JournalVoucherModel> JournalVoucherItemDetail);
 
                     // If cache exists, use it; otherwise, initialize a new list
-                    if (ProductionEntryItemDetail != null)
+                    if (JournalVoucherItemDetail != null)
                     {
-                        ProductionEntryDetail = ProductionEntryItemDetail;
+                        JournalVoucherDetail = JournalVoucherItemDetail;
                     }
 
                     foreach (var item in model)
                     {
                         if (item != null)
                         {
-                            var existingItem = ProductionEntryDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.InVoiceNo == item.InVoiceNo);
+                            var existingItem = JournalVoucherDetail.FirstOrDefault(x => x.LedgerName == item.LedgerName && x.AgainstVoucherNo == item.AgainstVoucherNo && x.ModeOfAdjustment == item.ModeOfAdjustment);
                             if (existingItem != null)
                             {
-                                ProductionEntryDetail.Remove(existingItem);
+                                JournalVoucherDetail.Remove(existingItem);
                             }
 
                             // Assign sequence number correctly
-                            //item.SeqNo = ProductionEntryDetail.Count + 1;
+                            // item.SrNO = ProductionEntryDetail.Count + 1;
 
                             // Swap Type values
                             item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
 
                             // Add new item to list
-                            ProductionEntryDetail.Add(item);
+                            JournalVoucherDetail.Add(item);
                         }
                     }
-                    for (int i = 0; i < ProductionEntryDetail.Count; i++)
+                    for (int i = 0; i < JournalVoucherDetail.Count; i++)
                     {
-                        ProductionEntryDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
+                        JournalVoucherDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
                     }
-                    // Update the main model and cache
-                    MainModel.CashPaymentGrid = ProductionEntryDetail;
-                    _MemoryCache.Set("KeyCashPaymentGridEdit", MainModel.CashPaymentGrid, cacheEntryOptions);
-                } 
 
-                return PartialView("_CashPaymentGrid", MainModel);
+                    // Update the main model and cache
+                    MainModel.JournalVoucherList = JournalVoucherDetail.OrderBy(x => x.SrNO).ToList();
+                    _MemoryCache.Set("KeyJournalVoucherGridEdit", MainModel.JournalVoucherList, cacheEntryOptions);
+                }
+                return PartialView("_JournalVoucherGrid", MainModel);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-        public async Task<JsonResult> EditItemRows(int SrNO,string Mode)
+        public async Task<JsonResult> EditItemRows(int SrNO, string Mode)
         {
             if (Mode != "U" && Mode != "V")
             {
-                var MainModel = new CashPaymentModel();
-                _MemoryCache.TryGetValue("KeyCashPaymentGrid", out IList<CashPaymentModel> GridDetail);
-                var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
+                var MainModel = new JournalVoucherModel();
+                _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out IList<JournalVoucherModel> GridDetail);
+                var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
                 string JsonString = JsonConvert.SerializeObject(SAGrid);
                 return Json(JsonString);
             }
             else
             {
-                var MainModel = new CashPaymentModel();
-                _MemoryCache.TryGetValue("KeyCashPaymentGridEdit", out IList<CashPaymentModel> GridDetail);
-                var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
+                var MainModel = new JournalVoucherModel();
+                _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out IList<JournalVoucherModel> GridDetail);
+                var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
                 string JsonString = JsonConvert.SerializeObject(SAGrid);
                 return Json(JsonString);
-            }  
+            }
         }
         public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData)
         {
             if (PopUpData == "PopUpData")
             {
-                var MainModel = new CashPaymentModel();
-                _MemoryCache.TryGetValue("KeyCashPaymentGridPopUpData", out List<CashPaymentModel> CashPaymentGrid);
+                var MainModel = new JournalVoucherModel();
+                _MemoryCache.TryGetValue("KeyJournalVoucherGridPopUpData", out List<JournalVoucherModel> JournalVoucherGrid);
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                if (CashPaymentGrid != null && CashPaymentGrid.Count > 0)
+                if (JournalVoucherGrid != null && JournalVoucherGrid.Count > 0)
                 {
-                    CashPaymentGrid.RemoveAt(Convert.ToInt32(Indx));
+                    JournalVoucherGrid.RemoveAt(Convert.ToInt32(Indx));
                     Indx = 0;
 
-                    foreach (var item in CashPaymentGrid)
+                    foreach (var item in JournalVoucherGrid)
                     {
                         Indx++;
                         // item.SequenceNo = Indx;
                     }
-                    MainModel.CashPaymentGrid = CashPaymentGrid;
+                    MainModel.JournalVoucherList = JournalVoucherGrid.OrderBy(x => x.SrNO).ToList();
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
@@ -759,29 +754,29 @@ namespace eTactwebAccounts.Controllers
                         Size = 1024,
                     };
 
-                    _MemoryCache.Set("KeyCashPaymentGridPopUpData", MainModel.CashPaymentGrid, cacheEntryOptions);
+                    _MemoryCache.Set("KeyJournalVoucherGridPopUpData", MainModel.JournalVoucherList, cacheEntryOptions);
                 }
                 return PartialView("_DisplayPopupForPendingVouchers", MainModel);
             }
             else
             {
-                var MainModel = new CashPaymentModel();
+                var MainModel = new JournalVoucherModel();
                 if (Mode != "U" && Mode != "V")
                 {
-                    _MemoryCache.TryGetValue("KeyCashPaymentGrid", out List<CashPaymentModel> CashPaymentGrid);
+                    _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out List<JournalVoucherModel> JournalVoucherGrid);
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                    if (CashPaymentGrid != null && CashPaymentGrid.Count > 0)
+                    if (JournalVoucherGrid != null && JournalVoucherGrid.Count > 0)
                     {
-                        CashPaymentGrid.RemoveAt(Convert.ToInt32(Indx));
+                        JournalVoucherGrid.RemoveAt(Convert.ToInt32(Indx));
                         Indx = 0;
 
-                        foreach (var item in CashPaymentGrid)
+                        foreach (var item in JournalVoucherGrid)
                         {
                             Indx++;
-                            // item.SequenceNo = Indx;
+                            item.SrNO = Indx;
                         }
-                        MainModel.CashPaymentGrid = CashPaymentGrid;
+                        MainModel.JournalVoucherList = JournalVoucherGrid.OrderBy(x => x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -790,25 +785,26 @@ namespace eTactwebAccounts.Controllers
                             Size = 1024,
                         };
 
-                        _MemoryCache.Set("KeyCashPaymentGrid", MainModel.CashPaymentGrid, cacheEntryOptions);
+                        _MemoryCache.Set("KeyJournalVoucherGrid", MainModel.JournalVoucherList, cacheEntryOptions);
                     }
                 }
                 else
                 {
-                    _MemoryCache.TryGetValue("KeyCashPaymentGridEdit", out List<CashPaymentModel> CashPaymentGrid);
+
+                    _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out List<JournalVoucherModel> JournalVoucherGrid);
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                    if (CashPaymentGrid != null && CashPaymentGrid.Count > 0)
+                    if (JournalVoucherGrid != null && JournalVoucherGrid.Count > 0)
                     {
-                        CashPaymentGrid.RemoveAt(Convert.ToInt32(Indx));
+                        JournalVoucherGrid.RemoveAt(Convert.ToInt32(Indx));
                         Indx = 0;
 
-                        foreach (var item in CashPaymentGrid)
+                        foreach (var item in JournalVoucherGrid)
                         {
                             Indx++;
-                            // item.SequenceNo = Indx;
+                            item.SrNO = Indx;
                         }
-                        MainModel.CashPaymentGrid = CashPaymentGrid;
+                        MainModel.JournalVoucherList = JournalVoucherGrid.OrderBy(x => x.SrNO).ToList();
 
                         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                         {
@@ -817,29 +813,29 @@ namespace eTactwebAccounts.Controllers
                             Size = 1024,
                         };
 
-                        _MemoryCache.Set("KeyCashPaymentGridEdit", MainModel.CashPaymentGrid, cacheEntryOptions);
+                        _MemoryCache.Set("KeyJournalVoucherGridEdit", MainModel.JournalVoucherList, cacheEntryOptions);
                     }
                 }
-                return PartialView("_CashPaymentGrid", MainModel);
+                return PartialView("_JournalVoucherGrid", MainModel);
             }
         }
-        public async Task<IActionResult> CashPaymentDashBoard(string FromDate, string ToDate)
+        public async Task<IActionResult> JournalVoucherDashBoard(string FromDate, string ToDate)
         {
             try
             {
-                _MemoryCache.Remove("KeyCashPaymentGrid");
-                _MemoryCache.Remove("KeyCashPaymentGridEdit");
-                var model = new CashPaymentModel();
+                _MemoryCache.Remove("KeyJournalVoucherGrid");
+                _MemoryCache.Remove("KeyJournalVoucherGridEdit");
+                var model = new JournalVoucherModel();
                 FromDate = HttpContext.Session.GetString("FromDate");
                 ToDate = HttpContext.Session.GetString("ToDate");
-                var Result = await _ICashPayment.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
+                var Result = await _IJournalVoucher.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
                 if (Result != null)
                 {
                     DataSet ds = Result.Result;
                     if (ds != null && ds.Tables.Count > 0)
                     {
                         var dt = ds.Tables[0];
-                        model.CashPaymentGrid = CommonFunc.DataTableToList<CashPaymentModel>(dt, "CashPaymentDashBoard");
+                        model.JournalVoucherList = CommonFunc.DataTableToList<JournalVoucherModel>(dt, "JournalVoucherDashBoard");
                     }
                 }
                 return View(model);
@@ -851,42 +847,41 @@ namespace eTactwebAccounts.Controllers
         }
         public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate)
         {
-            _MemoryCache.Remove("KeyCashPaymentGrid");
-            _MemoryCache.Remove("KeyCashPaymentGridEdit");
-            var model = new CashPaymentModel();
-            model = await _ICashPayment.GetDashBoardDetailData(FromDate, ToDate);
-            return PartialView("_CashPaymentDashBoardDetailGrid", model);
+            _MemoryCache.Remove("KeyJournalVoucherGrid");
+            _MemoryCache.Remove("KeyJournalVoucherGridEdit");
+            var model = new JournalVoucherModel();
+            model = await _IJournalVoucher.GetDashBoardDetailData(FromDate, ToDate);
+            return PartialView("_JournalVoucherDashBoardDetailGrid", model);
         }
         public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate)
         {
-            _MemoryCache.Remove("KeyCashPaymentGrid");
-            _MemoryCache.Remove("KeyCashPaymentGridEdit");
-            var model = new CashPaymentModel();
-            model = await _ICashPayment.GetDashBoardSummaryData(FromDate, ToDate);
-            return PartialView("_CashPaymentDashBoardGrid", model);
+            _MemoryCache.Remove("KeyJournalVoucherGrid");
+            _MemoryCache.Remove("KeyJournalVoucherGridEdit");
+            var model = new JournalVoucherModel();
+            model = await _IJournalVoucher.GetDashBoardSummaryData(FromDate, ToDate);
+            return PartialView("_JournalVoucherDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
-            _MemoryCache.Remove("KeyCashPaymentGridPopUpData");
+            _MemoryCache.Remove("KeyJournalVoucherGridPopUpData");
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024,
             };
-            var model = await _ICashPayment.PopUpForPendingVouchers(DataTable);
-            _MemoryCache.Set("KeyCashPaymentGridPopUpData", model.CashPaymentGrid, cacheEntryOptions);
+            var model = await _IJournalVoucher.PopUpForPendingVouchers(DataTable);
+            _MemoryCache.Set("KeyJournalVoucherGridPopUpData", model.JournalVoucherList, cacheEntryOptions);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType)
         {
-            var Result = await _ICashPayment.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate);
+            var Result = await _IJournalVoucher.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate, VoucherType);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
-                //TempData["Message"] = "Data deleted successfully.";
             }
             else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
             {
@@ -898,9 +893,7 @@ namespace eTactwebAccounts.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-
-            return RedirectToAction("CashPaymentDashBoard");
-
+            return RedirectToAction("JournalVoucherDashBoard");
         }
     }
 }

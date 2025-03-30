@@ -58,7 +58,7 @@ namespace eTactWeb.DOM.Models
         public decimal CrAmt { get; set; }
         public double VoucherAmt { get; set; }
         public IList<BankReceiptModel> BankReceiptGrid { get; set; }
-        public List<PopUpDataTable> DataTable {  get; set; }
+        public List<PopUpDataTableAgainstRef> DataTable {  get; set; }
         public int BooktrnsEntryId { get; set; }
         public int DocEntryId { get; set; }
         public string VoucherDocNo { get; set; }
@@ -147,16 +147,5 @@ namespace eTactWeb.DOM.Models
         public decimal TotalPopDrAmt { get; set; }
         public decimal TotalPopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
-    }
-    public class PopUpDataTable
-    {
-        public string? VoucherType { get; set; }
-        public string? Flag { get; set; }
-        public string? SumDetail { get; set; }
-        public int AccountCode {  get; set; }
-        public int YearCode {  get; set; }
-        public string? VoucherDate {  get; set; }
-        public int AccEntryId {  get; set; }
-        public int AccYearCode {  get; set; }
     }
 }

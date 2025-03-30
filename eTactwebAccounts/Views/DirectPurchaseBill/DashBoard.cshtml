@@ -121,6 +121,10 @@
             }
             GetSearchData();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
+            
+            setTimeout(function () {
+                $("#search-box").trigger('keyup');
+            }, 500);
 
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
@@ -355,9 +359,18 @@
         }
 
         function deleteItem(entryID, yearCode, purchVouchNo, invNo, isDetail, cnt) {
-            // if (!confirm("Are you sure you want to delete this item?")) {
-            //     return;
-            // }
+            sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
+            sessionStorage.setItem('TypeITEMSERVASSETSBack', $('#TypeITEMSERVASSETS').val());
+            sessionStorage.setItem('DocumentTypeBack', $('#DocumentType').val());
+            sessionStorage.setItem('VendorNameBack', $('#VendorName').val());
+            sessionStorage.setItem('PurchVouchNoBack', $('#PurchVouchNo').val());
+            sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNo').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCode').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemName').val());
+            sessionStorage.setItem('HSNNoBack', $('#HSNNo').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
 
             $.ajax({
                 url: '@Url.Action("DeleteByID", "DirectPurchaseBill")',
@@ -372,8 +385,8 @@
                 success: function (response) {
                     if (response != null && response != undefined && response != '') {
                         if (response == true || response == 'true') {
-                            // $('#approvedRow-' + cnt).remove();
                             GetSearchData();
+                            $.notify("Item Deleted Successfully...!", { className: "success", globalPosition: "top center" });
                         }
                     }
                 },
