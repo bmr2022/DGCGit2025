@@ -31,7 +31,7 @@ namespace eTactWeb.Controllers
 
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> CreditNote(int ID, string Mode, int YC)
+        public async Task<IActionResult> CreditNote(int ID, string Mode, int YearCode)
         {
             AccCreditNoteModel model = new AccCreditNoteModel();
             ViewData["Title"] = "Credit Note Details";
@@ -51,7 +51,7 @@ namespace eTactWeb.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
-                model = await _creditNote.GetViewByID(ID, YC,Mode);
+                model = await _creditNote.GetViewByID(ID, YearCode,Mode);
                 model.Mode = Mode;
                 model.ID = ID;
             }
