@@ -22,6 +22,10 @@ namespace eTactWeb.Data.BLL
             _CustomerJobWorkIssueDAL = new CustomerJobWorkIssueDAL(configuration, iDataLogic);
             _DataLogicDAL = iDataLogic;
         }
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _CustomerJobWorkIssueDAL.GetFormRights(userID);
+        }
 
         public async Task<ResponseResult> GetNewEntry(int yearCode)
         {

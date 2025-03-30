@@ -13,8 +13,8 @@
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>Job Work Receive</strong>
-                <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="JWRDashboard" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                <span class="d-flex float-end DashBoard" style="margin-top:-2px;">
+                    <a asp-action="JWRDashboard" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -388,7 +388,7 @@
                         <h5>
                             <strong>Job Work Receive</strong>
                             <span class="d-flex float-end" style="margin-top:-2px;">
-                                <a asp-action="JWRDashboard" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                                <a asp-action="JWRDashboard" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -536,7 +536,7 @@
             $('#EntryDate').datepicker("option", "minDate", formattedDate1);
             $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
 
-           // GetFormRights();
+            GetFormRights();
 
             $('#MRNNo').rules("remove", "required");
             $('#MRNNo').removeClass('input-validation-error');
@@ -885,6 +885,13 @@
                         if (!optAll) {
                             if (!optSave) {
                                 $(".submitBTN").prop("disabled", true);
+                            }
+                            if (!(optUpdate || optDelete || optView)) {
+                                $(".DashBoard")
+                                    .addClass("disabled-link")
+                                    .on("click", function (e) {
+                                        e.preventDefault(); // Prevents clicking the link
+                                    });
                             }
                         }
                     }
@@ -2513,5 +2520,12 @@
         position: sticky;
         top: 0;
         z-index: 1;
+    }
+
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
     }
 </style>

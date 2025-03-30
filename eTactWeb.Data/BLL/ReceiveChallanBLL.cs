@@ -18,8 +18,12 @@ namespace eTactWeb.Data.BLL
             _ReceiveChallanDAL = new ReceiveChallanDAL(configuration, iDataLogic);
         }
 
-        private ReceiveChallanDAL? _ReceiveChallanDAL { get; }
 
+        private ReceiveChallanDAL? _ReceiveChallanDAL { get; }
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _ReceiveChallanDAL.GetFormRights(userID);
+        }
         public async Task<ResponseResult> NewEntryId(int YearCode)
         {
             return await _ReceiveChallanDAL.NewEntryId(YearCode);

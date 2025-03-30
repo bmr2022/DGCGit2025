@@ -117,6 +117,14 @@ namespace eTactWeb.Controllers
             return View(MainModel);
         }
 
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _ICustomerJobWorkIssue.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         [Route("{controller}/Index")]
         [HttpPost]
         public async Task<IActionResult> CustomerJWI(CustomerJobWorkIssueModel model)

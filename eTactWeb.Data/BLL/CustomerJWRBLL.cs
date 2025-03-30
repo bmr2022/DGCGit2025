@@ -20,6 +20,10 @@ namespace eTactWeb.Data.BLL
             _CustomerJWRDAL = new CustomerJWRDAL(configuration, iDataLogic);
             _DataLogicDAL = iDataLogic;
         }
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _CustomerJWRDAL.GetFormRights(userID);
+        }
 
         public async Task<ResponseResult> GetNewEntry(int YearCode)
         {

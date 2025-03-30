@@ -20,6 +20,10 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _IssueNRGPDAL = new IssueNrgpDAL(configuration, iDataLogic);
         }
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _IssueNRGPDAL.GetFormRights(userID);
+        }
         public async Task<ResponseResult> GetReportName()
         {
             return await _IssueNRGPDAL.GetReportName();

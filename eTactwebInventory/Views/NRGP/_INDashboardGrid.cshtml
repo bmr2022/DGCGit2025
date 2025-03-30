@@ -102,12 +102,14 @@
                                                 </span>
                                             </a>
                                         </div>
+                                        <div id="viewCursorDiv-@Cntr">
                                         <a class="table-link link-success" asp-action="IssueNRGP" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,@item.ChallanNo,@item.YearCode)">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
+                                        </div>
                                        @* <a class="table-link link-primary" onclick="CheckGateEntryExists(event,@item.EntryId,'U',@item.YearCode)" asp-action="IssueNRGP" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
@@ -116,19 +118,22 @@
                                         </a> *@
                                         @if (item.YearCode == yearCode)
                                         {
+                                            <div id="editCursorDiv-@Cntr">
                                             <a class="table-link link-primary" asp-action="IssueNRGP" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
-
+                                            </div>
+                                            <div id="deleteCursorDiv-@Cntr">
                                             <a class="table-link link-danger" onclick="confirmdelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
+                                            </div>
                                         }
                                         else
                                         {
@@ -253,12 +258,14 @@ else
                                 <th>@Cntr</th>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
+                                        <div id="#viewCursorDiv-@Cntr">
                                         <a class="table-link link-success" asp-action="IssueNRGP" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
+                                        </div>
 
                                       @*  <a class="table-link link-primary" asp-action="IssueNRGP" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                             <span class="fa-stack">
@@ -268,20 +275,23 @@ else
                                         </a>*@
                                         @if (item.YearCode == yearCode)
                                         {
+                                            <div id="#editCursorDiv-@Cntr">
                                             <a class="table-link link-primary" onclick="CheckGateEntryExists(event, @item.EntryId, @item.YearCode)" href="#">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
+                                            </div>
 
-
+                                            <div id="#deleteCursorDiv-@Cntr">
                                             <a class="table-link link-danger" onclick="confirmdelete(event)" asp-action="DeleteByID" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
+                                            </div>
                                         }
                                         else
                                         {

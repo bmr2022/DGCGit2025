@@ -23,6 +23,10 @@ namespace eTactWeb.Data.BLL
 
         private InterStoreTransferDAL? _InterStoreTransferDAL { get; }
 
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _InterStoreTransferDAL.GetFormRights(userID);
+        }
         public async Task<ResponseResult> NewEntryId(int yearCode)
         {
             return await _InterStoreTransferDAL.NewEntryId(yearCode);

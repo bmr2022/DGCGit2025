@@ -107,7 +107,7 @@
                     <partial name="_JobWorkRecDashboardGrid" />
                 </div>
             </div>
-            <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+            <center><strong class="totalrows">TOTAL ROWS : <span id="totalRows"></span></strong></center>
 
         </div>
     </div>
@@ -370,6 +370,11 @@
                                                         </span>
                                                     </a>`);
                                 }
+                            }
+                            if (!(optUpdate || optDelete || optView)) {
+                                $("#divDashboardGrid").css("display", "none");
+                                $(".totalrows").css("display", "none");
+                                $("#SParam").hide();
                             }
                         }
                     }
