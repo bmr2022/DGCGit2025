@@ -10,6 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface ICustomerJWR
     {
+        Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> GetNewEntry(int YearCode);
         Task<DataSet> BindAllDropDowns(string Flag);
         Task<ResponseResult> GetGateNo(string FromDate,string ToDate);

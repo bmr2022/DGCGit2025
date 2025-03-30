@@ -6,6 +6,13 @@
 }
 <style>
 
+    .disabled-link {
+        pointer-events: none; /* Prevents clicking */
+        color: gray; /* Optional: Make it look disabled */
+        text-decoration: none; /* Optional: Remove underline */
+        cursor: default; /* Optional: Show normal cursor */
+        opacity: 0.6; /* Optional: Make it look faded */
+    }
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a !important;
@@ -39,7 +46,7 @@
                             Generate E-Way Bill
                         </a>
                     }
-                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -86,7 +93,7 @@
                             {
                                 <div class="col-auto">
                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -606,7 +613,7 @@
                                     PRINT E-Way Bill
                                 </a>
                             }
-                            <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                            <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                                 <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                 Dashboard
                             </a>
@@ -726,6 +733,13 @@
                         if (!optAll) {
                             if (!optSave) {
                                 $("#submitBTN").prop("disabled", true);
+                            }
+                            if (!(optUpdate || optDelete || optView)) {
+                                $(".DashBoard")
+                                    .addClass("disabled-link")
+                                    .on("click", function (e) {
+                                        e.preventDefault(); // Prevents clicking the link
+                                    });
                             }
                         }
                     }
@@ -938,6 +952,7 @@
         }
 
         $(document).ready(function () {
+            GetFormRights();
             $('#ItemCode').select2();
             $('#PartCode').select2();
             $('#AccountCode').select2();

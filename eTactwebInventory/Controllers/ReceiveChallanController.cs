@@ -111,7 +111,13 @@ namespace eTactWeb.Controllers
 
         //}
 
-
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await IReceiveChallan.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         [Route("{controller}/Dashboard")]
         public async Task<IActionResult> RCDashboard(string AccountName, string PartCode, string ItemName, string GateNo, string ChallanNo, string SummaryDetail, string Flag = "True", string FromDate = "", string ToDate = "")

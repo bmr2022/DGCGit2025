@@ -5,6 +5,15 @@
     ViewData["Title"] = "Material Receipt Note";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+    .disabled-link {
+        pointer-events: none; /* Prevents clicking */
+        color: gray; /* Optional: Make it look disabled */
+        text-decoration: none; /* Optional: Remove underline */
+        cursor: default; /* Optional: Show normal cursor */
+        opacity: 0.6; /* Optional: Make it look faded */
+    }
+</style>
 <div class="card bg-gradient mb-3 border-light shadow-lg">
 
     <form asp-action="MaterialReceipt" autocomplete="off" class="form-horizontal">
@@ -20,7 +29,7 @@
                             PRINT
                         </a>
                     </div>
-                    <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                    <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -505,7 +514,7 @@
                             PRINT
                         </button>
                     </div>
-                    <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                    <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -738,6 +747,7 @@
 
 
             $(document).ready(function () {
+            GetFormRights();
 
                 if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                     GetServerDate();
@@ -818,7 +828,7 @@
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 // $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-                //GetFormRights();
+               
                 functionFeatureOption();
                 $('#GateNo').rules("remove", "required");
                 $('#GateYearCode').rules("remove", "required");
@@ -1469,31 +1479,38 @@
                 });
             }
 
-            // function GetFormRights() {
-            //     $.ajax({
-            //         url: "@Url.Action("GetFormRights")",
-            //         type: "POST",
-            //         success: function (data) {
-            //             if (data != null) {
-            //                 var obj = $.parseJSON(data);
-            //                 console.log(obj);
-            //                 var optAll = obj.Result.Table[0].OptAll;
-            //                 var optSave = obj.Result.Table[0].OptSave;
-            //                 var optUpdate = obj.Result.Table[0].OptUpdate;
-            //                 var optDelete = obj.Result.Table[0].OptDelete;
-            //                 var optView = obj.Result.Table[0].OptView;
-            //                 if (!optAll) {
-            //                     if (!optSave) {
-            //                         $("#submitBTN").prop("disabled", true);
-            //                     }
-            //                 }
-            //             }
-            //         },
-            //         error: function (errMsg) {
-            //             $.notify(errMsg, { position: "top center", className: "error" });
-            //         }
-            //     });
-            // }
+            function GetFormRights() {
+                $.ajax({
+                    url: "@Url.Action("GetFormRights")",
+                    type: "POST",
+                    success: function (data) {
+                        if (data != null) {
+                            var obj = $.parseJSON(data);
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#submitBTN").prop("disabled", true);
+                                }
+                            if (!(optUpdate || optDelete || optView)) {
+                                $(".DashBoard")
+                                    .addClass("disabled-link")
+                                    .on("click", function (e) {
+                                        e.preventDefault(); // Prevents clicking the link
+                                    });
+                            }
+                            }
+                        }
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
+                    }
+                });
+            }
 
             function functionFeatureOption() {
                 $.ajax({
