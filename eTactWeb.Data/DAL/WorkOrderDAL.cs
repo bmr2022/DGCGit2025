@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -17,10 +18,13 @@ namespace eTactWeb.Data
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-        public WorkOrderDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public WorkOrderDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
         public async Task<ResponseResult> GetSaleOrderData(string Flag, string SPName, int YearCode, string WODate, string EffFrom, string EffTill)
@@ -46,6 +50,27 @@ namespace eTactWeb.Data
                 Error.Source = ex.Source;
             }                               
 
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+                SqlParams.Add(new SqlParameter("@EmpId", userID));
+                SqlParams.Add(new SqlParameter("@MainMenu", "Production Plan"));
+                //SqlParams.Add(new SqlParameter("@SubMenu", "Sale Order"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
             return _ResponseResult;
         }
 

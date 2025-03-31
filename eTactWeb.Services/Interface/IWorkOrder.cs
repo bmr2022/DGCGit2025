@@ -10,6 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IWorkOrder
     {
+        Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> GetSaleOrderData(string Flag, string SPName, int yearCode, string WODate,string EffFrom,string EffTill);
         Task<ResponseResult> GetStoreList(string Flag, string SPName);
         Task<ResponseResult> GetTotalStockList(int store, int Itemcode);
