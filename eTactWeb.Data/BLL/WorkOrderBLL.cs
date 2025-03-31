@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,12 +17,15 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
         private readonly WorkOrderDAL _WorkOrderDAL;
 
-        public WorkOrderBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public WorkOrderBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _WorkOrderDAL = new WorkOrderDAL(configuration, iDataLogic);
+            _WorkOrderDAL = new WorkOrderDAL(configuration, iDataLogic, connectionStringService);
         }
-
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _WorkOrderDAL.GetFormRights(userID);
+        }
         public async Task<ResponseResult> GetSaleOrderData(string Flag, string SPName, int YearCode, string WODate, string EffFrom, string EffTill)
         {
             return await _WorkOrderDAL.GetSaleOrderData(Flag, SPName, YearCode, WODate,EffFrom,EffTill);
