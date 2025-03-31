@@ -1620,6 +1620,7 @@
                 $('#SchEffTillDate').val($(this).val()).datepicker("option", "minDate", OneMonthDate);
                 $('#SchEffTillDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
             }
+            FillCustomer();
             ClearGrid();
         });
 
