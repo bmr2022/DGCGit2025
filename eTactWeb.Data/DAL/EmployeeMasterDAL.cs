@@ -317,29 +317,57 @@ namespace eTactWeb.Data.DAL
                 dorDt = ParseDate(model.DateOfResignation);
                 dobDt = ParseDate(model.DOB);
 
+
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand oCmd = new SqlCommand("HREmployeeMaster", myConnection)
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-
-                    oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                    oCmd.Parameters.AddWithValue("@empid", model.EmpId);
-                    oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
-                    oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
-                    oCmd.Parameters.AddWithValue("@branchCC", model.Branch);
-                    oCmd.Parameters.AddWithValue("@EmpName", model.Name);
-                    oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
-                    oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
-                    oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
-                    oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
-                    oCmd.Parameters.AddWithValue("@DesignationId", model.Designation);
-                    oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
-                    oCmd.Parameters.AddWithValue("@Deptid", model.Department);
-                    oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
-                    oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
-                    oCmd.Parameters.AddWithValue("@active", model.Active);
+                    if (model.Mode == "UPDATE")
+                    {
+                        oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+                        oCmd.Parameters.AddWithValue("@empid", model.EmpId);
+                        oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
+                        oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
+                        oCmd.Parameters.AddWithValue("@branchCC", model.Branch);
+                        oCmd.Parameters.AddWithValue("@EmpName", model.Name);
+                        oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
+                        oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
+                        oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
+                        oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
+                        oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
+                        oCmd.Parameters.AddWithValue("@DesignationId", model.Designation);
+                        oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
+                        oCmd.Parameters.AddWithValue("@Deptid", model.Department);
+                        oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
+                        oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
+                        oCmd.Parameters.AddWithValue("@active", "Y");
+                        oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
+                    }
+                    else
+                    {
+                        oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+                        oCmd.Parameters.AddWithValue("@empid", model.EmpId);
+                        oCmd.Parameters.AddWithValue("@desigEntryid", model.Designation);
+                        oCmd.Parameters.AddWithValue("@EmpCode", model.EmpCode);
+                        oCmd.Parameters.AddWithValue("@CC", model.Branch);
+                        oCmd.Parameters.AddWithValue("@EmpName", model.Name);
+                        oCmd.Parameters.AddWithValue("@EntryDate", entDt == null ? DBNull.Value : entDt);
+                        oCmd.Parameters.AddWithValue("@DOB", dobDt == null ? DBNull.Value : dobDt);
+                        oCmd.Parameters.AddWithValue("@DOJ", dojDt == null ? DBNull.Value : dojDt);
+                        oCmd.Parameters.AddWithValue("@DateOfJoining", dojDt == null ? DBNull.Value : dojDt);
+                        oCmd.Parameters.AddWithValue("@DOR", dorDt == null ? DBNull.Value : dorDt);
+                        oCmd.Parameters.AddWithValue("@DesigId", model.Designation);
+                        oCmd.Parameters.AddWithValue("@shiftId", model.Shift);
+                        oCmd.Parameters.AddWithValue("@Deptid", model.Department);
+                        oCmd.Parameters.AddWithValue("@CategoryId", model.Category);
+                        oCmd.Parameters.AddWithValue("@NatureOfDuties", model.NatureOfDuties);
+                        oCmd.Parameters.AddWithValue("@Active", "Y");
+                        oCmd.Parameters.AddWithValue("@ResignationDate", dorDt);
+                    }
+                   
+                  
                     myConnection.Open();
                     Reader = await oCmd.ExecuteReaderAsync();
                     if (Reader != null)

@@ -210,15 +210,23 @@
                                                                     </select>
                                                                 </td>
                                                                  <td>
-                                                                        <input type="hidden" asp-for="WcId" value="@Model.WcId" />
+                                                                   @*  <input type="hidden" asp-for="WcId" value="@Model.WcId" />
                                                                         <select class="form-select" asp-for="WorkCenterName" style="width:200px;">
                                                                         <option value="">-Select-</option>
                                                                             @if (Model.Mode == "U" || Model.Mode == "V")
                                                                             {
-                                                                                @* <input type="hidden" value="@Model.WorkCenterName" id="hiddenToWCID" /> *@
+                                                                               
                                                                                 <option value="@Model.WcId" selected>@Model.WorkCenterName</option>
                                                                             }
-                                                                    </select>
+                                                                    </select> *@
+                                                                        <input type="hidden" id="WcId" asp-for="WcId" value="@Model.WcId" />
+                                                                        <select class="form-select" id="WorkCenterName" asp-for="WorkCenterName" style="width:200px;">
+                                                                            <option value="">-Select-</option>
+                                                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                                                            {
+                                                                                <option value="@Model.WcId" selected>@Model.WorkCenterName</option>
+                                                                            }
+                                                                        </select>
                                                                 </td>
 
                                                                     <td>
@@ -750,12 +758,24 @@
                 //$(this).off('click');
                 $('form').submit();
             });
-            FillStockBatchNo();
+            if ($('#IssueToStoreWC').val() == 'W') {
+                FillCurrentWIPBatchINStore();
+            }
+            else {
+                FillStockBatchNo();
+            }
             FillTotalStock();
             FillAltStock();
             GetUnitAltUnit($('#OriginalItemCode').val());
-            FillStockUniqueBatchNo();
+            if ($('#IssueToStoreWC').val() == 'W') {
+                FillCurrentWIPUniqueBatchINStore();
+            }
+            else {
+                FillStockUniqueBatchNo(); 
+            }
+           
             FillLotStock();
+            FillLotStockWC();
             if ($('#IssueToStoreWC').val() == 'S') {
                 FillStoreName();
                 $('#WorkCenterName').val('');
@@ -819,11 +839,18 @@
             
                 $('#OriginalItemCode').val($('#OriginalItemName').val());
                 FillTotalStock();
-            FillAltStock();
+                FillAltStock();
                 GetUnitAltUnit($('#OriginalItemCode').val());
             
-                FillStockBatchNo();
                 setFormattedDate();
+            if ($('#IssueToStoreWC').val() == 'W') {
+                FillCurrentWIPBatchINStore();
+            }
+            else {
+                FillStockBatchNo();
+            }
+               
+                
            
            // $('#OriginalItemCode').val($('#OriginalItemName').val());
         });
@@ -831,49 +858,87 @@
            
                 $('#OriginalItemCode').val($('#OriginalPartCode').val());
                 FillTotalStock();
-            FillAltStock();
+                 FillAltStock();
                 GetUnitAltUnit($('#OriginalItemCode').val());
-           
+
+            if ($('#IssueToStoreWC').val() == 'W') {
+                FillCurrentWIPBatchINStore();
+            }
+            else {
                 FillStockBatchNo();
+            }
             //$('#OriginalItemCode').val($('#OriginalPartCode').val());
         });
+
          $('#AltItemName').change(function () {
            
                 $('#AltItemCode').val($('#AltItemName').val());
-            
-           
-           // $('#OriginalItemCode').val($('#OriginalItemName').val());
         });
         $('#AltPartCode').change(function () {
             
                 $('#AltItemCode').val($('#AltPartCode').val());
-           
-            //$('#OriginalItemCode').val($('#OriginalPartCode').val());
         });
 
          $('#StoreName').change(function () {
-            
                 $('#StoreId').val($('#StoreName').val());
-              
-               // FillLotStock();
                 FillTotalStock();
-            FillAltStock();
-           
+                FillAltStock();
+            if ($('#IssueToStoreWC').val() == 'W') {
+                FillCurrentWIPBatchINStore();
+            }
+            else {
                 FillStockBatchNo();
+            }
+             
          });
+
+        // $('#WorkCenterName').change(function () {
+        //      debugger
+        //     $('#WcId').val($('#WrokCenterName').val());
+        //     FillCurrentWIPBatchINStore();
+          
+        //  });
+        $('#WorkCenterName').change(function () {
+            debugger;
+            $('#WcId').val($(this).val());
+            if ($('#IssueToStoreWC').val() == 'W') {
+                FillCurrentWIPBatchINStore();
+            }
+            else {
+                FillStockBatchNo();
+            }
+           
+        });
+        $('#AltWorkCenterName').change(function () {
+            debugger;
+            $('#AltWCID').val($(this).val());
+        });
+
+      
         $('#AltStoreName').change(function () {
-           
-                $('#AltStoreId').val($('#AltStoreName').val());
-           
-               
+                $('#AltStoreId').val($('#AltStoreName').val()); 
          });
 
         $('#BatchNo').change(function () {
-             FillStockUniqueBatchNo();
-             FillLotStock();
+           
+            
+            if ($('#IssueToStoreWC').val() == 'W'){
+                FillLotStockWC();
+                FillCurrentWIPUniqueBatchINStore();
+            }
+            else{
+            FillStockUniqueBatchNo();
+            FillLotStock();
+            }
         });
          $('#UniqueBatchNo').change(function () {
-            FillLotStock();
+            if ($('#IssueToStoreWC').val() == 'W') {
+                FillLotStockWC();
+            }
+            else {
+
+                FillLotStock();
+            }
            
         });
 
@@ -1207,12 +1272,12 @@
                     WorkCenterNameDropdown.empty();
                     WorkCenterNameDropdown.append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (index, WorkCenter) {
-                        WorkCenterNameDropdown.append('<option value="' + WorkCenter.WorkCenterDescription + '">' + WorkCenter.WorkCenterDescription + '</option>');
+                        WorkCenterNameDropdown.append('<option value="' + WorkCenter.EntryID + '">' + WorkCenter.WorkCenterDescription + '</option>');
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                        var WorkCenterName = "@Model.WorkCenterName"
+                        var WorkCenterName = "@Model.WcId"
                         $('#WorkCenterName').val(WorkCenterName);
                     }
                 },
@@ -1232,7 +1297,7 @@
                     AltWorkCenterNameDropdown.empty();
                     AltWorkCenterNameDropdown.append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (index, WorkCenter) {
-                        AltWorkCenterNameDropdown.append('<option value="' + WorkCenter.WorkCenterDescription + '">' + WorkCenter.WorkCenterDescription + '</option>');
+                        AltWorkCenterNameDropdown.append('<option value="' + WorkCenter.EntryID + '">' + WorkCenter.WorkCenterDescription + '</option>');
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
@@ -1394,6 +1459,83 @@
                 }
             });
         }
+      
+        function FillCurrentWIPBatchINStore() {
+            var ItemCode = $('#OriginalItemName').val();
+            var YearCode = $('#OpeningYearCode').val();
+            var Wcid = $('#WcId').val();
+            //$('#WcId').val();
+            var batchno = "";
+            var TransDate = $('#SlipDate').val();
+            if ($('#BatchNo').prop('selectedIndex') != 0) {
+                batchno = $('#BatchNo').val();
+            }
+            $.ajax({
+                type: "GET",
+                data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
+                url: "@Url.Action("FillCurrentBatchINWIP", "StockAdjustment")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="" disabled selected>-Select-</option>');
+                            //$('#UniqueBatchNo').empty();
+                            //$('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                //$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
+                            });
+                            GetBatchInventory();
+                        } else {
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="" disabled selected>-Select-</option>');
+                        }
+
+                    }
+                }
+            });
+        }
+
+        function FillCurrentWIPUniqueBatchINStore() {
+            var ItemCode = $('#OriginalItemName').val();
+            var YearCode = $('#OpeningYearCode').val();
+            var Wcid = $('#WcId').val();
+            //$('#WcId').val();
+            var batchno = "";
+            var TransDate = $('#SlipDate').val();
+            if ($('#BatchNo').prop('selectedIndex') != 0) {
+                batchno = $('#BatchNo').val();
+            }
+            $.ajax({
+                type: "GET",
+                data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
+                url: "@Url.Action("FillCurrentBatchINWIP", "StockAdjustment")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#UniqueBatchNo').empty();
+                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                //  $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                $('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" selected>' + val.UniqueBatchNo + '</option>');
+                            });
+                            GetBatchInventory();
+                        } else {
+                            $('#UniqueBatchNo').empty();
+                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                        }
+
+                    }
+                }
+            });
+        }
+
         function FillTotalStock() {
 
             var ItemCode = $('#OriginalItemName').val();
@@ -1458,8 +1600,54 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#BatchStock').val("");
                             $('#BatchStock').val(obj.Result[0].STOCK);
+                           
+
                             BatchStock = obj.Result[0].STOCK;
                         }
+                    }
+                }
+            }); 
+        }
+        // function FillLotStockWC() {
+
+        //     var ItemCode = $('#OriginalItemName').val();
+        //     var Storeid = $('#WcId').val();
+        //     var UniqueBatchNo = $('#UniqueBatchNo').val();
+        //     var BatchNo = $('#BatchNo').val();
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "@Url.Action("FillLotStock", "StockAdjustment")",
+        //         data: { "ItemCode": ItemCode, "Storeid": Storeid, "UniqueBatchNo": UniqueBatchNo, "BatchNo": BatchNo },
+        //         async: false,
+        //         success: function (result, status, error) {
+
+        //             if (result != null) {
+        //                 var obj = $.parseJSON(result);
+        //                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                     $('#BatchStock').val("");
+        //                     $('#BatchStock').val(obj.Result[0].STOCK);
+        //                     BatchStock = obj.Result[0].STOCK;
+        //                 }
+        //             }
+        //         }
+        //     });
+        // }
+        function FillLotStockWC() {
+
+            var ItemCode = parseInt($('#OriginalItemName').val());
+            var WCID = parseInt($('#WcId').val());
+            $.ajax({
+                type: "POST",
+                data: { "ItemCode": ItemCode, "WCID": WCID },
+                url: "@Url.Action("GETWIPotalSTOCK", "StockAdjustment")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#BatchStock').val("");
+                        $('#BatchStock').val(obj.Result[0].STOCK);
+                        $('#TotalStock').val("");
+                        $('#TotalStock').val(obj.Result[0].STOCK);
                     }
                 }
             });
@@ -1503,17 +1691,17 @@
             var missingFields = [];
 
            var issueToStoreWC = $('#IssueToStoreWC').val();
-            var originalPartCode = $('#OriginalPartCode').val().trim();
-            var originalItemName = $('#OriginalItemName').val().trim();
-            var originalItemCode = $('#OriginalItemCode').val().trim();
-            var altItemName = $('#AltItemName').val().trim();
-            var altPartCode = $('#AltPartCode').val().trim();
-            var AltItemCode = $('#AltItemCode').val().trim();
-            var StoreName = $('#StoreName').val().trim();
+            var originalPartCode = $('#OriginalPartCode').val();
+            var originalItemName = $('#OriginalItemName').val();
+            var originalItemCode = $('#OriginalItemCode').val();
+            var altItemName = $('#AltItemName').val();
+            var altPartCode = $('#AltPartCode').val();
+            var AltItemCode = $('#AltItemCode').val();
+            var StoreName = $('#StoreName').val();
             var AltStoreName = $('#AltStoreName').val();
             //var altUnit = $('#AltUnit').val().trim();
-            var unit = $('#Unit').val().trim();
-            var originalQty = $('#OriginalQty').val().trim();
+            var unit = $('#Unit').val();
+            var originalQty = $('#OriginalQty').val();
 
             if (!originalPartCode) missingFields.push("Original Part Code");
             if (!originalItemName) missingFields.push("Original Item Name");
@@ -1524,8 +1712,8 @@
             //if (!altUnit) missingFields.push("Alt Unit");
             if (!unit) missingFields.push("Unit");
             if (!originalQty) missingFields.push("Original Quantity");
-            if (!StoreName) missingFields.push("StoreName");
-            if (!AltStoreName) missingFields.push("AltStoreName");
+            //if (!StoreName) missingFields.push("StoreName");
+            //if (!AltStoreName) missingFields.push("AltStoreName");
 
             if (!issueToStoreWC) {
                 $.notify("Please select Store/WC before adding to the grid!", "error");
@@ -1560,7 +1748,7 @@
                
                 AltStoreId: $('#AltStoreId').val(),
                 AltStoreName: $('#AltStoreName').val(),
-                OrginalWCID: $('#OrginalWCID').val(),
+               // OrginalWCID: $('#OrginalWCID').val(),
                 AltWCID: $('#AltWCID').val(),
                 AltWorkCenterName: $('#AltWorkCenterName').val(),
                 BatchNo: $('#BatchNo').val(),
@@ -1679,8 +1867,8 @@
                         $('#OriginalStoreId').val(obj[0].OriginalStoreId).trigger("change");
                         $('#StoreName').val(obj[0].StoreId).trigger("change");
                         $('#AltStoreName').val(obj[0].AltStoreId).trigger("change");
-                        $('#OrginalWCID').val(obj[0].OrginalWCID).trigger("change");
-                        $('#AltWCID').val(obj[0].AltWCID).trigger("change");
+                        $('#WorkCenterName').val(obj[0].WcId).trigger("change");
+                        $('#AltWorkCenterName').val(obj[0].AltWCID).trigger("change");
                         $('#BatchNo').val(obj[0].BatchNo).trigger("change");
                         $('#UniqueBatchNo').val(obj[0].UniqueBatchNo).trigger("change");
                         $('#BatchStock').val(obj[0].BatchStock).trigger("change");
