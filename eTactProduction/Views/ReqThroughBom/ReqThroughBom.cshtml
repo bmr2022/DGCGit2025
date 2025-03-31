@@ -6,6 +6,12 @@
 }
 
 <style>
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
+    }
 
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
@@ -36,7 +42,7 @@
                             PRINT
                         </a>
                     </div>
-                    <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -496,7 +502,7 @@
                                 PRINT
                             </button>
                         </div>
-                        <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient">
+                        <a asp-action="Dashboard" asp-route-FromDate="@DateTime.Now.AddMonths(-3)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
@@ -869,6 +875,13 @@
                             if (!optSave) {
                                 $("#submitBTN").prop("disabled", true);
                             }
+                        }
+                        if (!(optUpdate || optDelete || optView)) {
+                            $(".DashBoard")
+                                .addClass("disabled-link")
+                                .on("click", function (e) {
+                                    e.preventDefault(); // Prevents clicking the link
+                                });
                         }
                     }
                 },
