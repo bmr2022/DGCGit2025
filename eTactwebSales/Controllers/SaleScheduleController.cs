@@ -1408,12 +1408,6 @@ public class SaleScheduleController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    public async Task<JsonResult> FillCustomerOrderNo(int AccountCode,string SchEffFromDate)
-    {
-        var JSON = await ISaleSchedule.FillCustomerOrderNo(AccountCode,SchEffFromDate);
-        string JsonString = JsonConvert.SerializeObject(JSON);
-        return Json(JsonString);
-    }
     [HttpGet, Route("/SSAmendmentCompleted")]
     public async Task<IActionResult> SSAmmCompleted()
     {
