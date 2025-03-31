@@ -1,13 +1,13 @@
 ﻿@model eTactWeb.DOM.Models.EmployeeMasterModel;
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "EmployeeMaster";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="EmployeeMaster" autocomplete="on" class="form-horizontal">
+    <form asp-action="EmployeeMaster" asp-controller="EmployeeMaster" method="post" autocomplete="on" class="form-horizontal">
      @*    @Html.AntiForgeryToken() *@
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
@@ -76,7 +76,7 @@
                                 <div class="col-lg-2">
                                     <label asp-for="Branch" class="form-label">Branch</label>
                                     <input asp-for="Branch" class="form-control" readonly />
-                                    <input asp-for="Mode" class="form-control" type="hidden" />
+                                    
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="EntryDate" class="form-label" style="color: blue;">Entry Date</label>
@@ -154,18 +154,23 @@
                                     <label asp-for="Nationality" class="form-label">Nationality</label>
                                     <select asp-for="Nationality" class="form-control" >
                                         <option value="">Select</option>
+                                        <option value="I">Indian</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                     <label asp-for="MaritalStatus" class="form-label">MaritalStatus</label>
                                     <select asp-for="MaritalStatus" class="form-control" >
                                         <option value="">Select</option>
+                                        <option value="M">Married</option>
+                                        <option value="U">UnMerried</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                     <label asp-for="BloodGroup" class="form-label">BloodGroup</label>
                                     <select asp-for="BloodGroup" class="form-control" >
                                         <option value="">Select</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
                                     </select>
                                 </div>
                                 
@@ -643,6 +648,14 @@
                 $('#DateOfResignation').prop("disabled", true);
                 $('#Active').val('Y').prop("disabled", true);
             }
+
+            $('.submitBTN').click(function (e) {
+
+                console.log("SubmitButton Click");
+                e.preventDefault();
+                //$(this).off('click');
+                $('form').submit();
+            });
         });
 
         function GetEmpIdandEmpCode() {

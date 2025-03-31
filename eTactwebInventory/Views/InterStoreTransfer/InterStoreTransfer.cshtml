@@ -431,7 +431,8 @@
                 var rowCount = $('#divISTGrid tr').length;
                 for (var i = 1; i <= rowCount; i++) {
                     var itemCodee = parseInt($('#GridItemCode-' + i).val());
-                    var batchNoo = $('#GridBatchNo-' + i).text();
+                    var 
+                    o = $('#GridBatchNo-' + i).text();
                     var uniquebatchnoo = $('#GridUniqueBatchno-' + i).text();
                     var Seqno = $('#SeqNo-' + i).val();
                     itemBatchArray.push({
@@ -1175,6 +1176,7 @@
 
         var UniqueBatchNo = [];
         function FillStockBatchNo() {
+            debugger
             var ItemCode = $('#ItemCode').val();
             var YearCode = $('#YearCode').val();
             var StoreName = $('#FromStoreId').find(':selected').text();
