@@ -132,13 +132,13 @@
                                     </div>
                                     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AccountCode" class="control-label">Customer Name</label>
-                                        <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" style="height:50px;width:260px;" readonly disabled>
+                                        <select class="form-select" asp-for="AccountCode" style="height:50px;width:260px;" readonly disabled>
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="CustomerOrderNo" class="control-label">Customer Order#</label>
-                                        <select class="form-select" asp-for="CustomerOrderNo" asp-items="@(new SelectList(Model.CustomerOrderList,"Value","Text"))" readonly disabled>
+                                        <select class="form-select" asp-for="CustomerOrderNo" readonly disabled>
                                             <option value="">-Select-</option>
                                         </select>
                                     </div>
@@ -240,19 +240,31 @@
                                         <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                         <input asp-for="EntryDate" class="form-control" readonly disabled />
                                     </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
+                                        <label asp-for="SchEffFromDate" class="control-label">Sch Eff From Date</label>
+                                        <input asp-for="SchEffFromDate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        {
+                                            <input type="hidden" value="@Model.SchEffTillDate" id="hiddenSchEffTillDate" />
+                                        }
+                                        <label asp-for="SchEffTillDate" class="control-label">Sch Eff Till Date</label>
+                                        <input asp-for="SchEffTillDate" class="form-control" readonly />
+                                    </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="CC" class="control-label">Branch</label>
                                         <input asp-for="CC" class="form-control" value="@Model.CC" tabindex="4" readonly />
                                     </div>
                                     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AccountCode" class="control-label">Customer Name</label>
-                                        <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" style="height:50px;width:260px;">
+                                        <select class="form-select" asp-for="AccountCode" style="height:50px;width:260px;">
                                             <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="CustomerOrderNo" class="control-label">Customer Order#</label>
-                                        <select class="form-select" asp-for="CustomerOrderNo" asp-items="@(new SelectList(Model.CustomerOrderList,"Value","Text"))">
+                                        <select class="form-select" asp-for="CustomerOrderNo">
                                             <option value="">-Select-</option>
                                         </select>
                                     </div>
@@ -313,19 +325,6 @@
                                         <label asp-for="ScheduleDate" class="control-label">Sch Date</label>
                                         <input asp-for="ScheduleDate" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
-                                        <label asp-for="SchEffFromDate" class="control-label">Sch Eff From Date</label>
-                                        <input asp-for="SchEffFromDate" class="form-control" readonly />
-                                    </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
-                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
-                                        {
-                                            <input type="hidden" value="@Model.SchEffTillDate" id="hiddenSchEffTillDate" />
-                                        }
-                                        <label asp-for="SchEffTillDate" class="control-label">Sch Eff Till Date</label>
-                                        <input asp-for="SchEffTillDate" class="form-control" readonly />
-                                    </div>
-
                                     <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12" style="width:300px">
                                         <label asp-for="DeliveryAddress" class="control-label">Delivery Address</label>
                                         <input asp-for="DeliveryAddress" class="form-control" />
@@ -1032,6 +1031,7 @@
                 SetSchTillDate();
             }
 
+            FillCustomer();
 
             function UploadButton() {
                 var fileInput = $('#ExcelFile');
@@ -2944,6 +2944,40 @@
                 $("form").submit();
             }
         });
+
+        function FillCustomer(){
+            debugger
+            $.ajax({
+                url: '@Url.Action("FillCustomer")',
+                type: 'POST',
+                data: {
+                    "SchEffFromDate": $('#SchEffFromDate').val()
+                },
+                async: false,
+                success: function (response, status, error) {
+                    debugger
+                    if (response != null) {
+                        var obj = $.parseJSON(response);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#AccountCode').empty();
+                            $('#AccountCode').append('<option disabled selected>-Select-</option>');
+                            $.each(obj.Result.Table, function (key, val) {
+                                $('#AccountCode').append('<option value="' + val.AccountCode + '" >' + val.AccountName + '</option>');
+                            });
+                        }
+                    }
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var LedgerName = '@Model.AccountCode';
+                        $('#AccountCode').val(LedgerName).trigger("change");
+                        $('#AccountCode').val(LedgerName);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
 
         function ItemcodeChange(Row) {
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
