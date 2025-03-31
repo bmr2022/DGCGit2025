@@ -23,10 +23,9 @@ public interface ISaleSchedule
     Task<string> GetSONO(int AccountCode);
     Task<ResponseResult> GetFormRights(int uId);
     Task<ResponseResult> GetFormRightsAmen(int uId);
-
-
+    Task<ResponseResult> FillCustomer(string SchEffFromDate);
+    Task<ResponseResult> FillCustomerOrderNo(int AccountCode, string SchEffFromDate);
     Task<string> GetSOYear(int AccountCode, int SONO);
-
     Task<SaleSubScheduleModel> GetViewByID(int ID, int YearCode, string Mode);
     Task<SSDashboard> GetAmmSearchData(SSDashboard model);
     Task<SSDashboard> GetUpdAmmData(SSDashboard model);

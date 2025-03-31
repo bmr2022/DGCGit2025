@@ -160,6 +160,45 @@ internal class SaleScheduleDAL
         }
         return _ResponseResult;
     }
+    public async Task<ResponseResult> FillCustomer(string SchEffFromDate)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "FILLCUSTOMER"));
+            SqlParams.Add(new SqlParameter("@SchEffFromDate", ParseFormattedDate(SchEffFromDate)));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleSchedule", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+    public async Task<ResponseResult> FillCustomerOrderNo(int AccountCode,string SchEffFromDate)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "FILLCUSTOMER"));
+            SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
+            SqlParams.Add(new SqlParameter("@SchEffFromDate", ParseFormattedDate(SchEffFromDate)));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleSchedule", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
     public async Task<ResponseResult> GetExchangeRate(string Currency)
     {
         var _ResponseResult = new ResponseResult();

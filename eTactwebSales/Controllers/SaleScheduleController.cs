@@ -553,8 +553,6 @@ public class SaleScheduleController : Controller
         return View("SaleSchedule", model);
     }
 
-
-
     [HttpGet, Route("{controller}/SSAmendmentList")]
     public async Task<IActionResult> SSAmendmentList()
     {
@@ -1404,8 +1402,18 @@ public class SaleScheduleController : Controller
         }
         return model;
     }
-
-
+    public async Task<JsonResult> FillCustomer(string SchEffFromDate)
+    {
+        var JSON = await ISaleSchedule.FillCustomer(SchEffFromDate);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> FillCustomerOrderNo(int AccountCode,string SchEffFromDate)
+    {
+        var JSON = await ISaleSchedule.FillCustomerOrderNo(AccountCode,SchEffFromDate);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     [HttpGet, Route("/SSAmendmentCompleted")]
     public async Task<IActionResult> SSAmmCompleted()
     {
