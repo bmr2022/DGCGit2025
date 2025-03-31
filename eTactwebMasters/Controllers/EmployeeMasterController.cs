@@ -83,12 +83,9 @@ namespace eTactWeb.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Form(EmployeeMasterModel model)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> EmployeeMaster(EmployeeMasterModel model)
         {
-            ModelState.Remove("TxPageName");
-            if (ModelState.IsValid)
-            {
                 model.Mode = model.Mode != "U" ? "SAVE" : "UPDATE";
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 var Result = await _IEmployeeMaster.SaveEmployeeMaster(model);
@@ -116,14 +113,8 @@ namespace eTactWeb.Controllers
                     TempData["202"] = "202";
                     return RedirectToAction(nameof(DashBoard));
                 }
-                return RedirectToAction(nameof(Form), new { ID = 0 });
-            }
-            else
-            {
-                ViewBag.isSuccess = false;
-                TempData["Message"] = "Form Validation Error.";
-                return RedirectToAction(nameof(Form), new { ID = 0 });
-            }
+                return RedirectToAction(nameof(EmployeeMaster), new { ID = 0 });
+            
         }
 
         public async Task<IActionResult> GetSearchData(string EmpCode, string Name)

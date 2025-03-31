@@ -331,6 +331,7 @@
             $('.DH').fadeOut();
             if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
                 GetTaxPartItem();
+               // FillItems();
                 $('#lblItemNetAmount').text($('#ItemNetAmount').val());
                 $('#AccountCode').prop('disabled', true);
                 if ($('#POType').val() == "OPEN") {
@@ -435,7 +436,7 @@
                     else if (response == "OK") {
                         $.notify("Indent detail saved successfully..!", "success");
                         if ($('#ItemCode').val() == null && $('#PartCode').val() == null) {
-                            FillItems();
+                            //FillItems();
                         }
                     }
                 },
@@ -475,9 +476,9 @@
             FillVendors();
             GetFormRights();
             LockedFinancialYear();
-            FillItems();
             FillCurrency();
             $('#POTypeServItem').val('Item');
+            FillItems();
 
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
@@ -516,6 +517,7 @@
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 PendingIndentDetail(true);
+                //FillItems();
                 $('.DH').fadeIn();
                 $('#PN1').prop("disabled", "false");
                 $('#PN1').prop("checked", "true");
@@ -545,6 +547,7 @@
                 var AmendmentDt = $('#AmendmentDate').val().split("-").join("/");
                 AmendmentDt = parseDateToFormat(AmendmentDt.split(" ")[0]);
                 $('#AmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AmendmentDt);
+                
             }
             else {
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -1110,7 +1113,7 @@
         }
         var isItemSelected = false;
         function FillItems() {
-             
+             debugger
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("FillItems")",
@@ -1118,7 +1121,7 @@
                 async:false,
                 data: { Type: $('#POTypeServItem').val(), ShowAllItem: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
                 success: function (result, status, error) {
-                     
+                     debugger 
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == "Success") {
@@ -1997,27 +2000,6 @@
         $('#IN1').change(function () {
 
             FillItems();
-            // $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
-            // $.ajax({
-            //     type: "GET",
-            //     url: "@Url.Action("FillItems")",
-            //     dataType: "json",
-            //     data: { Type: 'Item', ShowAllItem: $('#IN1').val() == 'true' ? 'Y' : 'N' },
-            //     success: function (result, status, error) {
-            //         if (result != null) {
-            //             var obj = $.parseJSON(result);
-            //             if (obj.StatusCode == 200 && obj.StatusText == "Success") {
-            //                 $('#PartCode,#ItemCode').empty();
-            //                 $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
-            //                 $.each(obj.Result.Table, function (index, val) {
-            //                     $('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
-            //                     $('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
-            //                 });
-            //             }
-
-            //         }
-            //     }
-            // });
         });
 
 
@@ -2704,6 +2686,7 @@
 
         var isEditAllowed = "false";
         async function EditItemRow(SeqNo) {
+             
             var PartCode = $('#PartCode').val();
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
@@ -2711,7 +2694,7 @@
                 data: { PartCode: PartCode, SeqNo: SeqNo },
                 async:false,
                 success: await function (data, status, xhr) {
-
+                     
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
                     }
@@ -2725,8 +2708,8 @@
                         else {
 
                             if (obj != null && obj.length == 1) {
-                                $('#PartCode').val(obj[0].PartCode).change();
-                                $('#ItemCode').val(obj[0].ItemCode).change();
+                                $('#PartCode').val(obj[0].PartCode).trigger('change');
+                                $('#ItemCode').val(obj[0].ItemCode).trigger('change');
                                 $('#HSNNo').val(obj[0].HSNNo);
                                 $('#AdditionalRate').val(obj[0].AdditionalRate);
                                 $('#AltPendQty').val(obj[0].AltPendQty);

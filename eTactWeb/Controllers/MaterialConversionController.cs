@@ -120,6 +120,14 @@ namespace eTactWeb.Controllers
             return View(MainModel);
         }
 
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IMaterialConversion.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         [HttpPost]
         [Route("{controller}/Index")]
         public async Task<IActionResult> MaterialConversion(MaterialConversionModel model)

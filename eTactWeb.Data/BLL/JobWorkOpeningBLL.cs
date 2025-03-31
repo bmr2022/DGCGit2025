@@ -17,10 +17,15 @@ namespace eTactWeb.Data.BLL
 
         private readonly JobWorkOpeningDAL _JobWorkOpeningDAL;
 
+
         public JobWorkOpeningBLL(IConfiguration configuration, IDataLogic iDataLogic)
         {
             _JobWorkOpeningDAL = new JobWorkOpeningDAL(configuration, iDataLogic);
             _DataLogicDAL = iDataLogic;
+        }
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _JobWorkOpeningDAL.GetFormRights(userID);
         }
 
         public async Task<ResponseResult> FillEntryId(string Flag, int YearCode,string FormTypeCustJWNRGP, string SPName)
