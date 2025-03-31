@@ -372,7 +372,7 @@ namespace eTactWeb.DOM.Models
         public string CustJwIssChallanNo { get; set; }
         public string? CustJwIssChallanDate { get; set; }
         public int? AccountCode { get; set; }
-        public int? FinishItemCode { get; set; }
+        public int FinishItemCode { get; set; }
         public string? FGPartCode { get; set; }
         public string? FGItemName { get; set; }
         public float? AdjQty { get; set; }

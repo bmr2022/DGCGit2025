@@ -2229,7 +2229,7 @@
             var rowCount = $(gridSelector + ' tr').length;
             for (var j = 1; j <= rowCount; j++) {
                 var itemCode = $(itemSelector + j).val();
-                if (itemCode != "") {
+                if (itemCode != "" && itemCode != "0") {
                     if (!itemsStockableAndCustJw.includes(itemCode)) {
                         if (gridSelector == '#divBomCustJobWorkISsueSummary') {
                             $.notify('Bom Customer JobWork must be 1 row...!', "error");
