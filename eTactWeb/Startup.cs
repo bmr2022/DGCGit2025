@@ -95,6 +95,12 @@ namespace eTactWeb
                 options.ValueCountLimit=int.MaxValue;
             });
 
+            services.AddControllersWithViews(options =>
+            {
+                options.MaxModelBindingCollectionSize = int.MaxValue; // or set to a specific value
+            });
+
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
