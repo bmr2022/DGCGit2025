@@ -315,8 +315,8 @@ public class SaleOrderController : Controller
 
 		}
 		model.ResponsibleSalesPersonList = await _IDataLogic.GetDropDownList("EmpNameNCode", "SP_GetDropDownList");
-		model.PartCodeList = await _IDataLogic.GetDropDownList("FINISHEDGOODS", "CODELIST", "SP_GetDropDownList");
-		model.ItemNameList = await _IDataLogic.GetDropDownList("FINISHEDGOODS", "NAMELIST", "SP_GetDropDownList");
+		model.PartCodeList = await _IDataLogic.GetDropDownList("ALLGOODS", "CODELIST", "SP_GetDropDownList");
+		model.ItemNameList = await _IDataLogic.GetDropDownList("ALLGOODS", "NAMELIST", "SP_GetDropDownList");
 		model.Branch = HttpContext.Session.GetString("Branch");
 		model.FinFromDate = HttpContext.Session.GetString("FromDate");
 		model.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -642,9 +642,11 @@ public class SaleOrderController : Controller
 
 	public async Task<JsonResult> GetItemPartCode(string Code)
 	{
-		ResponseResult JsonString = await _ISaleOrder.GetItemPartCode(Code, "GetItemPartCode");
-		_logger.LogError(JsonConvert.SerializeObject(JsonString));
-		return Json(JsonConvert.SerializeObject(JsonString));
+        //	ResponseResult JsonString = await _ISaleOrder.GetItemPartCode(Code, "GetItemPartCode");
+        //.,mnbvcx.LogError(JsonConvert.SerializeObject(JsonString));
+        ResponseResult JsonString = await _ISaleOrder.GetItemPartCode(Code, "GetItemPartCode");
+        _logger.LogError(JsonConvert.SerializeObject(JsonString));
+        return Json(JsonConvert.SerializeObject(JsonString));
 	}
 
 	public async Task<IActionResult> GetItemPartList(string TF)

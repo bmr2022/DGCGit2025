@@ -111,6 +111,7 @@
 		<PackageReference Include="FastReport.OpenSource.Data.MsSql" Version="2021.4.0">
 		  <TreatAsUsed>true</TreatAsUsed>
 		</PackageReference>
+		<PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2023.2.25" />
 		<PackageReference Include="FastReport.OpenSource.Web" Version="2023.2.25" />
 		<PackageReference Include="Grpc.Core" Version="2.46.6" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.0" />

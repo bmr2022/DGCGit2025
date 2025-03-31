@@ -17,6 +17,7 @@ using static Grpc.Core.Metadata;
 using System.Net;
 using System.Globalization;
 using System.Data;
+using System.Configuration;
 
 namespace eTactWeb.Controllers
 {
@@ -27,7 +28,7 @@ namespace eTactWeb.Controllers
         private readonly ILogger<ReqWithoutBomController> _logger;
         private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        private readonly IConfiguration iconfiguration;
+        private readonly IConfiguration _iconfiguration;
 
         public ReqWithoutBomController(ILogger<ReqWithoutBomController> logger, IDataLogic iDataLogic, IReqWithoutBOM iReqWithoutBOM, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
         {
@@ -36,37 +37,49 @@ namespace eTactWeb.Controllers
             _IReqWithoutBOM = iReqWithoutBOM;
             _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
-            iconfiguration = configuration;
+            _iconfiguration = configuration;
         }
 
 
-        public IActionResult PrintReport(int EntryId, int YearCode = 0,string Type="")
+        //public IActionResult PrintReport(int EntryId, int YearCode = 0,string Type="")
+        //{
+        //    string my_connection_string;
+        //    string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+        //    string webRootPath = _IWebHostEnvironment.WebRootPath;
+        //    var webReport = new WebReport();
+        //    webReport.Report.Load(webRootPath + "\\ReqWithoutBom4.frx");
+        //    //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
+        //    webReport.Report.SetParameterValue("entryparam", EntryId);
+        //    webReport.Report.SetParameterValue("yearparam", YearCode);
+        //    my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+        //    webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+
+        //    return View(webReport);
+        //}
+        public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "")
         {
-            string my_connection_string;
-            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
-            var webReport = new WebReport();
-
-            webReport.Report.Load(webRootPath + "\\ReqWithoutBom.frx");
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
-            webReport.Report.SetParameterValue("entryparam", EntryId);
-            webReport.Report.SetParameterValue("yearparam", YearCode);
-
-
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
-            //         ID = web; Password = bmr2401";
-            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
-            return View(webReport);
+            try
+            {
+                string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+                string webRootPath = _IWebHostEnvironment.WebRootPath;
+                var webReport = new WebReport();
+                string reportPath = Path.Combine(webRootPath, "ReqWithoutBom.frx");
+                webReport.Report.Load(reportPath);
+                string my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+                webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+                webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+                webReport.Report.SetParameterValue("entryparam", EntryId);
+                webReport.Report.SetParameterValue("yearparam", YearCode);
+                webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+                webReport.Report.Refresh();
+                return View(webReport);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Report generation failed: {ex.Message}");
+            }
         }
+
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
         {
             using (Report report = new Report())
