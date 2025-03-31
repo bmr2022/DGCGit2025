@@ -382,6 +382,7 @@
                     $.each(obj.Result, function (index, store) {
                          
                         storeNameDropdown.append('<option selected value="' + store.storeid + '">' + store.Store_Name + '</option>');
+                        // alert('Store Name: ' + store.Store_Name);
                     });
 
                 },
@@ -503,16 +504,53 @@
             return firstDayOfMonth;
         }
 
-        $('#sendToExcel').click(function () {
+        // $('#sendToExcel').click(function () {
+        //     let table = $("#ReportTable");
+        //     console.log(table);
+        //     TableToExcel.convert(table[0], {
+        //         name: `ReportTable.xlsx`,
+        //         sheet: {
+        //             name: 'ReportTable'
+        //         }
+        //     });
+        // });
+         $('#sendToExcel').click(function () 
+         {
             let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
-                }
-            });
+            let wb = XLSX.utils.table_to_book(table[0], { sheet: "ReportTable" });
+            let ws = wb.Sheets["ReportTable"];
+
+            // Example: Highlight the header row
+            const headerRange = XLSX.utils.decode_range(ws['!ref']);
+            for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) 
+            {
+                const address = XLSX.utils.encode_cell({ r: headerRange.s.r, c: C });
+                if (!ws[address]) continue;
+                ws[address].s = {
+                    fill: {
+                        patternType: "solid",
+                        fgColor: { rgb: "FFFF0000" } // Red
+                    },
+                    font: {
+                        bold: true,
+                         color: { rgb: "FFFFFF" }
+                    }
+                };
+            }
+
+            // Add filter (example - assumes header row is row 1)
+            ws['!autofilter'] =
+            {
+                ref: XLSX.utils.encode_range({
+                    s: { r: 0, c: 0 },  // Start at header row
+                    e: { r: table[0].rows.length - 1, c: table[0].rows[0].cells.length - 1 } //End at last row and column
+                })
+            };
+
+
+            XLSX.writeFile(wb, `ReportTable.xlsx`);
         });
+
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
             var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -656,6 +694,8 @@
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 
 
 
