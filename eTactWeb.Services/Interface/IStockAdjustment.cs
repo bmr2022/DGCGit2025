@@ -11,6 +11,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IStockAdjustment
     {
+        Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> StockAdjBackDatePassword();
         Task<DataSet> BindAllDropDowns(string Flag);
         Task<ResponseResult> NewEntryId(int YearCode);

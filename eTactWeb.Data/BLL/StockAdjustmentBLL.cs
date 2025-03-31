@@ -22,6 +22,11 @@ namespace eTactWeb.Data.BLL
 
         private StockAdjustmentDAL? _StockAdjustmentDAL { get; }
 
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _StockAdjustmentDAL.GetFormRights(userID);
+        }
+
         public async Task<DataSet> BindAllDropDowns(string Flag)
         {
             return await _StockAdjustmentDAL.BindAllDropDowns(Flag);

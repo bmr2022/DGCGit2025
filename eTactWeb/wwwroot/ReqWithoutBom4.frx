@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="03/30/2025 22:15:59" ReportInfo.Modified="03/30/2025 22:20:28" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtcWTv6LW0DNXsuauBe6YLE+JE+wS7EovPzT+RKckLEIKOLODxqkeV2PNNL+nDO38qtpqgoHLgeMqz9Hx7jPF5ARjiwT0CgHrjKUuN4f8XXT/Am6Lx+LoThaGmtKgLzGG9rG7WTai0lBPr6KxIx96wjU=">
+      <TableDataSource Name="Table" Alias="getrequisitionmaindetail" DataType="System.Int32" Enabled="true" SelectCommand="exec GetRequisitionMainDetail @EntryId=@entryparam,@yearCode=@yearparam">
+        <Column Name="REQNo" DataType="System.String"/>
+        <Column Name="ReqDate" DataType="System.DateTime"/>
+        <Column Name="WONo" DataType="System.String"/>
+        <Column Name="WOYearcode" DataType="System.Int32"/>
+        <Column Name="EntryId" DataType="System.Int64"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="YearCode" DataType="System.Int64"/>
+        <Column Name="MachineName" DataType="System.String"/>
+        <Column Name="MachineId" DataType="System.Int64"/>
+        <Column Name="WorkcenterId" DataType="System.Int64"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="ReqReason" DataType="System.String"/>
+        <Column Name="UID" DataType="System.Int64"/>
+        <Column Name="Completed" DataType="System.String"/>
+        <Column Name="WorkCenter" DataType="System.String"/>
+        <Column Name="Prefix" DataType="System.String"/>
+        <Column Name="Cancel" DataType="System.String"/>
+        <Column Name="Approved" DataType="System.String"/>
+        <Column Name="LineRejEntryId" DataType="System.Int64"/>
+        <Column Name="LineRejYearCode" DataType="System.Int64"/>
+        <Column Name="LastUpdatedBy" DataType="System.Int64"/>
+        <Column Name="DeptName" DataType="System.String"/>
+        <Column Name="LastUpdationdate" DataType="System.DateTime"/>
+        <Column Name="ApproveBy" DataType="System.Int64"/>
+        <Column Name="NeedApproval" DataType="System.String"/>
+        <Column Name="ApproveDate" DataType="System.DateTime"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="ItemPartCode" DataType="System.String"/>
+        <Column Name="ItemCode" DataType="System.Int64"/>
+        <Column Name="AltQty" DataType="System.Decimal"/>
+        <Column Name="Qty" DataType="System.Decimal"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="TotalStock" DataType="System.Decimal"/>
+        <Column Name="ExpectedDate" DataType="System.DateTime"/>
+        <Column Name="PendAltQty" DataType="System.Decimal"/>
+        <Column Name="PendQty" DataType="System.Decimal"/>
+        <Column Name="ItemModel" DataType="System.String"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="ItemCancel" DataType="System.String"/>
+        <Column Name="ProjectNo" DataType="System.String"/>
+        <Column Name="ProjectYearCode" DataType="System.Int64"/>
+        <Column Name="ItemLocation" DataType="System.String"/>
+        <Column Name="ItemBinRackNo" DataType="System.String"/>
+        <Column Name="CostCenterId" DataType="System.Int64"/>
+        <Column Name="StoreId" DataType="System.Int64"/>
+        <Column Name="Store_Name" DataType="System.String"/>
+        <Column Name="CostCenterName" DataType="System.String"/>
+        <Column Name="FromDepartmentId" DataType="System.Int64"/>
+        <Column Name="BranchName" DataType="System.String"/>
+        <Column Name="CancelDate" DataType="System.DateTime"/>
+        <Column Name="CancelReason" DataType="System.String"/>
+        <Column Name="EneterdBy" DataType="System.Int64"/>
+        <Column Name="RequByEmpId" DataType="System.Int64"/>
+        <Column Name="CreatedByName" DataType="System.String"/>
+        <Column Name="SeqNo" DataType="System.Int64"/>
+        <Column Name="ItemSize" DataType="System.String"/>
+        <Column Name="Com_Name" DataType="System.String"/>
+        <Column Name="CompAddress" DataType="System.String"/>
+        <Column Name="WODate" DataType="System.DateTime"/>
+        <Column Name="EntryByMachineName" DataType="System.String"/>
+        <Column Name="CreatedBy" DataType="System.Int64"/>
+        <Column Name="CreatedOn" DataType="System.DateTime"/>
+        <Column Name="UpdatedByName" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2"/>
+    <PageHeaderBand Name="PageHeader1" Top="2.44" Width="718.2"/>
+    <DataBand Name="Data1" Top="4.88" Width="718.2" Height="75.6" DataSource="Table">
+      <TextObject Name="Text3" Left="9.45" Top="18.9" Width="94.5" Height="18.9" Text="[getrequisitionmaindetail.PartCode]" Font="Arial, 10pt"/>
+      <TextObject Name="Text1" Left="151.2" Top="9.45" Width="94.5" Height="18.9" Text="[getrequisitionmaindetail.REQNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text2" Left="321.3" Top="9.45" Width="94.5" Height="18.9" Text="[getrequisitionmaindetail.ReqDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="82.92" Width="718.2" Height="18.9"/>
+  </ReportPage>
+</Report>
