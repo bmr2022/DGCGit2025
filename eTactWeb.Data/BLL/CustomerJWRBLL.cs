@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly CustomerJWRDAL _CustomerJWRDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public CustomerJWRBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public CustomerJWRBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _CustomerJWRDAL = new CustomerJWRDAL(configuration, iDataLogic);
+            _CustomerJWRDAL = new CustomerJWRDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<ResponseResult> GetFormRights(int userID)
