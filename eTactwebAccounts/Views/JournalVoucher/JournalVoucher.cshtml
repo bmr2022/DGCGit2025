@@ -44,6 +44,7 @@
         font-size: 15px;
         vertical-align: super;
     }
+
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a !important;
@@ -61,12 +62,12 @@
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="BankReceipt" asp-controller="BankReceipt" method="post" class="form-horizontal">
+    <form asp-action="JournalVoucher" asp-controller="JournalVoucher" method="post" class="form-horizontal">
         <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
             <h5>
                 <strong>Bank Receipt</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-controller="BankReceipt" asp-action="BankReceiptDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-controller="JournalVoucher" asp-action="JournalVoucherDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                         Dashboard
                     </a>
@@ -367,7 +368,7 @@
                                         </button>
                                     </div>
                                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                                    <a asp-controller="BankReceipt" asp-action="BankReceiptDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <a asp-controller="JournalVoucher" asp-action="JournalVoucherDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
                                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                         Dashboard
                                     </a>
@@ -536,18 +537,18 @@
                 $.notify("Grid should have at least one item.", "error");
                 Err = 1;
             }
-            var BankTypeData = [];
-            for (let i = 1; i <= Row; i++) {
-                BankTypeData.push({
-                    "BankType": $('#BankType-' + i).val()
-                })
-            }
-            var hasBank = BankTypeData.some(item => item.BankType === "Bank");
-            if (!hasBank) {
-                $.notify("There should be at least one bank in grid.", "error");
-                Err = 1;
-            }
-
+            /*  var BankTypeData = [];
+             for (let i = 1; i <= Row; i++) {
+                 BankTypeData.push({
+                     "BankType": $('#BankType-' + i).val()
+                 })
+             }
+             var hasBank = BankTypeData.some(item => item.BankType === "Bank");
+             if (!hasBank) {
+                 $.notify("There should be at least one bank in grid.", "error");
+                 Err = 1;
+             }
+        */
             for (let i = 1; i <= Row; i++) {
                 var ModeOfAdjust = $('#ModeOfAdjustment-' + i).text();
                 if (ModeOfAdjust == "Against Ref") {
@@ -798,10 +799,10 @@
 
         function BindModeOfAdjust() {
             $('#ModeOfAdjustment').append(`
-                                            <option selected value="New Ref">New Ref</option>
-                                            <option value="Advance">Advance</option>
-                                            <option value="Against Ref">Against Ref</option>
-                                        `);
+                                                    <option selected value="New Ref">New Ref</option>
+                                                    <option value="Advance">Advance</option>
+                                                    <option value="Against Ref">Against Ref</option>
+                                                `);
         }
 
         $('#LedgerName').change(function () {
@@ -1685,25 +1686,6 @@
             }
             else {
                 RemoveErrorCls('ModeOfAdjustment');
-            }
-            if ($('#BankType').val() == "Bank") {
-
-                if ($('#InsNo').val() == null || $('#InsNo').val() == "") {
-                    AddErrorCls('InsNo');
-                    $.notify("InsNo is required.", "error");
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('InsNo');
-                }
-                if ($('#Intrument').prop('selectedIndex') == 0) {
-                    AddErrorCls('Intrument');
-                    $.notify("Intrument is required.", "error");
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('Intrument');
-                }
             }
 
             if ($('#ModeOfAdjustment').val() == "Advance") {

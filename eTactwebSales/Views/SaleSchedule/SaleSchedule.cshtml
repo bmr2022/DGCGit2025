@@ -114,6 +114,18 @@
                                         <label asp-for="EntryDate" class="form-label">Entry Date</label>
                                         <input asp-for="EntryDate" class="form-control" readonly disabled />
                                     </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="SchEffFromDate" class="control-label">Sch Eff From Date</label>
+                                        <input asp-for="SchEffFromDate" class="form-control" readonly disabled />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
+                                        {
+                                            <input type="hidden" value="@Model.SchEffTillDate" id="hiddenSchEffTillDate" />
+                                        }
+                                        <label asp-for="SchEffTillDate" class="control-label">Sch Eff Till Date</label>
+                                        <input asp-for="SchEffTillDate" class="form-control" />
+                                    </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="CC" class="control-label">Branch</label>
                                         <input asp-for="CC" class="form-control" value="@Model.CC" tabindex="4" readonly />
@@ -186,18 +198,6 @@
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SOCloseDate" class="control-label">SO Close Date</label>
                                         <input asp-for="SOCloseDate" class="form-control" readonly disabled />
-                                    </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="SchEffFromDate" class="control-label">Sch Eff From Date</label>
-                                        <input asp-for="SchEffFromDate" class="form-control" readonly disabled />
-                                    </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        @if (Model.Mode == "U" || Model.Mode == "V" || Model.Mode == "SSA")
-                                        {
-                                            <input type="hidden" value="@Model.SchEffTillDate" id="hiddenSchEffTillDate" />
-                                        }
-                                        <label asp-for="SchEffTillDate" class="control-label">Sch Eff Till Date</label>
-                                        <input asp-for="SchEffTillDate" class="form-control" />
                                     </div>
                                     <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <label asp-for="DeliveryAddress" class="control-label">Delivery Address</label>
