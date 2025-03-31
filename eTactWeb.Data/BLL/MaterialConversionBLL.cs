@@ -21,6 +21,11 @@ namespace eTactWeb.Data.BLL
             _MaterialConversionDAL = new MaterialConversionDAL(config, dataLogicDAL);
             _DataLogicDAL = dataLogicDAL;
         }
+
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _MaterialConversionDAL.GetFormRights(userID);
+        }
         public async Task<ResponseResult> FillEntryID(int YearCode)
         {
             return await _MaterialConversionDAL.FillEntryID(YearCode);
