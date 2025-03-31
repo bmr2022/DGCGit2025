@@ -69,7 +69,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillLedger"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "BankReceipt"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
                 SqlParams.Add(new SqlParameter("@type", Type));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
@@ -89,7 +89,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "SUBVOUCHER"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "BankReceipt"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
