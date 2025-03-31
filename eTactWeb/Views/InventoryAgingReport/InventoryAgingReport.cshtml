@@ -460,16 +460,55 @@
             return firstDayOfMonth;
         }
 
+        // $('#sendToExcel').click(function () {
+        //     let table = $("#ReportTable");
+        //     console.log(table);
+        //     TableToExcel.convert(table[0], {
+        //         name: `ReportTable.xlsx`,
+        //         sheet: {
+        //             name: 'ReportTable'
+        //         }
+        //     });
+        // });
+
+        //sumu written
+
+                // Assumes you have js-xlsx included in your project
+
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
-                }
-            });
+            let wb = XLSX.utils.table_to_book(table[0], { sheet: "ReportTable" });
+            let ws = wb.Sheets["ReportTable"];
+
+            // Example: Highlight the header row
+            const headerRange = XLSX.utils.decode_range(ws['!ref']);
+            for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+                const address = XLSX.utils.encode_cell({ r: headerRange.s.r, c: C });
+                if (!ws[address]) continue;
+                ws[address].s = {
+                    fill: {
+                        patternType: "solid",
+                        fgColor: { rgb: "FFFF0000" } // Red
+                    },
+                    font: {
+                        bold: true
+                    }
+                };
+            }
+
+            // Add filter (example - assumes header row is row 1)
+            ws['!autofilter'] = {
+                ref: XLSX.utils.encode_range({
+                    s: { r: 0, c: 0 },  // Start at header row
+                    e: { r: table[0].rows.length - 1, c: table[0].rows[0].cells.length - 1 } //End at last row and column
+                })
+            };
+
+
+            XLSX.writeFile(wb, `ReportTable.xlsx`);
         });
+
+
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
             var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

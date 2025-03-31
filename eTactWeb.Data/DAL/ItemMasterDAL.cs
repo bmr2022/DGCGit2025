@@ -422,7 +422,7 @@ namespace eTactWeb.Data.DAL
                 if (oDataTable.Rows.Count != 0)
                 {
                     FO.AllowPartCode = oDataTable.Rows[0]["AutoGen_PartCode"].ToString() == "Y" ? true : false;
-                    //FO.DuplicateItemName = oDataTable.Rows[0]["DuplicateItemName"].ToString() == "Y" ? true : false;
+                    FO.DuplicateItemName = oDataTable.Rows[0]["DuplicateItemName"].ToString() == "Y" ? true : false;
                 }
             }
             catch (Exception e)

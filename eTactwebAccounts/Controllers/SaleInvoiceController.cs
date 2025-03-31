@@ -1152,6 +1152,8 @@ namespace eTactWeb.Controllers
                 webReport.Report.SetParameterValue("entryparam", EntryId);
                 webReport.Report.SetParameterValue("yearparam", YearCode);
                 my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+                webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+                webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
                 webReport.Report.SetParameterValue("MyParameter", my_connection_string);
                 webReport.Report.SetParameterValue("copyType", copyType);
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
@@ -1165,6 +1167,7 @@ namespace eTactWeb.Controllers
                         tableDataSource.Init(); // Refresh the data source
                     }
                 }
+                webReport.Report.Refresh();
                 reports.Add(webReport);
             }
             return View(reports);
