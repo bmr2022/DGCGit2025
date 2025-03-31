@@ -1210,7 +1210,7 @@ public class SaleScheduleController : Controller
 
                     // Create a new row
                     DataRow dr = dt.NewRow();
-                    dr["PART NO"] = ExlPC;
+                    dr["Part Code"] = ExlPC;
 
                     foreach (var kvp in columnMapping)
                     {
