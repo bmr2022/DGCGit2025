@@ -758,54 +758,28 @@
         });
 
         $("#pending-search-box").on("keyup", function () {
-
             var value = $("#pending-search-box").val().toLowerCase();
+
             $("#divPendingChallanDisplayGrid tr").filter(function () {
+                var rowContainsValue = false;
+
                 if (currentSearchColumn != null) {
-                    var rowContainsValue = false;
-                    $(this).find('td').eq(currentSearchColumn).each(function () {
-                        var columnInput = $(this).find('input, select');
-                        var columnInputValue = "";
-
-                        if (columnInput.is('input')) {
-                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
-                        } else if (columnInput.is('select')) {
-                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
-                        }
-
-                        if (columnInputValue.indexOf(value) > -1) {
-                            rowContainsValue = true;
-                            return false;
-                        }
-                    });
-
-                    $(this).toggle(rowContainsValue);
-
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().trim().toLowerCase();
+                    rowContainsValue = columnText.indexOf(value) > -1;
                 } else {
-                    var rowContainsValue = false;
-
                     $(this).find('td').each(function () {
-
-                        var columnInput = $(this).find('input, select');
-                        var columnInputValue = "";
-
-                        if (columnInput.is('input')) {
-                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
-                        } else if (columnInput.is('select')) {
-                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
-                        }
-
-                        if (columnInputValue.indexOf(value) > -1) {
+                        var columnText = $(this).text().trim().toLowerCase();
+                        if (columnText.indexOf(value) > -1) {
                             rowContainsValue = true;
-                            return false;
+                            return false; 
                         }
-
                     });
-
-                    $(this).toggle(rowContainsValue);
                 }
+
+                $(this).toggle(rowContainsValue);
             });
         });
+
 
         function ValidateAdjDetail() {
             if ($('#AccountCode').val() == 0) {
