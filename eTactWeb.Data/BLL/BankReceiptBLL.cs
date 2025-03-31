@@ -79,7 +79,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.DeleteByID(ID,YearCode,ActualEntryBy,EntryByMachine,ActualEntryDate, VoucherType);
         }
-        public async Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTable DataTable)
+        public async Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
             return await _BankReceiptDAL.PopUpForPendingVouchers(DataTable);
         }

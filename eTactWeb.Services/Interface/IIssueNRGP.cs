@@ -12,6 +12,7 @@ namespace eTactWeb.Services.Interface
     {
         public Task<ResponseResult> FillEntryandChallanNo(int YearCode, string RGPNRGP);
         Task<ResponseResult> GetReportName();
+        Task<ResponseResult> GetFormRights(int userID);
         public Task<ResponseResult> GetBatchInventory();
         public Task<ResponseResult> GetVendorList();
         public Task<ResponseResult> GetProcessList();

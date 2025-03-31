@@ -24,7 +24,7 @@ namespace eTactWeb.Services.Interface
         Task<BankReceiptModel> GetDashBoardSummaryData(string FromDate, string ToDate);
         Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate,string VoucherType);
         Task<ResponseResult> FillBankType(int AccountCode);
-        Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTable DataTable);
+        Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable);
         Task<BankReceiptModel> GetViewByID(int ID, int YearCode, string VoucherNo);
         Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode);
         Task<ResponseResult> FillSONO(string accountcode, string VoucherDate);

@@ -437,6 +437,11 @@
                                                                                                                             </a>`);
                                     }
                                 }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
+                                }
                             }
                         }
                     }

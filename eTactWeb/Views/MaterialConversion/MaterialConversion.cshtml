@@ -3,6 +3,14 @@
     ViewData["Title"] = "Material Conversion";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
+    }
+</style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="MaterialConversion" asp-controller="MaterialConversion" method="post" autocomplete="on" class="form-horizontal">
@@ -11,7 +19,7 @@
                 <h5>
                     <strong>Material Conversion </strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                             <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                             Dashboard
                         </a>
@@ -564,7 +572,7 @@
                             <span class="d-flex float-end" style="margin-top:-2px;">
 
                                 @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                                    <a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -622,6 +630,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            GetFormRights();
             if ($('#Mode').val() !== "U") {
 
                 FillEntryID();
@@ -941,6 +950,52 @@
             }
            
         });
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $(".submitBTN").prop("disabled", true);
+                            $('.card-footer .submitBTN').prop("disabled", true);
+                            $(".DashBoard")
+                                .addClass("disabled-link")
+                                .on("click", function (e) {
+                                    e.preventDefault(); // Prevents clicking the link
+                                });
+                        }
+                        else {
+                            // console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#submitBTN").prop("disabled", true);
+                                    $('.card-footer #submitBTN').prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".DashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
 
         function GetOriginalPartCode() {
             $.ajax({

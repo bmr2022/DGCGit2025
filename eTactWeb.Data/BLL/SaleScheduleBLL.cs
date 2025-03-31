@@ -59,8 +59,10 @@ public class SaleScheduleBLL : ISaleSchedule
     {
         return await _SaleScheduleDAL.GetAltUnitQty(ItemCode, AltSchQty, UnitQty);
     }
-
-
+    public async Task<ResponseResult> FillCustomer(string SchEffFromDate)
+    {
+        return await _SaleScheduleDAL.FillCustomer(SchEffFromDate);
+    }
     public async Task<string> GetSODATA(int AccountCode, int SONO, int Year)
     {
         return await _SaleScheduleDAL.GetSODATA(AccountCode, SONO, Year);

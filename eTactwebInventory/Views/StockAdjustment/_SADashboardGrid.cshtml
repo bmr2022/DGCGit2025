@@ -7,7 +7,46 @@
 }
 
 <style>
+    #container {
+        display: flex;
+    }
 
+        #container > div {
+            flex: 1;
+            margin-right: 10px; /* Adjust margin as needed */
+        }
+
+    #MRNTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashMRNThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
 
     .SAGrid {
         width: 100%;
@@ -61,27 +100,37 @@ else
                             <tr id="SAGridRow-@Cntr" onclick="selection(this)">
                                 <th>@Cntr</th>
                                 <td style="text-align:center;white-space: nowrap;">
-                                    <a class="table-link link-success" asp-action="StockAdjustment" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                    <div id="container">
+                                        <div id="viewCursorDiv-@Cntr">
+                                        <a  class="table-link link-success" asp-action="StockAdjustment" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </a>
+                                    </div>
+                                   
                                     @if (item.YearCode == yearCode)
                                     {
-                                        <a class="table-link link-primary" asp-action="StockAdjustment" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="back(event)">
+                                        <div id="editCursorDiv-@Cntr">
+                                            <a  class="table-link link-primary" asp-action="StockAdjustment" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="back(event)">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
+                                        </div>
+                                       
 
-                                        <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" onclick="confirmdelete(event)" asp-route-YC="@item.YearCode" asp-route-EntryByEmp="@item.entryByEmp" asp-route-EntryByMachineName="@item.EntryByMachineName" asp-route-EntryDate="@item.EntryDate">
+                                       <div id="deleteCursorDiv-@Cntr">
+                                            <a  class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.EntryId" onclick="confirmdelete(event)" asp-route-YC="@item.YearCode" asp-route-EntryByEmp="@item.entryByEmp" asp-route-EntryByMachineName="@item.EntryByMachineName" asp-route-EntryDate="@item.EntryDate">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
+                                        </div>
+                                        
                                     }
                                     else
                                     {
@@ -98,6 +147,7 @@ else
                                             </span>
                                         </a>
                                     }
+                                    </div>
                                 </td>
                                 <td>@item.SlipNo</td>
                                 <td>@item.StockAdjustmentDate.ToString().Split(" ")[0]</td>

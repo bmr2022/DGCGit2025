@@ -444,7 +444,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTable DataTable)
+        public async Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
             DataSet? oDataSet = new DataSet();
             var model = new BankReceiptModel();
@@ -660,7 +660,6 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
         public async Task<ResponseResult> FillSONO(string accountcode, string VoucherDate)
         {
             var _ResponseResult = new ResponseResult();
@@ -685,7 +684,6 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
         public async Task<ResponseResult> GetSODetail(int SONO, string accountcode, string VoucherDate)
         {
             var _ResponseResult = new ResponseResult();
@@ -710,8 +708,6 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
-
         public async Task<ResponseResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode)
         {
             var _ResponseResult = new ResponseResult();

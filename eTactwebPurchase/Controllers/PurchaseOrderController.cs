@@ -7,6 +7,8 @@ using FastReport.Export.Html;
 using FastReport.Export.Image;
 using FastReport;
 using FastReport.Web;
+
+
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -22,6 +24,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using FastReport.Export.PdfSimple;
 
 namespace eTactWeb.Controllers;
 
@@ -31,7 +34,7 @@ public class PurchaseOrderController : Controller
     private readonly IMemoryCacheService _iMemoryCacheService;
     private readonly IWebHostEnvironment _IWebHostEnvironment;
     private readonly IConfiguration iconfiguration;
-
+    public WebReport webReport;
 
     public PurchaseOrderController(IPurchaseOrder iPurchaseOrder, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
     {
@@ -55,13 +58,15 @@ public class PurchaseOrderController : Controller
 
     public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
     {
+        
         string my_connection_string;
         string contentRootPath = _IWebHostEnvironment.ContentRootPath;
         string webRootPath = _IWebHostEnvironment.WebRootPath;
-        //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
-        var webReport = new WebReport();
-
+        webReport = new WebReport();
         var ReportName = IPurchaseOrder.GetReportName();
+        ViewBag.EntryId = EntryId;
+        ViewBag.YearCode =YearCode;
+        ViewBag.PONO = PONO;
         if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
         {
             webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
@@ -71,24 +76,64 @@ public class PurchaseOrderController : Controller
             webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
 
         }
-        //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
         webReport.Report.SetParameterValue("entryparam", EntryId);
         webReport.Report.SetParameterValue("yearparam", YearCode);
         webReport.Report.SetParameterValue("ponoparam", PONO);
-
-
         my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-        //my_connection_string = "Data Source=192.168.1.224\\sqlexpress;Initial  Catalog = etactweb; Integrated Security = False; Persist Security Info = False; User
-        //         ID = web; Password = bmr2401";
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-        // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-        // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-        //ViewBag.WebReport = webReport;
+        
         return View(webReport);
+    }
+  
+    public IActionResult Pdf(int EntryId = 0, int YearCode = 0, string PONO = "")
+    {
+        try
+        {
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var report = new Report(); // Use the Report class instead of WebReport for exports
+
+            // Get the report name (await properly if async)
+            var ReportNameResult = IPurchaseOrder.GetReportName().Result.Result;
+            string reportFileName = !string.Equals(ReportNameResult.Rows[0].ItemArray[0], DBNull.Value)
+                ? ReportNameResult.Rows[0].ItemArray[0].ToString()
+                : "PO"; // Default to "PO.frx"
+
+            string reportPath = Path.Combine(webRootPath, $"{reportFileName}.frx");
+
+            // Ensure the report file exists
+            if (!System.IO.File.Exists(reportPath))
+                throw new FileNotFoundException($"Report file not found: {reportPath}");
+
+            // Load the report
+            report.Load(reportPath);
+
+            // Set parameters
+            report.SetParameterValue("entryparam", EntryId);
+            report.SetParameterValue("yearparam", YearCode);
+            report.SetParameterValue("ponoparam", PONO);
+
+            // Set connection string
+            string myConnectionString = iconfiguration.GetConnectionString("eTactDB");
+            report.SetParameterValue("MyParameter", myConnectionString);
+
+            // Prepare the report (generate data)
+            report.Prepare();
+
+            // Export to PDF
+            using (MemoryStream ms = new MemoryStream())
+            {
+                PDFSimpleExport pdfExport = new PDFSimpleExport();
+                pdfExport.Export(report, ms);
+                ms.Position = 0;
+
+                return File(ms.ToArray(), "application/pdf", $"PurchaseOrder_{EntryId}.pdf");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log the error (e.g., using ILogger)
+            return StatusCode(500, $"Error generating PDF: {ex.Message}");
+        }
     }
     public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string PONO = "")
     {

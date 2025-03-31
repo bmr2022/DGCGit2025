@@ -845,8 +845,7 @@ namespace eTactWeb.Controllers
                 if (AdjGrid?.AdjAdjustmentDetailGrid != null && AdjGrid?.AdjAdjustmentDetailGrid?.Count > 0)
                 {
                     MainModel.adjustmentModel = AdjGrid;
-
-                    isDuplicate = AdjGrid.AdjAdjustmentDetailGrid.Any(a => a.AdjNewRefNo.Equals(model.AdjNewRefNo) && a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment));
+                    isDuplicate = AdjGrid.AdjAdjustmentDetailGrid.Any(a => (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjModeOfAdjstment == "NewRef") || (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjNewRefNo.Equals(model.AdjNewRefNo) && (a.AdjPurchOrderNo != null && a.AdjPurchOrderNo.Equals(model.AdjPurchOrderNo)) && (a.AdjPOYear != null && a.AdjPOYear.Equals(model.AdjPOYear)) && a.AdjAgnstAccEntryID.Equals(model.AdjAgnstAccEntryID) && a.AdjAgnstAccYearCode.Equals(model.AdjAgnstAccYearCode)));
                 }
 
                 if (!isDuplicate)
@@ -1002,7 +1001,7 @@ namespace eTactWeb.Controllers
                         0,//AgainstOpeningVoucheryearcode
                         Item.AdjNewRefNo,
                         Item.AdjDescription,
-                        Item.DueDate == null ? AdjDueDt : ParseFormattedDate(Item.DueDate.Split(" ")[0]).Split(" ")[0],
+                        Item.DueDate == null ? (Item.AdjDueDate != null ? ParseFormattedDate(Item.AdjDueDate.ToString().Split(" ")[0]).Split(" ")[0] :  AdjDueDt) : ParseFormattedDate(Item.DueDate.Split(" ")[0]).Split(" ")[0],
                         string.Empty,//AgainstOrderno
                         0,//AgainstOrderYeearCode
                         AdjOrderDt,//AgainstOrderDate

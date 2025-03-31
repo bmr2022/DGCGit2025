@@ -67,7 +67,7 @@ else
                 }
                 else { }
             </td>
-            <td>@(item.AdjPurchOrderNo ?? string.Empty)</td>
+            <td>@((item.AdjPurchOrderNo != null && item.AdjPurchOrderNo != "" && !item.AdjPurchOrderNo.Contains("Select")) ? item.AdjPurchOrderNo : string.Empty)</td>
             <td>@(item.AdjPOYear ?? 0)</td>
             <td>
                 @{

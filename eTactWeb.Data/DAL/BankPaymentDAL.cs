@@ -521,7 +521,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<BankPaymentModel> PopUpForPendingVouchers(PopUpDataTable DataTable)
+        public async Task<BankPaymentModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
             DataSet? oDataSet = new DataSet();
             var model = new BankPaymentModel();
@@ -641,9 +641,6 @@ namespace eTactWeb.Data.DAL
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
             model.DrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["DrAmt"].ToString());
             model.CrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["CrAmt"].ToString());
-
-            //model.DrAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["DrAmt"].ToString());
-            //model.CrAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["CrAmt"].ToString());
 
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
             {

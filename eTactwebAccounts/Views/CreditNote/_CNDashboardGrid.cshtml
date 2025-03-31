@@ -77,7 +77,7 @@
                     </a>
                     </div>*@
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-action="CreditNote" asp-route-Mode="V" asp-route-ID="@item.CreditNoteEntryId" asp-route-YC="@item.CreditNoteYearCode">
+                                        <a class="table-link link-success" asp-action="CreditNote" asp-route-Mode="V" asp-route-ID="@item.CreditNoteEntryId" asp-route-YearCode="@item.CreditNoteYearCode">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -86,7 +86,7 @@
                                     </div>
                                     <div id="editCursorDiv-@Cntr">
 
-                                        <a class="table-link link-primary" asp-action="CreditNote" asp-route-Mode="U" asp-route-ID="@item.CreditNoteEntryId" asp-route-YC="@item.CreditNoteYearCode" onclick="BackButtonData(event)">
+                                        <a class="table-link link-primary" asp-action="CreditNote" asp-route-Mode="U" asp-route-ID="@item.CreditNoteEntryId" asp-route-YearCode="@item.CreditNoteYearCode" onclick="BackButtonData(event)">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -95,7 +95,7 @@
                                     </div>
 
                                     <div id="deleteCursorDiv-@Cntr">
-                                        <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.CreditNoteEntryId" asp-route-YC="@item.CreditNoteYearCode" asp-route-accountCode="@item.AccountCode" asp-route-entryByMachineName="@item.MachineName" onclick="confirmdelete(event)">
+                                        <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.CreditNoteEntryId" asp-route-YearCode="@item.CreditNoteYearCode" asp-route-accountCode="@item.AccountCode" asp-route-entryByMachineName="@item.MachineName" onclick="confirmdelete(event)">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>

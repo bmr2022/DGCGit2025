@@ -24,6 +24,7 @@ using System.Net;
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using eTactWeb.Data.DAL;
 
 namespace eTactWeb.Controllers;
 
@@ -430,7 +431,7 @@ public class PurchaseBillController : Controller
         return MainModel;
     }
 
-    public async Task<IActionResult> DeleteByID(int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)
+    public async Task<IActionResult> DeleteByIDOld(int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)
     {
         int EntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
         string EntryByMachineName = GetEmpByMachineName();
@@ -459,6 +460,42 @@ public class PurchaseBillController : Controller
         }
 
         return RedirectToAction(nameof(DashBoard));
+    }
+    public async Task<JsonResult> DeleteByID(int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)
+    {
+        int EntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+        string EntryByMachineName = HttpContext.Session.GetString("EmpName");
+        DateTime EntryDate = DateTime.Today;
+        var Result = await IPurchaseBill.DeleteByID(ID, YC, "DELETE", PurchVoucherNo, InvNo, EntryBy, EntryByMachineName, EntryDate);
+
+        var rslt = string.Empty;
+        if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+        {
+            ViewBag.isSuccess = true;
+            TempData["410"] = "410";
+            rslt = "true";
+        }
+        else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Locked)
+        {
+            ViewBag.isSuccess = true;
+            TempData["423"] = "423";
+            rslt = "true";
+        }
+        if ((Result.StatusText == "Deleted Successfully" || Result.StatusText == "deleted Successfully") && (Result.StatusCode == HttpStatusCode.Accepted || Result.StatusCode == HttpStatusCode.OK))
+        {
+            ViewBag.isSuccess = true;
+            TempData["410"] = "410";
+            rslt = "true";
+        }
+        else
+        {
+            ViewBag.isSuccess = false;
+            TempData["500"] = "500";
+            rslt = "false";
+        }
+
+        return Json(rslt);
+        //return RedirectToAction(nameof(DashBoard));   
     }
 
     public IActionResult DeleteItemRow(string SeqNo)
@@ -1195,6 +1232,7 @@ public class PurchaseBillController : Controller
         DataSet DS = new();
         DataTable Table = new();
 
+        #region
         Table.Columns.Add("PurchBillEntryID", typeof(int));
         Table.Columns.Add("PurchBillYearCode", typeof(int));
         Table.Columns.Add("SeqNo", typeof(int));
@@ -1253,19 +1291,34 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("AcceptedQty", typeof(float));
         Table.Columns.Add("ReworkQty", typeof(float));
         Table.Columns.Add("HoldQty", typeof(float));
+        #endregion
 
         foreach (PBItemDetail Item in itemDetailList)
         {
-            DateTime poDate = new DateTime();
-            DateTime schDate = new DateTime();
-            DateTime MIRDate = new DateTime();
-            DateTime ProjectDate = new DateTime();
-            DateTime AgainstImportInvDate = new DateTime();
+            DateTime poDate = new DateTime(2000, 1, 1);
+            DateTime schDate = new DateTime(2000, 1, 1);
+            DateTime MIRDate = new DateTime(2000, 1, 1);
+            DateTime ProjectDate = new DateTime(2000, 1, 1);
+            DateTime AgainstImportInvDate = new DateTime(2000, 1, 1);
             string poDt = "";
             string schDt = "";
             string mirDt = "";
             string projectDt = "";
             string againstImportInvDt = "";
+
+            #region Formats
+            string[] formats = {
+                "dd-MM-yyyy HH:mm:ss",
+                "dd/MM/yyyy HH:mm:ss",
+                "yyyy-MM-dd HH:mm:ss",
+                "MM/dd/yyyy HH:mm:ss",
+                "dd-MM-yyyy",
+                "dd/MM/yyyy",
+                "yyyy-MM-dd",
+                "MM/dd/yyyy"
+            };
+            #endregion
+
             if (Item.PODate != null)
             {
                 //poDate = DateTime.Parse(Item.PODate, new CultureInfo("en-GB"));
@@ -1289,7 +1342,8 @@ public class PurchaseBillController : Controller
             if (Item.MIRDATE != null)
             {
                 //MIRDate = DateTime.Parse(Item.MIRDATE, new CultureInfo("en-GB"));
-                DateTime.TryParse(Item.MIRDATE, CultureInfo.InvariantCulture, out MIRDate);
+                //DateTime.TryParse(Item.MIRDATE, CultureInfo.InvariantCulture, out MIRDate);
+                DateTime.TryParseExact(Item.MIRDATE, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out MIRDate);
                 mirDt = MIRDate.ToString("yyyy/MM/dd");
             }
             else
@@ -1384,7 +1438,7 @@ public class PurchaseBillController : Controller
         DS.Tables.Add(Table);
         return DS;
     }
-
+   
     private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
     {
         DataTable Table = new();
@@ -1468,15 +1522,30 @@ public class PurchaseBillController : Controller
         {
             foreach (TDSModel Item in TDSDetailList)
             {
-                DateTime InvoiceDate = new DateTime();
-                DateTime challanDate = new DateTime();
-                DateTime BankVoucherDate = new DateTime();
+                DateTime InvoiceDate = new DateTime(2000, 1, 1);
+                DateTime challanDate = new DateTime(2000, 1, 1);
+                DateTime BankVoucherDate = new DateTime(2000, 1, 1);
                 string InvoiceDt = "";
                 string challanDt = "";
                 string BankVoucherDt = "";
+
+                #region Formats
+                string[] formats = {
+                    "dd-MM-yyyy HH:mm:ss",
+                    "dd/MM/yyyy HH:mm:ss",
+                    "yyyy-MM-dd HH:mm:ss",
+                    "MM/dd/yyyy HH:mm:ss",
+                    "dd-MM-yyyy",
+                    "dd/MM/yyyy",
+                    "yyyy-MM-dd",
+                    "MM/dd/yyyy"
+                };
+                #endregion
+
                 if (MainModel.InvDate != null)
                 {
-                    DateTime.TryParse(MainModel.InvDate, CultureInfo.InvariantCulture, out InvoiceDate);
+                    DateTime.TryParseExact(MainModel.InvDate, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out InvoiceDate);
+                    //DateTime.TryParse(MainModel.InvDate, CultureInfo.InvariantCulture, out InvoiceDate);
                     InvoiceDt = InvoiceDate.ToString("yyyy/MM/dd");
                 }
                 else

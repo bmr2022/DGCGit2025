@@ -10,6 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IMaterialConversion
     {
+        Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> FillEntryID(int YearCode);
         Task<ResponseResult> FillBranch();
         Task<ResponseResult> FillStoreName();

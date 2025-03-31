@@ -19,7 +19,7 @@
                             PRINT
                         </a>
                     </div>
-                    <a asp-action="CustomerJWRDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                    <a asp-action="CustomerJWRDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -425,7 +425,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-header card-headerBG text-light bg-gradient">
+        <div class="card-footer card-headerBG text-light bg-gradient">
             <h5>
                 <strong>Material Receipt</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
@@ -437,7 +437,7 @@
                             PRINT
                         </button>
                     </div>
-                    <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                    <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -481,7 +481,7 @@
                             
                             else
                             {
-                                <div class="col-auto">
+                                <div class="col-auto ">
                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
                                     <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right"></i>
@@ -503,6 +503,7 @@
     <script>
 
         $(document).ready(function () {
+            GetFormRights();
              
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 GetNewEntry();
@@ -765,6 +766,52 @@
             });
             GetgateItemdata();
         });
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("#submitBTN").prop("disabled", true);
+                            $('.card-footer #submitBTN').prop("disabled", true);
+                            $(".DashBoard")
+                                .addClass("disabled-link")
+                                .on("click", function (e) {
+                                    e.preventDefault(); // Prevents clicking the link
+                                });
+                        }
+                        else {
+                            // console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#submitBTN").prop("disabled", true);
+                                    $('.card-footer #submitBTN').prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".DashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
 
         function GetgateItemdata() {
             var dataParams = {
@@ -1137,5 +1184,12 @@
     .color-box {
         width: 15px;
         height: 15px;
+    }
+
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
     }
 </style>

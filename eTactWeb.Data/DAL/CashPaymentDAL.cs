@@ -523,7 +523,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<CashPaymentModel> PopUpForPendingVouchers(PopUpDataTable DataTable)
+        public async Task<CashPaymentModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
             DataSet? oDataSet = new DataSet();
             var model = new CashPaymentModel();
@@ -639,10 +639,6 @@ namespace eTactWeb.Data.DAL
             model.DrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["DrAmt"].ToString());
             model.CrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["CrAmt"].ToString());
 
-            //model.DrAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["DrAmt"].ToString());
-            //model.CrAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["CrAmt"].ToString());
-
-
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
             {
                 model.UpdatedByEmp = DS.Tables[0].Rows[0]["UpdatedByEmp"].ToString();
@@ -676,11 +672,12 @@ namespace eTactWeb.Data.DAL
                         ChequeDate = row["chequeDate"].ToString(),
                         InsNo = row["instrumentno"].ToString(),
                         Intrument = row["instrument"].ToString(),
-                        InsDate = row["instrumentdate"].ToString(),
+                        InsDate = DateTime.TryParse(row["instrumentdate"].ToString(), out DateTime insDate) ? insDate.ToString("dd/MM/yyyy") : row["instrumentdate"].ToString(),
                         ModeOfAdjustment = row["ModeOfAdjustment"].ToString(),
                         AgainstVoucherEntryId = Convert.ToInt32(row["AgainstVoucherEntryId"].ToString()),
                         AgainstVoucherRefNo = row["againstVoucherRefNo"].ToString(),
                         AgainstVoucherType = row["AgainstVoucherType"].ToString(),
+                        AgainstVoucherNo = row["AgainstVoucherNo"].ToString(),
                         AgainstVoucheryearCode = Convert.ToInt32(row["AgainstVoucheryearcode"].ToString()),
                         ChequeClearDate = row["chequeClearDate"].ToString(),
                         ChequePrintAC = row["ChequePrintAC"].ToString(),
@@ -694,7 +691,10 @@ namespace eTactWeb.Data.DAL
                         AccountNarration = row["AccountNarration"].ToString(),
                         Description = row["Description"].ToString(),
                         VoucherRemark = row["VoucherRemark"].ToString(),
-                        ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString())
+                        ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
+                        DRCR = row["DRCRTYPE"].ToString(),
+                        Balance =  Convert.ToDecimal(row["BalanceAmt"].ToString()),
+                        Type = row["CRDDR"].ToString(),
                     });
                 }
                 model.CashPaymentGrid = ItemList;

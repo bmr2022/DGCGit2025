@@ -79,6 +79,18 @@
                                                 ControllerName = "PurchaseBill";
                                                 ActionName ="PurchaseBill";
                                                 break;
+                                            case "PURCHASE-DIRECT":
+                                                ControllerName = "DirectPurchaseBill";
+                                                ActionName ="DirectPurchaseBill";
+                                                break;
+                                            case "SALE-REJECTION":
+                                                ControllerName = "SaleRejectionEdit";
+                                                ActionName ="SaleRejectionEdit";
+                                                break;
+                                            case "CREDIT-NOTE ":
+                                                ControllerName = "CreditNote";
+                                                ActionName ="CreditNote";
+                                                break;
                                         }
                                         <div id="viewCursorDiv-@Cntr">
                                             <a class="table-link link-success" asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YearCode="@item.AccEntryYearCode" asp-route-VoucherNo="@item.VchNo">

@@ -553,8 +553,6 @@ public class SaleScheduleController : Controller
         return View("SaleSchedule", model);
     }
 
-
-
     [HttpGet, Route("{controller}/SSAmendmentList")]
     public async Task<IActionResult> SSAmendmentList()
     {
@@ -1210,7 +1208,7 @@ public class SaleScheduleController : Controller
 
                     // Create a new row
                     DataRow dr = dt.NewRow();
-                    dr["PART NO"] = ExlPC;
+                    dr["Part Code"] = ExlPC;
 
                     foreach (var kvp in columnMapping)
                     {
@@ -1404,8 +1402,12 @@ public class SaleScheduleController : Controller
         }
         return model;
     }
-
-
+    public async Task<JsonResult> FillCustomer(string SchEffFromDate)
+    {
+        var JSON = await ISaleSchedule.FillCustomer(SchEffFromDate);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     [HttpGet, Route("/SSAmendmentCompleted")]
     public async Task<IActionResult> SSAmmCompleted()
     {

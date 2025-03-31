@@ -24,7 +24,7 @@
                         print
                         </a>*@
                         <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" 
-                        asp-controller="ReqWithoutBom" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode">
+                        asp-controller="ReqWithoutBom" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" target="_blank">
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
                         </a>
@@ -1237,7 +1237,7 @@
         }
 
         $('#FromDepartmentId').change(function () {
-            if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" ||
+            if ($('#FromDepartmentId').find(":selected").data('depttype') == "PRODUCTION" ||
                 $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
 
                 $('#WorkCenterId').prop('disabled', false);
@@ -1465,6 +1465,7 @@
                 success: function (result, status, xhr) {
                     if (result) {
                         var obj = JSON.parse(result);
+                        alert('Parsed Result: ' + JSON.stringify(obj, null, 2));
                         if (!obj) {
                             $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
                         }
@@ -1493,6 +1494,7 @@
 
         function PartCodeChange(ID) {
             copyToClipboardForDropdown('#PartCode');
+            alert('unit'+$('#PartCode').find(':selected').data('unit'));
             $('#Unit').val($('#PartCode').find(':selected').data('unit'));
             $('#AltUnit').val($('#PartCode').find(':selected').data('altunit'));
             $('#ItemBinRackNo').val($('#PartCode').find(':selected').data('bin'));

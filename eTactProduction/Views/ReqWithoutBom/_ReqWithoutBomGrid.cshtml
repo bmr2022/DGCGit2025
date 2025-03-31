@@ -14,7 +14,7 @@ else
             <td style="white-space:nowrap;">
                 @if (Model.Mode == "V" && Model.ID > 0)
                 {
-                    <a class="table-link link-primary noCursor"  asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" asp-action="PrintReport">
+                    <a class="table-link link-primary noCursor"  asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" asp-action="PrintReport" target="_blank">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

@@ -11,6 +11,7 @@ namespace eTactWeb.Services.Interface
     public interface IReceiveChallan
     {
         Task<ResponseResult> NewEntryId(int YearCode);
+        Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> GetMRNNo(int yearcode,string FromDate,string ToDate);
         Task<ResponseResult> GetGateNo(int yearcode, string FromDate, string ToDate);
         Task<ResponseResult> GetMRNDetail(int EntryId);

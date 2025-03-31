@@ -446,6 +446,47 @@
         //         window.location.href = linkurl;
         //     }
         //}
+        
+        function deleteItem(entryID, yearCode, purchVouchNo, invNo, isDetail, cnt) {
+            sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
+            sessionStorage.setItem('MRNTypeBack', $('#MRNType').val());
+            sessionStorage.setItem('DocumentNameBack', $('#DocumentName').val());
+            sessionStorage.setItem('VendorNameBack', $('#VendorName').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
+            sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNo').val());
+            sessionStorage.setItem('MRNNoBack', $('#MRNNo').val());
+            sessionStorage.setItem('GateNoBack', $('#GateNo').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCode').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemName').val());
+            sessionStorage.setItem('HSNNoBack', $('#HSNNo').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+
+            $.ajax({
+                url: '@Url.Action("DeleteByID", "PurchaseBill")',
+                type: 'GET',
+                data: {
+                    ID: entryID,
+                    YC: yearCode,
+                    PurchVoucherNo: purchVouchNo,
+                    InvNo: invNo,
+                    IsDetail: isDetail
+                },
+                success: function (response) {
+                    if (response != null && response != undefined && response != '') {
+                        if (response == true || response == 'true') {
+                            $.notify("Item Deleted Successfully...!", { className: "success", globalPosition: "top center" });
+                            GetSearchData();
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    alert("Error deleting item: " + error);
+                }
+            });
+        }
 
         function LockedFinancialYear() {
             $.ajax({

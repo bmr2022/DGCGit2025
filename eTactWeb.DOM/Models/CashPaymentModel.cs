@@ -57,7 +57,7 @@ namespace eTactWeb.DOM.Models
         public decimal CrAmt { get; set; }
         public double VoucherAmt { get; set; }
         public IList<CashPaymentModel> CashPaymentGrid { get; set; }
-        public List<PopUpDataTable> DataTable { get; set; }
+        public List<PopUpDataTableAgainstRef> DataTable { get; set; }
         public int BooktrnsEntryId { get; set; }
         public int DocEntryId { get; set; }
         public string VoucherDocNo { get; set; }
