@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,9 +15,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly PendingInProcessToQcDAL _PendInProcesstoQcDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public PendingInProcessToQcBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public PendingInProcessToQcBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _PendInProcesstoQcDAL = new PendingInProcessToQcDAL(configuration, iDataLogic);
+            _PendInProcesstoQcDAL = new PendingInProcessToQcDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<DataSet> BindItem(string Flag)

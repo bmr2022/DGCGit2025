@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -15,11 +16,11 @@ namespace eTactWeb.Data.BLL
         private readonly ProductionEntryDAL _ProductionEntryDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProductionEntryBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public ProductionEntryBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //_PurchaseOrderDAL = new PurchaseOrderDAL(configuration, iDataLogic);
             _DataLogicDAL = iDataLogic;
-            _ProductionEntryDAL = new ProductionEntryDAL(configuration, iDataLogic, _httpContextAccessor);
+            _ProductionEntryDAL = new ProductionEntryDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
         public async Task<PendingProductionEntryModel> GetPendingProductionEntry(int Yearcode)
         {
