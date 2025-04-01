@@ -116,7 +116,7 @@
 {
     <script>
         $(function () {
-             
+            GetFormRights();
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
             var SlipNoBack = sessionStorage.getItem('SlipNoBack');
@@ -246,25 +246,106 @@
             GetSearchData();
         })
 
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            //$("#submitBTN").prop("disabled", true);
+                        } else {
+                            console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#savebtn").css("pointer-events", "none");
+                                } else {
+                                    $("#savebtn").css("pointer-events", "");
+                                }
+                                if (!optView) {
+
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#viewCursorDiv-' + i).empty();
+                                        $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                                                                                <span class="fa-stack">
+                                                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                                                                </span>
+                                                                                                                                            </a>`);
+                                    }
+                                }
+                                if (!optUpdate) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#editCursorDiv-' + i).empty();
+                                        $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                                                                                <span class="fa-stack">
+                                                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                                                </span>
+                                                                                                                                            </a>`);
+                                    }
+                                }
+                                if (!optDelete) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#deleteCursorDiv-' + i).empty();
+                                        $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                                                                                <span class="fa-stack">
+                                                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                                                </span>
+                                                                                                                                            </a>`);
+                                    }
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
         function GetSearchData() {
 
             if ($('#DashboardType').val() == "Summary") {
                 GetSummaryData();
+                GetFormRights();
             }
             else if ($('#DashboardType').val() == "Breakdown") {
                 GetBreakdownData();
+                GetFormRights();
             }
             else if ($('#DashboardType').val() == "DetailWithBatchwise") {
                 GetBatchwiseDetail();
+                GetFormRights();
             }
             else if ($('#DashboardType').val() == "Operation") {
                 GetOperationData();
+                GetFormRights();
             }
             else if ($('#DashboardType').val() == "Scrap") {
                 GetScrapData();
+                GetFormRights();
             }
             else {
                 GetDetailData();
+                GetFormRights();
             }
         }
 
@@ -982,6 +1063,7 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#gateDashboardtable tr').length
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -1005,6 +1087,7 @@
                     CheckApprovedOrNotBatchWiseDetail();
                     var dashGrid = $('#gateDashboardtable tr').length
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -1038,6 +1121,7 @@
                     CheckApprovedOrNotBreakdown();
                     var dashGrid = $('#gateDashboardtable tr').length
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -1061,6 +1145,7 @@
                     CheckApprovedOrNotOperator();
                     var dashGrid = $('#gateDashboardtable tr').length
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -1084,6 +1169,7 @@
                     CheckApprovedOrNotScrapDetail();
                     var dashGrid = $('#gateDashboardtable tr').length
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -1108,6 +1194,7 @@
                     CheckApprovedOrNotDetail();
                     var dashGrid = $('#gateDashboardtable tr').length
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);

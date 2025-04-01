@@ -117,6 +117,27 @@ public class PurchaseOrderDAL
         }
         return _ResponseResult;
     }
+
+    public async Task<ResponseResult> PoallowtoprintWithoutApproval()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "PoallowtoprintWithoutApproval"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_PurchaseOrder", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+
+
     public async Task<ResponseResult> FillEntryandPONumber(int YearCode)
     {
         var _ResponseResult = new ResponseResult();

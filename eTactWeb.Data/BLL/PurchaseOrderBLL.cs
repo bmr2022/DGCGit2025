@@ -22,6 +22,8 @@ namespace eTactWeb.Data.BLL
         //{
         //    return await _PurchaseOrderDAL.GetItemServiceFORPO(ItemSErv);
         //}
+
+        
         public async Task<string> GetItemServiceFORPO(string ItemService)
         {
             return await _PurchaseOrderDAL.GetItemServiceFORPO(ItemService);
@@ -49,6 +51,11 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillEntryandPONumber(int YearCode)
         {
             return await _PurchaseOrderDAL.FillEntryandPONumber(YearCode);
+        }
+
+        public async Task<ResponseResult> PoallowtoprintWithoutApproval()
+        {
+            return await _PurchaseOrderDAL.PoallowtoprintWithoutApproval();
         }
         public async Task<ResponseResult> NewAmmEntryId(int PoAmendYearCode)
         {

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,14 @@ namespace eTactWeb.Data.BLL
     {
         private readonly IDataLogic _DataLogicDAL;
         private readonly TranferFromWorkCenterDAL _TranferFromWorkCenterDAL;
-        public TransferFromWorkCenterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public TransferFromWorkCenterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _TranferFromWorkCenterDAL = new TranferFromWorkCenterDAL(configuration, iDataLogic);
+            _TranferFromWorkCenterDAL = new TranferFromWorkCenterDAL(configuration, iDataLogic, connectionStringService);
+        }
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _TranferFromWorkCenterDAL.GetFormRights(userID);
         }
         public async Task<TransferFromWorkCenterModel> GetViewByID(int ID, int YearCode)
         {

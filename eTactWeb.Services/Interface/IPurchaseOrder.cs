@@ -27,6 +27,8 @@ namespace eTactWeb.Services.Interface
         Task<PurchaseOrderModel> GetViewPOCcompletedByID(int iD, int yC, string PONO, string v);
 
         Task<ResponseResult> GetQuotData(string Flag, string QuotNo);
+
+        Task<ResponseResult> PoallowtoprintWithoutApproval();
         Task<ResponseResult> FillEntryandPONumber(int YearCode);
         Task<ResponseResult> FillItems(string Type, string ShowAllItem);
         Task<ResponseResult> FillPONumber(int YearCode, string Ordertype, string Podate);

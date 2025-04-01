@@ -50,6 +50,8 @@ namespace eTactWeb.DOM.Models
         public string Country { get; set; } 
         public string LUTNO { get; set; } 
         public string? LUTDATE { get; set; } 
+        public string? ActualEntryBy { get; set; } 
+        public string? ActualEntryDate { get; set; } 
         public string UDYMANO { get; set; } 
         public string FromDate { get; set; } 
         public string ToDate { get; set; }

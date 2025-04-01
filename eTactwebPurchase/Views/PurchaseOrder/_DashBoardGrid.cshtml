@@ -4,6 +4,8 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+   // var PoallowtoprintWithoutApproval = HttpContextAccessor.HttpContext.Session.GetString("PoallowtoprintWithoutApproval");
+   // string PoallowtoprintWithoutApproval = HttpContextAccessor.HttpContext.Request.Query["PoallowtoprintWithoutApproval"];
 }
 @if (Model.DashboardType == "Detail")
 {
@@ -46,6 +48,7 @@ else
             <tbody id="divDashboardGrid1">
                 @{
                     var @Cntr = 0;
+                    var PoallowtoprintWithoutApproval = Model.PoallowtoprintWithoutApproval;
                     if (Model.PODashboard == null || Model.PODashboard.Count == 0)
                     {
                         <tr class="text-center"><td colspan="18" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -74,15 +77,31 @@ else
                                         </div>
                                         @if (@item.Approved == "N" && @item.CC != "AC")
                                         {
-                                            <div>
-                                                <a class="table-link link-dark noCursor">
-                                                    <span class="fa-stack">
-                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                        <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                </a>
-                                            </div>
-                                        }
+                                            @if (PoallowtoprintWithoutApproval == "Y")
+                                            {
+                                                <div id="printData-@Cntr">
+                                                    <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode" target="_blank">
+                                                        <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            }
+                                            else
+                                            {
+
+                                                <div>
+                                                    <a class="table-link link-dark noCursor">
+                                                        <span class="fa-stack">
+                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                            <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            }
+
+                            }
                                         else
                                         {
                                             <div id="printData-@Cntr">

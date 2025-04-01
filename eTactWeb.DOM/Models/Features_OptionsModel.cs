@@ -116,6 +116,7 @@ namespace eTactWeb.DOM.Models
         public string ProdAllowMultiplePlanInProdSchOrNot { get; set; }
         public string AccPurchaseVoucherPrintoutFilename { get; set; }
         public string AccPurchaseBillInvoicePrintoutFilename { get; set; }
+        public string PoallowtoprintWithoutApproval { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string Searchbox { get; set; }

@@ -63,7 +63,7 @@ namespace eTactWeb.Data.DAL
                     if (Type == "PurchaseDetail")
                     {
 
-                        oCmd.Parameters.AddWithValue("@flag", "UPDATEPurchaseDashbaord");
+                        oCmd.Parameters.AddWithValue("@flag", "PurchaseDashbaord");
                     }
                     if (Type == "SaleOrderDetail")
                     {
@@ -128,6 +128,10 @@ namespace eTactWeb.Data.DAL
                          {
                           oCmd.Parameters.AddWithValue("@flag", "SaleBillDashbaord");
                          }
+                        if (Type == "AccountDetail")
+                         {
+                          oCmd.Parameters.AddWithValue("@flag", "AccountDashbaord");
+                         }
                         
 
                     await myConnection.OpenAsync();
@@ -167,6 +171,7 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBackDatePURCHASEORDER = dr["AllowBackDatePURCHASEORDER"] != DBNull.Value ? dr["AllowBackDatePURCHASEORDER"].ToString() : string.Empty,
                                                                 AllowBackDateINDENT = dr["AllowBackDateINDENT"] != DBNull.Value ? dr["AllowBackDateINDENT"].ToString() : string.Empty,
                                                                 CheckPOPendFromPOonlyNotFromAmendment = dr["CheckPOPendFromPOonlyNotFromAmendment"] != DBNull.Value ? dr["CheckPOPendFromPOonlyNotFromAmendment"].ToString() : string.Empty,
+                                                                PoallowtoprintWithoutApproval = dr["PoallowtoprintWithoutApproval"] != DBNull.Value ? dr["PoallowtoprintWithoutApproval"].ToString() : string.Empty,
                                                             }).ToList();
                     }
 
@@ -371,6 +376,24 @@ namespace eTactWeb.Data.DAL
                                                                
                                                             }).ToList();
                         }
+                         if (Type == "AccountDetail")
+                        {
+                         model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                AccAllowtochangeDocumentinPurchaseBill = dr["AccAllowtochangeDocumnetinPurchaseBill"] != DBNull.Value ? dr["AccAllowtochangeDocumnetinPurchaseBill"].ToString() : string.Empty,
+                                                                AccPasswordToChangeDocumentinPurchaseBill = dr["AccPasswordToChangeDocumentinPurchaseBill"] != DBNull.Value ? dr["AccPasswordToChangeDocumentinPurchaseBill"].ToString() : string.Empty,
+                                                                AccAllowtochangeInvoiceNoDateinPurchaseBill = dr["AccAllowtochangeInvoiceNoDateinPurchaseBill"] != DBNull.Value ? dr["AccAllowtochangeInvoiceNoDateinPurchaseBill"].ToString() : string.Empty,
+                                                                AccPasswordToAllowManualTax = dr["AccPasswordToAllowManualTax"] != DBNull.Value ? dr["AccPasswordToAllowManualTax"].ToString() : string.Empty,
+                                                                AccSaleBillManualTaxAllowed = dr["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? dr["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty,
+                                                                AccAllowBackdateVoucherEntry = dr["AccAllowBackdateVoucherEntry"] != DBNull.Value ? dr["AccAllowBackdateVoucherEntry"].ToString() : string.Empty,
+                                                                AccBackdateVoucherEntryPassword = dr["AccBackdateVoucherEntryPassword"] != DBNull.Value ? dr["AccBackdateVoucherEntryPassword"].ToString() : string.Empty,
+                                                                AccAllowToChangeVoucherDateInPurchBill = dr["AccAllowTochangeVoucherDateInPurchBill"] != DBNull.Value ? dr["AccAllowTochangeVoucherDateInPurchBill"].ToString() : string.Empty,
+                                                                AccPurchaseVoucherPrintoutFilename = dr["AccPurchaseVoucherPrintoutfilename"] != DBNull.Value ? dr["AccPurchaseVoucherPrintoutfilename"].ToString() : string.Empty,
+                                                                AccPurchaseBillInvoicePrintoutFilename = dr["AccPurchaseBillInvoicePrintoutfilename"] != DBNull.Value ? dr["AccPurchaseBillInvoicePrintoutfilename"].ToString() : string.Empty
+
+                                                            }).ToList();
+                        }
 
                  }
             }
@@ -468,6 +491,10 @@ namespace eTactWeb.Data.DAL
                   {
                     SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDProdPlanSch"));
                   }
+                   if (Type == "AccountDetail")
+                  {
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDAccount"));
+                  }
 
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("Sp_FeaturesOptions", SqlParams);
 
@@ -513,6 +540,7 @@ namespace eTactWeb.Data.DAL
                     model.AllowBackDatePURCHASEORDER = DS.Tables[0].Rows[0]["AllowBackDatePURCHASEORDER"].ToString();
                     model.AllowBackDateINDENT = DS.Tables[0].Rows[0]["AllowBackDateINDENT"].ToString();
                     model.CheckPOPendFromPOonlyNotFromAmendment = DS.Tables[0].Rows[0]["CheckPOPendFromPOonlyNotFromAmendment"].ToString();
+                    model.PoallowtoprintWithoutApproval = DS.Tables[0].Rows[0]["PoallowtoprintWithoutApproval"].ToString();
                 }
                 if (Type == "SaleOrderDetail")
                 {
@@ -650,6 +678,20 @@ namespace eTactWeb.Data.DAL
                     model.VoucherRotationDailyMonthYearly = DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"] != DBNull.Value ? DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"].ToString() : string.Empty;
                     
                 }
+                  if (Type == "AccountDetail")
+                {
+                    model.AccAllowtochangeDocumentinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeDocumentinPurchaseBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowtochangeDocumentinPurchaseBill"].ToString() : string.Empty;
+                    model.AccPasswordToChangeDocumentinPurchaseBill = DS.Tables[0].Rows[0]["AccPasswordToChangeDocumentinPurchaseBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToChangeDocumentinPurchaseBill"].ToString() : string.Empty;
+                    model.AccAllowtochangeInvoiceNoDateinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeInvoiceNoDateinPurchaseBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowtochangeInvoiceNoDateinPurchaseBill"].ToString() : string.Empty;
+                    model.AccPasswordToAllowManualTax = DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"].ToString() : string.Empty;
+                    model.AccSaleBillManualTaxAllowed = DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty;
+                    model.AccAllowBackdateVoucherEntry = DS.Tables[0].Rows[0]["AccAllowBackdateVoucherEntry"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowBackdateVoucherEntry"].ToString() : string.Empty;
+                    model.AccBackdateVoucherEntryPassword = DS.Tables[0].Rows[0]["AccBackdateVoucherEntryPassword"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccBackdateVoucherEntryPassword"].ToString() : string.Empty;
+                    model.AccAllowToChangeVoucherDateInPurchBill = DS.Tables[0].Rows[0]["AccAllowTochangeVoucherDateInPurchBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowTochangeVoucherDateInPurchBill"].ToString() : string.Empty;
+                    model.AccPurchaseVoucherPrintoutFilename = DS.Tables[0].Rows[0]["AccPurchaseVoucherPrintoutfilename"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPurchaseVoucherPrintoutfilename"].ToString() : string.Empty;
+                    model.AccPurchaseBillInvoicePrintoutFilename = DS.Tables[0].Rows[0]["AccPurchaseBillInvoicePrintoutfilename"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPurchaseBillInvoicePrintoutfilename"].ToString() : string.Empty;
+
+                }
 
                 if (DS.Tables.Count != 0 && DS.Tables[0].Rows.Count > 0)
                 {
@@ -702,6 +744,7 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@AllowBackDatePURCHASEORDER", model.AllowBackDatePURCHASEORDER));
                         SqlParams.Add(new SqlParameter("@AllowBackDateINDENT", model.AllowBackDateINDENT));
                         SqlParams.Add(new SqlParameter("@CheckPOPendFromPOonlyNotFromAmendment", model.CheckPOPendFromPOonlyNotFromAmendment));
+                        SqlParams.Add(new SqlParameter("@PoallowtoprintWithoutApproval", model.PoallowtoprintWithoutApproval));
                     }
                     if (model.Type == "SaleOrderDetail")
                     {
@@ -857,6 +900,21 @@ namespace eTactWeb.Data.DAL
                             SqlParams.Add(new SqlParameter("@VoucherRotationDailyMonthYearly", model.VoucherRotationDailyMonthYearly));
 
                         }
+                         if (model.Type == "AccountDetail")
+                         {
+                            SqlParams.Add(new SqlParameter("@Flag", "UPDATEAccount"));
+                            SqlParams.Add(new SqlParameter("@AccAllowtochangeDocumnetinPurchaseBill", model.AccAllowtochangeDocumentinPurchaseBill));
+                            SqlParams.Add(new SqlParameter("@AccPasswordToChangeDocumentinPurchaseBill", model.AccPasswordToChangeDocumentinPurchaseBill));
+                            SqlParams.Add(new SqlParameter("@AccAllowtochangeInvoiceNoDateinPurchaseBill", model.AccAllowtochangeInvoiceNoDateinPurchaseBill));
+                            SqlParams.Add(new SqlParameter("@AccPasswordToAllowManualTax", model.AccPasswordToAllowManualTax));
+                            SqlParams.Add(new SqlParameter("@AccSaleBillManualTaxAlloweed", model.AccSaleBillManualTaxAllowed));
+                            SqlParams.Add(new SqlParameter("@AccAllowBackdateVoucherEntry", model.AccAllowBackdateVoucherEntry));
+                            SqlParams.Add(new SqlParameter("@AccBackdateVoucherEntryPassword", model.AccBackdateVoucherEntryPassword));
+                            SqlParams.Add(new SqlParameter("@AccAllowTochangeVoucherDateInPurchBill", model.AccAllowToChangeVoucherDateInPurchBill));
+                            SqlParams.Add(new SqlParameter("@AccPurchaseVoucherPrintoutfilename", model.AccPurchaseVoucherPrintoutFilename));
+                            SqlParams.Add(new SqlParameter("@AccPurchaseBillInvoicePrintoutfilename", model.AccPurchaseBillInvoicePrintoutFilename));
+
+                         }
 
 
 

@@ -505,6 +505,7 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "DeliveryTerm"
                      // && typeProperty.PropertyInfo.Name != "UpdateddByEmp"
                      && typeProperty.PropertyInfo.Name != "UpdatedOn"
+                     && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval"
                       )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

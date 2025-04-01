@@ -34,5 +34,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _CompanyDetailDAL.GetDashboardDetailData();
         }
+        public async Task<CompanyDetailModel> GetViewByID(int ID)
+        {
+            return await _CompanyDetailDAL.GetViewByID(ID);
+        }
     }
 }
