@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.Features;
 using eTactWeb.Services.Interface;
 using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
+using eTactWeb.Services;
 
 namespace eTactWeb
 {
@@ -35,12 +36,11 @@ namespace eTactWeb
                 app.UseHsts();
             }
 
-          
-
             loggerFactory.AddFile("Logs/eTactWeb-.log");
        
             app.UseHttpLogging();
             app.UseSession();
+            app.UseMiddleware<SessionCheckMiddleware>();
             app.UseOutputCache();
            
             app.UseStaticFiles();
@@ -59,9 +59,6 @@ namespace eTactWeb
             app.UseAuthorization();
 
             app.UseStatusCodePages();
-
-          
-
             app.UseEndpoints
             (
                 endpoints =>
@@ -74,7 +71,6 @@ namespace eTactWeb
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddLogging();
             services.AddAuthentication();
@@ -83,9 +79,14 @@ namespace eTactWeb
             services.AddMemoryCache();
             services.AddOutputCache();
             FastReport.Utils.RegisteredObjects.AddConnection(typeof(FastReport.Data.MsSqlDataConnection));
-            services.AddControllersWithViews();
 
-            services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(60); });
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1); // Auto-expire after 30 seconds
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+
+            });
 
             services.AddMvc(options =>
             {
