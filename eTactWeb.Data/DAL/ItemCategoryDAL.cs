@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
@@ -13,12 +14,15 @@ namespace eTactWeb.Data.DAL
         private IDataReader? Reader;
 
         private readonly IDataLogic _DataLogicDAL;
+        private readonly ConnectionStringService _connectionStringService;
         //private readonly IConfiguration configuration;
 
-        public ItemCategoryDAL(IConfiguration configuration, IDataLogic dataLogicDAL)
+        public ItemCategoryDAL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            // DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _DataLogicDAL = dataLogicDAL;
         }
 

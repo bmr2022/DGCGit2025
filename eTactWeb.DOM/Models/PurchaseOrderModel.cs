@@ -19,6 +19,7 @@ public class PODashBoard : TimeStamp
     public string? ApprovedDate { get; set; }
     public string? EntryByMachineName { get; set; }
     public string? Approved { get; set; }
+    public string? PoallowtoprintWithoutApproval { get; set; }
     public string? ApproveAmm { get; set; }
     public string? Approval1Levelapproved { get; set; }
     public string? Currency { get; set; }
