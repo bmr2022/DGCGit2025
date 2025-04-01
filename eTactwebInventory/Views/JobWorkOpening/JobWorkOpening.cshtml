@@ -810,6 +810,7 @@
                     dataType: "json",
                     data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
                     success: function (result, status, error) {
+                       
                         DeleteItemRow(SeqNo);
                          
                         if (result != null) {
@@ -845,13 +846,13 @@
                                 if ($('#Mode').val() == "U") {
                                     $('#ItemCode').val(obj[0].ItemCode).trigger('change');
                                     $('#PartCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#RecItemCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#RecPartCode').val(obj[0].ItemCode).trigger('change');
+                                    $('#RecItemCode').val(obj[0].RecItemCode).trigger('change');
+                                    $('#RecPartCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#ScrapItemCode').val(obj[0].ScrapItemCode).trigger('change');
                                     $('#ScrapPartCode').val(obj[0].ScrapItemCode).trigger('change');
                                 } else {
                                     $('#ItemCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#PartCode').val(obj[0].PartCode).trigger('change');
+                                    $('#PartCode').val(obj[0].ItemCode).trigger('change');
                                     $('#RecItemCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#RecPartCode').val(obj[0].RecPartCode).trigger('change');
                                     $('#ScrapItemCode').val(obj[0].ScrapItemCode).trigger('change');
@@ -896,6 +897,21 @@
                 success: function (data, status, xhr) {
                     $('#divJobWorkOpeningGrid').empty().html(data);
                     $.notify("Item deleted successfully", "info");
+                    var sum = 0;
+                    var rowCount = $('#divJobWorkOpeningGrid tr').length;
+                    var columnCount = $('#divJobWorkOpeningGrid tr td').length;
+
+                    for (var i = 1; i <= rowCount; i++) {
+
+                        sum += parseFloat($('#Qty-' + i).text() == '.00' ? 0 : $('#Qty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
+                    }
+                    //noofitems
+                    if (columnCount > 1)
+                        $('#lblItemCount').text(rowCount);
+                    else
+                        $('#lblItemCount').text(0);
+                
+                            $('#lblItemNetAmount').text(sum.toFixed(2));
                 },
                 error: function (response, status, xhr) {
                     alert(response.responseText);
