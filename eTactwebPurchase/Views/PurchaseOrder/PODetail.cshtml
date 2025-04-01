@@ -111,26 +111,26 @@
                             <div class="card">
                                 <div class="d-flex justify-content-end mb-2">
 
-                                    
-                                        <div class="col-auto" style="display:none">
-                                            <button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
-                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
-                                            </button>
-                                        </div>
-                                        <div class="col-auto  me-3">
-                                            <input class="form-control" type="file" id="ExcelFile" />
-                                        </div>
-                                        <div class="col-auto  me-3">
-                                            <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
-                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
-                                            </button>
-                                        </div>
+
+                                    <div class="col-auto" style="display:none">
+                                        <button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
+                                        </button>
+                                    </div>
+                                    <div class="col-auto  me-3">
+                                        <input class="form-control" type="file" id="ExcelFile" />
+                                    </div>
+                                    <div class="col-auto  me-3">
+                                        <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                                        </button>
+                                    </div>
 
 
 
                                     <div class="col-md-2 me-3">
-                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
-                                </div>
+                                        <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                    </div>
                                     <a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportPOFormate();">
                                         <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
                                         IMPORT FORMAT
@@ -451,9 +451,10 @@
             $(this).attr("tabindex", ++tabIndx);
         });
 
-        $(document).ready(function () {
+        $(document).ready(function ()
+        {
 
-            
+
             if ($('#OrderType').val() == 'Import') {
                 $('#Rate').prop("disabled", true);
                 $('#OtherRateCurr').prop("disabled", false);
@@ -547,7 +548,7 @@
                 var AmendmentDt = $('#AmendmentDate').val().split("-").join("/");
                 AmendmentDt = parseDateToFormat(AmendmentDt.split(" ")[0]);
                 $('#AmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AmendmentDt);
-                
+
             }
             else {
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -701,7 +702,7 @@
                 });
             }
 
-            
+
 
             $('#EntryDate').datepicker("option", "minDate", formattedDate1);
             $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
@@ -786,7 +787,8 @@
                 minDate: new Date(currentYear, 4 - 1, 1)
             });
             $('#POFor').trigger("change");
-        });
+            FillItems();
+        });///ready even end here
 
         //$('#PODate').change(function () {
         //    if (!$('#AccountCode').is(':focus')) {
@@ -1121,13 +1123,15 @@
                 async:false,
                 data: { Type: $('#POTypeServItem').val(), ShowAllItem: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
                 success: function (result, status, error) {
-                     debugger 
+                     debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
+                        alert(result);
                         if (obj.StatusCode == 200 && obj.StatusText == "Success") {
                             $('#PartCode,#ItemCode').empty();
                             $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
-                            if (isItemSelected) {
+                            if (isItemSelected)
+                            {
                                 const distinctItems = Array.from(
                                     itemDataArray.reduce((map, item) => map.set(item.ItemCode, item), new Map()).values()
                                 );
@@ -1136,7 +1140,9 @@
                                     $('#PartCode').append("<option value=" + val.ItemCode + " data-unipartcode = " + val.PartCode + ">" + val.PartCode + "</option>");
                                     $('#ItemCode').append("<option value=" + val.ItemCode + " data-unipartcode = " + val.PartCode + ">" + val.ItemName + "</option>");
                                 });
-                            } else {
+                            }
+                            else
+                            {
 
                                 $.each(obj.Result.Table, function (index, val) {
                                     $('#PartCode').append("<option value=" + val.Item_Code + " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription + ">" + val.PartCode + "</option>");
@@ -1999,7 +2005,27 @@
 
         $('#IN1').change(function () {
 
-            FillItems();
+                    $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("FillItems")",
+            dataType: "json",
+            data: { Type: 'Item', ShowAllItem: $('#IN1').val() == 'true' ? 'Y' : 'N' },
+            success: function (result, status, error) {
+                if (result != null) {
+                    var obj = $.parseJSON(result);
+                    if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                        $('#PartCode,#ItemCode').empty();
+                        $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
+                        $.each(obj.Result.Table, function (index, val) {
+                            $('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
+                            $('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
+                        });
+                    }
+
+                }
+            }
+        });
         });
 
 
@@ -2686,7 +2712,7 @@
 
         var isEditAllowed = "false";
         async function EditItemRow(SeqNo) {
-             
+
             var PartCode = $('#PartCode').val();
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
@@ -2694,7 +2720,7 @@
                 data: { PartCode: PartCode, SeqNo: SeqNo },
                 async:false,
                 success: await function (data, status, xhr) {
-                     
+
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
                     }
@@ -3077,7 +3103,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-   
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
     @*<script src="~/Scripts/table2excel.js"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
