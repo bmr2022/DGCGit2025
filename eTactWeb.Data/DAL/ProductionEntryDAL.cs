@@ -22,13 +22,17 @@ public class ProductionEntryDAL
     private readonly IDataLogic _IDataLogic;
     private readonly string DBConnectionString = string.Empty;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ConnectionStringService _connectionStringService;
+
 
     private IDataReader? Reader;
 
-    public ProductionEntryDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor)
+    public ProductionEntryDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService)
     {
         _IDataLogic = iDataLogic;
-        DBConnectionString = configuration.GetConnectionString("eTactDB");
+        //  DBConnectionString = configuration.GetConnectionString("eTactDB");
+        _connectionStringService = connectionStringService;
+        DBConnectionString = _connectionStringService.GetConnectionString();
         _httpContextAccessor = httpContextAccessor;
     }
     public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy)
@@ -1077,7 +1081,7 @@ public class ProductionEntryDAL
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
             SqlParams.Add(new SqlParameter("@EmpId", userId));
-            SqlParams.Add(new SqlParameter("@MainMenu", "Gate Inward"));
+            SqlParams.Add(new SqlParameter("@MainMenu", "Daily Production Entry"));
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
         }

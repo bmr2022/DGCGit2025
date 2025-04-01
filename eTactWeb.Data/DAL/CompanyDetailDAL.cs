@@ -3,6 +3,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -29,6 +30,15 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+                DateTime? startDt = new DateTime();
+                DateTime? endDt = new DateTime();
+                //DateTime? softwarestartDt = new DateTime();
+                //DateTime? lutdt = new DateTime();
+
+                startDt = ParseDate(model.Start_Date);
+                endDt = ParseDate(model.End_Date);
+                //softwarestartDt = ParseDate(model.SoftwareStartDate);
+                //lutdt = ParseDate(model.LUTDATE);
                 var sqlParams = new List<dynamic>();
                 if (model.Mode == "U" || model.Mode == "V")
                 {
@@ -46,8 +56,8 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@StateCode", model.StateCode));
                     sqlParams.Add(new SqlParameter("@StateName", model.StateName));
                     sqlParams.Add(new SqlParameter("@Commodity", model.Commodity));
-                    sqlParams.Add(new SqlParameter("@Start_Date", (object)model.Start_Date ?? DBNull.Value));
-                    sqlParams.Add(new SqlParameter("@End_Date", (object)model.End_Date ?? DBNull.Value));
+                    sqlParams.Add(new SqlParameter("@Start_Date", startDt == null ? DBNull.Value : startDt));
+                    sqlParams.Add(new SqlParameter("@End_Date", endDt == null ? DBNull.Value : endDt));
                     sqlParams.Add(new SqlParameter("@PhoneF", model.PhoneF));
                     sqlParams.Add(new SqlParameter("@Division", model.Division));
                     sqlParams.Add(new SqlParameter("@OrgType", model.OrgType));
@@ -60,7 +70,7 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@PFNO", model.PFNO));
                     sqlParams.Add(new SqlParameter("@Registration_No", model.Registration_No));
                     sqlParams.Add(new SqlParameter("@VENDOR_CODE", model.VENDOR_CODE));
-                    sqlParams.Add(new SqlParameter("@SoftwareStartDate", (object)model.SoftwareStartDate ?? DBNull.Value));
+                    sqlParams.Add(new SqlParameter("@SoftwareStartDate", model.SoftwareStartDate == null ? DBNull.Value : model.SoftwareStartDate));
                     sqlParams.Add(new SqlParameter("@Prefix", model.Prefix));
                     sqlParams.Add(new SqlParameter("@ContactPersonSales", model.ContactPersonSales));
                     sqlParams.Add(new SqlParameter("@ContacPersonPurchase", model.ContacPersonPurchase));
@@ -68,7 +78,7 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@ContactPersonAccounts", model.ContactPersonAccounts));
                     sqlParams.Add(new SqlParameter("@Country", model.Country));
                     sqlParams.Add(new SqlParameter("@LUTNO", model.LUTNO));
-                    sqlParams.Add(new SqlParameter("@LUTDATE", (object)model.LUTDATE ?? DBNull.Value));
+                    sqlParams.Add(new SqlParameter("@LUTDATE", model.LUTDATE == null ? DBNull.Value : model.LUTDATE));
                     sqlParams.Add(new SqlParameter("@UDYMANO", model.UDYMANO));
 
                 }
@@ -88,6 +98,100 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
+        }
+        public async Task<CompanyDetailModel > GetViewByID(int ID)
+        {
+            var model = new CompanyDetailModel();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "VIEWBYID"));
+                SqlParams.Add(new SqlParameter("@EntryID", ID));;
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SpCompanyDetail", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(_ResponseResult.Result, ref model);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+        private static CompanyDetailModel PrepareView(DataSet DS, ref CompanyDetailModel? model)
+        {
+            try
+            {
+                var ItemList = new List<CompanyDetailModel>();
+               
+                DS.Tables[0].TableName = "CompanyDetail";
+                int cnt = 0;
+
+                model.EntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryID"].ToString());
+               
+                if (DS.Tables.Count != 0 && DS.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in DS.Tables[0].Rows)
+                    {
+                        ItemList.Add(new CompanyDetailModel
+                        {
+                            EntryID = row["EntryID"] != DBNull.Value ? Convert.ToInt32(row["EntryID"]) : 0,
+                            DispName = row["DispName"] != DBNull.Value ? row["DispName"].ToString() : string.Empty,
+                            Com_Name = row["Com_Name"] != DBNull.Value ? row["Com_Name"].ToString() : string.Empty,
+                            WebSite = row["WebSite"] != DBNull.Value ? row["WebSite"].ToString() : string.Empty,
+                            OfficeAdd1 = row["OfficeAdd1"] != DBNull.Value ? row["OfficeAdd1"].ToString() : string.Empty,
+                            OfficeAdd2 = row["OfficeAdd2"] != DBNull.Value ? row["OfficeAdd2"].ToString() : string.Empty,
+                            PinCode = row["PinCode"] != DBNull.Value ? row["PinCode"].ToString() : string.Empty,
+                            Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : string.Empty,
+                            Phone = row["Phone"] != DBNull.Value ? row["Phone"].ToString() : string.Empty,
+                            Mobile = row["Mobile"] != DBNull.Value ? row["Mobile"].ToString() : string.Empty,
+                            StateCode = row["StateCode"] != DBNull.Value ? row["StateCode"].ToString() : string.Empty,
+                            StateName = row["StateName"] != DBNull.Value ? row["StateName"].ToString() : string.Empty,
+                            Commodity = row["Commodity"] != DBNull.Value ? row["Commodity"].ToString() : string.Empty,
+                            Start_Date = row["Start_Date"] != DBNull.Value ? Convert.ToDateTime(row["Start_Date"]).ToString("dd/MMM/yyyy") : string.Empty,
+                            End_Date = row["End_Date"] != DBNull.Value ? Convert.ToDateTime(row["End_Date"]).ToString("dd/MMM/yyyy") : string.Empty,
+                            PhoneF = row["PhoneF"] != DBNull.Value ? row["PhoneF"].ToString() : string.Empty,
+                            Division = row["Division"] != DBNull.Value ? row["Division"].ToString() : string.Empty,
+                            OrgType = row["OrgType"] != DBNull.Value ? row["OrgType"].ToString() : string.Empty,
+                            PANNo = row["PANNo"] != DBNull.Value ? row["PANNo"].ToString() : string.Empty,
+                            TDSAccount = row["TDSAccount"] != DBNull.Value ? row["TDSAccount"].ToString() : string.Empty,
+                            Range = row["Range"] != DBNull.Value ? row["Range"].ToString() : string.Empty,
+                            TDSRange = row["TDSRange"] != DBNull.Value ? row["TDSRange"].ToString() : string.Empty,
+                            GSTNO = row["GSTNO"] != DBNull.Value ? row["GSTNO"].ToString() : string.Empty,
+                            PFApplicable = row["PFApplicable"] != DBNull.Value ? row["PFApplicable"].ToString() : string.Empty,
+                            PFNO = row["PFNO"] != DBNull.Value ? row["PFNO"].ToString() : string.Empty,
+                            Registration_No = row["Registration_No"] != DBNull.Value ? row["Registration_No"].ToString() : string.Empty,
+                            VENDOR_CODE = row["VENDOR_CODE"] != DBNull.Value ? row["VENDOR_CODE"].ToString() : string.Empty,
+                            SoftwareStartDate = row["SoftwareStartDate"] != DBNull.Value ? Convert.ToDateTime(row["SoftwareStartDate"]).ToString("dd/MMM/yyyy") : string.Empty,
+                            Prefix = row["Prefix"] != DBNull.Value ? row["Prefix"].ToString() : string.Empty,
+                            ContactPersonSales = row["ContactPersonSales"] != DBNull.Value ? row["ContactPersonSales"].ToString() : string.Empty,
+                            ContacPersonPurchase = row["ContacPersonPurchase"] != DBNull.Value ? row["ContacPersonPurchase"].ToString() : string.Empty,
+                            ContactPersonQC = row["ContactPersonQC"] != DBNull.Value ? row["ContactPersonQC"].ToString() : string.Empty,
+                            ContactPersonAccounts = row["ContactPersonAccounts"] != DBNull.Value ? row["ContactPersonAccounts"].ToString() : string.Empty,
+                            Country = row["Country"] != DBNull.Value ? row["Country"].ToString() : string.Empty,
+                            LUTNO = row["LUTNO"] != DBNull.Value ? row["LUTNO"].ToString() : string.Empty,
+                            LUTDATE = row["LUTDATE"] != DBNull.Value ? Convert.ToDateTime(row["LUTDATE"]).ToString("dd/MMM/yyyy") : string.Empty,
+
+                            UDYMANO = row["UDYMANO"] != DBNull.Value ? row["UDYMANO"].ToString() : string.Empty,
+                            ActualEntryBy = row["ActualEntryBy"] != DBNull.Value ? row["ActualEntryBy"].ToString() : string.Empty,
+                            ActualEntryDate =row["Start_Date"] != DBNull.Value ? Convert.ToDateTime(row["Start_Date"]).ToString("dd/MMM/yyyy") : string.Empty,
+                        });
+                    }
+                   
+                    model.CompanyDetailGrid = ItemList;
+                }
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
         public async Task<ResponseResult> GetDashboardData()
         {
@@ -189,6 +293,20 @@ namespace eTactWeb.Data.DAL
                 oDataSet.Dispose();
             }
             return model;
+        }
+        public static DateTime? ParseDate(string? dateString)
+        {
+            if (string.IsNullOrWhiteSpace(dateString))
+            {
+                return null;
+            }
+            dateString = dateString.Replace("-", "/");
+            if (DateTime.TryParseExact(dateString, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+            {
+                return parsedDate;
+            }
+
+            throw new FormatException($"Invalid date format: {dateString}. Expected format: dd/MM/yyyy");
         }
     }
 }

@@ -19,8 +19,7 @@
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT VOUCHER
                     </a>
-                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
-                       asp-controller="SaleInvoice" asp-route-EntryId="@Model.SaleBillEntryId" asp-route-YearCode="@Model.SaleBillYearCode" asp-route-Type="SALEBILL" asp-route-InvoiceNo="@Model.SaleBillNo" asp-route-AccountCode="@Model.AccountCode">
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="SaleInvoice" asp-route-EntryId="@Model.SaleBillEntryId" asp-route-YearCode="@Model.SaleBillYearCode" asp-route-Type="SALEBILL" asp-route-InvoiceNo="@Model.SaleBillNo" asp-route-AccountCode="@Model.AccountCode" target="_blank">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT INVOICE
                     </a>
@@ -315,6 +314,10 @@
                     @await Html.PartialAsync("_DrCrTable", Model)
                 </div>
                 <div class="accordion-item">
+                    @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel ?? new Common.AdjustmentModel())
+                    @*  <partial name="_AdjustmentGrid" /> *@
+                </div>
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel4">
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
@@ -326,10 +329,6 @@
                         @await Html.PartialAsync("_SaleBillOtherDetail", Model)
 
                     </div>
-                </div>
-                <div class="accordion-item">
-                    @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel ?? new Common.AdjustmentModel())
-                    @*  <partial name="_AdjustmentGrid" /> *@
                 </div>
             </div>
         </div>
@@ -759,54 +758,28 @@
         });
 
         $("#pending-search-box").on("keyup", function () {
-
             var value = $("#pending-search-box").val().toLowerCase();
+
             $("#divPendingChallanDisplayGrid tr").filter(function () {
+                var rowContainsValue = false;
+
                 if (currentSearchColumn != null) {
-                    var rowContainsValue = false;
-                    $(this).find('td').eq(currentSearchColumn).each(function () {
-                        var columnInput = $(this).find('input, select');
-                        var columnInputValue = "";
-
-                        if (columnInput.is('input')) {
-                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
-                        } else if (columnInput.is('select')) {
-                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
-                        }
-
-                        if (columnInputValue.indexOf(value) > -1) {
-                            rowContainsValue = true;
-                            return false;
-                        }
-                    });
-
-                    $(this).toggle(rowContainsValue);
-
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().trim().toLowerCase();
+                    rowContainsValue = columnText.indexOf(value) > -1;
                 } else {
-                    var rowContainsValue = false;
-
                     $(this).find('td').each(function () {
-
-                        var columnInput = $(this).find('input, select');
-                        var columnInputValue = "";
-
-                        if (columnInput.is('input')) {
-                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
-                        } else if (columnInput.is('select')) {
-                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
-                        }
-
-                        if (columnInputValue.indexOf(value) > -1) {
+                        var columnText = $(this).text().trim().toLowerCase();
+                        if (columnText.indexOf(value) > -1) {
                             rowContainsValue = true;
                             return false;
                         }
-
                     });
-
-                    $(this).toggle(rowContainsValue);
                 }
+
+                $(this).toggle(rowContainsValue);
             });
         });
+
 
         function ValidateAdjDetail() {
             if ($('#AccountCode').val() == 0) {
@@ -911,6 +884,7 @@
                                 $('#BomNo').append('<option value="' + val.bomno + '">' + val.bomno + '</option>');
                             });
                         }
+
                     }
                 }
 
@@ -1193,6 +1167,30 @@
             var discPer = $(this).val();
             if (discPer < 0 || discPer > 100 || isNaN(discPer)) {
                 $(this).val('');
+            }
+        });
+
+        $('#NoofPcs').on('input', function () {
+            var value = $(this).val();
+
+            if (value < 0 || isNaN(value) || value.includes('--')) {
+                $(this).val('');
+            }
+            $(this).val(value.replace(/[^0-9]/g, ''));
+        });
+
+
+        $('#AltQty').on('input', function () {
+            var value = $(this).val();
+
+            if (value < 0 || isNaN(value) || value.includes('--')) {
+                $(this).val('');
+            }
+
+            $(this).val(value.replace(/[^0-9.]/g, ''));
+
+            if ((value.match(/\./g) || []).length > 1) {
+                $(this).val(value.substring(0, value.lastIndexOf('.')));
             }
         });
 
@@ -2230,7 +2228,7 @@
             var rowCount = $(gridSelector + ' tr').length;
             for (var j = 1; j <= rowCount; j++) {
                 var itemCode = $(itemSelector + j).val();
-                if (itemCode != "") {
+                if (itemCode != "" && itemCode != "0") {
                     if (!itemsStockableAndCustJw.includes(itemCode)) {
                         if (gridSelector == '#divBomCustJobWorkISsueSummary') {
                             $.notify('Bom Customer JobWork must be 1 row...!', "error");
@@ -2286,7 +2284,7 @@
                 if (isCustJWValid && isBomCustJWValid && isPentoAdj) {
                     $("form").submit();
                 }
-            } 
+            }
             else if ($('#GSTRegistered').val() == 'Y') {
                 if ($('#divTaxGrid tr td').length <= 1) {
                     $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
@@ -2349,6 +2347,10 @@
                                     $('#Batchno').append('<option value="' + obj[0].Batchno + '" selected>' + obj[0].Batchno + '</option>');
                                 }
 
+                                if ($('#SaleBillJobwork').val() == 'J') {
+                                    fillBomRevNo();
+                                }
+                                $('#BomNo').val(obj[0].BomNo);
                             } else {
                                 $('#SONO').val(obj[0].SONO);
                                 $('#SOYearCode').val(obj[0].SOYearCode);
@@ -2362,6 +2364,11 @@
                                 }
 
                             }
+
+                            if ($('#SaleBillJobwork').val() == 'J') {
+                                fillBomRevNo();
+                            }
+                            $('#BomNo').val(obj[0].BomNo);
                             $('#SeqNo').val(obj[0].SeqNo);
                             $('#ProducedUnprod').val(obj[0].ProducedUnprod);
                             $('#BOMInd').val(obj[0].BOMInd);

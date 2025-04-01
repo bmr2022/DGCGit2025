@@ -111,26 +111,26 @@
                             <div class="card">
                                 <div class="d-flex justify-content-end mb-2">
 
-                                    
-                                        <div class="col-auto" style="display:none">
-                                            <button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
-                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
-                                            </button>
-                                        </div>
-                                        <div class="col-auto  me-3">
-                                            <input class="form-control" type="file" id="ExcelFile" />
-                                        </div>
-                                        <div class="col-auto  me-3">
-                                            <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
-                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
-                                            </button>
-                                        </div>
+
+                                    <div class="col-auto" style="display:none">
+                                        <button type="button" class="EXPORT btn btn-sm btn-outline-success" id="sendToExcel">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> EXPORT
+                                        </button>
+                                    </div>
+                                    <div class="col-auto  me-3">
+                                        <input class="form-control" type="file" id="ExcelFile" />
+                                    </div>
+                                    <div class="col-auto  me-3">
+                                        <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                                        </button>
+                                    </div>
 
 
 
                                     <div class="col-md-2 me-3">
-                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
-                                </div>
+                                        <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                    </div>
                                     <a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportPOFormate();">
                                         <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
                                         IMPORT FORMAT
@@ -331,6 +331,7 @@
             $('.DH').fadeOut();
             if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
                 GetTaxPartItem();
+               // FillItems();
                 $('#lblItemNetAmount').text($('#ItemNetAmount').val());
                 $('#AccountCode').prop('disabled', true);
                 if ($('#POType').val() == "OPEN") {
@@ -435,7 +436,7 @@
                     else if (response == "OK") {
                         $.notify("Indent detail saved successfully..!", "success");
                         if ($('#ItemCode').val() == null && $('#PartCode').val() == null) {
-                            FillItems();
+                            //FillItems();
                         }
                     }
                 },
@@ -450,9 +451,10 @@
             $(this).attr("tabindex", ++tabIndx);
         });
 
-        $(document).ready(function () {
+        $(document).ready(function ()
+        {
 
-            
+
             if ($('#OrderType').val() == 'Import') {
                 $('#Rate').prop("disabled", true);
                 $('#OtherRateCurr').prop("disabled", false);
@@ -475,9 +477,9 @@
             FillVendors();
             GetFormRights();
             LockedFinancialYear();
-            FillItems();
             FillCurrency();
             $('#POTypeServItem').val('Item');
+            FillItems();
 
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
@@ -516,6 +518,7 @@
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 PendingIndentDetail(true);
+                //FillItems();
                 $('.DH').fadeIn();
                 $('#PN1').prop("disabled", "false");
                 $('#PN1').prop("checked", "true");
@@ -545,6 +548,7 @@
                 var AmendmentDt = $('#AmendmentDate').val().split("-").join("/");
                 AmendmentDt = parseDateToFormat(AmendmentDt.split(" ")[0]);
                 $('#AmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AmendmentDt);
+
             }
             else {
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -698,7 +702,7 @@
                 });
             }
 
-            
+
 
             $('#EntryDate').datepicker("option", "minDate", formattedDate1);
             $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
@@ -783,7 +787,8 @@
                 minDate: new Date(currentYear, 4 - 1, 1)
             });
             $('#POFor').trigger("change");
-        });
+            FillItems();
+        });///ready even end here
 
         //$('#PODate').change(function () {
         //    if (!$('#AccountCode').is(':focus')) {
@@ -1110,7 +1115,7 @@
         }
         var isItemSelected = false;
         function FillItems() {
-             
+             debugger
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("FillItems")",
@@ -1118,13 +1123,14 @@
                 async:false,
                 data: { Type: $('#POTypeServItem').val(), ShowAllItem: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
                 success: function (result, status, error) {
-                     
+                     debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == "Success") {
                             $('#PartCode,#ItemCode').empty();
                             $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
-                            if (isItemSelected) {
+                            if (isItemSelected)
+                            {
                                 const distinctItems = Array.from(
                                     itemDataArray.reduce((map, item) => map.set(item.ItemCode, item), new Map()).values()
                                 );
@@ -1133,7 +1139,9 @@
                                     $('#PartCode').append("<option value=" + val.ItemCode + " data-unipartcode = " + val.PartCode + ">" + val.PartCode + "</option>");
                                     $('#ItemCode').append("<option value=" + val.ItemCode + " data-unipartcode = " + val.PartCode + ">" + val.ItemName + "</option>");
                                 });
-                            } else {
+                            }
+                            else
+                            {
 
                                 $.each(obj.Result.Table, function (index, val) {
                                     $('#PartCode').append("<option value=" + val.Item_Code + " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription + ">" + val.PartCode + "</option>");
@@ -1996,28 +2004,27 @@
 
         $('#IN1').change(function () {
 
-            FillItems();
-            // $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
-            // $.ajax({
-            //     type: "GET",
-            //     url: "@Url.Action("FillItems")",
-            //     dataType: "json",
-            //     data: { Type: 'Item', ShowAllItem: $('#IN1').val() == 'true' ? 'Y' : 'N' },
-            //     success: function (result, status, error) {
-            //         if (result != null) {
-            //             var obj = $.parseJSON(result);
-            //             if (obj.StatusCode == 200 && obj.StatusText == "Success") {
-            //                 $('#PartCode,#ItemCode').empty();
-            //                 $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
-            //                 $.each(obj.Result.Table, function (index, val) {
-            //                     $('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
-            //                     $('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
-            //                 });
-            //             }
+                    $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("FillItems")",
+            dataType: "json",
+            data: { Type: 'Item', ShowAllItem: $('#IN1').val() == 'true' ? 'Y' : 'N' },
+            success: function (result, status, error) {
+                if (result != null) {
+                    var obj = $.parseJSON(result);
+                    if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                        $('#PartCode,#ItemCode').empty();
+                        $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
+                        $.each(obj.Result.Table, function (index, val) {
+                            $('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
+                            $('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
+                        });
+                    }
 
-            //         }
-            //     }
-            // });
+                }
+            }
+        });
         });
 
 
@@ -2508,7 +2515,7 @@
             let IsError = 0;
 
             $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
-
+            debugger
             if ($('#PartCode').prop('selectedIndex') == 0) {
                 AddErrorCls('PartCode');
                 IsError = 1;
@@ -2704,6 +2711,7 @@
 
         var isEditAllowed = "false";
         async function EditItemRow(SeqNo) {
+
             var PartCode = $('#PartCode').val();
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
@@ -2725,8 +2733,8 @@
                         else {
 
                             if (obj != null && obj.length == 1) {
-                                $('#PartCode').val(obj[0].PartCode).change();
-                                $('#ItemCode').val(obj[0].ItemCode).change();
+                                $('#PartCode').val(obj[0].PartCode).trigger('change');
+                                $('#ItemCode').val(obj[0].ItemCode).trigger('change');
                                 $('#HSNNo').val(obj[0].HSNNo);
                                 $('#AdditionalRate').val(obj[0].AdditionalRate);
                                 $('#AltPendQty').val(obj[0].AltPendQty);
@@ -3094,7 +3102,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-   
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
     @*<script src="~/Scripts/table2excel.js"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>

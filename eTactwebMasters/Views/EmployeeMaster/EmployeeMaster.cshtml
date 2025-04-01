@@ -1,13 +1,13 @@
 ﻿@model eTactWeb.DOM.Models.EmployeeMasterModel;
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "EmployeeMaster";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="EmployeeMaster" autocomplete="on" class="form-horizontal">
+    <form asp-action="EmployeeMaster" asp-controller="EmployeeMaster" method="post" autocomplete="on" class="form-horizontal">
      @*    @Html.AntiForgeryToken() *@
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
@@ -76,7 +76,7 @@
                                 <div class="col-lg-2">
                                     <label asp-for="Branch" class="form-label">Branch</label>
                                     <input asp-for="Branch" class="form-control" readonly />
-                                    <input asp-for="Mode" class="form-control" type="hidden" />
+                                    
                                 </div>
                                 <div class="col-lg-2">
                                     <label asp-for="EntryDate" class="form-label" style="color: blue;">Entry Date</label>
@@ -87,27 +87,27 @@
                                     <input asp-for="EmpId" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg-2">
-                                    <label asp-for="EmpCode" class="form-label">EmpCode</label>
+                                    <label asp-for="EmpCode" class="form-label" style="color:red">EmpCode*</label>
                                     <input asp-for="EmpCode" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg-4">
-                                    <label asp-for="Name" class="form-label">Name</label>
+                                    <label asp-for="Name" class="form-label" style="color:red">Name</label>
                                     <input asp-for="Name" class="form-control" required />
                                 </div>
                                 <div class="col-lg-4">
-                                    <label asp-for="Designation" class="form-label"></label>
+                                    <label asp-for="Designation" class="form-label" style="color:red">Designation*</label>
                                     <select asp-for="Designation" class="form-select" asp-items="@(new SelectList(Model.DesignationList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-lg-4">
-                                    <label asp-for="Department" class="form-label"></label>
+                                    <label asp-for="Department" class="form-label" style="color:red">Department*</label>
                                     <select asp-for="Department" class="form-select" asp-items="@(new SelectList(Model.DepartmentList,"Value", "Text"))" onchange="GetEmpIdandEmpCode()" required>
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-lg-4">
-                                    <label asp-for="Category" class="form-label"></label>
+                                    <label asp-for="Category" class="form-label" style="color:red">Category*</label>
                                     <select asp-for="Category" class="form-select" asp-items="@(new SelectList(Model.CategoryList,"Value", "Text"))" required>
                                         <option value="">-Select-</option>
                                     </select>
@@ -154,18 +154,23 @@
                                     <label asp-for="Nationality" class="form-label">Nationality</label>
                                     <select asp-for="Nationality" class="form-control" >
                                         <option value="">Select</option>
+                                        <option value="I">Indian</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                     <label asp-for="MaritalStatus" class="form-label">MaritalStatus</label>
                                     <select asp-for="MaritalStatus" class="form-control" >
                                         <option value="">Select</option>
+                                        <option value="M">Married</option>
+                                        <option value="U">UnMerried</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
                                     <label asp-for="BloodGroup" class="form-label">BloodGroup</label>
                                     <select asp-for="BloodGroup" class="form-control" >
                                         <option value="">Select</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
                                     </select>
                                 </div>
                                 
@@ -611,6 +616,18 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+
+          
+            $('#DateOfJoining').rules("remove", "required");
+            $('#DOB').rules("remove", "required");
+            $('#Shift').rules("remove", "required");
+            $('#Active').rules("remove", "required");
+            $('#DateOfResignation').rules("remove", "required");
+            $('#NatureOfDuties').rules("remove", "required");
+            $('#Gender').rules("remove", "required");
+            $('#Nationality').rules("remove", "required");
+            $('#MaritalStatus').rules("remove", "required");
+            $('#BloodGroup').rules("remove", "required");
             var mode = '@Model.Mode';
             $('#Nationality').select2();
             $('#MaritalStatus').select2();
@@ -643,7 +660,40 @@
                 $('#DateOfResignation').prop("disabled", true);
                 $('#Active').val('Y').prop("disabled", true);
             }
+
+            $('.submitBTN').click(function (e) {
+
+                console.log("SubmitButton Click");
+                e.preventDefault();
+                //$(this).off('click');
+                $('form').submit();
+            });
+
+            $(".submitBTN").click(function (e) {
+                let isValid = true;
+
+                function checkField(selector, errorMessage) {
+                    if (!$(selector).val()) {
+                        $.notify(errorMessage, "error");
+                        isValid = false;
+                    }
+                }
+                @Model.EmpCode
+               
+                checkField("#Name", "Name is required");
+                checkField("#Designation", "Designation is required");
+                checkField("#Department", "Department is required");
+                checkField("#Category", "Category is required");
+                checkField("#DateOfResignation", "Date Of Resignation is required");
+                checkField("#Shift", "Shift is required");
+                checkField("#EmpCode", "EmpCode is required");
+
+                if (!isValid) {
+                    e.preventDefault(); 
+                }
+            });
         });
+       
 
         function GetEmpIdandEmpCode() {
             var mode = '@Model.Mode';

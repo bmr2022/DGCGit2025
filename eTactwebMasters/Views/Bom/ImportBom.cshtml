@@ -269,26 +269,28 @@
                 var fileName = file.name;
                  
                 var fileExtension = fileName.split('.').pop().toLowerCase();
-
+                debugger
                 if (fileExtension === 'xls' || fileExtension === 'xlsx') {
                     // The selected file is in Excel format
                     console.log('File is in Excel format.');
                     var reader = new FileReader();
 
                     reader.onload = function (e) {
+                        debugger
                         var data = e.target.result;
                         var workbook = XLSX.read(data, { type: 'binary' });
                         var sheetName = workbook.SheetNames[0];
                         var worksheet = workbook.Sheets[sheetName];
                         var rowCount = XLSX.utils.decode_range(worksheet['!ref']).e.r + 1; // Number of rows
                         var columnCount = XLSX.utils.decode_range(worksheet['!ref']).e.c + 1; // Number of columns
-                        alert('columnCount'+columnCount);
+                        
+                       debugger
                         // Define the expected number of columns
-                        var expectedColumnCount = 17; // Change this to your desired number of columns
-
-                        if (columnCount === expectedColumnCount) {
+                        var expectedColumnCount = 16; // Change this to your desired number of columns
+                        
+                        // if (columnCount === expectedColumnCount) {
                             console.log('The Excel file has the expected number of columns.');
-
+                            debugger
                             var formData = new FormData();
                             formData.append("excelFile", file);
                              
@@ -314,11 +316,11 @@
                                 }
                             });
 
-                        } else {
+                        // } else {
                              
-                            $.notify('The file does not have the expected number of columns.', "error");
-                            return false;
-                        }
+                        //     $.notify('The file does not have the expected number of columns.', "error");
+                        //     return false;
+                        // }
                     };
 
                     reader.readAsBinaryString(file);
@@ -434,21 +436,37 @@
             });
         }
 
+        // function ExportBom() {
+        //     $('#divItemList').empty();
+        //     var firstTh = $("#headerRow th:first");
+        //     firstTh.remove();
+        //     var newTh = $("<th>Action</th>");
+
+        //     $("#itemtable").table2excel({
+        //         filename: "ImportBOMFormat.xlsx"
+        //     });
+
+        //     $("#headerRow").prepend(newTh);
+        // }
+
         function ExportBom() {
-            $('#divItemList').empty();
-            var firstTh = $("#headerRow th:first");
-            firstTh.remove();
-            var newTh = $("<th>Action</th>");
+            var table = document.getElementById('itemtable');
+            var cloneTable = table.cloneNode(true);
 
-            $("#itemtable").table2excel({
-                filename: "ImportBOMFormat.xls"
-            });
+            var headerRow = cloneTable.getElementsByTagName('thead')[0].getElementsByTagName('tr')[0];
 
-            $("#headerRow").prepend(newTh);
+            headerRow.deleteCell(0);
+
+            cloneTable.getElementsByTagName('tbody')[0].remove();
+
+            var wb = XLSX.utils.table_to_book(cloneTable, { sheet: "Sheet 1" });
+
+            XLSX.writeFile(wb, "ImportBOMFormat.xlsx");
         }
 
+
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script src="~/Scripts/table2excel.js"></script>
 
 }

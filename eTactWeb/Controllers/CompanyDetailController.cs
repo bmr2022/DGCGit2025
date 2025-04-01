@@ -36,15 +36,15 @@ namespace eTactWeb.Controllers
         [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> CompanyDetail(int ID, string Mode
-    //        , int MainItemCode,
-    //int AlternateItemCode,  string DispName,string Com_Name, string WebSite, string OfficeAdd1,
-    //string OfficeAdd2, string PinCode,string Email,  string Phone,  string Mobile, string StateCode,
-    //string StateName,string Commodity,string? Start_Date, string? End_Date, string PhoneF,
-    //string Division, string OrgType,string PANNo,string TDSAccount,string Range,string TDSRange,
-    //string GSTNO, string PFApplicable, string PFNO, string Registration_No,string VENDOR_CODE,
-    //string? SoftwareStartDate,string Prefix, string ContactPersonSales, string ContacPersonPurchase,
-    //string ContactPersonQC, string ContactPersonAccounts, string Country, string LUTNO, string? LUTDATE,
-    //string UDYMANO
+            , int MainItemCode,
+    int AlternateItemCode, string DispName, string Com_Name, string WebSite, string OfficeAdd1,
+    string OfficeAdd2, string PinCode, string Email, string Phone, string Mobile, string StateCode,
+    string StateName, string Commodity, string? Start_Date, string? End_Date, string PhoneF,
+    string Division, string OrgType, string PANNo, string TDSAccount, string Range, string TDSRange,
+    string GSTNO, string PFApplicable, string PFNO, string Registration_No, string VENDOR_CODE,
+    string? SoftwareStartDate, string Prefix, string ContactPersonSales, string ContacPersonPurchase,
+    string ContactPersonQC, string ContactPersonAccounts, string Country, string LUTNO, string? LUTDATE,
+    string UDYMANO
             )
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
@@ -63,47 +63,47 @@ namespace eTactWeb.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
-                // MainModel = await _ICompanyDetail.GetViewByID(MainItemCode, AlternateItemCode).ConfigureAwait(false);
+                MainModel = await _ICompanyDetail.GetViewByID(ID).ConfigureAwait(false);
                
                 MainModel.Mode = Mode; 
                 MainModel.ID = ID;
                 MainModel.EntryID = ID;
-                //MainModel.DispName = DispName;
-                //MainModel.Com_Name = Com_Name;
-                //MainModel.WebSite = WebSite;
-                //MainModel.OfficeAdd1 = OfficeAdd1;
-                //MainModel.OfficeAdd2 = OfficeAdd2;
-                //MainModel.PinCode = PinCode;
-                //MainModel.Email = Email;
-                //MainModel.Phone = Phone;
-                //MainModel.Mobile = Mobile;
-                //MainModel.StateCode = StateCode;
-                //MainModel.StateName = StateName;
-                //MainModel.Commodity = Commodity;
-                //MainModel.Start_Date = Start_Date;
-                //MainModel.End_Date = End_Date;
-                //MainModel.PhoneF = PhoneF;
-                //MainModel.Division = Division;
-                //MainModel.OrgType = OrgType;
-                //MainModel.PANNo = PANNo;
-                //MainModel.TDSAccount = TDSAccount;
-                //MainModel.Range = Range;
-                //MainModel.TDSRange = TDSRange;
-                //MainModel.GSTNO = GSTNO;
-                //MainModel.PFApplicable = PFApplicable;
-                //MainModel.PFNO = PFNO;
-                //MainModel.Registration_No = Registration_No;
-                //MainModel.VENDOR_CODE = VENDOR_CODE;
-                //MainModel.SoftwareStartDate = SoftwareStartDate;
-                //MainModel.Prefix = Prefix;
-                //MainModel.ContactPersonSales = ContactPersonSales;
-                //MainModel.ContacPersonPurchase = ContacPersonPurchase;
-                //MainModel.ContactPersonQC = ContactPersonQC;
-                //MainModel.ContactPersonAccounts = ContactPersonAccounts;
-                //MainModel.Country = Country;
-                //MainModel.LUTNO = LUTNO;
-                //MainModel.LUTDATE = LUTDATE;
-                //MainModel.UDYMANO = UDYMANO;
+                MainModel.DispName = DispName;
+                MainModel.Com_Name = Com_Name;
+                MainModel.WebSite = WebSite;
+                MainModel.OfficeAdd1 = OfficeAdd1;
+                MainModel.OfficeAdd2 = OfficeAdd2;
+                MainModel.PinCode = PinCode;
+                MainModel.Email = Email;
+                MainModel.Phone = Phone;
+                MainModel.Mobile = Mobile;
+                MainModel.StateCode = StateCode;
+                MainModel.StateName = StateName;
+                MainModel.Commodity = Commodity;
+                MainModel.Start_Date = Start_Date;
+                MainModel.End_Date = End_Date;
+                MainModel.PhoneF = PhoneF;
+                MainModel.Division = Division;
+                MainModel.OrgType = OrgType;
+                MainModel.PANNo = PANNo;
+                MainModel.TDSAccount = TDSAccount;
+                MainModel.Range = Range;
+                MainModel.TDSRange = TDSRange;
+                MainModel.GSTNO = GSTNO;
+                MainModel.PFApplicable = PFApplicable;
+                MainModel.PFNO = PFNO;
+                MainModel.Registration_No = Registration_No;
+                MainModel.VENDOR_CODE = VENDOR_CODE;
+                MainModel.SoftwareStartDate = SoftwareStartDate;
+                MainModel.Prefix = Prefix;
+                MainModel.ContactPersonSales = ContactPersonSales;
+                MainModel.ContacPersonPurchase = ContacPersonPurchase;
+                MainModel.ContactPersonQC = ContactPersonQC;
+                MainModel.ContactPersonAccounts = ContactPersonAccounts;
+                MainModel.Country = Country;
+                MainModel.LUTNO = LUTNO;
+                MainModel.LUTDATE = LUTDATE;
+                MainModel.UDYMANO = UDYMANO;
 
                 if (Mode == "U")
                 {

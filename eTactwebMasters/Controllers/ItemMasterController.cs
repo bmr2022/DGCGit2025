@@ -452,8 +452,8 @@ public class ItemMasterController : Controller
 
                 ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
 
-                int itemGCode = 0;
-                int itemCCode = 0;
+                int itemGCode = 1;
+                int itemCCode = 1;
                 if (itemGroupCode.Result.Result != null)
                 {
                     itemGCode = itemGroupCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemGroupCode.Result.Result.Rows[0].ItemArray[0];

@@ -375,10 +375,12 @@
         function GetSearchData() {
             if ($('#DashboardType').val() == "Summary") {
                 GetSummaryData();
+                GetFormRights();
                
             }
             else {
                 GetDetailData();
+                GetFormRights();
                
             }
         }
@@ -393,6 +395,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#mrnTbody tr').length;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                    
 
                 },
@@ -415,6 +418,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#mrnTbody tr').length;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                   
                 },
                 error: function (response) {

@@ -24,7 +24,7 @@
                             REFRESH
                         </a>
                     </div>
-                    <a asp-action="Dashboard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                    <a asp-action="Dashboard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -41,7 +41,7 @@
                     }
                     else
                     {
-                        <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
                             <i class="fa-solid fa-chevron-circle-right"></i>
                             SUBMIT
                         </button>
@@ -409,7 +409,7 @@
                                             REFRESH
                                         </a>
                                     </div>
-                                    <a asp-action="Dashboard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                    <a asp-action="Dashboard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                         Dashboard
                                     </a>
@@ -426,7 +426,7 @@
                                     }
                                     else
                                     {
-                                        <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
                                             <i class="fa-solid fa-chevron-circle-right"></i>
                                             SUBMIT
                                         </button>
@@ -447,6 +447,7 @@
 {
     <script>
         $(document).ready(function () {
+            GetFormRights();
             $('#PartCode').select2();
             $('#ItemCode').select2();
             $('#RecPartCode').select2();
@@ -728,6 +729,52 @@
             });
         }
 
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $(".submitBTN").prop("disabled", true);
+                            $('.card-footer .submitBTN').prop("disabled", true);
+                            $(".DashBoard")
+                                .addClass("disabled-link")
+                                .on("click", function (e) {
+                                    e.preventDefault(); // Prevents clicking the link
+                                });
+                        }
+                        else {
+                            // console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#submitBTN").prop("disabled", true);
+                                    $('.card-footer #submitBTN').prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".DashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
 
         function FillBomNo() {
             $.ajax({
@@ -763,6 +810,7 @@
                     dataType: "json",
                     data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
                     success: function (result, status, error) {
+                       
                         DeleteItemRow(SeqNo);
                          
                         if (result != null) {
@@ -798,13 +846,13 @@
                                 if ($('#Mode').val() == "U") {
                                     $('#ItemCode').val(obj[0].ItemCode).trigger('change');
                                     $('#PartCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#RecItemCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#RecPartCode').val(obj[0].ItemCode).trigger('change');
+                                    $('#RecItemCode').val(obj[0].RecItemCode).trigger('change');
+                                    $('#RecPartCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#ScrapItemCode').val(obj[0].ScrapItemCode).trigger('change');
                                     $('#ScrapPartCode').val(obj[0].ScrapItemCode).trigger('change');
                                 } else {
                                     $('#ItemCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#PartCode').val(obj[0].PartCode).trigger('change');
+                                    $('#PartCode').val(obj[0].ItemCode).trigger('change');
                                     $('#RecItemCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#RecPartCode').val(obj[0].RecPartCode).trigger('change');
                                     $('#ScrapItemCode').val(obj[0].ScrapItemCode).trigger('change');
@@ -849,6 +897,21 @@
                 success: function (data, status, xhr) {
                     $('#divJobWorkOpeningGrid').empty().html(data);
                     $.notify("Item deleted successfully", "info");
+                    var sum = 0;
+                    var rowCount = $('#divJobWorkOpeningGrid tr').length;
+                    var columnCount = $('#divJobWorkOpeningGrid tr td').length;
+
+                    for (var i = 1; i <= rowCount; i++) {
+
+                        sum += parseFloat($('#Qty-' + i).text() == '.00' ? 0 : $('#Qty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
+                    }
+                    //noofitems
+                    if (columnCount > 1)
+                        $('#lblItemCount').text(rowCount);
+                    else
+                        $('#lblItemCount').text(0);
+                
+                            $('#lblItemNetAmount').text(sum.toFixed(2));
                 },
                 error: function (response, status, xhr) {
                     alert(response.responseText);
@@ -1381,3 +1444,12 @@
 
     </script>
 }
+
+                        <style>
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
+    }
+                        </style>

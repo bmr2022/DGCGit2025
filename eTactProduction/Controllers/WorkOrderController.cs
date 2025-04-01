@@ -76,6 +76,13 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IworkOrder.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

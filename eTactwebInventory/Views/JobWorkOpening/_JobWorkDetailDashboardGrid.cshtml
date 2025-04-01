@@ -74,18 +74,23 @@
                             <th>@Cntr</th>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container" style="display:flex">
+                                    <div id="viewCursorDiv-@Cntr">
                                     <a class="table-link link-success" asp-action="JobWorkOpening" asp-route-Mode="V" asp-route-ID="@item.VJOBOPENEntryID" asp-route-YC="@item.IssChallanYearcode" asp-route-OpeningType="@item.OpeningType">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </a>
+                                    </div>
+                                    <div id="editCursorDiv-@Cntr">
                                     <a class="table-link link-primary" asp-action="JobWorkOpening" asp-route-Mode="U" asp-route-ID="@item.VJOBOPENEntryID" asp-route-YC="@item.IssChallanYearcode" asp-route-OpeningType="@item.OpeningType">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </a>
+                                    </div>
+                                    <div id="deleteCursorDiv-@Cntr">
 
                                     <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.VJOBOPENEntryID" asp-route-YC="@item.IssChallanYearcode" asp-route-repotype="@item.repotype" asp-route-OpeningType="@item.OpeningType" asp-route-ItemCode="@item.ItemCode" asp-route-Challanno="@item.IssJWChallanNo"
                                        asp-route-ActualEntryById="@item.ActualEntryByEmp" asp-route-MachineName="@item.EnteredByMachine" asp-route-AccountCode="@item.Accountcode"
@@ -95,7 +100,7 @@
                                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </a>
-
+                                    </div>
                                 </div>
                             </td>
                             <td>@item.VendoreName</td>

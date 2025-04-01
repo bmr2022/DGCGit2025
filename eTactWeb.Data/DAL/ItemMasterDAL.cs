@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -14,14 +15,17 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _DataLogicDAL;
         //private readonly IConfiguration configuration;
         private dynamic? _ResponseResult;
+        private readonly ConnectionStringService _connectionStringService;
 
         private IDataReader? Reader;
 
-        public ItemMasterDAL(IConfiguration config, IDataLogic dataLogicDAL)
+        public ItemMasterDAL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = config.GetConnectionString("eTactDB");
+            //DBConnectionString = config.GetConnectionString("eTactDB");
             _DataLogicDAL = dataLogicDAL;
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
         public async Task<ResponseResult> GetFormRights(int userId)
