@@ -53,6 +53,9 @@
                 <th data-columnno="12" data-sortorder="asc" class="sortCol">
                     <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Check PO Pend From PO only Not From Amendment
                 </th>
+                 <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Po Allow To PrintWithoutApproval
+                </th>
 
                 
 
@@ -101,6 +104,8 @@
                                            asp-route-AllowBackDatePURCHASEORDER="@item.AllowBackDatePURCHASEORDER"
                                            asp-route-AllowBackDateINDENT="@item.AllowBackDateINDENT"
                                            asp-route-CheckPOPendFromPOonlyNotFromAmendment="@item.CheckPOPendFromPOonlyNotFromAmendment"
+                                           asp-route-PoallowtoprintWithoutApproval="@item.PoallowtoprintWithoutApproval"
+                                           
                                            onclick="confirmEdit(event)">
 
                                             <span class="fa-stack">
@@ -126,6 +131,7 @@
                             <td>@item.AllowBackDatePURCHASEORDER</td>
                             <td>@item.AllowBackDateINDENT</td>
                             <td>@item.CheckPOPendFromPOonlyNotFromAmendment</td>
+                            <td>@item.PoallowtoprintWithoutApproval</td>
                            
 
                         </tr>

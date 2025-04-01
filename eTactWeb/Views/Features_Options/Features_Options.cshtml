@@ -202,6 +202,13 @@
                                             <option value="N">No</option>
                                         </select>
                                     </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="PoallowtoprintWithoutApproval" class="form-label">Po Allow to PrintWithoutApproval</label>
+                                        <select class="form-control" asp-for="PoallowtoprintWithoutApproval" style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
 
                                 </div>
                             </div>
@@ -1010,8 +1017,90 @@
                             </div>
                         </div>
                     </div>
-                   
+                   @* Account *@
+                    <div class="accordion-item" id="AccountDetail">
+                        <h2 class="accordion-header" id="H_SAGrid">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient"
+                                    data-type="AccountDetail" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i> Account Detail</strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:600px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update AccountDetail
+                                </span>
 
+                            </button>
+                        </h2>
+
+                        <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3" id="_ItemGrid">
+
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="AccAllowtochangeDocumentinPurchaseBill" class="form-label">AccAllowtochangeDocumnetinPurchaseBill</label>
+                                        <select class="form-control" asp-for="AccAllowtochangeDocumentinPurchaseBill" style="width:280px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:400px;">
+                                        <label asp-for="AccPasswordToChangeDocumentinPurchaseBill" class="form-label">AccPasswordToChangeDocumentinPurchaseBill</label>
+                                        <input asp-for="AccPasswordToChangeDocumentinPurchaseBill" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:400px;">
+                                        <label asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBill" class="form-label">AccAllowtochangeInvoiceNoDateinPurchaseBill</label>
+                                        <select class="form-control" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBill" style="width:400px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AccPasswordToAllowManualTax" class="form-label">AccPasswordToAllowManualTax</label>
+                                        <select class="form-control" asp-for="AccPasswordToAllowManualTax" style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:400px;">
+                                        <label asp-for="AccAllowToChangeVoucherDateInPurchBill" class="form-label">AccAllowToChangeVoucherDateInPurchBill</label>
+                                        <select class="form-control" asp-for="AccAllowToChangeVoucherDateInPurchBill" style="width:300px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="AccBackdateVoucherEntryPassword" class="form-label">AccBackdateVoucherEntryPassword</label>
+                                        <input asp-for="AccBackdateVoucherEntryPassword" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="AccPurchaseVoucherPrintoutFilename" class="form-label">AccPurchaseVoucherPrintoutFilename</label>
+                                        <input asp-for="AccPurchaseVoucherPrintoutFilename" class="form-control" />
+                                    </div>
+                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:400px;">
+                                        <label asp-for="AccPurchaseBillInvoicePrintoutFilename" class="form-label">AccPurchaseBillInvoicePrintoutFilename</label>
+                                        <input asp-for="AccPurchaseBillInvoicePrintoutFilename" class="form-control" />
+                                    </div>
+
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AccSaleBillManualTaxAllowed" class="form-label">AccSaleBillManualTaxAllowed</label>
+                                        <select class="form-control" asp-for="AccSaleBillManualTaxAllowed" style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AccAllowBackdateVoucherEntry" class="form-label">AccAllowBackdateVoucherEntry</label>
+                                        <select class="form-control" asp-for="AccAllowBackdateVoucherEntry" style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
                 <div class="progress my-3 mb-3" style="height: 4px;">
@@ -1136,6 +1225,13 @@
             $('#AllowBackDateRECEIVEINSTORE').select2();
             $('#AllowBackDateSALEBILL').select2();
             $('#VoucherRotationDailyMonthYearly').select2();
+            $('#PoallowtoprintWithoutApproval').select2();
+            $('#AccAllowtochangeDocumentinPurchaseBill').select2();
+            $('#AccAllowtochangeInvoiceNoDateinPurchaseBill').select2();
+            $('#AccPasswordToAllowManualTax').select2();
+            $('#AccSaleBillManualTaxAllowed').select2();
+            $('#AccAllowBackdateVoucherEntry').select2();
+            $('#AccAllowToChangeVoucherDateInPurchBill').select2();
 
             const fieldsToRemoveRules = [
                 'FlagSelectUpdate', 'Module', 'AutoGen_PartCode', 'DuplicateItemName', 'Allow_PO_Print', 'Po_File_Name',
@@ -1170,7 +1266,11 @@
                 'AccSaleBillManualTaxAllowed', 'POClosePOAlwaysAgainstIndent', 'AccAllowBackdateVoucherEntry',
                 'AccBackdateVoucherEntryPassword', 'IndentReportName', 'AccAllowToChangeVoucherDateInPurchBill',
                 'ProdAllowMultiplePlanInProdSchOrNot', 'AccPurchaseVoucherPrintoutFilename',
-                'AccPurchaseBillInvoicePrintoutFilename', 'FromDate', 'ToDate', 'Searchbox', 'Type'
+                'AccPurchaseBillInvoicePrintoutFilename', 'FromDate', 'ToDate', 'Searchbox', 'Type',
+                'AccAllowtochangeDocumentinPurchaseBill', 'AccPasswordToChangeDocumentinPurchaseBill',
+                'AccAllowtochangeInvoiceNoDateinPurchaseBill','AccPasswordToAllowManualTax','AccSaleBillManualTaxAllowed',
+                'AccAllowBackdateVoucherEntry','AccBackdateVoucherEntryPassword','AccAllowToChangeVoucherDateInPurchBill',
+                'AccPurchaseVoucherPrintoutFilename', 'AccPurchaseBillInvoicePrintoutFilename'
             ];
 
             fieldsToRemoveRules.forEach(field => {
@@ -1182,7 +1282,7 @@
           
             if (mode === "U") {
 
-                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection,#VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection").hide();
+                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection,#VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection,#AccountDetail").hide();
 
                 
                 if (selectedType === "ItemDetail") {
@@ -1221,11 +1321,13 @@
                     $("#TransMtrFromWcRec").show();
                 } else if (selectedType === "SaleBillDetail") {
                     $("#SaleBillSection").show();
+                } else if (selectedType === "AccountDetail") {
+                    $("#AccountDetail").show();
                 }
 
             } else {
 
-                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection, #VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection").show();
+                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection, #VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection,#AccountDetail").show();
             }
 
             // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name

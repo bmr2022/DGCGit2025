@@ -13,5 +13,6 @@ namespace eTactWeb.Services.Interface
         public Task<ResponseResult> GetDashboardData();
         public Task<CompanyDetailModel> GetDashboardDetailData();
         Task<ResponseResult> SaveCompanyDetail(CompanyDetailModel model);
+        Task<CompanyDetailModel> GetViewByID(int ID);
     }
 }
