@@ -16,11 +16,14 @@ public class PurchaseOrderDAL
 {
     private readonly IDataLogic _IDataLogic;
     private readonly string DBConnectionString = string.Empty;
+    private readonly ConnectionStringService _connectionStringService;
 
-    public PurchaseOrderDAL(IConfiguration configuration, IDataLogic iDataLogic)
+    public PurchaseOrderDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
         _IDataLogic = iDataLogic;
-        DBConnectionString = configuration.GetConnectionString("eTactDB");
+        //DBConnectionString = configuration.GetConnectionString("eTactDB");
+        _connectionStringService = connectionStringService;
+        DBConnectionString = _connectionStringService.GetConnectionString();
     }
     public async Task<string> GetItemServiceFORPO(string ItemService)
     {
