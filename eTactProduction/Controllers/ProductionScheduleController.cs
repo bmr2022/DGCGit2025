@@ -158,6 +158,14 @@ namespace eTactWeb.Controllers
         //{
         //    return View();
         //}
+
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IProductionSchedule.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> DeleteByID(int ID, int YC, int createdBy, string entryByMachineName,int ActualEntryBy,string EntryDate,string FromDate,string ToDate,string PartCode,string ItemName,string AccountName,string ProdSchNo,string WONo,string SummaryDetail,string SearchBox)
         {
             var Result = await _IProductionSchedule.DeleteByID(ID, YC, createdBy, entryByMachineName, ActualEntryBy, EntryDate).ConfigureAwait(false);

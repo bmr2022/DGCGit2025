@@ -185,6 +185,13 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _ITransferFromWorkCenter.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillEntryandGate(int YearCode)
         {
             var JSON = await _ITransferFromWorkCenter.FillEntryandGate("NewEntryId", YearCode, "SP_TransferMaterialFromWc");

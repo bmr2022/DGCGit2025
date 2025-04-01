@@ -1,4 +1,5 @@
-﻿using eTactWeb.Services.Interface;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
 
@@ -13,11 +14,14 @@ public class TaxModuleDAL
     private readonly DataTable oDataTable = new();
 
     private object Result = "";
+    private readonly ConnectionStringService _connectionStringService;
 
-    public TaxModuleDAL(IConfiguration configuration, IDataLogic iDataLogic)
+    public TaxModuleDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
-        DBConnectionString = configuration.GetConnectionString("eTactDB");
+        //DBConnectionString = configuration.GetConnectionString("eTactDB");
         _IDataLogic = iDataLogic;
+        _connectionStringService = connectionStringService;
+        DBConnectionString = _connectionStringService.GetConnectionString();
     }
 
     private IDataLogic? _IDataLogic { get; }
@@ -49,7 +53,7 @@ public class TaxModuleDAL
             Error.Source = ex.Source;
         }
         finally { }
-        return Result.ToString();
+        return Result?.ToString();
     }
 
     internal async Task<ResponseResult> GetHSNTaxInfo(HSNTAX HSNTaxParam)

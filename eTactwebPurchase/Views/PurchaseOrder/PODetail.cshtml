@@ -2516,7 +2516,7 @@
             let IsError = 0;
 
             $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
-
+            debugger
             if ($('#PartCode').prop('selectedIndex') == 0) {
                 AddErrorCls('PartCode');
                 IsError = 1;

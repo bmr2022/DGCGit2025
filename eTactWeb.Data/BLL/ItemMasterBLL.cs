@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -14,10 +15,10 @@ public class ItemMasterBLL : IItemMaster
 
     //private readonly IConfiguration configuration;
 
-    public ItemMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+    public ItemMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
     {
         //configuration = config;
-        _ItemMasterDAL = new ItemMasterDAL(config,dataLogicDAL);
+        _ItemMasterDAL = new ItemMasterDAL(config,dataLogicDAL, connectionStringService);
         _DataLogicDAL = dataLogicDAL;
     }
 

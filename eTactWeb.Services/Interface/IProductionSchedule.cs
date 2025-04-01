@@ -10,6 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IProductionSchedule
     {
+        Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> GetItems();
         Task<ResponseResult> GetBomMultiLevelGrid();

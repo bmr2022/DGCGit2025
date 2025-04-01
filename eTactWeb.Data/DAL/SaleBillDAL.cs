@@ -1008,6 +1008,9 @@ namespace eTactWeb.Data.DAL
                         SeqNo = Convert.ToInt32(row["SeqNo"]),
                         ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
                         PartCode = row["PartCode"]?.ToString(),
+                        BomNo = row["BomNo"] != DBNull.Value ? Convert.ToInt32(row["BomNo"]) : 0,
+                        BOMInd = row["BOMInd"]?.ToString(),
+                        ProducedUnprod = row["ProdUnProduced"]?.ToString(),
                         Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
                         ItemName = row["ItemName"]?.ToString(),
                         CustOrderNo = row["CustOrderNo"]?.ToString(),
@@ -1173,66 +1176,67 @@ namespace eTactWeb.Data.DAL
                     cnt1++;
                 }
 
-                if (DS.Tables.Count != 0 && DS.Tables[5].Rows.Count > 0)
-                {
-                    foreach (DataRow row in DS.Tables[5].Rows)
-                    {
-                        customerJWAdj.Add(new CustomerJobWorkChallanAdj //
-                        {
-                            EntryDate = row["EntryDate"]?.ToString(),
-                            CustJwRecEntryId = row["CustJwRecEntryId"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecEntryId"]) : 0,
-                            CustJwRecYearCode = row["CustJwRecYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecYearCode"]) : 0,
-                            CustJwRecChallanNo = row["CustJwRecChallanNo"]?.ToString(),
-                            CustJwRecEntryDate = row["CustJwRecEntryDate"]?.ToString(),
-                            RecItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
-                            RecPartCode = row["RecPartCode"]?.ToString(),
-                            RecItemName = row["RecItemName"]?.ToString(),
-                            FGPartCode = row["FGPartCode"]?.ToString(),
-                            FGItemName = row["FGItemName"]?.ToString(),
-                            CustJwIssEntryid = row["CustJwIssEntryid"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssEntryid"]) : 0,
-                            CustJwIssYearCode = row["CustJwIssYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssYearCode"]) : 0,
-                            CustJwIssChallanNo = row["CustJwIssChallanNo"]?.ToString(),
-                            CustJwIssChallanDate = row["CustJwIssChallanDate"]?.ToString(),
-                            AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
-                            FinishItemCode = row["FinishItemCode"] != DBNull.Value ? Convert.ToInt32(row["FinishItemCode"]) : 0,
-                            AdjQty = row["AdjQty"] != DBNull.Value ? Convert.ToSingle(row["AdjQty"]) : 0,
-                            CC = row["CC"]?.ToString(),
-                            UID = row["UID"] != DBNull.Value ? Convert.ToInt32(row["UID"]) : 0,
-                            AdjFormType = row["AdjFormType"]?.ToString(),
-                            TillDate = row["TillDate"]?.ToString(),
-                            TotIssQty = row["TotIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotIssQty"]) : 0,
-                            PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0,
-                            BOMQty = row["BOMQty"] != DBNull.Value ? Convert.ToSingle(row["BOMQty"]) : 0,
-                            BomRevNo = row["BomRevNo"] != DBNull.Value ?  Convert.ToInt32(row["BomRevNo"]): 0,
-                            BOMRevDate = row["BOMRevDate"]?.ToString(),
-                            ProcessID = row["ProcessID"] != DBNull.Value ? Convert.ToInt32(row["ProcessID"]) : 0,
-                            BOMInd = row["BOMInd"]?.ToString(),
-                            IssQty = row["IssQty"] != DBNull.Value ? Convert.ToSingle(row["IssQty"]) : 0,
-                            TotadjQty = row["TotadjQty"] != DBNull.Value ? Convert.ToSingle(row["TotadjQty"]) : 0,
-                            TotalIssQty = row["TotalIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotalIssQty"]) : 0,
-                            TotalRecQty = row["TotalRecQty"] != DBNull.Value ? Convert.ToSingle(row["TotalRecQty"]) : 0,
-                            RunnerItemCode = row["RunnerItemCode"] != DBNull.Value ?  Convert.ToInt32(row["RunnerItemCode"]): 0,
-                            ScrapItemCode = row["ScrapItemCode"] != DBNull.Value ? Convert.ToInt32(row["ScrapItemCode"]) : 0,
-                            IdealScrapQty = row["IdealScrapQty"] != DBNull.Value ?  Convert.ToSingle(row["IdealScrapQty"]) : 0,
-                            IssuedScrapQty = row["IssuedScrapQty"] != DBNull.Value ? Convert.ToSingle(row["IssuedScrapQty"]) : 0,
-                            PreRecChallanNo = row["PreRecChallanNo"]?.ToString(),
-                            ScrapqtyagainstRcvqty = row["ScrapqtyagainstRcvqty"] != DBNull.Value ?  Convert.ToSingle(row["ScrapqtyagainstRcvqty"]) : 0,
-                            Recbatchno = row["Recbatchno"]?.ToString(),
-                            Recuniquebatchno = row["Recuniquebatchno"]?.ToString(),
-                            Issbatchno = row["Issbatchno"]?.ToString(),
-                            Issuniquebatchno = row["Issuniquebatchno"]?.ToString(),
-                            ScrapAdjusted = row["ScrapAdjusted"]?.ToString()
-                        });
-                    }
-                    model.CustomerJobWorkChallanAdj = customerJWAdj;
-                }
-
                 if (model.adjustmentModel == null)
                 {
                     model.adjustmentModel = new AdjustmentModel();
                 }
 
                 model.adjustmentModel.AdjAdjustmentDetailGrid = adjustGrid;
+            }
+
+
+            if (DS.Tables.Count != 0 && DS.Tables[5].Rows.Count > 0)
+            {
+                foreach (DataRow row in DS.Tables[5].Rows)
+                {
+                    customerJWAdj.Add(new CustomerJobWorkChallanAdj //
+                    {
+                        EntryDate = row["EntryDate"]?.ToString(),
+                        CustJwRecEntryId = row["CustJwRecEntryId"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecEntryId"]) : 0,
+                        CustJwRecYearCode = row["CustJwRecYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecYearCode"]) : 0,
+                        CustJwRecChallanNo = row["CustJwRecChallanNo"]?.ToString(),
+                        CustJwRecEntryDate = row["CustJwRecEntryDate"]?.ToString(),
+                        RecItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
+                        RecPartCode = row["RecPartCode"]?.ToString(),
+                        RecItemName = row["RecItemName"]?.ToString(),
+                        FGPartCode = row["FGPartCode"]?.ToString(),
+                        FGItemName = row["FGItemName"]?.ToString(),
+                        CustJwIssEntryid = row["CustJwIssEntryid"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssEntryid"]) : 0,
+                        CustJwIssYearCode = row["CustJwIssYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssYearCode"]) : 0,
+                        CustJwIssChallanNo = row["CustJwIssChallanNo"]?.ToString(),
+                        CustJwIssChallanDate = row["CustJwIssChallanDate"]?.ToString(),
+                        AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
+                        FinishItemCode = row["FinishItemCode"] != DBNull.Value ? Convert.ToInt32(row["FinishItemCode"]) : 0,
+                        AdjQty = row["AdjQty"] != DBNull.Value ? Convert.ToSingle(row["AdjQty"]) : 0,
+                        CC = row["CC"]?.ToString(),
+                        UID = row["UID"] != DBNull.Value ? Convert.ToInt32(row["UID"]) : 0,
+                        AdjFormType = row["AdjFormType"]?.ToString(),
+                        TillDate = row["TillDate"]?.ToString(),
+                        TotIssQty = row["TotIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotIssQty"]) : 0,
+                        PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0,
+                        BOMQty = row["BOMQty"] != DBNull.Value ? Convert.ToSingle(row["BOMQty"]) : 0,
+                        BomRevNo = row["BomRevNo"] != DBNull.Value ? Convert.ToInt32(row["BomRevNo"]) : 0,
+                        BOMRevDate = row["BOMRevDate"]?.ToString(),
+                        ProcessID = row["ProcessID"] != DBNull.Value ? Convert.ToInt32(row["ProcessID"]) : 0,
+                        BOMInd = row["BOMInd"]?.ToString(),
+                        IssQty = row["IssQty"] != DBNull.Value ? Convert.ToSingle(row["IssQty"]) : 0,
+                        TotadjQty = row["TotadjQty"] != DBNull.Value ? Convert.ToSingle(row["TotadjQty"]) : 0,
+                        TotalIssQty = row["TotalIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotalIssQty"]) : 0,
+                        TotalRecQty = row["TotalRecQty"] != DBNull.Value ? Convert.ToSingle(row["TotalRecQty"]) : 0,
+                        RunnerItemCode = row["RunnerItemCode"] != DBNull.Value ? Convert.ToInt32(row["RunnerItemCode"]) : 0,
+                        ScrapItemCode = row["ScrapItemCode"] != DBNull.Value ? Convert.ToInt32(row["ScrapItemCode"]) : 0,
+                        IdealScrapQty = row["IdealScrapQty"] != DBNull.Value ? Convert.ToSingle(row["IdealScrapQty"]) : 0,
+                        IssuedScrapQty = row["IssuedScrapQty"] != DBNull.Value ? Convert.ToSingle(row["IssuedScrapQty"]) : 0,
+                        PreRecChallanNo = row["PreRecChallanNo"]?.ToString(),
+                        ScrapqtyagainstRcvqty = row["ScrapqtyagainstRcvqty"] != DBNull.Value ? Convert.ToSingle(row["ScrapqtyagainstRcvqty"]) : 0,
+                        Recbatchno = row["Recbatchno"]?.ToString(),
+                        Recuniquebatchno = row["Recuniquebatchno"]?.ToString(),
+                        Issbatchno = row["Issbatchno"]?.ToString(),
+                        Issuniquebatchno = row["Issuniquebatchno"]?.ToString(),
+                        ScrapAdjusted = row["ScrapAdjusted"]?.ToString()
+                    });
+                }
+                model.CustomerJobWorkChallanAdj = customerJWAdj;
             }
 
             return model;

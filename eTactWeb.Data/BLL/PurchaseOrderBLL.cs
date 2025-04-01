@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -12,15 +13,17 @@ namespace eTactWeb.Data.BLL
 
         private readonly PurchaseOrderDAL _PurchaseOrderDAL;
 
-        public PurchaseOrderBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public PurchaseOrderBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _PurchaseOrderDAL = new PurchaseOrderDAL(configuration, iDataLogic);
+            _PurchaseOrderDAL = new PurchaseOrderDAL(configuration, iDataLogic,connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         //public async Task<ResponseResult> GetItemServiceFORPO(string ItemSErv)
         //{
         //    return await _PurchaseOrderDAL.GetItemServiceFORPO(ItemSErv);
         //}
+
+        
         public async Task<string> GetItemServiceFORPO(string ItemService)
         {
             return await _PurchaseOrderDAL.GetItemServiceFORPO(ItemService);
@@ -48,6 +51,11 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillEntryandPONumber(int YearCode)
         {
             return await _PurchaseOrderDAL.FillEntryandPONumber(YearCode);
+        }
+
+        public async Task<ResponseResult> PoallowtoprintWithoutApproval()
+        {
+            return await _PurchaseOrderDAL.PoallowtoprintWithoutApproval();
         }
         public async Task<ResponseResult> NewAmmEntryId(int PoAmendYearCode)
         {

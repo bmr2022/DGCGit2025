@@ -430,7 +430,7 @@
                 // FillCustomerList("Y");
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
                 var taxRowCount = $('#divTaxGrid tr').length;
-
+               
                 var txSum = 0;
                 if ($('#divTaxGrid tr td').length > 1) {
                     for (var i = 0; i < taxRowCount; i++) {
@@ -884,6 +884,7 @@
                                 $('#BomNo').append('<option value="' + val.bomno + '">' + val.bomno + '</option>');
                             });
                         }
+
                     }
                 }
 
@@ -2322,6 +2323,10 @@
                                     $('#Batchno').append('<option value="' + obj[0].Batchno + '" selected>' + obj[0].Batchno + '</option>');
                                 }
 
+                                if ($('#SaleBillJobwork').val() == 'J') {
+                                    fillBomRevNo();
+                                }
+                                $('#BomNo').val(obj[0].BomNo);
                             } else {
                                 $('#SONO').val(obj[0].SONO);
                                 $('#SOYearCode').val(obj[0].SOYearCode);
@@ -2335,6 +2340,11 @@
                                 }
 
                             }
+
+                            if ($('#SaleBillJobwork').val() == 'J') {
+                                fillBomRevNo();
+                            }
+                            $('#BomNo').val(obj[0].BomNo);
                             $('#SeqNo').val(obj[0].SeqNo);
                             $('#ProducedUnprod').val(obj[0].ProducedUnprod);
                             $('#BOMInd').val(obj[0].BOMInd);

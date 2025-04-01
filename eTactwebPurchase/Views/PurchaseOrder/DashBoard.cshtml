@@ -25,6 +25,7 @@
                 <div class="card-body">
                     <form id="SParam">
                         <partial name="_SearchParam" />
+                        
                     </form>
                 </div>
             </div>
@@ -51,6 +52,7 @@
             GetFormRights();
             LockedFinancialYear();
             CheckApprovedOrNot();
+            PoallowtoprintWithoutApproval();
             var currentDate = new Date();
             var dashGrid = $('#PODashboardGrid tr').length - 1;
             $('#totalRows').text(dashGrid);
@@ -212,8 +214,10 @@
 
         function GetSearchData() {
             if($('#DashboardType').val()=="Summary"){
+                PoallowtoprintWithoutApproval();
                 GetSummaryData();
             }else{
+                PoallowtoprintWithoutApproval();
                 GetDetailData();
             }
         }
@@ -342,6 +346,28 @@
                 table.children('#divDashboardGrid1').append(row);
             });
         }
+
+        function PoallowtoprintWithoutApproval() {
+            //ENTRYID
+            debugger
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("PoallowtoprintWithoutApproval")",
+                dataType: "json",
+                async: false,
+                
+                success: function (result, status, error) {
+                    debugger
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#PoallowtoprintWithoutApproval').val(obj.Result.Table[0].PoallowtoprintWithoutApproval);
+                       
+                    }
+                }
+            });
+           
+        }
+
 
 
         function LockedFinancialYear() {

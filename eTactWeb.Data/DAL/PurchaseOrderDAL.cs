@@ -16,11 +16,14 @@ public class PurchaseOrderDAL
 {
     private readonly IDataLogic _IDataLogic;
     private readonly string DBConnectionString = string.Empty;
+    private readonly ConnectionStringService _connectionStringService;
 
-    public PurchaseOrderDAL(IConfiguration configuration, IDataLogic iDataLogic)
+    public PurchaseOrderDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
         _IDataLogic = iDataLogic;
-        DBConnectionString = configuration.GetConnectionString("eTactDB");
+        //DBConnectionString = configuration.GetConnectionString("eTactDB");
+        _connectionStringService = connectionStringService;
+        DBConnectionString = _connectionStringService.GetConnectionString();
     }
     public async Task<string> GetItemServiceFORPO(string ItemService)
     {
@@ -114,6 +117,27 @@ public class PurchaseOrderDAL
         }
         return _ResponseResult;
     }
+
+    public async Task<ResponseResult> PoallowtoprintWithoutApproval()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "PoallowtoprintWithoutApproval"));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_PurchaseOrder", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
+    }
+
+
     public async Task<ResponseResult> FillEntryandPONumber(int YearCode)
     {
         var _ResponseResult = new ResponseResult();
