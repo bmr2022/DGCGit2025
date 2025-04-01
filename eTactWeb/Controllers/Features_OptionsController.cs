@@ -55,7 +55,17 @@ namespace eTactWeb.Controllers
         string ProdEntryAllowToAddNegativeStock,string BatchWiseProduction,string ProdEntryAllowBackDate,string AllowBackDateDAILYPRODUCTION,
         string AllowBackDateTRANSFERMATERIAL,string AllowBackDateRECEIVEINSTORE,string AllowBackDateSALEBILL,
         string VoucherRotationDailyMonthYearly, string AllowBackDateWorkorderEntry,string AllowBackDateProductionScheduleEntry,
-        string InProdScheduleShowSumOrDetail)
+        string InProdScheduleShowSumOrDetail,string PoallowtoprintWithoutApproval,
+        string AccAllowtochangeDocumentinPurchaseBill,
+string AccPasswordToChangeDocumentinPurchaseBill,
+string AccAllowtochangeInvoiceNoDateinPurchaseBill,
+string AccPasswordToAllowManualTax,
+string AccSaleBillManualTaxAllowed,
+string AccAllowBackdateVoucherEntry,
+string AccBackdateVoucherEntryPassword,
+string AccAllowToChangeVoucherDateInPurchBill,
+string AccPurchaseVoucherPrintoutFilename,
+string AccPurchaseBillInvoicePrintoutFilename)
         {
             _logger.LogInformation("\n \n ********** Page Features_Options ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
 
@@ -159,7 +169,18 @@ namespace eTactWeb.Controllers
                 MainModel.AllowBackDateWorkorderEntry = AllowBackDateWorkorderEntry;
                 MainModel.AllowBackDateProductionScheduleEntry = AllowBackDateProductionScheduleEntry;
                 MainModel.InProdScheduleShowSumOrDetail = InProdScheduleShowSumOrDetail;
+                MainModel.PoallowtoprintWithoutApproval = PoallowtoprintWithoutApproval;
 
+                MainModel.AccAllowtochangeDocumentinPurchaseBill = AccAllowtochangeDocumentinPurchaseBill;
+                MainModel.AccPasswordToChangeDocumentinPurchaseBill = AccPasswordToChangeDocumentinPurchaseBill;
+                MainModel.AccAllowtochangeInvoiceNoDateinPurchaseBill = AccAllowtochangeInvoiceNoDateinPurchaseBill;
+                MainModel.AccPasswordToAllowManualTax = AccPasswordToAllowManualTax;
+                MainModel.AccSaleBillManualTaxAllowed = AccSaleBillManualTaxAllowed;
+                MainModel.AccAllowBackdateVoucherEntry = AccAllowBackdateVoucherEntry;
+                MainModel.AccBackdateVoucherEntryPassword = AccBackdateVoucherEntryPassword;
+                MainModel.AccAllowToChangeVoucherDateInPurchBill = AccAllowToChangeVoucherDateInPurchBill;
+                MainModel.AccPurchaseVoucherPrintoutFilename = AccPurchaseVoucherPrintoutFilename;
+                MainModel.AccPurchaseBillInvoicePrintoutFilename = AccPurchaseBillInvoicePrintoutFilename;
 
 
 
@@ -329,6 +350,10 @@ namespace eTactWeb.Controllers
               if (Type == "SaleBillDetail")
               {
                  return PartialView("_Features_OptionsSaleBillDetail", model);
+              }
+              if (Type == "AccountDetail")
+              {
+                 return PartialView("_Features_OptionsAccountDetail", model);
               }
                
             return null;

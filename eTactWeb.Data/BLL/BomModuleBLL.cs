@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +12,9 @@ public class BomModuleBLL : IBomModule
     private BomModuleDAL _BomModuleDAL;
     private readonly IDataLogic _DataLogicDAL;
 
-    public BomModuleBLL(IConfiguration configuration, IDataLogic dataLogicDAL)
+    public BomModuleBLL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
     {
-        _BomModuleDAL = new BomModuleDAL(configuration,dataLogicDAL);
+        _BomModuleDAL = new BomModuleDAL(configuration,dataLogicDAL,connectionStringService);
         _DataLogicDAL = dataLogicDAL;
     }
 

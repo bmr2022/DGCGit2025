@@ -277,7 +277,16 @@
             //$('#StoreType').rules("remove", "required");
             $('#StateCode').select2();
             $('#StateName').select2();
-           
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+       
+            $('#SoftwareStartDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#LUTDATE').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#LUTDATE').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#Start_Date').datepicker({ dateFormat: 'dd/M/yy' });
+            $('#End_Date').datepicker({ dateFormat: 'dd/M/yy' });
+
+          
             // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name
             //     $.notify("SaleBill Nunmber is required.", "warn");
             // }
@@ -290,7 +299,14 @@
                 //FillCostCenterID();
             }
         });
-
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var month = monthNames[date.getMonth()];
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
         // $('#DepartmentName').change(function () {
         //     $('#DepartmentID').val($('#DepartmentName').val());
         // });
