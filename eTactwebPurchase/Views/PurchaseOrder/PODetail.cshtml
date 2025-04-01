@@ -1126,7 +1126,6 @@
                      debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        alert(result);
                         if (obj.StatusCode == 200 && obj.StatusText == "Success") {
                             $('#PartCode,#ItemCode').empty();
                             $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
