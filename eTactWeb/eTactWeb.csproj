@@ -59,6 +59,7 @@
 	<ItemGroup>
 		<Content Remove="bundleconfig.json" />
 		<Content Remove="Views\Home\Dashboard.cshtml" />
+		<Content Remove="wwwroot\js\FinAccountMethods.js" />
 		<Content Remove="wwwroot\Scripts\CheckUserRights.js" />
 		
 	</ItemGroup>
@@ -96,6 +97,7 @@
 			<PackagePath>\</PackagePath>
 		</None>
 		<None Include="wwwroot\jQueryTable2Excel\table2excel.js" />
+		<None Include="wwwroot\js\FinAccountMethods.js" />
 		<None Include="wwwroot\lib\jquery\jquery.js" />
 		<None Include="wwwroot\lib\jquery\jquery.min.js" />
 		<None Include="wwwroot\lib\jquery\jquery.min.map" />
@@ -158,6 +160,7 @@
 
 	<ItemGroup>
 	  <_ContentIncludedByDefault Remove="Views\Home\Dashboard.cshtml" />
+	  <_ContentIncludedByDefault Remove="wwwroot\js\FinAccountMethods.js" />
 	  <_ContentIncludedByDefault Remove="wwwroot\Scripts\CheckUserRights.js" />
 	</ItemGroup>
 

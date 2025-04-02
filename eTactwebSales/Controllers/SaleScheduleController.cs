@@ -897,7 +897,7 @@ public class SaleScheduleController : Controller
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
                 if (worksheet == null)
                 {
-                    //return or alert message here
+                    return BadRequest("Uploaded file does not contain any worksheet.");
                 }
                 else
                 {
@@ -978,7 +978,7 @@ public class SaleScheduleController : Controller
                                 //  ErrorMsg = "PartCode does not Exists";
                                 ErrMsg = "PartCode does not Exists";
                             }
-                            else if (!(Convert.ToDateTime(ExlDelDate) >= EffFromDate && Convert.ToDateTime(ExlDelDate) <= EffTillDate))
+                            else if ((Convert.ToDateTime(ExlDelDate) >= EffFromDate && Convert.ToDateTime(ExlDelDate) <= EffTillDate))
                             {
                                 ErrMsg = "Row : " + row + "has OutofRange DeliveryDate.";
                             }

@@ -426,12 +426,14 @@
                 });
             }
             console.log(data);
+           
 
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GenerateMRP")",
                 data: { "model": data },
                 dataType: "json",
+                async:false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -459,6 +461,7 @@
                 url: "@Url.Action("FillMRPSOList")",
                 data: { "ForMonth": ForMonth, "YearCode": YearCode },
                 dataType: "json",
+                async:false,
                 success: function (result, status, error) {
 
                     if (result != null) {
