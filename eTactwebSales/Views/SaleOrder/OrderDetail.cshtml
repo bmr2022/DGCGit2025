@@ -1460,7 +1460,8 @@
             var formData = new FormData();
             formData.append("excelFile", file);
             formData.append("SOType", $("#SOType").val());
-
+            formData.append("SOEntryId", $('#EntryID').val());
+            formData.append("SOYearCode", $('#YearCode').val());
 
             // Get valid part codes from the hidden field
             var validPartCodes = $('#validPartCodes').val();

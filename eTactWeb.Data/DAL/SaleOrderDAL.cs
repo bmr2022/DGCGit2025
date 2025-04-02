@@ -576,17 +576,140 @@ namespace eTactWeb.Data.DAL
             //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
 
         }
+        //public async Task<ResponseResult> SaveSaleOrder(DataTable DTItemGrid, DataTable DTSchedule, DataTable DTTaxGrid, DataTable MultiBuyersDT, SaleOrderModel model)
+        //{
+        //    var oDataTable = new DataTable();
+        //    var SqlParams = new List<dynamic>();
+        //    try
+        //    {
+        //        await using SqlConnection myConnection = new SqlConnection(DBConnectionString);
+        //        SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection)
+        //        {
+        //            CommandType = CommandType.StoredProcedure
+        //        };
+        //        DateTime soDt = new DateTime();
+        //        DateTime wef = new DateTime();
+        //        DateTime soclDt = new DateTime();
+        //        DateTime QDt = new DateTime();
+        //        DateTime AmmEDt = new DateTime();
+        //        DateTime soconDt = new DateTime();
+        //        DateTime soDlDt = new DateTime();
+        //        if (model.Mode == "SOA")
+        //            oCmd.Parameters.AddWithValue("@SOAmendYC", model.AmmYearCode);
+
+        //        soDt = ParseDate(model.SODate);
+        //        wef = ParseDate(model.WEF);
+        //        soclDt = ParseDate(model.SOCloseDate);
+        //        QDt = ParseDate(model.QDate);
+        //        AmmEDt = ParseDate(model.AmmEffDate);
+        //        soconDt = ParseDate(model.SOConfirmDate);
+        //        soDlDt = ParseDate(model.SODeliveryDate);
+
+
+
+        //        oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+        //        oCmd.Parameters.AddWithValue("@EntryID", model.EntryID);
+        //        oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
+        //        oCmd.Parameters.AddWithValue("@Branch", model.Branch);
+        //        oCmd.Parameters.AddWithValue("@SOFor", model.SOFor);
+        //        oCmd.Parameters.AddWithValue("@SOType", model.SOType);
+        //        oCmd.Parameters.AddWithValue("@CurrencyID", model.CurrencyID);
+        //        oCmd.Parameters.AddWithValue("@AccountCode", model.AccountCode);
+        //        oCmd.Parameters.AddWithValue("@Address", model.Address);
+        //        oCmd.Parameters.AddWithValue("@DeliveryAddress", model.DeliveryAddress);
+        //        oCmd.Parameters.AddWithValue("@OrderType", model.OrderType);
+        //        oCmd.Parameters.AddWithValue("@CustOrderNo", model.CustOrderNo);
+        //        oCmd.Parameters.AddWithValue("@SONo", model.SONo);
+        //        oCmd.Parameters.AddWithValue("@ENTRYDATE", ParseDate(model.EntryDate));
+        //        //SqlParams.Add(new SqlParameter("@EntryDate", DateTime.ParseExact(model.EntryDate.ToString(), "dd-mm-yyyy", CultureInfo.InvariantCulture)));
+
+        //        oCmd.Parameters.AddWithValue("@SODate", soDt == default ? string.Empty : soDt);
+        //        oCmd.Parameters.AddWithValue("@WEF", wef == default ? string.Empty : wef);
+        //        oCmd.Parameters.AddWithValue("@SOCloseDate", soclDt == default ? string.Empty : soclDt);
+
+        //        oCmd.Parameters.AddWithValue("@QuotNo", model.QuotNo);
+        //        oCmd.Parameters.AddWithValue("@QDate", soclDt == default ? string.Empty : soclDt);
+
+        //        oCmd.Parameters.AddWithValue("@QuotYear", model.QuotYear);
+        //        oCmd.Parameters.AddWithValue("@AmmNo", model.AmmNo);
+        //        oCmd.Parameters.AddWithValue("@AmmEffDate", AmmEDt == default ? string.Empty : AmmEDt);
+        //        oCmd.Parameters.AddWithValue("@SOConfirmDate", soconDt == default ? string.Empty : soconDt);
+
+        //        oCmd.Parameters.AddWithValue("@ConsigneeAccountCode", model.ConsigneeAccountCode);
+        //        oCmd.Parameters.AddWithValue("@ConsigneeAddress", model.ConsigneeAddress);
+        //        oCmd.Parameters.AddWithValue("@FreightPaidBy", model.FreightPaidBy);
+        //        oCmd.Parameters.AddWithValue("@PackingChgApplicable", model.PackingChgApplicable);
+        //        oCmd.Parameters.AddWithValue("@ModeTransport", model.TransportMode);
+        //        oCmd.Parameters.AddWithValue("@Remark", model.SORemark);
+        //        oCmd.Parameters.AddWithValue("@DeliverySch", model.DeliverySch);
+        //        oCmd.Parameters.AddWithValue("@DeliveryTerms", model.DeliveryTerms);
+        //        oCmd.Parameters.AddWithValue("@PreparedBy", model.PreparedBy);
+        //        oCmd.Parameters.AddWithValue("@PortOfDischarge", model.PortOfDischarge);
+        //        oCmd.Parameters.AddWithValue("@ResponsibleSalesPersonID", model.ResponsibleSalesPersonID);
+        //        oCmd.Parameters.AddWithValue("@CustContactPerson", model.CustContactPerson);
+        //        oCmd.Parameters.AddWithValue("@SaleDocType", model.SaleDocType);
+        //        oCmd.Parameters.AddWithValue("@OtherDetail", model.OtherDetail);
+        //        oCmd.Parameters.AddWithValue("@PortToLoading", model.Port2Loading);
+        //        oCmd.Parameters.AddWithValue("@InsuApplicable", model.InsuApplicable);
+        //        oCmd.Parameters.AddWithValue("@SODeliveryDate", soDlDt == default ? string.Empty : soDlDt);
+
+        //        oCmd.Parameters.AddWithValue("@OrderAmt", model.ItemNetAmount);
+        //        oCmd.Parameters.AddWithValue("@DTItemGrid", DTItemGrid);
+        //        oCmd.Parameters.AddWithValue("@OrderNetAmt", model.NetTotal);
+        //        oCmd.Parameters.AddWithValue("@DTSchedule", DTSchedule);
+        //        oCmd.Parameters.AddWithValue("@DTTaxGrid", DTTaxGrid);
+        //        oCmd.Parameters.AddWithValue("@DTBuyerGrid", MultiBuyersDT);
+        //        oCmd.Parameters.AddWithValue("@RoundOff", model.TotalRoundOff);
+        //        oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+
+        //        await myConnection.OpenAsync();
+
+        //        using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
+        //        oDataAdapter.Fill(oDataTable);
+
+        //        if (oDataTable.Rows.Count > 0)
+        //        {
+        //            _ResponseResult = new ResponseResult()
+        //            {
+        //                StatusCode = HttpStatusCode.OK,
+        //                StatusText = "Success",
+        //                Result = oDataTable
+        //            };
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //        Error.StackTrace = ex.StackTrace;
+        //        Error.Exception = ex;
+        //        _ResponseResult = new ResponseResult()
+        //        {
+        //            StatusCode = HttpStatusCode.InternalServerError,
+        //            StatusText = Error.Message,
+        //            Result = oDataTable
+        //        };
+        //    }
+        //    finally
+        //    {
+        //        oDataTable.Dispose();
+        //    }
+        //    return _ResponseResult;
+        //}
+
+
         public async Task<ResponseResult> SaveSaleOrder(DataTable DTItemGrid, DataTable DTSchedule, DataTable DTTaxGrid, DataTable MultiBuyersDT, SaleOrderModel model)
         {
             var oDataTable = new DataTable();
-
+            var SqlParams = new List<dynamic>();
             try
             {
-                await using SqlConnection myConnection = new SqlConnection(DBConnectionString);
-                SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
+                // await using SqlConnection myConnection = new SqlConnection(DBConnectionString);
+                // SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection)
+                // {
+                //     CommandType = CommandType.StoredProcedure
+                // };
                 DateTime soDt = new DateTime();
                 DateTime wef = new DateTime();
                 DateTime soclDt = new DateTime();
@@ -595,7 +718,7 @@ namespace eTactWeb.Data.DAL
                 DateTime soconDt = new DateTime();
                 DateTime soDlDt = new DateTime();
                 if (model.Mode == "SOA")
-                    oCmd.Parameters.AddWithValue("@SOAmendYC", model.AmmYearCode);
+                    SqlParams.Add(new SqlParameter("@SOAmendYC", model.AmmYearCode));
 
                 soDt = ParseDate(model.SODate);
                 wef = ParseDate(model.WEF);
@@ -607,75 +730,76 @@ namespace eTactWeb.Data.DAL
 
 
 
-                oCmd.Parameters.AddWithValue("@Flag", model.Mode);
-                oCmd.Parameters.AddWithValue("@EntryID", model.EntryID);
-                oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
-                oCmd.Parameters.AddWithValue("@Branch", model.Branch);
-                oCmd.Parameters.AddWithValue("@SOFor", model.SOFor);
-                oCmd.Parameters.AddWithValue("@SOType", model.SOType);
-                oCmd.Parameters.AddWithValue("@CurrencyID", model.CurrencyID);
-                oCmd.Parameters.AddWithValue("@AccountCode", model.AccountCode);
-                oCmd.Parameters.AddWithValue("@Address", model.Address);
-                oCmd.Parameters.AddWithValue("@DeliveryAddress", model.DeliveryAddress);
-                oCmd.Parameters.AddWithValue("@OrderType", model.OrderType);
-                oCmd.Parameters.AddWithValue("@CustOrderNo", model.CustOrderNo);
-                oCmd.Parameters.AddWithValue("@SONo", model.SONo);
-                oCmd.Parameters.AddWithValue("@ENTRYDATE", ParseDate(model.EntryDate));
+                SqlParams.Add(new SqlParameter("@Flag", model.Mode));
+                SqlParams.Add(new SqlParameter("@EntryID", model.EntryID));
+                SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
+                SqlParams.Add(new SqlParameter("@Branch", model.Branch));
+                SqlParams.Add(new SqlParameter("@SOFor", model.SOFor));
+                SqlParams.Add(new SqlParameter("@SOType", model.SOType));
+                SqlParams.Add(new SqlParameter("@CurrencyID", model.CurrencyID));
+                SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
+                SqlParams.Add(new SqlParameter("@Address", model.Address));
+                SqlParams.Add(new SqlParameter("@DeliveryAddress", model.DeliveryAddress));
+                SqlParams.Add(new SqlParameter("@OrderType", model.OrderType));
+                SqlParams.Add(new SqlParameter("@CustOrderNo", model.CustOrderNo));
+                SqlParams.Add(new SqlParameter("@SONo", model.SONo));
+                SqlParams.Add(new SqlParameter("@ENTRYDATE", ParseDate(model.EntryDate)));
                 //SqlParams.Add(new SqlParameter("@EntryDate", DateTime.ParseExact(model.EntryDate.ToString(), "dd-mm-yyyy", CultureInfo.InvariantCulture)));
 
-                oCmd.Parameters.AddWithValue("@SODate", soDt == default ? string.Empty : soDt);
-                oCmd.Parameters.AddWithValue("@WEF", wef == default ? string.Empty : wef);
-                oCmd.Parameters.AddWithValue("@SOCloseDate", soclDt == default ? string.Empty : soclDt);
+                SqlParams.Add(new SqlParameter("@SODate", soDt == default ? string.Empty : soDt));
+                SqlParams.Add(new SqlParameter("@WEF", wef == default ? string.Empty : wef));
+                SqlParams.Add(new SqlParameter("@SOCloseDate", soclDt == default ? string.Empty : soclDt));
 
-                oCmd.Parameters.AddWithValue("@QuotNo", model.QuotNo);
-                oCmd.Parameters.AddWithValue("@QDate", soclDt == default ? string.Empty : soclDt);
+                SqlParams.Add(new SqlParameter("@QuotNo", model.QuotNo));
+                SqlParams.Add(new SqlParameter("@QDate", soclDt == default ? string.Empty : soclDt));
 
-                oCmd.Parameters.AddWithValue("@QuotYear", model.QuotYear);
-                oCmd.Parameters.AddWithValue("@AmmNo", model.AmmNo);
-                oCmd.Parameters.AddWithValue("@AmmEffDate", AmmEDt == default ? string.Empty : AmmEDt);
-                oCmd.Parameters.AddWithValue("@SOConfirmDate", soconDt == default ? string.Empty : soconDt);
+                SqlParams.Add(new SqlParameter("@QuotYear", model.QuotYear));
+                SqlParams.Add(new SqlParameter("@AmmNo", model.AmmNo));
+                SqlParams.Add(new SqlParameter("@AmmEffDate", AmmEDt == default ? string.Empty : AmmEDt));
+                SqlParams.Add(new SqlParameter("@SOConfirmDate", soconDt == default ? string.Empty : soconDt));
 
-                oCmd.Parameters.AddWithValue("@ConsigneeAccountCode", model.ConsigneeAccountCode);
-                oCmd.Parameters.AddWithValue("@ConsigneeAddress", model.ConsigneeAddress);
-                oCmd.Parameters.AddWithValue("@FreightPaidBy", model.FreightPaidBy);
-                oCmd.Parameters.AddWithValue("@PackingChgApplicable", model.PackingChgApplicable);
-                oCmd.Parameters.AddWithValue("@ModeTransport", model.TransportMode);
-                oCmd.Parameters.AddWithValue("@Remark", model.SORemark);
-                oCmd.Parameters.AddWithValue("@DeliverySch", model.DeliverySch);
-                oCmd.Parameters.AddWithValue("@DeliveryTerms", model.DeliveryTerms);
-                oCmd.Parameters.AddWithValue("@PreparedBy", model.PreparedBy);
-                oCmd.Parameters.AddWithValue("@PortOfDischarge", model.PortOfDischarge);
-                oCmd.Parameters.AddWithValue("@ResponsibleSalesPersonID", model.ResponsibleSalesPersonID);
-                oCmd.Parameters.AddWithValue("@CustContactPerson", model.CustContactPerson);
-                oCmd.Parameters.AddWithValue("@SaleDocType", model.SaleDocType);
-                oCmd.Parameters.AddWithValue("@OtherDetail", model.OtherDetail);
-                oCmd.Parameters.AddWithValue("@PortToLoading", model.Port2Loading);
-                oCmd.Parameters.AddWithValue("@InsuApplicable", model.InsuApplicable);
-                oCmd.Parameters.AddWithValue("@SODeliveryDate", soDlDt == default ? string.Empty : soDlDt);
+                SqlParams.Add(new SqlParameter("@ConsigneeAccountCode", model.ConsigneeAccountCode));
+                SqlParams.Add(new SqlParameter("@ConsigneeAddress", model.ConsigneeAddress));
+                SqlParams.Add(new SqlParameter("@FreightPaidBy", model.FreightPaidBy));
+                SqlParams.Add(new SqlParameter("@PackingChgApplicable", model.PackingChgApplicable));
+                SqlParams.Add(new SqlParameter("@ModeTransport", model.TransportMode));
+                SqlParams.Add(new SqlParameter("@Remark", model.SORemark));
+                SqlParams.Add(new SqlParameter("@DeliverySch", model.DeliverySch));
+                SqlParams.Add(new SqlParameter("@DeliveryTerms", model.DeliveryTerms));
+                SqlParams.Add(new SqlParameter("@PreparedBy", model.PreparedBy));
+                SqlParams.Add(new SqlParameter("@PortOfDischarge", model.PortOfDischarge));
+                SqlParams.Add(new SqlParameter("@ResponsibleSalesPersonID", model.ResponsibleSalesPersonID));
+                SqlParams.Add(new SqlParameter("@CustContactPerson", model.CustContactPerson));
+                SqlParams.Add(new SqlParameter("@SaleDocType", model.SaleDocType));
+                SqlParams.Add(new SqlParameter("@OtherDetail", model.OtherDetail));
+                SqlParams.Add(new SqlParameter("@PortToLoading", model.Port2Loading));
+                SqlParams.Add(new SqlParameter("@InsuApplicable", model.InsuApplicable));
+                SqlParams.Add(new SqlParameter("@SODeliveryDate", soDlDt == default ? string.Empty : soDlDt));
 
-                oCmd.Parameters.AddWithValue("@OrderAmt", model.ItemNetAmount);
-                oCmd.Parameters.AddWithValue("@DTItemGrid", DTItemGrid);
-                oCmd.Parameters.AddWithValue("@OrderNetAmt", model.NetTotal);
-                oCmd.Parameters.AddWithValue("@DTSchedule", DTSchedule);
-                oCmd.Parameters.AddWithValue("@DTTaxGrid", DTTaxGrid);
-                oCmd.Parameters.AddWithValue("@DTBuyerGrid", MultiBuyersDT);
-                oCmd.Parameters.AddWithValue("@RoundOff", model.TotalRoundOff);
-                oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+                SqlParams.Add(new SqlParameter("@OrderAmt", model.ItemNetAmount));
+                SqlParams.Add(new SqlParameter("@DTItemGrid", DTItemGrid));
+                SqlParams.Add(new SqlParameter("@OrderNetAmt", model.NetTotal));
+                SqlParams.Add(new SqlParameter("@DTSchedule", DTSchedule));
+                SqlParams.Add(new SqlParameter("@DTTaxGrid", DTTaxGrid));
+                SqlParams.Add(new SqlParameter("@DTBuyerGrid", MultiBuyersDT));
+                SqlParams.Add(new SqlParameter("@RoundOff", model.TotalRoundOff));
+                SqlParams.Add(new SqlParameter("@CreatedBy", model.CreatedBy));
 
-                await myConnection.OpenAsync();
-
-                using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
-                oDataAdapter.Fill(oDataTable);
-
-                if (oDataTable.Rows.Count > 0)
-                {
-                    _ResponseResult = new ResponseResult()
-                    {
-                        StatusCode = HttpStatusCode.OK,
-                        StatusText = "Success",
-                        Result = oDataTable
-                    };
-                }
+                // await myConnection.OpenAsync();
+                // 
+                // using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
+                // oDataAdapter.Fill(oDataTable);
+                // 
+                // if (oDataTable.Rows.Count > 0)
+                // {
+                //     _ResponseResult = new ResponseResult()
+                //     {
+                //         StatusCode = HttpStatusCode.OK,
+                //         StatusText = "Success",
+                //         Result = oDataTable
+                //     };
+                // }
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleOrder", SqlParams);
             }
             catch (Exception ex)
             {
