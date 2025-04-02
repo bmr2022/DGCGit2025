@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -8,9 +9,9 @@ namespace eTactWeb.Data.BLL;
 
 public class PurchaseScheduleBLL : IPurchaseSchedule
 {
-    public PurchaseScheduleBLL(IConfiguration configuration, IDataLogic iDataLogic)
+    public PurchaseScheduleBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
-        _PurchaseScheduleDAL = new PurchaseScheduleDAL(configuration, iDataLogic);
+        _PurchaseScheduleDAL = new PurchaseScheduleDAL(configuration, iDataLogic, connectionStringService);
     }
 
     private PurchaseScheduleDAL? _PurchaseScheduleDAL { get; }

@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -15,11 +16,13 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-
-        public Features_OptionsDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public Features_OptionsDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
         public async Task<ResponseResult> GetDashboardData()
@@ -172,6 +175,8 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBackDateINDENT = dr["AllowBackDateINDENT"] != DBNull.Value ? dr["AllowBackDateINDENT"].ToString() : string.Empty,
                                                                 CheckPOPendFromPOonlyNotFromAmendment = dr["CheckPOPendFromPOonlyNotFromAmendment"] != DBNull.Value ? dr["CheckPOPendFromPOonlyNotFromAmendment"].ToString() : string.Empty,
                                                                 PoallowtoprintWithoutApproval = dr["PoallowtoprintWithoutApproval"] != DBNull.Value ? dr["PoallowtoprintWithoutApproval"].ToString() : string.Empty,
+                                                                POClosePOAlwaysAgainstIndent = dr["POClosePOAlwaysAgainstIndent"] != DBNull.Value ? dr["POClosePOAlwaysAgainstIndent"].ToString() : string.Empty,
+                                                                IndentReportName = dr["IndentReportName"] != DBNull.Value ? dr["IndentReportName"].ToString() : string.Empty,
                                                             }).ToList();
                     }
 
@@ -341,6 +346,7 @@ namespace eTactWeb.Data.DAL
                                                                 BatchWiseProduction = dr["BatchWiseProduction"] != DBNull.Value ? dr["BatchWiseProduction"].ToString() : string.Empty,
                                                                 ProdEntryAllowBackDate = dr["ProdEntryAllowBackDate"] != DBNull.Value ? dr["ProdEntryAllowBackDate"].ToString() : string.Empty,
                                                                 AllowBackDateDAILYPRODUCTION = dr["AllowBackDateDAILYPRODUCTION"] != DBNull.Value ? dr["AllowBackDateDAILYPRODUCTION"].ToString() : string.Empty,
+                                                                ProdAllowMultiplePlanInProdSchOrNot = dr["ProdAllowMultiplePlanInProdSchOrNot"] != DBNull.Value ? dr["ProdAllowMultiplePlanInProdSchOrNot"].ToString() : string.Empty,
 
                                                             }).ToList();
                         }
@@ -541,6 +547,8 @@ namespace eTactWeb.Data.DAL
                     model.AllowBackDateINDENT = DS.Tables[0].Rows[0]["AllowBackDateINDENT"].ToString();
                     model.CheckPOPendFromPOonlyNotFromAmendment = DS.Tables[0].Rows[0]["CheckPOPendFromPOonlyNotFromAmendment"].ToString();
                     model.PoallowtoprintWithoutApproval = DS.Tables[0].Rows[0]["PoallowtoprintWithoutApproval"].ToString();
+                    model.POClosePOAlwaysAgainstIndent = DS.Tables[0].Rows[0]["POClosePOAlwaysAgainstIndent"].ToString();
+                    model.IndentReportName = DS.Tables[0].Rows[0]["IndentReportName"].ToString();
                 }
                 if (Type == "SaleOrderDetail")
                 {
@@ -657,6 +665,7 @@ namespace eTactWeb.Data.DAL
                     model.BatchWiseProduction = DS.Tables[0].Rows[0]["BatchWiseProduction"] != DBNull.Value ? DS.Tables[0].Rows[0]["BatchWiseProduction"].ToString() : string.Empty;
                     model.ProdEntryAllowBackDate = DS.Tables[0].Rows[0]["ProdEntryAllowBackDate"] != DBNull.Value ? DS.Tables[0].Rows[0]["ProdEntryAllowBackDate"].ToString() : string.Empty;
                     model.AllowBackDateDAILYPRODUCTION = DS.Tables[0].Rows[0]["AllowBackDateDAILYPRODUCTION"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateDAILYPRODUCTION"].ToString() : string.Empty;
+                    model.ProdAllowMultiplePlanInProdSchOrNot = DS.Tables[0].Rows[0]["ProdAllowMultiplePlanInProdSchOrNot"] != DBNull.Value ? DS.Tables[0].Rows[0]["ProdAllowMultiplePlanInProdSchOrNot"].ToString() : string.Empty;
 
                 }
                 if (Type == "ProdPlanSchDetail")
@@ -745,6 +754,8 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@AllowBackDateINDENT", model.AllowBackDateINDENT));
                         SqlParams.Add(new SqlParameter("@CheckPOPendFromPOonlyNotFromAmendment", model.CheckPOPendFromPOonlyNotFromAmendment));
                         SqlParams.Add(new SqlParameter("@PoallowtoprintWithoutApproval", model.PoallowtoprintWithoutApproval));
+                        SqlParams.Add(new SqlParameter("@POClosePOAlwaysAgainstIndent", model.POClosePOAlwaysAgainstIndent));
+                        SqlParams.Add(new SqlParameter("@IndentReportName", model.POClosePOAlwaysAgainstIndent));
                     }
                     if (model.Type == "SaleOrderDetail")
                     {
@@ -875,6 +886,7 @@ namespace eTactWeb.Data.DAL
                             SqlParams.Add(new SqlParameter("@BatchWiseProduction", model.BatchWiseProduction));
                             SqlParams.Add(new SqlParameter("@ProdEntryAllowBackDate", model.ProdEntryAllowBackDate));
                             SqlParams.Add(new SqlParameter("@AllowBackDateDAILYPRODUCTION", model.AllowBackDateDAILYPRODUCTION));
+                            SqlParams.Add(new SqlParameter("@ProdAllowMultiplePlanInProdSchOrNot", model.ProdAllowMultiplePlanInProdSchOrNot));
 
                         }
                         if (model.Type == "ProdPlanSchDetail")

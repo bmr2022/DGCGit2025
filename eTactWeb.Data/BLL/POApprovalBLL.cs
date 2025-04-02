@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly POApprovalDAL _POAppDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public POApprovalBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public POApprovalBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _POAppDAL = new POApprovalDAL(configuration, iDataLogic);
+            _POAppDAL = new POApprovalDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<ResponseResult> GetInitialData(string Flag, string Uid, int EmpId)
