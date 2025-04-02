@@ -77,6 +77,27 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetItemCode(string PartCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemCode"));
+                SqlParams.Add(new SqlParameter("@PartCode", PartCode));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_JobworkOpeningDetail", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
         internal async Task<JobWorkOpeningModel> GetViewByID(int ID, string Mode, int YC, string OpeningType)
         {
             var model = new JobWorkOpeningModel();

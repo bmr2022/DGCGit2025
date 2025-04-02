@@ -35,6 +35,8 @@ namespace eTactWeb.DOM.Models
     [Serializable()]
     public class ItemDetail : TaxModel
     {
+        public int SOEntryId { get; set; }
+        public int SOYearCode { get; set; }
         public decimal AltQty { get; set; }
         public string? AltUnit { get; set; }
         public string? AmendmentDate { get; set; }

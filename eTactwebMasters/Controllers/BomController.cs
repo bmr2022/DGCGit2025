@@ -668,6 +668,7 @@ public class BomController : Controller
         //var Result = System.Text.Json.JsonSerializer.Serialize(model);
         return PartialView("_BomDashboardGrid", model);
     }
+
     public async Task<IActionResult> GetDetailSearchData(BomDashboard model)
     {
         model = await _IBom.GetDetailSearchData(model);
@@ -675,6 +676,7 @@ public class BomController : Controller
         //var Result = System.Text.Json.JsonSerializer.Serialize(model);
         return PartialView("_BomDashboardGrid", model);
     }
+
 
     public JsonResult GetUnit(string IC)
     {

@@ -17,12 +17,14 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
+        private readonly ConnectionStringService _connectionStringService;
 
-
-        public POCancelDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        public POCancelDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
         public async Task<ResponseResult> GetSearchData(string FromDate, string ToDate, string CancelationType, string PONO, string VendorName, int Eid, string uid)

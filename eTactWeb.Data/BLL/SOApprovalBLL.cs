@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly SOApprovalDAL _SOAppDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public SOApprovalBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public SOApprovalBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _SOAppDAL = new SOApprovalDAL(configuration, iDataLogic);
+            _SOAppDAL = new SOApprovalDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
 

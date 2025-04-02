@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private CompanyDetailDAL _CompanyDetailDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public CompanyDetailBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public CompanyDetailBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _CompanyDetailDAL = new CompanyDetailDAL(config, dataLogicDAL);
+            _CompanyDetailDAL = new CompanyDetailDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> SaveCompanyDetail(CompanyDetailModel model)

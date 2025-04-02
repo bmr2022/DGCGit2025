@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -11,10 +12,10 @@ public class PartCodePartyWiseBLL : IPartCodePartyWise
     private readonly IDataLogic _DataLogicDAL;
     private PartCodePartyWiseDAL _PartCodePartyWiseDAL;
 
-    public PartCodePartyWiseBLL(IConfiguration configuration, IDataLogic dataLogicDAL)
+    public PartCodePartyWiseBLL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
     {
         _DataLogicDAL = dataLogicDAL;
-        _PartCodePartyWiseDAL = new PartCodePartyWiseDAL(configuration,dataLogicDAL);
+        _PartCodePartyWiseDAL = new PartCodePartyWiseDAL(configuration,dataLogicDAL, connectionStringService);
     }
 
     public async Task<ResponseResult> FillItems(string Type, string ShowAllItem)

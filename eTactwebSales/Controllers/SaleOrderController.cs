@@ -1039,13 +1039,17 @@ public class SaleOrderController : Controller
 
 								if (index != -1)
 								{
-									int messageStartIndex = index + "#ERROR_MESSAGE".Length; // Remove the extra space and colon
-									string errorMessage = input.Substring(messageStartIndex).Trim();
-									int maxLength = 100;
-									int wrapLength = Math.Min(maxLength, errorMessage.Length);
-									TempData["ErrorMessage"] = errorMessage.Substring(0, wrapLength);
-								}
-								else
+                                    int messageStartIndex = index + "#ERROR_MESSAGE".Length; // Remove the extra space and colon
+                                    string errorMessage = input.Substring(messageStartIndex).Trim();
+
+                                    int maxLength = 100;
+                                    int wrapLength = Math.Min(maxLength, errorMessage.Length);
+
+                                    string formattedMessage = errorMessage.Substring(0, wrapLength).Replace("\n", "<br>");
+
+                                    TempData["ErrorMessage"] = formattedMessage;
+                                }
+                                else
 								{
 									TempData["500"] = "500";
 								}
@@ -1603,7 +1607,7 @@ public class SaleOrderController : Controller
 				}
 
 				var rowCount = worksheet.Dimension.Rows;
-
+				var itemList = new List<ItemDetail>();
 				for (int row = 2; row <= rowCount; row++)
 				{
 					bool isRowEmpty = true;
@@ -1649,7 +1653,19 @@ public class SaleOrderController : Controller
 					string itemName = itemData.Rows[0]["Item_Name"].ToString();
 					int itemCode = Convert.ToInt32(itemData.Rows[0]["Item_Code"]);
 
-					string soType = Request.Form["SOType"];
+
+                    string soType = Request.Form["SOType"];
+                    string soEntryId = Request.Form["SOEntryId"];
+                    string soYearCode = Request.Form["SOYearCode"];
+
+					itemList.Add(new ItemDetail()
+					{
+					    SOEntryId = Convert.ToInt32(soEntryId),
+						SOYearCode = Convert.ToInt32(soYearCode),
+						ItemCode = Convert.ToInt32(itemData.Rows[0]["Item_Code"]),
+						PartText = partCode
+                    });
+
 					bool isSOTypeClose = soType.Equals("Close", StringComparison.OrdinalIgnoreCase);
 
 					// **Quantity and Rate Validation**
@@ -1721,7 +1737,20 @@ public class SaleOrderController : Controller
 					});
 				}
 
-				if (errors.Count > 0)
+                var duplicateItems = itemList
+					   .GroupBy(x => x.ItemCode)
+					   .Where(g => g.Count() > 1)
+					   .SelectMany(g => g.Select(x => x.PartText))
+					   .Distinct() 
+					   .ToList();
+
+                if (duplicateItems.Any())
+                {
+					var duplicateErrorMsg = "Duplicate ItemCodes: " + string.Join(", ", duplicateItems);
+                    return BadRequest(string.Join("\n", duplicateErrorMsg));
+                }
+
+                if (errors.Count > 0)
 				{
 					return BadRequest( string.Join("\n", errors));
 				}
