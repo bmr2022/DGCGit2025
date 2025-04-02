@@ -56,6 +56,12 @@
                  <th data-columnno="12" data-sortorder="asc" class="sortCol">
                     <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Po Allow To PrintWithoutApproval
                 </th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POClosePOAlwaysAgainstIndent
+                </th>
+                 <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IndentReportName
+                </th>
 
                 
 
@@ -105,6 +111,8 @@
                                            asp-route-AllowBackDateINDENT="@item.AllowBackDateINDENT"
                                            asp-route-CheckPOPendFromPOonlyNotFromAmendment="@item.CheckPOPendFromPOonlyNotFromAmendment"
                                            asp-route-PoallowtoprintWithoutApproval="@item.PoallowtoprintWithoutApproval"
+                                           asp-route-POClosePOAlwaysAgainstIndent="@item.POClosePOAlwaysAgainstIndent"
+                                           asp-route-IndentReportName="@item.IndentReportName"
                                            
                                            onclick="confirmEdit(event)">
 
@@ -132,6 +140,8 @@
                             <td>@item.AllowBackDateINDENT</td>
                             <td>@item.CheckPOPendFromPOonlyNotFromAmendment</td>
                             <td>@item.PoallowtoprintWithoutApproval</td>
+                            <td>@item.POClosePOAlwaysAgainstIndent</td>
+                            <td>@item.IndentReportName</td>
                            
 
                         </tr>

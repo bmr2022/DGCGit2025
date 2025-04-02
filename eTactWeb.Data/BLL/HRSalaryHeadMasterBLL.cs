@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -19,10 +20,10 @@ namespace eTactWeb.Data.BLL
 
         //private readonly IConfiguration configuration;
 
-        public HRSalaryHeadMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public HRSalaryHeadMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            _SalaryHeadMasterDAL = new HRSalaryHeadMasterDAL(config, dataLogicDAL);
+            _SalaryHeadMasterDAL = new HRSalaryHeadMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
 

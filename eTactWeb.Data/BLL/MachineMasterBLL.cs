@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.DOM.Models.Master;
 using eTactWeb.Services.Interface;
@@ -17,9 +18,9 @@ namespace eTactWeb.Data.BLL
         private MachineMasterDAL _MachineMasterDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public MachineMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public MachineMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _MachineMasterDAL = new MachineMasterDAL(config, dataLogicDAL);
+            _MachineMasterDAL = new MachineMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> FillMachineGroup()

@@ -55,9 +55,9 @@ namespace eTactWeb.Controllers
         string ProdEntryAllowToAddNegativeStock,string BatchWiseProduction,string ProdEntryAllowBackDate,string AllowBackDateDAILYPRODUCTION,
         string AllowBackDateTRANSFERMATERIAL,string AllowBackDateRECEIVEINSTORE,string AllowBackDateSALEBILL,
         string VoucherRotationDailyMonthYearly, string AllowBackDateWorkorderEntry,string AllowBackDateProductionScheduleEntry,
-        string InProdScheduleShowSumOrDetail,string PoallowtoprintWithoutApproval,
-        string AccAllowtochangeDocumentinPurchaseBill,
-string AccPasswordToChangeDocumentinPurchaseBill,
+        string InProdScheduleShowSumOrDetail,string PoallowtoprintWithoutApproval,string POClosePOAlwaysAgainstIndent,
+        string AccAllowtochangeDocumentinPurchaseBill,string ProdAllowMultiplePlanInProdSchOrNot,
+string AccPasswordToChangeDocumentinPurchaseBill,string IndentReportName,
 string AccAllowtochangeInvoiceNoDateinPurchaseBill,
 string AccPasswordToAllowManualTax,
 string AccSaleBillManualTaxAllowed,
@@ -181,6 +181,9 @@ string AccPurchaseBillInvoicePrintoutFilename)
                 MainModel.AccAllowToChangeVoucherDateInPurchBill = AccAllowToChangeVoucherDateInPurchBill;
                 MainModel.AccPurchaseVoucherPrintoutFilename = AccPurchaseVoucherPrintoutFilename;
                 MainModel.AccPurchaseBillInvoicePrintoutFilename = AccPurchaseBillInvoicePrintoutFilename;
+                MainModel.POClosePOAlwaysAgainstIndent = POClosePOAlwaysAgainstIndent;
+                MainModel.ProdAllowMultiplePlanInProdSchOrNot = ProdAllowMultiplePlanInProdSchOrNot;
+                MainModel.IndentReportName = IndentReportName;
 
 
 

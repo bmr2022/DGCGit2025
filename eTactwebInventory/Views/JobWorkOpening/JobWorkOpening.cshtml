@@ -289,6 +289,22 @@
                                 <div class="progress my-2 mb-3" style="height: 4px;">
                                     <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
+                                <div class="d-flex justify-content-end mb-2">
+                           
+                                        <div class="col-auto  me-3">
+                                            <input class="form-control" type="file" id="ExcelFile" />
+                                        </div>
+                                        <div class="col-auto  me-3">
+                                            <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
+                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                                            </button>
+                                        </div>
+                             
+                                    <a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportJobWorkOpeningFormate();">
+                                        <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        IMPORT FORMAT
+                                    </a> 
+                                </div>
                                 <div class="card">
                                     @*  <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left:1100px">
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -514,7 +530,7 @@
             $('#RGPNRGP').val("RGP");
             $('#ChallanType').val("openingRGP");
 
-
+             
 
             if ($('#OpeningType').val() == "CustomerJobwork") {
                 $('#IsCustomerJobWork').val("CustomerJobworkOpening");
@@ -657,6 +673,74 @@
         $('#OpeningType').change(function () {
             FillEntryId();
         });
+
+        function ExportJobWorkOpeningFormate() {
+
+            $('#divJobWorkOpeningGrid').empty();
+            var wb = XLSX.utils.book_new();
+
+            var ws = XLSX.utils.json_to_sheet([], { header: ["ChallanNo", "Date", "IND/BOM", "IssuePartcode", "ChallanQty", "PendingQty","Rate", "Unit", "Recpartcode", "BomNo", "Process", "Issuebatchno", "Uniqbatchno"] });
+
+            //ws['!ref'] = 'A1:I1';
+
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+            XLSX.writeFile(wb, "ImportJobWorkOpeningFormat.xlsx");
+        }
+
+        function UploadExcel() {
+            var fileInput = $('#ExcelFile');
+            var file = fileInput.prop("files")[0];
+
+            if (!file) {
+                $.notify("Please upload an Excel file", "error");
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("excelFile", file);
+            formData.append("SOType", $("#SOType").val());
+            formData.append("EntryID", $("#EntryID").val());
+            formData.append("YearCode", $("#YearCode").val());
+            formData.append("EntryDate", $("#EntryDate").val());
+            formData.append("Accountcode", $("#Accountcode").val());
+            formData.append("PartyName", $("#Accountcode option:selected").text());
+            formData.append("cc", $("#cc").val());
+            formData.append("UID", $("#UID").val());
+            formData.append("ActualEnteredByName", $("#ActualEnteredByName").val());
+
+
+            // Get valid part codes from the hidden field
+            var validPartCodes = $('#validPartCodes').val();
+            formData.append("validPartCodes", validPartCodes);
+
+            $.ajax({
+                url: "@Url.Action("UploadExcel")",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+
+                    $('#divJobWorkOpeningGrid').html(result);
+                    // calculateTotalAmount();
+                    // GetTaxPartItem();
+
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        $.notify(xhr.responseText, "error"); // Show error message if part code is invalid
+                    } else {
+                        $.notify("An unexpected error occurred. Please try again.", "error");
+                    }
+                }
+            });
+        }
+
+
+
+
+
         function CalAmount() {
             var pendQty = $('#pendqty').val();
             var rate = $('#Rate').val();
@@ -1443,6 +1527,9 @@
         }
 
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    @*<script src="~/Scripts/table2excel.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 }
 
                         <style>

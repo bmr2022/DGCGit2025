@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly POCancelDAL _POCancelDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public POCancelBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public POCancelBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _POCancelDAL = new POCancelDAL(configuration, iDataLogic);
+            _POCancelDAL = new POCancelDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
 

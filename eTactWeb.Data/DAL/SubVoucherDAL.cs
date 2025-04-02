@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.DOM.Models.Master;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +19,15 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-
-        public SubVoucherDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public SubVoucherDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
+            _connectionStringService = connectionStringService;
         }
 
         public async Task<ResponseResult> GetMainVoucherNames()

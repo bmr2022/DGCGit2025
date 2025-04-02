@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private AlternateItemMasterDAL _AlternateItemMasterDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public AlternateItemMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public AlternateItemMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _AlternateItemMasterDAL = new AlternateItemMasterDAL(config, dataLogicDAL);
+            _AlternateItemMasterDAL = new AlternateItemMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> GetMainItem()

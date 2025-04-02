@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
+using eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -18,12 +19,14 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
+        private readonly ConnectionStringService _connectionStringService;
 
-
-        public SOCancelDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        public SOCancelDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
         public async Task<ResponseResult> GetSearchData(string FromDate, string ToDate, string CancelType, string Uid, int EmpId, string SONO, string AccountName, string CustOrderNo)
         {

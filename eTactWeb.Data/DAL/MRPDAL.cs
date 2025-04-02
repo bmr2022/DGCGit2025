@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -17,13 +18,16 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-
+        private readonly ConnectionStringService _connectionStringService;
         //public static decimal BatchStockQty { get; private set; }
 
-        public MRPDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        public MRPDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+           
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
         public async Task<ResponseResult> PendingMRPData(PendingMRP model)
         {

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -13,9 +14,9 @@ namespace eTactWeb.Data.BLL
 {
     public class IndentBLL : IIndent
     {
-        public IndentBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public IndentBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _IndentDAL = new IndentDAL(configuration, iDataLogic);
+            _IndentDAL = new IndentDAL(configuration, iDataLogic, connectionStringService);
         }
 
         private IndentDAL? _IndentDAL { get; }

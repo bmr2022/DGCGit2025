@@ -15,6 +15,7 @@ using eTactWeb.DOM.Models;
 using System.Globalization;
 using System.Data;
 using System.Net;
+using OfficeOpenXml;
 
 namespace eTactWeb.Controllers
 {
@@ -824,6 +825,286 @@ namespace eTactWeb.Controllers
                 // Log any other unexpected exceptions
                 Console.WriteLine($"Unexpected Exception: {ex.Message}");
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
+            }
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> UploadExcel()
+        {
+            try
+            {
+                IFormFile ExcelFile = Request.Form.Files.FirstOrDefault();
+                if (ExcelFile == null || ExcelFile.Length == 0)
+                {
+                    return BadRequest("Invalid file. Please upload a valid Excel file.");
+                }
+
+                //string validPartCodesString = Request.Form["validPartCodes"];
+                //var validPartCodes = new HashSet<string>(validPartCodesString.Split(','), StringComparer.OrdinalIgnoreCase);
+
+                string path = Path.Combine(this._IWebHostEnvironment.WebRootPath, "Uploads");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string fileName = Path.GetFileName(ExcelFile.FileName);
+                string filePath = Path.Combine(path, fileName);
+                using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ExcelFile.CopyToAsync(stream);
+                }
+
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                var JobWorkGridList = new List<JobWorkOpeningModel>();
+                var MainModel = new JobWorkOpeningModel();
+                var errors = new List<string>(); // List to collect validation errors
+
+                using (var package = new ExcelPackage(new FileInfo(filePath)))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                    if (worksheet == null)
+                    {
+                        return BadRequest("Uploaded file does not contain any worksheet.");
+                    }
+
+                    var rowCount = worksheet.Dimension.Rows;
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        var itemCode = _IJobWorkOpening.GetItemCode(worksheet.Cells[row, 4].Value.ToString());
+                        var partcode = 0;
+                        var itemCodeValue = 0;
+                        var itemname = "";
+                        if (itemCode.Result.Result != null && itemCode.Result.Result.Rows.Count > 0)
+                        {
+                            partcode = Convert.ToInt32(itemCode.Result.Result.Rows[0].ItemArray[0]);
+                            itemCodeValue = Convert.ToInt32(itemCode.Result.Result.Rows[0].ItemArray[0]);
+                            itemname = itemCode.Result.Result.Rows[0].ItemArray[1]?.ToString() ?? "Unknown Item"; // Ensure string conversion
+                        }
+                        else
+                        {
+                            partcode = 0;
+                            itemCodeValue = 0;
+                            itemname = "Unknown Item"; // Set default name if not found
+                        }
+
+                        if (partcode == 0)
+                        {
+                            errors.Add($"Invalid PartCode at row {row}");
+                            continue;
+                        }
+
+
+
+                        var RecitemCode = _IJobWorkOpening.GetItemCode(worksheet.Cells[row, 9].Value.ToString());
+                        var Recpartcode = 0;
+                        var RecitemCodeValue = 0;
+                        var Recitemname = "";
+                        if (RecitemCode.Result.Result != null && RecitemCode.Result.Result.Rows.Count > 0)
+                        {
+                            Recpartcode = Convert.ToInt32(RecitemCode.Result.Result.Rows[0].ItemArray[0]);
+                            RecitemCodeValue = Convert.ToInt32(RecitemCode.Result.Result.Rows[0].ItemArray[0]);
+                            Recitemname = RecitemCode.Result.Result.Rows[0].ItemArray[1]?.ToString() ?? "Unknown Item"; // Ensure string conversion
+                        }
+                        else
+                        {
+                            Recpartcode = 0;
+                            RecitemCodeValue = 0;
+                            Recitemname = "Unknown Item"; // Set default name if not found
+                        }
+
+                        if (Recpartcode == 0)
+                        {
+                            errors.Add($"Invalid RecPartCode at row {row}");
+                            continue;
+                        }
+
+
+
+
+
+
+
+
+                        bool isRowEmpty = true;
+                        for (int col = 1; col <= worksheet.Dimension.Columns; col++)
+                        {
+                            if (!string.IsNullOrEmpty((worksheet.Cells[row, col].Value ?? string.Empty).ToString().Trim()))
+                            {
+                                isRowEmpty = false;
+                                break;
+                            }
+                        }
+                        if (isRowEmpty) continue;
+
+                        //var partCode = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
+                        //var validateUnit = (worksheet.Cells[row, 2].Value ?? string.Empty).ToString().Trim();
+
+                        //// **Validate Unit**
+                        //if (validateUnit.Length > 3)
+                        //{
+                        //    errors.Add($"Invalid Unit at row {row}: {validateUnit}");
+                        //    continue;
+                        //}
+
+                        //// **Validate PartCode**
+                        //if (!validPartCodes.Contains(partCode))
+                        //{
+                        //    errors.Add($"Invalid PartCode at row {row}: {partCode}");
+                        //    continue;
+                        //}
+
+                        // **Fetch Item Details from Database**
+                        //var response = await _ISaleOrder.FillItemPartCode(partCode);
+
+                        //if (response?.Result is not DataTable itemData || itemData.Rows.Count == 0)
+                        //{
+                        //    errors.Add($"No data found for PartCode '{partCode}' at row {row}.");
+                        //    continue;
+                        //}
+
+                        //string hsnNo = itemData.Rows[0]["HSNNo"].ToString();
+                        //string unit = itemData.Rows[0]["Unit"].ToString();
+                        //string altUnit = itemData.Rows[0]["AltUnit"].ToString();
+                        //string itemName = itemData.Rows[0]["Item_Name"].ToString();
+                        //int itemCode = Convert.ToInt32(itemData.Rows[0]["Item_Code"]);
+
+                        //string soType = Request.Form["SOType"];
+
+                        int EntryID = Convert.ToInt32(Request.Form["EntryID"]);
+                        int YearCode = Convert.ToInt32(Request.Form["YearCode"]);
+                        string EntryDate = Request.Form["EntryDate"];
+                        int Accountcode = Convert.ToInt32(Request.Form["Accountcode"]);
+                        string PartyName = Request.Form["PartyName"];
+                        string cc = Request.Form["cc"];
+                        int UID = Convert.ToInt32(Request.Form["UID"]);
+                        int EnteredByEmpId = Convert.ToInt32(Request.Form["UID"]);
+                        string ActualEnteredByName = Request.Form["ActualEnteredByName"];
+
+
+
+                        //bool isSOTypeClose = soType.Equals("Close", StringComparison.OrdinalIgnoreCase);
+
+                        // **Quantity and Rate Validation**
+                        //decimal qty = isSOTypeClose
+                        //    ? decimal.TryParse(worksheet.Cells[row, 4].Value?.ToString(), out decimal tempQty) ? tempQty : 0
+                        //    : 0;
+
+                        decimal rate = decimal.TryParse(worksheet.Cells[row, 7].Value?.ToString(), out decimal tempRate) ? tempRate : 0;
+                        decimal ChallanQty = decimal.TryParse(worksheet.Cells[row, 5].Value?.ToString(), out decimal TEMPChallanQty) ? TEMPChallanQty : 0;
+                        decimal PendingQty = decimal.TryParse(worksheet.Cells[row, 6].Value?.ToString(), out decimal tempPendingQty) ? tempPendingQty : 0;
+
+                        if (PendingQty > ChallanQty)
+                        {
+                            errors.Add($"PendingQty cannot be greater then ChallanQty  at row {row}");
+                            continue;
+                        }
+                        //if (isSOTypeClose && qty <= 0)
+                        //{
+                        //    errors.Add($"Qty should be greater than 0 at row {row} ");
+                        //    continue; // Skip processing this row
+                        //}
+
+                        // **Delivery Date Validation**
+                        //string deliveryDateStr = worksheet.Cells[row, 7].Value?.ToString();
+                        //DateTime? deliveryDate = null;
+                        //if (DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
+                        //{
+                        //    if (tempDeliveryDate <= DateTime.Today)
+                        //    {
+                        //        errors.Add($"Delivery Date at row {row} must be greater than today ({DateTime.Today:dd/MMM/yyyy}).");
+                        //    }
+                        //    else
+                        //    {
+                        //        deliveryDate = tempDeliveryDate;
+                        //    }
+                        //}
+
+                        //// **Calculate Amount (Qty * Rate)**
+                        //decimal amount = qty * rate;
+
+                        // **Add to SaleGridList**
+                        JobWorkGridList.Add(new JobWorkOpeningModel
+                        {
+                            SeqNo = JobWorkGridList.Count + 1,
+                            cc = cc,
+                            UID=UID,
+                            EnteredByEmpId= EnteredByEmpId,
+                            ActualEnteredByName=ActualEnteredByName,
+                            EntryID = EntryID,
+                            YearCode = YearCode,
+                            EntryDate = EntryDate,
+                            ItemName = itemname,
+                            PartCode = worksheet.Cells[row, 4].Value?.ToString() ?? "",
+                            ItemCode = itemCodeValue,
+                            IssJWChallanNo = worksheet.Cells[row, 1].Value?.ToString() ?? "",
+                            IssChallanYearcode = YearCode,
+                            Isschallandate = DateTime.TryParse(worksheet.Cells[row, 2].Value?.ToString(), out DateTime tempChallanDate)
+                                ? tempChallanDate.ToString("yyyy-MM-dd")
+                                : DateTime.Now.ToString("yyyy-MM-dd"),
+                            Accountcode = Accountcode,
+                            AccountName = PartyName,
+                            Rate = rate,
+                            unit = worksheet.Cells[row, 8].Value?.ToString() ?? "",
+                            ChallanQty = ChallanQty,
+                            pendqty = PendingQty,
+                            RecQty = ChallanQty - PendingQty,
+                            Amount = PendingQty * rate,
+                            BomDate = DateTime.Today.ToString("dd/MMM/yyyy"),
+                            //Amount
+                            //rec qnt
+                            //pendqty 
+                            ScrapQty = decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempscrapQty) ? tempscrapQty : 0,
+                            ScrapItemCode = int.TryParse(worksheet.Cells[row, 17].Value?.ToString(), out int tempScrapItemCode) ? tempScrapItemCode : 0,
+                            ScrapPartCode = worksheet.Cells[row, 17].Value?.ToString() ?? "",
+                            ScrapItemName = worksheet.Cells[row, 17].Value?.ToString() ?? "",
+                            RecItemCode = RecitemCodeValue,
+                            RecItemName = Recitemname,
+                            RecPartCode = worksheet.Cells[row, 9].Value?.ToString() ?? "",
+                            PendScrapToRec = int.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out int tempPendScrapToRec) ? tempPendScrapToRec : 0,
+                            BomType = worksheet.Cells[row, 3].Value?.ToString() ?? "",
+                            BatchNo = worksheet.Cells[row, 12].Value?.ToString() ?? "",
+                            UniqueBatchNo = worksheet.Cells[row, 13].Value?.ToString() ?? "",
+                            ProcessId = int.TryParse(worksheet.Cells[row, 11].Value?.ToString(), out int tempProcessId) ? tempProcessId : 0,
+
+                            Closed = "N",
+
+                            //challanqty
+
+
+
+                        });
+                    }
+
+                    if (errors.Count > 0)
+                    {
+                        return BadRequest(string.Join("\n", errors));
+                    }
+                }
+
+                MainModel.ItemDetailGrid = JobWorkGridList;
+                //HttpContext.Session.SetString("KeyJobWorkOpeningGrid", JsonConvert.SerializeObject(JobWorkGridList));
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                _MemoryCache.Set("KeyJobWorkOpeningGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+
+
+
+                return PartialView("_JobWorkOpeningGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while processing the Excel file.");
+                return StatusCode(500, "An internal server error occurred. Please check the file format.");
             }
         }
 

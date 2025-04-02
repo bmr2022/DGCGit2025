@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private UserRightReportDAL _UserRightReportDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public UserRightReportBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public UserRightReportBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _UserRightReportDAL = new UserRightReportDAL(config, dataLogicDAL);
+            _UserRightReportDAL = new UserRightReportDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<UserRightReportModel> GetUserRightsReportDetailData(string fromDate, string toDate, string ReportType, string UserName, string EmployeeName, string FormName, string ModuleName, string MachineName)

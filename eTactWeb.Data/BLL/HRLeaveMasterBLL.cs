@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -18,10 +19,10 @@ namespace eTactWeb.Data.BLL
 
         //private readonly IConfiguration configuration;
 
-        public HRLeaveMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public HRLeaveMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            _HRLeaveMasterDAL = new HRLeaveMasterDAL(config, dataLogicDAL);
+            _HRLeaveMasterDAL = new HRLeaveMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
 

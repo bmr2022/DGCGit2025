@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private HRHolidaysMasterDAL _HRHolidaysMasterDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public HRHolidaysMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public HRHolidaysMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _HRHolidaysMasterDAL = new HRHolidaysMasterDAL(config, dataLogicDAL);
+            _HRHolidaysMasterDAL = new HRHolidaysMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
 
