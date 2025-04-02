@@ -965,7 +965,7 @@
             //$('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
 
             $('.BtnExcel').fadeOut();
-            $('#SchAmendmentDate').datepicker("option", "minDate", parseDateToFormat($('#ScheduleDate').val()));
+            $('#SchAmendmentDate').datepicker("option", "minDate", $('#ScheduleDate').val());
 
             // $('#SchEffFromDate').datepicker("option", "minDate", $('#SODate').val());
             $("#SchEffFromDate,#SchEffTillDate,#SOCloseDate").datepicker({ dateFormat: 'dd/mm/yy' });
@@ -993,24 +993,24 @@
                 hiddenSchEffTillDate = formateDashDateToSlashDate(hiddenSchEffTillDate.split(" ")[0]);
 
                 if ($('#Mode').val() != 'SSA') {
-                    $("#SchEffFromDate").datepicker("setDate", parseDateToFormat(SchEffFromDate));
-                    $("#SchEffTillDate").datepicker("setDate", parseDateToFormat(SchEffTillDate));
+                    $("#SchEffFromDate").datepicker("setDate", SchEffFromDate);
+                    $("#SchEffTillDate").datepicker("setDate", SchEffTillDate);
                     $('#ScheduleDate').datepicker("option", "minDate", new Date(SchEffFromDate));
                     $('#ScheduleDate').datepicker("option", "maxDate", new Date(SchEffTillDate));
-                    $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat(SoDate));
-                    $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat(SOCloseDate));
+                    $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", SoDate);
+                    $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", SOCloseDate);
                 }
 
                 var SOCloseDate = "@Model.SOCloseDate";
                 var SoDate = "@Model.SODate";
 
                 $('#ScheduleDate').datepicker("setDate", hiddenSchDate);
-                $("#SchEffFromDate").datepicker("setDate", parseDateToFormat(SchEffFromDate));
-                $("#SchEffTillDate").datepicker("setDate", parseDateToFormat(SchEffTillDate));
-                $('#DeliveryDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
-                $('#DeliveryDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
-                $("#SOCloseDate").datepicker("setDate", parseDateToFormat(SOCloseDate));
-                $("#SODate").datepicker("setDate", parseDateToFormat(SoDate));
+                $("#SchEffFromDate").datepicker("setDate", SchEffFromDate);
+                $("#SchEffTillDate").datepicker("setDate", SchEffTillDate);
+                $('#DeliveryDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
+                $('#DeliveryDate').datepicker("option", "maxDate", $('#SchEffTillDate').val());
+                $("#SOCloseDate").datepicker("setDate", SOCloseDate);
+                $("#SODate").datepicker("setDate", SoDate);
                 //$('#SchEffTillDate').datepicker("option", "minDate", new Date(SoDate));
                 //$('#SchEffTillDate').datepicker("option", "maxDate", new Date(SoCloseDate));
 
@@ -1018,12 +1018,12 @@
                  
                 $("#SchEffFromDate").datepicker("setDate", $('#SchEffFromDate').val());
                 $("#SchEffTillDate").datepicker("setDate", $('#SchEffTillDate').val());
-                $('#ScheduleDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
-                $('#ScheduleDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
-                // $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SODate').val()));
-                // $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat($('#SOCloseDate').val()));
-                $('#DeliveryDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
-                $('#DeliveryDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
+                $('#ScheduleDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
+                $('#ScheduleDate').datepicker("option", "maxDate", $('#SchEffTillDate').val());
+                // $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", $('#SODate').val());
+                // $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", $('#SOCloseDate').val());
+                $('#DeliveryDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
+                $('#DeliveryDate').datepicker("option", "maxDate", $('#SchEffTillDate').val());
             }
 
             if ($('#Mode').val() == 'SSA' || $('#Mode').val() == 'SSC') {
@@ -3820,6 +3820,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
     @*<script src="~/Scripts/table2excel.js"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-
 
 }
