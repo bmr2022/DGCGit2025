@@ -18,7 +18,7 @@
                 <h4>
                     @ViewData["Title"] - @Model.YearCode
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                             <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                             Dashboard
                         </a>
@@ -584,7 +584,7 @@
                             <h4>
                                 @ViewData["Title"] - @Model.YearCode
                                 <span class="d-flex float-end" style="margin-top:-2px;">
-                                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                                         Dashboard
                                     </a>
@@ -761,6 +761,11 @@
                         var obj = $.parseJSON(data);
                         if (obj.Result.Table.length == 0) {
                             $("button[type='submit']").prop("disabled", true);
+                            $(".DashBoard")
+                                .addClass("disabled-link")
+                                .on("click", function (e) {
+                                    e.preventDefault(); // Prevents clicking the link
+                                });
                         } else {
                             console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
@@ -771,6 +776,13 @@
                             if (!optAll) {
                                 if (!optSave) {
                                     $("button[type='submit']").prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".DashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
                                 }
                             }
                         }
@@ -1078,3 +1090,11 @@
         });
     </script>
 }
+<style>
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
+    }
+</style>

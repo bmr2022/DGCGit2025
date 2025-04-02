@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,10 +17,14 @@ namespace eTactWeb.Data.BLL
         private PrimaryAccountGroupMasterDAL _PrimaryAccountGroupMasterDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public PrimaryAccountGroupMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public PrimaryAccountGroupMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _PrimaryAccountGroupMasterDAL = new PrimaryAccountGroupMasterDAL(config, dataLogicDAL);
+            _PrimaryAccountGroupMasterDAL = new PrimaryAccountGroupMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
+        }
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _PrimaryAccountGroupMasterDAL.GetFormRights(userID);
         }
         public async Task<ResponseResult> GetParentGroup()
         {
