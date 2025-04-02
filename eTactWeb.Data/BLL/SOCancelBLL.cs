@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly SOCancelDAL _SOCancelDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public SOCancelBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public SOCancelBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _SOCancelDAL = new SOCancelDAL(configuration, iDataLogic);
+            _SOCancelDAL = new SOCancelDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<ResponseResult> GetSearchData(string FromDate, string ToDate, string CancelType, string Uid, int EmpId, string SONO, string AccountName, string CustOrderNo)

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +12,9 @@ public class BankMasterBLL : IBankMaster
     private BankMasterDAL _BankMasterDAL;
     private readonly IDataLogic _DataLogicDAL;
 
-    public BankMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+    public BankMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
     {
-        _BankMasterDAL = new BankMasterDAL(config, dataLogicDAL);
+        _BankMasterDAL = new BankMasterDAL(config, dataLogicDAL, connectionStringService);
         _DataLogicDAL = dataLogicDAL;
     }
 

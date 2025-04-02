@@ -33,7 +33,7 @@
                 <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Scrap</th>
                 <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Burn Qty</th>
                 <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Location</th>
-                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MPNNo</th>              
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MPNNo</th>
             </tr>
         </thead>
         <tbody id="bomTableBody">
@@ -45,72 +45,129 @@
                 }
                 else
                 {
+                    var a = Model.DTDashboard.Rows;
                     for (int i = 0; i < Model.DTDashboard.Rows.Count; i++)
                     {
-                        Cntr = Cntr + 1;
-                        <tr>
-                            <td class="FWB">@Cntr</td>
-                            <td style="text-align:center;white-space: nowrap;">
-                                <div id="container">
-                                    <div id="viewCursorDiv-@Cntr">
-                                        <a href="#" class="table-link link-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="GetBomDetail('@Model.DTDashboard.Rows[i]["FGPartCode"]','@Model.DTDashboard.Rows[i]["BomNo"]')">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    <div id="editCursorDiv-@Cntr">
-                                        <a class="table-link link-primary" asp-action="EditBomDetail" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGPartCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]" asp-route-Mode="U">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    <div id="deleteCursorDiv-@Cntr">
-                                        <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="Bom" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGItemCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
+                        // Cntr = Cntr + 1;
+                        // <tr>
+                        //     <td class="FWB">@Cntr</td>
+                        //     <td style="text-align:center;white-space: nowrap;">
+                        //         <div id="container">
+                        //             <div id="viewCursorDiv-@Cntr">
+                        //                 <a href="#" class="table-link link-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="GetBomDetail('@Model.DTDashboard.Rows[i]["FGPartCode"]','@Model.DTDashboard.Rows[i]["BomNo"]')">
+                        //                     <span class="fa-stack">
+                        //                         <i class="fa fa-square fa-stack-2x"></i>
+                        //                         <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                        //                     </span>
+                        //                 </a>
+                        //             </div>
+                        //             <div id="editCursorDiv-@Cntr">
+                        //                 <a class="table-link link-primary" asp-action="EditBomDetail" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGPartCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]" asp-route-Mode="U">
+                        //                     <span class="fa-stack">
+                        //                         <i class="fa fa-square fa-stack-2x"></i>
+                        //                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        //                     </span>
+                        //                 </a>
+                        //             </div>
+                        //             <div id="deleteCursorDiv-@Cntr">
+                        //                 <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="Bom" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGItemCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]">
+                        //                     <span class="fa-stack">
+                        //                         <i class="fa fa-square fa-stack-2x"></i>
+                        //                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        //                     </span>
+                        //                 </a>
 
-                                    </div>
-                                </div>
-                            </td>
+                        //             </div>
+                        //         </div>
+                        //     </td>
+                        //     <td class="FWB">@Model.DTDashboard.Rows[i]["BomNo"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["FGPartCode"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["FGItem"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["BomQty"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["RMPartCode"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["RMItemName"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["Qty"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["Unit"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["AltPartcode1"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["AltItem1"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["AltPartcode2"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["AltItem2"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["AltQty1"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["AltQty2"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["UsedStageId"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["IssueToJoBwork"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["DirectProcess"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["RecFrmCustJobwork"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["PkgItem"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["RunnerQty"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["Remark"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["RunnerItemCode"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["GrossWt"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["NetWt"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["scrap"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["BurnQty"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["Location"]</td>
+                        //     <td>@Model.DTDashboard.Rows[i]["MPNNo"]</td>
+                        // </tr>
+
+                        <tr>
                             <td class="FWB">@Model.DTDashboard.Rows[i]["BomNo"]</td>
                             <td>@Model.DTDashboard.Rows[i]["FGPartCode"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["FGItem"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["BomQty"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["RMPartCode"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["RMItemName"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["Qty"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["Unit"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["AltPartcode1"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["AltItem1"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["AltPartcode2"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["AltItem2"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["AltQty1"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["AltQty2"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["UsedStageId"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["IssueToJoBwork"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["DirectProcess"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["RecFrmCustJobwork"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["PkgItem"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["RunnerQty"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["Remark"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["RunnerItemCode"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["GrossWt"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["NetWt"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["scrap"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["BurnQty"]</td>
+
                             <td>@Model.DTDashboard.Rows[i]["Location"]</td>
-                            <td>@Model.DTDashboard.Rows[i]["MPNNo"]</td>                           
+
+                            <td>@Model.DTDashboard.Rows[i]["MPNNo"]</td>
                         </tr>
 
-                      
-                }
+                    }
                 }
             }
         </tbody>
@@ -136,7 +193,7 @@
         position: sticky;
         top: -18px;
         z-index: 1;
-        position:fixed;
+        position: fixed;
     }
 
     tbody td {

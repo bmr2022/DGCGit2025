@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.DOM.Models.Master;
 using eTactWeb.Services.Interface;
@@ -17,9 +18,9 @@ namespace eTactWeb.Data.BLL
         private WorkCenterMasterDAL _WorkCenterMasterDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public WorkCenterMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public WorkCenterMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _WorkCenterMasterDAL = new WorkCenterMasterDAL(config, dataLogicDAL);
+            _WorkCenterMasterDAL = new WorkCenterMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<WorkCenterMasterModel> GetDashboardData(WorkCenterMasterModel model)

@@ -116,6 +116,12 @@
                     <label class="form-label">Global search</label>
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                 </div>
+                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <button type="button" class="btn btn-sm btn-outline-danger btnClearGrid mt-3" style="margin-top:10px;">
+                        <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
+                        CLEAR GRID
+                    </button>
+                </div>
                 <div class="d-flex col justify-content-center buttonGrid">
                     @if (@Model.Mode != "V")
                     {
@@ -256,6 +262,23 @@
             }
 
         });
+
+        $('.btnClearGrid').click(function (e) {
+            ClearGrid();
+        });
+
+        function ClearGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetClearGrid")",
+                success: function () {
+                    $('#UserRightsGrid').empty();  // Clears the grid
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error clearing grid:", error);
+                }
+            });
+        }
 
         $('#AC1').change(function () {
             var showAll = '';

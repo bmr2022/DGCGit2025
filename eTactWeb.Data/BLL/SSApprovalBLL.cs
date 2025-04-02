@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly SSApprovalDAL _SSAppDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public SSApprovalBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public SSApprovalBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _SSAppDAL = new SSApprovalDAL(configuration, iDataLogic);
+            _SSAppDAL = new SSApprovalDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<ResponseResult> GetSSData(string Flag, string FromDate, string ToDate, string ApprovalType, string SONO, string SchNo, string VendorName, int Eid, string uid)
