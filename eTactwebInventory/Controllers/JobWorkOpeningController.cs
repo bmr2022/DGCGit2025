@@ -1032,8 +1032,10 @@ namespace eTactWeb.Controllers
                             SeqNo = JobWorkGridList.Count + 1,
                             cc = cc,
                             UID=UID,
-                            EnteredByEmpId= EnteredByEmpId,
-                            ActualEnteredByName=ActualEnteredByName,
+                            EnteredByEmpId= UID,
+                            CreatedBy = UID,
+
+                            ActualEnteredByName =ActualEnteredByName,
                             EntryID = EntryID,
                             YearCode = YearCode,
                             EntryDate = EntryDate,

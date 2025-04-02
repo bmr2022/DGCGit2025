@@ -471,7 +471,7 @@
             $('#ScrapPartCode').select2();
             $('#ScrapItemCode').select2();
             $('#Accountcode').select2();
-            $('#EntryDate').css('pointer-events', 'none');
+            //$('#EntryDate').css('pointer-events', 'none');
             $('#IssJWChallanNo').rules("remove", "required");
             $('#IssChallanYearcode').rules("remove", "required");
             $('#PartCode').rules("remove", "required");
@@ -723,8 +723,22 @@
                 success: function (result) {
 
                     $('#divJobWorkOpeningGrid').html(result);
+                    var sum = 0;
+                    var rowCount = $('#divJobWorkOpeningGrid tr').length;
+                    var columnCount = $('#divJobWorkOpeningGrid tr td').length;
+
+                    for (var i = 1; i <= rowCount; i++) {
+
+                        sum += parseFloat($('#Qty-' + i).text() == '.00' ? 0 : $('#Qty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
+                    }
+                    //noofitems
+                    if (columnCount > 1)
+                        $('#lblItemCount').text(rowCount);
+                    else
+                        $('#lblItemCount').text(0);
                     // calculateTotalAmount();
                     // GetTaxPartItem();
+                    $('#lblItemNetAmount').text(sum.toFixed(2));
 
                 },
                 error: function (xhr) {
@@ -1498,13 +1512,13 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-
+                    debugger
                     var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 
                     var BomDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
                     $('#BomDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", BomDate);
-                    $('#Isschallandate').css("pointer-events", 'none');
+                    // $('#Isschallandate').css("pointer-events", 'none');
                     var originalDate = $('#FinStartDate').val()
                     if (originalDate != "") {
                         var dateObj = new Date(originalDate);
@@ -1516,7 +1530,8 @@
                         var convertedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
 
                         var startdate = parseDateToFormat(convertedDate);
-                        $('#Isschallandate').val(convertedDate);
+                       // $('#Isschallandate').val(convertedDate);
+                        $('#Isschallandate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", convertedDate);
                     } else {
                         $('#Isschallandate').val("01/04/2024");
                     }
