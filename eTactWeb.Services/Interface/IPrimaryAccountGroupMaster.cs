@@ -10,6 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IPrimaryAccountGroupMaster
     {
+        Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> GetParentGroup();
         Task<ResponseResult> GetAccountGroupDetailsByParentCode(int parentAccountCode);
         Task<ResponseResult> SavePrimaryAccountGroupMaster(PrimaryAccountGroupMasterModel model);
