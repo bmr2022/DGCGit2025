@@ -2334,7 +2334,8 @@
                                 if ($('#SaleBillJobwork').val() == 'J') {
                                     JWItemList($('#TypeItemServAssets').val());
                                 }
-                                if ($('#SONO').val() == '') {
+
+                                if ($('#SONO').val() == ''|| $('#SONO').val() == '0') {
                                     FillItems($('#TypeItemServAssets').val());
                                 } else {
                                     FillSOWiseItems();
@@ -2469,14 +2470,13 @@
                     async: false,
                     data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
                     success: function (data, status, xhr) {
-
+                        debugger
                         $('#divSaleBillList').html(data);
-
                         BasicTotal();
                         ClearDRCRGrid();
                         ClearAdjustmentGrid();
                         var itemArrayLength = itemBatchArray.length;
-
+                        debugger
                         for (var i = 0; i < itemArrayLength; i++) {
                             if (itemBatchArray[i].itemcode == IC && itemBatchArray[i].batchno == BatchNo) {
                                 itemBatchArray.splice(i, 1);
