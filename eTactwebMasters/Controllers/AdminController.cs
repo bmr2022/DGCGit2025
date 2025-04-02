@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Net;
 using System.Reflection;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Controllers;
 
@@ -81,6 +82,14 @@ public class AdminController : Controller, IAsyncDisposable
         else
         {
             return View(model);
+        }
+    }
+
+    public void GetClearGrid()
+    {
+        if (_MemoryCache.TryGetValue("KeyUserRightsDetail", out _))
+        {
+            _MemoryCache.Remove("KeyUserRightsDetail");
         }
     }
 

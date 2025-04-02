@@ -25,5 +25,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillProcessName();
         Task<ResponseResult> FillRecItemPartCode(string BOMIND, int ItemCode);
         Task<ResponseResult> FillScrapItemPartCode(string BOMIND, int ItemCode);
+        Task<ResponseResult> GetItemCode(string PartCode);
     }
 }

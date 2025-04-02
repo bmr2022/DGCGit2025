@@ -704,7 +704,10 @@
             formData.append("YearCode", $("#YearCode").val());
             formData.append("EntryDate", $("#EntryDate").val());
             formData.append("Accountcode", $("#Accountcode").val());
-            formData.append("PartyName", $("#Accountcode selected").text());
+            formData.append("PartyName", $("#Accountcode option:selected").text());
+            formData.append("cc", $("#cc").val());
+            formData.append("UID", $("#UID").val());
+            formData.append("ActualEnteredByName", $("#ActualEnteredByName").val());
 
 
             // Get valid part codes from the hidden field

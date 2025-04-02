@@ -874,6 +874,61 @@ namespace eTactWeb.Controllers
 
                     for (int row = 2; row <= rowCount; row++)
                     {
+                        var itemCode = _IJobWorkOpening.GetItemCode(worksheet.Cells[row, 4].Value.ToString());
+                        var partcode = 0;
+                        var itemCodeValue = 0;
+                        var itemname = "";
+                        if (itemCode.Result.Result != null && itemCode.Result.Result.Rows.Count > 0)
+                        {
+                            partcode = Convert.ToInt32(itemCode.Result.Result.Rows[0].ItemArray[0]);
+                            itemCodeValue = Convert.ToInt32(itemCode.Result.Result.Rows[0].ItemArray[0]);
+                            itemname = itemCode.Result.Result.Rows[0].ItemArray[1]?.ToString() ?? "Unknown Item"; // Ensure string conversion
+                        }
+                        else
+                        {
+                            partcode = 0;
+                            itemCodeValue = 0;
+                            itemname = "Unknown Item"; // Set default name if not found
+                        }
+
+                        if (partcode == 0)
+                        {
+                            errors.Add($"Invalid PartCode at row {row}");
+                            continue;
+                        }
+
+
+
+                        var RecitemCode = _IJobWorkOpening.GetItemCode(worksheet.Cells[row, 9].Value.ToString());
+                        var Recpartcode = 0;
+                        var RecitemCodeValue = 0;
+                        var Recitemname = "";
+                        if (RecitemCode.Result.Result != null && RecitemCode.Result.Result.Rows.Count > 0)
+                        {
+                            Recpartcode = Convert.ToInt32(RecitemCode.Result.Result.Rows[0].ItemArray[0]);
+                            RecitemCodeValue = Convert.ToInt32(RecitemCode.Result.Result.Rows[0].ItemArray[0]);
+                            Recitemname = RecitemCode.Result.Result.Rows[0].ItemArray[1]?.ToString() ?? "Unknown Item"; // Ensure string conversion
+                        }
+                        else
+                        {
+                            Recpartcode = 0;
+                            RecitemCodeValue = 0;
+                            Recitemname = "Unknown Item"; // Set default name if not found
+                        }
+
+                        if (Recpartcode == 0)
+                        {
+                            errors.Add($"Invalid RecPartCode at row {row}");
+                            continue;
+                        }
+
+
+
+
+
+
+
+
                         bool isRowEmpty = true;
                         for (int col = 1; col <= worksheet.Dimension.Columns; col++)
                         {
@@ -924,6 +979,11 @@ namespace eTactWeb.Controllers
                         string EntryDate = Request.Form["EntryDate"];
                         int Accountcode = Convert.ToInt32(Request.Form["Accountcode"]);
                         string PartyName = Request.Form["PartyName"];
+                        string cc = Request.Form["cc"];
+                        int UID = Convert.ToInt32(Request.Form["UID"]);
+                        int EnteredByEmpId = Convert.ToInt32(Request.Form["UID"]);
+                        string ActualEnteredByName = Request.Form["ActualEnteredByName"];
+
 
 
                         //bool isSOTypeClose = soType.Equals("Close", StringComparison.OrdinalIgnoreCase);
@@ -937,7 +997,11 @@ namespace eTactWeb.Controllers
                         decimal ChallanQty = decimal.TryParse(worksheet.Cells[row, 5].Value?.ToString(), out decimal TEMPChallanQty) ? TEMPChallanQty : 0;
                         decimal PendingQty = decimal.TryParse(worksheet.Cells[row, 6].Value?.ToString(), out decimal tempPendingQty) ? tempPendingQty : 0;
 
-
+                        if (PendingQty > ChallanQty)
+                        {
+                            errors.Add($"PendingQty cannot be greater then ChallanQty  at row {row}");
+                            continue;
+                        }
                         //if (isSOTypeClose && qty <= 0)
                         //{
                         //    errors.Add($"Qty should be greater than 0 at row {row} ");
@@ -966,42 +1030,47 @@ namespace eTactWeb.Controllers
                         JobWorkGridList.Add(new JobWorkOpeningModel
                         {
                             SeqNo = JobWorkGridList.Count + 1,
+                            cc = cc,
+                            UID=UID,
+                            EnteredByEmpId= EnteredByEmpId,
+                            ActualEnteredByName=ActualEnteredByName,
                             EntryID = EntryID,
                             YearCode = YearCode,
                             EntryDate = EntryDate,
-                            ItemName=worksheet.Cells[row, 4].Value?.ToString() ?? "",
+                            ItemName = itemname,
                             PartCode = worksheet.Cells[row, 4].Value?.ToString() ?? "",
-                            ItemCode= int.TryParse(worksheet.Cells[row, 4].Value?.ToString(), out int tempAltQty) ? tempAltQty : 0,
-                            IssJWChallanNo=worksheet.Cells[row, 1].Value?.ToString() ?? "",
+                            ItemCode = itemCodeValue,
+                            IssJWChallanNo = worksheet.Cells[row, 1].Value?.ToString() ?? "",
                             IssChallanYearcode = YearCode,
-                            Isschallandate= DateTime.TryParse(worksheet.Cells[row, 2].Value?.ToString(), out DateTime tempChallanDate)
+                            Isschallandate = DateTime.TryParse(worksheet.Cells[row, 2].Value?.ToString(), out DateTime tempChallanDate)
                                 ? tempChallanDate.ToString("yyyy-MM-dd")
                                 : DateTime.Now.ToString("yyyy-MM-dd"),
-                            Accountcode=Accountcode,
-                            AccountName=PartyName,
-                            Rate=rate,
-                            unit=worksheet.Cells[row, 8].Value?.ToString() ?? "",
-                            ChallanQty=ChallanQty,
-                            pendqty=PendingQty,
-                            RecQty=ChallanQty-PendingQty,
-                            Amount=PendingQty*rate,
+                            Accountcode = Accountcode,
+                            AccountName = PartyName,
+                            Rate = rate,
+                            unit = worksheet.Cells[row, 8].Value?.ToString() ?? "",
+                            ChallanQty = ChallanQty,
+                            pendqty = PendingQty,
+                            RecQty = ChallanQty - PendingQty,
+                            Amount = PendingQty * rate,
+                            BomDate = DateTime.Today.ToString("dd/MMM/yyyy"),
                             //Amount
                             //rec qnt
                             //pendqty 
-                            ScrapQty=decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempscrapQty) ? tempscrapQty : 0,
+                            ScrapQty = decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempscrapQty) ? tempscrapQty : 0,
                             ScrapItemCode = int.TryParse(worksheet.Cells[row, 17].Value?.ToString(), out int tempScrapItemCode) ? tempScrapItemCode : 0,
                             ScrapPartCode = worksheet.Cells[row, 17].Value?.ToString() ?? "",
                             ScrapItemName = worksheet.Cells[row, 17].Value?.ToString() ?? "",
-                            RecItemCode = int.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out int tempRecItemCode) ? tempRecItemCode : 0,
-                            RecItemName = worksheet.Cells[row, 9].Value?.ToString() ?? "",
+                            RecItemCode = RecitemCodeValue,
+                            RecItemName = Recitemname,
                             RecPartCode = worksheet.Cells[row, 9].Value?.ToString() ?? "",
                             PendScrapToRec = int.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out int tempPendScrapToRec) ? tempPendScrapToRec : 0,
-                            BomType=worksheet.Cells[row, 3].Value?.ToString() ?? "",
-                            BatchNo=worksheet.Cells[row, 12].Value?.ToString() ?? "",
-                            UniqueBatchNo=worksheet.Cells[row, 13].Value?.ToString() ?? "",
-                            ProcessId=int.TryParse(worksheet.Cells[row, 11].Value?.ToString(), out int tempProcessId) ? tempProcessId : 0,
+                            BomType = worksheet.Cells[row, 3].Value?.ToString() ?? "",
+                            BatchNo = worksheet.Cells[row, 12].Value?.ToString() ?? "",
+                            UniqueBatchNo = worksheet.Cells[row, 13].Value?.ToString() ?? "",
+                            ProcessId = int.TryParse(worksheet.Cells[row, 11].Value?.ToString(), out int tempProcessId) ? tempProcessId : 0,
 
-                            Closed="N",
+                            Closed = "N",
 
                             //challanqty
 
@@ -1017,7 +1086,19 @@ namespace eTactWeb.Controllers
                 }
 
                 MainModel.ItemDetailGrid = JobWorkGridList;
-                HttpContext.Session.SetString("KeyJobWorkOpeningGrid", JsonConvert.SerializeObject(JobWorkGridList));
+                //HttpContext.Session.SetString("KeyJobWorkOpeningGrid", JsonConvert.SerializeObject(JobWorkGridList));
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                _MemoryCache.Set("KeyJobWorkOpeningGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+
+
+
                 return PartialView("_JobWorkOpeningGrid", MainModel);
             }
             catch (Exception ex)

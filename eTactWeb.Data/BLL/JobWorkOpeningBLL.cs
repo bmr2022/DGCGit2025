@@ -27,6 +27,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _JobWorkOpeningDAL.GetFormRights(userID);
         }
+        public async Task<ResponseResult> GetItemCode(string PartCode)
+        {
+            return await _JobWorkOpeningDAL.GetItemCode(PartCode);
+        }
 
         public async Task<ResponseResult> FillEntryId(string Flag, int YearCode,string FormTypeCustJWNRGP, string SPName)
         {
