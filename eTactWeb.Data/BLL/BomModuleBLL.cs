@@ -69,6 +69,10 @@ public class BomModuleBLL : IBomModule
     {
         return _BomModuleDAL.GetBomNo(ID, Flag);
     }
+    public async Task<string> VerifyPartCode(DataTable bomDataTable)
+    {
+        return await _BomModuleDAL.VerifyPartCode(bomDataTable);
+    }
 
     public int GetBomStatus(int ItemCode, int BomNo)
     {

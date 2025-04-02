@@ -13,6 +13,7 @@ namespace eTactWeb.Services.Interface
         DataTable GetBomDetail(string FGC, int BMNo, string Flag);
         BomModel GetGridData(int IC, int BMNo);
         int GetBomNo(int ID, string Flag);
+        Task<string> VerifyPartCode(DataTable bomDataTable);
         int GetBomStatus(int ItemCode, int BomNo);
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetItemCode(string FGPartCode, string RMPartCode);
