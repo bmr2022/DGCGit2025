@@ -187,7 +187,7 @@ namespace eTactWeb.Controllers
                         model.LastUpdatedByEmpName = HttpContext.Session.GetString("EmpName");
                         MRPGrid = GetDetailTable(MRPDetail);
                         MRPSOGrid = GetSODetailTable(MRPSODetail);
-                        MRPFGGrid = GetFGDetailTable(MRPFGDetail);
+                        //MRPFGGrid = GetFGDetailTable(MRPFGDetail);
                     }
                     else
                     {
@@ -197,10 +197,10 @@ namespace eTactWeb.Controllers
                         model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                         MRPGrid = GetDetailTable(MRPDetail);
                         MRPSOGrid = GetSODetailTable(MRPSODetail);
-                        MRPFGGrid = GetFGDetailTable(MRPFGDetail);
+                        //MRPFGGrid = GetFGDetailTable(MRPFGDetail);
                     }
 
-                    var Result = await IMRP.SaveMRPDetail(model, MRPGrid, MRPSOGrid, MRPFGGrid);
+                    var Result = await IMRP.SaveMRPDetail(model, MRPGrid, MRPSOGrid, MRPFGGrid=null);
 
                     if (Result != null)
                     {

@@ -82,7 +82,7 @@ namespace eTactWeb
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromHours(1); // Auto-expire after 30 seconds
+                options.IdleTimeout = TimeSpan.FromHours(1); // Auto-expire after 1 hour
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
 
@@ -175,8 +175,6 @@ namespace eTactWeb
             services.TryAddScoped<IIndentRegister, IndentRegisterBLL>();
             services.TryAddScoped<IAutoGenerateSchedule, AutoGenerateScheduleBLL>();
             services.TryAddScoped<IMaterialConversion, MaterialConversionBLL>();
-
-
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();
             services.TryAddTransient<IPurchaseOrder, PurchaseOrderBLL>();

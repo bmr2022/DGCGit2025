@@ -7,18 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\FinAccountMethods.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\js\FinAccountMethods.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\js\FinAccountMethods.js" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="EPPlus" Version="6.1.0" />
     <PackageReference Include="FastReport.OpenSource" Version="2023.2.25" />
     <PackageReference Include="FastReport.OpenSource.Data.MsSql" Version="2021.4.0" />

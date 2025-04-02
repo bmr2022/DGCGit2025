@@ -467,8 +467,8 @@
                                 <div class="col-lg-3 col-md-3 col-sm-3 text-center ImportExcel">
 
                                     <div class="input_container">
-                                        <label for="files" class="btn btn-sm btn-outline-success mt-2">Import Excel</label>
-                                        <input id="files" class="Execllbl BtnUploadExl btn btn-sm btn-outline-success" style="display:none;" type="file">
+                                        <label for="manualImport" class="btn btn-sm btn-outline-success mt-2">Import Excel</label>
+                                        <input id="manualImport" class="Execllbl BtnUploadExl btn btn-sm btn-outline-success" style="display:none;" type="file">
                                     </div>
                                 </div>
                             </div>
@@ -830,9 +830,10 @@
             selectedSplitItemCodes = selectedSplitItemCodes.filter((item, i, ar) => ar.indexOf(item) === i);
         }
 
-        document.querySelector("#files").onchange = function () {
+        document.querySelector("#manualImport").onchange = function () {
+            debugger
             const fileName = this.files[0]?.name;
-            const label = document.querySelector("label[for=files]");
+            const label = document.querySelector("label[for=manualImport]");
             label.innerText = fileName ?? "Import Excel";
         };
 
@@ -2186,7 +2187,7 @@
 
         $('#manualImport').change(function () {
 
-            handleExcelUpload('manualImport', 'SaleSchedule/UploadExcel');
+            handleExcelUpload('manualImport', '/SaleSchedule/UploadExcel');
         });
 
         $('#monthlyImport').change(function () {
@@ -2195,7 +2196,7 @@
         });
 
         function handleExcelUpload(inputId, uploadUrl) {
-
+            debugger
             var fileInput = $('#' + inputId);
             var fileExtension = ['xls', 'xlsx'];
             var filename = fileInput.val();
@@ -3818,7 +3819,9 @@
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
-    @*<script src="~/Scripts/table2excel.js"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<<<<<<< HEAD
 
+=======
+>>>>>>> b0e528798e1188143d18517cdd55be2877cad6d9
 }

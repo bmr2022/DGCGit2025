@@ -580,7 +580,7 @@
             FillIntrument();
             FillCurrency();
             BindModeOfAdjust();
-            FillLedgerName();
+            //FillLedgerName();
 
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
@@ -1196,7 +1196,7 @@
             });
         }
 
-        function FillLedgerName() {
+        /* function FillLedgerName() {
 
             var Type = $('#Type').val();
             $.ajax({
@@ -1227,7 +1227,7 @@
                     alert('Failed to load ledger names.');
                 }
             });
-        }
+        } */
 
         function FillSubVoucherName() {
             var VoucherType = $('#VoucherType').val();
@@ -2023,5 +2023,5 @@
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>
+    <script src="~/js/FinAccountMethods.js"></script>
 }
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
