@@ -142,6 +142,7 @@ namespace eTactWeb.DOM.Models
         public string? RMUnit { get; set; }
         public string? Location { get; set; }
         public string? MPNNumber { get; set; }
+        public string? CustJWmandatory { get; set; }
         public string? AltPartCode1 { get; set; }
         public int? AltItemCode1 { get; set; }
         public string? AltPartCode2 { get; set; }
@@ -153,5 +154,15 @@ namespace eTactWeb.DOM.Models
         public decimal? NetWeight { get; set; }
         public string? Remark { get; set; }
         public string? ConstraintExists { get; set; }
+    }
+
+    public class ImportBomData
+    {
+        public int SeqNo { get; set; }
+        public string FGPartCode { get; set; }
+        public string RMPartCode { get; set; }
+        public float BomQty { get; set; }
+        public string   ScrapPartCode { get; set; }
+        public string   ByProdPartCode { get; set; }
     }
 }

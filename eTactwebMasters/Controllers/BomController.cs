@@ -141,7 +141,7 @@ public class BomController : Controller
         HttpContext.Session.Remove("BomList");
         HttpContext.Session.SetString("Model", JsonConvert.SerializeObject(model));
         //  return View(model);
-       // return RedirectToAction("BomForm", "BOMStage");
+        // return RedirectToAction("BomForm", "BOMStage");
         return View(model);
     }
     public JsonResult AutoComplete(string ColumnName, string prefix)
@@ -159,7 +159,7 @@ public class BomController : Controller
 
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    //[ValidateAntiForgeryToken]
     public async Task<IActionResult> BomForm(BomModel model)
     {
         var BomStatus = 0;
@@ -261,7 +261,7 @@ public class BomController : Controller
                     //model.CreatedBy = Constants.UserID;
                     model.EntryDate = ParseFormattedDate(model.EntryDate);
                     model.EffectiveDate = ParseFormattedDate(model.EffectiveDate);
-                    
+
                     if (model.Mode == "Update")
                     {
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -329,8 +329,8 @@ public class BomController : Controller
                 ItemName = model.ItemName,
                 Qty = model.Qty,
                 Unit = model.Unit,
-                Location= model.Location,
-                MPNNo= model.MPNNo,
+                Location = model.Location,
+                MPNNo = model.MPNNo,
                 AltItemCode1 = model.AltItemCode1,
                 AICName1 = model.AICName1,
                 AltItemName1 = model.AltItemName1,
@@ -469,7 +469,7 @@ public class BomController : Controller
         model.BomRevNo = BomRevNo;
         model.DashboardType = DashboardType;
 
-        model.DTDashboard  = model.DTDashboard == null ? new DataTable()  : model.DTDashboard;
+        model.DTDashboard = model.DTDashboard == null ? new DataTable() : model.DTDashboard;
         return View(model);
     }
 
@@ -684,7 +684,7 @@ public class BomController : Controller
     public IActionResult GetGridData(int IC, int BMNo)
     {
         var model = new BomModel();
-         model = _IBom.GetGridData(IC, BMNo);
+        model = _IBom.GetGridData(IC, BMNo);
         MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
         {
             AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -692,7 +692,7 @@ public class BomController : Controller
             Size = 1024,
         };
         _MemoryCache.Set("KeyBomList", model.BomList, cacheEntryOptions);
-        return PartialView("_BomGrid",model);
+        return PartialView("_BomGrid", model);
     }
     public ActionResult ImportBom()
     {
@@ -712,19 +712,28 @@ public class BomController : Controller
         using (var package = new ExcelPackage(stream))
         {
             var worksheet = package.Workbook.Worksheets[0];
+            List<ImportBomData> importDataList = new();
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 var FGPartCode = worksheet.Cells[row, 1].Value.ToString();
                 var RMPartCode = worksheet.Cells[row, 3].Value.ToString();
                 var AltPartCode1 = worksheet.Cells[row, 8].Value == null ? "" : worksheet.Cells[row, 8].Value.ToString();
                 var AltPartCode2 = worksheet.Cells[row, 9].Value == null ? "" : worksheet.Cells[row, 9].Value.ToString();
-                var FGItemCode = 0;var RmItemCode = 0;var AltItemCode1 = 0;var AltItemCode2 = 0;
-                var FGItemName = "";var RMItemName = "";
-                var FGIC = _IBom.GetItemCode(FGPartCode,RMPartCode);
-                
+                var FGItemCode = 0; var RmItemCode = 0; var AltItemCode1 = 0; var AltItemCode2 = 0;
+                var FGItemName = ""; var RMItemName = "";
+                var FGIC = _IBom.GetItemCode(FGPartCode, RMPartCode);
+
+                var bomPartCodeData = new ImportBomData()
+                {
+                    FGPartCode = worksheet.Cells[row, 1].Value?.ToString(),
+                    RMPartCode = worksheet.Cells[row, 3].Value.ToString()
+                };
+
+                importDataList.Add(bomPartCodeData);
+
                 if (!string.IsNullOrEmpty(AltPartCode1))
                 {
-                   var AltPC = _IBom.GetAltItemCode(AltPartCode1);
+                    var AltPC = _IBom.GetAltItemCode(AltPartCode1);
                     if (AltPC != null)
                     {
                         var resultDataSet = AltPC.Result.Result;
@@ -740,7 +749,7 @@ public class BomController : Controller
                 }
                 if (!string.IsNullOrEmpty(AltPartCode2))
                 {
-                   var AltPC = _IBom.GetAltItemCode(AltPartCode2);
+                    var AltPC = _IBom.GetAltItemCode(AltPartCode2);
                     if (AltPC != null)
                     {
                         var resultDataSet = AltPC.Result.Result;
@@ -760,7 +769,7 @@ public class BomController : Controller
                     var resultDataSet = FGIC.Result.Result;
                     if (resultDataSet != null)
                     {
-                        var firstTable = resultDataSet.Tables[0]; 
+                        var firstTable = resultDataSet.Tables[0];
                         foreach (DataRow row1 in firstTable.Rows)
                         {
                             FGItemCode = Convert.ToInt32(row1["FGItemCode"]);
@@ -777,7 +786,8 @@ public class BomController : Controller
 
                 var duplicateBom = "";
 
-                if (BomData != null) {
+                if (BomData != null)
+                {
                     var oDT = BomData.Result.DefaultView.ToTable(true, "FinishItemCode", "BomNo", "ItemCode");
                     oDT.TableName = "BOMDataForConstraint";
 
@@ -787,12 +797,11 @@ public class BomController : Controller
 
                     var checkConstraint = bomData.Where(x => x.FinishItemCode == FGItemCode && x.ItemCode == RmItemCode && x.BomNo == BomRevNo).ToList();
 
-                    if(checkConstraint.Count > 0)
+                    if (checkConstraint.Count > 0)
                     {
                         duplicateBom = "true";
                     }
                 }
-
                 data.Add(new BomViewModel()
                 {
                     FGPartCode = worksheet.Cells[row, 1].Value == null ? "" : worksheet.Cells[row, 1].Value.ToString(),
@@ -805,8 +814,8 @@ public class BomController : Controller
                     RMQty = worksheet.Cells[row, 6].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 6].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString())),
                     RMUnit = worksheet.Cells[row, 7].Value == null ? "" : worksheet.Cells[row, 7].Value.ToString(),
                     Location = worksheet.Cells[row, 8].Value == null ? "" : worksheet.Cells[row, 8].Value.ToString(),
-                    MPNNumber = worksheet.Cells[row, 9].Value == null ?"" : worksheet.Cells[row, 9].Value.ToString(),
-                    AltPartCode1 = worksheet.Cells[row, 10].Value == null ?"" :worksheet.Cells[row, 10].Value.ToString(),
+                    MPNNumber = worksheet.Cells[row, 9].Value == null ? "" : worksheet.Cells[row, 9].Value.ToString(),
+                    AltPartCode1 = worksheet.Cells[row, 10].Value == null ? "" : worksheet.Cells[row, 10].Value.ToString(),
                     AltItemCode1 = AltItemCode1,
                     AltItemCode2 = AltItemCode2,
                     AltPartCode2 = worksheet.Cells[row, 11].Value == null ? "" : worksheet.Cells[row, 11].Value.ToString(),
@@ -817,10 +826,56 @@ public class BomController : Controller
                     NetWeight = worksheet.Cells[row, 16].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 16].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 16].Value.ToString())),
                     Remark = worksheet.Cells[row, 17].Value == null ? "" : worksheet.Cells[row, 17].Value.ToString(),
                     BomNo = BomRevNo,
-                    ConstraintExists= duplicateBom,
+                    ConstraintExists = duplicateBom,
                 });
             }
+
+            // duplicate items
+            var duplicateParts = importDataList
+        .GroupBy(x => new { x.FGPartCode, x.RMPartCode })
+        .Where(g => g.Count() > 1)
+        .Select(g => new
+        {
+            FGPartCode = g.Key.FGPartCode,
+            RMPartCode = g.Key.RMPartCode,
+            Count = g.Count()
+        })
+        .ToList();
+
+            if (duplicateParts.Any())
+            {
+                foreach (var item in duplicateParts)
+                {
+                    var errorMsg = "Duplicate: FGPartCode = {item.FGPartCode}, RMPartCode = {item.RMPartCode}, Count = {item.Count}";
+                    return StatusCode(207, errorMsg);
+                }
+            }
+
+            // Get Bom Detail
+            var bomDataTable = GetBomDetailTable(importDataList);
+            var isValidPartCodes = _IBom.VerifyPartCode(bomDataTable);
+            var extractedData = JsonConvert.DeserializeObject<List<dynamic>>(isValidPartCodes.Result);
+
+            var simplifiedResponse = extractedData.Select(x => new
+            {
+                FGPartCode = x.FGPartCode,
+                RMPartCode = x.RMPartCode
+            }).ToList();
+
+            var response = new
+            {
+                Message = "Some part codes are invalid. Please check the details.",
+                InvalidPartCodes = simplifiedResponse
+            };
+
+            string jsonResponse = JsonConvert.SerializeObject(response);
+
+            if (simplifiedResponse.Count > 0)
+            {
+                return StatusCode(207, jsonResponse);
+            }
         }
+
         var model = new BomModel();
         model.ExcelDataList = data;
         return PartialView("_DisplayExcelData", model);
@@ -872,7 +927,7 @@ public class BomController : Controller
             var EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var ItemGridList = new DataTable();
-            ItemGridList = GetDetailTable(ItemListt, CC, EmpID,yearCode);
+            ItemGridList = GetDetailTable(ItemListt, CC, EmpID, yearCode);
 
             var Result = await _IBom.SaveMultipleBomData(ItemGridList);
 
@@ -912,7 +967,36 @@ public class BomController : Controller
         }
     }
 
-    private static DataTable GetDetailTable(IList<BomViewModel> DetailList, string CC, int Empid,int YearCode)
+    private static DataTable GetBomDetailTable(List<ImportBomData> DetailList)
+    {
+        var BOMGrid = new DataTable();
+
+        BOMGrid.Columns.Add("SeqNo", typeof(int));
+        BOMGrid.Columns.Add("FGPartCode", typeof(string));
+        BOMGrid.Columns.Add("RMPartCode", typeof(string));
+        BOMGrid.Columns.Add("BOMQty", typeof(float));
+        BOMGrid.Columns.Add("ScrapPartCode", typeof(string));
+        BOMGrid.Columns.Add("ByProdPartCode", typeof(string));
+
+        foreach (var Item in DetailList)
+        {
+            DateTime today = DateTime.Today;
+            BOMGrid.Rows.Add(
+                new object[]
+                {
+                    Item.SeqNo,
+                    Item.FGPartCode ?? string.Empty,
+                    Item.RMPartCode ?? string.Empty,
+                    Item.BomQty,
+                    Item.ScrapPartCode ?? string.Empty,
+                    Item.ByProdPartCode ?? string.Empty
+                });
+        }
+        BOMGrid.Dispose();
+        return BOMGrid;
+    }
+
+    private static DataTable GetDetailTable(IList<BomViewModel> DetailList, string CC, int Empid, int YearCode)
     {
         var MRGrid = new DataTable();
 
@@ -947,12 +1031,13 @@ public class BomController : Controller
         MRGrid.Columns.Add("CC", typeof(string));
         MRGrid.Columns.Add("YearCode", typeof(int));
         MRGrid.Columns.Add("CreatedBy", typeof(int));
-        MRGrid.Columns.Add("CreatedOn", typeof(DateTime));
+        MRGrid.Columns.Add("CreatedOn", typeof(string)); // datetime
         MRGrid.Columns.Add("UpdatedBy", typeof(int));
-        MRGrid.Columns.Add("UpdatedOn", typeof(DateTime));
+        MRGrid.Columns.Add("UpdatedOn", typeof(string)); // datetime
         MRGrid.Columns.Add("Active", typeof(string));
         MRGrid.Columns.Add("EntryByMachineName", typeof(string));
         MRGrid.Columns.Add("MPNNo", typeof(string));
+        MRGrid.Columns.Add("CustJWmandatory", typeof(string));
 
         foreach (var Item in DetailList)
         {
@@ -973,10 +1058,13 @@ public class BomController : Controller
                     "",Item.AltItemCode1,Item.AltQty1,Item.AltItemCode2,Item.AltQty2,
                     Item.Location,
                     "","","","",Item.Remark,Item.GrossWeight,Item.NetWeight,Item.Scrap,0,0,0,Empid,
-                    CC,YearCode,Empid,ParseFormattedDate(DateTime.UtcNow.ToString()),
-                    0,ParseFormattedDate(DateTime.UtcNow.ToString()),"Y",
+                    CC,YearCode,Empid,
+                    ParseFormattedDate(DateTime.UtcNow.ToString()),
+                    0,
+                    ParseFormattedDate(DateTime.UtcNow.ToString()),"Y",
                     Environment.MachineName,
-                    Item.MPNNumber ?? ""
+                    Item.CustJWmandatory,
+
                 });
         }
         MRGrid.Dispose();

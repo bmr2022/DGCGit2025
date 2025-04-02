@@ -3,6 +3,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+using Newtonsoft.Json;
 using System.Globalization;
 using System.Reflection;
 using static eTactWeb.DOM.Models.Common;
@@ -476,6 +477,28 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return BomNo == null ? 1 : Convert.ToInt32(BomNo);
+        }
+
+        public async Task<string> VerifyPartCode(DataTable bomDataTable)
+        {
+            var JsonString = string.Empty;
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "CHEKIMPORTDATA"));
+                SqlParams.Add(new SqlParameter("@DtChk", bomDataTable));
+
+                _ResponseResult = await  _IDataLogic.ExecuteDataTable("SP_Bom", SqlParams);
+                JsonString = JsonConvert.SerializeObject(_ResponseResult.Result);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return JsonString;
         }
 
         public async Task<BomDashboard> GetSearchData(BomDashboard model)
