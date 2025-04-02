@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -17,10 +18,10 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
         private HRLeaveApplicationMasterDAL _HRLeaveApplicationMasterDAL;
 
-        public HRLeaveApplicationMasterBLL(IConfiguration configuration, IDataLogic dataLogicDAL)
+        public HRLeaveApplicationMasterBLL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = dataLogicDAL;
-            _HRLeaveApplicationMasterDAL = new HRLeaveApplicationMasterDAL(configuration, dataLogicDAL);
+            _HRLeaveApplicationMasterDAL = new HRLeaveApplicationMasterDAL(configuration, dataLogicDAL, connectionStringService);
         }
         public async Task<ResponseResult> GetEmpName()
         {

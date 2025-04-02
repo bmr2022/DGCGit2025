@@ -17,14 +17,16 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _DataLogicDAL;
         //private readonly IConfiguration configuration;
         private dynamic? _ResponseResult;
-
+        private readonly ConnectionStringService _connectionStringService;
         private IDataReader? Reader;
 
-        public HRPFESIMasterDAL(IConfiguration config, IDataLogic dataLogicDAL)
+        public HRPFESIMasterDAL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = config.GetConnectionString("eTactDB");
+            //DBConnectionString = config.GetConnectionString("eTactDB");
             _DataLogicDAL = dataLogicDAL;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            _connectionStringService = connectionStringService;
         }
 
         public async Task<ResponseResult> GetESIDispensary()

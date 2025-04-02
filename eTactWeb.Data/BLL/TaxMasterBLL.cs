@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -8,9 +9,9 @@ namespace eTactWeb.Data.BLL
 {
     public class TaxMasterBLL : ITaxMaster
     {
-        public TaxMasterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public TaxMasterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _TaxMasterDAL = new TaxMasterDAL(configuration, iDataLogic);
+            _TaxMasterDAL = new TaxMasterDAL(configuration, iDataLogic, connectionStringService);
         }
 
         private TaxMasterDAL? _TaxMasterDAL { get; }

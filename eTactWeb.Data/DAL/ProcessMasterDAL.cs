@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
@@ -9,13 +10,15 @@ namespace eTactWeb.Data.DAL
     {
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-
+        private readonly ConnectionStringService _connectionStringService;
         private readonly IDataLogic _DataLogicDAL;
 
-        public ProcessMasterDAL(IConfiguration configuration, IDataLogic dataLogicDAL)
+        public ProcessMasterDAL(IConfiguration configuration, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _DataLogicDAL = dataLogicDAL;
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
         public async Task<ResponseResult> DeleteByID(int ID)

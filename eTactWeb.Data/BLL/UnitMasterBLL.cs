@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private UnitMasterDAL _UnitMasterDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public UnitMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public UnitMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _UnitMasterDAL = new UnitMasterDAL(config, dataLogicDAL);
+            _UnitMasterDAL = new UnitMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
 

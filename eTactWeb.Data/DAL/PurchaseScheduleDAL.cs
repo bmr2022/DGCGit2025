@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -12,10 +13,13 @@ namespace eTactWeb.Data.DAL;
 
 public class PurchaseScheduleDAL
 {
-    public PurchaseScheduleDAL(IConfiguration configuration, IDataLogic iDataLogic)
+    private readonly ConnectionStringService _connectionStringService;
+    public PurchaseScheduleDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
-        DBConnectionString = configuration.GetConnectionString("eTactDB");
+        //DBConnectionString = configuration.GetConnectionString("eTactDB");
         _IDataLogic = iDataLogic;
+        _connectionStringService = connectionStringService;
+        DBConnectionString = _connectionStringService.GetConnectionString();
     }
 
     public IDataLogic? _IDataLogic { get; }

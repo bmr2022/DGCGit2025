@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private CloseProductionPlanDAL _CloseProductionPlanDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public CloseProductionPlanBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public CloseProductionPlanBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _CloseProductionPlanDAL = new CloseProductionPlanDAL(config, dataLogicDAL);
+            _CloseProductionPlanDAL = new CloseProductionPlanDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> GetOpenItemName(int EmpId, int ActualEntryId)

@@ -17,12 +17,14 @@ namespace eTactWeb.Data.DAL
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
         private dynamic? _ResponseResult;
-
-        public HRWeekOffMasterDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public HRWeekOffMasterDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //configuration = config;
             DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
         public async Task<ResponseResult> FillEntryId()

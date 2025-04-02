@@ -8,10 +8,13 @@ namespace eTactWeb.Data.DAL
 {
     internal class TaxMasterDAL
     {
-        public TaxMasterDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public TaxMasterDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
         public IDataLogic? _IDataLogic { get; }

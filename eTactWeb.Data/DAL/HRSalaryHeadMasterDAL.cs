@@ -17,13 +17,15 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _DataLogicDAL;
         //private readonly IConfiguration configuration;
         private dynamic? _ResponseResult;
-
+        private readonly ConnectionStringService _connectionStringService;
         private IDataReader? Reader;
 
-        public HRSalaryHeadMasterDAL(IConfiguration config, IDataLogic dataLogicDAL)
+        public HRSalaryHeadMasterDAL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = config.GetConnectionString("eTactDB");
+            //DBConnectionString = config.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _DataLogicDAL = dataLogicDAL;
         }
 

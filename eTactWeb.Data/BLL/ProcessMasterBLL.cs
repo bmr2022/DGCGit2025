@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -10,9 +11,9 @@ public class ProcessMasterBLL : IProcessMaster
     private readonly ProcessMasterDAL _ProcessMasterDAL;
     private readonly IDataLogic _DataLogicDAL;
 
-    public ProcessMasterBLL(IConfiguration config, IDataLogic dataLogicDAL)
+    public ProcessMasterBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
     {
-        _ProcessMasterDAL = new ProcessMasterDAL(config, dataLogicDAL);
+        _ProcessMasterDAL = new ProcessMasterDAL(config, dataLogicDAL, connectionStringService);
         _DataLogicDAL = dataLogicDAL;
     }
     public Task<ResponseResult> CheckBeforeUpdate(int Type)

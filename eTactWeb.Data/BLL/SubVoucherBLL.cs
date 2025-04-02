@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.DOM.Models.Master;
 using eTactWeb.Services.Interface;
@@ -17,9 +18,9 @@ namespace eTactWeb.Data.BLL
         private SubVoucherDAL _SubVoucherDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public SubVoucherBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public SubVoucherBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _SubVoucherDAL = new SubVoucherDAL(config, dataLogicDAL);
+            _SubVoucherDAL = new SubVoucherDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> GetMainVoucherNames()

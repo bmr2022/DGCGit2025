@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -20,12 +21,14 @@ namespace eTactWeb.Data.DAL
         private readonly DataTable oDataTable = new();
         private dynamic? _ResponseResult;
         private IDataReader? Reader;
-
-        public HRLeaveApplicationMasterDAL(IConfiguration configuration, IDataLogic dataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public HRLeaveApplicationMasterDAL(IConfiguration configuration, IDataLogic dataLogic, ConnectionStringService connectionStringService)
         {
             //configuration = config;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = dataLogic;
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
         public async Task<ResponseResult> GetEmpName()
