@@ -54,7 +54,7 @@ public class TaxModuleDAL
         }
         finally { }
         return Result?.ToString();
-    }
+            }
 
     internal async Task<ResponseResult> GetHSNTaxInfo(HSNTAX HSNTaxParam)
     {

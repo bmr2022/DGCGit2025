@@ -11,7 +11,7 @@
                 <h5>
                     <strong>Primary Account Group Master</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="PrimaryAccountGroupMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <a asp-action="PrimaryAccountGroupMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
                             <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                             Dashboard
                         </a>
@@ -48,7 +48,7 @@
                                 {
                                     <div class="col-auto">
                                         @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                        <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                        <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
                                             <i class="fa-solid fa-chevron-circle-right"></i>
                                             SUBMIT
                                         </button>
@@ -122,7 +122,7 @@
             </div>
 
             <div class="card-footer p-3">
-                <div class="row justify-content-between g-2">
+                <div class="row justify-content-between g-2"> 
                     <div class="card-header card-headerBG text-light bg-gradient">
                         <h5>
                             <strong>Primary Account Group Master </strong>
@@ -136,7 +136,7 @@
                                     </button>
                                 </div>
                                 @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                                <a asp-action="PrimaryAccountGroupMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
+                                <a asp-action="PrimaryAccountGroupMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                                     Dashboard
                                 </a>
@@ -183,7 +183,7 @@
                                         else
                                         {
                                             <div class="col-auto">
-                                                <button type="submit" class="btn btn-primary btn-sm submitBTN">
+                                                <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
                                                     <i class="fa-solid fa-chevron-circle-right"></i>
                                                     SUBMIT
                                                 </button>
@@ -207,8 +207,8 @@
             $('form').submit();
         });
         $(document).ready(function () {
-             
-            $('#Account_Code').rules("remove", "required");
+            GetFormRights();
+            $('#Account_Code').rules("remove", "required"); 
             $('#Account_Code').select2();
 
             if ($('#Mode').val() !== 'U' && $('#Mode').val() !== 'V') {
@@ -220,6 +220,51 @@
                 $('#AccountCode').val(AccountCode);
             }
         });
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            $("#submitBTN").prop("disabled", true);
+                            $('.card-footer #submitBTN').prop("disabled", true);
+                            $(".DashBoard")
+                                .addClass("disabled-link")
+                                .on("click", function (e) {
+                                    e.preventDefault(); // Prevents clicking the link
+                                });
+                        }
+                        else {
+                            // console.log(obj);
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    $("#submitBTN").prop("disabled", true);
+                                    $('.card-footer #submitBTN').prop("disabled", true);
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $(".DashBoard")
+                                        .addClass("disabled-link")
+                                        .on("click", function (e) {
+                                            e.preventDefault(); // Prevents clicking the link
+                                        });
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
 
         // $('#GroupName').change(function () {
         //     if ($('#Mode').val() !== "U") {
@@ -447,5 +492,13 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
+    }
+</style>
 
 
