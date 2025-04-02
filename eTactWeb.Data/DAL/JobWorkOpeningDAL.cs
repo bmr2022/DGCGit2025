@@ -139,7 +139,7 @@ namespace eTactWeb.Data.DAL
         private static JobWorkOpeningModel PrepareViewForCustomer(DataSet DS, ref JobWorkOpeningModel? model, string Mode)
         {
             var ItemList = new List<JobWorkOpeningModel>();
-            DS.Tables[0].TableName = "SAMain";
+            DS.Tables[0].TableName = "CustomerJobWork";
             //DS.Tables[1].TableName = "SADetail";
 
             int cnt = 1;
@@ -219,7 +219,7 @@ namespace eTactWeb.Data.DAL
         private static JobWorkOpeningModel PrepareViewForRGPChallan(DataSet DS, ref JobWorkOpeningModel? model, string Mode)
         {
             var ItemList = new List<JobWorkOpeningModel>();
-            DS.Tables[0].TableName = "SAMain";
+            DS.Tables[0].TableName = "RGPChallan";
             //DS.Tables[1].TableName = "SADetail";
 
             int cnt = 1;
@@ -285,7 +285,7 @@ namespace eTactWeb.Data.DAL
         private static JobWorkOpeningModel PrepareView(DataSet DS, ref JobWorkOpeningModel? model, string Mode)
         {
             var ItemList = new List<JobWorkOpeningModel>();
-            DS.Tables[0].TableName = "SAMain";
+            DS.Tables[0].TableName = "VendorJobwork";
             //DS.Tables[1].TableName = "SADetail";
 
             int cnt = 1;

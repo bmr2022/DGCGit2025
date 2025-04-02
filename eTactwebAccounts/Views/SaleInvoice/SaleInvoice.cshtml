@@ -314,6 +314,10 @@
                     @await Html.PartialAsync("_DrCrTable", Model)
                 </div>
                 <div class="accordion-item">
+                    @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel ?? new Common.AdjustmentModel())
+                    @*  <partial name="_AdjustmentGrid" /> *@
+                </div>
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="HPanel4">
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
@@ -325,10 +329,6 @@
                         @await Html.PartialAsync("_SaleBillOtherDetail", Model)
 
                     </div>
-                </div>
-                <div class="accordion-item">
-                    @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel ?? new Common.AdjustmentModel())
-                    @*  <partial name="_AdjustmentGrid" /> *@
                 </div>
             </div>
         </div>
@@ -430,7 +430,7 @@
                 // FillCustomerList("Y");
                 $('#SaleBillNo').val($('#hiddenSaleBillNo').val());
                 var taxRowCount = $('#divTaxGrid tr').length;
-               
+
                 var txSum = 0;
                 if ($('#divTaxGrid tr td').length > 1) {
                     for (var i = 0; i < taxRowCount; i++) {
@@ -771,7 +771,7 @@
                         var columnText = $(this).text().trim().toLowerCase();
                         if (columnText.indexOf(value) > -1) {
                             rowContainsValue = true;
-                            return false; 
+                            return false;
                         }
                     });
                 }
@@ -1167,6 +1167,30 @@
             var discPer = $(this).val();
             if (discPer < 0 || discPer > 100 || isNaN(discPer)) {
                 $(this).val('');
+            }
+        });
+
+        $('#NoofPcs').on('input', function () {
+            var value = $(this).val();
+
+            if (value < 0 || isNaN(value) || value.includes('--')) {
+                $(this).val('');
+            }
+            $(this).val(value.replace(/[^0-9]/g, ''));
+        });
+
+
+        $('#AltQty').on('input', function () {
+            var value = $(this).val();
+
+            if (value < 0 || isNaN(value) || value.includes('--')) {
+                $(this).val('');
+            }
+
+            $(this).val(value.replace(/[^0-9.]/g, ''));
+
+            if ((value.match(/\./g) || []).length > 1) {
+                $(this).val(value.substring(0, value.lastIndexOf('.')));
             }
         });
 
@@ -2260,7 +2284,7 @@
                 if (isCustJWValid && isBomCustJWValid && isPentoAdj) {
                     $("form").submit();
                 }
-            } 
+            }
             else if ($('#GSTRegistered').val() == 'Y') {
                 if ($('#divTaxGrid tr td').length <= 1) {
                     $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");

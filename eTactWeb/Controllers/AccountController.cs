@@ -14,10 +14,10 @@ using eTactWeb.DOM.Models;
 
 namespace eTactWeb.Controllers;
 
-public class HomeController : Controller
+public class AccountController : Controller
 {
     private readonly IDataLogic _IDataLogic;
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<AccountController> _logger;
     private readonly IConfiguration _configuration;
     private readonly EncryptDecrypt _EncryptDecrypt;
     private readonly IConnectionStringHelper _connectionStringHelper;
@@ -32,7 +32,7 @@ public class HomeController : Controller
     private string year_code;
 
     //public HomeController(ILogger<HomeController> logger)
-    public HomeController(IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService)
+    public AccountController(IConfiguration config, ILogger<AccountController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService)
     {
         _logger = logger;
         this._IDataLogic = iDataLogic;
@@ -240,8 +240,6 @@ public class HomeController : Controller
         conn.Close();
         return catlist;
     }
-    [HttpGet]
-    [Route("GetServerNames")]
     public IActionResult GetServerName()
     {
         var __configuration = new ConfigurationBuilder()
@@ -324,6 +322,7 @@ public class HomeController : Controller
     public async Task<IActionResult> Login()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
         LoginModel model = GeteDTRModel();
         return View(model);
     }
@@ -709,8 +708,8 @@ public class HomeController : Controller
             HttpContext.Session.SetString("Branch", model.Unit); //done CompanyName
             HttpContext.Session.SetString("CompanyName", model.CompanyName); //done CompanyName
             HttpContext.Session.SetString("YearCode", yearCode.ToString());//done
-            HttpContext.Session.SetString("EmpID", EmpId.ToString());//use this everywhere
             HttpContext.Session.SetString("UID", EmpId.ToString());//done there is no UID it will be same as EMpid
+            HttpContext.Session.SetString("EmpID", EmpId.ToString());//use this everywhere
             HttpContext.Session.SetString("EmpName", EMPNAME); // done
             HttpContext.Session.SetString("FromDate", frmDt);//done
             HttpContext.Session.SetString("ToDate", toDt);//done
@@ -789,7 +788,7 @@ public class HomeController : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         HttpContext.Session.Clear();
-        return RedirectToAction("Login", "Home");
+        return RedirectToAction("Login", "Account");
     }
     public IActionResult Privacy()
     {

@@ -469,6 +469,7 @@ public class BomController : Controller
         model.BomRevNo = BomRevNo;
         model.DashboardType = DashboardType;
 
+        model.DTDashboard  = model.DTDashboard == null ? new DataTable()  : model.DTDashboard;
         return View(model);
     }
 
