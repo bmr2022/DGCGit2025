@@ -387,6 +387,8 @@
 
         function GetAutoGenSchDetailData() {
 
+
+
             var ReportType = $('#ReportType').val(); // Get ReportType from a dropdown or input element
             var SchEffectivedate = $('#SchEffectivedate').val();
             var MrpNo = $('#MrpNo').val();
@@ -397,6 +399,14 @@
             var UID = $('#UID').val();
             var MachineName = $('#MachineName').val();
 
+            if (MrpNo == '' || MrpNo == 0) { 
+                notify("Please Select MrpNo");
+                return;
+            }
+            if (MrpYearCode == '' || MrpYearCode==0) {
+                notify("Please Select yearCode");
+                return;
+            }
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("GetAutoGenSchDetailData", "AutoGenerateSchedule")",
