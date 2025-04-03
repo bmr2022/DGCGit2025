@@ -651,7 +651,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@VendorStateCode", model.VendorStateCode ?? ""));
                 SqlParams.Add(new SqlParameter("@GSTType", model.GSTType == null ? string.Empty : model.GSTType));
                 SqlParams.Add(new SqlParameter("@TotalAmount", model.TotalAmount));
-                SqlParams.Add(new SqlParameter("@NetAmount", model.NetAmount));
+                SqlParams.Add(new SqlParameter("@NetAmount", model.NetTotal));
                 SqlParams.Add(new SqlParameter("@Completed", model.Completed));
                 SqlParams.Add(new SqlParameter("@FullyReturned", model.FullyReturned));
                 SqlParams.Add(new SqlParameter("@TotalGSTAmt", model.TotalGSTAmt));

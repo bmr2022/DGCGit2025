@@ -903,7 +903,11 @@ public class SaleScheduleController : Controller
                 {
                     var AC = Convert.ToInt32(Request.Form.Where(x => x.Key == "AC").FirstOrDefault().Value, System.Globalization.CultureInfo.InvariantCulture);
                     var SONO = Convert.ToInt32(Request.Form.Where(x => x.Key == "SONO").FirstOrDefault().Value, System.Globalization.CultureInfo.InvariantCulture);
-                    var Year = Convert.ToInt32(Request.Form.Where(x => x.Key == "Year").FirstOrDefault().Value, new CultureInfo("en-IN"));
+                    //var Year = Convert.ToInt32(Request.Form.Where(x => x.Key == "Year").FirstOrDefault().Value, new CultureInfo("en-IN"));
+                    var yearString = Request.Form.FirstOrDefault(x => x.Key == "Year").Value;
+
+                    var Year = 2025;//Convert.ToInt32(yearString, new CultureInfo("en-IN"));
+                   
                     var FromDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "FromDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
                     var TillDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "TillDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
                     var Action = Request.Form.Where(x => x.Key == "Action").FirstOrDefault().Value;
@@ -1193,8 +1197,10 @@ public class SaleScheduleController : Controller
                     int AC = Convert.ToInt32(Request.Form["AC"]);
                     int SONO = Convert.ToInt32(Request.Form["SONO"]);
                     int Year = Convert.ToInt32(Request.Form["Year"], new CultureInfo("en-IN"));
-                    string FromDate = Convert.ToDateTime(Request.Form["FromDate"]).ToString("dd/MM/yyyy");
-                    string TillDate = Convert.ToDateTime(Request.Form["TillDate"]).ToString("dd/MM/yyyy");
+                    string FromDate = CommonFunc.ParseFormattedDate(Request.Form["FromDate"]);
+                    //Convert.ToDateTime(Request.Form["FromDate"]).ToString("dd/MM/yyyy");
+                    string TillDate = CommonFunc.ParseFormattedDate(Request.Form["TillDate"]);
+                        //Convert.ToDateTime(Request.Form["TillDate"]).ToString("dd/MM/yyyy");
 
                     var JSONString = ISaleSchedule.GetSOItem(AC, SONO, Year, 0).GetAwaiter().GetResult();
                     var ItemList = JsonConvert.DeserializeObject<Root>(JSONString);

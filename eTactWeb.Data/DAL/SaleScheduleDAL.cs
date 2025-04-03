@@ -720,11 +720,17 @@ internal class SaleScheduleDAL
             DateTime SchEffTillDt = new DateTime();
             DateTime SoCloseDt = new DateTime();
 
-            EntryDt = DateTime.Parse(ConvertToDesiredFormat(model.EntryDate));
-            SoDt = DateTime.Parse((model.SODate));
-            SchDt = DateTime.Parse(ConvertToDesiredFormat(model.ScheduleDate));
-            SchAmmDt = DateTime.Parse(ConvertToDesiredFormat(model.SchAmendmentDate));
-            SoCloseDt = DateTime.Parse(ConvertToDesiredFormat(model.SOCloseDate));
+            EntryDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.EntryDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            SoDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SODate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            SchDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.ScheduleDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            SchAmmDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchAmendmentDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            SoCloseDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SOCloseDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+
+            //EntryDt = DateTime.Parse(ConvertToDesiredFormat(model.EntryDate));
+            //SoDt = DateTime.Parse((model.SODate));
+            //SchDt = DateTime.Parse(ConvertToDesiredFormat(model.ScheduleDate));
+            //SchAmmDt = DateTime.Parse(ConvertToDesiredFormat(model.SchAmendmentDate));
+            //SoCloseDt = DateTime.Parse(ConvertToDesiredFormat(model.SOCloseDate));
 
             if (model.SchApprovalDate == null)
             {
@@ -732,7 +738,8 @@ internal class SaleScheduleDAL
             }
             else
             {
-                SchAppDate = ParseDate(model.SchApprovalDate);
+                SchAppDate = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchApprovalDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+                //SchAppDate = ParseDate(model.SchApprovalDate);
             }
 
             if (model.SchAmendApprovalDate == null)
@@ -741,12 +748,14 @@ internal class SaleScheduleDAL
             }
             else
             {
-                SchAmendAppDate = ParseDate(model.SchAmendApprovalDate);
+                SchAmendAppDate = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchAmendApprovalDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+               // SchAmendAppDate = ParseDate(model.SchAmendApprovalDate);
             }
-
+            SchEffFromDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchEffFromDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
             //SchAmendAppDate = DateTime.Parse( ConvertToDesiredFormat(model.SchAmendApprovalDate));
-            SchEffFromDt = DateTime.Parse((model.SchEffFromDate));
-            SchEffTillDt = DateTime.Parse((model.SchEffTillDate));
+            //SchEffFromDt = DateTime.Parse((model.SchEffFromDate));
+            SchEffTillDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchEffTillDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            //SchEffTillDt = DateTime.Parse((model.SchEffTillDate));
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", model.Mode));
             SqlParams.Add(new SqlParameter("@ID", model.ID));
