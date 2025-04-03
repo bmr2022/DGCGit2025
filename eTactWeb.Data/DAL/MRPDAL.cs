@@ -297,28 +297,69 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+
+
         public async Task<MRPMain> GetMRPDetailData(PendingMRP model)
         {
+            DataSet? oDataSet = new DataSet();
             var Mainmodel = new MRPMain();
             try
             {
-                var Date = DateTime.Now;
-
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("Flag", "GetDATA"));
-                SqlParams.Add(new SqlParameter("@so_no", model.sono));
-                SqlParams.Add(new SqlParameter("@so_yearcode", model.SOYearCode));
-                SqlParams.Add(new SqlParameter("@Consider_Stock_Stores", model.StoreId));
-                SqlParams.Add(new SqlParameter("@Consider_WIP", model.WcId));
-                SqlParams.Add(new SqlParameter("@Sch_entryid", model.ScheduleNo));
-                var ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRPGENERATION", SqlParams);
-
-                if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
-                    var MainList = MRPDetailList(model.MRPEntryId, model.MRPNo, model.Month, model.ForMonthYear, ResponseResult.Result, ref model);
-                    Mainmodel.MRPGrid = MainList;
-                }
+                    SqlCommand oCmd = new SqlCommand("SP_MRPGENERATION", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("Flag", "GetDATA");
+                    oCmd.Parameters.AddWithValue("@so_no", model.sono);
+                    oCmd.Parameters.AddWithValue("@so_yearcode", model.SOYearCode);
+                    oCmd.Parameters.AddWithValue("@Consider_Stock_Stores", model.StoreId);
+                    oCmd.Parameters.AddWithValue("@Consider_WIP", model.WcId);
+                    oCmd.Parameters.AddWithValue("@Sch_entryid", model.ScheduleNo);
 
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    int seqNo = 1;
+                    Mainmodel.MRPGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                         select new MRPDetail
+                                         {
+                                            // SeqNo = seqNo++,
+                                             MRPEntryId = model.MRPEntryId,
+                                             MRPNo = model.MRPNo,
+                                             Month = model.Month,
+                                             ForMonthYear = model.ForMonthYear,
+                                             FGItemCode = Convert.ToInt32(row["FinishedItem"]),
+                                             FGPartCode = row["FGPartCode"].ToString(),
+                                             FGItemName = row["FGItemName"].ToString(),
+                                             RMItemCode = Convert.ToInt32(row["RMitemCode"]),
+                                             RMPartCode = row["ReqPartCode"].ToString(),
+                                             RMItemName = row["ReqItemDesc"].ToString(),
+                                             ReqQty = Convert.ToInt32(row["ReqQty"]),
+                                             Unit = row["Unit"].ToString(),
+                                             CurrMonthQty = Convert.ToInt32(row["CurrentStock"]),
+                                             WIPStock = Convert.ToInt32(row["WIP"]),
+                                             TotalStock = Convert.ToInt32(row["TotalStock"]),
+                                             RecorderLvl = Convert.ToInt32(row["ReorderLvl"]),
+                                             OrderQtyInclPrevPOQty = Convert.ToInt32(row["OrderQty"]),
+                                             PORate = Convert.ToInt32(row["LastPORate"]),
+                                             AllocatedQty = Convert.ToInt32(row["AllocatedQty"]),
+                                             ConsumedQty = Convert.ToInt32(row["ConsumedQty"]),
+                                             AccountName = row["AccountName"].ToString(),
+                                             PrevOrderQty = Convert.ToInt32(row["POQty"]),
+                                             IIndMonthQty = Convert.ToInt32(row["2ndMonthReqQty"]),
+                                             IIrdMonthQty = Convert.ToInt32(row["3rdMonthReqQty"]),
+                                             IIndMonthActualReqQty = Convert.ToInt32(row["2ndMonthActualReqQty"]),
+                                             IIrdMonthActualReqQty = Convert.ToInt32(row["3rdMonthActualReqQty"]),
+
+                                         }).ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -326,10 +367,46 @@ namespace eTactWeb.Data.DAL
                 Error.Message = ex.Message;
                 Error.Source = ex.Source;
             }
-
+            finally
+            {
+                oDataSet.Dispose();
+            }
             return Mainmodel;
-
         }
+
+        //public async Task<MRPMain> GetMRPDetailData(PendingMRP model)
+        //{
+        //    var Mainmodel = new MRPMain();
+        //    try
+        //    {
+        //        var Date = DateTime.Now;
+
+        //        var SqlParams = new List<dynamic>();
+        //        SqlParams.Add(new SqlParameter("Flag", "GetDATA"));
+        //        SqlParams.Add(new SqlParameter("@so_no", model.sono));
+        //        SqlParams.Add(new SqlParameter("@so_yearcode", model.SOYearCode));
+        //        SqlParams.Add(new SqlParameter("@Consider_Stock_Stores", model.StoreId));
+        //        SqlParams.Add(new SqlParameter("@Consider_WIP", model.WcId));
+        //        SqlParams.Add(new SqlParameter("@Sch_entryid", model.ScheduleNo));
+        //        var ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRPGENERATION", SqlParams);
+
+        //        if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
+        //        {
+        //            var MainList = MRPDetailList(model.MRPEntryId, model.MRPNo, model.Month, model.ForMonthYear, ResponseResult.Result, ref model);
+        //            Mainmodel.MRPGrid = MainList;
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+
+        //    return Mainmodel;
+
+        //}
 
         public async Task<MRPMain> GetMRPFGRMDetailData(PendingMRP model)
         {

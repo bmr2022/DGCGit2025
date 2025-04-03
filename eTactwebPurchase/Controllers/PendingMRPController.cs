@@ -244,16 +244,16 @@ namespace eTactWeb.Controllers
                 foreach (var item in model)
                 {
                     var DetailData = await IMRP.GetMRPDetailData(item);
-                    var FGRMDetailData = await IMRP.GetMRPFGRMDetailData(item);
+                    //var FGRMDetailData = await IMRP.GetMRPFGRMDetailData(item);
                     if (DetailData.MRPGrid != null)
                     {
                         ListOfMRPGrid.AddRange(DetailData.MRPGrid);
                     }
 
-                    if (FGRMDetailData.MRPFGRMGrid != null)
-                    {
-                        ListOfMRPFGRMGrid.AddRange(FGRMDetailData.MRPFGRMGrid);
-                    }
+                    //if (FGRMDetailData.MRPFGRMGrid != null)
+                    //{
+                    //    ListOfMRPFGRMGrid.AddRange(FGRMDetailData.MRPFGRMGrid);
+                    //}
 
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
