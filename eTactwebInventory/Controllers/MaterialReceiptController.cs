@@ -73,20 +73,14 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
             }
+          
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MrnEntryparam", EntryId);
             webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            webReport.Report.Prepare();
-            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
-            {
-                if (dataSource is TableDataSource tableDataSource)
-                {
-                    tableDataSource.Enabled = true;
-                    tableDataSource.Init(); // Refresh the data source
-                }
-            }
+            webReport.Report.Refresh();
             return View(webReport);
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string MrnNo = "")
