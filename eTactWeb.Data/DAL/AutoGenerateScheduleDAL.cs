@@ -127,9 +127,11 @@ namespace eTactWeb.Data.DAL
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
+
                     SqlCommand command = new SqlCommand("SpGenerateAutoPurchScheduleAgainstMRP", connection)
                     {
-                        CommandType = CommandType.StoredProcedure
+                        CommandType = CommandType.StoredProcedure,
+                        CommandTimeout = 300
                     };
 
                     command.Parameters.AddWithValue("@flag", ReportType);

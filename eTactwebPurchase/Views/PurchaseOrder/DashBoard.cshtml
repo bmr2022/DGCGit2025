@@ -349,7 +349,7 @@
 
         function PoallowtoprintWithoutApproval() {
             //ENTRYID
-            debugger
+             
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("PoallowtoprintWithoutApproval")",
@@ -357,7 +357,7 @@
                 async: false,
                 
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#PoallowtoprintWithoutApproval').val(obj.Result.Table[0].PoallowtoprintWithoutApproval);

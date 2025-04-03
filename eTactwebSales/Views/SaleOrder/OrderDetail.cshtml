@@ -1575,7 +1575,7 @@
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SOA" && $('#Mode').val() != "SAU") {
 
                 NewEntryId();
-                debugger
+                 
                 GetServerDate();
                 $('#OtherRateCurr').prop('readonly', true);
                 $('#Rate').prop('readonly', false);
@@ -1920,7 +1920,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                     
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                 }
@@ -2729,7 +2729,7 @@
                 data: { Check: $('#PN1').is(':checked') == true ? 'T' : 'F' },
                 dataType: "json",
                 success: function (data, status, error) {
-                    debugger
+                     
                     $('#AccountCode').empty();
                     $('#AccountCode').append('<option>-Select-</option>');
                     $.each(data, function (key, val) {

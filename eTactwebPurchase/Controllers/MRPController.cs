@@ -187,7 +187,7 @@ namespace eTactWeb.Controllers
                         model.LastUpdatedByEmpName = HttpContext.Session.GetString("EmpName");
                         MRPGrid = GetDetailTable(MRPDetail);
                         MRPSOGrid = GetSODetailTable(MRPSODetail);
-                        //MRPFGGrid = GetFGDetailTable(MRPFGDetail);
+                        MRPFGGrid = GetFGDetailTable(MRPFGDetail);
                     }
                     else
                     {
@@ -197,10 +197,10 @@ namespace eTactWeb.Controllers
                         model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                         MRPGrid = GetDetailTable(MRPDetail);
                         MRPSOGrid = GetSODetailTable(MRPSODetail);
-                        //MRPFGGrid = GetFGDetailTable(MRPFGDetail);
+                        MRPFGGrid = GetFGDetailTable(MRPFGDetail);
                     }
 
-                    var Result = await IMRP.SaveMRPDetail(model, MRPGrid, MRPSOGrid, MRPFGGrid=null);
+                    var Result = await IMRP.SaveMRPDetail(model, MRPGrid, MRPSOGrid, MRPFGGrid);
 
                     if (Result != null)
                     {
@@ -210,6 +210,7 @@ namespace eTactWeb.Controllers
                             TempData["200"] = "200";
                             IMemoryCache.Remove(MRPGrid);
                             IMemoryCache.Remove(MRPSOGrid);
+                            IMemoryCache.Remove(MRPFGGrid);
                             var model1 = new MRPMain();
                             model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -412,7 +413,7 @@ namespace eTactWeb.Controllers
                     Item.FGItemCode,
                     Item.SeqNo,
                     Item.RMItemCode,
-                    Item.CurrMonthQty,
+                    Item.OrderQty,
                     Item.OrderQtyInclPrevPOQty == null ? 0 : Item.OrderQtyInclPrevPOQty,
                     Item.IIndMonthQty,
                     Item.IIrdMonthQty,

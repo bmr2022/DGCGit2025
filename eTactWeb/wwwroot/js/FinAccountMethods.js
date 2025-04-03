@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    debugger
+     
     $('#VoucherType').select2();
     $('#Intrument').select2();
     $('#LedgerName').select2();
@@ -190,7 +190,7 @@ $("#ModeOfAdjustment").on("change", function () {
 });
 
 function FillLedgerName() {
-    debugger
+     
     var Type = $('#Type').val();
     $.ajax({
         url: '/JournalVoucher/FillLedgerName', // Hardcoded URL to avoid Razor issues
