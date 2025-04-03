@@ -1284,14 +1284,20 @@ public class PurchaseOrderDAL
             DateTime AppDate = new DateTime();
             DateTime AmmAppDate = new DateTime();
             DateTime FirstLvlAppDate = new DateTime();
-
-            EntryDt = ParseDate(model.EntryDate);
-            PoDt = ParseDate(model.PODate);
-            WEFDate = ParseDate(model.WEF);
-            PoCloseDt = ParseDate(model.POCloseDate);
-            AmmDt = ParseDate(model.AmmDate);
-            RefDt = ParseDate(model.RefDate);
-            QuotDt = ParseDate(model.QuotDate);
+            EntryDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.EntryDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            PoDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.PODate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            WEFDate = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.WEF), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            PoCloseDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.POCloseDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            AmmDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.AmmDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            RefDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.RefDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            QuotDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.QuotDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            //EntryDt = ParseDate(model.EntryDate);
+            //PoDt = ParseDate(model.PODate);
+            //WEFDate = ParseDate(model.WEF);
+            //PoCloseDt = ParseDate(model.POCloseDate);
+            //AmmDt = ParseDate(model.AmmDate);
+            //RefDt = ParseDate(model.RefDate);
+            //QuotDt = ParseDate(model.QuotDate);
 
 
             SqlParams.Add(new SqlParameter("@EntryDate", EntryDt == default ? string.Empty : EntryDt));
