@@ -343,6 +343,7 @@ namespace eTactWeb.Data.DAL
                                              RMItemName = row["ReqItemDesc"].ToString(),
                                              ReqQty = Convert.ToInt32(row["ReqQty"]),
                                              Unit = row["Unit"].ToString(),
+                                             OrderQty= Convert.ToInt32(row["OrderQty"]),
                                              CurrMonthQty = Convert.ToInt32(row["CurrentStock"]),
                                              WIPStock = Convert.ToInt32(row["WIP"]),
                                              TotalStock = Convert.ToInt32(row["TotalStock"]),

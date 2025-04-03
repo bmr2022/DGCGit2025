@@ -88,8 +88,9 @@
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
-                                        <option value="List Of Item For Schedule">List Of Item For Schedule</option>
                                         <option value="Generate Purchase Schedule">Purchase Schedule</option>
+                                        <option value="List Of Item For Schedule">List Of Item For Schedule</option>
+                                        
                                     </select>
                                 </div>
                                 <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
@@ -99,8 +100,8 @@
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class=" d-flex justify-content-center  mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
 
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetAutoGenSchDetailData();">
-                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:200;" onclick="GetAutoGenSchDetailData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i> Generate Schedule
                                     </button>
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
@@ -116,7 +117,7 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="H_SAGrid">
                                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>BOM Report Detail Grid</strong>
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Generate Schedule Detail</strong>
                                     </button>
                                 </h2>
 

@@ -62,6 +62,7 @@ namespace eTactWeb.DOM.Models
         public float MinLevel { get; set; }
         public float RecorderLvl { get; set; }
         public float PrevOrderQty { get; set; }
+        public float OrderQty { get; set; }
         public float ReqQty { get; set; }
         public float IIndMonthActualReqQty { get; set; }
         public float IIrdMonthActualReqQty { get; set; }
