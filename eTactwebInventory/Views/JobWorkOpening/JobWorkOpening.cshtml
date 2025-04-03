@@ -1512,7 +1512,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                     
                     var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 

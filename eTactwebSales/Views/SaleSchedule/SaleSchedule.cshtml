@@ -831,7 +831,7 @@
         }
 
         document.querySelector("#manualImport").onchange = function () {
-            debugger
+             
             const fileName = this.files[0]?.name;
             const label = document.querySelector("label[for=manualImport]");
             label.innerText = fileName ?? "Import Excel";
@@ -2196,7 +2196,7 @@
         });
 
         function handleExcelUpload(inputId, uploadUrl) {
-            debugger
+             
             var fileInput = $('#' + inputId);
             var fileExtension = ['xls', 'xlsx'];
             var filename = fileInput.val();
@@ -2948,7 +2948,7 @@
         });
 
         function FillCustomer(){
-            debugger
+             
             $.ajax({
                 url: '@Url.Action("FillCustomer")',
                 type: 'POST',
@@ -2957,7 +2957,7 @@
                 },
                 async: false,
                 success: function (response, status, error) {
-                    debugger
+                     
                     if (response != null) {
                         var obj = $.parseJSON(response);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
