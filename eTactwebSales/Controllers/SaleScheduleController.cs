@@ -903,7 +903,11 @@ public class SaleScheduleController : Controller
                 {
                     var AC = Convert.ToInt32(Request.Form.Where(x => x.Key == "AC").FirstOrDefault().Value, System.Globalization.CultureInfo.InvariantCulture);
                     var SONO = Convert.ToInt32(Request.Form.Where(x => x.Key == "SONO").FirstOrDefault().Value, System.Globalization.CultureInfo.InvariantCulture);
-                    var Year = Convert.ToInt32(Request.Form.Where(x => x.Key == "Year").FirstOrDefault().Value, new CultureInfo("en-IN"));
+                    //var Year = Convert.ToInt32(Request.Form.Where(x => x.Key == "Year").FirstOrDefault().Value, new CultureInfo("en-IN"));
+                    var yearString = Request.Form.FirstOrDefault(x => x.Key == "Year").Value;
+
+                    var Year = 2025;//Convert.ToInt32(yearString, new CultureInfo("en-IN"));
+                   
                     var FromDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "FromDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
                     var TillDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "TillDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
                     var Action = Request.Form.Where(x => x.Key == "Action").FirstOrDefault().Value;

@@ -24,6 +24,7 @@ namespace eTactWeb.Controllers
 {
     public class NRGPController : Controller
     {
+        public WebReport webReport;
         private readonly IDataLogic _IDataLogic;
         private readonly IIssueNRGP _IIssueNRGP;
         private readonly ITaxModule _ITaxModule;
@@ -221,36 +222,60 @@ namespace eTactWeb.Controllers
             //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
             //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             //return View(webReport); 
+            //string my_connection_string;
+            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //var webReport = new WebReport();
+            //webReport.Report.Clear();
+            //var ReportName = _IIssueNRGP.GetReportName();
+            //webReport.Report.Dispose();
+            //webReport.Report = new Report();
+            //if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            //{
+            //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+            //}
+            //else
+            //{
+            //    webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // default report
+            //}
+            //webReport.Report.SetParameterValue("entryparam", EntryId);
+            //webReport.Report.SetParameterValue("yearparam", YearCode);
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            //webReport.Report.Prepare();
+            //foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+            //{
+            //    if (dataSource is TableDataSource tableDataSource)
+            //    {
+            //        tableDataSource.Enabled = true;
+            //        tableDataSource.Init(); // Refresh the data source
+            //    }
+            //}
+            //return View(webReport);
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
-            var webReport = new WebReport();
-            webReport.Report.Clear();
+            webReport = new WebReport();
             var ReportName = _IIssueNRGP.GetReportName();
-            webReport.Report.Dispose();
-            webReport.Report = new Report();
-            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            ViewBag.EntryId = EntryId;
+            ViewBag.YearCode = YearCode;
+           
+            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
-                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
             }
             else
             {
                 webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // default report
+
             }
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
+           
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            webReport.Report.Prepare();
-            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
-            {
-                if (dataSource is TableDataSource tableDataSource)
-                {
-                    tableDataSource.Enabled = true;
-                    tableDataSource.Init(); // Refresh the data source
-                }
-            }
+
             return View(webReport);
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
