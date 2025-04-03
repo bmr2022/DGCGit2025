@@ -269,14 +269,14 @@
                 var fileName = file.name;
                  
                 var fileExtension = fileName.split('.').pop().toLowerCase();
-                debugger
+                 
                 if (fileExtension === 'xls' || fileExtension === 'xlsx') {
                     // The selected file is in Excel format
                     console.log('File is in Excel format.');
                     var reader = new FileReader();
 
                     reader.onload = function (e) {
-                        debugger
+                         
                         var data = e.target.result;
                         var workbook = XLSX.read(data, { type: 'binary' });
                         var sheetName = workbook.SheetNames[0];
@@ -284,13 +284,13 @@
                         var rowCount = XLSX.utils.decode_range(worksheet['!ref']).e.r + 1; // Number of rows
                         var columnCount = XLSX.utils.decode_range(worksheet['!ref']).e.c + 1; // Number of columns
                         
-                       debugger
+                        
                         // Define the expected number of columns
                         var expectedColumnCount = 16; // Change this to your desired number of columns
                         
                         // if (columnCount === expectedColumnCount) {
                             console.log('The Excel file has the expected number of columns.');
-                            debugger
+                             
                             var formData = new FormData();
                             formData.append("excelFile", file);
                              

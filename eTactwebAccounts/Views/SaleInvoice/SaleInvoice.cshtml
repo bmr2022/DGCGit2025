@@ -946,7 +946,7 @@
                 // dataType: "html",
                 async: false,
                 success: function (data) {
-                    debugger
+                     
                     $('#divBomCustJobWorkISsueSummary').html(data);
                     var dashGrid = $('#divBomCustJobWorkISsueSummary').length ? $('#divBomCustJobWorkISsueSummary').length : 0;
                     $('#totalRows').text(dashGrid);
@@ -2245,7 +2245,7 @@
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
 
             e.preventDefault();
-            debugger
+             
             if (!ValidateSubmit()) return;
 
             if ($('#divSaleBillList tr td').length <= 1) {
@@ -2261,7 +2261,7 @@
                 $.notify('StateCode is mandatory...!', "error");
             }
             else if ($('#SaleBillJobwork').val() == 'J') {
-                debugger
+                 
                 var rowCount = $('#divSaleBillList tr').length;
                 for (var i = 1; i <= rowCount; i++) {
                     var stockable = $('#stockableItems-' + i).text() === 'Y';
@@ -2316,7 +2316,7 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-                            debugger
+                             
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
@@ -2340,7 +2340,7 @@
                                 } else {
                                     FillSOWiseItems();
                                 }
-                                debugger
+                                 
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                                 $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                 FillCurrentBatchINStore();
@@ -2470,13 +2470,13 @@
                     async: false,
                     data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
                     success: function (data, status, xhr) {
-                        debugger
+                         
                         $('#divSaleBillList').html(data);
                         BasicTotal();
                         ClearDRCRGrid();
                         ClearAdjustmentGrid();
                         var itemArrayLength = itemBatchArray.length;
-                        debugger
+                         
                         for (var i = 0; i < itemArrayLength; i++) {
                             if (itemBatchArray[i].itemcode == IC && itemBatchArray[i].batchno == BatchNo) {
                                 itemBatchArray.splice(i, 1);
@@ -2609,7 +2609,7 @@
                 drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
                 crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
             }
-            debugger
+             
             if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
                 $.notify("Debit and Credit are not maintained...!", "error");
                 return false;

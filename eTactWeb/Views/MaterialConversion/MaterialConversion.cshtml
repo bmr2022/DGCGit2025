@@ -902,13 +902,13 @@
          });
 
         // $('#WorkCenterName').change(function () {
-        //      debugger
+        //       
         //     $('#WcId').val($('#WrokCenterName').val());
         //     FillCurrentWIPBatchINStore();
           
         //  });
         $('#WorkCenterName').change(function () {
-            debugger;
+             ;
             $('#WcId').val($(this).val());
             if ($('#IssueToStoreWC').val() == 'W') {
                 FillCurrentWIPBatchINStore();
@@ -919,7 +919,7 @@
            
         });
         $('#AltWorkCenterName').change(function () {
-            debugger;
+             ;
             $('#AltWCID').val($(this).val());
         });
 
@@ -1440,7 +1440,7 @@
         // }
 
         function FillStockBatchNo() {
-            debugger
+             
             var ItemCode = $('#OriginalItemCode').val();
             var YearCode = $('#OpeningYearCode').val();
             var StoreName = $('#StoreName').find(':selected').text();
@@ -1893,7 +1893,7 @@
         var EditEachItem = false;
 
         function EditItemRow(SrNO) {
-            debugger
+             
             if (EditEachItem) {
                 $.notify('Cannot edit item while another item is being added to the grid!', "error");
                 return;

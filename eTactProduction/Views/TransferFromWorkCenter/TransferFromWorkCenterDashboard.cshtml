@@ -240,12 +240,12 @@
             GetSearchData();
         })
         function GetFormRights() {
-            debugger
+             
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
                 success: function (data) {
-                    debugger
+                     
                     if (data != null) {
 
                         var obj = $.parseJSON(data);

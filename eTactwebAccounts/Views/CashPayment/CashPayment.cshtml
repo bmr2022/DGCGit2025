@@ -1184,7 +1184,7 @@
         }
 
         function FillSubVoucherName() {
-            debugger
+             
             var VoucherType = $('#VoucherType').val();
             $.ajax({
                 url: '@Url.Action("FillSubVoucherName", "CashPayment")',
@@ -1194,7 +1194,7 @@
                 },
                 async: false,
                 success: function (response, status, error) {
-                    debugger
+                     
                     var SubVoucherNameDropdown = $('#SubVoucherName');
                     var obj = $.parseJSON(response);
                     SubVoucherNameDropdown.empty();
@@ -1804,7 +1804,7 @@
         };
 
         function AdjustAmountForAddToGridForDRCR() {
-            debugger
+             
             var RowCount = $('#divCashPaymentDetail tr').length;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
