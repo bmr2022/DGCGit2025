@@ -36,6 +36,7 @@
                                         <label class="form-label">From Date</label>
                                         <input asp-for="FinFromDate" maxlength="10" class="form-control" />
                                         <input type="hidden" asp-for="FromDate1" />
+                                        <input type="hidden" asp-for="SaleBillYearCode" />
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
@@ -143,7 +144,7 @@
     <script>
         $(document).ready(function () {
             GetServerDate();
-             
+            YearEditDeleteRight();
             // var FromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
             var ToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
             // $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
@@ -377,6 +378,29 @@
             window.location.href = linkUrl;
         }
 
+        function YearEditDeleteRight() {
+            debugger
+            var currentFinYC = getFinancialYear();
+            if ($('#SaleBillYearCode').val() != currentFinYC) {
+                $('.btnDeleteData').css('cursor', 'not-allowed');
+                $('.btnEditData').css('cursor', 'not-allowed');
+            }else{
+                $('.btnDeleteData').css('cursor', '');
+                $('.btnEditData').css('cursor', '');
+            }
+        }
+
+        function getFinancialYear() {
+            let today = new Date();
+            let year = today.getFullYear();
+            let month = today.getMonth() + 1;
+
+            if (month < 4) {
+                return year - 1;
+            } else {
+                return year;
+            }
+        }
 
         function GetSearchData() {
              
@@ -404,7 +428,7 @@
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     CheckInv();
-
+                    YearEditDeleteRight();
                 },
                 error: function (response) {
                     alert(response.responseText);
