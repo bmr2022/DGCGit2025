@@ -413,7 +413,7 @@ namespace eTactWeb.Controllers
                     Item.FGItemCode,
                     Item.SeqNo,
                     Item.RMItemCode,
-                    Item.CurrMonthQty,
+                    Item.OrderQty,
                     Item.OrderQtyInclPrevPOQty == null ? 0 : Item.OrderQtyInclPrevPOQty,
                     Item.IIndMonthQty,
                     Item.IIrdMonthQty,

@@ -526,7 +526,7 @@ namespace eTactWeb.Data.DAL
                         RMItemCode = Convert.ToInt32(row["RMItemCode"]),
                         RMItemName = row["RMItemName"].ToString(),
                         RMPartCode = row["RMPartCode"].ToString(),
-                        OrderQty = Convert.ToInt32(row["OrderQtyInclPrevPOQty"]),
+                        OrderQty = Convert.ToInt32(row["CurrMonthOrderQty"]),
                         OrderQtyInclPrevPOQty = Convert.ToInt32(row["OrderQtyInclPrevPOQty"]),
                         ReqQty = Convert.ToInt32(row["ReqQty"]),
                         CurrMonthQty = Convert.ToInt32(row["CurrMonthOrderQty"]),
