@@ -696,7 +696,7 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "Rate" && typeProperty.PropertyInfo.Name != "RateInOtherCurr" && typeProperty.PropertyInfo.Name != "DiscPer" && typeProperty.PropertyInfo.Name != "DiscRs"
                      && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
                      && typeProperty.PropertyInfo.Name != "UnitRate" && typeProperty.PropertyInfo.Name != "SchApproved" && typeProperty.PropertyInfo.Name != "SchAmendApprove"
-                      && typeProperty.PropertyInfo.Name != "SchCompleted" && typeProperty.PropertyInfo.Name != "DashboardType" && typeProperty.PropertyInfo.Name != "EnteredBy" && typeProperty.PropertyInfo.Name != "AmmType" && typeProperty.PropertyInfo.Name != "UpdatedByName")
+                      && typeProperty.PropertyInfo.Name != "SchCompleted" && typeProperty.PropertyInfo.Name != "DashboardType" && typeProperty.PropertyInfo.Name != "EnteredBy" && typeProperty.PropertyInfo.Name != "AmmType" && typeProperty.PropertyInfo.Name != "UpdatedByName" && typeProperty.PropertyInfo.Name != "ApprovedBy")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
@@ -705,7 +705,7 @@ public static class CommonFunc
                 }
                 else if (Tbname == "POSCHEDULEDASHBOARD")
                 {
-                    if (typeProperty.PropertyInfo.Name != "AmmEffDate"
+                    if (typeProperty.PropertyInfo.Name != "AmmEffDate" && typeProperty.PropertyInfo.Name != "ApprovedBy"
               && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode" && typeProperty.PropertyInfo.Name != "ItemName" &&
               typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "TxPageName"
               && typeProperty.PropertyInfo.Name != "DeliveryDate"
@@ -1333,7 +1333,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "DiscountPercent" && typeProperty.PropertyInfo.Name != "DiscountAmt" && typeProperty.PropertyInfo.Name != "NetAmtInWords" && typeProperty.PropertyInfo.Name != "PermitNo"
                         && typeProperty.PropertyInfo.Name != "CashDisPer" && typeProperty.PropertyInfo.Name != "CashDisRs" && typeProperty.PropertyInfo.Name != "SoDelTime" && typeProperty.PropertyInfo.Name != "TypeJob"
                         && typeProperty.PropertyInfo.Name != "CurrencyId" && typeProperty.PropertyInfo.Name != "Shippingdate" && typeProperty.PropertyInfo.Name != "Cancelreason"
-                        && typeProperty.PropertyInfo.Name != "BankName" && typeProperty.PropertyInfo.Name != "EntryByempId" && typeProperty.PropertyInfo.Name != "ActualEnteredBy" && typeProperty.PropertyInfo.Name != "LastUpdatedByName"
+                        && typeProperty.PropertyInfo.Name != "BankName" 
+                        && typeProperty.PropertyInfo.Name != "SOType" && typeProperty.PropertyInfo.Name != "EntryByempId" && typeProperty.PropertyInfo.Name != "ActualEnteredBy" && typeProperty.PropertyInfo.Name != "LastUpdatedByName"
                         && typeProperty.PropertyInfo.Name != "ChallanNo" && typeProperty.PropertyInfo.Name != "ChallanDate" && typeProperty.PropertyInfo.Name != "ChallanEntryid" && typeProperty.PropertyInfo.Name != "ChallanYearCode"
                         && typeProperty.PropertyInfo.Name != "SaleQuotEntryID" && typeProperty.PropertyInfo.Name != "TotalRoundOff" && typeProperty.PropertyInfo.Name != "TotalDiscountPercentage" && typeProperty.PropertyInfo.Name != "FinToDate"
                         && typeProperty.PropertyInfo.Name != "ItemSA" && typeProperty.PropertyInfo.Name != "dispatchLocation" && typeProperty.PropertyInfo.Name != "NetTotal" && typeProperty.PropertyInfo.Name != "BomNo"
@@ -1396,7 +1397,7 @@ public static class CommonFunc
                 {
                     if (typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "saleBillDashboard" && typeProperty.PropertyInfo.Name != "StateCode"
                     && typeProperty.PropertyInfo.Name != "saleBillDetails" && typeProperty.PropertyInfo.Name != "ItemDetailGrid" && typeProperty.PropertyInfo.Name != "_YesNo" && typeProperty.PropertyInfo.Name != "YesNoList"
-                    && typeProperty.PropertyInfo.Name != "TransporterId" && typeProperty.PropertyInfo.Name != "ConsigneeAccountcode" && typeProperty.PropertyInfo.Name != "PNConsingee"
+                    && typeProperty.PropertyInfo.Name != "TransporterId" && typeProperty.PropertyInfo.Name != "ConsigneeAccountcode" && typeProperty.PropertyInfo.Name != "PNConsingee" && typeProperty.PropertyInfo.Name != "SOType"
                     && typeProperty.PropertyInfo.Name != "InvPrefix" && typeProperty.PropertyInfo.Name != "PN1" && typeProperty.PropertyInfo.Name != "DocTypeAccountCode"
                     && typeProperty.PropertyInfo.Name != "DocTypeAccountName" && typeProperty.PropertyInfo.Name != "TaxbaleAmtInWord" && typeProperty.PropertyInfo.Name != "SaleSchYearCode"
                     && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "BillAmtWord" && typeProperty.PropertyInfo.Name != "RoundTypea"

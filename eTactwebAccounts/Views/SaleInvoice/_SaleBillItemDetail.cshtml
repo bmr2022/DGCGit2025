@@ -28,6 +28,11 @@
         </select>
     </div>
 
+    <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="SONODiv">
+        <label asp-for="SOType" class="form-label" style="color: blue;">SO Type</label>
+        <input class="form-control" asp-for="SOType" disabled />
+    </div>
+
     <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-6" id="SOYearCodeDiv">
         <label asp-for="SOYearCode" class="form-label">SO Year</label>
         <select asp-for="SOYearCode" class="form-control">
@@ -76,12 +81,12 @@
             <option value="0">-Select-</option>
         </select>
     </div>
-    <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-6">
         <label asp-for="ItemCode" class="form-label" style="color: red;">Item Name*</label>
         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
             <input asp-for="ItemSA" class="form-check-input" type="checkbox" role="switch" />Show All
         </div>
-        <select asp-for="ItemCode" class="form-control" style="width:320px;">
+        <select asp-for="ItemCode" class="form-control" style="width:200px;">
             <option value="0">-Select-</option>
         </select>
     </div>

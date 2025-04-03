@@ -201,6 +201,7 @@
             <select asp-for="ConsigneeAccountcode" class="form-control">
                 <option value="0">-Select-</option>
             </select>
+            <input type="hidden" value="@Model.ConsigneeAccountcode" id="hiddenConsigneeAC" />
         </div>
         <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>

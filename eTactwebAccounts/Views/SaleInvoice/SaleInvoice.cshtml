@@ -2432,6 +2432,14 @@
                                 $('#editItemGrid-' + i).css("pointer-events", "none");
                                 $('#editItemGrid-' + i).css("cursor", "not-allowed");
                             }
+
+                            if ($('#SaleBillJobwork').val() == 'J') {
+                                $('.jobWorkChalln').show();
+                                $('.gridHiddenField').show();
+                            } else {
+                                $('.jobWorkChalln').hide();
+                                $('.gridHiddenField').hide();
+                            }
                             DeleteItemRow(SeqNo);
                         }
                     },
@@ -2472,6 +2480,7 @@
                     success: function (data, status, xhr) {
                         debugger
                         $('#divSaleBillList').html(data);
+
                         BasicTotal();
                         ClearDRCRGrid();
                         ClearAdjustmentGrid();
@@ -2777,6 +2786,7 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#SONO').append("<option value=" + val.SONo + " data-sotype=" + val.SOType + ">" + val.SONo + "</option>");
                             });
+
                         }
                     }
                 }
@@ -2876,7 +2886,7 @@
                 $('#SchNo').prop("disabled", false);
                 $('#SaleSchYearCode').prop("disabled", false);
             }
-
+            $('#SOType').val($('#SONO').find(':selected').data('sotype'));
             if ($('#SONO').val() == '0' || $('#SONO').val() == '') {
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
@@ -3308,6 +3318,10 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#ConsigneeAccountcode').append("<option value=" + val.Account_code + ">" + val.CustomeName + "</option>");
                             });
+
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                $('#ConsigneeAccountcode').val($('#hiddenConsigneeAC').val());
+                            }
                         }
                     }
                 }
