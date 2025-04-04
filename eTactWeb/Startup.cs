@@ -212,6 +212,7 @@ namespace eTactWeb
             services.TryAddTransient<IProductionEntryReport, ProductionEntryReportBLL>();
             services.TryAddTransient<ITransferMaterialReport, TransferMaterialReportBLL>();
             services.TryAddTransient<IPORegister, PORegisterBLL>();
+            services.TryAddTransient<IMaterialReqPlanning, MaterialReqPlanningBLL>();
             services.TryAddTransient<IRCRegister, RCRegisterBLL>();
             services.TryAddTransient<IVendJWRegister, VendJWRegisterBLL>();
             services.TryAddTransient<IProductionSchedule, ProductionScheduleBLL>();

@@ -727,7 +727,8 @@
                 type: "POST",
                 success: function (data) {
 
-                    if (data != null) {
+                    if (data != null) 
+                    {
                         var obj = $.parseJSON(data);
                         if (obj.Result.Table.length == 0) {
                             $("button[type='submit'").prop("disabled", true);
@@ -736,8 +737,9 @@
                                 .on("click", function (e) {
                                     e.preventDefault(); // Prevents clicking the link
                                 });
-                        }
-                        } else {
+                        
+                        } else 
+                        {
                             console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
@@ -1364,6 +1366,7 @@
          
         var GateEntryId = 0;
         $('#GateYearCode').change(function () {
+            debugger
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetGateDate")",
