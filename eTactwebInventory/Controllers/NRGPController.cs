@@ -1014,7 +1014,7 @@ namespace eTactWeb.Controllers
             }
             return model;
         }
-        public async Task<JsonResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string StoreName, string batchno = "")
+        public async Task<JsonResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string StoreName, string batchno )
         {
             var FinStartDate = HttpContext.Session.GetString("FromDate");
             var JSON = await _IIssueNRGP.FillCurrentBatchINStore(ItemCode, YearCode, FinStartDate, StoreName, batchno);

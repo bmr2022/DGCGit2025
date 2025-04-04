@@ -702,9 +702,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
-                SqlParams.Add(new SqlParameter("@FinStartDate", ParseFormattedDate(FinStartDate)));
+                SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
                 //finStDt.ToString("yyyy/MM/dd").Replace("-", "/")));
-                SqlParams.Add(new SqlParameter("@transDate", Date.ToString("yyyy-MM-dd")));
+                SqlParams.Add(new SqlParameter("@transDate", Date));
                     //.Replace("-", "/")));
                 SqlParams.Add(new SqlParameter("@batchno", batchno));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStore", SqlParams);
