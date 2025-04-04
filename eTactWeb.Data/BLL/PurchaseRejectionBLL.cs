@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -11,10 +12,10 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _iDtaLogic;
         private readonly PurchaseRejectionDAL _purchRejDAL;
 
-        public PurchaseRejectionBLL(IConfiguration configuration, IDataLogic iDtaLogic)
+        public PurchaseRejectionBLL(IConfiguration configuration, IDataLogic iDtaLogic, ConnectionStringService connectionStringService)
         {
             _iDtaLogic = iDtaLogic;
-            _purchRejDAL = new PurchaseRejectionDAL(configuration, iDtaLogic);
+            _purchRejDAL = new PurchaseRejectionDAL(configuration, iDtaLogic, connectionStringService);
         }
 
         public async Task<AccPurchaseRejectionModel> GetViewByID(int ID, int YearCode, string mode)

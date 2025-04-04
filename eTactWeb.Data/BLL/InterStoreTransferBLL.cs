@@ -16,9 +16,10 @@ namespace eTactWeb.Data.BLL
 {
     public class InterStoreTransferBLL : IInterStoreTransfer
     {
-        public InterStoreTransferBLL(IConfiguration configuration, IDataLogic iDataLogic)
+
+        public InterStoreTransferBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _InterStoreTransferDAL = new InterStoreTransferDAL(configuration, iDataLogic);
+            _InterStoreTransferDAL = new InterStoreTransferDAL(configuration, iDataLogic,connectionStringService);
         }
 
         private InterStoreTransferDAL? _InterStoreTransferDAL { get; }

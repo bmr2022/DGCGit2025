@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private ProdPlanStatusDAL _ProdPlanStatusDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public ProdPlanStatusBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public ProdPlanStatusBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _ProdPlanStatusDAL = new ProdPlanStatusDAL(config, dataLogicDAL);
+            _ProdPlanStatusDAL = new ProdPlanStatusDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ProdPlanStatusModel> GetProdPlanStatus()

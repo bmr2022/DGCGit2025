@@ -20,8 +20,8 @@ namespace eTactWeb.Data.DAL
             //_configuration = configuration;
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
-            _connectionStringService = connectionStringService;
-            DBConnectionString = _connectionStringService.GetConnectionString();
+                _connectionStringService = connectionStringService;
+                DBConnectionString = _connectionStringService.GetConnectionString();
         }
 
         public async Task<ResponseResult> DeleteByID(int ID)

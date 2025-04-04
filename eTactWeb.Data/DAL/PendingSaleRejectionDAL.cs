@@ -1,4 +1,5 @@
 ﻿using eTactWeb.Data.BLL;
+using eTactWeb.Data.Common;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -12,9 +13,12 @@ namespace eTactWeb.Data.DAL
 {
     public class PendingSaleRejectionDAL
     {
-        public PendingSaleRejectionDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public PendingSaleRejectionDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
 

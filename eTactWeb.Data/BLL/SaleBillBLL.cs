@@ -23,9 +23,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.GetReportName();
         }
-        public SaleBillBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public SaleBillBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _SaleBillDAL = new SaleBillDAL(configuration, iDataLogic);
+            _SaleBillDAL = new SaleBillDAL(configuration, iDataLogic,connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<ResponseResult> NewEntryId(int YearCode)

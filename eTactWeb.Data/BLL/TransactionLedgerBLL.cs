@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,10 +17,10 @@ namespace eTactWeb.Data.BLL
     {
         private TransactionLedgerDAL _TransactionLedgerDAL;
         private readonly IDataLogic _DataLogicDAL;
-
-        public TransactionLedgerBLL(IConfiguration config, IDataLogic dataLogicDAL)
+            
+        public TransactionLedgerBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _TransactionLedgerDAL = new TransactionLedgerDAL(config, dataLogicDAL);
+            _TransactionLedgerDAL = new TransactionLedgerDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> GetLedgerName()

@@ -22,12 +22,14 @@ namespace eTactWeb.Data.DAL
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         private IDataReader? Reader;
-
-        public PORegisterDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor)
+        private readonly ConnectionStringService _connectionStringService;
+        public PORegisterDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
             _httpContextAccessor = httpContextAccessor;
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
         public async Task<PORegisterModel> GetPORegisterData(string FromDate, string ToDate, string ReportType,int YearCode, string Partyname, string partcode, string itemName, string POno, string SchNo, string OrderType, string POFor, string ItemType, string ItemGroup)

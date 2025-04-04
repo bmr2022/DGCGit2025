@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -19,10 +20,10 @@ namespace eTactWeb.Data.BLL
         private readonly MRNRegisterDAL _MRNRegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public MRNRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public MRNRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _MRNRegisterDAL = new MRNRegisterDAL(configuration, iDataLogic, _httpContextAccessor);
+            _MRNRegisterDAL = new MRNRegisterDAL(configuration, iDataLogic, _httpContextAccessor,connectionStringService);
         }
         public async Task <ResponseResult> FillDocument(string FromDate, string ToDate)
         {

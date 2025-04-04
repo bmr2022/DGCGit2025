@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +18,10 @@ namespace eTactWeb.Data.BLL
         private readonly RCRegisterDAL _RCRegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RCRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public RCRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _RCRegisterDAL = new RCRegisterDAL(configuration, iDataLogic, _httpContextAccessor);
+            _RCRegisterDAL = new RCRegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
         public async Task<RCRegisterModel> GetRCRegisterData(string FromDate, string ToDate, string Partyname, string IssueChallanNo, string RecChallanNo, string PartCode, string ItemName, string IssueChallanType, string RGPNRGP, string ReportMode)
         {

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -19,10 +20,10 @@ namespace eTactWeb.Data.BLL
         private readonly MIRRegisterDAL _MIRRegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public MIRRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public MIRRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _MIRRegisterDAL = new MIRRegisterDAL(configuration, iDataLogic, _httpContextAccessor);
+            _MIRRegisterDAL = new MIRRegisterDAL(configuration, iDataLogic, _httpContextAccessor,connectionStringService);
         }
         public async Task <ResponseResult> FillMIRNo(string FromDate, string ToDate)
         {

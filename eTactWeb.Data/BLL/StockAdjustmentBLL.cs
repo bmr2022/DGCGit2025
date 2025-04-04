@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,9 @@ namespace eTactWeb.Data.BLL
 {
     public class StockAdjustmentBLL : IStockAdjustment
     {
-        public StockAdjustmentBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public StockAdjustmentBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _StockAdjustmentDAL = new StockAdjustmentDAL(configuration, iDataLogic);
+            _StockAdjustmentDAL = new StockAdjustmentDAL(configuration, iDataLogic, connectionStringService);
         }
 
         private StockAdjustmentDAL? _StockAdjustmentDAL { get; }

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -19,10 +20,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _JobWorkIssueDAL.GetReportName();
         }
-        public JobWorkIssueBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public JobWorkIssueBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _JobWorkIssueDAL = new JobWorkIssueDAL(configuration, iDataLogic);
+            _JobWorkIssueDAL = new JobWorkIssueDAL(configuration, iDataLogic, connectionStringService);
         }
 
         public async Task<DataSet> BindAllDropDowns(string Flag)

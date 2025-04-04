@@ -17,11 +17,13 @@ public class PurchaseBillDAL
 {
     private readonly IDataLogic _IDataLogic;
     private readonly string DBConnectionString = string.Empty;
-
-    public PurchaseBillDAL(IConfiguration configuration, IDataLogic iDataLogic)
+    private readonly ConnectionStringService _connectionStringService;
+    public PurchaseBillDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
     {
         _IDataLogic = iDataLogic;
-        DBConnectionString = configuration.GetConnectionString("eTactDB");
+        _connectionStringService = connectionStringService;
+        DBConnectionString = _connectionStringService.GetConnectionString();
+        //DBConnectionString = configuration.GetConnectionString("eTactDB");
     }
     public async Task<string> GetItemServiceFORPO(string ItemService)
     {
