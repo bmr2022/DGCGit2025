@@ -945,7 +945,7 @@
 
         $(document).ready(function () {
             functionFeatureOption();
-
+            debugger
             $('#BomStatus').css('background-color', 'rgb(248 255 178)');
             $('#BatchNo').css('background-color', 'rgb(248 255 178)');
             $('#ItemCode').select2();
@@ -1006,9 +1006,9 @@
 
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-
-                $('#EntryDate,#ChallanDate').datepicker("option", "minDate", formattedDate1);
-                $('#EntryDate,#ChallanDate').datepicker("option", "maxDate", formattedDate2);
+                debugger
+                $('#EntryDate,#ChallanDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+                $('#EntryDate,#ChallanDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
                 //console.log(formattedDate1);
                 //console.log(formattedDate2);
             }
@@ -2002,18 +2002,19 @@
 
 
         $('#StoreId').change(function () {
-
+            debugger
             var ItemCode = $('#ItemCode').val();
             $('#BatchNo,#UniqueBatchNo').empty();
             $('#StockQty,#BatchStockQty').val('');
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetBatchNumber")',
+                 /* url: '@Url.Action("GetBatchNumber")',  */
+                url: '@Url.Action("FillCurrentBatchINStore","NRGP")',
                 data: { StoreId: $('#StoreId').val(), StoreName: $('#StoreId').find(':selected').text(), ItemCode: $('#ItemCode').val(), TransDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-
+                    debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -2021,7 +2022,8 @@
                             $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
                             //$('#uniquebatchno').empty();
                             //$('#uniquebatchno').append('<option value="" disabled selected>-Select-</option>');
-
+                            
+                            debugger
                             var seenValues = {};
                             $.each(obj.Result, function (index, val) {
                                 if (!seenValues[val.batchno]) {
@@ -2178,7 +2180,7 @@
         $('#BatchNo').change(function () {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetBatchNumber")',
+                url: '@Url.Action("GetBatchNumber","NRGP")',
                 data: { StoreId: $('#StoreId').val(), StoreName: $('#StoreId').find(':selected').text(), ItemCode: $('#ItemCode').val(), TransDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val() },
                 dataType: "json",
                 async: false,
@@ -2190,7 +2192,7 @@
                             $('#UniqueBatchNo').append('<option selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
                                 if ($("#UniqueBatchNo option[value='" + val.UniqueBatchNo + "']").length == 0) {
-                                    $('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" data-stock="' + val.stock + '">' + val.UniqueBatchNo + '</option>');
+                                    $('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" data-stock="' + val.stock + '" selected>' + val.UniqueBatchNo + '</option>');
                                 }
                             });
                         }

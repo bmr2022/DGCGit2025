@@ -69,7 +69,10 @@
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
-
+                             <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 justify-content-center mt-4" style="margin-left:50px;margin-top:10px;">
+                                    <label class="color-box" style="background-color: #FF0000;"></label><label style="margin-left:5px;margin-top:-5px;">Sch Unapproved</label>
+                                    <label class="color-box" style="background-color: green;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Sch Approved</label>
+                                </div>
                             <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 d-flex justify-content-center mt-3">
                                 <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetSearchData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
@@ -113,6 +116,13 @@
 
     </div>
 </div>
+
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>
 
 @section Scripts
 {

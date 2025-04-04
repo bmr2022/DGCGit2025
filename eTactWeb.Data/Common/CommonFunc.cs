@@ -706,16 +706,40 @@ public static class CommonFunc
                 else if (Tbname == "POSCHEDULEDASHBOARD")
                 {
                     if (typeProperty.PropertyInfo.Name != "AmmEffDate" && typeProperty.PropertyInfo.Name != "ApprovedBy"
-              && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode" && typeProperty.PropertyInfo.Name != "ItemName" &&
-              typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "TxPageName"
-              && typeProperty.PropertyInfo.Name != "DeliveryDate"
+              && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode" && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "schAmendDate" &&
+              typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "TxPageName"  && typeProperty.PropertyInfo.Name != "SchAmendApprove"
+              && typeProperty.PropertyInfo.Name != "CreatedByEmpName" && typeProperty.PropertyInfo.Name != "SchAmendApprovedByEmp"
+              && typeProperty.PropertyInfo.Name != "DeliveryDate" && typeProperty.PropertyInfo.Name != "Branch"
               && typeProperty.PropertyInfo.Name != "PSDashboard" && typeProperty.PropertyInfo.Name != "POComplete"
                && typeProperty.PropertyInfo.Name != "ApprovedDate" && typeProperty.PropertyInfo.Name != "Approved" && typeProperty.PropertyInfo.Name != "SchQty"
                      && typeProperty.PropertyInfo.Name != "Rate" && typeProperty.PropertyInfo.Name != "ApprovedBy"
                    && typeProperty.PropertyInfo.Name != "UserName" && typeProperty.PropertyInfo.Name != "ItemAmendNo"
                      && typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "AltUnit" && typeProperty.PropertyInfo.Name != "AltSchQty"
                   && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "AltPendQty" && typeProperty.PropertyInfo.Name != "Canceled"
-                      && typeProperty.PropertyInfo.Name != "SchCompleted" && typeProperty.PropertyInfo.Name != "DashboardType" && typeProperty.PropertyInfo.Name != "EnteredBy" && typeProperty.PropertyInfo.Name != "AmmType" && typeProperty.PropertyInfo.Name != "UpdatedByName")
+                      && typeProperty.PropertyInfo.Name != "SchCompleted" && typeProperty.PropertyInfo.Name != "DashboardType" && typeProperty.PropertyInfo.Name != "EnteredBy" && typeProperty.PropertyInfo.Name != "AmmType" && typeProperty.PropertyInfo.Name != "UpdatedByName"
+                       && typeProperty.PropertyInfo.Name != "schAmendNo"
+                         && typeProperty.PropertyInfo.Name != "MRPNO"
+                         && typeProperty.PropertyInfo.Name != "Active"
+                         && typeProperty.PropertyInfo.Name != "CreatedOn"
+                         && typeProperty.PropertyInfo.Name != "SchYear"
+                         && typeProperty.PropertyInfo.Name != "POYearCode"
+                         && typeProperty.PropertyInfo.Name != "Mode"
+                         && typeProperty.PropertyInfo.Name != "PartCode"
+                         && typeProperty.PropertyInfo.Name != "ItemName"
+                         && typeProperty.PropertyInfo.Name != "Rate"
+                         && typeProperty.PropertyInfo.Name != "SchQty"
+                         && typeProperty.PropertyInfo.Name != "PendQty"
+                         && typeProperty.PropertyInfo.Name != "Unit"
+                         && typeProperty.PropertyInfo.Name != "AltUnit"
+                         && typeProperty.PropertyInfo.Name != "AltSchQty"
+                         && typeProperty.PropertyInfo.Name != "AltPendQty"
+                         && typeProperty.PropertyInfo.Name != "ItemAmendNo"
+                         && typeProperty.PropertyInfo.Name != "SchApproved"
+                         && typeProperty.PropertyInfo.Name != "DeliveryDate"
+                         && typeProperty.PropertyInfo.Name != "EntryByMachineName"
+                         && typeProperty.PropertyInfo.Name != "Canceled"
+                         && typeProperty.PropertyInfo.Name != "SchCompleted"
+                      )
 
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
