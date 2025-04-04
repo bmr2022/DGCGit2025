@@ -843,12 +843,15 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-            DateTime fromDt, toDt;
-            string fromDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
-                 fromDt = DateTime.ParseExact(fromDtString, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                // Use fromDt as needed
-            string toDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(ToDate);
-                 toDt = DateTime.ParseExact(toDtString, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            //DateTime fromDt, toDt;
+            //string fromDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
+            //     fromDt = DateTime.ParseExact(fromDtString, "dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            //    // Use fromDt as needed
+            //string toDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(ToDate);
+            //     toDt = DateTime.ParseExact(toDtString, "dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+
+
+
                 // Use fromDt as needed
             //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
             // DateTime fromDt = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
@@ -856,7 +859,7 @@ namespace eTactWeb.Controllers
             //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
             //string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
 
-            return RedirectToAction("MRNDashboard", new { FromDate = fromDt, ToDate = toDt, Flag = "False", VendorName = VendorName, MrnNo = MrnNo, GateNo = GateNo, PONo = PONo, ItemName = ItemName, PartCode = PartCode, Type = Type });
+            return RedirectToAction("MRNDashboard", new { FromDate = FromDate, ToDate = ToDate, Flag = "False", VendorName = VendorName, MrnNo = MrnNo, GateNo = GateNo, PONo = PONo, ItemName = ItemName, PartCode = PartCode, Type = Type });
 
         }
         public async Task<JsonResult> FillEntryandMRN(int YearCode)
