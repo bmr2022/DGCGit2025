@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private InventoryAgingReportDAL _InventoryAgingReportDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public InventoryAgingReportBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public InventoryAgingReportBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _InventoryAgingReportDAL = new InventoryAgingReportDAL(config, dataLogicDAL);
+            _InventoryAgingReportDAL = new InventoryAgingReportDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> FillRMItemName(string FromDate, string ToDate, string CurrentDate, int Storeid)

@@ -19,10 +19,13 @@ namespace eTactWeb.Data.DAL
         private readonly string DBConnectionString = string.Empty;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IDataReader? Reader;
-        public TransferMaterialReportDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor)
+        private readonly ConnectionStringService _connectionStringService;
+        public TransferMaterialReportDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _httpContextAccessor = httpContextAccessor;
         }
         public async Task<ResponseResult> FillFromWorkCenter(string FromDate, string ToDate)

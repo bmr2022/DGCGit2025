@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,9 @@ namespace eTactWeb.Data.BLL
         private TrailBalanceDAL _TrailBalanceDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public TrailBalanceBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public TrailBalanceBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _TrailBalanceDAL = new TrailBalanceDAL(config, dataLogicDAL);
+            _TrailBalanceDAL = new TrailBalanceDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, string EntryByMachine,string ReportType)

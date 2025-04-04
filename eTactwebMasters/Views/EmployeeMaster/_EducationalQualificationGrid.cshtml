@@ -1,0 +1,56 @@
+﻿@model eTactWeb.DOM.Models.EmployeeMasterModel;
+@if (Model.EmployeeMasterGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.EmployeeMasterGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small " style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.ID > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditItemRow(@item.SrNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNo);" asp-action="DeleteItemRow">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td id="SrNO-@Cntr"><input type="hidden" value="@item.SrNo" />@item.SrNo</td>
+
+            <td>@item.Qualification </td>
+            <td>@item.Univercity_Sch </td>
+            <td>@item.Per</td>
+            <td>@item.InYear </td>
+            <td>@item.Remark </td>
+        </tr>
+    }
+}

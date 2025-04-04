@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private OutStandingDAL _OutStandingDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public OutStandingBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public OutStandingBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _OutStandingDAL = new OutStandingDAL(config, dataLogicDAL);
+            _OutStandingDAL = new OutStandingDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
 

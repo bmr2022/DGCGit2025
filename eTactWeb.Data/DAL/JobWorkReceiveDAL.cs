@@ -17,6 +17,7 @@ using System.Xml.Linq;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.DOM.Models.JobWorkReceiveModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -25,12 +26,14 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
+        private readonly ConnectionStringService _connectionStringService;
 
-
-        public JobWorkReceiveDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        public JobWorkReceiveDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
         public async Task<ResponseResult> GetFormRights(int userId)
         {

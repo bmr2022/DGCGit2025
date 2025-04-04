@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.DOM.Models.Master;
 using eTactWeb.Services.Interface;
@@ -20,9 +21,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly JobWorkReceiveDAL _JobWorkReceiveDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public JobWorkReceiveBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public JobWorkReceiveBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _JobWorkReceiveDAL = new JobWorkReceiveDAL(configuration, iDataLogic);
+            _JobWorkReceiveDAL = new JobWorkReceiveDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<DataSet> BindBranch(string Flag)

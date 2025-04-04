@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -18,10 +19,10 @@ namespace eTactWeb.Data.BLL
         private readonly StockRegisterDAL _StockRegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public StockRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public StockRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _StockRegisterDAL = new StockRegisterDAL(configuration, iDataLogic, _httpContextAccessor);
+            _StockRegisterDAL = new StockRegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
         public async Task<StockRegisterModel> GetStockRegisterData(string FromDate, string ToDate, string PartCode,string ItemName, string ItemGroup, string ItemType,int StoreId, string ReportType,string BatchNo,string UniqueBatchNo)
         {

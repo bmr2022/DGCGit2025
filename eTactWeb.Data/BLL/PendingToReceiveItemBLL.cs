@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,9 +15,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly PendingToReceiveItemDAL _PendingToReceiveItemDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public PendingToReceiveItemBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public PendingToReceiveItemBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _PendingToReceiveItemDAL = new PendingToReceiveItemDAL(configuration, iDataLogic);
+            _PendingToReceiveItemDAL = new PendingToReceiveItemDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<DataSet> BindItem(string Flag,string FromDate, string ToDate)

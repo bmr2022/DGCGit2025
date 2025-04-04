@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +18,10 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
         private readonly ProductionEntryReportDAL _ProductionEntryReportDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public ProductionEntryReportBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public ProductionEntryReportBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _ProductionEntryReportDAL = new ProductionEntryReportDAL(configuration, iDataLogic, _httpContextAccessor);
+            _ProductionEntryReportDAL = new ProductionEntryReportDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
         public async Task<ResponseResult> FillFGPartCode(string FromDate,string ToDate)
         {

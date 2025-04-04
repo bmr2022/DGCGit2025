@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private MinimumMaximaumLevelDAL _MinimumMaximaumLevelDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public MinimumMaximaumLevelBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public MinimumMaximaumLevelBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _MinimumMaximaumLevelDAL = new MinimumMaximaumLevelDAL(config, dataLogicDAL);
+            _MinimumMaximaumLevelDAL = new MinimumMaximaumLevelDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> FillStoreName()

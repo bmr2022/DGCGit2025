@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -12,10 +13,10 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _iDtaLogic;
         private readonly CreditNoteDAL _creditNoteDAL;
 
-        public CreditNoteBLL(IConfiguration configuration, IDataLogic iDtaLogic)
+        public CreditNoteBLL(IConfiguration configuration, IDataLogic iDtaLogic, ConnectionStringService connectionStringService)
         {
             _iDtaLogic = iDtaLogic;
-            _creditNoteDAL = new CreditNoteDAL(configuration, iDtaLogic);
+            _creditNoteDAL = new CreditNoteDAL(configuration, iDtaLogic, connectionStringService);
         }
 
         public async Task<AccCreditNoteModel> GetViewByID(int ID, int YearCode,string mode)

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private DayBookDAL _DayBookDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public DayBookBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public DayBookBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _DayBookDAL = new DayBookDAL(config, dataLogicDAL);
+            _DayBookDAL = new DayBookDAL(config, dataLogicDAL,connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> FillLedgerName(string FromDate, string ToDate)
