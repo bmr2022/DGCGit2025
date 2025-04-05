@@ -43,9 +43,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssuewithoutBomDAL.GetDetailData(REQNo, ReqDate, PartCode, Item_Name, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEntryBy,string EntryByMachine)
         {
-            return await _IssuewithoutBomDAL.DeleteByID(ID, YC);
+            return await _IssuewithoutBomDAL.DeleteByID(ID, YC,ActualEntryBy,EntryByMachine);
         }
         public async Task<ResponseResult> GetDataForDelete(int ID, int YC)
         {

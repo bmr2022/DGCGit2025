@@ -120,6 +120,8 @@ namespace eTactWeb.DOM.Models
         public string? DashboardType { get; set; }
         public string WorkCenterDescription { get; set; }
         public string RecDepartment { get; set; }
+        public int ActualEnteredBy { get; set; }
+        public string? MachineCode { get; set; }
 
         public IList<IssueWOBomMainDashboard>? IssueWOBOMDashboard { get; set; }
     }

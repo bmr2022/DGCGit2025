@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -41,16 +42,14 @@ namespace eTactWeb.Data.DAL
                     //DateTime FromDt = DateTime.Parse(Fromdate, CultureInfo.InvariantCulture);
                     //DateTime todt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
-                    SqlParams.Add(new SqlParameter("@FromDate", Fromdate));
-                    SqlParams.Add(new SqlParameter("@ToDate", Todate));
+                    SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(Fromdate)));
+                    SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(Todate)));
                 }
                 else
                 {
-                    DateTime FromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime todt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
-                    SqlParams.Add(new SqlParameter("@FromDate", FromDt.ToString("yyyy/MM/dd")));
-                    SqlParams.Add(new SqlParameter("@ToDate", todt.ToString("yyyy/MM/dd")));
+                    SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(Fromdate)));
+                    SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(Todate)));
                 }
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueWithoutBomM", SqlParams);
@@ -356,9 +355,6 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
                     oCmd.Parameters.AddWithValue("@Flag", "Search");
                     oCmd.Parameters.AddWithValue("@REQNo", REQNo);
                     oCmd.Parameters.AddWithValue("@ReqDate", ReqDate);
@@ -367,13 +363,9 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@IssueSlipNo", IssueSlipNo);
                     oCmd.Parameters.AddWithValue("@IssueDate", IssueDate);
                     oCmd.Parameters.AddWithValue("@ReqYearCode", ReqYearCode);
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
+                    oCmd.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
 
-
-
-                    //oCmd.Parameters.AddWithValue("@ItemCategory", model.ItemCategory);
-                    // oCmd.Parameters.AddWithValue("@Main_Category_Type", model.Main_Category_Type);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {
@@ -395,6 +387,7 @@ namespace eTactWeb.Data.DAL
                                                      IssueSlipNo = dr["IssueSlipNo"].ToString(),
                                                      IssueDate = dr["IssueDate"].ToString(),
                                                      WorkCenterDescription = dr["WorkCenterDescription"].ToString(),
+                                                     ActualEnteredBy = Convert.ToInt32(dr["SavedByEemp"]),
                                                  }).ToList();
                 }
                 //var ilst = model.AccountMasterList.Select(m => new TextValue
@@ -496,7 +489,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<ResponseResult> DeleteByID(int ID, int YearCode)
+        public async Task<ResponseResult> DeleteByID(int ID, int YearCode,int ActualEnteredBy,string EntryByMachine)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -507,6 +500,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@ActualEnteredBy", ActualEnteredBy));
+                SqlParams.Add(new SqlParameter("@Machinecode", EntryByMachine));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithoutBomM", SqlParams);
             }

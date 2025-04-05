@@ -453,6 +453,10 @@
                 $.notify('Issued By Emp Code is required', "error");
                 return false;
             }
+            else if ($('#RecByEmpCode').prop('selectedIndex') <= 0) {
+                $.notify('Rec By Emp Code is required', "error");
+                return false;
+            }
             else {
                 var rowCount = $('#divIssueWOBOMGridAdd tr').length;
                 for(var i=1;i<=rowCount;i++){
@@ -1435,7 +1439,7 @@
         }
 
         function fillGridFromMemoryCache() {
-               
+            debugger   
             $.ajax({
                 url: "@Url.Action("FillGridFromMemoryCache")",
                 type: "POST",

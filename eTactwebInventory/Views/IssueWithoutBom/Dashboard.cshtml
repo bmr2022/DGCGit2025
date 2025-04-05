@@ -113,12 +113,7 @@
 
             var dashGrid = $('#divDashboardGrid tr').length - 1;
             $('#totalRows').text(dashGrid);
-            //$("#FromDate").datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' });
-            //$("#FromDate").on('keydown', function (e) { e.preventDefault(); return false; });
-            //$("#ToDate").datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' });
-            //$("#ToDate").on('keydown', function (e) { e.preventDefault(); return false; });
-            //GetFormRights();
-            GetSearchData();
+            
             var fromDate;
             var toDate;
             var currentDate = new Date();
@@ -207,9 +202,7 @@
             AutoComplete('VIssueWithoutBomdetail', 'Item_Name', 'Item_Name', null);
             AutoComplete('VIssueWithoutBomdetail', 'PartCode', 'PartCode', null);
             AutoComplete('VIssueWithoutBomdetail', 'WorkCenterDescription', 'WorkCenterDescription', null);
-
             GetSearchData();
-
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('REQNoBack');

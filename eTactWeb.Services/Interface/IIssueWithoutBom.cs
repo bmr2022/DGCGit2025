@@ -14,7 +14,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetIsStockable(int ItemCode);
         Task<ResponseResult> SaveIssueWithoutBom(IssueWithoutBom model, DataTable MRGrid);
 
-        Task<ResponseResult> DeleteByID(int ID, int YearCode);
+        Task<ResponseResult> DeleteByID(int ID, int YC, int ActualEntryBy, string EntryByMachine);
         Task<ResponseResult> FillBatchUnique(int ItemCode, int YearCode, string StoreName, string BatchNo,string IssuedDate,string FinStartDate);
         Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo);
         Task<ResponseResult> GetReqQtyForScan(string ReqNo, int ReqYearCode, string ReqDate,int ItemCode);

@@ -566,7 +566,7 @@ namespace eTactWeb.Controllers
                     DataSet DS = Result.Result;
                     if (DS != null)
                     {
-                        var DT = DS.Tables[0].DefaultView.ToTable(false, "ReqNo", "ReqDate", "IssueSlipNo", "IssueDate", "Fromdepartment", "RecDepartment","ReqYearCode", "Item_Name", "PartCode", "EntryId", "YearCode", "WorkCenterDescription");
+                        var DT = DS.Tables[0].DefaultView.ToTable(false, "ReqNo", "ReqDate", "IssueSlipNo", "IssueDate", "ActualEnteredBy", "Fromdepartment", "RecDepartment","ReqYearCode", "Item_Name", "PartCode", "EntryId", "YearCode", "WorkCenterDescription");
                         model.IssueWOBOMDashboard = CommonFunc.DataTableToList<IssueWOBomMainDashboard>(DT, "IssueWODashboard");
                     }
                 }
@@ -620,7 +620,7 @@ namespace eTactWeb.Controllers
              string JsonString = JsonConvert.SerializeObject(JSON);
              return Json(JsonString);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate, string ToDate, string REQNo, string WCName, string PartCode, string ItemName)
+        public async Task<IActionResult> DeleteByID(int ID, int YC,int ActualEntryBy,string EntryByMachine, string FromDate, string ToDate, string REQNo, string WCName, string PartCode, string ItemName)
         {
             var getData = _IIssueWOBOM.GetDataForDelete(ID,YC);
 
@@ -645,7 +645,7 @@ namespace eTactWeb.Controllers
                 }
             }
 
-            var Result = await _IIssueWOBOM.DeleteByID(ID, YC);
+            var Result = await _IIssueWOBOM.DeleteByID(ID, YC,ActualEntryBy,EntryByMachine);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
