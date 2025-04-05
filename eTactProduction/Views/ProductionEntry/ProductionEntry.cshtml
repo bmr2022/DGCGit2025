@@ -5130,8 +5130,12 @@
         function ScrapGrid(event) {
             event.preventDefault();
             if (!ValidateScrap_Grid()) return;
+            var TransferToWCStore = $('#TransferToWCStore').find(':selected').text();
+            if(TransferToWCStore == "S"){
+
+            }
             var ScrapData = {
-                "ScrapItemName": $('#ScrapItemName').find(':selected').text(),
+                "ScrapItemName": $('#ScrapItemName').find(':selected').text(),  
                 "ScrapPartCode": $('#ScrapPartCode').find(':selected').text(),
                 "ScrapItemCode": $('#ScrapItemCode').val(),
                 "ScrapType": $('#ScrapType').val(),
@@ -5139,6 +5143,8 @@
                 "Scrapunit": $('#Scrapunit').val(),
                 "StoreTransferScrap": $('#StoreTransferScrap').val(),
                 "TransferToWCStore": $('#TransferToWCStore').find(':selected').text(),
+                "TransferToStoreId" : parseInt($('#TransferToWCStore').val()),
+
             }
 
             $.ajax({

@@ -802,7 +802,7 @@
         });
 
         function showToTransfer(i) {
-                 
+           debugger      
            $('#ReqNo').val();
 
             var desiredOptionText = $('#ReqNo'+i).val(); 
@@ -817,7 +817,7 @@
             // alert(#IssueDate);
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
-            var parts = toDate.split('/');
+            var parts = fromDate.split('/');
             var ReqNo = $('#ReqNo'+ i).val();
             var WorkCenter = $('#WorkCenter').val() == '' ? 0 : parseInt($('#WorkCenter').val());
             var DeptName = $('#DeptName').val() == '' ? 0 : parseInt($('#DeptName').val());
@@ -837,7 +837,7 @@
                 async: false,
                 data: { FromDate: fromDate, ToDate: toDate, ReqNo: ReqNo, YearCode: YearCode, ItemCode: ItemCode, WoNo: wono, WorkCenter: WorkCenter, DeptName: DeptName, ReqYear: reqYearCode, IssueDate: issuedDate, GlobalSearch: GlobalSearch, FromStore: FromStore, StoreId: storeId },
                 success: function (data) {
-                        
+                    debugger    
                     if (data != null) {
                         $('#divPendIssueGrid').empty();
                         var obj = $.parseJSON(data);
@@ -902,12 +902,12 @@
         function TransferToIssueWithDblClick(k) {
             //if (!validateTransfer()) { console.log("do nothing"); }
             //else {
-                  
+                debugger 
                 var rowCount = $('#divPendIssueGrid tr').length;
                  
                 var ItemData = [];
                 for (let i = 0; i < rowCount; i++) {
-
+                    debugger
                     ItemData.push({
                         "ReqNo1": $('#ReqNo'+i).text(),
                         "ReqDate1": $('#ReqDate' + i).val(),

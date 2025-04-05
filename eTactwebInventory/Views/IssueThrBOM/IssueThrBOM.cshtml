@@ -12,6 +12,13 @@
         width: 10px;
         height: 10px;
     }
+
+    #IssueThrBom th {
+        background-color: #127387;
+        position: sticky;
+        top: -15px;
+        z-index: 1;
+    }
 </style>
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_AllowBatchChangeBox" />
@@ -243,9 +250,9 @@
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="card">
-                                <div class="card-body overflow-auto pb-0">
+                                <div class="card-body overflow-auto pb-0" style="max-height:240px;">
                                     <table class="table table-hover table-bordered table-striped">
-                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="IssueThrBom">
                                             <tr>
                                                 <th>Action</th>
                                                 <th style="color:yellow">RM Item name*</th>
