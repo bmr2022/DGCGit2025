@@ -6,7 +6,7 @@ namespace eTactWeb.Services.Interface;
 public interface IPurchaseSchedule
 {
     Task<DataSet> BindAllDropDown();
-
+    Task<ResponseResult> GetReportName();
     Task<ResponseResult> FillMRPNo();
     Task<ResponseResult> FillMRPDetail(string MRPNo);
 

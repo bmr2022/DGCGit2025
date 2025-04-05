@@ -21,6 +21,10 @@ public class PurchaseScheduleBLL : IPurchaseSchedule
     {
         return await _PurchaseScheduleDAL.FillMRPNo();
     }
+    public async Task<ResponseResult> GetReportName()
+    {
+        return await _PurchaseScheduleDAL.GetReportName();
+    }
     public async Task<ResponseResult> FillMRPDetail(string MRPNo)
     {
         return await _PurchaseScheduleDAL.FillMRPDetail(MRPNo);
