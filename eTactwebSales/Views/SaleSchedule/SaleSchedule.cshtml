@@ -135,6 +135,7 @@
                                         <select class="form-select" asp-for="AccountCode" style="height:50px;width:260px;" readonly disabled>
                                             <option value="0">-Select-</option>
                                         </select>
+                                        <input type="hidden" value="@Model.AccountCode" id="hiddenSSAccountCode"/>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="CustomerOrderNo" class="control-label" style="color:red">Customer Order#*</label>
@@ -920,6 +921,7 @@
             else {
 
             }
+            debugger
 
             $('.input_container').fadeIn();
 
@@ -937,7 +939,8 @@
             TotalSchQty();
 
             $('#EnterByMachineName').val($('#machineName').text());
-
+            debugger
+            FillCustomer();
 
             //today = today.toLocaleString().substr(0, 10);
             //$("#EntryDate").val(today);
@@ -1031,9 +1034,7 @@
                 $('.ImportExcel').hide();
                 SetSchTillDate();
             }
-
-            FillCustomer();
-
+            
             function UploadButton() {
                 var fileInput = $('#ExcelFile');
                 var file = fileInput.prop("files")[0];
@@ -2979,7 +2980,7 @@
         });
 
         function FillCustomer() {
-
+            debugger
             $.ajax({
                 url: '@Url.Action("FillCustomer")',
                 type: 'POST',
@@ -3005,6 +3006,10 @@
                         $('#AccountCode').val(LedgerName).trigger("change");
                         $('#AccountCode').val(LedgerName);
                     }
+                    debugger
+                     if ($('#Mode').val() == "SSA" || $('#Mode').val() == "SSC") {
+                        $('#AccountCode').val($('#hiddenSSAccountCode').val());
+                     }
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load ledger names.');
