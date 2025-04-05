@@ -619,7 +619,7 @@
 
                 if (allInDistinctBatch || $('#DocType').val() == 'SALE RETURN') {
                     // All elements of distinctPartArray are in distinctbatchPartArray
-                    console.log("All elements of distinctPartArray are in distinctbatchPartArray.");
+                     ("All elements of distinctPartArray are in distinctbatchPartArray.");
                 }
                 else {
                     $.notify("Please check MRN grid with Batch Detail Grid", "error");
@@ -654,7 +654,7 @@
                     url: "@Url.Action("GetServerDate")",
                     async: false,
                     success: function (result, status, error) {
-                        console.log(result);
+                         (result);
                         if (result != null) {
 
                             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -694,7 +694,7 @@
 
                 if (allInDistinctBatch) {
                     // All elements of distinctPartArray are in distinctbatchPartArray
-                    console.log("All elements of distinctPartArray are in distinctbatchPartArray.");
+                     ("All elements of distinctPartArray are in distinctbatchPartArray.");
                 } else {
                     // Not all elements of distinctPartArray are in distinctbatchPartArray
                     $.notify("Please check MRN grid with Batch Detail Grid", "error");
@@ -1468,10 +1468,10 @@
                     dataType: "json",
                     data: { "YearCode": $('#YearCode').val() },
                     success: function (result, status, error) {
-                        console.log(result);
+                         (result);
                         if (result != null) {
                             var obj = $.parseJSON(result);
-                            console.log(obj);
+                             (obj);
                             $('#EntryID').val(obj.Result[0].EntryId);
                             $('#MRNNo').val(obj.Result[0].MRNNO);
                         }
@@ -1486,7 +1486,7 @@
                     success: function (data) {
                         if (data != null) {
                             var obj = $.parseJSON(data);
-                            console.log(obj);
+                             (obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1521,7 +1521,7 @@
                         if (result != null) {
                             var obj = $.parseJSON(result);
                             var allowOption = obj.Result.Table[0].AllowBackDateMRNEntry;
-                            console.log(allowOption);
+                             (allowOption);
                             if (allowOption == 'Y') {
                                 //$('#EntryDate').prop("readonly", false);
                                 $('#EntryDate').prop("disabled", false);
@@ -1658,7 +1658,7 @@
                     data: dataParams,
                     dataType: "json",
                     success: function (data, status, error) {
-                        console.log("Grid cleared");
+                         ("Grid cleared");
                         $('#divMRNGridAdd').empty();
                         $('#divMRNGrid').empty();
                     },
@@ -1680,7 +1680,7 @@
                     dataType: "json",
                     async: false,
                     success: function (data, status, error) {
-                        console.log("Grid cleared");
+                         ("Grid cleared");
                         $('#divMRNGridAdd').empty();
                     },
                     error: function (req, status, error) {
@@ -1837,7 +1837,7 @@
 
                 const formattedDate = `${day}/${month < 10 ? '0' : ''}${month}/${year}`;
 
-                console.log(formattedDate); // Output: "17/08/2023"
+                 (formattedDate); // Output: "17/08/2023"
                 $('#EntryDate').datepicker("option", "minDate", formattedDate);
             }
 

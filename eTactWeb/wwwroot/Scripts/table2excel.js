@@ -88,7 +88,7 @@
                     });
 
                     tempRows += "</tr>";
-                    console.log(tempRows);
+                     (tempRows);
 
                 });
                 // exclude img tags

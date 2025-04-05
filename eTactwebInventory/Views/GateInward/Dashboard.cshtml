@@ -148,7 +148,7 @@
 
             var sessionYearCode = parseInt($('#SessionYearCode').val().split('/')[2].split(" ")[0]);
 
-            console.log(sessionYearCode);
+             (sessionYearCode);
 
             var currentDate = new Date();
 
@@ -299,7 +299,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                    console.log(result);
+                     (result);
                     if (result != null) {
                         $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     }

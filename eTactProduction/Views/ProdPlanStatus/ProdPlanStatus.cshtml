@@ -168,7 +168,7 @@
     <script>
 
         $(document).ready(function () {
-            console.log("Ready");
+             ("Ready");
             $('#CustomerName').select2();
             $('#ProdPlanNo').select2();
             $('#FGPartCode').select2();
@@ -223,7 +223,7 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-            console.log(table);
+             (table);
             TableToExcel.convert(table[0], {
                 name: `ReportTable.xlsx`,
                 sheet: {

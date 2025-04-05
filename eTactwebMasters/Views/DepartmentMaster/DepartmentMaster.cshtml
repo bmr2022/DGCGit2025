@@ -264,7 +264,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                    console.log(data);
+                     (data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#DeptId').val(0);
@@ -294,7 +294,7 @@
                 type: "POST",
                 data: { "Type": $('#Entry_id').val() },
                 success: function (data) {
-                    console.log("success");
+                     ("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {

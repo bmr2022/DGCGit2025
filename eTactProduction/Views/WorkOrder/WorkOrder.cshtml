@@ -723,8 +723,8 @@
 
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-            console.log(formattedDate1);
-            console.log(formattedDate2);
+             (formattedDate1);
+             (formattedDate2);
 
             //$('#Entrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
 
@@ -925,7 +925,7 @@
                                 });
                         }
                         else {
-                            // console.log(obj);
+                            //  (obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1093,9 +1093,9 @@
                 async: false,
                 success: function (result, status, error) {
 
-                    console.log(result);
+                     (result);
                     //DateResult = result;
-                    //console.log(DateResult);
+                    // (DateResult);
                     $('#Entrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#StartDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#StartDate').datepicker("option", "minDate", result);
@@ -1182,7 +1182,7 @@
                 data: { YearCode: $('#YearCode').val(), "WODate": $('#WODate').val(), "EffFrom": $('#EffectiveFrom').val(), "EffTill": $('#EffectiveTill').val() },
                 async: false,
                 success: function (result, status, xhr) {
-                    console.log("Raw Result:", result);
+                     ("Raw Result:", result);
                     $('#divSaleOrderGrid').empty();
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -1772,7 +1772,7 @@
                 dataType: "json",
                 success: function (result, status, error) {
 
-                    console.log(result);
+                     (result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#Entryid').val("");

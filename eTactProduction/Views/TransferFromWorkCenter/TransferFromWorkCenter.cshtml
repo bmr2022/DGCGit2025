@@ -679,7 +679,7 @@
                                 });
                         }
                         else {
-                            // console.log(obj);
+                            //  (obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -775,8 +775,8 @@
 
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-                console.log(formattedDate1);
-                console.log(formattedDate2);
+                 (formattedDate1);
+                 (formattedDate2);
                 $('#TransferMatEntrydate,#TransferMatSlipDate,#ProdDate,#QcCleaningDate').datepicker("option", "minDate", formattedDate1);
                 $('#TransferMatEntrydate,#TransferMatSlipDate,#ProdDate,#QcCleaningDate').datepicker("option", "maxDate", formattedDate2);
                 // $('#TransferMatEntrydate,#TransferMatSlipDate,#ActualEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -808,7 +808,7 @@
                 async: false,
                 success: function (result, status, error) {
                      
-                    console.log(result);
+                     (result);
                     if (result != null) {
 
                         var today = new Date();
@@ -1237,10 +1237,10 @@
                 type: "POST",
                 data: ItemData,
                 beforeSend: function (xhr) {
-                    console.log(1);
+                     (1);
                 },
                 success: function (data, status, xhr) {
-                    console.log(2);
+                     (2);
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -1266,16 +1266,16 @@
                     alert(response.responseText);
                 },
                 complete: function () {
-                    console.log(5);
+                     (5);
                     $('.Schedule').fadeIn();
                     //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 }
             }).done(function () {
-                console.log(3);
+                 (3);
             }).fail(function () {
                 alert("error");;
             }).always(function () {
-                console.log(4);
+                 (4);
             });
         });
 

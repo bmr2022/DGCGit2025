@@ -60,6 +60,7 @@ else
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
                                         <div class="d-flex">
+
                                             <div id="viewCursorDiv-@Cntr">
                                                 <a class="table-link link-success" asp-action="PurchaseSchedule" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear">
                                                     <span class="fa-stack">
@@ -86,6 +87,16 @@ else
                                                         </span>
                                                     </a>
                                                 </div>
+                                            
+                                                    <div id="printData-@Cntr">
+                                                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-ID="@item.EntryID" asp-route-YearCode="@item.SchYear">
+                                                            <span class="fa-stack">
+                                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                
                                             }
                                             else if (item.SchApproved == "Y" || item.POYearCode != yearCode)
                                             {

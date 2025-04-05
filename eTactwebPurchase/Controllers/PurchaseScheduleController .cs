@@ -17,18 +17,21 @@ using System.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FastReport.Web;
+using Microsoft.AspNetCore.Hosting;
+using System.Configuration;
 
 namespace eTactWeb.Controllers;
 
 [Authorize]
 public class PurchaseScheduleController : Controller
 {
+    public WebReport webReport;
+    private readonly IConfiguration _iconfiguration;
+    private IWebHostEnvironment _IWebHostEnvironment { get; }
     //private readonly ILogger _logger;
-  //  public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
-public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
-
-
-    //public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+    //  public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+    public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IConfiguration configuration, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
     {
         IPurchaseSchedule = iPurchaseSchedule;
         IDataLogic = iDataLogic;
@@ -37,6 +40,7 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
         Logger = logger;
         EncryptDecrypt = encryptDecrypt;
         IWebHostEnvironment = iWebHostEnvironment;
+        _iconfiguration = configuration;
     }
 
     public IDataLogic IDataLogic { get; }
@@ -135,7 +139,35 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
+    public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string Type = "")
+    {
 
+        string my_connection_string;
+        string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+        string webRootPath = _IWebHostEnvironment.WebRootPath;
+        webReport = new WebReport();
+        var ReportName = IPurchaseSchedule.GetReportName();
+        ViewBag.EntryId = EntryId;
+        ViewBag.YearCode = YearCode;
+
+        if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+        {
+            webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+        }
+        else
+        {
+            webReport.Report.Load(webRootPath + "\\purchaseschedule.frx"); // default report
+
+        }
+        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+        webReport.Report.SetParameterValue("entryparam", EntryId);
+        webReport.Report.SetParameterValue("yearparam", YearCode);
+        webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+        webReport.Report.Refresh();
+        return View(webReport);
+    }
     public IActionResult ClearGrid()
     {
         IMemoryCache.Remove("KeyPurchaseScheduleGrid");

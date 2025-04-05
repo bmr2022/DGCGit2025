@@ -154,7 +154,7 @@
                             }
                         } else {
 
-                            console.log(obj);
+                             (obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -352,7 +352,7 @@
                 data: { "YearCode": $('#sessionYC').text() },
                 success: function (result, status, error) {
 
-                    console.log(result);
+                     (result);
                     var obj = $.parseJSON(result);
                     if (obj.Result != null && obj.Result.Table[0] != undefined) {
                         if (obj.Result.Table[0].ClosedForAllusers == 'Y') {
@@ -440,7 +440,7 @@
             //     },
             //     error: function (result, status, xhr) {
             //         $.notify(result.responseText, "error");
-            //         console.log(result.responseText);
+            //          (result.responseText);
             //     }
             // });
         }

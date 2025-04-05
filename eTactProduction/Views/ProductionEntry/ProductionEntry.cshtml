@@ -1083,7 +1083,7 @@
                                 });
                         }
                         else {
-                            // console.log(obj);
+                            //  (obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1923,7 +1923,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        console.log(obj);
+                         (obj);
                         $('#EntryId').val(obj.Result[0].ProdEntryId);
                         $('#ProdSlipNo').val(obj.Result[0].ProdSlipNo);
                     }
@@ -3769,7 +3769,7 @@
                 dataType: "json",
                 async: false,
                 success: function (data, status, error) {
-                    console.log("Grid cleared");
+                     ("Grid cleared");
                     $('#divAddProductionEntryGrid').empty();
                     $('#divProductionEntryGrid').empty();
                 },

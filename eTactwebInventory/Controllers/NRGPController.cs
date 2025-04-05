@@ -203,6 +203,14 @@ namespace eTactWeb.Controllers
             //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
 
         }
+
+
+        public async Task<JsonResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo)
+        {
+            var JSON = await _IIssueNRGP.GetItemRate(ItemCode, TillDate, YearCode, BatchNo, UniqueBatchNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -212,47 +220,7 @@ namespace eTactWeb.Controllers
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string Type = "")
         {
-            //string my_connection_string;
-            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            //string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //var webReport = new WebReport();
-            //webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // summary report
-            //webReport.Report.SetParameterValue("entryparam", EntryId);
-            //webReport.Report.SetParameterValue("yearparam", YearCode);
-            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            //return View(webReport); 
-            //string my_connection_string;
-            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            //string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //var webReport = new WebReport();
-            //webReport.Report.Clear();
-            //var ReportName = _IIssueNRGP.GetReportName();
-            //webReport.Report.Dispose();
-            //webReport.Report = new Report();
-            //if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
-            //{
-            //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
-            //}
-            //else
-            //{
-            //    webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // default report
-            //}
-            //webReport.Report.SetParameterValue("entryparam", EntryId);
-            //webReport.Report.SetParameterValue("yearparam", YearCode);
-            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
-            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            //webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            //webReport.Report.Prepare();
-            //foreach (var dataSource in webReport.Report.Dictionary.DataSources)
-            //{
-            //    if (dataSource is TableDataSource tableDataSource)
-            //    {
-            //        tableDataSource.Enabled = true;
-            //        tableDataSource.Init(); // Refresh the data source
-            //    }
-            //}
-            //return View(webReport);
+            
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;

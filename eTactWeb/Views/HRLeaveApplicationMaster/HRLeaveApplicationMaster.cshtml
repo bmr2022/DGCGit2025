@@ -802,7 +802,7 @@
                 async: false,
                 data: { YearCode: YearCode },
                 success: function (data, status, xhr) {
-                    console.log(data);
+                     (data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#LeaveAppEntryId').val(0);

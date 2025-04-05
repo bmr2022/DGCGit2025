@@ -179,7 +179,7 @@
                 type: "POST",
                 data: { "Type": $('#Entry_id').val() },
                 success: function (data) {
-                    console.log("success");
+                     ("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {
@@ -250,7 +250,7 @@
                                 });
                             } else {
 
-                                console.log(obj);
+                                 (obj);
                                 var optAll = obj.Result.Table[0].OptAll;
                                 var optSave = obj.Result.Table[0].OptSave;
                                 var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -335,7 +335,7 @@
                 IsErr = 1;
             }
 
-            console.log('IsErr : ' + IsErr);
+             ('IsErr : ' + IsErr);
 
             if (IsErr == 1) return false;
             if (IsErr == 0) return true;

@@ -591,7 +591,7 @@
                                 });
                         }
                         else {
-                            // console.log(obj);
+                            //  (obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1147,7 +1147,7 @@
                     type: "POST",
                     data: { SeqNo: SeqNo },
                     success: function (data) {
-                        console.log(data);
+                         (data);
                         var obj = $.parseJSON(data);
                         if (obj != null) {
                             EditEachItem = true;
@@ -1319,7 +1319,7 @@
                 success: function (data) {
                     //alert("success!!!!");
                     var obj = $.parseJSON(data);
-                    console.log(obj);
+                     (obj);
                     if (obj != null && obj.length == 1) {
                         $('#PartCode').val(obj[0].ItemCode).trigger("change");
                         $('#ItemCode').val(obj[0].ItemCode).trigger("change");
@@ -2026,7 +2026,7 @@
 
                 },
                 error: function (req, status, error) {
-                    console.log(error);
+                     (error);
                 }
             });
 
@@ -2062,7 +2062,7 @@
 
                 },
                 error: function (req, status, error) {
-                    console.log(error);
+                     (error);
                 }
             });
         }
@@ -2123,7 +2123,7 @@
 
             }
              
-            console.log($('#batchno').val());
+             ($('#batchno').val());
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddStockDetail")',

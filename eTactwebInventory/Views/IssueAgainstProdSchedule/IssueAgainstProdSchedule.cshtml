@@ -622,7 +622,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        console.log(obj);
+                         (obj);
                         $('#IssAgtProdSchEntryId').val(obj.Result[0].EntryId);
                         $('#IssAgtProdSchSlipNo').val(obj.Result[0].IssueSlipNo);
                     }
@@ -908,10 +908,10 @@
                             $('#ToatlStock-' + i).val(0);
                         }
                     }
-                    console.log("success");
+                     ("success");
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1035,7 +1035,7 @@
                 type: "POST",
                 data: { "ItemCode": $('#ProdPlanFGItemCode-' + i).val() },
                 success: function (data) {
-                    console.log(data);
+                     (data);
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -1044,7 +1044,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1086,7 +1086,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1348,7 +1348,7 @@
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
-                    console.log(result.responseText);
+                     (result.responseText);
                 }
             });
         }

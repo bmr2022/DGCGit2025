@@ -467,7 +467,7 @@
         //                     $('.card-footer #submitBTN').prop("disabled", true);
         //                 }
         //                 else {
-        //                     // console.log(obj);
+        //                     //  (obj);
         //                     var optAll = obj.Result.Table[0].OptAll;
         //                     var optSave = obj.Result.Table[0].OptSave;
         //                     var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -820,7 +820,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                    console.log(data);
+                     (data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#LeaveOpnEntryId').val(0);
@@ -1004,7 +1004,7 @@
 
             e.preventDefault();
 
-            console.log('Add to Grid button clicked');
+             ('Add to Grid button clicked');
             var LeaveAccrualType = $('#LeaveAccrualType').val().trim();
             var LeaveName = $('#LeaveName option:Selected').text().trim();
             var LeaveId = $('#LeaveName').val().trim();
@@ -1083,7 +1083,7 @@
                 
             };
 
-            console.log(SchData);
+             (SchData);
 
             $.ajax({
                 type: "POST",
@@ -1200,7 +1200,7 @@
                         
                         
 
-                            console.log(obj);
+                             (obj);
                             if (obj != null ) {
                                 editingNow = true;
 

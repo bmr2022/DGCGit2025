@@ -762,7 +762,7 @@
 
             $('.submitBTN').click(function (e) {
                  
-                console.log("SubmitButton Click");
+                 ("SubmitButton Click");
                 e.preventDefault();
                 //$(this).off('click');
                 $('form').submit();
@@ -968,7 +968,7 @@
                                 });
                         }
                         else {
-                            // console.log(obj);
+                            //  (obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1829,7 +1829,7 @@
                 AltWorkCenterName: $('#AltWorkCenterName').find(":selected").text(),
                 //OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
             };
-            console.log(SchData);
+             (SchData);
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddToGridData", "MaterialConversion")',

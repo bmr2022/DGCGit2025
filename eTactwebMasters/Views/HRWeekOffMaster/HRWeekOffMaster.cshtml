@@ -418,7 +418,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                    console.log(data);
+                     (data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#WeekoffEntryId').val(0);

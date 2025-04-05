@@ -872,7 +872,7 @@
 
             $('.submitBTN').click(function (e) {
 
-                console.log("SubmitButton Click");
+                 ("SubmitButton Click");
                 e.preventDefault();
                 //$(this).off('click');
                 $('form').submit();
@@ -914,7 +914,7 @@
                 AllowanceType: $('#AllowanceType').val(),
                
             };
-            console.log(SchData);
+             (SchData);
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddToGridData", "EmployeeMaster")',
@@ -945,7 +945,7 @@
                 Remark: $('#Remark').val(),
                
             };
-            console.log(SchData);
+             (SchData);
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddToGridDataEduction", "EmployeeMaster")',

@@ -9,6 +9,7 @@ namespace eTactWeb.DOM.Models
     {
         public bool AllowPartCode { get; set; }
         public bool DuplicateItemName { get; set; }
+     
     }
 
     [Serializable()]
