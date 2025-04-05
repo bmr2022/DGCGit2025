@@ -161,34 +161,34 @@ namespace eTactWeb.Controllers
 
         public IActionResult AddissueWithoutBom(List<IssueWithoutBomDetail> model)
         {
-            if (model != null)
-            {
-                foreach(var listItem in model)
-                {
-                    int YC = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                    var FinStartDate = ParseFormattedDate(HttpContext.Session.GetString("FromDate").Split(" ")[0]);
-                    //first get batchno's
-                    //listItem. = ParseFormattedDate(listItem.IssuedDate);
+            //if (model != null)
+            //{
+            //    foreach(var listItem in model)
+            //    {
+            //        int YC = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            //        var FinStartDate = ParseFormattedDate(HttpContext.Session.GetString("FromDate").Split(" ")[0]);
+            //        //first get batchno's
+            //        //listItem. = ParseFormattedDate(listItem.IssuedDate);
      
-                    listItem.IssuedDate = ParseFormattedDate(listItem.IssuedDate);
-                    //var Batchno = _IssueWithoutBom.FillBatchUnique(listItem.ItemCode, YC, "MAIN STORE", "", listItem.IssuedDate ?? DateTime.Today.ToString(), FinStartDate);
-                    var Batchno = _IssueWithoutBom.FillBatchUnique(listItem.ItemCode, YC, listItem.StoreName , "", listItem.IssuedDate ?? DateTime.Today.ToString(), FinStartDate);
-                    var frmStoreid = listItem.StoreId;
-                    if (Batchno.Result.Result != null)
-                    { 
-                        var i = 0;
-                        foreach (var batchList in Batchno.Result.Result.Rows)
-                        {
-                            var checkTransDate = _IPendReqToIssue.CheckTransDate(listItem.ItemCode, listItem.IssuedDate, Batchno.Result.Result.Rows[i].ItemArray[1], Batchno.Result.Result.Rows[i].ItemArray[2], YC, frmStoreid);
-                            if (checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0] != "Successful")
-                            {
-                                return Json(checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0]);
-                            }
-                            i++;
-                        }
-                    }
-                }
-            }
+            //        listItem.IssuedDate = ParseFormattedDate(listItem.IssuedDate);
+            //        //var Batchno = _IssueWithoutBom.FillBatchUnique(listItem.ItemCode, YC, "MAIN STORE", "", listItem.IssuedDate ?? DateTime.Today.ToString(), FinStartDate);
+            //        var Batchno = _IssueWithoutBom.FillBatchUnique(listItem.ItemCode, YC, listItem.StoreName , "", listItem.IssuedDate ?? DateTime.Today.ToString(), FinStartDate);
+            //        var frmStoreid = listItem.StoreId;
+            //        if (Batchno.Result.Result != null)
+            //        { 
+            //            var i = 0;
+            //            foreach (var batchList in Batchno.Result.Result.Rows)
+            //            {
+            //                var checkTransDate = _IPendReqToIssue.CheckTransDate(listItem.ItemCode, listItem.IssuedDate, Batchno.Result.Result.Rows[i].ItemArray[1], Batchno.Result.Result.Rows[i].ItemArray[2], YC, frmStoreid);
+            //                if (checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0] != "Successful")
+            //                {
+            //                    return Json(checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0]);
+            //                }
+            //                i++;
+            //            }
+            //        }
+            //    }
+            //}
             try
             {
                 
