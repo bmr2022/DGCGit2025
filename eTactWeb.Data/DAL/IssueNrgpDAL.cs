@@ -68,6 +68,32 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo)
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
+                SqlParams.Add(new SqlParameter("@TransDate", TillDate));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@BatchNo", BatchNo));
+                SqlParams.Add(new SqlParameter("@uniquebatchno", UniqueBatchNo));
+
+                Result = await _IDataLogic.ExecuteDataTable("GetItemRate", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+
         public async Task<ResponseResult> FillEntryandChallanNo(int YearCode, string RGPNRGP)
         {
             var Result = new ResponseResult();
