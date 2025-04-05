@@ -169,5 +169,124 @@ namespace eTactWeb.Controllers
         {
             return DateTime.TryParse(date, out DateTime parsedDate) ? parsedDate.ToString("dd/MM/yyyy") : date;
         }
+
+        public IActionResult AddToGridData(EmployeeMasterModel model)
+        {
+            try
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterGrid", out IList<EmployeeMasterModel> EmployeeMasterGrid);
+
+                var MainModel = new EmployeeMasterModel();
+                var WorkOrderPGrid = new List<EmployeeMasterModel>();
+                var OrderGrid = new List<EmployeeMasterModel>();
+                var ssGrid = new List<EmployeeMasterModel>();
+
+                if (model != null)
+                {
+                    if (EmployeeMasterGrid == null)
+                    {
+                        model.SrNo = 1;
+                        OrderGrid.Add(model);
+                    }
+                    else
+                    {
+                        if (EmployeeMasterGrid.Any(x => (x.SrNo == model.SrNo)))
+                        {
+                            return StatusCode(207, "Duplicate");
+                        }
+                        else
+                        {
+                            //count = WorkOrderProcessGrid.Count();
+                            model.SrNo = EmployeeMasterGrid.Count + 1;
+                            OrderGrid = EmployeeMasterGrid.Where(x => x != null).ToList();
+                            ssGrid.AddRange(OrderGrid);
+                            OrderGrid.Add(model);
+
+                        }
+
+                    }
+
+                    MainModel.EmployeeMasterGrid = OrderGrid;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyEmployeeMasterGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                }
+                else
+                {
+                    ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+                }
+                return PartialView("_EmployeeAllowanceGrid", MainModel);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        } 
+        public IActionResult AddToGridDataEduction(EmployeeMasterModel model)
+        {
+            try
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterEductionGrid", out IList<EmployeeMasterModel> EmployeeMasterGrid);
+
+                var MainModel = new EmployeeMasterModel();
+                var WorkOrderPGrid = new List<EmployeeMasterModel>();
+                var OrderGrid = new List<EmployeeMasterModel>();
+                var ssGrid = new List<EmployeeMasterModel>();
+
+                if (model != null)
+                {
+                    if (EmployeeMasterGrid == null)
+                    {
+                        model.SrNo = 1;
+                        OrderGrid.Add(model);
+                    }
+                    else
+                    {
+                        if (EmployeeMasterGrid.Any(x => (x.SrNo == model.SrNo)))
+                        {
+                            return StatusCode(207, "Duplicate");
+                        }
+                        else
+                        {
+                            //count = WorkOrderProcessGrid.Count();
+                            model.SrNo = EmployeeMasterGrid.Count + 1;
+                            OrderGrid = EmployeeMasterGrid.Where(x => x != null).ToList();
+                            ssGrid.AddRange(OrderGrid);
+                            OrderGrid.Add(model);
+
+                        }
+
+                    }
+
+                    MainModel.EmployeeMasterGrid = OrderGrid;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyEmployeeMasterEductionGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                }
+                else
+                {
+                    ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+                }
+                return PartialView("_EducationalQualificationGrid", MainModel);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
