@@ -27,7 +27,6 @@ namespace eTactWeb.Controllers
     public class ProductionEntryController : Controller
     {
         private readonly IDataLogic _IDataLogic;
-        //private readonly IGateInward _IGateInward;
         public IProductionEntry _IProductionEntry { get; }
         private readonly ILogger<ProductionEntryController> _logger;
         private readonly IConfiguration iconfiguration;
@@ -96,25 +95,20 @@ namespace eTactWeb.Controllers
                 }
             }
         }
-
         [Route("{controller}/PendingProductionEntry")]
         [HttpGet]
         public async Task<ActionResult> PendingProductionEntry()
         {
             var MainModel = new PendingProductionEntryModel();
             MainModel.PendingProductionEntryGrid = new List<PendingProductionEntryModel>();
-
-
-            return View(MainModel); // Pass the model with old data to the view
+            return View(MainModel);
         }
-
         public async Task<IActionResult> GetPendingProductionEntry(int Yearcode)
         {
             var model = new PendingProductionEntryModel();
             model = await _IProductionEntry.GetPendingProductionEntry(Yearcode);
             return PartialView("_PendingProductionEntry", model);
         }
-
         public async Task<IActionResult> GetDataForProductionEntry(PendingProductionEntryModel ItemData)
         {
             _MemoryCache.Remove("KeyProductionEntryDataGrid");
@@ -163,8 +157,6 @@ namespace eTactWeb.Controllers
         {
             return View();
         }
-        //1   -129
-
         [Route("{controller}/Index")]
         public async Task<IActionResult> ProductionEntry()
         {
@@ -195,7 +187,7 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> ProductionEntry(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string SlipNo = "", string ItemName = "", string PartCode = "", string ProdPlanNo = "", string ProdSchNo = "", string ReqNo = "", string Searchbox = "", string DashboardType = "")//, ILogger logger)
+        public async Task<ActionResult> ProductionEntry(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string SlipNo = "", string ItemName = "", string PartCode = "", string ProdPlanNo = "", string ProdSchNo = "", string ReqNo = "", string Searchbox = "", string DashboardType = "")
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
@@ -286,7 +278,6 @@ namespace eTactWeb.Controllers
             MainModel.DashboardTypeBack = DashboardType;
             return View(MainModel);
         }
-        //2-- save code
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
@@ -445,7 +436,6 @@ namespace eTactWeb.Controllers
             if (model == null)
             {
                 model = new ProductionEntryModel();
-
                 model.YearCode = Constants.FinincialYear;
                 model.EntryId = _IDataLogic.GetEntryID("SP_ProductionEntry", Constants.FinincialYear, "PRODEntryId", "PRODYearcode");
                 //model.Date = DateTime.Today;
@@ -468,8 +458,6 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetDefaultBranch()
         {
             var username = HttpContext.Session.GetString("Branch");
-
-            // Render profile page with username
             return Json(username);
         }
         public async Task<JsonResult> CCEnableDisable()
@@ -1544,7 +1532,7 @@ namespace eTactWeb.Controllers
                 {
                     ScrapDetailGrid.Rows.Add(
                         new object[]
-                        {
+                    {
                     Item.EntryId == 0 ? 0 : Item.EntryId,
                     Item.EntryDate == null ? string.Empty : ParseFormattedDate(Item.EntryDate.Split(" ")[0]),
                     Item.SeqNo == null ? 0 : Item.SeqNo,

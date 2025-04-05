@@ -5128,11 +5128,17 @@
         }
 
         function ScrapGrid(event) {
+             
             event.preventDefault();
             if (!ValidateScrap_Grid()) return;
-            var TransferToWCStore = $('#TransferToWCStore').find(':selected').text();
+            var TransferToStoreId = 0;
+            var TransferToWC = 0;
+            var TransferToWCStore = $('#StoreTransferScrap').val();
             if(TransferToWCStore == "S"){
-
+                TransferToStoreId = $('#TransferToWCStore').val();
+            }
+            else{
+                TransferToWC = $('#TransferToWCStore').val();
             }
             var ScrapData = {
                 "ScrapItemName": $('#ScrapItemName').find(':selected').text(),  
@@ -5144,7 +5150,7 @@
                 "StoreTransferScrap": $('#StoreTransferScrap').val(),
                 "TransferToWCStore": $('#TransferToWCStore').find(':selected').text(),
                 "TransferToStoreId" : parseInt($('#TransferToWCStore').val()),
-
+                "TransferToWC": parseInt($('#TransferToWCStore').val())
             }
 
             $.ajax({
