@@ -185,6 +185,10 @@ namespace eTactWeb.Controllers
                     {
                         model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         model.LastUpdatedByEmpName = HttpContext.Session.GetString("EmpName");
+                        model.CreatedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.CreatedByEmpName = HttpContext.Session.GetString("EmpName");
+                        model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                         MRPGrid = GetDetailTable(MRPDetail);
                         MRPSOGrid = GetSODetailTable(MRPSODetail);
                         MRPFGGrid = GetFGDetailTable(MRPFGDetail);
