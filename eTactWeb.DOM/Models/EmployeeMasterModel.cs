@@ -18,13 +18,14 @@ namespace eTactWeb.DOM.Models
         public string? Department { get; set; }
         public IList<TextValue>? DepartmentList { get; set; }
         public string? Category { get; set; }
+        public string? CategoryId { get; set; }
         public IList<TextValue>? CategoryList { get; set; }
         public bool IsStaff { get; set; }
         public string? DateOfJoining { get; set; }
         public string? DOB { get; set; }
         public string? Shift { get; set; }
         public IList<TextValue>? ShiftList { get; set; }
-        public string? Active { get; set; }
+       
         public string? DateOfResignation { get; set; }
         public string NatureOfDuties { get; set; }
         public int ProbationPeriod { get; set; }
@@ -116,6 +117,20 @@ namespace eTactWeb.DOM.Models
         public string Per { get; set; }   
         public int InYear { get; set; }   
         public string Remark { get; set; }   
+
+        //Experiance Detail
+        public string CompanyName { get; set; }   
+        public string CFromDate { get; set; }   
+        public string CToDate { get; set; }   
+        public string Desigation { get; set; }   
+        public decimal Salary { get; set; }   
+
+        //Exit Deatil
+        public int NoticPeriod { get; set; }   
+        public string  GratutyEligibility { get; set; }   
+        public string  ResignationDate { get; set; }   
+        public string  Active { get; set; }   
+
 
     }
 }
