@@ -321,7 +321,6 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        [HttpGet]
         public async Task<JsonResult> FillLedgerName(string VoucherType, string Type)
         {
             var JSON = await _IJournalVoucher.FillLedgerName(VoucherType, Type);

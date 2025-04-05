@@ -27,9 +27,6 @@ public class ItemMasterController : Controller
     private readonly IWebHostEnvironment _IWebHostEnvironment;
     private readonly IMemoryCache _MemoryCache;
     private readonly ILogger<ItemMasterController> _logger;
-
-
-
     public ItemMasterController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IItemMaster iItemMaster, IMemoryCache iMemoryCache, ILogger<ItemMasterController> logger)
     {
         _IDataLogic = iDataLogic;
@@ -39,7 +36,6 @@ public class ItemMasterController : Controller
         _MemoryCache = iMemoryCache;
         _logger = logger;
     }
-
     [HttpPost]
     public JsonResult AutoComplete(string ColumnName, string prefix)
     {
@@ -50,7 +46,6 @@ public class ItemMasterController : Controller
 
         return Json(Result);
     }
-
     public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue, string UniversalPartCode = "", int pageNumber = 1, int pageSize = 500)
     {
         ItemMasterModel model = new ItemMasterModel
@@ -176,7 +171,6 @@ public class ItemMasterController : Controller
 
         return PartialView("_IMGrid", model);
     }
-
     public async Task<IActionResult> DeleteItemByID(int ID, string ParentName, string POServType, string HSNNO, string PartCode, string ItemName)
     {
         var Result = await _IItemMaster.DeleteItemByID(ID);
@@ -205,7 +199,6 @@ public class ItemMasterController : Controller
         return RedirectToAction("Dashboard", new { Item_Name = ItemName, PartCode = PartCode, ParentCode = ParentName, ItemType = POServType, HsnNo = HSNNO, Flag = "" });
         //return RedirectToAction(nameof(Dashboard));
     }
-
     public async Task<IActionResult> GetData()
     {
         ItemMasterList iList = new ItemMasterList
@@ -225,7 +218,6 @@ public class ItemMasterController : Controller
 
         return View();
     }
-
     [HttpPost]
     public JsonResult isDuplicate(string ColName, string Colval)
     {
@@ -243,7 +235,6 @@ public class ItemMasterController : Controller
         var Result = _IDataLogic.isDuplicate(Colval, ColName, "Item_Master");
         return Json(Result);
     }
-
     public async Task<IActionResult> ItemDetail(int ID, string Mode)
     {
         ItemMasterModel model = new ItemMasterModel();
@@ -292,7 +283,6 @@ public class ItemMasterController : Controller
         }
         return View(model);
     }
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ItemDetail(ItemMasterModel model)
@@ -420,7 +410,6 @@ public class ItemMasterController : Controller
         //    return RedirectToAction(nameof(ItemDetail), new { ID = 0 });
         //}
     }
-
     public ActionResult ImportItems()
     {
         ItemMasterModel model = new ItemMasterModel();
@@ -492,7 +481,6 @@ public class ItemMasterController : Controller
         model.ExcelDataList = data;
         return PartialView("_DisplayExcelData", model);
     }
-
     public async Task<IActionResult> AddItemListdata(List<ItemViewModel> model)
     {
         try
@@ -587,7 +575,6 @@ public class ItemMasterController : Controller
             return View("Error", ResponseResult);
         }
     }
-
     private static DataTable GetDetailTable(IList<ItemViewModel> DetailList, string CC, int Empid)
     {
         var MRGrid = new DataTable();

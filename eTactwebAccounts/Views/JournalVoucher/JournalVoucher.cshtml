@@ -537,18 +537,6 @@
                 $.notify("Grid should have at least one item.", "error");
                 Err = 1;
             }
-            /*  var BankTypeData = [];
-             for (let i = 1; i <= Row; i++) {
-                 BankTypeData.push({
-                     "BankType": $('#BankType-' + i).val()
-                 })
-             }
-             var hasBank = BankTypeData.some(item => item.BankType === "Bank");
-             if (!hasBank) {
-                 $.notify("There should be at least one bank in grid.", "error");
-                 Err = 1;
-             }
-        */
             for (let i = 1; i <= Row; i++) {
                 var ModeOfAdjust = $('#ModeOfAdjustment-' + i).text();
                 if (ModeOfAdjust == "Against Ref") {
@@ -580,7 +568,7 @@
             FillIntrument();
             FillCurrency();
             BindModeOfAdjust();
-            //FillLedgerName();
+            FillLedgerName();
 
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
@@ -1196,7 +1184,7 @@
             });
         }
 
-        /* function FillLedgerName() {
+        function FillLedgerName() {
 
             var Type = $('#Type').val();
             $.ajax({
@@ -1227,7 +1215,7 @@
                     alert('Failed to load ledger names.');
                 }
             });
-        } */
+        }
 
         function FillSubVoucherName() {
             var VoucherType = $('#VoucherType').val();
@@ -2023,5 +2011,4 @@
 
     </script>
     <script src="~/Scripts/table2excel.js"></script>
-    <script src="~/js/FinAccountMethods.js"></script>
 }

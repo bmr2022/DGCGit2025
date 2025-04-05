@@ -1558,7 +1558,7 @@ namespace eTactWeb.Controllers
                     Item.ScrapType == null ? "" :Item.ScrapType,
                     Item.ScrapQty == 0 ? 0 : Item.ScrapQty,
                     Item.Scrapunit == null ? "" : Item.Scrapunit,
-                    Item.TransferToWCStore == null ? "" : Item.TransferToWCStore,
+                    Item.StoreTransferScrap == null ? "" : Item.StoreTransferScrap,
                     Item.TransferToStoreId == 0 ? 0 : Item.TransferToStoreId,
                     Item.TransferToWC == 0 ? 0 : Item.TransferToWC
                         });

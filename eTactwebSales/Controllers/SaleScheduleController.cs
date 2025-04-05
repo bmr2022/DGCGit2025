@@ -908,8 +908,8 @@ public class SaleScheduleController : Controller
 
                     var Year = 2025;//Convert.ToInt32(yearString, new CultureInfo("en-IN"));
                    
-                    var FromDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "FromDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
-                    var TillDate = Convert.ToDateTime(Request.Form.Where(x => x.Key == "TillDate").FirstOrDefault().Value).ToString("dd/MM/yyyy");
+                    var FromDate = ParseFormattedDate(Request.Form.Where(x => x.Key == "FromDate").FirstOrDefault().Value);
+                    var TillDate = ParseFormattedDate(Request.Form.Where(x => x.Key == "TillDate").FirstOrDefault().Value);
                     var Action = Request.Form.Where(x => x.Key == "Action").FirstOrDefault().Value;
 
                     var JSONString = ISaleSchedule.GetSOItem(AC, SONO, Year, 0).GetAwaiter().GetResult();
@@ -974,17 +974,26 @@ public class SaleScheduleController : Controller
                             //}
 
                             //var DelDateValidate = SaleGridList.Where(x => x.DeliveryDate == ExlDelDate).Any();
-                            var EffFromDate = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
-                            var EffTillDate = DateTime.ParseExact(TillDate, "dd/MM/yyyy", null);
+                            var EffFromDate = ParseFormattedDate(FromDate);
+                            var EffTillDate = ParseFormattedDate(TillDate);
 
-                            if (!isValidPartCode)
+                            DateTime delDate, effFrom, effTill;
+
+                            if (!DateTime.TryParse(ExlDelDate, out delDate))
                             {
-                                //  ErrorMsg = "PartCode does not Exists";
-                                ErrMsg = "PartCode does not Exists";
+                                ErrMsg = $"Row : {row} has an invalid Delivery Date format.";
                             }
-                            else if ((Convert.ToDateTime(ExlDelDate) >= EffFromDate && Convert.ToDateTime(ExlDelDate) <= EffTillDate))
+                            else if (!DateTime.TryParse(EffFromDate.ToString(), out effFrom) || !DateTime.TryParse(EffTillDate.ToString(), out effTill))
                             {
-                                ErrMsg = "Row : " + row + "has OutofRange DeliveryDate.";
+                                ErrMsg = "Effective From or Till Date is invalid.";
+                            }
+                            else if (!isValidPartCode)
+                            {
+                                ErrMsg = "PartCode does not exist.";
+                            }
+                            else if (!IsDeliveryDateInRange(delDate, effFrom, effTill, out ErrMsg, row))
+                            {
+                                ErrMsg = $"Row : {row} has an Out of Range Delivery Date.";
                             }
                             else
                             {

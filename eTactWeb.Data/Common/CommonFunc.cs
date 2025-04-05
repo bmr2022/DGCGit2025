@@ -1801,7 +1801,33 @@ public static class CommonFunc
 
         return item;
     }
+    public static bool IsDeliveryDateInRange(DateTime delDate, DateTime effFrom, DateTime effTill, out string errorMsg, int row)
+    {
+        errorMsg = string.Empty;
 
+        // Compare by Year first
+        if (delDate.Year < effFrom.Year || delDate.Year > effTill.Year)
+        {
+            errorMsg = $"Row : {row} has an Out of Range Delivery Year.";
+            return false;
+        }
+        // If year matches, compare by Month
+        if ((delDate.Year == effFrom.Year && delDate.Month < effFrom.Month) ||
+            (delDate.Year == effTill.Year && delDate.Month > effTill.Month))
+        {
+            errorMsg = $"Row : {row} has an Out of Range Delivery Month.";
+            return false;
+        }
+        // If month matches, compare by Date
+        if ((delDate.Year == effFrom.Year && delDate.Month == effFrom.Month && delDate.Day < effFrom.Day) ||
+            (delDate.Year == effTill.Year && delDate.Month == effTill.Month && delDate.Day > effTill.Day))
+        {
+            errorMsg = $"Row : {row} has an Out of Range Delivery Date.";
+            return false;
+        }
+
+        return true;
+    }
 
     private static T GetItem<T>(DataRow dr)
     {

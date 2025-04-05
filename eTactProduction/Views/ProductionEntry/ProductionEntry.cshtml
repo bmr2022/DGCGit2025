@@ -6,6 +6,20 @@
 }
 <style>
 
+    #GateMainTable thead th {
+        background-color: #127387;
+        position: sticky;
+        top: -15px;
+        z-index: 1;
+    }
+
+    #GridLabels th {
+        background-color: #127387;
+        position: sticky;
+        top: 0px;
+        z-index: 1;
+    }
+
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a !important;
@@ -337,10 +351,8 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9" sstyle="width:80px" id="StoreTransferdiv">
                                     <label asp-for="StoreTransfer" class="form-label" style="color: red;">Store/Wc*</label>
                                     <select class="form-select" asp-for="StoreTransfer">
-                                        @*    <option>-Select-</option> *@
                                         <option value="W">WorkCenter</option>
                                         <option value="S">Store</option>
-
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style=" width:200px" id="Rejtransferdiv">
@@ -385,7 +397,7 @@
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                                 <div class="card">
-                                    <div class="card-body overflow-auto pb-0">
+                                    <div class="card-body overflow-auto pb-0" style="max-height: 240px;">
                                         <table class="table table-hover table-bordered table-striped" id="GateMainTable">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                                 <tr>
@@ -562,7 +574,7 @@
                     <div id="B_DrawingDetail" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="H_DrawingDetail">
                         <div class="accordion-body">
                             <div class="row g-3" id="_BreakdownDetail">
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style="width:120px">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style="width:130px">
                                     <label asp-for="BreakfromTime" class="form-label" style="color:red">Break From Time*</label>
                                     <input asp-for="BreakfromTime" class="form-control" value="@Model.BreakfromTime" />
                                 </div>
@@ -1034,10 +1046,10 @@
         cursor: not-allowed; /* Changes cursor */
     }
 
-        .toggle-btn .fa {
-            color: white;
-            margin-left: 3px;
-        }
+    .toggle-btn .fa {
+        color: white;
+        margin-left: 3px;
+    }
 
     .fa {
         margin-left: 3px;
@@ -1658,21 +1670,21 @@
                 var desiredValue = $('#hiddenProdAgain').val();
                 if (desiredValue == 'REQUISITION') {
                     $('#ProdAgainstPlanManual').append('<option value="PRODSCHEDULE">Against Plan Sch</option>\
-                                                                                                                                                                                                                                                                                                                                                                                            <option selected value="REQUISITION">Against Requisition</option>\
-                                                                                                                                                                                                                                                                                                                                                                                            <option value="UNPLANNED">UnPlanned</option>\
-                                                                                                                                                                                                                                                                                                                                                                                           ');
-                }
-                else if (desiredValue == 'PRODSCHEDULE') {
-                    $('#ProdAgainstPlanManual').append('<option selected value="PRODSCHEDULE">Against Plan Sch</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                    <option value="REQUISITION">Against Requisition</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                    <option selected value="REQUISITION">Against Requisition</option>\
                                                                                                                                                                                                                                                                                                                                                                                                     <option value="UNPLANNED">UnPlanned</option>\
                                                                                                                                                                                                                                                                                                                                                                                                    ');
                 }
+                else if (desiredValue == 'PRODSCHEDULE') {
+                    $('#ProdAgainstPlanManual').append('<option selected value="PRODSCHEDULE">Against Plan Sch</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                            <option value="REQUISITION">Against Requisition</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                            <option value="UNPLANNED">UnPlanned</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                           ');
+                }
                 else if (desiredValue == 'UNPLANNED') {
                     $('#ProdAgainstPlanManual').append('<option value="PRODSCHEDULE">Against Plan Sch</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                            <option value="REQUISITION">Against Requisition</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                            <option selected value="UNPLANNED">UnPlanned</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                           ');
+                                                                                                                                                                                                                                                                                                                                                                                                                    <option value="REQUISITION">Against Requisition</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                                    <option selected value="UNPLANNED">UnPlanned</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                                   ');
                 }
                 $('#ProdAgainstPlanManual').change();
                 $('#Store').change();
@@ -1802,6 +1814,8 @@
                     $('#ProdQty').val(0);
                     $('#PendQty').val(0);
                 }
+                GetItem();
+                GetPartCode();
             }
         })
 
@@ -2197,7 +2211,7 @@
         }
 
         function FillWorkcenter() {
-             
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillWorkcenter")",
@@ -2205,7 +2219,7 @@
                 data: {},
                 success: function (result, status, error) {
                     if (result != null) {
-                         
+
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#WorkCenter').empty();
@@ -2823,14 +2837,14 @@
         }
 
         function CheckAutoOrManual() {
-             
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetFeatureOption")",
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                     
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#ProdEntryAllowToAddRMItem').val(obj.Result[0].ProdEntryAllowToAddRMItem);
@@ -3522,9 +3536,9 @@
                             ProdSch = ProdSch ? ProdSch.trim() : "";
                             $.each(obj.Result, function (index, val) {
                                 var isSelected = (val.ProdSchNo == ProdSch) ? "selected" : "";
-                                $('#ProdSch').append('<option ' + isSelected +' value="' + val.ProdSchNo + '">' + val.ProdSchNo + '</option>');
+                                $('#ProdSch').append('<option ' + isSelected + ' value="' + val.ProdSchNo + '">' + val.ProdSchNo + '</option>');
                             })
-                            if(ProdSch){
+                            if (ProdSch) {
                                 $('#ProdSch').change();
                             }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
@@ -3576,9 +3590,9 @@
                             ProdSchYearCode = ProdSchYearCode ? parseInt(ProdSchYearCode, 10) : 0;
                             $.each(obj.Result, function (index, val) {
                                 var isSelected = (val.YearCode == ProdSchYearCode) ? "selected" : "";
-                                $('#ProdSchYear').append('<option ' + isSelected +' value="' + val.YearCode + '">' + val.YearCode + '</option>');
+                                $('#ProdSchYear').append('<option ' + isSelected + ' value="' + val.YearCode + '">' + val.YearCode + '</option>');
                             })
-                            if(ProdSchYearCode){
+                            if (ProdSchYearCode) {
                                 $('#ProdSchYear').change();
                             }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
@@ -3766,7 +3780,7 @@
         }
 
         $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
-             
+
             var cntId = e.target.id;
             if (cntId == 'ItemName') {
                 ItemNameChange(cntId);
@@ -3790,8 +3804,8 @@
             $('#ProdPlanDate').val(0);
         });
 
-        function GetItemNameForPendingProduction(){
-             
+        function GetItemNameForPendingProduction() {
+
             FillReqNo();
             FillProdSchNo();
             FillBomNo();
@@ -3799,7 +3813,7 @@
             GetProcessDetail();
             GetTotalStockWorkCenterQty();
         }
-        
+
         $(document).on('select2:select', '#RmItemName,#RmPartCode', function (e) {
             var cntId = e.target.id;
             if (cntId == 'RmItemName') {
@@ -3939,14 +3953,14 @@
         }
 
         function GetItem() {
-              
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetItems")",
                 dataType: "json",
                 data: { ProdAgainst: $('#ProdAgainstPlanManual').val(), YearCode: $('#YearCode').val() },
                 success: function (result, status, error) {
-                      
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -3978,14 +3992,14 @@
         }
 
         function GetPartCode() {
-             
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPartCode")",
                 dataType: "json",
                 data: { ProdAgainst: $('#ProdAgainstPlanManual').val(), YearCode: $('#YearCode').val() },
                 success: function (result, status, error) {
-                     
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -4090,7 +4104,7 @@
         })
 
         function FillBomNo() {
-             
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillBomNo")",
@@ -4098,7 +4112,7 @@
                 data: { ItemCode: parseInt($('#FGItemCode').val()) },
                 async: false,
                 success: function (result, status, error) {
-                     
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var BomEffecDate = obj.Result[0].EffectiveDate;
@@ -4109,7 +4123,7 @@
                             BomNo = BomNo ? parseInt(BomNo, 10) : 0;
                             $.each(obj.Result, function (index, val) {
                                 var isSelected = (val.BomNo == BomNo) ? "selected" : "";
-                                $('#BOMNo').append('<option '+ isSelected +' value="' + val.BomNo + '">' + val.BomNo + '</option>')
+                                $('#BOMNo').append('<option ' + isSelected + ' value="' + val.BomNo + '">' + val.BomNo + '</option>')
                             })
 
                             $('#BomEffecDate').val(BomEffecDate.split("T")[0]);
