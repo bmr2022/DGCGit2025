@@ -628,14 +628,14 @@
         });
 
         $(document).ready(function () {
-            debugger
+             
             $('#AccountCode').select2();
             GetFormRights();
             LockedFinancialYear();
             //            $( "#datepicker" ).datepicker({
             //  dateFormat: "MM d, yy"
             //});
-            debugger
+             
             if ($('#Mode').val() != "U" && $('#Mode').val() != "PSA" && $('#Mode').val() != "PSU" && $('#Mode').val() != "C") {
                 //Setting entry date to current date
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -695,7 +695,7 @@
                 var effToDate = $('#SchEffTillDate').datepicker('getDate');
                 $('#DeliveryDate').datepicker("option", "minDate", effFromDate);
                 $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
-                debugger
+                 
 
 
             }
@@ -739,7 +739,7 @@
             $('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
             /* $('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut(); */
             $('.BtnExcel').fadeOut();
-            debugger
+             
             /* $('#SchEffFromDate').change(); */
         });
 

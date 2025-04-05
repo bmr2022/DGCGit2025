@@ -580,9 +580,7 @@
             var storeId = $('#FromStore').val();
             var issuedDate = $('#IssueDate').val();
             var ItemName = $('#ItemName :selected').text().split("-")[0];
-            
-
-             var today = new Date();
+            var today = new Date();
             var year = today.getFullYear();
             var month = today.getMonth() + 1; // Months are 0-based in JS, so adding 1
             var financialYearStart, financialYearEnd;
@@ -603,7 +601,7 @@
                 async: false,
                 data: { FromDate: fromDate, ToDate: toDate, ReqNo: ReqNo, YearCode: YearCode, ItemCode: ItemCode, WoNo: wono, WorkCenter: WorkCenter, DeptName: DeptName, ReqYear: reqYearCode, IssueDate: issuedDate, GlobalSearch: GlobalSearch, FromStore: FromStore, StoreId: storeId },
                 success: function (data) {
-                        
+                         
                     if (data != null) {
                         $('#divPendIssueGrid').empty();
                         var obj = $.parseJSON(data);
@@ -664,7 +662,7 @@
                                     + '<input readonly class="styled-input"id="BatchNo' + i + '" value=' + obj.Result.Table[i].BatchNo + ' >'
                                     + '</td>'
                                     + '<td class="styled-cell">'
-                                    + '<input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value=' + obj.Result.Table[i].UniqueBatchNo + ' >'
+                                    + '<input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value=' + JSON.stringify(obj.Result.Table[i].UniqueBatchNo) + ' >'
                                     + '</td>'
                                     + '<input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
                                     + '<td class="styled-cell">'
@@ -802,7 +800,7 @@
         });
 
         function showToTransfer(i) {
-                 
+                  
            $('#ReqNo').val();
 
             var desiredOptionText = $('#ReqNo'+i).val(); 
@@ -817,7 +815,7 @@
             // alert(#IssueDate);
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
-            var parts = toDate.split('/');
+            var parts = fromDate.split('/');
             var ReqNo = $('#ReqNo'+ i).val();
             var WorkCenter = $('#WorkCenter').val() == '' ? 0 : parseInt($('#WorkCenter').val());
             var DeptName = $('#DeptName').val() == '' ? 0 : parseInt($('#DeptName').val());
@@ -837,11 +835,11 @@
                 async: false,
                 data: { FromDate: fromDate, ToDate: toDate, ReqNo: ReqNo, YearCode: YearCode, ItemCode: ItemCode, WoNo: wono, WorkCenter: WorkCenter, DeptName: DeptName, ReqYear: reqYearCode, IssueDate: issuedDate, GlobalSearch: GlobalSearch, FromStore: FromStore, StoreId: storeId },
                 success: function (data) {
-                        
+                         
                     if (data != null) {
                         $('#divPendIssueGrid').empty();
                         var obj = $.parseJSON(data);
-                       
+                         
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                              
                             var html1 = '';
@@ -907,7 +905,7 @@
                  
                 var ItemData = [];
                 for (let i = 0; i < rowCount; i++) {
-
+                     
                     ItemData.push({
                         "ReqNo1": $('#ReqNo'+i).text(),
                         "ReqDate1": $('#ReqDate' + i).val(),

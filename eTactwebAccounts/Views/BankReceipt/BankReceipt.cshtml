@@ -83,7 +83,6 @@
                     <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
-                                @* <input type="hidden" asp-for="MachineName" value="@Environment.MachineName" /> *@
                                 <input type="hidden" value="@Model.Mode" asp-for="Mode" />
                                 <input type="hidden" asp-for="SrNO" />
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -545,6 +544,7 @@
             $('#CostCenterName').change(function () {
                 $('#CostCenterId').val($('#CostCenterName').val());
             });
+
             $('#LedgerName').rules("remove", "required");
             $('#DRCR').rules("remove", "required");
             $('#Intrument').rules("remove", "required");
@@ -714,10 +714,7 @@
             $("#ModeOfAdjustment").on("change", function () {
                 checkModeOfAdjustment();
             });
-
-
-
-            // Initial check on page load
+            FillLedgerName();
             checkModeOfAdjustment();
         });
 
@@ -756,7 +753,7 @@
             $('#CostCenterName').prop('selectedIndex', 0).trigger("change");
             $('#PartyWiseNaration').val('');
         }
-
+         
         function BindModeOfAdjust() {
             $('#ModeOfAdjustment').append(`
                             <option selected value="New Ref">New Ref</option>
@@ -773,8 +770,6 @@
             CheckBankType();
             AdjustAmountForAddToGridForDRCR();
         });
-
-        FillLedgerName();
 
         function TotalNoOfRows() {
 

@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/04/2025 11:46:35" ReportInfo.Modified="04/04/2025 14:59:49" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Styles Name="Standard">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RS+YjLxzCkgn0gpSU2kf0lxQ==">
+      <TableDataSource Name="Table1" Alias="sppurchaseschedule" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReprtPurchaseSchedulePrint @PurchSchEntryID= 1,@PurchSchYearCode= 2025">
+        <Column Name="accountcode" DataType="System.Int64"/>
+        <Column Name="account_Name" DataType="System.String"/>
+        <Column Name="DisplayName" DataType="System.String"/>
+        <Column Name="ComAddress" DataType="System.String"/>
+        <Column Name="ComAddress1" DataType="System.String"/>
+        <Column Name="Pincode" DataType="System.String"/>
+        <Column Name="City" DataType="System.String"/>
+        <Column Name="State" DataType="System.String"/>
+        <Column Name="Country" DataType="System.String"/>
+        <Column Name="MobileNo" DataType="System.String"/>
+        <Column Name="PONO" DataType="System.String"/>
+        <Column Name="PODate" DataType="System.DateTime"/>
+        <Column Name="POAmenNo" DataType="System.Int64"/>
+        <Column Name="OrderTypeJWPurch" DataType="System.String"/>
+        <Column Name="ScheduleNo" DataType="System.String"/>
+        <Column Name="ScheduleDate" DataType="System.DateTime"/>
+        <Column Name="SchAmendNo" DataType="System.Int64"/>
+        <Column Name="ScheduleEffectiveFromDate" DataType="System.DateTime"/>
+        <Column Name="ScheduleEffectiveTillDate" DataType="System.DateTime"/>
+        <Column Name="TentetiveConfirm" DataType="System.String"/>
+        <Column Name="OrderPriority" DataType="System.String"/>
+        <Column Name="SchApproved" DataType="System.String"/>
+        <Column Name="OtherDetail" DataType="System.String"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="itemcode" DataType="System.Int64"/>
+        <Column Name="PartCode" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="unit" DataType="System.String"/>
+        <Column Name="FirstWeekQty" DataType="System.Decimal"/>
+        <Column Name="SecWeekQty" DataType="System.Decimal"/>
+        <Column Name="ThirdWeekQty" DataType="System.Decimal"/>
+        <Column Name="ForthWeekQty" DataType="System.Decimal"/>
+        <Column Name="FifthWeekQty" DataType="System.Int32"/>
+        <Column Name="SixethWeekQty" DataType="System.Int32"/>
+        <Column Name="TotalSchQty" DataType="System.Decimal"/>
+        <Column Name="TotalPendQty" DataType="System.Decimal"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="totalAltSchQty" DataType="System.Decimal"/>
+        <Column Name="Rate" DataType="System.Decimal"/>
+        <Column Name="RateInOthCurr" DataType="System.Decimal"/>
+        <Column Name="Column1" DataType="System.String"/>
+        <Column Name="OfficeAdd1" DataType="System.String"/>
+        <Column Name="OfficeAdd2" DataType="System.String"/>
+        <Column Name="PinCode1" DataType="System.String"/>
+        <Column Name="StateCode" DataType="System.String"/>
+        <Column Name="Statename" DataType="System.String"/>
+        <Column Name="GSTNo" DataType="System.String"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" Expression="yearparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="151.2">
+      <TextObject Name="Text1" Left="255.15" Top="56.7" Width="170.1" Height="18.9" Text="[sppurchaseschedule.Column1]" Font="Arial, 10pt"/>
+      <TextObject Name="Text2" Left="283.5" Top="75.6" Width="94.5" Height="18.9" Text="[sppurchaseschedule.OfficeAdd1]" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="283.5" Top="94.5" Width="94.5" Height="18.9" Text="[sppurchaseschedule.OfficeAdd2]" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="292.95" Top="113.4" Width="94.5" Height="18.9" Text="[sppurchaseschedule.PinCode1]" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Top="132.3" Width="189" Height="18.9" Text="Schedule for the month" Font="Arial, 8pt"/>
+      <TextObject Name="Text46" Left="198.45" Top="18.9" Width="321.3" Height="37.8" Text="PURCHASE SCHEUDLE" Font="Arial, 18pt, style=Bold"/>
+      <ChildBand Name="Child1" Top="155.05" Width="718.2" Height="151.2">
+        <TextObject Name="Text6" Left="9.45" Width="132.3" Height="18.9" Text="PURCHASE ORDER NO" Font="Arial, 8pt"/>
+        <TextObject Name="Text7" Left="9.45" Top="18.9" Width="141.75" Height="18.9" Text="SCHEDULE NO" Font="Arial, 8pt"/>
+        <TextObject Name="Text8" Left="9.45" Top="37.8" Width="94.5" Height="18.9" Text="VENDOR CODE" Font="Arial, 8pt"/>
+        <TextObject Name="Text9" Left="9.45" Top="56.7" Width="122.85" Height="18.9" Text="NAME OF SUPPLIER " Font="Arial, 8pt"/>
+        <TextObject Name="Text10" Left="9.45" Top="94.5" Width="283.5" Height="18.9" Text="Dear Sir(s)," Font="Arial, 8pt"/>
+        <TextObject Name="Text11" Left="9.45" Top="122.85" Width="368.55" Height="18.9" Text="We are giving below the delivery schedule for the following components." Font="Arial, 8pt"/>
+        <TextObject Name="Text12" Left="226.8" Width="56.7" Height="18.9" Text="PO DATE" Font="Arial, 8pt"/>
+        <TextObject Name="Text13" Left="217.35" Top="18.9" Width="66.15" Height="18.9" Text="SCH DATE" Font="Arial, 8pt"/>
+        <TextObject Name="Text14" Left="359.1" Width="103.95" Height="18.9" Text="PO AMMEND NO" Font="Arial, 8pt"/>
+        <TextObject Name="Text15" Left="359.1" Top="18.9" Width="103.95" Height="18.9" Text="SCH AMMEND NO" Font="Arial, 8pt"/>
+        <TextObject Name="Text16" Left="538.65" Width="113.4" Height="18.9" Text="PO AMMEND DATE" Font="Arial, 8pt"/>
+        <TextObject Name="Text17" Left="538.65" Top="18.9" Width="94.5" Height="18.9" Text="AMMEND DATE" Font="Arial, 8pt"/>
+        <TextObject Name="Text55" Left="141.75" Width="75.6" Height="18.9" Text="[sppurchaseschedule.PONO]" Font="Arial, 8pt"/>
+        <TextObject Name="Text56" Left="292.95" Width="56.7" Height="18.9" Text="[sppurchaseschedule.PODate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+        <TextObject Name="Text57" Left="141.75" Top="18.9" Width="75.6" Height="18.9" Text="[sppurchaseschedule.ScheduleNo]" Font="Arial, 8pt"/>
+        <TextObject Name="Text58" Left="292.95" Top="18.9" Width="56.7" Height="18.9" Text="[sppurchaseschedule.ScheduleDate]" Format="Date" Format.Format="d" Font="Arial, 8pt"/>
+        <TextObject Name="Text59" Left="141.75" Top="56.7" Width="141.75" Height="18.9" Text="[sppurchaseschedule.account_Name]" Font="Arial, 8pt"/>
+      </ChildBand>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="310.09" Width="718.2" Height="37.8">
+      <LineObject Name="Line1" Width="727.65"/>
+      <LineObject Name="Line4" Left="37.8" Height="37.8"/>
+      <TextObject Name="Text34" Width="28.35" Height="37.8" Text="SNO." Font="Arial, 10pt"/>
+      <TextObject Name="Text35" Left="47.25" Width="94.5" Height="18.9" Text="PART NO" Font="Arial, 10pt"/>
+      <TextObject Name="Text36" Left="141.75" Width="94.5" Height="18.9" Text="PART NAME" Font="Arial, 10pt"/>
+      <TextObject Name="Text37" Left="444.15" Width="94.5" Height="18.9" Text="@month" Font="Arial, 10pt"/>
+      <TextObject Name="Text38" Left="292.95" Top="18.9" Width="94.5" Height="18.9" Text="1st WK" Font="Arial, 10pt"/>
+      <TextObject Name="Text39" Left="349.65" Top="18.9" Width="94.5" Height="18.9" Text="2nd WK" Font="Arial, 10pt"/>
+      <TextObject Name="Text40" Left="415.8" Top="18.9" Width="94.5" Height="18.9" Text="3rd WK" Font="Arial, 10pt"/>
+      <TextObject Name="Text41" Left="472.5" Top="18.9" Width="94.5" Height="18.9" Text="4th WK" Font="Arial, 10pt"/>
+      <TextObject Name="Text42" Left="529.2" Top="18.9" Width="94.5" Height="18.9" Text="Total" Font="Arial, 10pt"/>
+      <TextObject Name="Text43" Left="576.45" Top="18.9" Width="94.5" Height="18.9" Text="5th WK-25%" Font="Arial, 10pt"/>
+      <LineObject Name="Line7" Left="132.3" Height="37.8"/>
+      <LineObject Name="Line8" Left="283.5" Height="37.8"/>
+      <LineObject Name="Line9" Left="283.5" Top="18.9" Width="434.7"/>
+      <LineObject Name="Line10" Left="349.65" Top="18.9" Height="18.9"/>
+      <LineObject Name="Line11" Left="406.35" Top="18.9" Height="18.9"/>
+      <LineObject Name="Line12" Left="472.5" Top="18.9" Height="18.9"/>
+      <LineObject Name="Line13" Left="529.2" Top="18.9" Height="18.9"/>
+      <LineObject Name="Line14" Left="576.45" Top="18.9" Height="18.9"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="351.74" Width="718.2" Height="37.8" Condition="[sppurchaseschedule.PartCode]">
+      <LineObject Name="Line2" Width="727.65"/>
+      <LineObject Name="Line5" Left="37.8" Height="37.8"/>
+      <TextObject Name="Text47" Left="37.8" Width="94.5" Height="18.9" Text="[sppurchaseschedule.PartCode]" Font="Arial, 8pt"/>
+      <TextObject Name="Text48" Left="141.75" Width="94.5" Height="18.9" Text="[sppurchaseschedule.Item_Name]" Font="Arial, 8pt"/>
+      <TextObject Name="Text49" Left="302.4" Top="9.45" Width="37.8" Height="18.9" Text="[sppurchaseschedule.FirstWeekQty]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text50" Left="349.65" Top="9.45" Width="47.25" Height="18.9" Text="[sppurchaseschedule.SecWeekQty]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text51" Left="425.25" Top="9.45" Width="37.8" Height="18.9" Text="[sppurchaseschedule.ThirdWeekQty]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text52" Left="481.95" Top="9.45" Width="37.8" Height="18.9" Text="[sppurchaseschedule.ForthWeekQty]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text53" Left="576.45" Top="9.45" Width="37.8" Height="18.9" Text="[sppurchaseschedule.FifthWeekQty]" Font="Arial, 8pt"/>
+      <LineObject Name="Line15" Left="132.3" Height="37.8"/>
+      <LineObject Name="Line16" Left="283.5" Height="37.8"/>
+      <DataBand Name="Data1" Top="393.38" Width="718.2" EvenStyle="EvenRows"/>
+      <GroupFooterBand Name="GroupFooter1" Top="397.23" Width="718.2"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="442.72" Width="718.2" Height="292.95">
+      <LineObject Name="Line3" Width="727.65"/>
+      <TextObject Name="Text18" Width="94.5" Height="18.9" Text="Remarks" Font="Arial, 10pt"/>
+      <TextObject Name="Text19" Top="28.35" Width="94.5" Height="18.9" Text="Special Instructions" Font="Arial, 10pt"/>
+      <TextObject Name="Text20" Top="47.25" Width="529.2" Height="18.9" Text="1. Schedule for  the      " Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Top="66.15" Width="529.2" Height="18.9" Text="2. You will dispatch the material strictly as per given schedule." Font="Arial, 10pt"/>
+      <TextObject Name="Text22" Top="85.05" Width="529.2" Height="18.9" Text="3. In case, if  you have any problem in effecting this supplies please advice us by return post to make alternate arrangement." Font="Arial, 10pt"/>
+      <TextObject Name="Text23" Top="103.95" Width="529.2" Height="18.9" Text="4. This schedule supersede all the existing schedule.Short Delivery of previous months is not acceptable in next months." Font="Arial, 10pt"/>
+      <TextObject Name="Text24" Top="122.85" Width="529.2" Height="18.9" Text="5. Schedule of 5th week,is tentative schedule of the next month's 1st week ." Font="Arial, 10pt"/>
+      <TextObject Name="Text25" Top="141.75" Width="529.2" Height="18.9" Text="6. Schedule of next months are also tentative.7. Kindly Note that no pending qty schedule will be carried forward &amp; will be treated as delivery failure." Font="Arial, 10pt"/>
+      <TextObject Name="Text26" Top="170.1" Width="94.5" Height="18.9" Text="Thanking You" Font="Arial, 10pt"/>
+      <TextObject Name="Text27" Top="207.9" Width="94.5" Height="18.9" Text="Prepared By" Font="Arial, 10pt"/>
+      <TextObject Name="Text28" Left="302.4" Top="207.9" Width="94.5" Height="18.9" Text="Checked By" Font="Arial, 10pt"/>
+      <TextObject Name="Text29" Left="585.9" Top="207.9" Width="94.5" Height="18.9" Text="( Authorised Signatory )" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="113.4" Top="255.15" Width="595.35" Height="18.9" Text="&quot;THINK BEFORE YOU PRINT &quot;  &quot; SAVE TREES,SAVE WORLD,SAVE MANKIND&quot;" Font="Arial, 8pt"/>
+      <TextObject Name="Text33" Left="28.35" Top="274.05" Width="652.05" Height="18.9" Text="All delivery vehicle should have valid P.U.C. documentsUse reusable packing such as plastic bins Save cost / Save environment" Font="Arial, 8pt"/>
+      <TextObject Name="Text44" Left="510.3" Top="179.55" Width="94.5" Height="18.9" Text="For" Font="Arial, 10pt"/>
+      <TextObject Name="Text45" Left="548.1" Top="179.55" Width="170.1" Height="18.9" Text="[sppurchaseschedule.Column1]" Font="Arial, 10pt"/>
+      <TextObject Name="Text54" Left="103.95" Width="415.8" Height="18.9" Text="[sppurchaseschedule.Remarks]" Font="Arial, 8pt"/>
+      <ChildBand Name="Child2" Top="401.08" Width="718.2" Height="37.8" FillUnusedSpace="true">
+        <LineObject Name="Line6" Left="37.8" Height="37.8"/>
+        <LineObject Name="Line17" Left="132.3" Height="37.8"/>
+        <LineObject Name="Line18" Left="283.5" Height="37.8"/>
+      </ChildBand>
+    </ReportSummaryBand>
+    <PageFooterBand Name="PageFooter1" Top="739.52" Width="718.2" Height="18.9"/>
+  </ReportPage>
+</Report>

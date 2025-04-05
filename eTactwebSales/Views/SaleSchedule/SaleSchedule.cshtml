@@ -925,7 +925,7 @@
                   $('#Rate').prop("readonly",true);
                    $('#Rate').prop("disabled",true);
             }
-            debugger
+             
 
             $('.input_container').fadeIn();
 
@@ -943,7 +943,7 @@
             TotalSchQty();
 
             $('#EnterByMachineName').val($('#machineName').text());
-            debugger
+             
             FillCustomer();
 
             //today = today.toLocaleString().substr(0, 10);
@@ -2984,7 +2984,7 @@
         });
 
         function FillCustomer() {
-            debugger
+             
             $.ajax({
                 url: '@Url.Action("FillCustomer")',
                 type: 'POST',
@@ -3010,7 +3010,7 @@
                         $('#AccountCode').val(LedgerName).trigger("change");
                         $('#AccountCode').val(LedgerName);
                     }
-                    debugger
+                     
                     if ($('#Mode').val() == "SSA" || $('#Mode').val() == "SSC") {
                         $('#AccountCode').val($('#hiddenSSAccountCode').val());
                     }

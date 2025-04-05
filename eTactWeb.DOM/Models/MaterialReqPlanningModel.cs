@@ -19,8 +19,9 @@ namespace eTactWeb.DOM.Models
         public string? PartCode { get; set; }
         public string? ItemName { get; set; }
         public string? SChNo { get; set; }
+        public string? ReportType { get; set; }
 
-        public IList<DayWiseMRPData>? DayWiseMRPData { get; set; }
+        public IList<DayWiseMRPData>? DayWiseMRPDataGrid { get; set; }
     }
 
     public class DayWiseMRPData
@@ -29,9 +30,16 @@ namespace eTactWeb.DOM.Models
         public string? Part_code { get; set; }
         public string? Item_Name { get; set; }
         public decimal? Req_Qty { get; set; }
+        public string? unit { get; set; }
         public decimal? Current_Stock { get; set; }
+        public decimal? StoreStock { get; set; }
+        public decimal? TotalStock { get; set; }
+        public decimal? MinLevel { get; set; }
+        public decimal? OrderQty { get; set; }
+        public decimal? WIPStock { get; set; }
         public decimal WIP_Qty { get; set; }
         public decimal? Order_Qty { get; set; }
+        public decimal? SChOrderQty { get; set; }
         public decimal? d1 { get; set; }
         public decimal? d2 { get; set; }
         public decimal? d3 { get; set; }

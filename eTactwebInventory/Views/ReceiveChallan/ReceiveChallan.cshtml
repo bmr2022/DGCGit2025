@@ -4,6 +4,12 @@
     ViewData["Title"] = "Receive Challan";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<style>
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+    }
+</style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="ReceiveChallan" autocomplete="off" class="form-horizontal">
@@ -546,6 +552,9 @@
     {
     <script>
         $(document).ready(function () {
+            $('#AccountCode').select2();
+            $('#DocTypeCode').select2();
+            $('#ChallanType').select2();
 
             GetFormRights();
 
@@ -1366,7 +1375,7 @@
          
         var GateEntryId = 0;
         $('#GateYearCode').change(function () {
-            debugger
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetGateDate")",
