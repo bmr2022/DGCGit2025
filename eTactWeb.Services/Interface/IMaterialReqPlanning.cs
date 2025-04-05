@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eTactWeb.DOM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,9 @@ namespace eTactWeb.Services.Interface
     public interface IMaterialReqPlanning
     {
         Task<ResponseResult> GetMRPNo(int YearCode);
-        Task<ResponseResult> GetMonthList();
+        Task<ResponseResult> GetMonthList(int YearCode);
+        public Task<MaterialReqPlanningModel> GetDetailData(string mrpno, string Month, int YearCode);
+
 
     }
 }
