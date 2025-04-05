@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -27,9 +28,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialReqPlanningDAL.GetMRPNo(YearCode);
         }
-        public async Task<ResponseResult> GetMonthList()
+        public async Task<ResponseResult> GetMonthList(int YearCode)
         {
-            return await _MaterialReqPlanningDAL.GetMonthList();
+            return await _MaterialReqPlanningDAL.GetMonthList( YearCode);
+        }
+        public async Task<MaterialReqPlanningModel> GetDetailData(string mrpno, string Month, int YearCode)
+        {
+            return await _MaterialReqPlanningDAL.GetDetailData( mrpno,  Month,  YearCode);
         }
     }
 }

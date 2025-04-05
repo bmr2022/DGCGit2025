@@ -41,11 +41,22 @@ namespace eTactwebPurchase.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetMonthList()
+        public async Task<JsonResult> GetMonthList(int YearCode)
         {
-            var JSON = await _IMaterialReqPlanning.GetMonthList();
+            var JSON = await _IMaterialReqPlanning.GetMonthList(YearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+
+        public async Task<IActionResult> GetDetailData(string mrpno, string Month, int YearCode)
+        {
+            var model = new MaterialReqPlanningModel();
+            model = await _IMaterialReqPlanning.GetDetailData(mrpno, Month, YearCode);
+           
+                return PartialView("_MaterialReqPlanningGrid", model);
+            
+            
+
         }
     }
 }
