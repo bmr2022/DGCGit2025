@@ -135,7 +135,7 @@
                                         <select class="form-select" asp-for="AccountCode" style="height:50px;width:260px;" readonly disabled>
                                             <option value="0">-Select-</option>
                                         </select>
-                                        <input type="hidden" value="@Model.AccountCode" id="hiddenSSAccountCode"/>
+                                        <input type="hidden" value="@Model.AccountCode" id="hiddenSSAccountCode" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="CustomerOrderNo" class="control-label" style="color:red">Customer Order#*</label>
@@ -408,7 +408,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="Rate" class="form-label" style="color:blue">Rate*</label>
-                                    <input asp-for="Rate" class="form-control Rate" readonly disabled />
+                                    <input asp-for="Rate" class="form-control Rate" />
                                 </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
@@ -473,6 +473,7 @@
                                         <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
                                     </button>
                                 </div>
+
                             </div>
                             <div class="progress my-2 mb-3 mt-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -1034,7 +1035,7 @@
                 $('.ImportExcel').hide();
                 SetSchTillDate();
             }
-            
+
             function UploadButton() {
                 var fileInput = $('#ExcelFile');
                 var file = fileInput.prop("files")[0];
@@ -2296,29 +2297,29 @@
                             for (var i = 0; i < rows; i++) {
                                 $('#MonthlyEntryData').append("<tr id='appendRow-" + i + "'>");  // Use 'i' instead of 'rows'
                                 $('#appendRow-' + i).append(`
-                                                                                                <td style='width:15px;'>
-                                                                                                    <a class='table-link link-danger removeMonthlyRow'>
-                                                                                                        <span class='fa-stack'>
-                                                                                                            <i class='fa fa-square fa-stack-2x'></i>
-                                                                                                            <i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i>
-                                                                                                        </span>
-                                                                                                    </a>
-                                                                                                </td>
-                                                                                                <td style='width:180px;'>
-                                                                                                    <input type="hidden" id="ImportExlData" value="ImportExlData" />
-                                                                                                    <input id='EditPartCode-${i}' value='${data.SaleGridList[i].PartCode}' class='SplitPC' onchange='ItemcodeChange(${i})' style='height:25px;width:250px;' readonly></input>
-                                                                                                </td>
-                                                                                                <td style='width:250px;'>
-                                                                                                    <input type='hidden' id='CountDate' value='${count}'/><input type="hidden" id='EditSplitItemCode-${i}' value='${data.SaleGridList[i].ItemCode}' />
-                                                                                                    <input id='EditSplitItemName-${i}' value='${data.SaleGridList[i].ItemName}' class='SplitIN' onchange='PartCodeChange(${i})' style='height:25px;width:250px;' readonly></input>
-                                                                                                </td>
-                                                                                                <td>
-                                                                                                    <input id='EditSplitUnit-${i}' value='${data.SaleGridList[i].Unit}' class='EditSplitUnitVal' type='text' style='width:50px;' readonly/>
-                                                                                                </td>
-                                                                                                <td>
-                                                                                                    <input id='EditSplitRate-${i}' value='${data.SaleGridList[i].Rate}' class='EditSplitRateVal' type='text' style='width:50px;' readonly/>
-                                                                                                </td>
-                                                                                            `);
+                                                                                                        <td style='width:15px;'>
+                                                                                                            <a class='table-link link-danger removeMonthlyRow'>
+                                                                                                                <span class='fa-stack'>
+                                                                                                                    <i class='fa fa-square fa-stack-2x'></i>
+                                                                                                                    <i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i>
+                                                                                                                </span>
+                                                                                                            </a>
+                                                                                                        </td>
+                                                                                                        <td style='width:180px;'>
+                                                                                                            <input type="hidden" id="ImportExlData" value="ImportExlData" />
+                                                                                                            <input id='EditPartCode-${i}' value='${data.SaleGridList[i].PartCode}' class='SplitPC' onchange='ItemcodeChange(${i})' style='height:25px;width:250px;' readonly></input>
+                                                                                                        </td>
+                                                                                                        <td style='width:250px;'>
+                                                                                                            <input type='hidden' id='CountDate' value='${count}'/><input type="hidden" id='EditSplitItemCode-${i}' value='${data.SaleGridList[i].ItemCode}' />
+                                                                                                            <input id='EditSplitItemName-${i}' value='${data.SaleGridList[i].ItemName}' class='SplitIN' onchange='PartCodeChange(${i})' style='height:25px;width:250px;' readonly></input>
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <input id='EditSplitUnit-${i}' value='${data.SaleGridList[i].Unit}' class='EditSplitUnitVal' type='text' style='width:50px;' readonly/>
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <input id='EditSplitRate-${i}' value='${data.SaleGridList[i].Rate}' class='EditSplitRateVal' type='text' style='width:50px;' readonly/>
+                                                                                                        </td>
+                                                                                                    `);
                             }
                             for (var k = 0; k < rows; k++) {
                                 for (var i = 0; i <= count; i++) {
@@ -3007,9 +3008,9 @@
                         $('#AccountCode').val(LedgerName);
                     }
                     debugger
-                     if ($('#Mode').val() == "SSA" || $('#Mode').val() == "SSC") {
+                    if ($('#Mode').val() == "SSA" || $('#Mode').val() == "SSC") {
                         $('#AccountCode').val($('#hiddenSSAccountCode').val());
-                     }
+                    }
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load ledger names.');
@@ -3856,8 +3857,8 @@
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-        <<<<<<< HEAD
+            <<<<<<< HEAD
 
-        =======
-        >>>>>>> b0e528798e1188143d18517cdd55be2877cad6d9
+            =======
+            >>>>>>> b0e528798e1188143d18517cdd55be2877cad6d9
 }
