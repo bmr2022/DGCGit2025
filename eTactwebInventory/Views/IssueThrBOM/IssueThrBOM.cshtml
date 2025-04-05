@@ -1069,6 +1069,8 @@
                                 $('#MainGridUniqueBatchNo-' + i).empty();
                                 $('#MainGridUniqueBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
                                 $.each(obj.Result, function (index, val) {
+                                    var fullVal = val.UniqueBatchNo;
+                                    var cleanLabel = fullVal.split(' Batch No')[0];
                                     $('#MainGridUniqueBatchNo-' + i).append('<option value = ' + val.UniqueBatchNo + ' > ' + val.UniqueBatchNo + ' </option>');
                                 });
                             }
@@ -1102,7 +1104,7 @@
         }
 
         function FillLotandTotalStock(i) {
-
+            debugger
             $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
