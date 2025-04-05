@@ -1,19 +1,19 @@
-﻿@model eTactWeb.DOM.Models.PurchaseSubScheduleModel
-@if (Model.PurchaseScheduleList == null)
+﻿@model eTactWeb.DOM.Models.EmployeeMasterModel;
+@if (Model.EmployeeMasterGrid == null)
 {
     <tr class="text-center">
-        <td colspan="17" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
     </tr>
 }
 else
 {
-    var Cntr = 0;
-    foreach (var item in Model.PurchaseScheduleList)
+    var @Cntr = 0;
+    foreach (var item in Model.EmployeeMasterGrid)
     {
         Cntr = Cntr + 1;
-        <tr class="small @item.SeqNo" style="white-space:nowrap">
-            <td style="width:4%">
-                @if (Model.Mode == "V" && Model.ID > 0)
+        <tr class="small " style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                @if (Model.ID > 0)
                 {
                     <a class="table-link link-primary noCursor" disabled>
                         <span class="fa-stack">
@@ -30,13 +30,13 @@ else
                 }
                 else
                 {
-                    <a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                    <a class="table-link link-primary" onclick="EditItemRow(@item.SrNo);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
-                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNo);" asp-action="DeleteItemRow">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -44,23 +44,13 @@ else
                     </a>
                 }
             </td>
-            <th>@item.SeqNo</th>
-            <td>@item.PartCode</td>
-            <td>@item.ItemName</td>
-            <td>@item.Unit</td>
-            <td>@item.SchQty</td>
-            <td>@item.PendQty</td>
-            <td>@item.AltUnit</td>
-            <td>@item.AltSchQty</td>
-            <td>@item.AltPendQty</td>
-            <td>@item.Rate.ToString("#.#0")</td>
-            <td>@item.RateInOthCurr.ToString("#.#0")</td>
-            <td>@(item.DeliveryDate == null ? string.Empty : (item.DeliveryDate.Split(" ")[0]))</td>
-            @*<td>"20/01/2023"</td>*@
-            <td>@item.ItemSize</td>
-            <td>@item.ItemColor</td>
-            <td>@item.OtherDetail</td>
-            <td>@item.Remarks</td>
+            <td id="SrNO-@Cntr"><input type="hidden" value="@item.SrNo" />@item.SrNo</td>
+
+            <td>@item.CompanyName </td>
+            <td>@item.CFromDate </td>
+            <td>@item.CToDate</td>
+            <td>@item.Desigation </td>
+            <td>@item.Salary </td>
         </tr>
     }
 }

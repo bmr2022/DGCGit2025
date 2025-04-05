@@ -687,14 +687,14 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
         DTSSGrid.Columns.Add("AltPendQty", typeof(decimal));
         DTSSGrid.Columns.Add("Rate", typeof(decimal));
         DTSSGrid.Columns.Add("RateInOthCurr", typeof(decimal));
-        DTSSGrid.Columns.Add("DeliveryDate", typeof(DateTime));
+        DTSSGrid.Columns.Add("DeliveryDate", typeof(string)); // datetime
         DTSSGrid.Columns.Add("ItemSize", typeof(string));
         DTSSGrid.Columns.Add("ItemColor", typeof(string));
         DTSSGrid.Columns.Add("OtherDetail", typeof(string));
         DTSSGrid.Columns.Add("Remarks", typeof(string));
         DTSSGrid.Columns.Add("DeliveryWeek", typeof(string));
         DTSSGrid.Columns.Add("schAmendNo", typeof(int));
-        DTSSGrid.Columns.Add("schAmendDate", typeof(DateTime));
+        DTSSGrid.Columns.Add("schAmendDate", typeof(string)); // datetime    
         DTSSGrid.Columns.Add("SchAmendYear", typeof(int));
         DTSSGrid.Columns.Add("TentQtyFor1stMonth", typeof(decimal));
         DTSSGrid.Columns.Add("TentQtyFor2stMonth", typeof(decimal));
@@ -705,22 +705,22 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
                 new object[]
                 {
                     Item.ItemCode,
-                    Item.Unit,
+                    Item.Unit ?? string.Empty,
                     Item.SchQty,
                     Item.PendQty,
-                    Item.AltUnit,
+                    Item.AltUnit ?? string.Empty,
                     Item.AltSchQty,
                     Item.AltPendQty,
                     Item.Rate,
                     Item.RateInOthCurr,
-                    Item.DeliveryDate,
-                    Item.ItemSize,
-                    Item.ItemColor,
-                    Item.OtherDetail,
-                    Item.Remarks,
-                    Item.DeliveryWeek,
+                    Item.DeliveryDate == null ? string.Empty : ParseFormattedDate(Item.DeliveryDate),
+                    Item.ItemSize ?? string.Empty,
+                    Item.ItemColor ?? string.Empty,
+                    Item.OtherDetail ?? string.Empty,
+                    Item.Remarks ?? string.Empty,
+                    Item.DeliveryWeek ?? string.Empty,
                     Item.schAmendNo,
-                    Item.schAmendDate,
+                    Item.schAmendDate == null ? string.Empty : ParseFormattedDate(Item.schAmendDate),
                     Item.SchAmendYear,
                     Item.TentQtyFor1stMonth,
                     Item.TentQtyFor2stMonth

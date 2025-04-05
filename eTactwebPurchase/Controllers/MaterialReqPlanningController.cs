@@ -32,7 +32,7 @@ namespace eTactwebPurchase.Controllers
         {
             var model = new MaterialReqPlanningModel();
             model.Year_Code = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            model.DayWiseMRPData = new List<DayWiseMRPData>();
+            model.DayWiseMRPDataGrid = new List<DayWiseMRPData>();
             return View(model);
         }
         public async Task<JsonResult> GetMRPNo(int YearCode)
@@ -47,16 +47,37 @@ namespace eTactwebPurchase.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+          public async Task<JsonResult> GetPartCode()
+        {
+            var JSON = await _IMaterialReqPlanning.GetPartCode();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+          public async Task<JsonResult> GetItemName()
+        {
+            var JSON = await _IMaterialReqPlanning.GetItemName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
-        public async Task<IActionResult> GetDetailData(string mrpno, string Month, int YearCode)
+        public async Task<IActionResult> GetDetailData(string ReportType, string mrpno, string Month, int YearCode, string FromDate, string ToDate)
         {
             var model = new MaterialReqPlanningModel();
-            model = await _IMaterialReqPlanning.GetDetailData(mrpno, Month, YearCode);
-           
-                return PartialView("_MaterialReqPlanningGrid", model);
+            model = await _IMaterialReqPlanning.GetDetailData( ReportType,mrpno, Month, YearCode,  FromDate,  ToDate);
+               if(ReportType== "DAYWISEMRPDATA")
+               {
+                   return PartialView("_MaterialReqPlanningGrid", model);
+               }
+               if(ReportType== "MRPCONSOLIDATED")
+               {
+                   return PartialView("_MaterialReqPlanningCONSOLIDATEDGrid", model);
+               }
+               if(ReportType== "MRPDataonly")
+               {
+                   return PartialView("_MaterialReqPlanningMRPDataonlyGrid", model);
+               }
+               return null;
             
-            
-
         }
     }
 }

@@ -79,7 +79,7 @@
                         <div class="accordion-body">
                             <div class="card-body" id="divPendingMRP">
                                 <div class="row">
-                                    <div class="col-md-10 divPendingMRPPartial">
+                                    <div class="col-md-9 divPendingMRPPartial">
                                         <div class="mb-3">
                                             <div class="d-flex">
                                                 <button class="btn btn-sm btn-outline-warning me-3" type="button" id="CheckAll">
@@ -132,7 +132,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-md-2" style="width:190px;">
+                                    <div class="col-md-3" style="">
                                         GenerateMRP
                                         <div class="card shadow">
                                             <div class="card-header bg-white font-bold">
@@ -308,10 +308,10 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#MRPEntryId').val(obj.Result.Table[0].EntryID);
+                            $('#MRPEntryId').val(obj.Result.Table[0].MRPEntryID);
                             $('#MRPNo').val(obj.Result.Table[0].MRPNo);
 
-                            MRPEntryId = obj.Result.Table[0].EntryID;
+                            MRPEntryId = obj.Result.Table[0].MRPEntryID;
                             MRPNo = obj.Result.Table[0].MRPNo;
                         } else {
                             $('#MRPEntryId').val(0);

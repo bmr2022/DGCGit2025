@@ -647,22 +647,22 @@ public class PurchaseScheduleDAL
             SqlParams.Add(new SqlParameter("@ID", model.ID));
             SqlParams.Add(new SqlParameter("@EntryID", model.EntryID));
             SqlParams.Add(new SqlParameter("@SchYearCode", model.YearCode));
-            SqlParams.Add(new SqlParameter("@PONO", model.PONO));
+            SqlParams.Add(new SqlParameter("@PONO", model.PONO ?? string.Empty));
             SqlParams.Add(new SqlParameter("@POYearCode", model.POYearCode));
             SqlParams.Add(new SqlParameter("@POAmenNo", model.POAmenNo));
             SqlParams.Add(new SqlParameter("@POAmendYearCode", model.POAmendYearCode));
-            SqlParams.Add(new SqlParameter("@OrderTypeJWPurch", model.OrderTypeJWPurch));
-            SqlParams.Add(new SqlParameter("@ItemService", model.ItemService));
+            SqlParams.Add(new SqlParameter("@OrderTypeJWPurch", model.OrderTypeJWPurch ?? string.Empty));
+            SqlParams.Add(new SqlParameter("@ItemService", model.ItemService ?? string.Empty));
             SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
-            SqlParams.Add(new SqlParameter("@DeliveryAddress", model.DeliveryAddress));
-            SqlParams.Add(new SqlParameter("@ScheduleNo", model.ScheduleNo));
+            SqlParams.Add(new SqlParameter("@DeliveryAddress", model.DeliveryAddress ?? string.Empty));
+            SqlParams.Add(new SqlParameter("@ScheduleNo", model.ScheduleNo ?? string.Empty));
             SqlParams.Add(new SqlParameter("@SchAmendNo", model.SchAmendmentNo));
             SqlParams.Add(new SqlParameter("@MRPNO", model.MRPNO));
             SqlParams.Add(new SqlParameter("@MRPentry_Id", model.MRPentryId));
             SqlParams.Add(new SqlParameter("@MRPNoYearCode", model.MRPNoYearCode));
-            SqlParams.Add(new SqlParameter("@ModeOfTransport", model.ModeOfTransport));
-            SqlParams.Add(new SqlParameter("@TentetiveConfirm", model.TentetiveConfirm));
-            SqlParams.Add(new SqlParameter("@OrderPriority", model.OrderPriority));
+            SqlParams.Add(new SqlParameter("@ModeOfTransport", model.ModeOfTransport ?? string.Empty));
+            SqlParams.Add(new SqlParameter("@TentetiveConfirm", model.TentetiveConfirm ?? string.Empty));
+            SqlParams.Add(new SqlParameter("@OrderPriority", model.OrderPriority ?? string.Empty));
             SqlParams.Add(new SqlParameter("@FirstMonthTentRatio", model.FirstMonthTentRatio));
             SqlParams.Add(new SqlParameter("@SecMonthTentRatio", model.SecMonthTentRatio));
             
@@ -674,14 +674,14 @@ public class PurchaseScheduleDAL
                 SqlParams.Add(new SqlParameter("@SchAmmAppDate", AppDate == default ? string.Empty : AppDate));
                 SqlParams.Add(new SqlParameter("@SchApprovalDate", AmmAppDate == default ? string.Empty : AmmAppDate));
 
-                SqlParams.Add(new SqlParameter("@SchApproved", model.Approved));
+                SqlParams.Add(new SqlParameter("@SchApproved", model.Approved ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@SchAppBy", model.Approvedby));
-                SqlParams.Add(new SqlParameter("@SchAmmApprove", model.AmmApproved));
+                SqlParams.Add(new SqlParameter("@SchAmmApprove", model.AmmApproved ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@SchAmmAppby", model.AmmApprovedby));
             }
             SqlParams.Add(new SqlParameter("@CreatedBY", model.CreatedBy));
-            SqlParams.Add(new SqlParameter("@BillingAddress", model.BillingAddress));
-            SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName)); 
+            SqlParams.Add(new SqlParameter("@BillingAddress", model.BillingAddress ?? string.Empty));
+            SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName ?? string.Empty)); 
             SqlParams.Add(new SqlParameter("@DTSSGrid", DTSSGrid));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseSchedule", SqlParams);

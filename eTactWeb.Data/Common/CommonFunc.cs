@@ -147,7 +147,7 @@ public static class CommonFunc
              "d/M/yyyy h:mm:ss tt","dd/MM/yyyy HH:mm","MM-dd-yyyy hh:mm:ss a",
              "yyyy-MM-ddTHH:mm:ss","yyyy-MM-ddTHH:mm:ssZ","yyyy-MM-ddTHH:mm:ss.SSS",
              "yyyy-MM-ddTHH:mm:ss.SSSZ","yyyy-MM-ddTHH:mm:ss+HH:mm","EEEE, MMMM dd, yyyy",
-             "EEE, dd MMM yyyy","EEEE dd/MM/yyyy","EEEE dd-MMM-yyyy","HH:mm:ss","hh:mm:ss a",
+             "EEE, dd MMM yyyy","EEEE dd/MM/yyyy","EEEE dd-MMM-yyyy","HH:mm:ss","hh:mm:ss a","dd-MMM-yyyy hh:mm:ss tt",
              "HH:mm","hh:mm a"
         };
 
