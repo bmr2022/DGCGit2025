@@ -37,7 +37,7 @@ namespace eTactWeb.Controllers
             return View(model);
         }
         [HttpGet]
-        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int StoreId, string ReportType, string BatchNo, string UniqueBatchNo, int pageNumber = 1, int pageSize = 50,string SearchBox="")
+        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int StoreId, string ReportType, string BatchNo, string UniqueBatchNo, int pageNumber = 1, int pageSize = 500,string SearchBox="")
         {
             var model = new StockRegisterModel();
             model.ReportMode = ReportType;
@@ -95,7 +95,7 @@ namespace eTactWeb.Controllers
             return PartialView("_StockRegisterGrid", model);
         }
         [HttpGet]
-        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 50)
+        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 500)
         {
             StockRegisterModel model = new StockRegisterModel();
             if (string.IsNullOrWhiteSpace(searchString))
