@@ -522,7 +522,7 @@
         //            }
         //        },
         //        error: function(result, status, xhr) {
-        //            console.log(result);
+        //             (result);
         //        }
         //    }).done(function() {
         //        ClearItemTax();
@@ -558,9 +558,9 @@
                     }
                 })
             }).fail(function(data) {
-                console.log(data);
+                 (data);
             }).always(function(data) {
-                console.log(data);
+                 (data);
             });
         }
 
@@ -834,10 +834,10 @@
                 data: ItemData,
                 beforeSend: function(xhr) {
                     //xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
-                    console.log(1);
+                     (1);
                 },
                 success: function(data, status, xhr) {
-                    console.log(2);
+                     (2);
                     if (data.trim() == "") {
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -862,17 +862,17 @@
                     $.notify(result.responseText, "error");
                 },
                 complete: function() {
-                    console.log(5);
+                     (5);
                     $('.Schedule').fadeIn();
                     $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 }
             }).done(function() {
-                console.log(3);
+                 (3);
                 GetTaxPartItem();
             }).fail(function() {
                 $.notify("error");
             }).always(function() {
-                console.log(4);
+                 (4);
             });
         });
 

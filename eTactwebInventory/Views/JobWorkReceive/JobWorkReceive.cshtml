@@ -523,8 +523,8 @@
 
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-            console.log(formattedDate1);
-            console.log(formattedDate2);
+             (formattedDate1);
+             (formattedDate2);
 
             var fromDate;
             var toDate;
@@ -732,7 +732,7 @@
                 dataType: "json",
                 success: function (result, status, error) {
                      
-                    console.log(result);
+                     (result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#EntryId').val(obj.Result[0].EntryId);
@@ -750,7 +750,7 @@
                 data: { yearCode: $('#YearCode').val(), entryId: $('#EntryId').val() },
                 dataType: "json",
                 success: function (result, status, error) {
-                    console.log(result);
+                     (result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                          
@@ -876,7 +876,7 @@
                     if (data != null) {
 
                         var obj = $.parseJSON(data);
-                        console.log(obj);
+                         (obj);
                         var optAll = obj.Result.Table[0].OptAll;
                         var optSave = obj.Result.Table[0].OptSave;
                         var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1326,7 +1326,7 @@
                 dataType: "json",
                 async: false,
                 success: function (data, status, error) {
-                    console.log("Grid cleared");
+                     ("Grid cleared");
                     $('#divJobWorkReceiveGridAdd').empty();
                     //$('#divJobWorkReceiveGrid').empty();
                     AlreadyAdjustedArray = [];
@@ -1556,12 +1556,12 @@
         //        async: false,
         //        success: function (result, status, error) {
         //
-        //            console.log(result);
+        //             (result);
         //            if (result != null) {
         //                var obj = $.parseJSON(result);
 
         //                var result_count = obj.Result.length;
-        //                console.log(result_count);
+        //                 (result_count);
         //                if (rowCountGrid == result_count) {
         //                    return true;
         //                }
@@ -1575,7 +1575,7 @@
         //                        resultList.push(obj.Result[i].Item_Name);
         //                    }
         //                    const elementsNotInArray2 = resultList.filter(element => !issItemsList.includes(element));
-        //                    console.log(elementsNotInArray2);
+        //                     (elementsNotInArray2);
         //                    $('#validationMsg').text("Bom Child Part item name '" + elementsNotInArray2 + "' is not in the list, You cannot adjust");
         //                    $.notify("BOM Challan cannot be adjusted", "error");
         //                    return false;
@@ -1622,11 +1622,11 @@
                     async: false,
                     success: function (result, status, error) {
 
-                        console.log(result);
+                         (result);
                         if ($.parseJSON(result).Result.length > 0) {
                             var obj = $.parseJSON(result);
                             var result_count = obj.Result.length;
-                            console.log(result_count);
+                             (result_count);
                             if (count == result_count) {
                                 $('#AddToBelowGrid').prop("disabled", false);
                                 return true;
@@ -1641,12 +1641,12 @@
                                     resultList.push(obj.Result[i].Item_Name);
                                 }
 
-                                console.log(issItemsList);
-                                console.log(resultList);
-                                console.log(obj);
+                                 (issItemsList);
+                                 (resultList);
+                                 (obj);
                                 const elementsNotInArray2 = resultList.filter(element => !issItemsList.includes(element));
-                                console.log("=============");
-                                console.log(elementsNotInArray2);
+                                 ("=============");
+                                 (elementsNotInArray2);
                                 if (elementsNotInArray2.length != 0) {
                                     $('#validationMsg').text("Bom Child Part item name '" + elementsNotInArray2 + "' is not in the list, You cannot adjust");
                                     $('#AddToBelowGrid').prop("disabled", true);
@@ -1680,7 +1680,7 @@
                     return outputArray;
                 }
                 $('#AddToBelowGrid').prop("disabled", false);
-                console.log(removeusingSet(ItemsArray));
+                 (removeusingSet(ItemsArray));
 
                 var arrayToUse = removeusingSet(ItemsArray);
 
@@ -1690,7 +1690,7 @@
                     var adjQty1 = 0;
                     for (var i = 1; i <= rowCount; i++) {
                         if (arrayToUse[j] == $('#IssPartCode' + i).text()) {
-                            console.log($('#IssPartCode' + i).text());
+                             ($('#IssPartCode' + i).text());
                             var ForGridSave = parseFloat($('#divChallanPopUp tr td #ForGridSave1').val());
                             var pendQty = parseFloat($('#PendQty' + i).text());
                             var recQty = parseFloat($('#RecQty' + ForGridSave).val());
@@ -2272,7 +2272,7 @@
                     "BOMInd": $('#BomInd' + i).val(),
                 });
             }
-            console.log("AdjChallan Data:", Data)
+             ("AdjChallan Data:", Data)
             
             $.ajax({
                 url: "@Url.Action("GetAdjustedChallan")",

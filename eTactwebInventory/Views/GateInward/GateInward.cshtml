@@ -733,7 +733,7 @@
                 data: { "YearCode": parseInt($('#YearCode').val()), "AccountCode": parseInt($('#AccountCode').val()), "InvNo": $('#Invoiceno').val(), "DocType": parseInt($('#docTypeId').val()) },
                 success: function (result, status, error) {
 
-                    console.log(result);
+                     (result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result.Table[0].Column1 == 'NOTEXIST') {
@@ -885,8 +885,8 @@
 
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-                console.log(formattedDate1);
-                console.log(formattedDate2);
+                 (formattedDate1);
+                 (formattedDate2);
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
@@ -975,7 +975,7 @@
                 async: false,
                 success: function (result, status, error) {
 
-                    console.log(result);
+                     (result);
                     if (result != null) {
 
                         var today = new Date();
@@ -996,7 +996,7 @@
                                 defaultDate: new Date(parseDateToFormat($('#ShowPOTillDate').val().split(" ")[0])), // Set the default date
                                 onSelect: function (dateText1, inst) {
                                     // Callback function when a date is selected
-                                    console.log("Selected date:", dateText1);
+                                     ("Selected date:", dateText1);
                                     poDate = dateText1;
 
                                 }
@@ -1006,7 +1006,7 @@
                                 defaultDate: new Date(parseDateToFormat($('#BiltyDate').val().split(" ")[0])), // Set the default date
                                 onSelect: function (dateText2, inst) {
                                     // Callback function when a date is selected
-                                    console.log("Selected date:", dateText2);
+                                     ("Selected date:", dateText2);
                                     biltyDt = dateText2;
 
                                 }
@@ -1032,10 +1032,10 @@
                 dataType: "json",
                 data: { "YearCode": $('#YearCode').val() },
                 success: function (result, status, error) {
-                    console.log(result);
+                     (result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        console.log(obj);
+                         (obj);
                         $('#EntryId').val(obj.Result[0].EntryId);
                         $('#GateNo').val(obj.Result[0].GateNo);
                     }
@@ -1063,7 +1063,7 @@
                         var obj = $.parseJSON(result);
                         var allowOption = obj.Result.Table[0].AllowBackDateGAteEntry;
                         var allowRate = obj.Result.Table[0].AllowGateRateEnabled;
-                        console.log(allowOption);
+                         (allowOption);
                         if (allowOption == 'Y') {
                             //$('#EntryDate').prop("readonly", false);
                             $('#EntryDate').css('color', 'rgb(248 255 178)'); // feature option
@@ -1091,7 +1091,7 @@
                 dataType: "json",
                 data: { ItemCode: $('#PartCode').val(), AltQty: parseFloat($('#AltQty').val()) == 'NaN' ? 0 : parseFloat($('#AltQty').val()), UnitQty: $('#Qty').val() },
                 success: function (data, status, error) {
-                    console.log(data);
+                     (data);
 
                     var obj = $.parseJSON(data);
                     $('#AltQty').val(obj.Result[0].AltUnitValue);
@@ -1108,7 +1108,7 @@
         //        url: "@Url.Action("GetDefaultBranch")",
         //        dataType: "json",
         //        success: function (result, status, error) {
-        //            console.log(result);
+        //             (result);
         //            const selectElement = document.getElementById("CC"); // replace "mySelect" with the ID of your select element
         //            const desiredValue = result; // replace with the value of the option you want to select
 
@@ -1152,7 +1152,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var allowOption = obj.Result.Table[0].AllowToChangeBranch;
-                        console.log(allowOption);
+                         (allowOption);
                         if (allowOption == 'Y') {
 
                             $('#CC').prop("disabled", false);
@@ -1277,7 +1277,7 @@
                     }
                 },
                 error: function (e) {
-                    console.log(e);
+                     (e);
                 }
             });
         }
@@ -1290,7 +1290,7 @@
                 data: { AccountCode: parseInt($('#AccountCode').val()), docType: parseInt($('#docTypeId').val()) },
                 dataType: "json",
                 success: function (data, status, error) {
-                    console.log("Grid cleared");
+                     ("Grid cleared");
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -1527,7 +1527,7 @@
         });
 
         function fillfunction() {
-            console.log("is it ????");
+             ("is it ????");
         }
 
         function clearItems() {
@@ -1543,7 +1543,7 @@
                 url: "@Url.Action("GetPopUpData")",
                 data: { AccountCode: parseInt($('#AccountCode').val()) },
                 success: function (result, status, xhr) {
-                    console.log("sucess");
+                     ("sucess");
                 }
             });
         }
@@ -1723,7 +1723,7 @@
             //         }
             //     },
             //     error: function (req, status, error) {
-            //         console.log(error);
+            //          (error);
             //     }
             // });
             $.ajax({
@@ -1770,7 +1770,7 @@
                     }
                 },
                 error: function (req, status, error) {
-                    console.log(error);
+                     (error);
                 }
             });
         }
@@ -1896,7 +1896,7 @@
 
                     if (data != null) {
                         var obj = $.parseJSON(data);
-                        console.log(obj);
+                         (obj);
                         var optAll = obj.Result.Table[0].OptAll;
                         var optSave = obj.Result.Table[0].OptSave;
                         var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1992,7 +1992,7 @@
                     }
                 },
                 error: function (req, status, error) {
-                    console.log(error);
+                     (error);
                 }
             });
         }
@@ -2006,7 +2006,7 @@
                 dataType: "json",
                 success: function (data, status, xhr) {
 
-                    console.log(data);
+                     (data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#ChallanQty').val(0);
@@ -2051,7 +2051,7 @@
                 dataType: "json",
                 success: function (data, status, xhr) {
 
-                    console.log(data);
+                     (data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#SaleBillQty').val(0);
@@ -2077,7 +2077,7 @@
                 data: { "ItemCode": ItemCode, "PartyCode": $('#AccountCode').val(), "PONO": $('#PONO').val(), "POYear": $('#PoYear').val(), "Year": $('#YearCode').val(), "SchNo": $('#SchNo').val(), "SchYearCode": $('#SchYearCode').val(), "ProcessId": $('#ProcessId').val(), "EntryId": $('#EntryId').val(), "YearCode": $('#YearCode').val() },
                 success: function (data, status, xhr) {
 
-                    console.log(data);
+                     (data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         if ($('#PONO').prop('selectedIndex') != 0) {
@@ -2272,7 +2272,7 @@
                 beforeSend: function (xhr) {
                 },
                 success: function (data, status, xhr) {
-                    console.log(2);
+                     (2);
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -2314,16 +2314,16 @@
                     alert(response.responseText);
                 },
                 complete: function () {
-                    console.log(5);
+                     (5);
                     $('.Schedule').fadeIn();
                     //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 }
             }).done(function () {
-                console.log(3);
+                 (3);
             }).fail(function () {
                 alert("error");;
             }).always(function () {
-                console.log(4);
+                 (4);
             });
         });
 

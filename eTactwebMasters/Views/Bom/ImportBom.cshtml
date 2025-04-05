@@ -212,7 +212,7 @@
                 var expectedColumnCount = 15; // Change this to your desired number of columns
 
                 if (columnCount === expectedColumnCount) {
-                    console.log('The Excel file has the expected number of columns.');
+                     ('The Excel file has the expected number of columns.');
                 } else {
                     $.notify('The file does not have the expected number of columns.', "error");
                     return false;
@@ -237,7 +237,7 @@
                             $("#BtnSubmit").prop("disabled", true);
                             $("#FooterBtnSubmit").prop("disabled", true);
                         } else {
-                            console.log(obj);
+                             (obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -272,7 +272,7 @@
                  
                 if (fileExtension === 'xls' || fileExtension === 'xlsx') {
                     // The selected file is in Excel format
-                    console.log('File is in Excel format.');
+                     ('File is in Excel format.');
                     var reader = new FileReader();
 
                     reader.onload = function (e) {
@@ -289,7 +289,7 @@
                         var expectedColumnCount = 16; // Change this to your desired number of columns
                         
                         // if (columnCount === expectedColumnCount) {
-                            console.log('The Excel file has the expected number of columns.');
+                             ('The Excel file has the expected number of columns.');
                              
                             var formData = new FormData();
                             formData.append("excelFile", file);
@@ -427,7 +427,7 @@
 
                 },
                 success: function (data, status, xhr) {
-                    console.log("success");
+                     ("success");
 
                 },
                 error: function (result, status, xhr) {

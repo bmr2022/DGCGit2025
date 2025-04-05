@@ -154,7 +154,7 @@
     <script>
 
         $(document).ready(function () {
-            console.log("Ready");
+             ("Ready");
             // GetServerDate();
 
             
@@ -226,7 +226,7 @@
             var year = date.getFullYear();
 
             var dateString = day + "/" + month + "/" + year;
-            console.log(dateString);    
+             (dateString);    
 
             return dateString;
 
@@ -455,7 +455,7 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-            console.log(table);
+             (table);
             TableToExcel.convert(table[0], {
                 name: `ReportTable.xlsx`,
                 sheet: {

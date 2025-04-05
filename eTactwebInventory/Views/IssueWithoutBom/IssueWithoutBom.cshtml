@@ -756,7 +756,7 @@
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
-                    console.log(result.responseText);
+                     (result.responseText);
                 }
             });
         });
@@ -860,7 +860,7 @@
                 //const formattedDate4 = `${parts[0]}/${numericMonth}/${parts[2]}`;
                 ////const formattedDate5 = `${parts[0]}/${nMonth}/${parts[2]}`;
 
-                //console.log(formattedDate4);
+                // (formattedDate4);
                 //$('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate4);
                 ////$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate5);
                 
@@ -937,7 +937,7 @@
                     },
                     error: function (result, status, xhr) {
                         $.notify(result.responseText, "error");
-                        console.log(result.responseText);
+                         (result.responseText);
                     }
                 });
         }
@@ -1008,10 +1008,10 @@
                                 });
                             }
                         }
-                        console.log("success");
+                         ("success");
                     },
                     error: function (errMsg) {
-                        console.log(errMsg);
+                         (errMsg);
                     }
                 });
             }
@@ -1039,10 +1039,10 @@
                                 });
                             }
                         }
-                        console.log("success");
+                         ("success");
                     },
                     error: function (errMsg) {
-                        console.log(errMsg);
+                         (errMsg);
                     }
                 });
             }
@@ -1087,10 +1087,10 @@
                             $('#IssueSlipNo').val(obj.Result[0].IssueSlipNo);
                         }
                     }
-                    console.log("success");
+                     ("success");
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1149,10 +1149,10 @@
                                 });
                             }
                         }
-                        console.log("success");
+                         ("success");
                     },
                     error: function (errMsg) {
-                        console.log(errMsg);
+                         (errMsg);
                     }
                 });
             }
@@ -1182,10 +1182,10 @@
                                 });
                             }
                         }
-                        console.log("success");
+                         ("success");
                     },
                     error: function (errMsg) {
-                        console.log(errMsg);
+                         (errMsg);
                     }
                 });
             }
@@ -1304,7 +1304,7 @@
 
             }
               
-            console.log(BatchNoArray);
+             (BatchNoArray);
 
             $.ajax({
                 url: "@Url.Action("AddtoIssueWOBomGrid")",
@@ -1332,7 +1332,7 @@
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
-                    console.log(result.responseText);
+                     (result.responseText);
                 }
             });
         });
@@ -1342,7 +1342,7 @@
                 url: "@Url.Action("FillBranch")",
                 type: "POST",
                 success: function (data) {
-                    console.log(data);
+                     (data);
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -1355,7 +1355,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1366,7 +1366,7 @@
                 type: "POST",
                 data : {"ItemCode" : $('#MainGridItemCode-'+i).val()},
                 success: function (data) {
-                    console.log(data);
+                     (data);
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -1375,7 +1375,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1388,7 +1388,7 @@
                 async:false,
                 success: function (data) {
                      
-                    console.log(data);
+                     (data);
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -1401,7 +1401,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1412,7 +1412,7 @@
                 type: "POST",
                 async:false,
                 success: function (data) {
-                    //console.log(data);
+                    // (data);
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -1425,7 +1425,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1490,7 +1490,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1543,10 +1543,10 @@
                             $('#AllowBatchChangePassWord').val(obj.Result[0].AllowBatchPassword);
                         }
                     }
-                    console.log("success");
+                     ("success");
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1583,10 +1583,10 @@
                             $('#MainGridTotalStock-' + i).val(0);
                         }
                     }
-                    console.log("success");
+                     ("success");
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1614,7 +1614,7 @@
         //            }
         //        },
         //        error : function (errMsg){
-        //            console.log(errMsg);
+        //             (errMsg);
         //        }
         //    });
         //}

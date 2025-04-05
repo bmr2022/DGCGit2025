@@ -661,7 +661,7 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-            console.log(table);
+             (table);
             TableToExcel.convert(table[0], {
                 name: `ReportTable.xlsx`,
                 sheet: {
@@ -676,7 +676,7 @@
                 url: "@Url.Action("GetServerDate","SaleOrder")",
                 async: false,
                 success: function (result, status, error) {
-                    console.log(result);
+                     (result);
                     if (result != null) {
 
                         var firstDayOfMonth = getFirstDayOfMonth(result);

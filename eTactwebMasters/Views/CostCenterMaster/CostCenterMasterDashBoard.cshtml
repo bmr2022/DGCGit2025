@@ -180,7 +180,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                    console.log(result);
+                     (result);
                     if (result != null) {
                         $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     }

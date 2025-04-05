@@ -856,7 +856,7 @@
                                 });
                         }
                         else {
-                            // console.log(obj);
+                            //  (obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1023,7 +1023,7 @@
 
         function selectAddedItems() {
             var prodPlanList = @Html.Raw(Json.Serialize(Model.prodPlanDetails));
-            console.log($('#divPendWOGrid tr').length);
+             ($('#divPendWOGrid tr').length);
             $('#divPendWOGrid tr').each(function () {
 
                 var currentRow = $(this);
@@ -1320,7 +1320,7 @@
                         //             //     if (inputElement.length) {
                         //             //         inputElement.val(item.qty);
                         //             //     }
-                        //             //     console.log(inputId + ":" + item.qty);
+                        //             //      (inputId + ":" + item.qty);
                         //             // });
 
                         //         }
@@ -1345,7 +1345,7 @@
                                         var inputId = `dayValus-${idEffDate}-${rowIndex + 1}`;
                                         $('#' + inputId).val(item.qty);
                                     }
-                                    console.log(inputId + ":" + item.qty);
+                                     (inputId + ":" + item.qty);
                                 }
 
                             }

@@ -753,7 +753,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        console.log(obj);
+                         (obj);
                         $('#InProcessEntryId').val(obj.Result[0].InProcQCEntryId);
                         $('#InProcQcSlipNo').val(obj.Result[0].InProcQCSlipNo);
                     }
@@ -774,7 +774,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -792,7 +792,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }

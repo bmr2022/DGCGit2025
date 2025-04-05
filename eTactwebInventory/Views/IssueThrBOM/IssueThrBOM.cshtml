@@ -616,7 +616,7 @@
                 const numericMonth = months[monthAbbreviation];
                 const formattedDate = `${parts[0]}/${numericMonth}/${parts[2]}`;
 
-                console.log(formattedDate);
+                 (formattedDate);
                 //$('#IssueDate').attr('disabled', true);
                 $('#IssueDate').css("pointer-events", "none");
                 var RecEmpCode = "@Model.RecByEmpCode";
@@ -655,10 +655,10 @@
                             //$('#totalRows').text($('#divPendIssueGrid tr').length);
                         }
                     }
-                    console.log("success");
+                     ("success");
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -729,10 +729,10 @@
                             $('#IssueSlipNo').val(obj.Result[0].IssueSlipNo);
                         }
                     }
-                    console.log("success");
+                     ("success");
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -784,7 +784,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -868,10 +868,10 @@
                             $('#AllowBatchChangePassWord').val(obj.Result[0].AllowBatchPassword);
                         }
                     }
-                    console.log("success");
+                     ("success");
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -911,10 +911,10 @@
                                 });
                             }
                         }
-                        console.log("success");
+                         ("success");
                     },
                     error: function (errMsg) {
-                        console.log(errMsg);
+                         (errMsg);
                     }
                 });
             }
@@ -944,7 +944,7 @@
                         }
                     },
                     error: function (errMsg) {
-                        console.log(errMsg);
+                         (errMsg);
                     }
                 });
             }
@@ -1039,10 +1039,10 @@
                                 });
                             }
                         }
-                        console.log("success");
+                         ("success");
                     },
                     error: function (errMsg) {
-                        console.log(errMsg);
+                         (errMsg);
                     }
                 });
             }
@@ -1073,10 +1073,10 @@
                                 });
                             }
                         }
-                        console.log("success");
+                         ("success");
                     },
                     error: function (errMsg) {
-                        console.log(errMsg);
+                         (errMsg);
                     }
                 });
             }
@@ -1096,7 +1096,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1121,10 +1121,10 @@
                             $('#MainGridTotalStock-' + i).val(0);
                         }
                     }
-                    console.log("success");
+                     ("success");
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1135,7 +1135,7 @@
                 type: "POST",
                 async: false,
                 success: function (data) {
-                    console.log(data);
+                     (data);
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -1148,7 +1148,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    console.log(errMsg);
+                     (errMsg);
                 }
             });
         }
@@ -1242,7 +1242,7 @@
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
-                    console.log(result.responseText);
+                     (result.responseText);
                 }
             });
         });
@@ -1278,12 +1278,12 @@
                 type: "POST",
                 data: { model: FGData },
                 success: function (data, status, xhr) {
-                    console.log(done);
+                     (done);
                     //    alert(success);
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
-                    console.log(result.responseText);
+                     (result.responseText);
                 }
             });
         }

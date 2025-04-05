@@ -401,7 +401,7 @@
                             formData = JSON.parse(formData);
                             unit = formData.find(item =>item.name === "Unit").value;
                             yearCode = formData.find(item=>item.name==="YearCode").value;
-                            console.log(unit);
+                             (unit);
                             
                         }
                    }
@@ -427,12 +427,12 @@
                         //else{
                             $('#ServerName').append('<option value="'+sName+'">'+sName+'</option>');
                         //}
-                       // console.log(lines[i]);
+                       //  (lines[i]);
                        
                    // }
                      var companyName = $('#CompanyName').find(':selected').val();
                      var serverName = $('#ServerName').find(':selected').val();
-                        console.log(companyName);
+                         (companyName);
                         fillUnitandYC(serverName,companyName);
                     }
                     else{
@@ -441,7 +441,7 @@
                     //for (var i = 0; i < lines.length; i++) {
                     //    // Use each line as needed
                     //    $('#ServerName').append('<option value="'+lines[i]+'">'+lines[i]+'</option>');
-                    //    console.log(lines[i]);
+                    //     (lines[i]);
                     //}
                      var sName = lines;                       
                             $('#ServerName').append('<option value="'+sName+'">'+sName+'</option>');
@@ -449,12 +449,12 @@
                     
                 },
                     error: function(xhr, status, error) {
-                        console.log("Error: " + error);
+                         ("Error: " + error);
                     }
                 });
                  var companyName = $('#CompanyName').find(':selected').val();
                      var serverName = $('#ServerName').find(':selected').val();
-                        console.log(companyName);
+                         (companyName);
                         fillUnitandYC(serverName,companyName);
                });
 
@@ -470,7 +470,7 @@
                    //          
                    //         //$('#Unit').empty();
                    //         //$('#Unit').append('<option selected disabled>-Select-</option>');
-                   //         //console.log(result);
+                   //         // (result);
                    //         //for(var i=0;i<result.length;i++){
                    //         //     
                    //         //    if ($('#hiddenUnit').val() == result[i]) {
@@ -481,10 +481,10 @@
                    //         //    }
                                 
                    //         //}
-                   //         console.log("sucesss");
+                   //          ("sucesss");
                    //     },
                    //     error: function(xhr, status, error) {
-                   //         console.log("Error: " + error);
+                   //          ("Error: " + error);
                    //     }
                    // });
                }
@@ -505,7 +505,7 @@
                           
                         },
                         error: function(xhr, status, error) {
-                            console.log("Error: " + error);
+                             ("Error: " + error);
                         }
                     });
             }
@@ -522,7 +522,7 @@
                              
                             $('#Unit').empty();
                             $('#Unit').append('<option selected disabled>-Select-</option>');
-                            console.log(result);
+                             (result);
                             for(var i=0;i<result.length;i++){
                                 if ($('#hiddenUnit').val() == result[i]) 
                                 {
@@ -540,7 +540,7 @@
                              fillUnitandYC(serverName,companyName);
                         },
                         error: function(xhr, status, error) {
-                            console.log("Error: " + error);
+                             ("Error: " + error);
                         }
                     });
                }
@@ -554,7 +554,7 @@
                         dataType: "json",
                         success: function (result, status, error) {
                              
-                            console.log(result);
+                             (result);
                             $('#YearCode').empty();
                             $('#YearCode').append('<option selected disabled>-Select-</option>');
                            for(var i=0;i<result.length;i++){
@@ -568,7 +568,7 @@
                             }
                         },
                         error: function(xhr, status, error) {
-                            console.log("Error: " + error);
+                             ("Error: " + error);
                         }
                     });
                }
@@ -590,16 +590,16 @@
                     for (var i = 0; i < lines.length; i++) {
                         // Use each line as needed
                         $('#ServerName').append('<option value="'+lines[i]+'">'+lines[i]+'</option>');
-                        console.log(lines[i]);
+                         (lines[i]);
                         }
                        //var fileContent = result.content;
                    
                    
                        // // Use the file content as needed
-                       // console.log(fileContent);
+                       //  (fileContent);
                     },
                         error: function(xhr, status, error) {
-                            console.log("Error: " + error);
+                             ("Error: " + error);
                         }
                     });
                });*/

@@ -414,7 +414,7 @@
                             $("button[type='submit']").prop("disabled", true);
 
                         } else {
-                            console.log(obj);
+                             (obj);
                             if (obj.Result.Table[0] != undefined) {
                                 var optAll = obj.Result.Table[0].OptAll;
                                 var optSave = obj.Result.Table[0].OptSave;
@@ -575,15 +575,15 @@
                             $('.accordion-header button').css('background-color', '#127387');
                             $('.accordion-header small').html('');
 
-                            console.log(IsSDSC, IsErr, HideShow);
+                             (IsSDSC, IsErr, HideShow);
                         }
                         else {
-                            console.log(response);
+                             (response);
                             $.notify('Something Went Wrong, Please Try Again.', "error");
                         }
                     },
                     error: function (req, status, error) {
-                        console.log(req);
+                         (req);
                     }
                 });
             }
@@ -902,7 +902,7 @@
                 }
             }
 
-            console.log('IsErr : ' + IsErr);
+             ('IsErr : ' + IsErr);
 
             if (IsErr == 1) return false;
             if (IsErr == 0) return true;

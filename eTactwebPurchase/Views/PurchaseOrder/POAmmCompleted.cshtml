@@ -319,7 +319,7 @@
                 data: { "YearCode": $('#sessionYC').text() },
                 success: function (result, status, error) {
                      
-                    console.log(result);
+                     (result);
                     var obj = $.parseJSON(result);
                     if (obj.Result.Table[0] != undefined) {
                         if (obj.Result.Table[0].ClosedForAllusers == 'Y') {
