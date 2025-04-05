@@ -844,7 +844,7 @@
                                 });
                         }
                         else {
-                            //  (obj);
+                            // console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -914,7 +914,7 @@
                         if (result != null) {
                             EditEachItem = true;
                             var obj = $.parseJSON(result);
-                             (obj);
+                            console.log(obj);
                             $('#EntryID').val(obj[0].EntryID);
                             $('#YearCode').val(obj[0].YearCode);
                             $('#RecQty').val(obj[0].RecQty);

@@ -172,7 +172,7 @@
                     if (data != null) {
                          
                         var obj = $.parseJSON(data);
-                         (obj);
+                        console.log(obj);
                         var optAll = obj.Result.Table[0].OptAll;
                         var optSave = obj.Result.Table[0].OptSave;
                         var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -225,7 +225,7 @@
 
         function GetSearchData() {
             var data = $('#SParam').serialize();
-             (data);
+            console.log(data);
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
@@ -253,7 +253,7 @@
                 data: { "YearCode": $('#sessionYC').text() },
                 success: function (result, status, error) {
                      
-                     (result);
+                    console.log(result);
                     var obj = $.parseJSON(result);
                     if (obj.Result.Table[0] != undefined) {
                         if (obj.Result.Table[0].ClosedForAllusers == 'Y') {

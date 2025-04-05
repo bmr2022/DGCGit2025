@@ -507,7 +507,7 @@
 
         $(document).on('select2:select', '#ItemCode,#PartCode', function (e) {
             var cntId = e.target.id;
-             (cntId);
+            console.log(cntId);
             if (cntId == 'ItemCode') {
                 ItemNameChange(cntId);
             }
@@ -527,7 +527,7 @@
                             $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
                         }
                         else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
-                             (obj);
+                            console.log(obj);
                             $('#Unit').val(obj.Result[0].Unit);
                             $('#HSNNo').val(obj.Result[0].HSNNo);
                             $('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
@@ -630,7 +630,7 @@
                                 $('#ItemCode').append('<option value="0">-Select-</option>'); // Default option
 
                                 $.each(obj.Result.Table, function (key, val) {
-                                     (obj.Result);
+                                    console.log(obj.Result);
                                     $('#ItemCode').append('<option value="' + val.ItemCode + '">' + val.ItemName + '</option>');
                                 });
                             } else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
@@ -658,7 +658,7 @@
                             $('#ItemCode').append('<option value="0">-Select-</option>'); // Default option
 
                             $.each(obj.Result.Table, function (key, val) {
-                                 (obj.Result);
+                                console.log(obj.Result);
                                 $('#ItemCode').append('<option value="' + val.ItemCode + '">' + val.ItemName + '</option>');
                             });
                         }
@@ -676,7 +676,7 @@
 
         $("#ItemCode").on("change", function () {
             var itemCode = $('#ItemCode').val();
-             (itemCode);
+            console.log(itemCode);
             var receiveByEmp = $('#ReturnByEmployee').val();
             var retFromDepEntrydate = $('#EntryDate').val();
             var retFromDepYearCode = $('#YearCode').val();
@@ -761,8 +761,8 @@
         $('.GridButton').click(function (e) {
             e.preventDefault();
             if (!ValidateReq_Grid()) return;
-             ($('#ItemCode').find(':selected').text());
-             ($('#ItemCode').val());
+            console.log($('#ItemCode').find(':selected').text());
+            console.log($('#ItemCode').val());
             var ItemData = {
                 "PartCode": $('#PartCode').val(),
                 "PartCode": $('#PartCode').find(':selected').text(),

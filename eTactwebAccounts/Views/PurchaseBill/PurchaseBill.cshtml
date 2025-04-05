@@ -340,7 +340,7 @@
                     Dat = new Date();
                     let am_pm = (Dat.getHours() >= 12) ? "PM" : "AM";
                     var time = Dat.getHours() + ":" + Dat.getMinutes() + ":" + Dat.getSeconds() + " - " + am_pm;
-                    // (time);
+                    //console.log(time);
                     $('#EntryTime').val(time);
                 }, 1000);
             }
@@ -627,10 +627,10 @@
                 if (docTypeId) {
                     $('#MainItemGrid-DocName-' + i).val(docTypeId);
                     if ($('#MainItemGrid-DocName-' + i).val() !== docTypeId) {
-                         (`No matching option found for DocTypeID: ${docTypeId} in row: ${i}`);
+                        console.log(`No matching option found for DocTypeID: ${docTypeId} in row: ${i}`);
                     }
                 } else {
-                     (`DocTypeID is not available for row: ${i}`);
+                    console.log(`DocTypeID is not available for row: ${i}`);
                 }
             }
         }
@@ -669,7 +669,7 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#poTable");
-             (table);
+            console.log(table);
             TableToExcel.convert(table[0], {
                 name: `PurchaseOrderTableAmm.xlsx`,
                 sheet: {
@@ -980,7 +980,7 @@
                     },
                     error: function (result, status, xhr) {
                         $.notify(result.responseText, "error");
-                         (result.responseText);
+                        console.log(result.responseText);
                     },
                     failure: function (result, status, xhr) {
                         alert(response.responseText);
@@ -1190,10 +1190,10 @@
                             $('#AllowInvoiceNoChangePassWord').val(obj.Result[0].InvPassword);
                         }
                     }
-                     ("success");
+                    console.log("success");
                 },
                 error: function (errMsg) {
-                     (errMsg);
+                    console.log(errMsg);
                 }
             });
         }
@@ -1230,10 +1230,10 @@
                             $('#AllowVouchDateChange').val(obj.Result[0].AccAllowTochangeVoucherDateInPurchBill);
                         }
                     }
-                     ("success");
+                    console.log("success");
                 },
                 error: function (errMsg) {
-                     (errMsg);
+                    console.log(errMsg);
                 }
             });
         }
@@ -1261,7 +1261,7 @@
                     let minDate = mrnDate;
                     if (mrnDate || maxMIRDate) {
                         minDate = (maxMIRDate != null && maxMIRDate != undefined && maxMIRDate > mrnDate) ? maxMIRDate : mrnDate;
-                         ("MinDate:", minDate);
+                        console.log("MinDate:", minDate);
                     }
                     const minDateFormatted = formatDateToDDMMYY(minDate);
                     const maxDateFormatted = formatDateToDDMMYY(currentDate);
@@ -1304,7 +1304,7 @@
                 let minDate = mrnDate;
                 if (mrnDate || maxMIRDate) {
                     minDate = (maxMIRDate != null && maxMIRDate != undefined && maxMIRDate > mrnDate) ? maxMIRDate : mrnDate;
-                     ("MinDate:", minDate);
+                    console.log("MinDate:", minDate);
                 }
                 const minDateFormatted = formatDateToDDMMYY(minDate);
                 const maxDateFormatted = formatDateToDDMMYY(currentDate);
@@ -1376,10 +1376,10 @@
                             $('#AllowDocNameChangePassWord').val(obj.Result[0].DocumentPassword);
                         }
                     }
-                     ("success");
+                    console.log("success");
                 },
                 error: function (errMsg) {
-                     (errMsg);
+                    console.log(errMsg);
                 }
             });
         }
@@ -1436,7 +1436,7 @@
                     }
                 },
                 error: function (errMsg) {
-                     (errMsg);
+                    console.log(errMsg);
                 }
             });
         }

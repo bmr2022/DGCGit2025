@@ -346,7 +346,7 @@
         $(document).ready(function () {
 
             var date = $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-             (date);
+            console.log(date);
 
             AutoComplete('Item_Master_Type', 'Type_Item', 'Main_Category_Type', null);
 
@@ -368,8 +368,8 @@
                 $('#LedgerName').prop('disabled', true);
             }
              
-            //  ('GroupName mode:', $('#GroupName').data('is-update-mode'));
-            //  ('LedgerName mode:', $('#LedgerName').data('is-update-mode'));
+            // console.log('GroupName mode:', $('#GroupName').data('is-update-mode'));
+            // console.log('LedgerName mode:', $('#LedgerName').data('is-update-mode'));
             // if ($('#GroupName').data('is-update-mode') === "true") {
             //     $('#GroupName').prop('disabled', true);
             // }
@@ -418,7 +418,7 @@
                 type: "POST",
                 data: { "Type": $('#Entry_id').val() },
                 success: function (data) {
-                     ("success");
+                    console.log("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {
@@ -518,7 +518,7 @@
                 "LedgerName": $('#LedgerName').find(":selected").text(),
                 "DrCr": $('#DrCr').find(":selected").text(),
             };
-             (SchData);
+            console.log(SchData);
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddLedgerOpeningEntryGrid", "LedgerOpeningEntry")',

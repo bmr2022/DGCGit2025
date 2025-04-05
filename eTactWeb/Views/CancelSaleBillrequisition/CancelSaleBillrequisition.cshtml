@@ -337,7 +337,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                     (data);
+                    console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#CanSaleBillReqEntryid').val(0);
@@ -359,7 +359,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                     (data);
+                    console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#CanRequisitionNo').val(0);
@@ -383,7 +383,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                     (data);
+                    console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#SaleBillDate').val(0);
@@ -407,7 +407,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                     (data);
+                    console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#INVNetAmt').val(0);
@@ -431,7 +431,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                     (data);
+                    console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#BillAmt').val(0);
@@ -455,7 +455,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                     (data);
+                    console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#SaleBillEntryId').val(0);
@@ -477,7 +477,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                     (data);
+                    console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                          
@@ -531,7 +531,7 @@
         //             ledgerDropdown.empty();
         //             ledgerDropdown.append('<option value="">--Select--</option>');
 
-        //              (obj);
+        //             console.log(obj);
         //             $.each(obj.Result, function (index, Customer) {
         //                 ledgerDropdown.append('<option value="' + Customer.Account_Code + '">' + Customer.Account_Name + '</option>');
         //             });
@@ -562,7 +562,7 @@
                     ledgerDropdown.empty();
                     ledgerDropdown.append('<option value="">--Select--</option>');
 
-                     (obj);
+                    console.log(obj);
 
                     $.each(obj.Result, function (index, Customer) {
                         ledgerDropdown.append('<option value="' + Customer.Account_Code + '">' + Customer.Account_Name + '</option>');
@@ -600,7 +600,7 @@
                 type: "POST",
                 data: { "Type": $('#Entry_id').val() },
                 success: function (data) {
-                     ("success");
+                    console.log("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {

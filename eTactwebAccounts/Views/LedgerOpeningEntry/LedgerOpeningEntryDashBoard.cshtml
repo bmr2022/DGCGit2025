@@ -322,7 +322,7 @@
                // GroupName: $('#GroupName').val(),
                // DrCr: $('#DrCr').val()
             };
-             ("Data From DashBoard:", requestData)
+            console.log("Data From DashBoard:", requestData)
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
@@ -355,7 +355,7 @@
                GroupName: $('#GroupName').val(),
                DrCr: $('#DrCr').val()
             };
-             ("Data From DashBoard:", requestData)
+            console.log("Data From DashBoard:", requestData)
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
@@ -388,7 +388,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     }

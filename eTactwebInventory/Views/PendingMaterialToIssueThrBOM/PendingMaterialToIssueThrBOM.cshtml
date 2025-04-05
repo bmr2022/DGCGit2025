@@ -457,7 +457,7 @@
                 async: false,
                 success: function (data) {
 
-                    // (data);
+                    //console.log(data);
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -474,7 +474,7 @@
                     }
                 },
                 error: function (errMsg) {
-                     (errMsg);
+                    console.log(errMsg);
                 }
             });
         }
@@ -898,7 +898,7 @@
         }
 
         function TransferToIssueWithDblClick(k) {
-            //if (!validateTransfer()) {  ("do nothing"); }
+            //if (!validateTransfer()) { console.log("do nothing"); }
             //else {
                   
                 var rowCount = $('#divPendIssueGrid tr').length;
@@ -961,7 +961,7 @@
                     },
                     error: function (result, status, xhr) {
                         $.notify(result.responseText, "error");
-                         (result.responseText);
+                        console.log(result.responseText);
                     }
                 });
             }
@@ -1053,7 +1053,7 @@
 
         function TransferToIssue() {
               
-            if (!validateTransfer()) {  ("do nothing"); }
+            if (!validateTransfer()) { console.log("do nothing"); }
             else {
 
                 var rowCount = $('#divPendIssueGrid tr').length;
@@ -1110,7 +1110,7 @@
                     },
                     error: function (result, status, xhr) {
                         $.notify(result.responseText, "error");
-                         (result.responseText);
+                        console.log(result.responseText);
                     }
                 });
             }

@@ -194,7 +194,7 @@
     <script>
 
         $(document).ready(function () {
-             ("Ready");
+            console.log("Ready");
 
             if ($('#Mode').val() === "U") {
                 
@@ -383,7 +383,7 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-             (table);
+            console.log(table);
             TableToExcel.convert(table[0], {
                 name: `ReportTable.xlsx`,
                 sheet: {

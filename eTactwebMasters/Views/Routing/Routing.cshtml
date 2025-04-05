@@ -646,7 +646,7 @@
 
                 },
                 error: function (req, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
         }
@@ -696,7 +696,7 @@
 
                 },
                 error: function (req, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
         }
@@ -730,7 +730,7 @@
 
                 },
                 error: function (req, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
         }
@@ -806,7 +806,7 @@
                         if (obj.Result.Table.length == 0) {
                             $("button[type='submit']").prop("disabled", true);
                         } else {
-                             (obj);
+                            console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1121,16 +1121,16 @@
                 "StoreName": $('#StoreName').find(':selected').text() == "-Select-" ? "" : $('#StoreName').find(':selected').text(),
                 "SequenceNo": parseInt($('#SequenceNo').val()) == 0 ? (highestValue + 1) : parseInt($('#SequenceNo').val())
             }
-             (ItemData);
+            console.log(ItemData);
             $.ajax({
                 url: "@Url.Action("AddRoutingDetail")",
                 type: "POST",
                 data: ItemData,
                 beforeSend: function (xhr) {
-                     (1);
+                    console.log(1);
                 },
                 success: function (data, status, xhr) {
-                     (2);
+                    console.log(2);
                     $('#RoundOff').prop('selectedIndex', 0);
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Process Not Allowed.', "info");
@@ -1150,16 +1150,16 @@
                     alert(response.responseText);
                 },
                 complete: function () {
-                     (5);
+                    console.log(5);
 
                 }
             }).done(function () {
-                 (3);
+                console.log(3);
 
             }).fail(function () {
                 alert("error");
             }).always(function () {
-                 (4);
+                console.log(4);
             });
         });
 

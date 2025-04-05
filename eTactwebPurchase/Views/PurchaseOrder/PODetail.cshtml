@@ -343,7 +343,7 @@
                     Dat = new Date();
                     let am_pm = (Dat.getHours() >= 12) ? "PM" : "AM";
                     var time = Dat.getHours() + ":" + Dat.getMinutes() + ":" + Dat.getSeconds() + " - " + am_pm;
-                    // (time);
+                    //console.log(time);
                     $('#EntryTime').val(time);
                 }, 1000);
             }
@@ -421,7 +421,7 @@
             $('#POQty').val(indentQty);
             $('#POQty').prop("readonly", true);
 
-             (JSON.stringify(itemDataArray));
+            console.log(JSON.stringify(itemDataArray));
 
             $.ajax({
                 type: "POST",
@@ -802,7 +802,7 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#poTable");
-             (table);
+            console.log(table);
 
             TableToExcel.convert(table[0], {
                 name: `PurchaseOrderTableAmm.xlsx`,
@@ -1992,7 +1992,7 @@
         //            }
         //        },
         //        error: function (result, status, xhr) {
-        //             (result);
+        //            console.log(result);
         //        }
         //    }).done(function () {
         //        ClearItemTax();
@@ -2908,7 +2908,7 @@
         //  if (event.altKey && event.keyCode === 83) {
         //    event.preventDefault(); // Prevent the default behavior of the event (e.g., opening browser menu)
         //    // Perform your desired actions here
-        //     ("ALT + S captured");
+        //    console.log("ALT + S captured");
         //  }
         //});
 

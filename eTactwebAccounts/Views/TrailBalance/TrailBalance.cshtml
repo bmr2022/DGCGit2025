@@ -190,7 +190,7 @@
     <script>
 
         $(document).ready(function () {
-             ("Ready");
+            console.log("Ready");
 
             function loadReportFields(reportType) {
                 let html = '';
@@ -471,7 +471,7 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-             (table);
+            console.log(table);
             TableToExcel.convert(table[0], {
                 name: `ReportTable.xlsx`,
                 sheet: {

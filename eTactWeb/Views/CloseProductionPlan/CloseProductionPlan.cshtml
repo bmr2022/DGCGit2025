@@ -246,7 +246,7 @@
         function GetDetailData() {
 
             var data = $('#SParam').serialize();
-             ("Data:",data);
+            console.log("Data:",data);
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
@@ -438,7 +438,7 @@
                 type: "POST",
                 data: { "Type": $('#Entry_id').val() },
                 success: function (data) {
-                     ("success");
+                    console.log("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {
@@ -473,7 +473,7 @@
                 "AltPartCode": $('#AltPartCode').find(":selected").text(),
                 "AltItemName": $('#AltItemName').find(":selected").text(),
             };
-             (SchData);
+            console.log(SchData);
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddAlternateItemMasterDetail", "AlternateItemMaster")',

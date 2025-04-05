@@ -245,7 +245,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                        // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                         //$('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -277,7 +277,7 @@
 
         $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
-             (table);
+            console.log(table);
             TableToExcel.convert(table[0], {
                 name: `ReportTable.xlsx`,
                 sheet: {

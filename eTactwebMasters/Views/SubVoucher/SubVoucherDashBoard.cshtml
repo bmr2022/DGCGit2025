@@ -294,7 +294,7 @@
         $(document).ready(function () {
 
             var date = $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-             (date);
+            console.log(date);
 
             AutoComplete('Item_Master_Type', 'Type_Item', 'Main_Category_Type', null);
 
@@ -448,7 +448,7 @@
                     $('#PrefixEntryId').val(data); // Set the value dynamically
                 },
                 error: function (xhr, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
         }

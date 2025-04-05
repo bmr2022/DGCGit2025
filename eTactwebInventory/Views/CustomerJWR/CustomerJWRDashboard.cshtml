@@ -208,7 +208,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var firstDayOfMonth = getFirstDayOfMonth(result);
                         $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
@@ -230,7 +230,7 @@
                         if (obj.Result.Table.length == 0) {
                             //$("#submitBTN").prop("disabled", true);
                         } else {
-                             (obj);
+                            console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;

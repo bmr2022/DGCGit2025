@@ -724,7 +724,7 @@
                 success: function (data) {
                     if (data != null) {
                         var obj = $.parseJSON(data);
-                         (obj);
+                        console.log(obj);
                         var optAll = obj.Result.Table[0].OptAll;
                         var optSave = obj.Result.Table[0].OptSave;
                         var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -935,11 +935,11 @@
 
                 }
             }).done(function (data) {
-                 (data);
+                console.log(data);
             }).fail(function (data) {
-                 (data);
+                console.log(data);
             }).always(function (data) {
-                 (data);
+                console.log(data);
             });
         }
 
@@ -1908,7 +1908,7 @@
                     }
                 },
                 error: function (req, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
         }
@@ -1938,7 +1938,7 @@
 
                 },
                 error: function (req, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
         }
@@ -1973,7 +1973,7 @@
 
                 },
                 error: function (req, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
         }
@@ -2453,12 +2453,12 @@
                     //$('.ItemBtn').html('<span role="status"><i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 }
             }).done(function () {
-                 (3);
+                console.log(3);
                 GetTxPartItem();
             }).fail(function () {
                 alert("error");;
             }).always(function () {
-                 (4);
+                console.log(4);
             });
         });
 
@@ -2572,7 +2572,7 @@
                     alert(error);
                 },
                 complete: function () {
-                    // (5);
+                    //console.log(5);
                     //$('.Schedule').fadeIn();
                     //$('#NetTotall').val(0);
                     //$('.ItemBtn').html('<span role="status"><i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -2878,7 +2878,7 @@
                 success: function (data, status, error) {
                     $('#divJobWorkGrid').empty();
                     //$('#divTaxGrid').empty();
-                     ("Job Grid cleared");
+                    console.log("Job Grid cleared");
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -2995,7 +2995,7 @@
                     data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
                     async: false,
                     success: function (data, status, xhr) {
-                         (data);
+                        console.log(data);
                         if (EditItemFlag) {
                             ClearGrid();
                         }

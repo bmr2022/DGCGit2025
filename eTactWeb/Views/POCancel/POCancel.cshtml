@@ -214,12 +214,12 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                             (obj);
+                            console.log(obj);
                             var action = [];
                             for (var i = 0; i < obj.Result.Table.length; i++) {
                                 action.push(obj.Result.Table[i].Action);
                             }
-                             (action);
+                            console.log(action);
                             if (action.includes('FinalLevelApproval')) {
                                 //do nothing
                             } else {

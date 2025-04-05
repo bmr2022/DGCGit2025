@@ -668,7 +668,7 @@
                     //$('#loader').show();
                     if (data != null) {
 
-                         (data);
+                        console.log(data);
                         $('#FromDate').val(data.fromDate);
                         $('#ToDate').val(data.toDate);
                         $('#MRNJWCustJW').val(data.mrnjwCustJW);
@@ -688,7 +688,7 @@
                     }
                 },
                 error: function (errMsg) {
-                     (errMsg);
+                    console.log(errMsg);
                 }
             });
         }
@@ -703,7 +703,7 @@
         //         success: function (data) {
         //             if (data != null) {
         //                 var obj = $.parseJSON(data);
-        //                  (obj);
+        //                 console.log(obj);
         //                 var optAll = obj.Result.Table[0].OptAll;
         //                 var optSave = obj.Result.Table[0].OptSave;
         //                 var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1699,7 +1699,7 @@
                 });
             }
             //FormAdd(formData);
-             (ItemData);
+            console.log(ItemData);
             $.ajax({
                 url: "@Url.Action("AddToMIRGrid")",
                 type: "POST",
@@ -1765,12 +1765,12 @@
                 },
                 success: function (data, status, xhr) {
 
-                     (data);
+                    console.log(data);
                     imageArray = data;
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
-                     (result.responseText)
+                    console.log(result.responseText)
                 },
                 failure: function (result, status, xhr) {
                     alert(response.responseText);

@@ -372,7 +372,7 @@
                             $(".totalrows").css("display", "none");
                             $("#SParam").hide();
                         } else {
-                         (obj);
+                        console.log(obj);
                         var optAll = obj.Result.Table[0].OptAll;
                         var optSave = obj.Result.Table[0].OptSave;
                         var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -461,7 +461,7 @@
                 url: "@Url.Action("GetLockedYear")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result[0] != undefined) {

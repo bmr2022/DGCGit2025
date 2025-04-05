@@ -121,7 +121,7 @@
             FillInvoiceForDashBoard();
 
             var date = $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-             (date);
+            console.log(date);
 
             AutoComplete('Item_Master_Type', 'Type_Item', 'Main_Category_Type', null);
           
@@ -256,7 +256,7 @@
                 BillNo: $('#BillNo').val(),
                
             };
-             ("Data From DashBoard:", requestData)
+            console.log("Data From DashBoard:", requestData)
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",

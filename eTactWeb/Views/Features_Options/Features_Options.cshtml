@@ -1361,7 +1361,7 @@
                     let parentButton = this.closest("button");
                     if (parentButton) {
                         let typeValue = parentButton.getAttribute("data-type");
-                         ("Selected Type:", typeValue); // Debugging
+                        console.log("Selected Type:", typeValue); // Debugging
 
                         // Store the type value in a hidden input field
                         let hiddenInput = document.getElementById("TypeInput");
@@ -1393,7 +1393,7 @@
                 type: "POST",
                 data: { "Type": $('#Entry_id').val() },
                 success: function (data) {
-                     ("success");
+                    console.log("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {

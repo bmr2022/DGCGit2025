@@ -188,7 +188,7 @@
                 }
             }
            var sessionYearCode = parseInt($('#SessionYearCode').val().split('/')[2].split(" ")[0]);
-             (sessionYearCode);
+            console.log(sessionYearCode);
             
             //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
@@ -284,7 +284,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         // var firstDayOfMonth = getFirstDayOfMonth(result);
                         // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);

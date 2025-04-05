@@ -1135,7 +1135,7 @@
                     var Dat = new Date();
                     let am_pm = (Dat.getHours() >= 12) ? "PM" : "AM";
                     var time = Dat.getHours() + ":" + Dat.getMinutes() + ":" + Dat.getSeconds() + " - " + am_pm;
-                    // (time);
+                    //console.log(time);
                     $('#EntryTime').val(time);
                 }, 1000);
             }
@@ -1224,7 +1224,7 @@
                         if (obj.Result.Table.length == 0) {
                             $("button[type='submit'").prop("disabled", true);
                         } else {
-                             (obj);
+                            console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1262,7 +1262,7 @@
                 url: "@Url.Action("GetTotalStock")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#StockQty').val("");
@@ -1399,7 +1399,7 @@
                 data: { Code: 0 },
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     $('#divTaxGrid').empty();
                     $('#TotalRoundOff').prop('selectedIndex', 0);
                     var INA = parseFloat($('#ItemNetAmount').val());
@@ -1435,7 +1435,7 @@
             //  }
             //});
             let table = $("#SaleOrderTbl");
-             (table);
+            console.log(table);
             ;
             TableToExcel.convert(table[0], {
                 name: `SaleOrderAmm.xlsx`,
@@ -2006,7 +2006,7 @@
                 data: { "CTRL": CTRL },
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
 
@@ -2057,7 +2057,7 @@
         //        url: "@Url.Action("GetLockedYear")",
         //        dataType: "json",
         //        success: function (result, status, error) {
-        //             (result);
+        //            console.log(result);
         //            if (result != null) {
         //                var obj = $.parseJSON(result);
         //                if (obj.Result[0] != undefined) {
@@ -2083,7 +2083,7 @@
                 url: "@Url.Action("GetLockedYear")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result[0] != undefined) {
@@ -2460,7 +2460,7 @@
                     }
                 },
                 error: function (result, status, xhr) {
-                     (result);
+                    console.log(result);
                 }
             }).done(function () {
                 //ClearItemTax();
@@ -2501,9 +2501,9 @@
                 //    }
                 //})
             }).fail(function (data) {
-                 (data);
+                console.log(data);
             }).always(function (data) {
-                 (data);
+                console.log(data);
             });
         }
 
@@ -2524,7 +2524,7 @@
                 url: "@Url.Action("GetAltQty")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
 
                         if ($('#PartCode').val() == 0 || $('#ItemCode').val() == 0) {
@@ -2566,7 +2566,7 @@
 
             const Total = TQty - (DQty + SQty);
 
-             (Total);
+            console.log(Total);
             if (Total == 0 && DQty + SQty == TQty) {
                 $('.addSchedule').prop('disabled', false).removeAttr('readonly');
             }
@@ -2669,7 +2669,7 @@
                 url: '@Url.Action("AddMultiBuyers")',
                 data: Data,
                 success: function (resp, status, error) {
-                     ("suceess Multi");
+                    console.log("suceess Multi");
                     if (resp) {
                         $('#divMultiBuyerGrid').empty();
                         $('#divMultiBuyerGrid').html(resp);
@@ -3021,18 +3021,18 @@
             }
             //alert('before itemgrid');
 
-             (ItemData);
+            console.log(ItemData);
             $.ajax({
                 url: '@Url.Action("ItemGrid")',
                 type: "POST",
                 data: ItemData,
                 beforeSend: function (xhr) {
                     //xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
-                     (1);
+                    console.log(1);
                 },
                 success: function (data, status, xhr) {
 
-                     (2);
+                    console.log(2);
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -3087,7 +3087,7 @@
                 },
                 complete: function () {
 
-                     (5);
+                    console.log(5);
                     if ($('#SOType').val() == 'CLOSE') {
                         $('.Schedule').fadeIn();
                     } else {
@@ -3096,12 +3096,12 @@
                     $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 }
             }).done(function () {
-                 (3);
+                console.log(3);
                 GetTaxPartItem();
             }).fail(function () {
                 alert("error");;
             }).always(function () {
-                 (4);
+                console.log(4);
             });
         });
 

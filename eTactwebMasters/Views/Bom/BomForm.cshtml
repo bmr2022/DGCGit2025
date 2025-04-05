@@ -399,7 +399,7 @@
                         if (obj.Result.Table.length == 0) {
                             $("button[type='submit']").prop("disabled", true);
                         } else {
-                             (obj);
+                            console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -674,7 +674,7 @@
                 $('#Unit').removeClass('is-invalid');
             }
 
-             ('IsErr : ' + IsErr);
+            console.log('IsErr : ' + IsErr);
 
             if (IsErr == 1) {
                 return false;
@@ -1041,7 +1041,7 @@
 
         $(function () {
             $("#container").delegate('a', 'click', function () {
-                 ("clicked");
+                console.log("clicked");
                 $(this).clone().appendTo("#container");
             });
         });

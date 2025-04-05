@@ -585,7 +585,7 @@
                     if (data != null) {
 
                         var obj = $.parseJSON(data);
-                         (obj);
+                        console.log(obj);
                         var optAll = obj.Result.Table[0].OptAll;
                         var optSave = obj.Result.Table[0].OptSave;
                         var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -612,10 +612,10 @@
                 dataType: "json",
                 data: { "YearCode": $('#YearCode').val() },
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                         (obj);
+                        console.log(obj);
                         $('#EntryId').val(obj.Result[0].EntryID);
                         $('#REQNo').val(obj.Result[0].REQNo);
                     }
@@ -762,8 +762,8 @@
 
                 var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-                 (formattedDate1);
-                 (formattedDate2);
+                console.log(formattedDate1);
+                console.log(formattedDate2);
 
                 $('#EntryDate').datepicker("option", "minDate", formattedFromDate);
                 $('#EntryDate').datepicker("option", "maxDate", formattedToDate);
@@ -966,7 +966,7 @@
             var formattedDate = ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear();
 
             return formattedDate;
-             (formattedDate);
+            console.log(formattedDate);
         }
         $('#AltQty').keyup(function () {
             var qty = parseFloat($(this).val());
@@ -1361,10 +1361,10 @@
                 type: "POST",
                 data: ItemData,
                 beforeSend: function (xhr) {
-                     (1);
+                    console.log(1);
                 },
                 success: function (data, status, xhr) {
-                     (2);
+                    console.log(2);
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
 
@@ -1392,15 +1392,15 @@
                     alert(response.responseText);
                 },
                 complete: function () {
-                     (5);
+                    console.log(5);
                     //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 }
             }).done(function () {
-                 (3);
+                console.log(3);
             }).fail(function () {
                 alert("error");
             }).always(function () {
-                 (4);
+                console.log(4);
             });
         });
 
@@ -1411,7 +1411,7 @@
             const month = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]).toLocaleString('default', { month: 'short' });
             const year = dateParts[2];
             const formattedDate = day + '/' + month + '/' + year;
-             (formattedDate);
+            console.log(formattedDate);
 
         }
 
@@ -1447,7 +1447,7 @@
 
         $(document).on('select2:select', '#ItemCode,#PartCode', function (e) {
             var cntId = e.target.id;
-             (cntId);
+            console.log(cntId);
             if (cntId == 'ItemCode') {
                 ItemNameChange(cntId);
             }
@@ -1512,7 +1512,7 @@
             if (!ID) return;
             else {
                 var v = $('#' + ID).select2('val');
-                 (v);
+                console.log(v);
                 if (ID == "PartCode") {
                     $("#ItemCode").val(v).trigger("change");
                 }

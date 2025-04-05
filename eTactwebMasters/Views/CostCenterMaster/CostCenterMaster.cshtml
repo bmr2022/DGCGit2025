@@ -339,7 +339,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                     (data);
+                    console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#CostcenterId').val(0);
@@ -442,7 +442,7 @@
                 type: "POST",
                 data: { "Type": $('#Entry_id').val() },
                 success: function (data) {
-                     ("success");
+                    console.log("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {

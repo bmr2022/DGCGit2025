@@ -542,8 +542,8 @@
 
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-             (formattedDate1);
-             (formattedDate2);
+            console.log(formattedDate1);
+            console.log(formattedDate2);
 
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
@@ -651,7 +651,7 @@
                 data: { "YearCode": $('#YearCode').val() },
                 async: false,
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#EntryId').val(obj.Result[0].EntryId);
@@ -784,7 +784,7 @@
                                 });
                         }
                         else {
-                            //  (obj);
+                            // console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;

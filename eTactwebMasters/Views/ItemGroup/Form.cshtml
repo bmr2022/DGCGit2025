@@ -163,7 +163,7 @@
                 type: "POST",
                 data: { "GroupCode": $('#Group_Code').val() },
                 success: function (data) {
-                     ("success");
+                    console.log("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {
@@ -312,7 +312,7 @@
                                     e.preventDefault(); // Prevents clicking the link
                                 });
                         } else {
-                             (obj);
+                            console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -372,7 +372,7 @@
             //    IsErr = 1;
             //}
 
-             ('IsErr : ' + IsErr);
+            console.log('IsErr : ' + IsErr);
 
             if (IsErr == 1) return false;
             if (IsErr == 0) return true;

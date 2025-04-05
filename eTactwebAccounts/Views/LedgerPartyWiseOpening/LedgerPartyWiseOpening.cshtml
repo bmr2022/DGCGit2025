@@ -395,7 +395,7 @@
                 type: 'POST',
                 async: false,
                 success: function (data, status, xhr) {
-                     (data);
+                    console.log(data);
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                         $('#EntryId').val(0);
@@ -748,7 +748,7 @@
 
         $(document).on('click', '#GridButton', function () {
              ;
-             ('Add to Grid button clicked');
+            console.log('Add to Grid button clicked');
             
             var BillNo = $('#BillNo').val().trim();
             var BillDate = $('#BillDate').val().trim();
@@ -838,7 +838,7 @@
                 "SrNO": parseInt($('#SrNO').val()) === 0 ? (highestValue + 1) : parseInt($('#SrNO').val())
             };
 
-             (SchData);
+            console.log(SchData);
 
             $.ajax({
                 type: "POST",

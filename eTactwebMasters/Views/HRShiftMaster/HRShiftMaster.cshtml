@@ -330,7 +330,7 @@
                     }
                 }
             }
-             ("Changes Effect done");
+            console.log("Changes Effect done");
             // Validate time format for specific fields
             
             $('#FirstBreakFrom, #FirstBreakTo, #SecondBreakFrom, #SecondBreakTo, #Lunchfrom, #Lunchto, #ThirdBreakFrom, #ThirdBreakTo')
@@ -527,7 +527,7 @@
                 type: "POST",
                 data: { "Type": $('#Entry_id').val() },
                 success: function (data) {
-                     ("success");
+                    console.log("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {

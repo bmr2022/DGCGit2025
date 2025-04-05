@@ -607,7 +607,7 @@
             e.preventDefault();
 
             if (!ValidateSubmit()) {
-                 ("Validation failed! Please check the form fields.");
+                console.log("Validation failed! Please check the form fields.");
                 return;
             }
             else {
@@ -912,7 +912,7 @@
                                 });
                         }
                         else {
-                            //  (obj);
+                            // console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1016,7 +1016,7 @@
                     }
                 }
             });
-             ("Opening modal...");
+            console.log("Opening modal...");
             $('#PopupModel').modal("show");
         }
         $('.Displayedit').click(function () {
@@ -1094,7 +1094,7 @@
 
                 adjustedData.push(rowData);
             });
-             ("Adustdata:", adjustedData);
+            console.log("Adustdata:", adjustedData);
 
             $.ajax({
                 url: "@Url.Action("GetAdjustedChallanDetailsData", "CustomerJWI")",
@@ -1245,7 +1245,7 @@
         //             //"SEQNo": parseInt($('#hiddenSeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#hiddenSeqNo').val())
         //         });
         //     }
-        //      ("AdjChallan Data:", Data)
+        //     console.log("AdjChallan Data:", Data)
         //     $.ajax({
         //         url: "@Url.Action("GetAdjustedChallan")",
         //         data: { DTTItemGrid: JSON.stringify(Data)},
@@ -1577,7 +1577,7 @@
         //         },
         //         async: false,
         //         success: function (result, status, error) {
-        //              (result);
+        //             console.log(result);
         //
         //             if (result && result.Result && result.Result.length > 0) {
         //
@@ -2074,7 +2074,7 @@
                 "Mode": $('#Mode').val(),
                 //"SEQNo": parseInt($('#hiddenSeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#hiddenSeqNo').val())
             }
-             (ItemData);
+            console.log(ItemData);
             $.ajax({
                 url: "@Url.Action("AddCustJWIDetail")",
                 type: "POST",

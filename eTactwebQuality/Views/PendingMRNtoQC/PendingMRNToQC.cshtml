@@ -254,7 +254,7 @@
                 success: function (data) {
                      
                     var obj = $.parseJSON(data);
-                     ("SUCCESS");
+                    console.log("SUCCESS");
                     $('#DeptName').val(obj.Result.Table[0].Department_Id);
 
                     if ($('#UserType').val() != "Admin") {
@@ -295,7 +295,7 @@
                 success: function (data) {
 
                     var obj = $.parseJSON(data);
-                     ("SUCCESS");
+                    console.log("SUCCESS");
                     $('#VendorName').empty();
                     $('#VendorName').append("<select value='0' selected disabled>-Select-</select>");
                     $.each(obj.Result.Table, function (index, val) {
@@ -333,7 +333,7 @@
                 success: function (data) {
 
                     var obj = $.parseJSON(data);
-                     ("SUCCESS");
+                    console.log("SUCCESS");
                     $('#ItemName,#ItemCode').empty();
                     $('#ItemName,#ItemCode').append("<select value='0' selected disabled>-Select-</select>");
                     $.each(obj.Result.Table, function (index, val) {
@@ -372,7 +372,7 @@
                 success: function (data) {
                      
                     var obj = $.parseJSON(data);
-                     ("SUCCESS");
+                    console.log("SUCCESS");
                     $('#MrnNo').empty();
                     $('#MrnNo').append("<select value='0' selected disabled>-Select-</select>");
                     $.each(obj.Result.Table, function (index, val) {
@@ -408,7 +408,7 @@
                 success: function (data) {
 
                     var obj = $.parseJSON(data);
-                     ("SUCCESS");
+                    console.log("SUCCESS");
                     $('#InvoiceNo').empty();
                     $('#InvoiceNo').append("<select value='0' selected disabled>-Select-</select>");
                     $.each(obj.Result.Table, function (index, val) {
@@ -512,13 +512,13 @@
             //    type: "POST",
             //    data: data,
             //    success: function (data, status, xhr) {+
-            //         ("SUCCESS");
+            //        console.log("SUCCESS");
             //        //var url = '@Url.Action("IssueWithoutBom", "IssueWithoutBom")';
             //        //window.location.href = url;
             //    },
             //    error: function (result, status, xhr) {
             //        $.notify(result.responseText, "error");
-            //         (result.responseText);
+            //        console.log(result.responseText);
             //    }
             //});
 
@@ -548,14 +548,14 @@
                 success: function (data, status, xhr) {
                      
                      $('#loader').show();
-                     ("SUCCESS");
+                    console.log("SUCCESS");
                     var url = '/MIR/Index/?';
                     url = url + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&VendorName=" + $('#VendorName').val() + "&ItemName=" + $('#ItemName').val() + "&MRNNo=" + $('#MrnNo').val() + "&MRNJW=" + $('#MrnJW').val() + "&PartCode=" + $('#ItemCode').val() + "&DeptName=" + $('#DeptName').val() + "&INVNo=" + $('#InvoiceNo').val()
                     window.location.href = url;
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
-                     (result.responseText);
+                    console.log(result.responseText);
                 }
             });
         }

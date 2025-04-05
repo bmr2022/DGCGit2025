@@ -1250,7 +1250,7 @@
                 type: 'POST',
                 async: false,
                 success: function (response, status, error) {
-                     ("Raw Response:", response);
+                    console.log("Raw Response:", response);
                     var CostCenterNameDropdown = $('#CostCenterName');
                     var obj = $.parseJSON(response);
                     CostCenterNameDropdown.empty();
@@ -1277,7 +1277,7 @@
                 type: "POST",
                 data: { "Type": $('#Entry_id').val() },
                 success: function (data) {
-                     ("success");
+                    console.log("success");
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result != null) {

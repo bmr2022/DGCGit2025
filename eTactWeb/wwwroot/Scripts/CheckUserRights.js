@@ -30,7 +30,7 @@ function disableLinks(selector) {
 //                            e.preventDefault(); // Prevents clicking the link
 //                        });
 //                } else {
-//                     (obj);
+//                    console.log(obj);
 //                    var optAll = obj.Result.Table[0].OptAll;
 //                    var optSave = obj.Result.Table[0].OptSave;
 //                    var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -84,7 +84,7 @@ function GetFormRightsSO() {
                             e.preventDefault(); // Prevents clicking the link
                         });
                 } else {
-                     (obj);
+                    console.log(obj);
                     var optAll = obj.Result.Table[0].OptAll;
                     var optSave = obj.Result.Table[0].OptSave;
                     var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -146,7 +146,7 @@ function GetFormRightsSOAmm() {
                             e.preventDefault(); // Prevents clicking the link
                         });
                 } else {
-                     (obj);
+                    console.log(obj);
                     var optAll = obj.Result.Table[0].OptAll;
                     var optSave = obj.Result.Table[0].OptSave;
                     var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -201,7 +201,7 @@ function GetFormRightsSaleSch() {
                             e.preventDefault(); // Prevents clicking the link
                         });
                 } else {
-                     (obj);
+                    console.log(obj);
                     var optAll = obj.Result.Table[0].OptAll;
                     var optSave = obj.Result.Table[0].OptSave;
                     var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -255,7 +255,7 @@ function GetFormRightsSaleSchAmm() {
                             e.preventDefault(); // Prevents clicking the link
                         });
                 } else {
-                     (obj);
+                    console.log(obj);
                     var optAll = obj.Result.Table[0].OptAll;
                     var optSave = obj.Result.Table[0].OptSave;
                     var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -310,7 +310,7 @@ function GetFormRightsPO() {
                             e.preventDefault(); // Prevents clicking the link
                         });
                 } else {
-                     (obj);
+                    console.log(obj);
                     var optAll = obj.Result.Table[0].OptAll;
                     var optSave = obj.Result.Table[0].OptSave;
                     var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -357,7 +357,7 @@ function GetFormRightsPOSch() {
                     disableLinks("#PurchaseSchedule, #PurchaseScheduleDashBoard");
                     
                 } else {
-                     (obj);
+                    console.log(obj);
                     var optAll = obj.Result.Table[0].OptAll;
                     var optSave = obj.Result.Table[0].OptSave;
                     var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -395,7 +395,7 @@ function GetFormRightsPOAmm() {
                     disableLinks("#PurchaseOrderAmendment, #PurchaseOrderAmendmentdash");
 
                 } else {
-                     (obj);
+                    console.log(obj);
                     var optAll = obj.Result.Table[0].OptAll;
                     var optSave = obj.Result.Table[0].OptSave;
                     var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -434,7 +434,7 @@ function GetFormRightsPOSchAmm() {
                     disableLinks("#PurchaseScheduleAmendment, #PurchaseScheduleAmendmentdash");
 
                 } else {
-                     (obj);
+                    console.log(obj);
                     var optAll = obj.Result.Table[0].OptAll;
                     var optSave = obj.Result.Table[0].OptSave;
                     var optUpdate = obj.Result.Table[0].OptUpdate;

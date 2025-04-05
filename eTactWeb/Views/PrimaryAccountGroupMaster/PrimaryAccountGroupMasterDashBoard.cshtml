@@ -213,7 +213,7 @@
         $(document).ready(function () {
             GetFormRights();
             var date = $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-             (date);
+            console.log(date);
 
             AutoComplete('Item_Master_Type', 'Type_Item', 'Main_Category_Type', null);
 
@@ -302,7 +302,7 @@
                         if (obj.Result.Table.length == 0) {
                             //$("#submitBTN").prop("disabled", true);
                         } else {
-                             (obj);
+                            console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -401,7 +401,7 @@
                 data: { parentAccountCode: parentGroupCode },
                 success: function (data) {
                      
-                     (data);
+                    console.log(data);
                     var response = JSON.parse(data);
                     if (response.Result && response.Result.length > 0) {
                         $('#Main_Group').val(response.Result[0].MainGroup);

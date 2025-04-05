@@ -879,7 +879,7 @@
                                 });
                         }
                         else {
-                            //  (obj);
+                            // console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1009,8 +1009,8 @@
                  
                 $('#EntryDate,#ChallanDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
                 $('#EntryDate,#ChallanDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
-                // (formattedDate1);
-                // (formattedDate2);
+                //console.log(formattedDate1);
+                //console.log(formattedDate2);
             }
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
@@ -1160,7 +1160,7 @@
                 url: "@Url.Action("FillVendors")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $.each(obj.Result, function (index, val) {
@@ -1177,7 +1177,7 @@
                 url: "@Url.Action("FillStore")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $.each(obj.Result, function (index, val) {
@@ -1195,7 +1195,7 @@
                 url: "@Url.Action("FillEmployee")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $.each(obj.Result, function (index, val) {
@@ -1212,7 +1212,7 @@
                 url: "@Url.Action("FillProcess")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $.each(obj.Result, function (index, val) {
@@ -1230,7 +1230,7 @@
                 data: { bomInd: $('#BomStatus').val() },
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $.each(obj.Result, function (index, val) {
@@ -1248,7 +1248,7 @@
                 data: { bomInd: $('#BomStatus').val() },
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $.each(obj.Result, function (index, val) {
@@ -1266,7 +1266,7 @@
                 data: { YearCode: $('#YearCode').val() },
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#EntryId').val(obj.Result[0].EntryId);
@@ -1282,7 +1282,7 @@
                 url: "@Url.Action("GetDefaultBranch")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     (result);
+                    console.log(result);
                     const selectElement = document.getElementById("CC"); // replace "mySelect" with the ID of your select element
                     const desiredValue = result; // replace with the value of the option you want to select
 
@@ -1534,7 +1534,7 @@
 
                 },
                 error: function (req, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
         }
@@ -1562,7 +1562,7 @@
                         var obj = $.parseJSON(result);
                         var allowOption = obj.Result.Table[0].AllowBackDateJOBWorkIssue;
                         fifoBatch = obj.Result.Table[0].FIFOBasedBatchInventory;//batch no FIFO feature
-                         (allowOption);
+                        console.log(allowOption);
                         if (allowOption == 'Y') {
                             //$('#EntryDate').prop("readonly", false);
                             $('#EntryDate').css('color', 'rgb(248 255 178)'); // feature option
@@ -1724,7 +1724,7 @@
 
                 },
                 error: function (req, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
             $.ajax({
@@ -1752,7 +1752,7 @@
 
                 },
                 error: function (req, status, error) {
-                     (error);
+                    console.log(error);
                 }
             });
         }
@@ -2309,7 +2309,7 @@
                 type: "POST",
                 data: ItemData,
                 beforeSend: function (xhr) {
-                    // (1);
+                    //console.log(1);
                 },
                 success: function (data, status, xhr) {
 
@@ -2323,7 +2323,7 @@
                         "batchno": $('#BatchNo').val(),
                         "seqBatch": SeqForBatch
                     });
-                    // (2);
+                    //console.log(2);
                     $('#RoundOff').prop('selectedIndex', 0);
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
@@ -2392,7 +2392,7 @@
                     alert(response.responseText);
                 },
                 complete: function () {
-                    //  (5);
+                    // console.log(5);
                     $('.Schedule').fadeIn();
                     //$('#NetTotall').val(0);
                     $('#DiscountPercentage').val(0);
@@ -2400,12 +2400,12 @@
                     //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 }
             }).done(function () {
-                //  (3);
+                // console.log(3);
                 GetTaxPartItem();
             }).fail(function () {
                 alert("error");;
             }).always(function () {
-                //   (4);
+                //  console.log(4);
             });
         });
 
@@ -2458,7 +2458,7 @@
                 dataType: "json",
                 data: { ItemCode: $('#PartCode').val(), AltQty: 0, UnitQty: $('#IssQty').val() },
                 success: function (data, status, error) {
-                     (data);
+                    console.log(data);
 
                     var obj = $.parseJSON(data);
                     $('#AltQTy').val(obj.Result[0].AltUnitValue);
@@ -2475,7 +2475,7 @@
                 dataType: "json",
                 data: { ItemCode: $('#PartCode').val(), AltQty: parseFloat($('#AltQTy').val()) == 'NaN' ? 0 : parseFloat($('#AltQTy').val()), UnitQty: 0 },
                 success: function (data, status, error) {
-                     (data);
+                    console.log(data);
 
                     var obj = $.parseJSON(data);
                     $('#IssQty').val(obj.Result[0].ActualUnitValue);
@@ -2560,7 +2560,7 @@
                     alert(error);
                 },
                 complete: function () {
-                    // (5);
+                    //console.log(5);
                     //$('.Schedule').fadeIn();
                     //$('#NetTotall').val(0);
                     //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -3125,7 +3125,7 @@
                         }
                         else {
 
-                            // (obj);
+                            //console.log(obj);
                             if (obj != null && obj.length == 1) {
 
                                 // QtyVal = obj[0].IssQty;

@@ -86,7 +86,7 @@
                     });
 
                     tempRows += "</tr>";
-                     (tempRows);
+                    console.log(tempRows);
                 });
                 // exclude img tags
                 if (e.settings.exclude_img) {

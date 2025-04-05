@@ -866,7 +866,7 @@
                         if (obj.Result.Table.length == 0) {
                             $("button[type='submit']").prop("disabled", true);
                         } else {
-                             (obj);
+                            console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -1404,7 +1404,7 @@
                     success: function (data) {
 
                         EditEachItem = true;
-                         (data);
+                        console.log(data);
                         var obj = $.parseJSON(data);
                         if (obj != null && obj.length == 1) {
                             $('#PartCode').val(obj[0].ItemCode).trigger("change");
