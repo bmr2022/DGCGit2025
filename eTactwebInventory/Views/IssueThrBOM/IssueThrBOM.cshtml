@@ -23,7 +23,7 @@
     #IssueThrBomGrid th {
         background-color: #127387;
         position: sticky;
-        top: 0px;
+        top: -17px;
         z-index: 1;
     }
 </style>
@@ -1069,9 +1069,7 @@
                                 $('#MainGridUniqueBatchNo-' + i).empty();
                                 $('#MainGridUniqueBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
                                 $.each(obj.Result, function (index, val) {
-                                    var fullVal = val.UniqueBatchNo;
-                                    var cleanLabel = fullVal.split(' Batch No')[0];
-                                    $('#MainGridUniqueBatchNo-' + i).append('<option value = ' + val.UniqueBatchNo + ' > ' + val.UniqueBatchNo + ' </option>');
+                                    $('#MainGridUniqueBatchNo-' + i).append('<option value ="' + val.UniqueBatchNo + '"> ' + val.UniqueBatchNo + ' </option>');
                                 });
                             }
                         }
@@ -1111,7 +1109,7 @@
                 data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).val() },
                 async: false,
                 success: function (data) {
-
+                    debugger
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
