@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -18,9 +19,9 @@ namespace eTactWeb.Data.BLL
         private RetFromDepartmentMainDAL _RetFromDepartmentMainDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public RetFromDepartmentMainBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public RetFromDepartmentMainBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _RetFromDepartmentMainDAL = new RetFromDepartmentMainDAL(config, dataLogicDAL);
+            _RetFromDepartmentMainDAL = new RetFromDepartmentMainDAL(config, dataLogicDAL,connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
 

@@ -105,5 +105,17 @@ namespace eTactWeb.DOM.Models
         public string PanNo{ get; set; }   
         public string MedicalInsuranceDetail { get; set; }    
 
+        //Upload Section
+        public string fileUpload { get; set; }    
+        public string ThumbUnPress { get; set; }    
+        public string Aadhar { get; set; }   
+
+        //Educational Qualification
+        public string Qualification { get; set; }   
+        public string Univercity_Sch { get; set; }   
+        public string Per { get; set; }   
+        public int InYear { get; set; }   
+        public string Remark { get; set; }   
+
     }
 }

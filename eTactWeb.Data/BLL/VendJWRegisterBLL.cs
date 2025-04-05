@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -17,10 +18,10 @@ namespace eTactWeb.Data.BLL
         private readonly IDataLogic _DataLogicDAL;
         private readonly VendJWRegisterDal _VendJWRegisterDal;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public VendJWRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public VendJWRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _VendJWRegisterDal = new VendJWRegisterDal(configuration, iDataLogic, _httpContextAccessor);
+            _VendJWRegisterDal = new VendJWRegisterDal(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
         public async Task<VendJWRegisterModel> GetJWRegisterData(string FromDate, string ToDate,string RecChallanNo,string IssChallanNo, string PartyName ,string PartCode, string ItemName, string IssueChallanType,string ReportMode)
         {

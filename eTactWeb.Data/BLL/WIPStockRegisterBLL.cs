@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -18,10 +19,10 @@ namespace eTactWeb.Data.BLL
         private readonly WIPStockRegisterDAL _WIPStockRegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public WIPStockRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public WIPStockRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _WIPStockRegisterDAL = new WIPStockRegisterDAL(configuration, iDataLogic, _httpContextAccessor);
+            _WIPStockRegisterDAL = new WIPStockRegisterDAL(configuration, iDataLogic, _httpContextAccessor,connectionStringService);
         }
 
         public async Task<ResponseResult> GetAllWorkCenter()

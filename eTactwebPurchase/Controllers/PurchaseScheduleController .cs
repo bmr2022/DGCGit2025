@@ -267,9 +267,9 @@ public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogi
         //"SchApproved", "PODate", "SchNo", "SchDate", "SchYear", "POYearCode", "SchEffFromDate", "SchEffTillDate", "CreatedByEmpName", "CreatedOn", "ApprovedBy",
         //"SchAmendApprovedByEmp", "SchCompleted", "schAmendNo", "schAmendDate", "MRPNO", "Branch", "Active");
         var DT = Result.Result.DefaultView.ToTable(true, "EntryID", "PONO", "AccountCode", "VendorName", "DeliveryAddress",
-  "SchApproved", "PODate", "SchNo", "SchDate", "SchYear", "POYearCode", "SchEffFromDate", "SchEffTillDate", "CreatedByEmpName",
-  "CreatedOn", "ApprovedByEmp", "EntryByMachineName", "CreatedBy",
-  "SchAmendApprovedByEmp", "SchCompleted", "schAmendNo", "schAmendDate", "MRPNO", "Branch", "Active");
+              "SchApproved", "PODate", "SchNo", "SchDate", "SchYear", "POYearCode", "SchEffFromDate", "SchEffTillDate", "CreatedByEmpName",
+              "CreatedOn", "ApprovedByEmp", "EntryByMachineName", "CreatedBy",
+              "SchAmendApprovedByEmp", "SchCompleted", "schAmendNo", "schAmendDate", "MRPNO", "Branch", "Active");
 
         model.PSDashboard = CommonFunc.DataTableToList<PurchaseScheduleDashboard>(DT,"POSCHEDULEDASHBOARD");
         model.DashboardType = "Summary";

@@ -18,14 +18,16 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
+        private readonly ConnectionStringService _connectionStringService;
         private IDataReader? Reader;
 
-        public VendJWRegisterDal(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor)
+        public VendJWRegisterDal(IConfiguration configuration, IDataLogic iDataLogic, IHttpContextAccessor httpContextAccessor, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
             _httpContextAccessor = httpContextAccessor;
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
         public async Task<VendJWRegisterModel> GetJWRegisterData(string FromDate, string ToDate, string RecChallanNo,string IssChallanNo,string PartyName, string PartCode, string ItemName, string IssueChallanType, string ReportMode)

@@ -69,7 +69,10 @@
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
-
+                             <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 justify-content-center mt-4" style="margin-left:50px;margin-top:10px;">
+                                    <label class="color-box" style="background-color: #FF0000;"></label><label style="margin-left:5px;margin-top:-5px;">Sch Unapproved</label>
+                                    <label class="color-box" style="background-color: green;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Sch Approved</label>
+                                </div>
                             <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 d-flex justify-content-center mt-3">
                                 <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetSearchData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
@@ -114,6 +117,13 @@
     </div>
 </div>
 
+<style>
+    .color-box {
+        width: 10px;
+        height: 10px;
+    }
+</style>
+
 @section Scripts
 {
     <script>
@@ -124,7 +134,7 @@
             var dashGrid = $('#PSDashboard tr').length - 1;
             $('#totalRows').text(dashGrid);
 
-
+            debugger
             var finToDate = $('#ToDate').val();
 
             var dateParts1 = finToDate.split("/");
@@ -148,11 +158,10 @@
 
 
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-
+            debugger
             //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate1.split(" ")[0]));
 
             AutoComplete('VPurchaseSCHEDULE', 'VendorName', 'VendorName', null);
             AutoComplete('VPurchaseSCHEDULE', 'ItemName', 'ItemName', null);
@@ -353,6 +362,73 @@
                 }
             });
         }
+
+        $("#SendToExcel").click(function () {
+
+            const table = document.querySelector(".divPendWOTable");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    headerData.push(cell.textContent);
+                }
+            });
+
+            let maxColumns = 0;
+            for (let i = 1; i < rows.length; i++) {
+                const cellsCount = rows[i].querySelectorAll("td, input").length;
+                maxColumns = Math.max(maxColumns, cellsCount);
+            }
+            for (let i = headerData.length; i < maxColumns; i++) {
+                headerData.push('');
+            }
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                const cells = rows[i].querySelectorAll("td");
+
+                cells.forEach((cell, index) => {
+                    if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                        rowData.push(cell.textContent);
+                    }
+                });
+
+                const inputCells = rows[i].querySelectorAll("input");
+                if (inputCells.length > 0) {
+                    inputCells.forEach((inputCell, index) => {
+                        if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                            rowData.push(inputCell.value);
+                        }
+                    });
+                }
+                for (let j = rowData.length; j < headerData.length; j++) {
+                    rowData.push('');
+                }
+
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            const colsWidths = [];
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    colsWidths.push({ wch: 15 });
+                }
+            });
+            ws["!cols"] = colsWidths;
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1")
+
+            XLSX.writeFile(wb, "PendProductionSchGrid.xlsx");
+        });
 
         function GetDetailData() {
             var data = $('#SParam').serialize();

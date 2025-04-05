@@ -27,6 +27,7 @@ namespace eTactWeb.DOM.Models
         public string BOMInd { get; set; }
         public string ProducedUnprod { get; set; }
         public string? SONO { get; set; }
+        public string? SOType { get; set; }
         public string? CustOrderNo { get; set; }
         public int SOYearCode { get; set; }
         public string? SODate { get; set; }

@@ -73,20 +73,14 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
             }
+          
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MrnEntryparam", EntryId);
             webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            webReport.Report.Prepare();
-            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
-            {
-                if (dataSource is TableDataSource tableDataSource)
-                {
-                    tableDataSource.Enabled = true;
-                    tableDataSource.Init(); // Refresh the data source
-                }
-            }
+            webReport.Report.Refresh();
             return View(webReport);
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string MrnNo = "")
@@ -849,12 +843,15 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-            DateTime fromDt, toDt;
-            string fromDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
-                 fromDt = DateTime.ParseExact(fromDtString, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                // Use fromDt as needed
-            string toDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(ToDate);
-                 toDt = DateTime.ParseExact(toDtString, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            //DateTime fromDt, toDt;
+            //string fromDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
+            //     fromDt = DateTime.ParseExact(fromDtString, "dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            //    // Use fromDt as needed
+            //string toDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(ToDate);
+            //     toDt = DateTime.ParseExact(toDtString, "dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+
+
+
                 // Use fromDt as needed
             //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
             // DateTime fromDt = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
@@ -862,7 +859,7 @@ namespace eTactWeb.Controllers
             //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
             //string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
 
-            return RedirectToAction("MRNDashboard", new { FromDate = fromDt, ToDate = toDt, Flag = "False", VendorName = VendorName, MrnNo = MrnNo, GateNo = GateNo, PONo = PONo, ItemName = ItemName, PartCode = PartCode, Type = Type });
+            return RedirectToAction("MRNDashboard", new { FromDate = FromDate, ToDate = ToDate, Flag = "False", VendorName = VendorName, MrnNo = MrnNo, GateNo = GateNo, PONo = PONo, ItemName = ItemName, PartCode = PartCode, Type = Type });
 
         }
         public async Task<JsonResult> FillEntryandMRN(int YearCode)

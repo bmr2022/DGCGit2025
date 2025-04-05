@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -13,9 +14,9 @@ namespace eTactWeb.Data.BLL
 
         private readonly DirectPurchaseBillDAL _DirectPurchaseBillDAL;
 
-        public DirectPurchaseBillBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public DirectPurchaseBillBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _DirectPurchaseBillDAL = new DirectPurchaseBillDAL(configuration, iDataLogic);
+            _DirectPurchaseBillDAL = new DirectPurchaseBillDAL(configuration, iDataLogic,  connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         //public async Task<ResponseResult> GetItemServiceFORPO(string ItemSErv)

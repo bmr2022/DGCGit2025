@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
+using eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -17,7 +18,7 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
-
+        private readonly ConnectionStringService _connectionStringService;
         //public static decimal BatchStockQty { get; private set; }
         public async Task<ResponseResult> GetReportName()
         {
@@ -38,10 +39,12 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public IssueNrgpDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        public IssueNrgpDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
         public async Task<ResponseResult> GetFormRights(int userID)
         {
@@ -699,9 +702,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
-                SqlParams.Add(new SqlParameter("@FinStartDate", ParseFormattedDate(FinStartDate)));
+                SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
                 //finStDt.ToString("yyyy/MM/dd").Replace("-", "/")));
-                SqlParams.Add(new SqlParameter("@transDate", Date.ToString("yyyy-MM-dd")));
+                SqlParams.Add(new SqlParameter("@transDate", Date));
                     //.Replace("-", "/")));
                 SqlParams.Add(new SqlParameter("@batchno", batchno));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStore", SqlParams);

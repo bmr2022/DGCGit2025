@@ -119,6 +119,9 @@
                                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                         <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Generate Schedule Detail</strong>
                                     </button>
+                                    <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnGenerateSchExcel" onclick="createStyledExcelFile();">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
                                 </h2>
 
                                 <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
@@ -171,7 +174,22 @@
            
             $('#MrpYearCode').select2();
             $('#MrpNo').select2();
-         
+            $("#btnGenerateSchExcel").click(function () {
+
+                var table = $(".PMRPGrid");
+                if (table.length === 0) {
+                    console.error("Table element with ID 'MRPGrid' not found.");
+                    return;
+                }
+
+                try {
+                    table.table2excel({
+                        filename: "GenerateSchedule.xls"
+                    });
+                } catch (error) {
+                    console.error("An error occurred while exporting to Excel:", error);
+                }
+            });
 
             GetMrpNo();
             
@@ -581,6 +599,8 @@
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <script src="~/Scripts/table2excel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
 
 
 

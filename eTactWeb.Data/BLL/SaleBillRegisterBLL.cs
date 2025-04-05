@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -19,10 +20,10 @@ namespace eTactWeb.Data.BLL
         private readonly SaleBillRegisterDAL _SaleBillRegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public SaleBillRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public SaleBillRegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _SaleBillRegisterDAL = new SaleBillRegisterDAL(configuration, iDataLogic, _httpContextAccessor);
+            _SaleBillRegisterDAL = new SaleBillRegisterDAL(configuration, iDataLogic, _httpContextAccessor,connectionStringService);
         }
          public async Task<ResponseResult> FillItemNamePartcodeList(string FromDate, string ToDate)
         {

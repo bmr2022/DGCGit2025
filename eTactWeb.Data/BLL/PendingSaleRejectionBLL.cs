@@ -1,4 +1,5 @@
 ﻿
+using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -10,9 +11,9 @@ namespace eTactWeb.Data.BLL
     {
         private readonly PendingSaleRejectionDAL _PendingSaleRejectionDAL;
         private readonly IDataLogic _DataLogicDAL;
-        public PendingSaleRejectionBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public PendingSaleRejectionBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _PendingSaleRejectionDAL = new PendingSaleRejectionDAL(configuration, iDataLogic);
+            _PendingSaleRejectionDAL = new PendingSaleRejectionDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<ResponseResult> PendingMRNForSaleRejection(string fromDate, string toDate, string mrnNo, string gateNo,string customerName)

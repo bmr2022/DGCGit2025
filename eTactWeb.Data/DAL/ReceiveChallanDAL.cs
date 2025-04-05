@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,12 @@ namespace eTactWeb.Data.DAL
 {
     internal class ReceiveChallanDAL
     {
-        public ReceiveChallanDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public ReceiveChallanDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
 

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -16,10 +17,10 @@ namespace eTactWeb.Data.BLL
         private readonly PendingMaterialToIssueThrBOMDAL _PendingMaterialToIssueThrBOMDAL;
         private readonly IDataLogic _IDataLogic;
 
-        public PendingMaterialToIssueThrBOMBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public PendingMaterialToIssueThrBOMBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            _PendingMaterialToIssueThrBOMDAL = new PendingMaterialToIssueThrBOMDAL(configuration, iDataLogic);
+            _PendingMaterialToIssueThrBOMDAL = new PendingMaterialToIssueThrBOMDAL(configuration, iDataLogic, connectionStringService);
         }
         public async Task<DataSet> BindAllDropDowns(string Flag, int YearCode)
         {

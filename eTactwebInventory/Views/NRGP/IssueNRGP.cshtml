@@ -106,7 +106,7 @@
             </h5>
         </div>
         <div class="card-body bg-light pt-0">
-            <div asp-validation-summary="All" class="text-danger pt-1"></div>
+          
             <div class="accordion shadow-lg">
                 <div class="accordion-item" id="GI_Grid">
                     <h2 class="accordion-header" id="H_RParameter">
@@ -1629,10 +1629,10 @@
                         var entryId = obj.Result[0].EntryId;
 
                         // Show EntryId in an alert box
-                        alert("EntryId: " + entryId);
+                       /*  alert("EntryId: " + entryId); */
 
                         // if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                      alert("condition in or up"+ ($('#Mode').val() != "U" && $('#Mode').val() != "V"));
+                      /* alert("condition in or up"+ ($('#Mode').val() != "U" && $('#Mode').val() != "V")); */
                         if ($('#Mode').val() == undefined || ($('#Mode').val() != "U" && $('#Mode').val() != "V"))
                         {
 

@@ -15,9 +15,12 @@ namespace eTactWeb.Data.DAL
 {
     internal class InterStoreTransferDAL
     {
-        public InterStoreTransferDAL(IConfiguration configuration, IDataLogic iDataLogic)
+     private readonly ConnectionStringService _connectionStringService;
+        public InterStoreTransferDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
 

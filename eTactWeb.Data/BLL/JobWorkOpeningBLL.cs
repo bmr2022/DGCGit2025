@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -18,9 +19,9 @@ namespace eTactWeb.Data.BLL
         private readonly JobWorkOpeningDAL _JobWorkOpeningDAL;
 
 
-        public JobWorkOpeningBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public JobWorkOpeningBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            _JobWorkOpeningDAL = new JobWorkOpeningDAL(configuration, iDataLogic);
+            _JobWorkOpeningDAL = new JobWorkOpeningDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
         public async Task<ResponseResult> GetFormRights(int userID)

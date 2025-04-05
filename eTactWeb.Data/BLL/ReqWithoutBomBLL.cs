@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,10 @@ namespace eTactWeb.Data.BLL
     {
         private readonly IDataLogic _DataLogicDAL;
         private readonly ReqWithoutBomDAL _ReqWithoutBomDAL;
-        public ReqWithoutBomBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public ReqWithoutBomBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _ReqWithoutBomDAL = new ReqWithoutBomDAL(configuration, iDataLogic);
+            _ReqWithoutBomDAL = new ReqWithoutBomDAL(configuration, iDataLogic,connectionStringService);
         }
 
         public async Task<DataSet> BindAllDropDowns(string Flag)

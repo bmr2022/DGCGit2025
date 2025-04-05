@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private BankReconciliationDAL _BackReconciliationDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public BankReconciliationBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public BankReconciliationBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _BackReconciliationDAL = new BankReconciliationDAL(config, dataLogicDAL);
+            _BackReconciliationDAL = new BankReconciliationDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
 

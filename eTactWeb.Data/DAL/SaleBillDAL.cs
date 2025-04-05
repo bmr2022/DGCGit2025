@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,12 @@ namespace eTactWeb.Data.DAL
 {
     public class SaleBillDAL
     {
-        public SaleBillDAL(IConfiguration configuration, IDataLogic iDataLogic)
+        private readonly ConnectionStringService _connectionStringService;
+        public SaleBillDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
+            //BConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
         public IDataLogic? _IDataLogic { get; }

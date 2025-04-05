@@ -365,6 +365,7 @@
                 type: "POST",
                 data: data,
                 success: function (data) {
+                    debugger
                     $('#divDashboardGrid').empty().append(data);
                     LockedFinancialYear();
                     var dashGrid = $('#PSDashboard tr').length - 1;

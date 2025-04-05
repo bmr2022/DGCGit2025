@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -16,9 +17,9 @@ namespace eTactWeb.Data.BLL
         private BankReceiptDAL _BankReceiptDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public BankReceiptBLL(IConfiguration config, IDataLogic dataLogicDAL)
+        public BankReceiptBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _BankReceiptDAL = new BankReceiptDAL(config, dataLogicDAL);
+            _BankReceiptDAL = new BankReceiptDAL(config, dataLogicDAL,connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
         public async Task<ResponseResult> FillLedgerName(string VoucherType, string Type)

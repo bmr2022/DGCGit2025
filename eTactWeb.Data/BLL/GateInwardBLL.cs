@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -14,11 +15,11 @@ namespace eTactWeb.Data.BLL
         private readonly GateInwardDAL _GateInwardDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GateInwardBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public GateInwardBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //_PurchaseOrderDAL = new PurchaseOrderDAL(configuration, iDataLogic);
             _DataLogicDAL = iDataLogic;
-            _GateInwardDAL = new GateInwardDAL(configuration, iDataLogic,_httpContextAccessor);
+            _GateInwardDAL = new GateInwardDAL(configuration, iDataLogic,_httpContextAccessor, connectionStringService);
         }
         public async Task<ResponseResult> CheckFeatureOption()
         {

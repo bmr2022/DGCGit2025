@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Http;
@@ -18,10 +19,10 @@ namespace eTactWeb.Data.BLL
         private readonly PORegisterDAL _PORegisterDAL;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PORegisterBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public PORegisterBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _DataLogicDAL = iDataLogic;
-            _PORegisterDAL = new PORegisterDAL(configuration, iDataLogic, _httpContextAccessor);
+            _PORegisterDAL = new PORegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
 
         public async Task<PORegisterModel> GetPORegisterData(string FromDate, string ToDate, string ReportType, int YearCode, string Partyname, string partcode, string itemName, string POno, string SchNo, string OrderType, string POFor, string ItemType, string ItemGroup)

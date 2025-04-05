@@ -270,12 +270,13 @@ namespace eTactWeb.Controllers
                 webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // default report
 
             }
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-           
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
+            webReport.Report.Refresh();
             return View(webReport);
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
@@ -1013,7 +1014,7 @@ namespace eTactWeb.Controllers
             }
             return model;
         }
-        public async Task<JsonResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string StoreName, string batchno = "")
+        public async Task<JsonResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string StoreName, string batchno )
         {
             var FinStartDate = HttpContext.Session.GetString("FromDate");
             var JSON = await _IIssueNRGP.FillCurrentBatchINStore(ItemCode, YearCode, FinStartDate, StoreName, batchno);

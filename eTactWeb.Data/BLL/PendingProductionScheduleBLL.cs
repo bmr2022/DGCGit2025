@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.DAL;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Data.DAL;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,10 +15,10 @@ namespace eTactWeb.Data.BLL
     {
         private readonly PendingProductionScheduleDAL _PendingProductionScheduleDAL;
         private readonly IDataLogic _IDataLogic;
-        public PendingProductionScheduleBLL(IConfiguration configuration, IDataLogic iDataLogic)
+        public PendingProductionScheduleBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             _IDataLogic = iDataLogic;
-            _PendingProductionScheduleDAL = new PendingProductionScheduleDAL(configuration, iDataLogic);
+            _PendingProductionScheduleDAL = new PendingProductionScheduleDAL(configuration, iDataLogic, connectionStringService);
         }
         public async Task<ResponseResult> FillStore()
         {

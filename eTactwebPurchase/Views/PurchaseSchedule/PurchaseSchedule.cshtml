@@ -295,6 +295,11 @@
                                         <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                                     </button>
                                 </div>
+                                <div class="col-lg-2 col-md-3 col-sm-3 text-center">
+                                    <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:70px;margin-left:20px;" type="button" id="SendToExportExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>
+                                    </button>
+                                </div>
                             </div>
                             <div class="progress my-2 mb-3 mt-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -516,13 +521,13 @@
 
 
         function FillMRPNo() {
-           
-             ;
+
+            ;
             $.ajax({
                 url: '@Url.Action("FillMRPNo", "PurchaseSchedule")',
                 type: 'POST',
                 async: false,
-               
+
                 success: function (response, status, error) {
 
                     var MRPNoDropdown = $('#MRPNO');
@@ -549,17 +554,17 @@
         function FillMRPDetail() {
 
             var MRPNo = $("#MRPNO").val();
-            
-            
 
-           
+
+
+
 
             $.ajax({
                 url: '@Url.Action("FillMRPDetail", "PurchaseSchedule")',
                 type: 'GET',
                 data: {
                     MRPNo: MRPNo,
-                   
+
                 },
                 success: function (data) {
 
@@ -582,7 +587,7 @@
 
                         $("#MRPNoYearCode").prop("disabled", false).val(Year.YearCode).trigger("input");
                         $("#MRPentryId").prop("disabled", false).val(EntryId.EntryId).trigger("input");
-                       
+
 
                     } else {
 
@@ -689,13 +694,13 @@
                 $('#DeliveryDate').datepicker("option", "minDate", effFromDate);
                 $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
 
-                
+
 
             }
             FillMRPNo();
             $("#MRPNO").on("change", function () {
                 FillMRPDetail();
-              
+
             });
 
 
@@ -1051,7 +1056,7 @@
                                         });
                                 }
                             }
-                           
+
                         }
                     }
                 },
@@ -1481,6 +1486,73 @@
             }
         });
 
+        $("#SendToExportExcel").click(function () {
+
+            const table = document.querySelector("#PurchaseScheduleTbl");
+            const rows = table.querySelectorAll("tr");
+            const data = [];
+
+            const headerRow = rows[0];
+            const headerData = [];
+
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    headerData.push(cell.textContent);
+                }
+            });
+
+            let maxColumns = 0;
+            for (let i = 1; i < rows.length; i++) {
+                const cellsCount = rows[i].querySelectorAll("td, input").length;
+                maxColumns = Math.max(maxColumns, cellsCount);
+            }
+            for (let i = headerData.length; i < maxColumns; i++) {
+                headerData.push('');
+            }
+
+            data.push(headerData);
+
+            for (let i = 1; i < rows.length; i++) {
+                const rowData = [];
+                const cells = rows[i].querySelectorAll("td");
+
+                cells.forEach((cell, index) => {
+                    if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                        rowData.push(cell.textContent);
+                    }
+                });
+
+                const inputCells = rows[i].querySelectorAll("input");
+                if (inputCells.length > 0) {
+                    inputCells.forEach((inputCell, index) => {
+                        if ($(headerRow.querySelectorAll("th")[index]).is(':visible')) {
+                            rowData.push(inputCell.value);
+                        }
+                    });
+                }
+                for (let j = rowData.length; j < headerData.length; j++) {
+                    rowData.push('');
+                }
+
+                data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            const colsWidths = [];
+            headerRow.querySelectorAll("th").forEach((cell, index) => {
+                if ($(cell).is(':visible')) {
+                    colsWidths.push({ wch: 15 });
+                }
+            });
+            ws["!cols"] = colsWidths;
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet 1")
+
+            XLSX.writeFile(wb, "PurchaseSchedule.xlsx");
+        });
+
         function EditItemRow(SeqNo) {
             var PartCode = $('#PartCode').val();
             $.ajax({
@@ -1529,5 +1601,7 @@
 
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
 }

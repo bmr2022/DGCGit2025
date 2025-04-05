@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
+using eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -19,6 +20,15 @@ namespace eTactWeb.Data.DAL
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
+        private readonly ConnectionStringService _connectionStringService;
+        public MaterialReceiptDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        {
+            _IDataLogic = iDataLogic;
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+        }
+
         public async Task<ResponseResult> GetReportName()
         {
             var _ResponseResult = new ResponseResult();
@@ -39,12 +49,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public MaterialReceiptDAL(IConfiguration configuration, IDataLogic iDataLogic)
-        {
-            _IDataLogic = iDataLogic;
-            DBConnectionString = configuration.GetConnectionString("eTactDB");
-        }
-
+      
         public async Task<ResponseResult> GetGateNo(string Flag, string SPName, string FromDate, string ToDate)
         {
             var _ResponseResult = new ResponseResult();
