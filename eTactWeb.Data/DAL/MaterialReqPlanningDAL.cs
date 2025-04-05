@@ -38,9 +38,6 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "MRPNO"));
                 SqlParams.Add(new SqlParameter("@YEaR_CODE", YearCode));
-                
-
-
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPMRPREport", SqlParams);
             }
             catch (Exception ex)
@@ -78,9 +75,47 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
 
         }
+         public async Task<ResponseResult> GetPartCode()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillPartCode"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPMRPREport", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+        }
+         public async Task<ResponseResult> GetItemName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillItem"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPMRPREport", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+        }
 
 
-        public async Task<MaterialReqPlanningModel> GetDetailData(string mrpno, string Month, int YearCode)
+        public async Task<MaterialReqPlanningModel> GetDetailData(string ReportType,string mrpno, string Month, int YearCode, string FromDate, string ToDate)
         {
             var resultList = new MaterialReqPlanningModel();
             DataSet oDataSet = new DataSet();
@@ -93,16 +128,18 @@ namespace eTactWeb.Data.DAL
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
 
-                    SqlCommand command = new SqlCommand("SpGenerateAutoPurchScheduleAgainstMRP", connection)
+                    SqlCommand command = new SqlCommand("SPMRPREport", connection)
                     {
                         CommandType = CommandType.StoredProcedure,
                         CommandTimeout = 300
                     };
 
-                    command.Parameters.AddWithValue("@flag", "DAYWISEMRPDATA");
+                    command.Parameters.AddWithValue("@flag", ReportType);
                     command.Parameters.Add(new SqlParameter("@mrpno", mrpno));
                     command.Parameters.Add(new SqlParameter("@months", Month));
                     command.Parameters.AddWithValue("@year_code", YearCode);
+                    command.Parameters.AddWithValue("@FromDate", FromDate);
+                    command.Parameters.AddWithValue("@ToDate", ToDate);
                    
 
                     await connection.OpenAsync();
@@ -114,9 +151,9 @@ namespace eTactWeb.Data.DAL
                 }
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
-                    //if (ReportType == "List Of Item For Schedule")
-                    //{
-                        resultList.DayWiseMRPData = (from DataRow row in oDataSet.Tables[0].Rows
+                    if (ReportType == "DAYWISEMRPDATA")
+                    {
+                        resultList.DayWiseMRPDataGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                                select new DayWiseMRPData
                                                                {
                                                                    Party_Name = row["Party Name"] == DBNull.Value ? string.Empty : row["Party Name"].ToString(),
@@ -167,41 +204,44 @@ namespace eTactWeb.Data.DAL
 
                                                                }).ToList();
 
-                    //}
-                    //else if (ReportType == "Generate Purchase Schedule")
-                    //{
-                            //resultList.AutoGenerateScheduleGrid = (from DataRow row in oDataSet.Tables[1].Rows
-                            //                                   select new AutoGenerateScheduleModel
-                            //                                   {
-                            //                                       VendorName = row["VendorName"] == DBNull.Value ? string.Empty : row["VendorName"].ToString(),
-                            //                                       PONO = row["PONO"] == DBNull.Value ? string.Empty : row["PONO"].ToString(),
-                            //                                       PoDate = row["PODate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["PODate"]).ToString("dd/MM/yyyy"),
-                            //                                       PoYearCode = row["POYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["POYearCode"]),
-                            //                                       SchNo = row["ScheduleNo"] == DBNull.Value ? string.Empty : row["ScheduleNo"].ToString(),
-                            //                                       ScheduleDate = row["ScheduleDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["ScheduleDate"]).ToString("dd/MM/yyyy"),
-                            //                                       SchAmendNo = row["SchAmendNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["SchAmendNo"]),
-                            //                                       ScheduleEffectiveFromDate = row["ScheduleEffectiveFromDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["ScheduleEffectiveFromDate"]).ToString("dd/MM/yyyy"),
-                            //                                       ScheduleEffectiveTillDate = row["ScheduleEffectiveTillDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["ScheduleEffectiveTillDate"]).ToString("dd/MM/yyyy"),
+                    }
+                    else if (ReportType == "MRPCONSOLIDATED")
+                    {
+                        resultList.DayWiseMRPDataGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                               select new DayWiseMRPData
+                                                               {
+                                                                   Part_code = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                                   Item_Name = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                                   Req_Qty = row["MRPReqQty"] == DBNull.Value ? 0: Convert.ToDecimal(row["MRPReqQty"]),
+                                                                   Current_Stock = row["CurrentStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrentStock"]),
+                                                                   WIPStock = row["MRPOrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["MRPOrderQty"]),
+                                                                   Order_Qty = row["WIPStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["WIPStock"]),
+                                                                   SChOrderQty = row["SChOrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["SChOrderQty"]),
+                                                                  
+                                                                   MRP_No = row["MRPNO"] == DBNull.Value ? string.Empty : row["MRPNO"].ToString(),
 
-                            //                                       MRPNO = row["MRPNO"] == DBNull.Value ? 0 : Convert.ToInt32(row["MRPNO"]),
-                            //                                       MRPNoYearCode = row["MRPNoYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["MRPNoYearCode"]),
-                            //                                       MRPEntry_Id = row["MRPEntry_Id"] == DBNull.Value ? 0 : Convert.ToInt32(row["MRPEntry_Id"]),
+                                                                   item_code = row["item_code"] == DBNull.Value ? 0 : Convert.ToInt32(row["item_code"]),
+                                                                  
+                                                               }).ToList();
+                    
+                    }
+                    else if (ReportType == "MRPDataonly")
+                    {
+                        resultList.DayWiseMRPDataGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                               select new DayWiseMRPData
+                                                               {
+                                                                   Part_code = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                                   Item_Name = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
+                                                                   Req_Qty = row["ReqQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ReqQty"]),
+                                                                   StoreStock = row["StoreStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["StoreStock"]),
+                                                                   WIPStock = row["WIPStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["WIPStock"]),
+                                                                   TotalStock = row["TotalStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalStock"]),
+                                                                   MinLevel = row["MinLevel"] == DBNull.Value ? 0 : Convert.ToDecimal(row["MinLevel"]),
+                                                                   OrderQty = row["OrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OrderQty"]),
+                                                                   unit = row["unit"] == DBNull.Value ? string.Empty : row["unit"].ToString(),
 
-                            //                                       //VendorName = oDataSet.Tables[0].Rows[0]["VendorName"] == DBNull.Value ? string.Empty : oDataSet.Tables[0].Rows[0]["VendorName"].ToString(),
-                            //                                       //PONO = oDataSet.Tables[0].Rows[0]["PONO"] == DBNull.Value ? string.Empty : oDataSet.Tables[0].Rows[0]["PONO"].ToString(),
-                            //                                       //PoDate = oDataSet.Tables[0].Rows[0]["PODate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["PODate"]).ToString("dd/MM/yyyy"),
-                            //                                       //PoYearCode = oDataSet.Tables[0].Rows[0]["POYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["POYearCode"]),
-                            //                                       //SchNo = oDataSet.Tables[0].Rows[0]["ScheduleNo"] == DBNull.Value ? string.Empty : oDataSet.Tables[0].Rows[0]["ScheduleNo"].ToString(),
-                            //                                       //ScheduleDate = oDataSet.Tables[0].Rows[0]["ScheduleDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["ScheduleDate"]).ToString("dd/MM/yyyy"),
-                            //                                       //SchAmendNo = oDataSet.Tables[0].Rows[0]["SchAmendNo"] == DBNull.Value ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["SchAmendNo"]),
-                            //                                       //ScheduleEffectiveFromDate = oDataSet.Tables[0].Rows[0]["ScheduleEffectiveFromDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["ScheduleEffectiveFromDate"]).ToString("dd/MM/yyyy"),
-                            //                                       //ScheduleEffectiveTillDate = oDataSet.Tables[0].Rows[0]["ScheduleEffectiveTillDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["ScheduleEffectiveTillDate"]).ToString("dd/MM/yyyy"),
-                            //                                       //MRPNO = oDataSet.Tables[0].Rows[0]["MRPNO"] == DBNull.Value ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["MRPNO"]),
-                            //                                       //MRPNoYearCode = oDataSet.Tables[0].Rows[0]["MRPNoYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["MRPNoYearCode"]),
-                            //                                       //MRPEntry_Id = oDataSet.Tables[0].Rows[0]["MRPEntry_Id"] == DBNull.Value ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["MRPEntry_Id"]),
-
-                            //                                   }).ToList();
-                    //}
+                                                               }).ToList();
+                    }
                 }
                  
 

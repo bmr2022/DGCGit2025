@@ -49,24 +49,35 @@
 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <div class="row">
-                                        <div class="col">
+                                        <div class="col"style="width:120px;">
                                             <label class="form-label">From Date</label>
-                                            <input asp-for="FromDate" class="form-control" />
+                                            <input asp-for="FromDate" class="form-control" readonly/>
                                         </div>
-                                        <div class="col">
+                                        <div class="col" style="width:120px;">
                                             <label class="form-label">To Date</label>
-                                            <input asp-for="ToDate" class="form-control" />
+                                            <input asp-for="ToDate" class="form-control" readonly />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-xl-1 col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-1" style="width:150px">
                                     <label class="form-label">YearCode</label>
-                                    <input asp-for="Year_Code" class="form-control" />
+                                    <input asp-for="Year_Code" class="form-control" readonly />
                                 </div>
 
 
                                 
                                 <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                    <label asp-for="ReportType" class="form-label">ReportType</label>
+                                    <select asp-for="ReportType" class="form-control">
+                                       
+                                        <option value="">-Select-</option>
+                                        <option value="DAYWISEMRPDATA" selected>Day Wise Data</option>
+                                        <option value="MRPCONSOLIDATED">Consolidated Data</option>
+                                        <option value="MRPDataonly">Only MRP Data</option>
+                                       
+                                    </select>
+                                </div>
+                                  <div class="col-xl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
                                     <label asp-for="mrpno" class="form-label">MRP No</label>
                                     <select asp-for="mrpno" class="form-control">
                                         @* <option value="@Model.AccountCode">-Select-</option> *@
@@ -167,7 +178,8 @@
                                                     <partial name="_MaterialReqPlanningGrid" />
                                                 </div>
                                             </div>
-
+                                            <div class="d-flex justify-content-end mt-2" id="reportFields">
+                                            </div>
 
                                         </div>
                                     </div>
@@ -196,15 +208,18 @@
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
-            // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
-            // $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
-            // $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+            $('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            
+            $('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", 'now');
             $('#ItemName').select2();
             $('#PartCode').select2();
             $('#IndentNo').select2();
+            $('#mrpno').select2();
 
             $('#ReportType').select2();
+
+            GetPartCode();
+            GetItemName();
 
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -215,22 +230,18 @@
                 var year = date.getFullYear();
                 return day + "/" + month + "/" + year;
             }
-            //$('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", firstDayOfMonth); // Pass the Date object directly
+            //$('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", firstDayOfMonth); 
             //$('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", currentDate);
 
-            FillItemName();
-            FillPartCode();
+           
             FillMRPNO();
             FillMonth();
-            GetDetailsData();
+            GetDetailData();
 
             handleReportTypeChange();
 
             // When ReportType changes, automatically set Group_Ledger to 'Ledger' if required
-            $("#ReportType").change(function () {
-
-                handleReportTypeChange();
-            });
+            
 
             // Function to handle the logic for setting 'Ledger' based on ReportType
             function handleReportTypeChange() {
@@ -244,39 +255,197 @@
                 }
             }
 
+            function applyBackgroundColor() {
 
+                var reportType = $('#ReportType').val();
+
+                $("#divStockRegisterBody tr").each(function () {
+                    if (reportType == "DAYWISEMRPDATA") {
+                        $(this).css("background-color", "#e5ccff");
+                    }
+                    else if (reportType == "MRPCONSOLIDATED") {
+                         $(this).css("background-color", "#fff0b3");
+                     }
+                    else if (reportType == "MRPDataonly") {
+                        $(this).css("background-color", "#ccffcc");
+                     }
+
+                    else {
+                        $(this).css("background-color", "antiquewhite");
+                    }
+                });
+            }
+
+
+            $(document).on('click', '#divStockRegisterBody tr', function () {
+
+                $("#divStockRegisterBody tr").each(function () {
+                    var reportType = $('#ReportType').val();
+
+                    if (reportType == "DAYWISEMRPDATA") {
+                        $(this).css("background-color", "#e5ccff");
+                    }
+                    else if (reportType == "MRPCONSOLIDATED") {
+                         $(this).css("background-color", "#fff0b3"); 
+                    }
+                    else if (reportType == "MRPDataonly") {
+                        $(this).css("background-color", "#ccffcc");
+                    }
+
+                });
+                $(this).css({ 'background-color': '#00bcd4' });
+            });
+
+           
+
+            function loadReportFields(reportType) {
+                let html = '';
+
+                if (reportType === "DAYWISEMRPDATA") {
+                    html = `
+                                              <div class="d-flex flex-wrap">
+
+                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                               <label class="form-label">Total ReqQty</label>
+                                                               <input id="totReqQty" class="form-control" readonly/>
+                                                         </div>
+                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                               <label class="form-label">CurrentStock</label>
+                                                               <input id="toCurrentStock" class="form-control" readonly/>
+                                                         </div>
+                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                               <label class="form-label">Total WipQty</label>
+                                                               <input id="totWipQty" class="form-control" readonly/>
+                                                         </div>
+                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                               <label class="form-label">Total OrderQty</label>
+                                                               <input id="totOrderQty" class="form-control" readonly/>
+                                                         </div>
+
+                                             </div>
+
+                                        `;
+                } else if (reportType === "MRPCONSOLIDATED") {
+                    html = `
+                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">Total ReqQty</label>
+                                                                       <input id="totReqQty" class="form-control" readonly/>
+                                                                 </div>
+                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">CurrentStock</label>
+                                                                       <input id="toCurrentStock" class="form-control" readonly/>
+                                                                 </div>
+                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">Total WipQty</label>
+                                                                       <input id="totWipQty" class="form-control" readonly/>
+                                                                 </div>
+                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">Total OrderQty</label>
+                                                                       <input id="totOrderQty" class="form-control" readonly/>
+                                                                 </div>
+                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">Total SchOrderQty</label>
+                                                                       <input id="totSchQty" class="form-control" readonly/>
+                                                                 </div>
+                                        `;
+                } else if (reportType === "MRPDataonly") {
+                    html = `
+                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">Total ReqQty</label>
+                                                                       <input id="totQty" class="form-control" readonly/>
+                                                                 </div>
+                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">TotalStoretStock</label>
+                                                                       <input id="totQty" class="form-control" readonly/>
+                                                                 </div>
+                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">Total WipStock</label>
+                                                                       <input id="totQty" class="form-control" readonly/>
+                                                                 </div>
+                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">Total Stock</label>
+                                                                       <input id="totQty" class="form-control" readonly/>
+                                                                 </div>
+                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                       <label class="form-label">Total OrderQty</label>
+                                                                       <input id="totQty" class="form-control" readonly/>
+                                                                 </div>
+                                        `;
+                }
+
+                $("#reportFields").html(html);
+            }
+            $("#ReportType").change(function () {
+                let reportType = $(this).val();
+                loadReportFields(reportType);
+            });
+
+            // Load initial report type if set
+            loadReportFields($("#ReportType").val());
+            applyBackgroundColor();
         });
+        $("#ReportType").change(function () {
 
+            GetDetailData();
+        });
         function selection(CurrentRow) {
 
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
 
-        function FillItemName() {
-
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
+        function GetPartCode() {
             $.ajax({
-                url: '@Url.Action("GetItemName", "IndentRegister")',
-                data:
-                {
-                    "FromDate": FromDate,
-                    "ToDate": ToDate,
+                url: '@Url.Action("GetPartCode", "MaterialReqPlanning")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var PartCoderDropdown = $('#PartCode');
+                    var obj = $.parseJSON(response);
+                    PartCoderDropdown.empty();
+                    PartCoderDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, Partcode) {
+
+                        PartCoderDropdown.append('<option value="' + Partcode.Itemcode + '">' + Partcode.PartCode + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var PartCode = '@Model.PartCode';
+                        $('#PartCode').val(PartCode).trigger("change");
+                        $('#PartCode').val(PartCode);
+                    }
                 },
-                type: 'GET',
+                error: function (xhr, status, error) {
+                    alert('Failed to load PartCode.');
+                }
+            });
+
+
+        }
+
+        function GetItemName() {
+            $.ajax({
+                url: '@Url.Action("GetItemName", "MaterialReqPlanning")', 
+                type: 'POST',
                 async: false,
                 success: function (response, status, error) {
 
-                    var itemNameDropdown = $('#ItemName');
+                    var ItemNameDropdown = $('#ItemName');
                     var obj = $.parseJSON(response);
-                    itemNameDropdown.empty();
-                    itemNameDropdown.append('<option value="">--Select--</option>');
+                    ItemNameDropdown.empty();
+                    ItemNameDropdown.append('<option value="">--Select--</option>');
 
-                    $.each(obj.Result, function (index, item) {
-                        itemNameDropdown.append('<option value="' + item.ItemName + '">' + item.ItemName + '</option>');
+
+                    $.each(obj.Result, function (index, Item) {
+                        ItemNameDropdown.append('<option value="' + Item.Itemcode + '">' + Item.ItemName + '</option>');
                     });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
+                        var ItemName = '@Model.ItemName';
+                        $('#ItemName').val(ItemName).trigger("change");
+                    }
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load groups.');
@@ -284,37 +453,41 @@
             });
         }
 
-        function FillPartCode() {
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
 
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
-            $.ajax({
-                url: '@Url.Action("GetPartCode", "IndentRegister")',
-                data:
-                {
-                    "FromDate": FromDate,
-                    "ToDate": ToDate,
-                },
-                type: 'GET',
-                async: false,
-                success: function (response, status, error) {
+            var cntId = e.target.id;
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+        });
 
-                    var PartCodeDropdown = $('#PartCode');
-                    var obj = $.parseJSON(response);
-                    PartCodeDropdown.empty();
-                    PartCodeDropdown.append('<option value="">--Select--</option>');
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
 
-                    $.each(obj.Result, function (index, item) {
-                        PartCodeDropdown.append('<option value="' + item.PartCode + '">' + item.PartCode + '</option>');
-                    });
+        function PartCodeChange(ID) {
 
-                },
-                error: function (xhr, status, error) {
-                    alert('Failed to load groups.');
-                }
+            $.when(SetPartCodeItemName(ID)).done(function () {
             });
         }
 
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
         function FillMRPNO() {
 
             var YearCode = $('#Year_Code').val();
@@ -324,7 +497,6 @@
                 data:
                 {
                     "YearCode": YearCode,
-                    
                 },
                 type: 'GET',
                 async: false,
@@ -377,13 +549,13 @@
         }
 
         function GetDetailData() {
-
-
-
-           // var ReportType = $('#ReportType').val(); // Get ReportType from a dropdown or input element
+            debugger
+            var ReportType = $('#ReportType').val();
             var YearCode = $('#Year_Code').val();
             var mrpno = $('#mrpno').val();
             var Month = $('#months').val();
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
            /*  var MrpEntryId = $('#MrpEntryId').val();
             var CreatedBy = $('#CreatedBy').val();
             var CC = $('#CC').val();
@@ -402,9 +574,12 @@
                 type: 'POST',
                 url: "@Url.Action("GetDetailData", "MaterialReqPlanning")",
                 data: {
+                    ReportType:ReportType,
                     YearCode: YearCode,
                     mrpno: mrpno,
-                    Month: Month
+                    Month: Month,
+                    FromDate:FromDate,
+                    ToDate: ToDate
 
                 },
                 success: function (response) {
@@ -412,7 +587,7 @@
 
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
-                    /* countAllTotal(); */
+                    countAllTotal();
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching BOM tree data:", error);
@@ -496,7 +671,8 @@
         });
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
-            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var month = monthNames[date.getMonth()];
             var year = date.getFullYear();
             var dateString = day + "/" + month + "/" + year;
             return dateString;
@@ -565,23 +741,26 @@
 
             var rowCount = $('#divStockRegisterBody tr').length;
 
-            var TotCr = 0;
-            var TotDr = 0;
-            var TotBal = 0;
+            var TotReqQty = 0;
+            var TotCurrentStock = 0;
+            var TotalWipQty= 0;
+            var TotalOrderQty = 0;
             for (var i = 1; i <= rowCount; i++) {
 
-                TotCr += $('#totCrG-' + i).text() == '' ? 0 : parseFloat($('#totCrG-' + i).text());
-                TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
-                TotBal += $('#totBalG-' + i).text() == '' ? 0 : parseFloat($('#totBalG-' + i).text());
+                TotReqQty += $('#totReqQtyG-' + i).text() == '' ? 0 : parseFloat($('#totReqQtyG-' + i).text());
+                TotCurrentStock += $('#totCurStockG-' + i).text() == '' ? 0 : parseFloat($('#totCurStockG-' + i).text());
+                TotalWipQty += $('#totWipQtyG-' + i).text() == '' ? 0 : parseFloat($('#totWipQtyG-' + i).text());
+                TotalOrderQty += $('#totOrderQtyG-' + i).text() == '' ? 0 : parseFloat($('#totOrderQtyG-' + i).text());
                 //if(totAmount < 0){
                 //    $('#SAGridRow-' + i).css('background-color', 'red');
                 //}
             }
 
 
-            $('#totCr').val(isNaN(TotCr) ? 0 : TotCr.toFixed(2));
-            $('#totDr').val(isNaN(TotDr) ? 0 : TotDr.toFixed(2));
-            $('#totBal').val(isNaN(TotBal) ? 0 : TotBal.toFixed(2));
+            $('#totReqQty').val(isNaN(TotReqQty) ? 0 : TotReqQty.toFixed(2));
+            $('#toCurrentStock').val(isNaN(TotCurrentStock) ? 0 : TotCurrentStock.toFixed(2));
+            $('#totWipQty').val(isNaN(TotalWipQty) ? 0 : TotalWipQty.toFixed(2));
+            $('#totOrderQty').val(isNaN(TotalOrderQty) ? 0 : TotalOrderQty.toFixed(2));
         }
         var currentSearchColumn = null;
 

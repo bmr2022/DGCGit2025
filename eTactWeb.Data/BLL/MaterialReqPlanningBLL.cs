@@ -31,10 +31,18 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetMonthList(int YearCode)
         {
             return await _MaterialReqPlanningDAL.GetMonthList( YearCode);
-        }
-        public async Task<MaterialReqPlanningModel> GetDetailData(string mrpno, string Month, int YearCode)
+        } 
+        public async Task<ResponseResult> GetPartCode()
         {
-            return await _MaterialReqPlanningDAL.GetDetailData( mrpno,  Month,  YearCode);
+            return await _MaterialReqPlanningDAL.GetPartCode( );
+        } 
+        public async Task<ResponseResult> GetItemName()
+        {
+            return await _MaterialReqPlanningDAL.GetItemName( );
+        }
+        public async Task<MaterialReqPlanningModel> GetDetailData(string ReportType, string mrpno, string Month, int YearCode, string FromDate, string ToDate)
+        {
+            return await _MaterialReqPlanningDAL.GetDetailData( ReportType,  mrpno,  Month,  YearCode,  FromDate,  ToDate);
         }
     }
 }
