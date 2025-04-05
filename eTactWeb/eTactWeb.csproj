@@ -94,6 +94,7 @@
 		<None Include="wwwroot\images\bmr-logo-web.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Include="wwwroot\jQueryTable2Excel\table2excel.js" />
 		<None Include="wwwroot\lib\jquery\jquery.js" />
