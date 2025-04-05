@@ -134,7 +134,7 @@
             var dashGrid = $('#PSDashboard tr').length - 1;
             $('#totalRows').text(dashGrid);
 
-            debugger
+             
             var finToDate = $('#ToDate').val();
 
             var dateParts1 = finToDate.split("/");
@@ -158,7 +158,7 @@
 
 
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            debugger
+             
             //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate1.split(" ")[0]));

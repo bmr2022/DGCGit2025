@@ -40,7 +40,6 @@ else
                 <input type="hidden" id="MainGridUniqueBatchNo1-@Cntr" value="@item.uniqueBatchNo" />
                 <select readonly id="MainGridUniqueBatchNo-@Cntr" onchange="UniqBatchNumberChange(@Cntr)">
                     <option value="0" selected disabled>-Select-</option>
-
                 </select>
             </td>
             <td><input id="MainGridIssueQty-@Cntr" style="width:50px;" onchange="AltUnitConversion(@Cntr,'IssueQtyChange')" onkeyup="IssueQtyValidation(@Cntr)" type="number" value="@item.IssueQty" /></td>
