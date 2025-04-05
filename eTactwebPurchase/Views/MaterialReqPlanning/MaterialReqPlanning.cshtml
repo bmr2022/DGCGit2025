@@ -137,7 +137,7 @@
 
                                 <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
 
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetDetailsData();">
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetDetailData();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                     </button>
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
@@ -347,10 +347,15 @@
         }
 
         function FillMonth() {
+            var YearCode = $('#Year_Code').val();
 
             $.ajax({
                 url: '@Url.Action("GetMonthList", "MaterialReqPlanning")',
-               
+                data:
+                {
+                    "YearCode": YearCode,
+
+                },
                 type: 'GET',
                 async: false,
                 success: function (response, status, error) {
@@ -371,48 +376,56 @@
             });
         }
 
+        function GetDetailData() {
 
 
 
+           // var ReportType = $('#ReportType').val(); // Get ReportType from a dropdown or input element
+            var YearCode = $('#Year_Code').val();
+            var mrpno = $('#mrpno').val();
+            var Month = $('#months').val();
+           /*  var MrpEntryId = $('#MrpEntryId').val();
+            var CreatedBy = $('#CreatedBy').val();
+            var CC = $('#CC').val();
+            var UID = $('#UID').val();
+            var MachineName = $('#MachineName').val(); */
 
-
-
-
-        function GetDetailsData() {
-
-            var ReportType = $('#ReportType').val();
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
-            var ItemName = $('#ItemName').val();
-            var PartCode = $('#PartCode').val();
-            var IndentNo = $('#IndentNo').val();
-
-
+           /*  if (MrpNo == '' || MrpNo == 0) {
+                notify("Please Select MrpNo");
+                return;
+            }
+            if (MrpYearCode == '' || MrpYearCode == 0) {
+                notify("Please Select yearCode");
+                return;
+            } */
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("GetDetailsData", "IndentRegister")',
+                url: "@Url.Action("GetDetailData", "MaterialReqPlanning")",
                 data: {
-                    "FromDate": FromDate,
-                    "ToDate": ToDate,
-                    "ItemName": ItemName,
-                    "PartCode": PartCode,
-                    "IndentNo": IndentNo,
-                    "ReportType": ReportType,
-                    //CrAmt: CrAmt,
-                    //DrAmt: DrAmt
+                    YearCode: YearCode,
+                    mrpno: mrpno,
+                    Month: Month
+
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
 
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
-                    countAllTotal();
+                    /* countAllTotal(); */
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching BOM tree data:", error);
                 }
             });
         }
+
+
+
+
+
+
+
 
         function DeleteRow(i) {
 
