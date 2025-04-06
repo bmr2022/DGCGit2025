@@ -128,8 +128,8 @@
                                                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Seq No</th>
                                                     <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
                                                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
-                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom/Ind</th>
-                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/UnProd</th>
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom/Ind</th> @*gridHiddenField*@
+                                                    <th data-columnno="4" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod/UnProd</th> @*gridHiddenField*@
                                                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
                                                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
                                                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
@@ -179,9 +179,9 @@
                                                     <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Packets Detail</th>
                                                     <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
                                                     <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Remark</th>
-                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StockableNonStockable</th>
-                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustJwAdjustmentMandatory</th>
-                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VendJwAdjustmentMandatory</th>
+                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StockableNonStockable</th> @*gridHiddenField*@
+                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustJwAdjustmentMandatory</th>  @*gridHiddenField*@
+                                                    <th data-columnno="29" data-sortorder="asc" class="sortCol gridHiddenField"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VendJwAdjustmentMandatory</th>  @*gridHiddenField*@
                                                 </tr>
                                             </thead>
                                             <tbody id="divSaleBillList">
@@ -416,7 +416,7 @@
     <script>
 
         $(document).ready(function () {
-
+            
             GetServerDate();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
@@ -441,6 +441,8 @@
                 $('#NetTotal').val(txTotal.toFixed(2));
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
+
+            // isAccountCodeClear = false;
 
             if ($('#SaleBillJobwork').val() == 'J') {
                 $('.jobWorkChalln').show();
@@ -946,7 +948,7 @@
                 // dataType: "html",
                 async: false,
                 success: function (data) {
-                     
+
                     $('#divBomCustJobWorkISsueSummary').html(data);
                     var dashGrid = $('#divBomCustJobWorkISsueSummary').length ? $('#divBomCustJobWorkISsueSummary').length : 0;
                     $('#totalRows').text(dashGrid);
@@ -1035,6 +1037,7 @@
         }
 
         function DueDateCalculation() {
+            
             var dueDate = $('#AdjDueDate').val();
             // var SaleBillDate = new Date($('#SaleBillDate').val());
 
@@ -1202,7 +1205,7 @@
                 $(this).val(parseInt(creditDays, 10));
             }
         });
-
+        var isAccountCodeClear = false;
         $('#AccountCode').change(function () {
             $.getJSON({
                 url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
@@ -1212,6 +1215,10 @@
                         var obj = $.parseJSON(result);
                         $('#GSTRegistered').val(obj.Result[0].GSTRegistered);
                     }
+                    // if ($('#divSaleBillList tr td').length > 1) {
+                    //     isAccountCodeClear = true;
+                    // }
+                    itemArrayLength = [];
                 }
             });
             FillDistance();
@@ -1543,6 +1550,8 @@
                 }
             });
 
+            
+
             var highestValue = 0;
             if (seqnoarray.length == 0) {
                 highestValue = 0;
@@ -1622,6 +1631,8 @@
                 "VendJwAdjustmentMandatory": $('#VendJwAdjustmentMandatory').val()
             }
 
+            
+
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("AddSaleBillDetail")',
@@ -1637,6 +1648,14 @@
                         $('#divSaleBillList').html(result);
                         var rowCount = $('#divSaleBillList tr').length;
 
+                        if ($('#SaleBillJobwork').val() == 'J') {
+                            $('.jobWorkChalln').show();
+                            $('.gridHiddenField').show();
+
+                        } else {
+                            $('.jobWorkChalln').hide();
+                            $('.gridHiddenField').hide();
+                        }
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
 
                         $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty').val(0);
@@ -2245,7 +2264,7 @@
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
 
             e.preventDefault();
-             
+
             if (!ValidateSubmit()) return;
 
             if ($('#divSaleBillList tr td').length <= 1) {
@@ -2261,7 +2280,7 @@
                 $.notify('StateCode is mandatory...!', "error");
             }
             else if ($('#SaleBillJobwork').val() == 'J') {
-                 
+
                 var rowCount = $('#divSaleBillList tr').length;
                 for (var i = 1; i <= rowCount; i++) {
                     var stockable = $('#stockableItems-' + i).text() === 'Y';
@@ -2316,7 +2335,7 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-                             
+
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
@@ -2335,12 +2354,12 @@
                                     JWItemList($('#TypeItemServAssets').val());
                                 }
 
-                                if ($('#SONO').val() == ''|| $('#SONO').val() == '0') {
+                                if ($('#SONO').val() == '' || $('#SONO').val() == '0') {
                                     FillItems($('#TypeItemServAssets').val());
                                 } else {
                                     FillSOWiseItems();
                                 }
-                                 
+
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                                 $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                 FillCurrentBatchINStore();
@@ -2478,14 +2497,24 @@
                     async: false,
                     data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
                     success: function (data, status, xhr) {
-                         
+
                         $('#divSaleBillList').html(data);
 
                         BasicTotal();
                         ClearDRCRGrid();
                         ClearAdjustmentGrid();
+
+                        if ($('#SaleBillJobwork').val() == 'J') {
+                            $('.jobWorkChalln').show();
+                            $('.gridHiddenField').show();
+
+                        } else {
+                            $('.jobWorkChalln').hide();
+                            $('.gridHiddenField').hide();
+                        }
+
                         var itemArrayLength = itemBatchArray.length;
-                         
+
                         for (var i = 0; i < itemArrayLength; i++) {
                             if (itemBatchArray[i].itemcode == IC && itemBatchArray[i].batchno == BatchNo) {
                                 itemBatchArray.splice(i, 1);
@@ -2618,7 +2647,7 @@
                 drAmt += $('#drcrRow-' + i + ' .dramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .dramt').text());
                 crAmt += $('#drcrRow-' + i + ' .cramt').text() == '' ? 0 : parseFloat($('#drcrRow-' + i + ' .cramt').text());
             }
-             
+
             if (drAmt.toFixed(2) != crAmt.toFixed(2)) {
                 $.notify("Debit and Credit are not maintained...!", "error");
                 return false;
@@ -2786,7 +2815,7 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#SONO').append("<option value=" + val.SONo + " data-sotype=" + val.SOType + ">" + val.SONo + "</option>");
                             });
-
+                            $('#SOType').val($('#SONO').find(':selected').data('sotype'));
                         }
                     }
                 }
@@ -2880,13 +2909,14 @@
             FillSOYearCode();
 
             if ($('#SONO').find(':selected').data('sotype') == "CLOSE") {
+                $('#SchNo').val('');
                 $('#SchNo').prop("disabled", true);
                 $('#SaleSchYearCode').prop("disabled", true);
             } else {
                 $('#SchNo').prop("disabled", false);
                 $('#SaleSchYearCode').prop("disabled", false);
             }
-            $('#SOType').val($('#SONO').find(':selected').data('sotype'));
+            // $('#SOType').val($('#SONO').find(':selected').data('sotype'));
             if ($('#SONO').val() == '0' || $('#SONO').val() == '') {
                 $('#Rate').prop("readonly", false);
                 $('#RateInOtherCurr').prop("readonly", false);
@@ -3172,6 +3202,7 @@
                                 }
                             });
 
+                            
                             GetBatchInventory();
 
                             var selectListLength = $('#Batchno option').length - 1;
@@ -3275,8 +3306,10 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        $('#Schdate').val("");
-                        $('#Schdate').val(obj.Result[0].ScheduleDate);
+                        if (obj.StatusCode != 500) {
+                            $('#Schdate').val("");
+                            $('#Schdate').val(obj.Result[0].ScheduleDate);
+                        }
 
                         // if ($('#SaleBillJobwork').val() == 'J') {
                         //     JWItemList($('#TypeItemServAssets').val());
@@ -3344,7 +3377,7 @@
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     } else {
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]))
-                        $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillDate').val().split(" ")[0]));
+                        $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
                     }
                     // $('#InvoiceTime').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#PerformaInvDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -3451,7 +3484,7 @@
         }
 
         function PressBack() {
-
+            debugger
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());

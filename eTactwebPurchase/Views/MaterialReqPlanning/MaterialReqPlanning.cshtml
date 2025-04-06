@@ -300,24 +300,24 @@
 
             function loadReportFields(reportType) {
                 let html = '';
-
+                debugger
                 if (reportType === "DAYWISEMRPDATA") {
                     html = `
                                               <div class="d-flex flex-wrap">
 
-                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
                                                                <label class="form-label">Total ReqQty</label>
                                                                <input id="totReqQty" class="form-control" readonly/>
                                                          </div>
-                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
                                                                <label class="form-label">CurrentStock</label>
                                                                <input id="toCurrentStock" class="form-control" readonly/>
                                                          </div>
-                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
                                                                <label class="form-label">Total WipQty</label>
                                                                <input id="totWipQty" class="form-control" readonly/>
                                                          </div>
-                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
                                                                <label class="form-label">Total OrderQty</label>
                                                                <input id="totOrderQty" class="form-control" readonly/>
                                                          </div>
@@ -327,49 +327,49 @@
                                         `;
                 } else if (reportType === "MRPCONSOLIDATED") {
                     html = `
-                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
                                                                        <label class="form-label">Total ReqQty</label>
                                                                        <input id="totReqQty" class="form-control" readonly/>
                                                                  </div>
-                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
                                                                        <label class="form-label">CurrentStock</label>
                                                                        <input id="toCurrentStock" class="form-control" readonly/>
                                                                  </div>
-                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
-                                                                       <label class="form-label">Total WipQty</label>
-                                                                       <input id="totWipQty" class="form-control" readonly/>
+                                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
+                                                                       <label class="form-label">Total WipStock</label>
+                                                                       <input id="totWipStock" class="form-control" readonly/>
                                                                  </div>
-                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
                                                                        <label class="form-label">Total OrderQty</label>
                                                                        <input id="totOrderQty" class="form-control" readonly/>
                                                                  </div>
-                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
                                                                        <label class="form-label">Total SchOrderQty</label>
                                                                        <input id="totSchQty" class="form-control" readonly/>
                                                                  </div>
                                         `;
                 } else if (reportType === "MRPDataonly") {
                     html = `
-                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
-                                                                       <label class="form-label">Total ReqQty</label>
-                                                                       <input id="totQty" class="form-control" readonly/>
-                                                                 </div>
-                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
+                                                                               <label class="form-label">Total ReqQty</label>
+                                                                               <input id="totReqQty" class="form-control" readonly/>
+                                                                         </div>
+                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
                                                                        <label class="form-label">TotalStoretStock</label>
-                                                                       <input id="totQty" class="form-control" readonly/>
+                                                                       <input id="totStoreStock" class="form-control" readonly/>
                                                                  </div>
-                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
-                                                                       <label class="form-label">Total WipStock</label>
-                                                                       <input id="totQty" class="form-control" readonly/>
-                                                                 </div>
-                                                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
+                                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                               <label class="form-label">Total WipStock</label>
+                                                                               <input id="totWipStock" class="form-control" readonly/>
+                                                                         </div>
+                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
                                                                        <label class="form-label">Total Stock</label>
-                                                                       <input id="totQty" class="form-control" readonly/>
+                                                                       <input id="totTotalStock" class="form-control" readonly/>
                                                                  </div>
-                                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; ">
-                                                                       <label class="form-label">Total OrderQty</label>
-                                                                       <input id="totQty" class="form-control" readonly/>
-                                                                 </div>
+                                                                               <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                               <label class="form-label">Total OrderQty</label>
+                                                                               <input id="totOrderQty" class="form-control" readonly/>
+                                                                         </div>
                                         `;
                 }
 
@@ -380,7 +380,7 @@
                 loadReportFields(reportType);
             });
 
-            // Load initial report type if set
+           
             loadReportFields($("#ReportType").val());
             applyBackgroundColor();
         });
@@ -745,12 +745,22 @@
             var TotCurrentStock = 0;
             var TotalWipQty= 0;
             var TotalOrderQty = 0;
+            var TotalWipStock = 0;
+            var TotalSchQty = 0;
+            var TotalStock = 0;
+            var TotalStoreStock = 0;
+
+
             for (var i = 1; i <= rowCount; i++) {
 
                 TotReqQty += $('#totReqQtyG-' + i).text() == '' ? 0 : parseFloat($('#totReqQtyG-' + i).text());
                 TotCurrentStock += $('#totCurStockG-' + i).text() == '' ? 0 : parseFloat($('#totCurStockG-' + i).text());
                 TotalWipQty += $('#totWipQtyG-' + i).text() == '' ? 0 : parseFloat($('#totWipQtyG-' + i).text());
                 TotalOrderQty += $('#totOrderQtyG-' + i).text() == '' ? 0 : parseFloat($('#totOrderQtyG-' + i).text());
+                TotalWipStock += $('#totWipStockG-' + i).text() == '' ? 0 : parseFloat($('#totWipStockG-' + i).text());
+                TotalSchQty += $('#totSchOrderQtyG-' + i).text() == '' ? 0 : parseFloat($('#totSchOrderQtyG-' + i).text());
+                TotalStoreStock += $('#totStoreStockG-' + i).text() == '' ? 0 : parseFloat($('#totStoreStockG-' + i).text());
+                TotalStock += $('#totTotalStockG-' + i).text() == '' ? 0 : parseFloat($('#totTotalStockG-' + i).text());
                 //if(totAmount < 0){
                 //    $('#SAGridRow-' + i).css('background-color', 'red');
                 //}
@@ -761,6 +771,10 @@
             $('#toCurrentStock').val(isNaN(TotCurrentStock) ? 0 : TotCurrentStock.toFixed(2));
             $('#totWipQty').val(isNaN(TotalWipQty) ? 0 : TotalWipQty.toFixed(2));
             $('#totOrderQty').val(isNaN(TotalOrderQty) ? 0 : TotalOrderQty.toFixed(2));
+            $('#totWipStock').val(isNaN(TotalWipStock) ? 0 : TotalWipStock.toFixed(2));
+            $('#totSchQty').val(isNaN(TotalSchQty) ? 0 : TotalSchQty.toFixed(2));
+            $('#totStoreStock').val(isNaN(TotalStoreStock) ? 0 : TotalStoreStock.toFixed(2));
+            $('#totTotalStock').val(isNaN(TotalStock) ? 0 : TotalStock.toFixed(2));
         }
         var currentSearchColumn = null;
 
