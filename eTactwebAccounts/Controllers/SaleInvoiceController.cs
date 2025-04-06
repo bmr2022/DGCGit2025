@@ -362,6 +362,13 @@ namespace eTactWeb.Controllers
                 model.Mode = Mode;
                 model.ID = ID;
             }
+            else
+            {
+                model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                model.FinToDate = HttpContext.Session.GetString("ToDate");
+                model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.CC = HttpContext.Session.GetString("Branch");
+            }
 
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
@@ -369,10 +376,6 @@ namespace eTactWeb.Controllers
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024,
             };
-            model.FinFromDate = HttpContext.Session.GetString("FromDate");
-            model.FinToDate = HttpContext.Session.GetString("ToDate");
-            model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            model.CC = HttpContext.Session.GetString("Branch");
 
             model.CustomerJobWorkChallanAdj = model.CustomerJobWorkChallanAdj == null ? new List<CustomerJobWorkChallanAdj>() : model.CustomerJobWorkChallanAdj;
             _MemoryCache.Set("KeySaleBillGrid", model.saleBillDetails, cacheEntryOptions);

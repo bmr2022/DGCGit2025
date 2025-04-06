@@ -3375,9 +3375,12 @@
                         //  alert('right');
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "minDate", FinFromDate);
+                        $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
                     } else {
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]))
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
+                        $('#SaleBillDate').prop("disabled", true);
                     }
                     // $('#InvoiceTime').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#PerformaInvDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -3398,9 +3401,7 @@
                     $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#ApprovDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "minDate", FinFromDate);
-                    $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
-
+                
                     var saleBillEntryDate = parseDateToFormat($('#SaleBillEntryDate').val());
                     let dateParts = saleBillEntryDate.split("/");
                     let day = parseInt(dateParts[0], 10);

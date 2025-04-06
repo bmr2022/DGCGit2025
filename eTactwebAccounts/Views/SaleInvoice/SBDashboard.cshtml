@@ -149,7 +149,7 @@
             var ToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
             // $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
             $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
-            debugger
+           
             var fromDateBack = sessionStorage.getItem('FromDateBack');
             var toDateBack = sessionStorage.getItem('ToDateBack');
             var partCodeBack = sessionStorage.getItem('PartCodeBack');
@@ -176,7 +176,7 @@
             // AutoComplete('VSaleBillMainDetailitemAccount', 'SaleQuotNo', 'SaleQuotNo', null);
             AutoComplete('VSaleBillMainDetailitemAccount', 'DomesticExportNEPZ', 'DomesticExportNEPZ', null);
             AutoComplete('VSaleBillMainDetailitemAccount', 'PerformaInvNo', 'PerformaInvNo', null);
-            debugger
+           
             if (fromDateBack != null && fromDateBack != '') {
 
                 $('#FinFromDate').val(fromDateBack);
@@ -194,7 +194,7 @@
                 $('#search-box').val(searchBoxBack);
                 $('#SummaryDetail').val(summaryDetailBack);
             }
-            debugger
+           
             GetSearchData();
 
             sessionStorage.removeItem('FromDateBack');
@@ -396,6 +396,7 @@
                     $editBtn.css('cursor', 'default');
                     $editBtn.css('pointer-events', 'auto');
                 } else {
+                    $row.css("background-color", " #e6f2ff");
                     $deleteBtn.css('cursor', 'not-allowed');
                     $deleteBtn.css('pointer-events', 'none');
                     $editBtn.css('cursor', 'not-allowed');
