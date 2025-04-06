@@ -168,7 +168,7 @@ public static class CommonFunc
         }
 
         // Return empty string if parsing failed
-        return string.Empty;
+        return dateString.ToString();
     }
 
     public static string ParseFormattedDateTime(string dateString)

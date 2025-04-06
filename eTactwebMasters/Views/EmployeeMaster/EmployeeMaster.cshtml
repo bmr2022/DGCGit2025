@@ -293,7 +293,8 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="SalaryCalculation" class="form-label">Salary Calculation</label>
                                     <select asp-for="SalaryCalculation" class="form-control">
-                                        <option value="">Select</option>
+                                        <option value="D">Day</option>
+                                        <option value="H">Hour</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -303,9 +304,9 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="PFApplicable" class="form-label">PF Applicable</label>
                                     <select asp-for="PFApplicable" class="form-control">
-                                        <option value="Standard">Standard</option>
-                                        <option value="Basic">Basic</option>
-                                        <option value="Other">Other</option>
+                                        <option value="Sta">Standard</option>
+                                        <option value="Bas">Basic</option>
+                                        <option value="Oth">Other</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
@@ -692,7 +693,7 @@
                                 <input asp-for="Salary" class="form-control" />
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-top:33px;">
-                                <button type="button" class="btn btn-sm btn-outline-danger " id="GridButton">
+                                <button type="button" class="btn btn-sm btn-outline-danger " id="GridButtonExperiance">
                                     <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                                 </button>
                             </div>
@@ -717,8 +718,8 @@
 
                                     </tr>
                                 </thead>
-                                <tbody id="divStockGrid">
-                                    <partial name="_ExperianceGrid" />
+                                <tbody id="divStockGridExperiance">
+                                    <partial name="_EmployeeMasterExperianceGrid" />
                                 </tbody>
                             </table>
                         </div>
@@ -836,20 +837,107 @@
             $('#Nationality').rules("remove", "required");
             $('#MaritalStatus').rules("remove", "required");
             $('#BloodGroup').rules("remove", "required");
+            $('#MobileNo').rules("remove", "required");
+            $('#MobileNo2').rules("remove", "required");
+            $('#EmailId').rules("remove", "required");
+            $('#CurrentAddress').rules("remove", "required");
+            $('#permanentAddress').rules("remove", "required");
+            $('#EmergencyContact').rules("remove", "required");
+            $('#EmergencyContactRelation').rules("remove", "required");
+
+            $('#BankName').rules("remove", "required");
+            $('#AccountNo').rules("remove", "required");
+            $('#PANNo').rules("remove", "required");
+            $('#AdharNo').rules("remove", "required");
+            $('#SwiftCode').rules("remove", "required");
+            $('#PaymentMode').rules("remove", "required");
+            $('#PFNo').rules("remove", "required");
+            $('#ESINo').rules("remove", "required");
+            $('#GrossSalary').rules("remove", "required");
+            $('#BasicSalary').rules("remove", "required");
+            $('#CalculatePfOn').rules("remove", "required");
+            $('#SalaryCalculation').rules("remove", "required");
+            $('#SalaryBasis').rules("remove", "required");
+            $('#PFApplicable').rules("remove", "required");
+            $('#ApplyPFFonmAmt').rules("remove", "required");
+            $('#ApplyESIFonmAmt').rules("remove", "required");
+            $('#OTApplicable').rules("remove", "required");
+            $('#LeaveApplicable').rules("remove", "required");
+            $('#ESIApplicable').rules("remove", "required");
+            $('#LateMarkingCalculationApplicable').rules("remove", "required");
+            $('#FixSalaryAmt').rules("remove", "required");
+            $('#SalaryHead').rules("remove", "required");
+            $('#AllowanceMode').rules("remove", "required");
+            $('#Percent').rules("remove", "required");
+            $('#AllowanceAmount').rules("remove", "required");
+            $('#AllowanceType').rules("remove", "required");
+            $('#PartyPay').rules("remove", "required");
+
+            $('#JoiningDate').rules("remove", "required");
+            $('#JobDepartment').rules("remove", "required");
+            $('#JobDesignation').rules("remove", "required");
+            $('#ReportingMg').rules("remove", "required");
+            $('#EmployeeType').rules("remove", "required");
+            $('#WorkLocation').rules("remove", "required");
+            $('#JObShift').rules("remove", "required");
+            $('#EmpGrade').rules("remove", "required");
+            $('#JobProbationPeriod').rules("remove", "required");
+            $('#ProbationStartDate').rules("remove", "required");
+            $('#ProbationEndDate').rules("remove", "required");
+            $('#DateOfConfirmation').rules("remove", "required");
+            $('#JobReference1').rules("remove", "required");
+            $('#JobReference2').rules("remove", "required");
+            $('#JoiningThrough').rules("remove", "required");
+
+            $('#PassportNo').rules("remove", "required");
+            $('#WorkPeritVisa').rules("remove", "required");
+            $('#DrivingLicenseNo').rules("remove", "required");
+            $('#PanNo').rules("remove", "required");
+            $('#MedicalInsuranceDetail').rules("remove", "required");
+
+            $('#fileUpload').rules("remove", "required");
+            $('#ThumbUnPress').rules("remove", "required");
+            $('#Aadhar').rules("remove", "required");
+
+            $('#Qualification').rules("remove", "required");
+            $('#Univercity_Sch').rules("remove", "required");
+            $('#Per').rules("remove", "required");
+            $('#InYear').rules("remove", "required");
+            $('#Remark').rules("remove", "required");
+
+            $('#CompanyName').rules("remove", "required");
+            $('#CFromDate').rules("remove", "required");
+            $('#CToDate').rules("remove", "required");
+            $('#Desigation').rules("remove", "required");
+            $('#Salary').rules("remove", "required");
+
+            $('#NoticPeriod').rules("remove", "required");
+            $('#GratutyEligibility').rules("remove", "required");
+            $('#ResignationDate').rules("remove", "required");
+            $('#Active').rules("remove", "required");
+
             var mode = '@Model.Mode';
             $('#Nationality').select2();
             $('#MaritalStatus').select2();
             $('#BloodGroup').select2();
             $('#Gender').select2();
             $('#PaymentMode').select2();
-            // Set current date for new entries
+
+            $('#ResignationDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#JoiningDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#DateOfConfirmation').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#ProbationStartDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#ProbationEndDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#CFromDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#CToDate').datepicker({ dateFormat: 'dd/mm/yy' });
+            
             if (mode === "U" || mode === "V") {
                 $('#EntryDate').val('@Model.EntryDate');
                 $('#DateOfJoining').val('@Model.DateOfJoining');
                 $('#DOB').val('@Model.DOB');
                 $('#DateOfResignation').val('@Model.DateOfResignation');
                 $('#DOB').datepicker({ dateFormat: 'dd/mm/yy' });
-                $('#ResignationDate').datepicker({ dateFormat: 'dd/mm/yy' });
+                
                 $('#DateOfJoining, #DateOfResignation').datepicker({ dateFormat: 'dd/mm/yy' });
             } else {
                 // For new entries set current date
@@ -876,6 +964,21 @@
                 e.preventDefault();
                 //$(this).off('click');
                 $('form').submit();
+            });
+
+            $("#GrossSalary, #BasicSalary, #SalaryBasis, #ApplyPFFonmAmt, #ApplyESIFonmAmt,#FixSalaryAmt,#Percent,#AllowanceAmount,#JobProbationPeriod,#Per,#InYear,#Salary,#NoticPeriod").on("input", function () {
+                let value = $(this).val();
+                let id = $(this).attr("id");
+
+                // Allow only positive numbers or decimals
+                if (!/^\d*\.?\d*$/.test(value)) {
+                    $.notify("Only positive numbers allowed in " + id, {
+                        position: "top right",
+                        className: "error"
+                    });
+                    $(this).val('');
+                    $(this).focus();
+                }
             });
 
             $(".submitBTN").click(function (e) {
@@ -912,6 +1015,7 @@
                 Percent: $('#Percent').val(),
                 AllowanceAmount: $('#AllowanceAmount').val() ,
                 AllowanceType: $('#AllowanceType').val(),
+                PartyPay: $('#PartyPay').val(),
                
             };
             console.log(SchData);
@@ -934,6 +1038,74 @@
                 }
             });
         });
+        var EditEachItem = false;
+
+        function EditItemRow(SrNO) {
+
+            if (EditEachItem) {
+                $.notify('Cannot edit item while another item is being added to the grid!', "error");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("EditItemRow")',
+                type: "POST",
+                data: { SrNO: SrNO, Mode: "U" },
+                success: function (data) {
+
+                    var obj = $.parseJSON(data);
+                    if (obj != null) {
+                        EditEachItem = true;
+
+                        $('#SalaryHead').val(obj[0].SalaryHead);
+                        $('#AllowanceMode').val(obj[0].AllowanceMode);
+                        $('#Percent').val(obj[0].Percent);
+                        $('#AllowanceAmount').val(obj[0].AllowanceAmount);
+                        $('#AllowanceType').val(obj[0].AllowanceType);
+                        $('#PartyPay').val(obj[0].PartyPay);
+
+                        $('#Qualification').val(obj[0].Qualification);
+                        $('#Univercity_Sch').val(obj[0].Univercity_Sch);
+                        $('#Per').val(obj[0].Per);
+                        $('#InYear').val(obj[0].InYear);
+                        $('#Remark').val(obj[0].Remark);
+                        
+                        var rowCount = $('#divStockGrid tr').length;
+                        for (var i = 1; i <= rowCount + 1; i++) {
+                            $('#editItemGrid-' + i).css("pointer-events", "none");
+                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                        }
+
+                        DeleteItemRow(SrNO);
+                    }
+                },
+                error: function (response) {
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+        function DeleteItemRow(SrNO) {
+
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { SrNO: SrNO, Mode: "U" },
+                success: function (data, status, xhr) {
+                    $('#divStockGrid').html(data);
+                    $.notify("Process deleted from Grid", "info");
+                    EditEachItem = false;
+
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item that exists in Other Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
         $('#GridButtonEduction').click(function (e) {
             e.preventDefault();
             debugger
@@ -965,6 +1137,159 @@
                 }
             });
         });
+        var EditEachEductionItem = false;
+
+        function EditEductionItemRow(SrNO) {
+
+            if (EditEachEductionItem) {
+                $.notify('Cannot edit item while another item is being added to the grid!', "error");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("EditEductionItemRow")',
+                type: "POST",
+                data: { SrNO: SrNO, Mode: "U" },
+                success: function (data) {
+
+                    var obj = $.parseJSON(data);
+                    if (obj != null) {
+                        EditEachEductionItem = true;
+
+                        $('#Qualification').val(obj[0].Qualification);
+                        $('#Univercity_Sch').val(obj[0].Univercity_Sch);
+                        $('#Per').val(obj[0].Per);
+                        $('#InYear').val(obj[0].InYear);
+                        $('#Remark').val(obj[0].Remark);
+
+                        var rowCount = $('#divStockGridEduction tr').length;
+                        for (var i = 1; i <= rowCount + 1; i++) {
+                            $('#editItemGrid-' + i).css("pointer-events", "none");
+                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                        }
+
+                        DeleteEductionItemRow(SrNO);
+                    }
+                },
+                error: function (response) {
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+        function DeleteEductionItemRow(SrNO) {
+
+            $.ajax({
+                url: '@Url.Action("DeleteEductionItemRow")',
+                type: "POST",
+                data: { SrNO: SrNO, Mode: "U" },
+                success: function (data, status, xhr) {
+                    $('#divStockGridEduction').html(data);
+                    $.notify("Process deleted from Grid", "info");
+                    EditEachEductionItem = false;
+
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item that exists in Other Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+        $('#GridButtonExperiance').click(function (e) {
+            e.preventDefault();
+            debugger
+            var SchData = {
+                CompanyName: $('#CompanyName').val(),
+                CFromDate: $('#CFromDate').val(),
+                CToDate: $('#CToDate').val(),
+                Desigation: $('#Desigation').val(),
+                Salary: $('#Salary').val(),
+            };
+            console.log(SchData);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToGridDataExperiance", "EmployeeMaster")',
+                data: { model: SchData },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+                        $('#divStockGridExperiance').html(result);
+                        TotalNoOfRows();
+                        ClearItems();
+                    } else if (xhr.status == 207) {
+                        $.notify('Duplicate Item...!', "info");
+                    }
+                },
+                error: function () {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
+        var EditEachExperianceItem = false;
+
+        function EditExperianceItemRow(SrNO) {
+
+            if (EditEachExperianceItem) {
+                $.notify('Cannot edit item while another item is being added to the grid!', "error");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("EditExperianceItemRow")',
+                type: "POST",
+                data: { SrNO: SrNO, Mode: "U" },
+                success: function (data) {
+
+                    var obj = $.parseJSON(data);
+                    if (obj != null) {
+                        EditEachExperianceItem = true;
+
+                        $('#CompanyName').val(obj[0].CompanyName);
+                        $('#CFromDate').val(obj[0].CFromDate);
+                        $('#CToDate').val(obj[0].CToDate);
+                        $('#Desigation').val(obj[0].Desigation);
+                        $('#Salary').val(obj[0].Salary);
+
+                        var rowCount = $('#divStockGridExperiance tr').length;
+                        for (var i = 1; i <= rowCount + 1; i++) {
+                            $('#editItemGrid-' + i).css("pointer-events", "none");
+                            $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                        }
+
+                        DeleteExperianceItemRow(SrNO);
+                    }
+                },
+                error: function (response) {
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+        function DeleteExperianceItemRow(SrNO) {
+
+            $.ajax({
+                url: '@Url.Action("DeleteExperianceItemRow")',
+                type: "POST",
+                data: { SrNO: SrNO, Mode: "U" },
+                success: function (data, status, xhr) {
+                    $('#divStockGridExperiance').html(data);
+                    $.notify("Process deleted from Grid", "info");
+                    EditEachExperianceItem = false;
+
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item that exists in Other Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
         function GetEmpIdandEmpCode() {
             var mode = '@Model.Mode';
             if (mode === "U" || mode === "V") {

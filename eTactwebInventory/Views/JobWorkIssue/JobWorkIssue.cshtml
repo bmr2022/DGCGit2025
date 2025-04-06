@@ -794,7 +794,7 @@
             }
              
             var itemGridRowCount = $('#divJobWorkGrid tr td').length;
-            if (itemGridRowCount >= 1) {
+            if (itemGridRowCount <= 1) {
                 $.notify('Item Detail Should Have Atleast 1 Item...!', "error");
                 return false;
             }

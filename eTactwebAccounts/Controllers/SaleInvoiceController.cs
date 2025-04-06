@@ -362,6 +362,13 @@ namespace eTactWeb.Controllers
                 model.Mode = Mode;
                 model.ID = ID;
             }
+            else
+            {
+                model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                model.FinToDate = HttpContext.Session.GetString("ToDate");
+                model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.CC = HttpContext.Session.GetString("Branch");
+            }
 
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
@@ -369,10 +376,6 @@ namespace eTactWeb.Controllers
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024,
             };
-            model.FinFromDate = HttpContext.Session.GetString("FromDate");
-            model.FinToDate = HttpContext.Session.GetString("ToDate");
-            model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            model.CC = HttpContext.Session.GetString("Branch");
 
             model.CustomerJobWorkChallanAdj = model.CustomerJobWorkChallanAdj == null ? new List<CustomerJobWorkChallanAdj>() : model.CustomerJobWorkChallanAdj;
             _MemoryCache.Set("KeySaleBillGrid", model.saleBillDetails, cacheEntryOptions);
@@ -382,23 +385,21 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
             HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
 
-            //, string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = ""
-            //, string performaInvNo = "", string saleQuoteNo = "",string domExportNEPZ = "", string Searchbox = ""
+            model.FromDateBack = fromDate;
+            model.ToDateBack = toDate;
+            model.PartCodeBack = partCode;
+            model.ItemNameBack = itemName;
+            model.SaleBillNoBack = saleBillNo;
+            model.CustNameBack = custName;
+            model.SonoBack = sono;
+            model.CustOrderNoBack = custOrderNo;
+            model.SchNoBack = schNo;
+            model.PerformaInvNoBack = performaInvNo;
+            model.SaleQuoteNoBack = saleQuoteNo;
+            model.DomesticExportNEPZBack = domExportNEPZ;
+            model.SearchBoxBack = Searchbox;
+            model.SummaryDetailBack = summaryDetail;
 
-            //model.FromDateBack = fromDate;
-            //model.ToDateBack = toDate;
-            //model.PartCodeBack = partCode;
-            //model.ItemNameBack = itemName;
-            //model.SaleBillNoBack = saleBillNo;
-            //model.CustNameBack = custName;
-            //model.SonoBack = sono;
-            //model.CustOrderNoBack = custOrderNo;
-            //model.SchNoBack = schNo;
-            //model.PerformaInvNoBack = performaInvNo;
-            //model.SaleQuoteNoBack = saleQuoteNo;
-            //model.DomesticExportNEPZBack = domExportNEPZ;
-            //model.SearchBoxBack = Searchbox;
-            //model.SummaryDetailBack = summaryDetail;
             return View(model);
         }
 
@@ -704,7 +705,7 @@ namespace eTactWeb.Controllers
 
         public IActionResult ClearGrid()
         {
-            _MemoryCache.Remove("KeySaleBilllGrid");
+            _MemoryCache.Remove("KeySaleBillGrid");
             _MemoryCache.Remove("SaleBillModel");
             var MainModel = new SaleBillModel();
             return PartialView("_SaleBillGrid", MainModel);

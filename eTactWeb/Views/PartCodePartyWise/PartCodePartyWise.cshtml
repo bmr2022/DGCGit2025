@@ -98,6 +98,7 @@
             <div id="divProductionEntryGrid">
                 <partial name="_PartCodePartyWise" />
             </div>
+            <center><strong>Total MOQ:</strong><label id="totalMOQ"></label></center>
             <div class="accordion-item">
                 <h2 class="accordion-header" id="O_Measurements">
                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BOT_Measurements" aria-expanded="true" aria-controls="BOT_Measurements">
@@ -182,6 +183,7 @@
             FillPartCode();
             FillItems();
             FillAccountName();
+            totalMOQ();
             $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
         });
 
@@ -381,6 +383,17 @@
 
         function Validate_PartCodePartyWiseGrid() {
             var Err = 0;
+
+            if ($('.MOQ').prop('selectedIndex') > 100) {
+                AddErrorCls('MOQ');
+                $.notify("Please Enter Valid MOQ", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('MOQ');
+            }
+
+
             if ($('#AccountName').prop('selectedIndex') == 0) {
                 AddErrorCls('AccountName');
                 $.notify("AccountName Required", "error");
@@ -410,6 +423,7 @@
             return true;
         }
 
+
         $('#decimalInput').on('blur', function () {
              
             let value = parseFloat($(this).val());
@@ -418,9 +432,38 @@
             }
         });
 
-        function GridButton(event) {
 
+        function totalMOQ()
+
+        {
+            const rowCount = $('#divProductionEntryGrid tr').length;
+            var total = 0;
+            for (let i = 1; i <= rowCount; i++) {
+                
+                const amount = parseFloat($('#totalMOQ-' + i).text());
+                if (!isNaN(amount)) {
+                    total += amount;
+                }
+               
+            }
+            $('#totalMOQ').text(total.toFixed(2));
+        }
+        function GridButton(event) {
             event.preventDefault();
+            if ($('.MOQ').val() > 100) {
+                $.notify("Please Enter Valid MOQ", "error");
+                return false;
+            }
+            const rowCount = $('#divProductionEntryGrid tr').length;
+
+            var MOQ = $('.MOQ').val();
+            var TotalMOQ = $('#totalMOQ').text();
+
+            if (parseFloat(MOQ) + parseFloat(TotalMOQ) >100) {
+                $.notify(" Enter Valid MOQ", "error");
+                return false;
+            }
+           
             if (!Validate_PartCodePartyWiseGrid()) return;
             var ItemData = {
                 "AccountName": $('#AccountName').find(":selected").text(),
@@ -433,6 +476,7 @@
                 "BusinessPercentage": $('.BusinessPercentage').val(),
                 "Mode":$('#Mode').val()
             }
+           
 
             $.ajax({
                 url: "@Url.Action("AddPartCodePartWiseGrid")",
@@ -450,6 +494,7 @@
                     else {
                         $('#divBomGrid').html(data);
                         ClearGrid();
+                        totalMOQ();
                         editingNow = false;
                     }
                 },
@@ -486,6 +531,7 @@
                         $.notify("Item Deleted from Grid", "info");
                         isEditOperationAllowed = "true";
                         resolve();
+                        totalMOQ();
                     },
                     error: function (response) {
                         reject(response.responseText);

@@ -39,8 +39,6 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 if (Flag == "True")
                 {
-                    //DateTime FromDt = DateTime.Parse(Fromdate, CultureInfo.InvariantCulture);
-                    //DateTime todt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
                     SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(Fromdate)));
                     SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(Todate)));
@@ -387,7 +385,8 @@ namespace eTactWeb.Data.DAL
                                                      IssueSlipNo = dr["IssueSlipNo"].ToString(),
                                                      IssueDate = dr["IssueDate"].ToString(),
                                                      WorkCenterDescription = dr["WorkCenterDescription"].ToString(),
-                                                     ActualEnteredBy = Convert.ToInt32(dr["SavedByEemp"]),
+                                                     ActualEnteredBy = Convert.ToInt32(dr["ActualEnteredBy"]),
+                                                     MachineCode = dr["Machinecode"].ToString(),
                                                  }).ToList();
                 }
                 //var ilst = model.AccountMasterList.Select(m => new TextValue

@@ -61,12 +61,12 @@
                             <th>@Cntr</th>
                             <td>@item.Part_code    </td>
                             <td>@item.Item_Name</td>
-                            <td>@item.Req_Qty</td>
-                            <td>@item.StoreStock</td>
-                            <td>@item.WIPStock</td>
-                            <td>@item.TotalStock</td>
+                            <td id="totReqQtyG-@Cntr">@item.Req_Qty</td>
+                            <td id="totStoreStockG-@Cntr">@item.StoreStock</td>
+                            <td id="totWipStockG-@Cntr">@item.WIPStock</td>
+                            <td id="totTotalStockG-@Cntr">@item.TotalStock</td>
                             <td>@item.MinLevel</td>
-                            <td>@item.OrderQty</td>
+                            <td id="totOrderQtyG-@Cntr">@item.OrderQty</td>
                             <td>@item.unit</td>
 
                         </tr>

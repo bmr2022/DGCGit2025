@@ -102,6 +102,7 @@
                                     <label class="color-box" style="background-color: #FF0000;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Cancel Bill</label>
                                     <label class="color-box" style="background-color: blue;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Domestic</label>
                                     <label class="color-box" style="background-color: #a69904;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Export</label>
+                                    <label class="color-box" style="background-color: #e6f2ff;margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">No Access</label>
                                 </div>
                                 <div class="ms-auto d-flex align-items-center">
                                     <div class="col-md-4">
@@ -149,7 +150,7 @@
             var ToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
             // $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
             $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
-
+           
             var fromDateBack = sessionStorage.getItem('FromDateBack');
             var toDateBack = sessionStorage.getItem('ToDateBack');
             var partCodeBack = sessionStorage.getItem('PartCodeBack');
@@ -176,7 +177,7 @@
             // AutoComplete('VSaleBillMainDetailitemAccount', 'SaleQuotNo', 'SaleQuotNo', null);
             AutoComplete('VSaleBillMainDetailitemAccount', 'DomesticExportNEPZ', 'DomesticExportNEPZ', null);
             AutoComplete('VSaleBillMainDetailitemAccount', 'PerformaInvNo', 'PerformaInvNo', null);
-
+           
             if (fromDateBack != null && fromDateBack != '') {
 
                 $('#FinFromDate').val(fromDateBack);
@@ -194,7 +195,7 @@
                 $('#search-box').val(searchBoxBack);
                 $('#SummaryDetail').val(summaryDetailBack);
             }
-             
+           
             GetSearchData();
 
             sessionStorage.removeItem('FromDateBack');
@@ -379,15 +380,30 @@
         }
 
         function YearEditDeleteRight() {
-             
-            var currentFinYC = getFinancialYear();
-            if ($('#SaleBillYearCode').val() != currentFinYC) {
-                $('.btnDeleteData').css('cursor', 'not-allowed');
-                $('.btnEditData').css('cursor', 'not-allowed');
-            }else{
-                $('.btnDeleteData').css('cursor', '');
-                $('.btnEditData').css('cursor', '');
-            }
+            
+            var loggedInYearCode = $('#SaleBillYearCode').val();
+
+            $('.sbDashboardRow').each(function () {
+   
+                var $row = $(this);
+                var yearCode = $row.find('.gridYearCode').val();
+
+                var $deleteBtn = $row.find('.btnDeleteData');
+                var $editBtn = $row.find('.btnEditData');
+
+                if (yearCode == loggedInYearCode) {
+                    $deleteBtn.css('cursor', 'default');
+                    $deleteBtn.css('pointer-events', 'auto');
+                    $editBtn.css('cursor', 'default');
+                    $editBtn.css('pointer-events', 'auto');
+                } else {
+                    $row.css("background-color", "#e6f2ff");
+                    $deleteBtn.css('cursor', 'not-allowed');
+                    $deleteBtn.css('pointer-events', 'none');
+                    $editBtn.css('cursor', 'not-allowed');
+                    $editBtn.css('pointer-events', 'none');
+                }
+            });
         }
 
         function getFinancialYear() {

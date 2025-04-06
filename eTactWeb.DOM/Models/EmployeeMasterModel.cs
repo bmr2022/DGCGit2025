@@ -59,26 +59,26 @@ namespace eTactWeb.DOM.Models
         public string PaymentMode { get; set; }
         public string PFNo { get; set; }
         public string ESINo { get; set; }
-        public double GrossSalary { get; set; }
-        public double BasicSalary { get; set; }
+        public decimal GrossSalary { get; set; }
+        public decimal BasicSalary { get; set; }
         public string CalculatePfOn { get; set; }
         public string SalaryCalculation { get; set; }
-        public double SalaryBasis { get; set; }
+        public decimal SalaryBasis { get; set; }
         public string PFApplicable { get; set; }
-        public double ApplyPFFonmAmt { get; set; }
-        public double ApplyESIFonmAmt { get; set; }
+        public decimal ApplyPFFonmAmt { get; set; }
+        public decimal ApplyESIFonmAmt { get; set; }
         public string OTApplicable { get; set; }
         public string LeaveApplicable { get; set; }
       
         public string ESIApplicable { get; set; }
         public string LateMarkingCalculationApplicable { get; set; }
-        public double FixSalaryAmt { get; set; }
+        public decimal FixSalaryAmt { get; set; }
 
         //Allowance/Deduction
         public string SalaryHead { get; set; }
         public string AllowanceMode { get; set; }
-        public double Percent { get; set; }
-        public double AllowanceAmount { get; set; }
+        public decimal Percent { get; set; }
+        public decimal AllowanceAmount { get; set; }
         public string AllowanceType{ get; set; }
         public string PartyPay{ get; set; }
 
@@ -91,7 +91,7 @@ namespace eTactWeb.DOM.Models
         public string WorkLocation{ get; set; }
         public string JObShift{ get; set; }     
         public string EmpGrade{ get; set; }     
-        public string JobProbationPeriod{ get; set; }     
+        public decimal JobProbationPeriod{ get; set; }     
         public string ProbationStartDate{ get; set; }     
         public string ProbationEndDate { get; set; }     
         public string DateOfConfirmation{ get; set; }     
