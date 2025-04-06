@@ -1572,6 +1572,7 @@
             $.getJSON({
                 url: '@Url.Action("GetItemPartCode", "SaleOrder")',
                 data: { Code: $('#' + ID).val() },
+                async:false,
                 success: function (result, status, xhr) {
                     if (result) {
                         var obj = JSON.parse(result);
@@ -2009,6 +2010,7 @@
             type: "GET",
             url: "@Url.Action("FillItems")",
             dataType: "json",
+            async:false,
             data: { Type: 'Item', ShowAllItem: $('#IN1').val() == 'true' ? 'Y' : 'N' },
             success: function (result, status, error) {
                 if (result != null) {

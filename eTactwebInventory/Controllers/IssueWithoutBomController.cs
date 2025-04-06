@@ -566,7 +566,7 @@ namespace eTactWeb.Controllers
                     DataSet DS = Result.Result;
                     if (DS != null)
                     {
-                        var DT = DS.Tables[0].DefaultView.ToTable(false, "ReqNo", "ReqDate", "IssueSlipNo", "IssueDate", "ActualEnteredBy", "Fromdepartment", "RecDepartment","ReqYearCode", "Item_Name", "PartCode", "EntryId", "YearCode", "WorkCenterDescription");
+                        var DT = DS.Tables[0].DefaultView.ToTable(false, "ReqNo", "ReqDate", "IssueSlipNo", "IssueDate", "ActualEnteredBy", "MachineCode" ,"Fromdepartment", "RecDepartment","ReqYearCode", "Item_Name", "PartCode", "EntryId", "YearCode", "WorkCenterDescription");
                         model.IssueWOBOMDashboard = CommonFunc.DataTableToList<IssueWOBomMainDashboard>(DT, "IssueWODashboard");
                     }
                 }
