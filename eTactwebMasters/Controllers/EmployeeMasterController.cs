@@ -228,7 +228,61 @@ namespace eTactWeb.Controllers
             {
                 throw ex;
             }
-        } 
+        }
+        public IActionResult EditItemRow(int SrNO, string Mode)
+        {
+            IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+            if (Mode == "U")
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterGrid", out EmployeeMasterGrid);
+            }
+            else
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterGrid", out EmployeeMasterGrid);
+            }
+            IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
+            if (EmployeeMasterGrid != null)
+            {
+                SSBreakdownGrid = EmployeeMasterGrid.Where(x => x.SrNo == SrNO);
+            }
+            string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
+            return Json(JsonString);
+        }
+
+        public IActionResult DeleteItemRow(int SrNO, string Mode)
+        {
+            var MainModel = new EmployeeMasterModel();
+            if (Mode == "U")
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterGrid", out List<EmployeeMasterModel> EmployeeMasterGrid);
+                int Indx = SrNO - 1;
+
+                if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
+                {
+                    EmployeeMasterGrid.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in EmployeeMasterGrid)
+                    {
+                        Indx++;
+                        item.SrNo = Indx;
+                    }
+                    MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyEmployeeMasterGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                }
+            }
+
+            return PartialView("_EmployeeAllowanceGrid", MainModel);
+        }
         public IActionResult AddToGridDataEduction(EmployeeMasterModel model)
         {
             try
@@ -287,6 +341,173 @@ namespace eTactWeb.Controllers
             {
                 throw ex;
             }
+        }
+        public IActionResult EditEductionItemRow(int SrNO, string Mode)
+        {
+            IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+            if (Mode == "U")
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterEductionGrid", out EmployeeMasterGrid);
+            }
+            else
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterEductionGrid", out EmployeeMasterGrid);
+            }
+            IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
+            if (EmployeeMasterGrid != null)
+            {
+                SSBreakdownGrid = EmployeeMasterGrid.Where(x => x.SrNo == SrNO);
+            }
+            string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
+            return Json(JsonString);
+        }
+
+        public IActionResult DeleteEductionItemRow(int SrNO, string Mode)
+        {
+            var MainModel = new EmployeeMasterModel();
+            if (Mode == "U")
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterEductionGrid", out List<EmployeeMasterModel> EmployeeMasterGrid);
+                int Indx = SrNO - 1;
+
+                if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
+                {
+                    EmployeeMasterGrid.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in EmployeeMasterGrid)
+                    {
+                        Indx++;
+                        item.SrNo = Indx;
+                    }
+                    MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyEmployeeMasterEductionGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                }
+            }
+
+            return PartialView("_EducationalQualificationGrid", MainModel);
+        }
+        public IActionResult AddToGridDataExperiance(EmployeeMasterModel model)
+        {
+            try
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterExperianceGrid", out IList<EmployeeMasterModel> EmployeeMasterGrid);
+
+                var MainModel = new EmployeeMasterModel();
+                var WorkOrderPGrid = new List<EmployeeMasterModel>();
+                var OrderGrid = new List<EmployeeMasterModel>();
+                var ssGrid = new List<EmployeeMasterModel>();
+
+                if (model != null)
+                {
+                    if (EmployeeMasterGrid == null)
+                    {
+                        model.SrNo = 1;
+                        OrderGrid.Add(model);
+                    }
+                    else
+                    {
+                        if (EmployeeMasterGrid.Any(x => (x.SrNo == model.SrNo)))
+                        {
+                            return StatusCode(207, "Duplicate");
+                        }
+                        else
+                        {
+                            //count = WorkOrderProcessGrid.Count();
+                            model.SrNo = EmployeeMasterGrid.Count + 1;
+                            OrderGrid = EmployeeMasterGrid.Where(x => x != null).ToList();
+                            ssGrid.AddRange(OrderGrid);
+                            OrderGrid.Add(model);
+
+                        }
+
+                    }
+
+                    MainModel.EmployeeMasterGrid = OrderGrid;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyEmployeeMasterExperianceGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                }
+                else
+                {
+                    ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+                }
+                return PartialView("_EmployeeMasterExperianceGrid", MainModel);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public IActionResult EditExperianceItemRow(int SrNO, string Mode)
+        {
+            IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+            if (Mode == "U")
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterExperianceGrid", out EmployeeMasterGrid);
+            }
+            else
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterExperianceGrid", out EmployeeMasterGrid);
+            }
+            IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
+            if (EmployeeMasterGrid != null)
+            {
+                SSBreakdownGrid = EmployeeMasterGrid.Where(x => x.SrNo == SrNO);
+            }
+            string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
+            return Json(JsonString);
+        }
+
+        public IActionResult DeleteExperianceItemRow(int SrNO, string Mode)
+        {
+            var MainModel = new EmployeeMasterModel();
+            if (Mode == "U")
+            {
+                _MemoryCache.TryGetValue("KeyEmployeeMasterExperianceGrid", out List<EmployeeMasterModel> EmployeeMasterGrid);
+                int Indx = SrNO - 1;
+
+                if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
+                {
+                    EmployeeMasterGrid.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in EmployeeMasterGrid)
+                    {
+                        Indx++;
+                        item.SrNo = Indx;
+                    }
+                    MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyEmployeeMasterExperianceGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                }
+            }
+
+            return PartialView("_EmployeeMasterExperianceGrid", MainModel);
         }
     }
 }
