@@ -714,6 +714,7 @@
                     return false;
                 }
             });
+            fillPendQty();
         });
 
         function SetFields() {
@@ -1341,6 +1342,9 @@
             }
             calculateSumAndSetValues();
         });
+        $("#docTypeId").change(function () {
+            fillPONumber();
+        })
 
         $('#Types').change(function () {
             fillPONumber();
@@ -1360,13 +1364,15 @@
             var invoiceDate = $('#InvoiceDate').val();
             var yearCode = $('#YearCode').val();
             var poNo = $('#PONO').val();
-            $('#ItemName,#Unit,#Qty,#Rate,#SchNo,#SchYearCode,#PartCode').empty();
+            var docTypeId = $("#docTypeId").val();
+            
+;            $('#ItemName,#Unit,#Qty,#Rate,#SchNo,#SchYearCode,#PartCode').empty();
             $('#PODate,#ScheduleDate,#Unit,#Qty,#Rate,#SchNo,#SchYearCode,#AltUnit,#PendQty,#AltQty').val("");
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPOYearList")",
                 async: false,
-                data: { accountCode: accountCode, invoiceDate: invoiceDate, yearCode: yearCode, poNo: poNo },
+                data: { accountCode: accountCode, invoiceDate: invoiceDate, yearCode: yearCode, poNo: poNo, docTypeId: docTypeId},
                 dataType: "json",
                 success: function (data, status, error) {
                     if (data != null) {
@@ -1806,6 +1812,7 @@
             $("#AltQty").val($('#PartCode').find(":selected").data('alt-qty'));
 
             $("#Qty").val($('#PartCode').find(":selected").data('qty'));
+            $("#PendQty").val($('#PartCode').find(":selected").data('qty'));
             if ($('#AltUnit').val() == undefined || $('#AltUnit').val() == 'undefined')
                 $('#AltUnit').val('');
             //$('#ItemName').find("[data-part-code='" + $("#PartCode").val() + "']").attr('selected', 'selected');
