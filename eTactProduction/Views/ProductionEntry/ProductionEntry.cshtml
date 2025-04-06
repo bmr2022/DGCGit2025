@@ -351,6 +351,7 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9" sstyle="width:80px" id="StoreTransferdiv">
                                     <label asp-for="StoreTransfer" class="form-label" style="color: red;">Store/Wc*</label>
                                     <select class="form-select" asp-for="StoreTransfer">
+                                        <option>-Select-</option>
                                         <option value="W">WorkCenter</option>
                                         <option value="S">Store</option>
                                     </select>
@@ -1322,12 +1323,12 @@
             FillTool();
             FillShiftTime();
             CheckAutoOrManual();
-            if ($('#StoreTransfer').val() == "S") {
+/*             if ($('#StoreTransfer').val() == "S") {
                 FillStore();
             }
             else {
                 FillTransferWorkCenter();
-            }
+            } */
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
 
                 fillEntryandGate();
@@ -1841,7 +1842,7 @@
                 });
             }
             else if ($('#Store').val() == 'S') {
-                FillIssStore();
+                 FillIssStore();
             }
         })
 
@@ -2939,7 +2940,7 @@
                             $('#RejTransferTo').empty();
                             $('#RejTransferTo').append('<option disabled>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#RejTransferTo').append('<option selected value="' + val.entryid + '">' + val.Store_Name + '</option>');
+                                $('#RejTransferTo').append('<option value="' + val.entryid + '">' + val.Store_Name + '</option>');
                                 $('#TransferToRejStoreId').val($('#RejTransferTo').val());
                                 $('#RejWCId').val(0);
                             })
@@ -2966,7 +2967,7 @@
                             $('#RejTransferTo').empty();
                             $('#RejTransferTo').append('<option disabled>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#RejTransferTo').append('<option selected value="' + val.entryid + '">' + val.WorkCenterDescription + '</option>');
+                                $('#RejTransferTo').append('<option value="' + val.entryid + '">' + val.WorkCenterDescription + '</option>');
                                 $('#RejWCId').val($('#RejTransferTo').val());
                                 $('#TransferToRejStoreId').val(0);
                             })
@@ -3097,7 +3098,7 @@
                             $('#NextWorkCenter').empty();
                             $('#NextWorkCenter').append('<option disabled>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#NextWorkCenter').append('<option selected value="' + val.entryid + '">' + val.Store_Name + '</option>');
+                                $('#NextWorkCenter').append('<option value="' + val.entryid + '">' + val.Store_Name + '</option>');
                                 $('#NextStoreId').val($('#NextWorkCenter').val());
                                 $('#NextWCID').val(0);
                             })
@@ -3370,7 +3371,13 @@
                             $('#TargetQty').empty();
                             $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
                             $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                                var ProdQty = '@Model.ProdQty'
+                                $('#ProdQty').val(ProdQty);
+                            }
                         }
+                       
                     }
                 }
             });
@@ -3391,6 +3398,11 @@
                             $('#TargetQty').empty();
                             $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
                             $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                                var ProdQty = '@Model.ProdQty'
+                                $('#ProdQty').val(ProdQty);
+                            }
                         }
                     }
                 }

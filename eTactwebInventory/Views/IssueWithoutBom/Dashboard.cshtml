@@ -100,7 +100,7 @@
     {
     <script>
         $(function () {
-
+            debugger
             FromDateBack = sessionStorage.getItem('FromDateBack');
             ToDateBack = sessionStorage.getItem('ToDateBack');
             var REQNoBack = sessionStorage.getItem('REQNoBack');
@@ -109,8 +109,6 @@
             var WorkCenterBack = sessionStorage.getItem('WorkCenterBack');
             var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
             GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
-
-
             var dashGrid = $('#divDashboardGrid tr').length - 1;
             $('#totalRows').text(dashGrid);
             
@@ -198,11 +196,11 @@
                 return finaldate;
             }
 
+            GetSearchData();
             AutoComplete('VIssueWithoutBomdetail', 'ReqNo', 'ReqNo', null);
             AutoComplete('VIssueWithoutBomdetail', 'Item_Name', 'Item_Name', null);
             AutoComplete('VIssueWithoutBomdetail', 'PartCode', 'PartCode', null);
             AutoComplete('VIssueWithoutBomdetail', 'WorkCenterDescription', 'WorkCenterDescription', null);
-            GetSearchData();
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('REQNoBack');
