@@ -1272,7 +1272,7 @@ public class ProductionEntryDAL
             SqlParams.Add(new SqlParameter("@TransferRejtoStoreWC", model.StoreTransfer == null ? "" : model.StoreTransfer));
             SqlParams.Add(new SqlParameter("@RejWCId", model.RejWCId == 0 ? 0 : model.RejWCId));
             SqlParams.Add(new SqlParameter("@TransferToRejStoreId", model.TransferToRejStoreId == 0 ? 0 : model.TransferToRejStoreId));
-            SqlParams.Add(new SqlParameter("@TransferFGToWCorSTORE", model.StoreTransfer == null ? "" : model.StoreTransfer));
+            SqlParams.Add(new SqlParameter("@TransferFGToWCorSTORE", model.Store == null ? "" : model.Store));
             SqlParams.Add(new SqlParameter("@QCMandatory", model.QCMandatory == null ? "" : model.QCMandatory));
             SqlParams.Add(new SqlParameter("@TransferToQc", model.SenToQc == null ? "" : model.SenToQc));
             SqlParams.Add(new SqlParameter("@NextWCID", model.NextWCID == 0 ? 0 : model.NextWCID));

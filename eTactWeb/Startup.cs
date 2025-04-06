@@ -39,11 +39,12 @@ namespace eTactWeb
             loggerFactory.AddFile("Logs/eTactWeb-.log");
        
             app.UseHttpLogging();
+            app.UseStaticFiles();
             app.UseSession();
             app.UseMiddleware<SessionCheckMiddleware>();
             app.UseOutputCache();
            
-            app.UseStaticFiles();
+           
              
             app.UseFastReport();
 
