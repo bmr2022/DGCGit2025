@@ -86,6 +86,7 @@ namespace eTactWeb
 
             app.UseHttpLogging();
             app.UseSession();
+            app.UseMiddleware<SessionCheckMiddleware>();
             app.UseOutputCache();
 
             app.UseStaticFiles();
@@ -104,8 +105,6 @@ namespace eTactWeb
             app.UseAuthorization();
 
             app.UseStatusCodePages();
-
-
 
             app.UseEndpoints
             (
@@ -131,7 +130,8 @@ namespace eTactWeb
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromHours(1); // Auto-expire after 1 hour
+                options.IdleTimeout = TimeSpan.FromHours(1);
+                // Auto-expire after 1 hour
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
 
