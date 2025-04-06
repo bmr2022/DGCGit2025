@@ -1,4 +1,11 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    string CompanyName = HttpContextAccessor.HttpContext.Session.GetString("CompanyName");
+    string branchName = HttpContextAccessor.HttpContext.Session.GetString("Branch");
+    string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
+}
 <header>
     <!-- Fixed navbar -->
     @*<nav class="navbar HeaderShadow navbar-expand-md fixed-top" style="background: radial-gradient(#168096, #04414a);">*@
@@ -88,7 +95,7 @@
                                 <a class="dropdown-item" href="#">Purchase Sch & Amendment Approval &raquo; </a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item POSchApproval" asp-action="PSApproval" asp-controller="PSApproval" asp-route-ID="0" >
+                                        <a class="dropdown-item POSchApproval" asp-action="PSApproval" asp-controller="PSApproval" asp-route-ID="0">
                                             <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i> Approval Form
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="POSchApproval" />
@@ -1143,9 +1150,9 @@
                             </ul>
                         </li>
                         @* <li>
-                            <a class="dropdown-item" href="#">Material Req Planning &raquo;</a>
-                            <ul class="submenu dropdown-menu">
-                            </ul>
+                        <a class="dropdown-item" href="#">Material Req Planning &raquo;</a>
+                        <ul class="submenu dropdown-menu">
+                        </ul>
                         </li> *@
                         <li>
                             <a class="dropdown-item" href="#">Auto Generate Schedule &raquo;</a>
@@ -1272,17 +1279,17 @@
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
                                     <input class="userRightsPermission" type="hidden" value="Work Order" />
-                                    <li>
+                                <li>
                                     <a class="dropdown-item" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="IssueAgainstProdSchedule">
-                                            <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
-                                               style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
-                                            Pending Production Schedule
-                                        </a>
-                                    </li>
-                                    <li>
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        Pending Production Schedule
+                                    </a>
+                                </li>
+                                <li>
                                     <a class="dropdown-item IssueAgainstProdSchedule" asp-action="IssueAgainstProdScheduleDashboard" asp-controller="IssueAgainstProdSchedule" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
-                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
-                                        </a>
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                    </a>
                                     <input class="userRightsPermission" type="hidden" value="IssueAgainstProdSchedule" />
 
                                 </li>
@@ -2400,10 +2407,16 @@
                     <a class="nav-link NavText" style="text-transform:uppercase" asp-action="Logout" asp-controller="Home">Logout</a>
                 </li>
                 <div class="col d-flex justify-content-evenly align-self-center">
-                    <label>
-                        @*   Branch: @branchName,
-                        FinancialYear:
-                        <b id="sessionYC" style="color:yellow">@yearCode</b> *@
+                    <label style="width:120px;">
+                        <b style="color:white">
+                            Company: <span style="color:yellow">@CompanyName</span>,
+                        </b><br />
+                        <b style="color:white">
+                            Branch: <span style="color:yellow">@branchName</span>,
+                        </b><br />
+                        <b style="color:white">
+                            Yc: <span id="sessionYC" style="color:yellow">@yearCode</span>
+                        </b>
                     </label>
                 </div>
                 </ul>

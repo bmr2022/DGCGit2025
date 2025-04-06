@@ -765,7 +765,7 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo)
+    public async Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo,int docTypeId, string InvoiceDate)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -781,6 +781,8 @@ public class GateInwardDAL
                 SqlParams.Add(new SqlParameter("@POYearCode", YearCode));
             }
             SqlParams.Add(new SqlParameter("@PONO", poNo));
+            SqlParams.Add(new SqlParameter("@docTypeId", docTypeId));
+            SqlParams.Add(new SqlParameter("@InvoiceDate", InvoiceDate));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }

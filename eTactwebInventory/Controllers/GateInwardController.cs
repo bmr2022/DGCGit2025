@@ -489,9 +489,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPOYearList(string accountCode, string yearCode, string poNo)
+        public async Task<JsonResult> GetPOYearList(string accountCode, string yearCode, string poNo, int docTypeId, string invoiceDate)
         {
-            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PENDINGPOLIST", accountCode, yearCode, poNo);
+            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PENDINGPOLIST", accountCode, yearCode, poNo,  docTypeId, invoiceDate);
             _logger.LogError(JsonConvert.SerializeObject(JSON));
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -630,9 +630,9 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> GetScheDuleByYearCodeandAccountCode(string accountCode, string Year, string poNo)
+        public async Task<JsonResult> GetScheDuleByYearCodeandAccountCode(string accountCode, string Year, string poNo, int docTypeId, string InvoiceDate)
         {
-            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PURCHSCHEDULE", accountCode, Year, poNo);
+            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PURCHSCHEDULE", accountCode, Year, poNo,  docTypeId,  InvoiceDate);
             _logger.LogError(JsonConvert.SerializeObject(JSON));
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);

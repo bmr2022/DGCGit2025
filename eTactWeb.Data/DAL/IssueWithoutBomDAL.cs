@@ -385,7 +385,8 @@ namespace eTactWeb.Data.DAL
                                                      IssueSlipNo = dr["IssueSlipNo"].ToString(),
                                                      IssueDate = dr["IssueDate"].ToString(),
                                                      WorkCenterDescription = dr["WorkCenterDescription"].ToString(),
-                                                     ActualEnteredBy = Convert.ToInt32(dr["SavedByEemp"]),
+                                                     ActualEnteredBy = Convert.ToInt32(dr["ActualEnteredBy"]),
+                                                     MachineCode = dr["Machinecode"].ToString(),
                                                  }).ToList();
                 }
                 //var ilst = model.AccountMasterList.Select(m => new TextValue
