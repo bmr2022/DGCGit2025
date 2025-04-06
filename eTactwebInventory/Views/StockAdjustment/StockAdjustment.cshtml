@@ -1260,7 +1260,7 @@
                     });
                 }
             }
-            else {
+            if ($('#StoreWorkCenter').val() == 'W') {
                 if (ItemCode != null && Wcid != null) {
                     $.each(batchWIPArray, function (index, val) {
                         $('#MultiBatchBody').append('<tr id="MultiBatchRow-' + (RowCount + index) + '">');
@@ -1676,7 +1676,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-
+                            batchWIPArray=[];
                             $.each(obj.Result, function (index, val) {
                                 batchWIPArray.push({
                                     Mbbatchno: val.batchno,
@@ -1772,7 +1772,7 @@
             var CheckboxArr = [];
             var RowCount = $('#MultiBatchBody tr').length;
 
-            for (var i = 1; i <= RowCount; i++) {
+            for (var i = 0; i <= RowCount; i++) {
                 if ($('#MBCheckbox-' + i).prop("checked")) {
                     CheckboxArr.push(i);
                 }
