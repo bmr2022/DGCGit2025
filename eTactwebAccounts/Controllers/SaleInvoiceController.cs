@@ -382,23 +382,21 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
             HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
 
-            //, string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = ""
-            //, string performaInvNo = "", string saleQuoteNo = "",string domExportNEPZ = "", string Searchbox = ""
+            model.FromDateBack = fromDate;
+            model.ToDateBack = toDate;
+            model.PartCodeBack = partCode;
+            model.ItemNameBack = itemName;
+            model.SaleBillNoBack = saleBillNo;
+            model.CustNameBack = custName;
+            model.SonoBack = sono;
+            model.CustOrderNoBack = custOrderNo;
+            model.SchNoBack = schNo;
+            model.PerformaInvNoBack = performaInvNo;
+            model.SaleQuoteNoBack = saleQuoteNo;
+            model.DomesticExportNEPZBack = domExportNEPZ;
+            model.SearchBoxBack = Searchbox;
+            model.SummaryDetailBack = summaryDetail;
 
-            //model.FromDateBack = fromDate;
-            //model.ToDateBack = toDate;
-            //model.PartCodeBack = partCode;
-            //model.ItemNameBack = itemName;
-            //model.SaleBillNoBack = saleBillNo;
-            //model.CustNameBack = custName;
-            //model.SonoBack = sono;
-            //model.CustOrderNoBack = custOrderNo;
-            //model.SchNoBack = schNo;
-            //model.PerformaInvNoBack = performaInvNo;
-            //model.SaleQuoteNoBack = saleQuoteNo;
-            //model.DomesticExportNEPZBack = domExportNEPZ;
-            //model.SearchBoxBack = Searchbox;
-            //model.SummaryDetailBack = summaryDetail;
             return View(model);
         }
 
@@ -704,7 +702,7 @@ namespace eTactWeb.Controllers
 
         public IActionResult ClearGrid()
         {
-            _MemoryCache.Remove("KeySaleBilllGrid");
+            _MemoryCache.Remove("KeySaleBillGrid");
             _MemoryCache.Remove("SaleBillModel");
             var MainModel = new SaleBillModel();
             return PartialView("_SaleBillGrid", MainModel);

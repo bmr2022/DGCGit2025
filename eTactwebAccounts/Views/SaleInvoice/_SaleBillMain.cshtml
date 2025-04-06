@@ -41,6 +41,9 @@
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="SaleBillDate" class="form-label" style="color: red;">Bill Date*</label>
             <input asp-for="SaleBillDate" class="form-control" readonly />
+            @if(Model.Mode == "U" || Model.Mode == "V"){
+                <input type="hidden" value="@Model.SaleBillDate" id="hiddenSaleBillDate" />
+            }
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="InvoiceTime" class="form-label">Time</label>
