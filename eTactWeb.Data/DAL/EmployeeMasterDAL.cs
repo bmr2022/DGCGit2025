@@ -227,6 +227,97 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetSalaryHead()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "SalaryHead"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult> GetSalaryMode(int SalaryHeadId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "SalaryHeadDeatil"));
+                SqlParams.Add(new SqlParameter("@SalHeadEntryId", SalaryHeadId));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult> GetJobDepartMent()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "JobDepartment"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetJobDesignation()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "JobDesignation"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetJobShift()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "JobShift"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<EmployeeMasterModel> GetDashboardData(EmployeeMasterModel model)
         {
             DataSet? oDataSet = new DataSet();
@@ -406,7 +497,7 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.FixSalaryAmt);
 
                         //Allowance-Deduction
-                        //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.SalaryHead);
+                        //oCmd.Parameters.AddWithValue("@SalaryHeadId", model.SalaryHeadId);
                         //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceMode);
                         //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.Percent);
                         //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.AllowanceAmount);

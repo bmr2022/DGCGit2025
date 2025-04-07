@@ -44,6 +44,26 @@ namespace eTactWeb.Data.BLL
         {
             return await _EmployeeMasterDAL.GetEmpIdandEmpCode(designation, department);
         }
+        public async Task<ResponseResult> GetSalaryHead()
+        {
+            return await _EmployeeMasterDAL.GetSalaryHead();
+        }
+        public async Task<ResponseResult> GetSalaryMode(int SalaryHeadId)
+        {
+            return await _EmployeeMasterDAL.GetSalaryMode(SalaryHeadId);
+        }
+        public async Task<ResponseResult> GetJobDepartMent()
+        {
+            return await _EmployeeMasterDAL.GetJobDepartMent();
+        }
+         public async Task<ResponseResult> GetJobDesignation()
+        {
+            return await _EmployeeMasterDAL.GetJobDesignation();
+        }
+         public async Task<ResponseResult> GetJobShift()
+        {
+            return await _EmployeeMasterDAL.GetJobShift();
+        }
 
         public async Task<DOM.Models.Common.ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model)
         {

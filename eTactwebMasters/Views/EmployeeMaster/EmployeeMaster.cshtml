@@ -364,39 +364,40 @@
                 <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                     <div class="accordion-body">
                         <div class="row g-2 gx-3" id="_ItemGrid">
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
-                                <label asp-for="SalaryHead" class="form-label">Salary Head</label>
-                                <select asp-for="SalaryHead" class="form-control">
-                                    <option value="">Select</option>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;" >
+                                <label asp-for="SalaryHead" class="form-label">Salary Head*</label>
+                                <input asp-for="SalaryHeadId" type="hidden" value="@Model.SalaryHeadId"/>
+                                    <select asp-for="SalaryHead" class="form-control" style="width:150px;">
+                                    <option value="">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.SalaryHeadId" selected>@Model.SalaryHead</option>
+                                        }
                                 </select>
                             </div>
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
-                                <label asp-for="AllowanceMode" class="form-label">Mode</label>
-                                <select asp-for="AllowanceMode" class="form-control">
-                                    <option value="">Select</option>
-                                </select>
-                            </div>
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;">
+                                
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;color:red;">
+                                    <label asp-for="AllowanceMode" class="form-label">Mode*</label>
+                                    <input asp-for="AllowanceMode" class="form-control" readonly />
+                                </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px;color:red;">
                                 <label asp-for="Percent" class="form-label">Percent</label>
-                                <input asp-for="Percent" class="form-control" />
+                                    <input asp-for="Percent" class="form-control" readonly />
                             </div>
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
-                                <label asp-for="AllowanceAmount" class="form-label">Amount </label>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
+                                <label asp-for="AllowanceAmount" class="form-label">Amount*</label>
                                 <input asp-for="AllowanceAmount" class="form-control" />
                             </div>
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
-                                <label asp-for="AllowanceType" class="form-label">Type</label>
-                                <select asp-for="AllowanceType" class="form-control">
-                                    <option value="">Select</option>
-                                </select>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
+                                    <label asp-for="AllowanceType" class="form-label">AllowanceType*</label>
+                                    <input asp-for="AllowanceType" class="form-control" readonly />
                             </div>
-                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
-                                <label asp-for="PartyPay" class="form-label">PartyPay...?</label>
-                                <select asp-for="PartyPay" class="form-control">
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                </select>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red">
+                                    <label asp-for="PartyPay" class="form-label">PartOfPayslip*</label>
+                                    <input asp-for="PartyPay" class="form-control" readonly/>
                             </div>
+
+                               
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-top:33px;">
                                     <button type="button" class="btn btn-sm btn-outline-danger " id="GridButton">
                                         <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
@@ -419,7 +420,7 @@
                                         <th>Percent</th>
                                         <th>Amount</th>
                                         <th>Types</th>
-                                        <th>Party Pay..?</th>
+                                            <th>PartOfPayslip</th>
                                     </tr>
                                 </thead>
                                 <tbody id="divStockGrid">
@@ -444,18 +445,29 @@
                                     <label asp-for="JoiningDate" class="form-label">Joining Date</label>
                                     <input asp-for="JoiningDate" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
-                                    <label asp-for="JobDepartment" class="form-label">Job Department </label>
-                                    <select asp-for="JobDepartment" class="form-control">
-                                        <option value="">Select</option>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
+                                    <label asp-for="JobDepartment" class="form-label">JobDepartment*</label>
+                                    <input asp-for="JobDepartmentId" type="hidden" value="@Model.JobDepartmentId" />
+                                    <select asp-for="JobDepartment" class="form-control" style="width:150px;">
+                                        <option value="">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.JobDepartmentId" selected>@Model.JobDepartment</option>
+                                        }
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
-                                    <label asp-for="JobDesignation" class="form-label">Job Designation</label>
-                                    <select asp-for="JobDesignation" class="form-control">
-                                        <option value="">Select</option>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red;">
+                                    <label asp-for="JobDesignation" class="form-label">JobDesignation*</label>
+                                    <input asp-for="JobDesignationId" type="hidden" value="@Model.JobDesignationId" />
+                                    <select asp-for="JobDesignation" class="form-control" style="width:150px;">
+                                        <option value="">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                        <option value="@Model.JobDesignationId" selected>@Model.JobDesignation</option>
+                                        }
                                     </select>
                                 </div>
+                               
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="ReportingMg" class="form-label">Reporting Mg</label>
                                     <select asp-for="ReportingMg" class="form-control">
@@ -474,12 +486,18 @@
                                         <option value="">Select</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
-                                    <label asp-for="JObShift" class="form-label">Job Shift  </label>
-                                    <select asp-for="JObShift" class="form-control">
-                                        <option value="">Select</option>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;color:red !important;">
+                                    <label asp-for="JObShift" class="form-label">JObShift*</label>
+                                    <input asp-for="JObShiftId" type="hidden" value="@Model.JObShiftId" />
+                                    <select asp-for="JObShift" class="form-control" style="width:150px;">
+                                        <option value="">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.JObShiftId" selected>@Model.JObShift</option>
+                                        }
                                     </select>
                                 </div>
+                                
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="EmpGrade" class="form-label">Emp Grade</label>
                                     <select asp-for="EmpGrade" class="form-control">
@@ -922,14 +940,19 @@
             $('#BloodGroup').select2();
             $('#Gender').select2();
             $('#PaymentMode').select2();
+            $('#SalaryHead').select2();
+            $('#JobDepartment').select2();
+            $('#JobDesignation').select2();
+            $('#JObShift').select2();
 
-            $('#ResignationDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#JoiningDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#DateOfConfirmation').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#ProbationStartDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#ProbationEndDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#CFromDate').datepicker({ dateFormat: 'dd/mm/yy' });
-            $('#CToDate').datepicker({ dateFormat: 'dd/mm/yy' });
+
+            $('#ResignationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
+            $('#JoiningDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
+            $('#DateOfConfirmation').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
+            $('#ProbationStartDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
+            $('#ProbationEndDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
+            $('#CFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
+            $('#CToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
             
             if (mode === "U" || mode === "V") {
                 $('#EntryDate').val('@Model.EntryDate');
@@ -940,16 +963,38 @@
                 
                 $('#DateOfJoining, #DateOfResignation').datepicker({ dateFormat: 'dd/mm/yy' });
             } else {
-                // For new entries set current date
+                
                 $('#EntryDate, #DateOfJoining, #DOB').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
 
-            // Restrict DOB to 18 years ago for new entry
+            
             var eighteenYearsAgo = new Date();
             eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
             $('#DOB').datepicker("option", "maxDate", eighteenYearsAgo);
 
-            // Disable Date of Resignation for new entries
+            GetSalaryHead();
+            GetJobDepartMent();
+            GetJobDesignation();
+            GetJobShift();
+            $("#SalaryHead").change(function () {
+                var salaryHeadValue = $(this).val();
+                if (salaryHeadValue) {
+                    GetSalaryMode();
+                }
+            });
+            $('#SalaryHead').change(function () {
+                $('#SalaryHeadId').val($('#SalaryHead').val());
+            });
+            $('#JobDepartment').change(function () {
+                $('#JobDepartmentId').val($('#JobDepartment').val());
+            });
+            $('#JobDesignation').change(function () {
+                $('#JobDesignationId').val($('#JobDesignation').val());
+            });
+            $('#JObShift').change(function () {
+                $('#JObShiftId').val($('#JObShift').val());
+            });
+
             if (mode === "U") {
                 $('#Active').prop("disabled", false);
                 $('#DateOfResignation').prop("disabled", false);
@@ -962,15 +1007,28 @@
 
                 console.log("SubmitButton Click");
                 e.preventDefault();
-                //$(this).off('click');
+                
                 $('form').submit();
+            });
+
+            $("#MobileNo,#MobileNo2").on("input", function () {
+                var value = $(this).val();
+
+                
+                value = value.replace(/\D/g, '');
+                $(this).val(value);
+
+                if (value.length > 10) {
+                    $.notify("Mobile number cannot be more than 10 digits.", "error");
+                    $(this).val(value.substring(0, 10));
+                }
             });
 
             $("#GrossSalary, #BasicSalary, #SalaryBasis, #ApplyPFFonmAmt, #ApplyESIFonmAmt,#FixSalaryAmt,#Percent,#AllowanceAmount,#JobProbationPeriod,#Per,#InYear,#Salary,#NoticPeriod").on("input", function () {
                 let value = $(this).val();
                 let id = $(this).attr("id");
 
-                // Allow only positive numbers or decimals
+               
                 if (!/^\d*\.?\d*$/.test(value)) {
                     $.notify("Only positive numbers allowed in " + id, {
                         position: "top right",
@@ -999,23 +1057,38 @@
                 checkField("#DateOfResignation", "Date Of Resignation is required");
                 checkField("#Shift", "Shift is required");
                 checkField("#EmpCode", "EmpCode is required");
+                checkField("#SalaryHead", "SalaryHead is required");
+                checkField("#AllowanceMode", "AllowanceMode is required");
+                checkField("#AllowanceType", "AllowanceType is required");
+                checkField("#PartyPay", "PartyPay is required");
 
                 if (!isValid) {
                     e.preventDefault(); 
                 }
             });
         });
+        function ClearItems() {
 
+            $('#AllowanceMode, #AllowanceType, #PartyPay').val('');
+            $('#SalaryHead,#SalaryHeadId').val("").trigger("change");//Drop
+
+            $('#Percent, #AllowanceAmount').val(0);
+
+
+            // $('select').prop('selectedIndex', 0);
+        }
         $('#GridButton').click(function (e) {
             e.preventDefault();
             debugger
             var SchData = {
                 SalaryHead: $('#SalaryHead').val(),
+                SalaryHeadId: $('#SalaryHeadId').val(),
                 AllowanceMode: $('#AllowanceMode').val(),
                 Percent: $('#Percent').val(),
                 AllowanceAmount: $('#AllowanceAmount').val() ,
                 AllowanceType: $('#AllowanceType').val(),
                 PartyPay: $('#PartyPay').val(),
+                SalaryHead: $('#SalaryHead').find(":selected").text(),
                
             };
             console.log(SchData);
@@ -1027,7 +1100,7 @@
                     if (xhr.status == 200 && xhr.responseText == result) {
 
                         $('#divStockGrid').html(result);
-                        TotalNoOfRows();
+                        //TotalNoOfRows();
                         ClearItems();
                     } else if (xhr.status == 207) {
                         $.notify('Duplicate Item...!', "info");
@@ -1057,18 +1130,13 @@
                     if (obj != null) {
                         EditEachItem = true;
 
-                        $('#SalaryHead').val(obj[0].SalaryHead);
+                        $('#SalaryHead').val(obj[0].SalaryHeadId).trigger("change");
+                        $('#SalaryHeadId').val(obj[0].SalaryHeadId).trigger("change");
                         $('#AllowanceMode').val(obj[0].AllowanceMode);
                         $('#Percent').val(obj[0].Percent);
                         $('#AllowanceAmount').val(obj[0].AllowanceAmount);
                         $('#AllowanceType').val(obj[0].AllowanceType);
                         $('#PartyPay').val(obj[0].PartyPay);
-
-                        $('#Qualification').val(obj[0].Qualification);
-                        $('#Univercity_Sch').val(obj[0].Univercity_Sch);
-                        $('#Per').val(obj[0].Per);
-                        $('#InYear').val(obj[0].InYear);
-                        $('#Remark').val(obj[0].Remark);
                         
                         var rowCount = $('#divStockGrid tr').length;
                         for (var i = 1; i <= rowCount + 1; i++) {
@@ -1310,6 +1378,128 @@
                         $('#EmpId').val(obj.Result[0].EmpId);
                         $('#EmpCode').val(obj.Result[0].EmpCode);
                     }
+                }
+            });
+        }
+
+        function GetSalaryHead() {
+            $.ajax({
+                url: '@Url.Action("GetSalaryHead", "EmployeeMaster")',
+                type: 'GET',
+                success: function (response) {
+                    var SalaryHeadDropdown = $('#SalaryHead');
+                    var obj = $.parseJSON(response);
+                    SalaryHeadDropdown.empty();
+                    SalaryHeadDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, Salary) {
+                        SalaryHeadDropdown.append('<option value="' + Salary.SalHeadEntryId + '">' + Salary.SalaryHead + '</option>');
+                    });
+
+                    if ($('#SalaryHead').val() == "U" || $('#SalaryHead').val() == "V") {
+                        var SalaryHead = '@Model.SalaryHeadId';
+                        $('#SalaryHead').val(SalaryHead).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
+                }
+            });
+        }
+        function GetSalaryMode() {
+            debugger
+            var SalaryHeadId = $('#SalaryHead').val();
+            $.ajax({
+                url: '@Url.Action("GetSalaryMode", "EmployeeMaster")',
+                type: 'GET',
+                data:{
+                    SalaryHeadId: SalaryHeadId
+                },
+                success: function (result) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#AllowanceMode').val(obj.Result[0].PaymentMode);
+                        $('#Percent').val(obj.Result[0].CalculationPercentage);
+                        $('#AllowanceType').val(obj.Result[0].TypeOfSalary);
+                        $('#PartyPay').val(obj.Result[0].PartOfPayslip);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
+                }
+            });
+        }
+        function GetJobDepartMent() {
+            $.ajax({
+                url: '@Url.Action("GetJobDepartMent", "EmployeeMaster")',
+                type: 'GET',
+                success: function (response) {
+                    var JobDepartmentDropdown = $('#JobDepartment');
+                    var obj = $.parseJSON(response);
+                    JobDepartmentDropdown.empty();
+                    JobDepartmentDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, Job) {
+                        JobDepartmentDropdown.append('<option value="' + Job.DeptId + '">' + Job.DeptName + '</option>');
+                    });
+
+                    if ($('#JobDepartment').val() == "U" || $('#JobDepartment').val() == "V") {
+                        var JobDepartment = '@Model.JobDepartmentId';
+                        $('#JobDepartment').val(JobDepartment).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
+                }
+            });
+        }
+
+        function GetJobDesignation() {
+            $.ajax({
+                url: '@Url.Action("GetJobDesignation", "EmployeeMaster")',
+                type: 'GET',
+                success: function (response) {
+                    var JobDesignationDropdown = $('#JobDesignation');
+                    var obj = $.parseJSON(response);
+                    JobDesignationDropdown.empty();
+                    JobDesignationDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, Job) {
+                        JobDesignationDropdown.append('<option value="' + Job.desigEntryId + '">' + Job.Designation + '</option>');
+                    });
+
+                    if ($('#JobDesignation').val() == "U" || $('#JobDepartment').val() == "V") {
+                        var JobDesignation = '@Model.JobDesignationId';
+                        $('#JobDesignation').val(JobDesignation).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
+                }
+            });
+        }
+
+        function GetJobShift() {
+            $.ajax({
+                url: '@Url.Action("GetJobShift", "EmployeeMaster")',
+                type: 'GET',
+                success: function (response) {
+                    var JObShiftDropdown = $('#JObShift');
+                    var obj = $.parseJSON(response);
+                    JObShiftDropdown.empty();
+                    JObShiftDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, Job) {
+                        JObShiftDropdown.append('<option value="' + Job.ShiftId + '">' + Job.ShiftName + '</option>');
+                    });
+
+                    if ($('#JObShift').val() == "U" || $('#JObShift').val() == "V") {
+                        var JObShift = '@Model.JObShiftId';
+                        $('#JObShift').val(JObShift).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
                 }
             });
         }
