@@ -2335,11 +2335,12 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-
+                            debugger
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
                             EditDeleteBatchValidation = true;
+                            debugger
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 FillSONO();
                                 $('#SONO').val(obj[0].SONO);
@@ -3370,17 +3371,24 @@
                     // alert(result);
                     var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
                     var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
-
+                    debugger
                     if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                         //  alert('right');
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                         $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "minDate", FinFromDate);
                         $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
+                        $('#SaleBillDate').prop("disabled", false);
                     } else {
-                        $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]))
+                        $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]));
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
-                        $('#SaleBillDate').prop("disabled", true);
+                        debugger
+                        var currentYear = getFinancialYear();
+                        if ($('#SaleBillYearCode').val() == currentYear) {
+                            $('#SaleBillDate').prop("disabled", false);
+                        }else{
+                            $('#SaleBillDate').prop("disabled", true);
+                        }
                     }
                     // $('#InvoiceTime').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#PerformaInvDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -3441,6 +3449,14 @@
                 return result;
             }
 
+        }
+
+        function getFinancialYear() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1;
+
+            return month < 4 ? year - 1 : year;
         }
 
         $('#SaleBillDate').change(function () {
