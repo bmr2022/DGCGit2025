@@ -46,7 +46,7 @@ else
             </td>
             <td id="SrNO-@Cntr"><input type="hidden" value="@item.SrNo" />@item.SrNo</td>
            
-            <td>@item.SalaryHead </td>
+            <td>@item.SalaryHead<input type="hidden" asp-for="@item.SalaryHeadId" value="@item.SalaryHeadId" /> </td>
             <td>@item.AllowanceMode </td>
             <td>@item.Percent</td>
             <td>@item.AllowanceAmount </td>

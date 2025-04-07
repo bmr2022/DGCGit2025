@@ -81,6 +81,39 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetSalaryHead()
+        {
+            var JSON = await _IEmployeeMaster.GetSalaryHead();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetSalaryMode(int SalaryHeadId)
+        {
+            var JSON = await _IEmployeeMaster.GetSalaryMode(SalaryHeadId);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetJobDepartMent()
+        {
+            var JSON = await _IEmployeeMaster.GetJobDepartMent();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+      
+        public async Task<JsonResult> GetJobDesignation()
+        {
+            var JSON = await _IEmployeeMaster.GetJobDesignation();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+      
+        public async Task<JsonResult> GetJobShift()
+        {
+            var JSON = await _IEmployeeMaster.GetJobShift();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+      
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
@@ -190,7 +223,7 @@ namespace eTactWeb.Controllers
                     }
                     else
                     {
-                        if (EmployeeMasterGrid.Any(x => (x.SrNo == model.SrNo)))
+                        if (EmployeeMasterGrid.Any(x => (x.SalaryHead == model.SalaryHead)))
                         {
                             return StatusCode(207, "Duplicate");
                         }
