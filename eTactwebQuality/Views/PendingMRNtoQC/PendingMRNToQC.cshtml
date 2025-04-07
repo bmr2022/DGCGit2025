@@ -442,7 +442,7 @@
         }
 
         function showDetail() {
-              
+              debugger
             if (!ValidateShow()) return;
             var data = {
                 "Flag": "MRNDATA",
@@ -462,6 +462,7 @@
                 type: "POST",
                 data: data,
                 success: function (data) {
+                    debugger
                     if (data != null) {
                           
                         var obj = $.parseJSON(data);

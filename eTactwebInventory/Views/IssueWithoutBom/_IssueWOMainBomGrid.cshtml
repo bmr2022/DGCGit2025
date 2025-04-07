@@ -26,7 +26,7 @@ else
             @*<td><input readonly id="MainGridReqNo-@Cntr" type="text" value="@item.ReqNo" /></td>
     <td><input readonly id="MainGridReqDate-@Cntr" type="text" value="@item.ReqDate" /></td>
     <td><input readonly id="MainGridReqYearCode-@Cntr" type="text" value="@item.ReqyearCode" /></td>*@
-            <td><input value="@item.ReqDepartmentID" id="MainReqDeptID" type="hidden" /><input value="@item.ReqDept" id="MainReqDept" type="hidden" /><input readonly id="MainGridItemname-@Cntr" type="text" style="width:300px;" value="@item.ItemName" /><input value="@item.ReqNo1" id="MainREQNo" type="hidden" /><input value="@item.ReqyearCode1" id="MainREQYearCode" type="hidden" /><input value="@item.ReqDate1" id="MainREQDate" type="hidden" /><input type="hidden" id="MainGridItemCode-@Cntr" value="@item.ItemCode" /><input type="hidden" id="MainGridStockable-@Cntr" /></td>
+            <td><input value="@item.ReqDepartmentID" id="MainReqDeptID" type="hidden" /><input value="@item.ReqDept" id="MainReqDept" type="hidden" /><input readonly class="itemname" id="MainGridItemname-@Cntr" type="text" style="width:250px;" value="@item.ItemName" /><input value="@item.ReqNo1" id="MainREQNo" type="hidden" /><input value="@item.ReqyearCode1" id="MainREQYearCode" type="hidden" /><input value="@item.ReqDate1" id="MainREQDate" type="hidden" /><input type="hidden" id="MainGridItemCode-@Cntr" value="@item.ItemCode" /><input type="hidden" id="MainGridStockable-@Cntr" /></td>
             <td><input readonly id="MainGridPartCode-@Cntr" type="text" style="width:80px;" value="@item.PartCode" /><input type="hidden" id="IssuedDateMemory" value="@item.IssuedDate" /></td>
             <td><input id="MainGridReqQty-@Cntr" type="text" value="@item.ReqQty" style="width:42px;" readonly /><input type="hidden" id="MachineCodeMemory" value="@item.MachineCodee" /></td>
             <td>
@@ -34,16 +34,16 @@ else
                 <input id="MainGridStoreId-@Cntr" type="hidden" value="@item.StoreId" />
             </td>
            
-            <td><input id="MainGridIssueQty-@Cntr" onchange="AltUnitConversion(@Cntr,'IssueQtyChange')" onkeyup="IssueQtyValidation(@Cntr)" type="number" style="width:50px;" value="@item.IssueQty" /></td>
+            <td><input id="MainGridIssueQty-@Cntr" onchange="AltUnitConversion(@Cntr,'IssueQtyChange')" onkeyup="IssueQtyValidation(@Cntr)" type="number" style="width:60px;" value="@item.IssueQty" /></td>
             <td onclick="AllowBatchChange(@Cntr)">
                 <input type="hidden" id="MainGridBatchNoInput-@Cntr" value="@item.BatchNo" />
                 <input type="hidden" id="AllowBatchChange" />
                 <input type="hidden" id="AllowBatchChangePassWord" />
-                <select id="MainGridBatchNo-@Cntr" onchange="BatchNumberChange(@Cntr)" style="width:80px;"><option value="0" selected disabled>-Select-</option></select>
+                <select class="batchNo" id="MainGridBatchNo-@Cntr" onchange="BatchNumberChange(@Cntr)" style="width:80px;"><option value="0" selected disabled>-Select-</option></select>
             </td>
             <td>
                 <input type="hidden" id="MainGridUniqueBatchNo1-@Cntr" value="@item.uniqueBatchNo" />
-                <select readonly id="MainGridUniqueBatchNo-@Cntr" style="width:190px;" onchange="UniqBatchNumberChange(@Cntr)">
+                <select readonly class="uniqueBatchNo" id="MainGridUniqueBatchNo-@Cntr" style="width:190px;" onchange="UniqBatchNumberChange(@Cntr)">
                     <option value="0" selected disabled>-Select-</option>
 
                 </select>

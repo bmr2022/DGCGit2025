@@ -868,7 +868,7 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style="width:120px">
                                     <label asp-for="RewYearcode" class="form-label">Rew Year Code</label>
                                     <input asp-for="RewYearcode" class="form-control" readonly />
-                                </div>
+                                </div> 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9">
                                     <label asp-for="QCOffered" class="form-label">QC Offered</label>
                                     <input asp-for="QCOffered" class="form-control" readonly />
@@ -1359,14 +1359,14 @@
                 $('#AddChildPartbtn').hide();
                 $('#StoreTransferdiv').hide();
                 $('#Rejtransferdiv').hide();
-
+                GetServerDate();
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-                $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                /* $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
+                /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#EntryDate').datepicker("option", "minDate", formattedDate1);
-                $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
-                $('#ActualProdDate').datepicker("option", "minDate", formattedDate1);
-                $('#ActualProdDate').datepicker("option", "maxDate", formattedDate2);
+                $('#EntryDate').datepicker("option", "maxDate", formattedDate2); */
+              /*   $('#ActualProdDate').datepicker("option", "minDate", formattedDate1);
+                $('#ActualProdDate').datepicker("option", "maxDate", formattedDate2); */
                 //$('#ProdPlanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#ReWorkEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -1865,6 +1865,28 @@
                 FillStoreforScrap();
             }
         })
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+
+                    var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+
+                    var ActualProdDate = parseDateToFormat($('#ActualProdDate').val().split("-").join("/"));
+                    $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualProdDate);
+
+
+
+                   
+
+                    // $('#Isschallandate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", startdate);
+                },
+            });
+        }
 
         function getFormattedDate() {
             var today = new Date();
