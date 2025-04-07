@@ -175,7 +175,12 @@ public class GateInwardDAL
 
             if (model.Mode == "U" || model.Mode == "V")
             {
+                model.UpdatedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                DateTime updDt = DateTime.Now;
+                updDt = ParseDate(model.UpdatedDate);
                 SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
+                SqlParams.Add(new SqlParameter("@lastupdated", updDt.ToString("yyyy/MM/dd")));
             }
             else
             {
@@ -215,8 +220,7 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
             SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
             SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntrybyMachineName ?? ""));
-            SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
-            SqlParams.Add(new SqlParameter("@lastupdated", DateTime.Now));
+           
 
             SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
