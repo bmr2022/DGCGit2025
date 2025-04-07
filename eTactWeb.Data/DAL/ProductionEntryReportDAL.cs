@@ -437,6 +437,19 @@ namespace eTactWeb.Data.DAL
                         model.ProductionEntryReportDetail = ProductionReport;
                     }
                 }
+                 else if (ReportType == "Production Summary") // done & working
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow row in oDataSet.Tables[0].Rows)
+                        {
+                            var poDetail = CommonFunc.DataRowToClass<ProductionEntryReportDetail>(row);
+                            ProductionReport.Add(poDetail);
+                        }
+                        model.ProductionEntryReportDetail = ProductionReport;
+                    }
+                }
+
             }
             catch (Exception ex)
             {

@@ -137,9 +137,9 @@ namespace eTactWeb.Controllers
 
             return PartialView("_StockRegisterGrid", model);
         }
-        public async Task<JsonResult> GetAllItems()
+        public async Task<JsonResult> FillItemName()
         {
-            var JSON = await _IStockRegister.GetAllItems();
+            var JSON = await _IStockRegister.FillItemName();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

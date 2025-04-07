@@ -319,7 +319,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> GetAllItems()
+        public async Task<ResponseResult> FillItemName()
         {
             var _ResponseResult = new ResponseResult();
             try
