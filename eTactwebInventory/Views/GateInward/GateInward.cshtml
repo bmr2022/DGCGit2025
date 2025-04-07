@@ -1787,9 +1787,8 @@
         });
 
         $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
-
+            debugger
             var cntId = e.target.id;
-
             if (cntId == 'ItemName') {
                 ItemNameChange(cntId);
                 $('#ItemCode').val($('#ItemName').val());
@@ -1816,11 +1815,11 @@
             if ($('#AltUnit').val() == undefined || $('#AltUnit').val() == 'undefined')
                 $('#AltUnit').val('');
             //$('#ItemName').find("[data-part-code='" + $("#PartCode").val() + "']").attr('selected', 'selected');
-            fillPendQty();
             $.when(SetPartCodeItemName(ID)).done(function () {
                 //GetItemPartCode(ID)
             });
             FillSaleBillChallan();
+            fillPendQty();
             if ($('#AltUnit').val() == "" || $('#AltUnit').val() == null || $('#AltUnit').val() == 'undefined') {
                 $('#AltQty').prop("disabled", true);
             }
@@ -1846,7 +1845,7 @@
         }
 
         function ItemNameChange(ID) {
-
+            debugger
             copyToClipboardForDropdown("#ItemName");
             $("#Unit").val($('#ItemName').find(":selected").data('unit'));
             $("#Rate").val($('#ItemName').find(":selected").data('rate'));
@@ -1856,11 +1855,11 @@
             $("#Qty").val($('#ItemName').find(":selected").data('qty'));
             if ($('#AltUnit').val() == undefined || $('#AltUnit').val() == 'undefined')
                 $('#AltUnit').val('');
-            fillPendQty();
             $.when(SetPartCodeItemName(ID)).done(function () {
                 //GetItemPartCode(ID)
             });
             FillSaleBillChallan();
+            fillPendQty();
             if ($('#AltUnit').val() == "" || $('#AltUnit').val() == null || $('#AltUnit').val() == 'undefined') {
                 $('#AltQty').prop("disabled", true);
             }
