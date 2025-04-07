@@ -389,7 +389,7 @@
                 success: function (data) {
 
                     $('#divStockMainRegister').empty();
-                    $('#divStockMainRegister').html(result);
+                    $('#divStockMainRegister').html(data);
                     $('#totalRows').text($('#divStockMainRegister tr').length - 1);
                     countAllTotal();
                 },
