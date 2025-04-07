@@ -62,10 +62,10 @@ else
             <td>@item.Amount</td>
             <td>@item.ShortExcessQty</td>
             <td>@item.INDBOM</td>
-            <td>@item.SoDate</td>
+            <td>@(item.SoDate == null ? string.Empty : item.SoDate.Split(" ")[0])</td>
             <td>@item.SOSchNo</td>
             <td>@item.SOSchYearCode</td>
-            <td>@item.Schdate</td>
+            <td>@(item.Schdate == null ? string.Empty : item.Schdate.Split(" ")[0])</td>
             <td>@item.BatchNo</td>
             <td>@item.UniqueBatchNo</td>
             <td>@item.Remark</td>
@@ -83,9 +83,7 @@ else
             <td>@item.CustOrderno</td>
             <td>@item.BomNo</td>
             <td>@item.BomName</td>
-            <td>@item.BomDate</td>
-            
-
+            <td>@(item.BomDate == null ? string.Empty : item.BomDate.Split(" ")[0])</td>
         </tr>
     }
 }
