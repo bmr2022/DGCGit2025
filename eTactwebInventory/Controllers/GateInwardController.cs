@@ -268,6 +268,13 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
                         }
+                        if (Result.StatusText == "Duplicate")
+                        {
+                            string gateNo = string.Empty;
+                            gateNo = Result.Result.Rows[0]["Result"].ToString();
+                            ViewBag.isSuccess = false;
+                            TempData["409"] = "409";
+                        }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             var errNum = Result.Result.Message.ToString().Split(":")[1];

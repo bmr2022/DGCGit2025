@@ -199,7 +199,7 @@ public class GateInwardModel : GateInwardItemDetail
     public string? UpdatedByName { get; set; }
     public DateTime? ActualEntryDate { get; set; }
     public decimal? AltQty { get; set; }
-
+    public string? UpdatedDate { get; set; }
     public decimal? AltPendQty { get; set; }
     public string? ItemSize { get; set; }
     public string? ItemColor { get; set; }
