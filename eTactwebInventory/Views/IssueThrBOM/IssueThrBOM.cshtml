@@ -1309,6 +1309,10 @@
                     $('MainGridUniqueBatchNo-' + i).css("border", "1px solid black");
                 }
             }
+            if ($('#MainGridWorkCenter-'+i).val() == '') {
+                $.notify("WorkCenter is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
+                Err = 1;
+            }
 
             if (parseFloat($('#MainGridIssueQty-' + i).val()) <= 0) {
                 $('MainGridIssueQty-' + i).css("border", "1px solid red");

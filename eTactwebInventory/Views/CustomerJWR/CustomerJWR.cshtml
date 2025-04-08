@@ -521,7 +521,7 @@
             }
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
-
+            debugger
             var dateParts1 = finFromDate.split("/");
             var monthNames = {
                 "Jan": "01",
@@ -544,12 +544,12 @@
 
             console.log(formattedDate1);
             console.log(formattedDate2);
-
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
-            $('#FromDate').datepicker("option", "minDate", formattedDate1);
-            $('#ToDate').datepicker("option", "maxDate", formattedDate2);
-
+            debugger
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate1));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate2));
+            $('#FromDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+            $('#ToDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+            debugger
             FillGateNo();
         });
 
@@ -939,7 +939,7 @@
 
                 ItemData.push({
 
-                    "SoNo": $('#PONo' + i).val(),
+                    "SoNo": $('#PONo' + i).val() == '' ? '' : $('#PONo' + i).val(),
                     "SoYearCode": $('#POYearCode' + i).val(),
                     "SOSchNo": $('#SchNo' + i).val(),
                     "SOSchYearCode": $('#SchYearCode' + i).val(),
@@ -957,14 +957,14 @@
                     "Amount": $('#Amount' + i).val(),
                     "PendQty": $('#PendQty' + i).val(),
                     "QcCompleted": $('#QCCompleted' + i).val(),
-                    "BatchNo": $('#BatchNo' + i).val(),
-                    "UniqueBatchNo": $('#Uniquebatchno' + i).val(),
+                    "BatchNo": $('#BatchNo' + i).val() == '' ? '' : $('#BatchNo' + i).val(),
+                    "UniqueBatchNo": $('#Uniquebatchno' + i).val() == '' ? '' : $('#Uniquebatchno' + i).val(),
                     "Schdate": $('#SchDate' + i).val(),
                     "BomName": $('#Bomname' + i).val(),
                     "INDBOM": $('#INDBOM' + i).val(),
                     "BomDate": $('#BomDate' + i).val(),
                     "BomNo": $('#BomNO' + i).val(),
-                    "Color": $('#ItemColor' + i).val(),
+                    "Color": $('#ItemColor' + i).val() == '' ? '' : $('#ItemColor' + i).val(),
                     "ProcessId": 0,
                     "ProcessName": $('#Process' + i).val(),
                     "AllowedRejPer": $('#AllowRejPer' + i).val(),
@@ -973,7 +973,7 @@
                     "FinishedItemCode": $('#ItemCode' + i).val(),
                     "FinishItemName": $('#Item_Name' + i).val(),
                     "FinishPartCode": $('#PartCode' + i).val(),
-                    "Purpose": $('#Purpose' + i).val(),
+                    "Purpose": $('#Purpose' + i).val() == '' ? '' : $('#Purpose' + i).val(),
                     "Remark": $('#Remark' + i).val(),
 
 
@@ -1047,7 +1047,7 @@
                             $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
                         }
                         else {
-                            ;
+                            debugger
                             var obj = $.parseJSON(data);
                             DeleteItemRow(SeqNo);
                             $('#divCustJWRGrid').empty();
@@ -1056,13 +1056,13 @@
                             if (obj != null && obj.length == 1) {
                                 html += '<tr id="divUnMain' + i + '"><td><input id="Item_Name' + i + '" value=' + JSON.stringify(obj[0].RecItemName) + ' readonly ><input id="ItemCode' + i + '" type="hidden" value=' + obj[0].RecitemCode + ' ></td> ' +
                                     ' <td><input style="width:100px !important;" id="PartCode' + i + '" value=' + obj[0].RecPartCode + ' readonly ></td>' +
-                                    ' <td><input style="width:100px !important;" readonly id="PONo' + i + '" value=' + obj[0].SoNo + '  ></td>' +
+                                    ' <td><input style="width:100px !important;" readonly id="PONo' + i + '" value=' + (obj[0].SoNo != null ? obj[0].SoNo : "") + '  ></td>' +
                                     ' <td><input style="width:50px" id="POYearCode' + i + '" value=' + obj[0].SoYearCode + ' readonly ></td>' +
                                     ' <td><input style="width:50px" readonly id="BillQty' + i + '" onchange="BillQtyChange(' + i + ');" value=' + obj[0].BillQty + ' ></td>' +
                                     ' <td><input style="width:50px;background-color:#ffd6dd !important" class="RecQty" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + obj[0].RecQty + ' ></td>' +
                                     ' <td><input style="width:50px" id="unit' + i + '" value=' + obj[0].Unit + ' readonly ></td>' +
                                     ' <td><input style="width:50px;background-color:#ffd6dd !important" id="AltRecQty' + i + '" value=' + obj[0].RecAltQty + ' ></td>' +
-                                    ' <td><input style="width:50px;" id="CustBatchNo' + i + '" readonly value=' + obj[0].CustbatchNo + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="CustBatchNo' + i + '" readonly value=' + (obj[0].CustbatchNo != null ? obj[0].CustbatchNo : "") + ' ></td>' +
                                     ' <td><input style="width:50px" id="altunit' + i + '" value=' + obj[0].AltUnit + ' readonly ></td>' +
                                     ' <td><input style="width:50px;"  id="Rate' + i + '" value=' + obj[0].Rate + ' ></td>' +
                                     ' <td><input style="width:50px;" id="Amount' + i + '" readonly value=' + obj[0].Amount + ' ></td>' +
@@ -1073,22 +1073,22 @@
                                     ' <td><input style="width:50px" id="SchYearCode' + i + '" value=' + obj[0].SOSchYearCode + ' readonly ></td>' +
                                     ' <td><input style="width:50px" id="SchDate' + i + '" value=' + obj[0].Schdate + ' readonly ></td>' +
                                     ' <td><input style="width:50px;background-color:#ffd6dd !important" id="AllowRejPer' + i + '" value=' + obj[0].AllowedRejPer + ' readonly ></td>' +
-                                    ' <td><input id="BatchNo' + i + '" readonly value=' + obj[0].BatchNo + ' ></td>' +
-                                    ' <td><input id="Uniquebatchno' + i + '" readonly value=' + obj[0].UniqueBatchNo + ' ></td>' +
+                                    ' <td><input id="BatchNo' + i + '" readonly value=' + (obj[0].BatchNo != null ? obj[0].BatchNo : "") + ' ></td>' +
+                                    ' <td><input id="Uniquebatchno' + i + '" readonly value=' + (obj[0].UniqueBatchNo != null ? obj[0].UniqueBatchNo : "") + ' ></td>' +
                                     ' <td><input style="width:70px" id="Remark' + i + '"  value=""  ></td>' +
                                     ' <td><input style="width:70px" id="FinishedItemName' + i + '"  value=' + JSON.stringify(obj[0].FinishItemName) + '  ></td>' +
                                     ' <td><input style="width:70px" id="FinishedPartCode' + i + '"  value=' + obj[0].FinishPartCode + '  ></td>' +
-                                    ' <td><input id="ItemColor' + i + '" readonly value=' + JSON.stringify(obj[0].Color) + ' ></td>' +
+                                    ' <td><input id="ItemColor' + i + '" readonly value=' + (obj[0].Color != null ?  JSON.stringify(obj[0].Color) : "") + ' ></td>' +
                                     ' <td> <input style="width:50px;" id="QCCompleted' + i + '" readonly value=' + obj[0].QcCompleted + ' ></td>' +
                                     ' <td><input style="width:50px;" id="PendQty' + i + '" readonly value=' + obj[0].PendQty + ' > </td>' +
-                                    ' <td><input style="width:50px" id="Purpose' + i + '" readonly value=' + obj[0].Purpose + '  ></td>' +
+                                    ' <td><input style="width:50px" id="Purpose' + i + '" readonly value=' + (obj[0].Purpose != null ? obj[0].Purpose : "") + '  ></td>' +
                                     ' <td><input style="width:70px" id="FinishedQty' + i + '" readonly value=' + obj[0].FinsihedQty + '  ></td>' +
                                     ' <td><input style="width:50px" id="RecScrap' + i + '" readonly value=' + obj[0].RecScrap + ' ></td>' +
                                     ' <td><input style="width:50px;" id="Process' + i + '" readonly value=' + obj[0].ProcessId + ' ></td>' +
                                     ' <td><input style="width:50px;" id="CustOrderNo' + i + '" readonly value=' + obj[0].CustOrderno + ' ></td>' +
-                                    ' <td><input style="width:50px;" id="BomNO' + i + '" readonly value=' + obj[0].BomNo + ' ></td>' +
-                                    ' <td><input style="width:50px;" id="Bomname' + i + '" readonly value=' + obj[0].BomName + ' ></td>' +
-                                    ' <td><input style="width:50px;" id="BomDate' + i + '" readonly value=' + obj[0].BomDate + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="BomNO' + i + '" readonly value=' + (obj[0].BomNo != null ? obj[0].BomNo : "") + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="Bomname' + i + '" readonly value=' + (obj[0].BomName != null ? obj[0].BomName : "" ) + ' ></td>' +
+                                    ' <td><input style="width:50px;" id="BomDate' + i + '" readonly value=' + (obj[0].BomDate != null ? obj[0].BomDate : "" ) + ' ></td>' +
                                    
                                     ' </tr > ';
                             }

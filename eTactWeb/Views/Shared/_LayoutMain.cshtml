@@ -138,6 +138,9 @@
         else if ('@TempData["202"]' == '202') {
             $.notify('Data Updated Successfully...!', { position: "top center", className: "success" });
         }
+        else if ('@TempData["409"]' == '409') {
+            $.notify('Data cannot be update because it is used In MRNNo...!', "error");
+        }
         else if ('@TempData["300"]' == '300') {
             $.notify('Duplicate Record Found.', { position: "top center", className: "info" });
         }

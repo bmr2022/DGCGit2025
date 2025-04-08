@@ -76,6 +76,7 @@ namespace eTactWeb.DOM.Models
 
         //Allowance/Deduction
         public string SalaryHead { get; set; }
+        public int SalaryHeadId { get; set; }
         public string AllowanceMode { get; set; }
         public decimal Percent { get; set; }
         public decimal AllowanceAmount { get; set; }
@@ -85,11 +86,14 @@ namespace eTactWeb.DOM.Models
         //job & Work Detail
         public string JoiningDate{ get; set; }
         public string JobDepartment{ get; set; }
+        public int JobDepartmentId{ get; set; }
         public string JobDesignation{ get; set; }
+        public int JobDesignationId{ get; set; }
         public string ReportingMg{ get; set; }
         public string EmployeeType{ get; set; }
         public string WorkLocation{ get; set; }
         public string JObShift{ get; set; }     
+        public int JObShiftId{ get; set; }     
         public string EmpGrade{ get; set; }     
         public decimal JobProbationPeriod{ get; set; }     
         public string ProbationStartDate{ get; set; }     

@@ -15,5 +15,10 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveEmployeeMaster(EmployeeMasterModel model);
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetEmpIdandEmpCode(string designation, string department);
+        Task<ResponseResult> GetSalaryHead();
+        Task<ResponseResult> GetSalaryMode(int SalaryHeadId);
+        Task<ResponseResult> GetJobDepartMent();
+        Task<ResponseResult> GetJobDesignation();
+        Task<ResponseResult> GetJobShift();
     }
 }

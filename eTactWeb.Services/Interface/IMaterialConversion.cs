@@ -13,6 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> FillEntryID(int YearCode);
         Task<ResponseResult> FillBranch();
+     
         Task<ResponseResult> FillStoreName();
         Task<ResponseResult> FillWorkCenterName();
         Task<ResponseResult> GetOriginalPartCode();

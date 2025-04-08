@@ -62,6 +62,8 @@ namespace eTactWeb.Controllers
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.MachineCode = HttpContext.Session.GetString("MachineName");
+
             _MemoryCache.Remove("KeyIssWOBomGrid");
             _MemoryCache.Remove("KeyIssWOBomScannedGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
