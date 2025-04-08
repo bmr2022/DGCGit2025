@@ -130,22 +130,22 @@
                 $('#FromDate').datepicker("option", "maxDate", toDate);
             });
 
-            $('#ToDate').change(function () {
-                $.ajax({
-                    url: '@Url.Action("Dashboard","IssueWithoutBom")',
-                    type: "POST",
-                    data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "False" },
-                    success: function (data) {
-                        $('#divDashboardGrid').empty().append(data);
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    }
-                });
-            });
+            // $('#ToDate').change(function () {
+            //     $.ajax({
+            //         url: '@Url.Action("Dashboard","IssueWithoutBom")',
+            //         type: "POST",
+            //         data: { FromDate: $('#FromDate').val(), Todate: $('#ToDate').val(), Flag: "False" },
+            //         success: function (data) {
+            //             $('#divDashboardGrid').empty().append(data);
+            //         },
+            //         error: function (response) {
+            //             alert(response.responseText);
+            //         },
+            //         failure: function (response) {
+            //             alert(response.responseText);
+            //         }
+            //     });
+            // });
 
             if($('#FromDate1').val()!="" && $('#ToDate1').val()!=""){
                 var inputFromDateString = $('#FromDate1').val().split(" ")[0];

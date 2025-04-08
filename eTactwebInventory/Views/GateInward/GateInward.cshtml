@@ -2132,6 +2132,13 @@
                     Err = 1;
                 }
             }
+            if ($('#Unit').val() == '') {
+                
+                    AddErrorCls('Unit');
+                    $.notify("Unit is Required", "error");
+                    Err = 1;
+                
+            }
             if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
                 if ($('#AgainstChallanNo').prop('selectedIndex') == 0) {
                     AddErrorCls('AgainstChallanNo');

@@ -9,7 +9,7 @@
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_PODelivery" />
     <partial name="_POConfirmationBox" />
-    <form asp-action="SavePODetail" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
+    <form asp-action="SavePODetail" asp-controller="PurchaseOrder" autocomplete="off" class="form-horizontal">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
@@ -1271,6 +1271,7 @@
         });
 
         $('#WEF').change(function () {
+            debugger
             var poEffDate = $(this).val();
             var poDate = $('#PODate').val();
             if (poEffDate < poDate) {
@@ -1623,7 +1624,7 @@
         //});
 
         $('#TxTaxType').change(function () {
-            GetTaxVendorName();
+            //GetTaxVendorName();
         });
 
         $('#OrderType').change(function () {
@@ -2157,7 +2158,8 @@
             });
         }
 
-        $('.PartialSave').click(function (e) {
+        $('.PartialSave').click(function (e) 
+        {
             e.preventDefault();
             $('#TypeOfSave').val("PS");
             var poGrid = $('#divPOItemList tr td').length;
@@ -2170,8 +2172,10 @@
                 $.notify("PO Grid should at least have one item", "error");
                 return;
             }
-            else {
-                if ($('#GSTRegistered').val() == "Y" || $('#OrderType').val() != "Domestic") {
+            else
+            {
+                if ($('#GSTRegistered').val() == "Y" || $('#OrderType').val() != "Domestic") 
+                {
                     if (taxGrid >= 1) {
                         for (var i = 1; i <= txRowCount; i++) {
                             var txType = $('#txGridType-' + i).text();
@@ -2231,7 +2235,9 @@
             return errorPartCode.length == 0;
         }
 
-        $('button[type="submit"]').click(function (e) {
+        $('button[type="submit"]').click(function (e) 
+        {
+            debugger
             e.preventDefault();
             $('#TypeOfSave').val("NS");
             var poGrid = $('#divPOItemList tr td').length;
@@ -2254,11 +2260,7 @@
                 }
             }
 
-            // else {
-            //     if (!checkPartCodeMusthaveAtLeastOneTax()) {
-            //         return false;
-            //     }
-            // }
+           
 
             if (poGrid <= 1) {
                 $.notify("PO Grid should at least have one item", "error");
@@ -2307,28 +2309,10 @@
                             return;
                         }
                     }
-                    // else {
-                    //     for (var i = 1; i <= txRowCount; i++) {
-                    //         var txType = $('#txGridType-' + i).text();
-                    //         var txname = $('#txGridName-' + i).text();
-                    //         if (txType == '' || txname == '') {
-                    //             $.notify("TaxType Or TaxName cannot be null", "error");
-                    //             return;
-                    //         }
-                    //     }
-                    // }
+                   
                 }
             }
-            // if (taxGrid >= 1) {
-            //     for (var i = 1; i <= txRowCount; i++) {
-            //         var txType = $('#txGridType-' + i).text();
-            //         var txname = $('#txGridName-' + i).text();
-            //         if (txType == '' || txname == '') {
-            //             $.notify("TaxType Or TaxName cannot be null", "error");
-            //             return;
-            //         }
-            //     }
-            // }
+          
             $("form").submit();
 
 
@@ -2336,49 +2320,15 @@
 
 
         $('#submitBTN').click(function () {
+            debugger
+           // alert("inside");
             $('#TypeOfSave').val("NS");
 
             var poGrid = $('#divPOItemList tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
 
-            // for (var i = 1; i <= txRowCount; i++) {
-            //     var txType = $('#txGridType-' + i).text();
-            //     var txname = $('#txGridName-' + i).text();
-            //     if (txType == '' || txname == '') {
-            //         $.notify("TaxType Or TaxName cannot be null", "error");
-            //         return;
-            //     }
-            // }
-
-
-            // if (!checkPartCodeMusthaveAtLeastOneTax()) {
-            //     return false;
-            // }
-            // else if (poGrid <= 1) {
-            //     $.notify("PO Grid should at least have one item", "error");
-            //     return;
-            // }
-            // else if (taxGrid <= 1) {
-            //     $.notify("Tax Grid should at least have one item", "error");
-            //     return;
-            // }
-            // else if ($('#AccountCode').val() == '0') {
-            //     $.notify("Vendor Name is required", "error");
-            // }
-            // else {
-            //     for (var i = 1; i <= txRowCount; i++) {
-            //         var txType = $('#txGridType-' + i).text();
-            //         var txname = $('#txGridName-' + i).text();
-            //         if (txType == '' || txname == '') {
-            //             $.notify("TaxType Or TaxName cannot be null", "error");
-            //             return;
-            //         }
-            //         else {
-            //             $("form").submit();
-            //         }
-            //     }
-            // }
+            
 
             if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
 
@@ -2411,6 +2361,7 @@
                             return;
                         }
                         else {
+                           // print("1");
                             $("form").submit();
                         }
                     }
@@ -2432,6 +2383,7 @@
                     }
                 }
                 else {
+                   // print("2");
                     $("form").submit();
                 }
             }

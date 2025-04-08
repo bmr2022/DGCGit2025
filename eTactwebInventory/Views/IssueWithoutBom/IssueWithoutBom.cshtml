@@ -134,7 +134,7 @@
                                 </div>
                                 <div class="col-lg">
                                     <label asp-for="MachineCode" class="form-label">Mach Code</label>
-                                    <input asp-for="MachineCode" class="form-control" readonly />
+                                    <input asp-for="MachineCode" class="form-control" value="@Environment.MachineName" readonly />
                                 </div>
                                @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ReqNo" class="form-label">Req No</label>
@@ -1459,7 +1459,7 @@
                         $('#RecDept').val($('#MainReqDept').val());
                         
                         //$('#IssueDate').val($('#IssuedDateMemory').val());
-                        $('#MachineCode').val($('#MachineCodeMemory').val());
+                        //$('#MachineCode').val($('#MachineCodeMemory').val());
                        // $('#IssueDate').datepicker("option", "maxDate", 'now');
                         $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                         $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');

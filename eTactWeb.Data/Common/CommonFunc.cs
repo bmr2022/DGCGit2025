@@ -171,6 +171,55 @@ public static class CommonFunc
         return dateString.ToString();
     }
 
+   
+        public static string FormatToDDMMYYYY(string inputDate)
+        {
+            if (string.IsNullOrWhiteSpace(inputDate))
+                return "";
+
+            DateTime parsedDate;
+
+            // Add all common and known date formats here
+            string[] formats = {
+        "d/M/yyyy", "dd/MM/yyyy",
+        "M/d/yyyy", "MM/dd/yyyy",
+        "yyyy-M-d", "yyyy-MM-dd", "yyyy/MM/dd",
+        "d-M-yyyy", "dd-MM-yyyy",
+        "d.MM.yyyy", "dd.MM.yyyy",
+        "M.d.yyyy", "MM.dd.yyyy",
+        "d/M/yy", "dd/MM/yy",
+        "M/d/yy", "MM/dd/yy",
+        "yyyyMMdd",
+        "dd MMM yyyy", "d MMM yyyy",
+        "dd MMMM yyyy", "d MMMM yyyy",
+        "dd/MMM/yyyy", "d/MMM/yyyy",         // Added format: 08/Apr/2025
+        "dd-MMM-yyyy", "d-MMM-yyyy"          // Also allow: 08-Apr-2025
+    };
+
+            // Try parsing with specific formats
+            bool parsed = DateTime.TryParseExact(
+                inputDate,
+                formats,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out parsedDate
+            );
+
+            // Fallback to flexible parse if no exact match
+            if (!parsed)
+            {
+                parsed = DateTime.TryParse(inputDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate);
+            }
+
+            if (!parsed)
+                return ""; // or return inputDate
+
+            return parsedDate.ToString("dd/MM/yyyy");
+        }
+    
+
+
+
     public static string ParseFormattedDateTime(string dateString)
     {
         string[] formats = { "dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.fff" };

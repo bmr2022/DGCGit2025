@@ -28,7 +28,7 @@ public class PurchaseScheduleController : Controller
 {
     public WebReport webReport;
     private readonly IConfiguration _iconfiguration;
-    private IWebHostEnvironment _IWebHostEnvironment { get; }
+    private readonly IWebHostEnvironment _IWebHostEnvironment;
     //private readonly ILogger _logger;
     //  public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
     public PurchaseScheduleController(IPurchaseSchedule iPurchaseSchedule, IConfiguration configuration, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
@@ -39,7 +39,7 @@ public class PurchaseScheduleController : Controller
         //_logger = logger;
         Logger = logger;
         EncryptDecrypt = encryptDecrypt;
-        IWebHostEnvironment = iWebHostEnvironment;
+        _IWebHostEnvironment = iWebHostEnvironment;
         _iconfiguration = configuration;
     }
 
@@ -374,7 +374,7 @@ public class PurchaseScheduleController : Controller
     [Route("{controller}/Index")]
     public async Task<ActionResult> PurchaseSchedule(int ID, string Mode, int YC)//, ILogger logger)
     {
-         Logger.LogInformation("\n \n ********** Page Purchase Schedule ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
+        //("\n \n ********** Page Purchase Schedule ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
 
         TempData.Clear();
         var MainModel = new PurchaseSubScheduleModel();
