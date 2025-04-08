@@ -721,13 +721,10 @@
                 debugger
                 var formattedDate2 = getFormattedDateOnly($('#hiddenReqDate').val());
                 var formattedDate3 = getFormattedDateOnly($('#hiddenExpectedDate').val());
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
 
                 // $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
                 $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
                 $('#ExpectedDate').datepicker("option", "mindate", 'now');
-
-
 
                 var finFromDate = $('#FinFromDate').val();
                 var finToDate = $('#FinToDate').val();
