@@ -835,8 +835,8 @@ public class PurchaseOrderController : Controller
 
     // POST: PurchaseOrderController
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    [Route("{controller}/Index")]
+    //[ValidateAntiForgeryToken]
+    //[Route("{controller}/Index")]
     public async Task<IActionResult> SavePODetail(PurchaseOrderModel model)
     {
         try
