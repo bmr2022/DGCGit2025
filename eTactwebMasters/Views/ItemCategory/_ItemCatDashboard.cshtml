@@ -3,16 +3,14 @@
     <table class="table table-hover table-bordered table-striped TbCss" id="ItemCatTable">
         <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="ItemHeadTable">
             <tr>
-                <th style="display: none">
-                    @Html.DisplayNameFor(model => model.Entry_id)
-                </th>
-                <th>Action</th>
+                <th style="display: none;" data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> @Html.DisplayNameFor(model => model.Entry_id)</th>
+                <th style="width:120px;">Action</th>
                 <th>Sr#</th>
-                <th data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span> Entry Id</th>
-                <th data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span> Entry Date</th>
-                <th data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span> Main Category</th>
-                <th data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa fa-sort-asc ascCol" aria-hidden="true"></i><i class="fa fa-sort-desc descCol" aria-hidden="true"></i></span> Category</th>
-                
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Id</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Main Category</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Category</th>
+
             </tr>
         </thead>
         <tbody id="ItemcatBody">

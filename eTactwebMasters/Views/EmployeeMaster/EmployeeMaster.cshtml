@@ -334,7 +334,8 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="ESIApplicable" class="form-label">ESI Applicable</label>
                                     <select asp-for="ESIApplicable" class="form-control">
-                                        <option value="">Select</option>
+                                        <option value="Y">Yes</option>
+                                        <option value="N">No</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
@@ -470,13 +471,13 @@
                                
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="ReportingMg" class="form-label">Reporting Mg</label>
-                                    <select asp-for="ReportingMg" class="form-control">
+                                    <select asp-for="ReportingMg" class="form-control" style="width:150px;">
                                         <option value="">Select</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="EmployeeType" class="form-label">Employee Type </label>
-                                    <select asp-for="EmployeeType" class="form-control">
+                                    <select asp-for="EmployeeType" class="form-control" style="width:150px;">
                                         <option value="">Select</option>
                                     </select>
                                 </div>
@@ -944,6 +945,8 @@
             $('#JobDepartment').select2();
             $('#JobDesignation').select2();
             $('#JObShift').select2();
+            $('#EmployeeType').select2();
+            $('#ReportingMg').select2();
 
 
             $('#ResignationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');;
@@ -976,6 +979,8 @@
             GetJobDepartMent();
             GetJobDesignation();
             GetJobShift();
+            GetEmployeeType();
+            GetReportingMg();
             $("#SalaryHead").change(function () {
                 var salaryHeadValue = $(this).val();
                 if (salaryHeadValue) {
@@ -1503,5 +1508,55 @@
                 }
             });
         }
+        function GetEmployeeType () {
+            $.ajax({
+                url: '@Url.Action("GetEmployeeType", "EmployeeMaster")',
+                type: 'GET',
+                success: function (response) {
+                    var EmployeeTypeDropdown = $('#EmployeeType');
+                    var obj = $.parseJSON(response);
+                    EmployeeTypeDropdown.empty();
+                    EmployeeTypeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, Job) {
+                        EmployeeTypeDropdown.append('<option value="' + Job.EmpType + '">' + Job.EmpType + '</option>');
+                    });
+
+                    if ($('#EmployeeType').val() == "U" || $('#EmployeeType').val() == "V") {
+                        var EmployeeType = '@Model.EmployeeType';
+                        $('#EmployeeType').val(EmployeeType).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
+                }
+            });
+        }
+        function GetReportingMg() {
+            $.ajax({
+                url: '@Url.Action("GetReportingMg", "EmployeeMaster")',
+                type: 'GET',
+                success: function (response) {
+                    var ReportingMgDropdown = $('#ReportingMg');
+                    var obj = $.parseJSON(response);
+                    ReportingMgDropdown.empty();
+                    ReportingMgDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, Job) {
+                        ReportingMgDropdown.append('<option value="' + Job.ReportingManager + '">' + Job.ReportingManager + '</option>');
+                    });
+
+                    if ($('#ReportingMg').val() == "U" || $('#ReportingMg').val() == "V") {
+                        var ReportingMg = '@Model.ReportingMg';
+                        $('#ReportingMg').val(ReportingMg).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
+                }
+            });
+        }
+
+
     </script>
 }

@@ -31,15 +31,18 @@
                                 <label for="state" class="control-label">Type Name</label>
                                 <input asp-for="Type_Item" class="form-control form-control-sm" data-val="false" />
                             </div>
-
+                            <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
                             <div class=" d-flex justify-content-center mt-3" width="inherit">
-                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="GetSearchData();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="GetSearchData();" style="padding:3px;height:30px;width:100px;margin-left:450px;margin-top:-45px;">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
-                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:-45px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <button type="reset" class="btn btn-sm btn-outline-danger" onclick="Reload();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                <button type="reset" class="btn btn-sm btn-outline-danger" onclick="Reload();" style="padding:3px;height:30px;width:100px;margin-left:20px;margin-top:-45px;">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </button>
                             </div>
@@ -68,6 +71,85 @@
             var dashGrid = $('#ItemcatBody tr').length;
             $('#totalRows').text(dashGrid);
         });
+
+        var currentSearchColumn = null;
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#ItemcatBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+        function sortTable(columnIndex, ascending) {
+            debugger
+            var table = $('#ItemCatTable');
+            var rows = table.find('#ItemcatBody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#ItemcatBody').append(row);
+            });
+        }
 
         //AutoComplete('VAccountHeadMaster', 'Account_Name', 'Account_Name', null);
         //AutoComplete('VAccountHeadMaster', 'SalesPersonName', 'salesperson_name', null);
@@ -230,56 +312,56 @@
             });
         });
 
-        $(document).on("click", ".ascCol", function () {
-            var $column = $(this).parent().closest("th");
-            var colno = $column.data('columnno');
-            $('.ascCol').css('color', 'white');
-            $('.descCol').css('color', 'white');
-            sortTable(colno, true);
-            $(this).css('color', 'yellow');
-        });
+        // $(document).on("click", ".ascCol", function () {
+        //     var $column = $(this).parent().closest("th");
+        //     var colno = $column.data('columnno');
+        //     $('.ascCol').css('color', 'white');
+        //     $('.descCol').css('color', 'white');
+        //     sortTable(colno, true);
+        //     $(this).css('color', 'yellow');
+        // });
 
-        $(document).on("click", ".descCol", function () {
-            var $column = $(this).parent().closest("th");
-            var colno = $column.data('columnno');
-            $('.ascCol').css('color', 'white');
-            $('.descCol').css('color', 'white');
-            sortTable(colno, false);
-            $(this).css('color', 'yellow');
-        });
+        // $(document).on("click", ".descCol", function () {
+        //     var $column = $(this).parent().closest("th");
+        //     var colno = $column.data('columnno');
+        //     $('.ascCol').css('color', 'white');
+        //     $('.descCol').css('color', 'white');
+        //     sortTable(colno, false);
+        //     $(this).css('color', 'yellow');
+        // });
 
-        function sortTable(columnIndex, ascending) {
-            var table = $('#ItemCatTable');
-            var rows = table.find('#ItemcatBody > tr').toArray();
+        // function sortTable(columnIndex, ascending) {
+        //     var table = $('#ItemCatTable');
+        //     var rows = table.find('#ItemcatBody > tr').toArray();
 
-            rows.sort(function (a, b) {
-                var aValue = $(a).find('td').eq(columnIndex).text().trim();
-                var bValue = $(b).find('td').eq(columnIndex).text().trim();
+        //     rows.sort(function (a, b) {
+        //         var aValue = $(a).find('td').eq(columnIndex).text().trim();
+        //         var bValue = $(b).find('td').eq(columnIndex).text().trim();
 
-                var aIntValue = 0;
-                var bIntValue = 0;
-                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
-                    aIntValue = parseInt(aValue, 10);
-                    bIntValue = parseInt(bValue, 10);
-                }
+        //         var aIntValue = 0;
+        //         var bIntValue = 0;
+        //         if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+        //             aIntValue = parseInt(aValue, 10);
+        //             bIntValue = parseInt(bValue, 10);
+        //         }
 
-                if (aIntValue > 0) {
-                    if (ascending) {
-                        return aValue - bValue;
-                    } else {
-                        return bValue - aValue;
-                    }
-                }
-                else {
-                    if (ascending) {
-                        return aValue.localeCompare(bValue);
-                    } else {
-                        return bValue.localeCompare(aValue);
-                    }
+        //         if (aIntValue > 0) {
+        //             if (ascending) {
+        //                 return aValue - bValue;
+        //             } else {
+        //                 return bValue - aValue;
+        //             }
+        //         }
+        //         else {
+        //             if (ascending) {
+        //                 return aValue.localeCompare(bValue);
+        //             } else {
+        //                 return bValue.localeCompare(aValue);
+        //             }
 
-                }
+        //         }
 
-            });
+        //     });
             //if (!ascending) {
             //    rows.reverse();
             //}
@@ -287,7 +369,7 @@
             $.each(rows, function (index, row) {
                 table.children('#ItemcatBody').append(row);
             });
-        }
+       
 
         function GetSearchData() {
             var data = $('#SParam').serialize();

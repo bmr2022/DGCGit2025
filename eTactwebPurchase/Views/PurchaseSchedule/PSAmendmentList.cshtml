@@ -342,7 +342,7 @@
         var currentSearchColumn = null;
         $("#search-box").on("keyup", function () {
             var value = $(this).val().toLowerCase();
-            $("#divDashboardGrid tr").filter(function () {
+            $("#PSDashboard tbody tr").filter(function () {
                 if (currentSearchColumn !== null) {
                     var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
                     $(this).toggle(columnText.indexOf(value) > -1);
