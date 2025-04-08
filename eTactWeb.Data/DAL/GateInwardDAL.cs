@@ -220,7 +220,8 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
             SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
             SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntrybyMachineName ?? ""));
-           
+            SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
+            SqlParams.Add(new SqlParameter("@lastupdated", DateTime.Now));
 
             SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
