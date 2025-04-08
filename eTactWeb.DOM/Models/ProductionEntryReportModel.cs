@@ -56,6 +56,11 @@ namespace eTactWeb.DOM.Models
         public decimal PendingQtyToIssue { get; set; }
         public int BOMNO { get; set; }
         public string? BOMDate { get; set; }
+        public string? TransferToWCSTr { get; set; }
+
+        
+        public string? TransferToWCStr { get; set; }
+
         public string? MachineName { get; set; }
         public string? StageDescription { get; set; }
         public string? ProdInWC { get; set; }
