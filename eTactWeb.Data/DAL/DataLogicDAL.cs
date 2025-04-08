@@ -906,6 +906,8 @@ namespace eTactWeb.Data.DAL
 
         internal async Task<ResponseResult> ExecuteDataTable(string SPName, IList<dynamic> SQLParams)
         {
+            int retryCount = 3;
+            int delayMilliseconds = 1000;
             var _ResponseResult = new ResponseResult();
                 var oDataTable = new DataTable();
             try
@@ -919,7 +921,21 @@ namespace eTactWeb.Data.DAL
                         await myConnection.OpenAsync();
                         using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                         {
-                            oDataAdapter.Fill(oDataTable);
+                            //  oDataAdapter.Fill(oDataTable);
+                            for (int i = 0; i < retryCount; i++)
+                            {
+                                try
+                                {
+                                    oDataAdapter.Fill(oDataTable);
+                                    break; // Success - exit loop
+                                }
+                                catch (SqlException ex) when (i < retryCount - 1 &&
+                                                             (ex.Number == -2 || ex.Message.Contains("timeout")))
+                                {
+                                    await Task.Delay(delayMilliseconds);
+                                    delayMilliseconds *= 2; // Exponential backoff
+                                }
+                            }
                             //oCmd.Parameters.Clear();
                             //await oCmd.DisposeAsync();
                         }

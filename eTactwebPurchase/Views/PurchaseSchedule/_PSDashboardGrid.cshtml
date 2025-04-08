@@ -69,7 +69,7 @@ else
                                                     </span>
                                                 </a>
                                             </div>
-                                            @if (item.SchApproved == "N" || item.SchApproved == null || item.POYearCode == yearCode)
+                                            @if (item.SchApproved == "N" || item.SchApproved == null)
                                             {
                                                 <div id="editCursorDiv-@Cntr">
                                                     <a class="table-link link-primary" asp-action="PurchaseSchedule" asp-route-Mode="U" asp-route-ID="@item.EntryID" asp-route-YC="@item.SchYear">
@@ -98,7 +98,7 @@ else
                                                     </div>
                                                 
                                             }
-                                            else if (item.SchApproved == "Y" || item.POYearCode != yearCode)
+                                            else if (item.SchApproved == "Y" )
                                             {
                                                 <div>
                                                     <a class="table-link link-primary noCursor">
