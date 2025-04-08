@@ -24,6 +24,50 @@ namespace eTactWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //    // The default HSTS value is 30 days. You may want to change this for production
+            //    // scenarios, see https://aka.ms/aspnetcore-hsts.
+            //    app.UseHsts();
+            //}
+
+            //loggerFactory.AddFile("Logs/eTactWeb-.log");
+
+            //app.UseHttpLogging();
+            //app.UseStaticFiles();
+            //app.UseSession();
+            //app.UseMiddleware<SessionCheckMiddleware>();
+            //app.UseOutputCache();
+
+
+
+            //app.UseFastReport();
+
+
+            //app.Use(async (context, next) =>
+            //{
+            //    await next.Invoke();
+            //});
+
+            //app.UseRouting();
+            //app.UseCookiePolicy();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
+
+            //app.UseStatusCodePages();
+            //app.UseEndpoints
+            //(
+            //    endpoints =>
+            //    {
+            //        endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Login}/{id?}");
+            //        endpoints.MapRazorPages();
+            //    }
+            //);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -36,19 +80,19 @@ namespace eTactWeb
                 app.UseHsts();
             }
 
+
+
             loggerFactory.AddFile("Logs/eTactWeb-.log");
-       
+
             app.UseHttpLogging();
-            app.UseStaticFiles();
             app.UseSession();
-            app.UseMiddleware<SessionCheckMiddleware>();
             app.UseOutputCache();
-           
-           
-             
+
+            app.UseStaticFiles();
+
             app.UseFastReport();
 
-         
+
             app.Use(async (context, next) =>
             {
                 await next.Invoke();
@@ -60,6 +104,9 @@ namespace eTactWeb
             app.UseAuthorization();
 
             app.UseStatusCodePages();
+
+
+
             app.UseEndpoints
             (
                 endpoints =>
@@ -72,6 +119,7 @@ namespace eTactWeb
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddLogging();
             services.AddAuthentication();

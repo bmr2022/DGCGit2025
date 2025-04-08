@@ -698,7 +698,7 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
             }
-            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            else if (Result.StatusText != "Success" || Result.StatusCode == HttpStatusCode.Accepted)
             {
                 ViewBag.isSuccess = true;
                 TempData["423"] = "423";

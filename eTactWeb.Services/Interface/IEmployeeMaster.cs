@@ -20,5 +20,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetJobDepartMent();
         Task<ResponseResult> GetJobDesignation();
         Task<ResponseResult> GetJobShift();
+        Task<ResponseResult> GetEmployeeType();
+        Task<ResponseResult> GetReportingMg();
     }
 }

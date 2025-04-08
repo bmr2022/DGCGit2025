@@ -57,7 +57,7 @@ public class PurchaseScheduleDAL
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
 
-            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseSchedule", SqlParams);
 
         }
         catch (Exception ex)
