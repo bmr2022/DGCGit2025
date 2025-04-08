@@ -1045,17 +1045,17 @@ public class DirectPurchaseBillDAL
         {
             var SqlParams = new List<dynamic>();
 
-            DateTime EntryDt = new DateTime();
-            DateTime VouchDate = new DateTime();
-            DateTime InvDate = new DateTime();
-            DateTime AppDate = new DateTime();
-            DateTime CurrentDate = new DateTime();
+            //DateTime EntryDt = new DateTime();
+            //DateTime VouchDate = new DateTime();
+            //DateTime InvDate = new DateTime();
+            //DateTime AppDate = new DateTime();
+            //DateTime CurrentDate = new DateTime();
 
-            EntryDt = ParseDate(model.EntryDate);
-            VouchDate = ParseDate(model.VouchDate);
-            InvDate = ParseDate(model.InvDate);
-            CurrentDate = DateTime.Today;
-
+            var EntryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+            var VouchDate = CommonFunc.ParseFormattedDate(model.VouchDate);
+            var InvDate = CommonFunc.ParseFormattedDate(model.InvDate);
+            var CurrentDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+            var AppDate = "";
             SqlParams.Add(new SqlParameter("@Flag", model.Mode == "COPY" ? "INSERT" : model.Mode));
             //SqlParams.Add(new SqlParameter("@ID", model.ID));
             if (model.Mode == "INSERT")
@@ -1064,7 +1064,7 @@ public class DirectPurchaseBillDAL
                 SqlParams.Add(new SqlParameter("@EntryID", model.EntryID));
             if (model.Mode == "POA")
             {
-                AppDate = ParseDate(model.ApprovedDate);
+                AppDate = CommonFunc.ParseFormattedDate(model.ApprovedDate);
                 SqlParams.Add(new SqlParameter("@ApprovedDate", AppDate == default ? string.Empty : AppDate));
                 SqlParams.Add(new SqlParameter("@Approved", model.Approved));
                 SqlParams.Add(new SqlParameter("@Approvedby", model.Approvedby));

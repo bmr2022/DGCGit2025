@@ -871,9 +871,10 @@ namespace eTactWeb.Controllers
                     }
 
                     var rowCount = worksheet.Dimension.Rows;
-
+                    var seenPartCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     for (int row = 2; row <= rowCount; row++)
                     {
+                       
                         var itemCode = _IJobWorkOpening.GetItemCode(worksheet.Cells[row, 4].Value.ToString());
                         var partcode = 0;
                         var itemCodeValue = 0;
@@ -896,7 +897,19 @@ namespace eTactWeb.Controllers
                             errors.Add($"Invalid PartCode at row {row}");
                             continue;
                         }
+                        string partCode = worksheet.Cells[row, 4].Value?.ToString()?.Trim();
 
+                        if (string.IsNullOrWhiteSpace(partCode))
+                        {
+                            errors.Add($"Missing PartCode at row {row}");
+                            continue;
+                        }
+
+                        if (!seenPartCodes.Add(partCode))
+                        {
+                            errors.Add($"Duplicate PartCode '{partCode}' found at row {row}");
+                            continue;
+                        }
 
 
                         var RecitemCode = _IJobWorkOpening.GetItemCode(worksheet.Cells[row, 9].Value.ToString());

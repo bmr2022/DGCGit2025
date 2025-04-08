@@ -841,12 +841,12 @@
                     var rowCount = $('#divAddPurchaseRejectionList tr td').length;
                     ClearPopupItemGrid();
                     BasicTotal();
-                    // if (rowCout <= 1) {
-                    //     $('#DiscountPer').val(0);
-                    //     $('#DiscountPer').prop("readonly", false);
-                    //     $('#DiscountAmt').val(0);
-                    //     $('#DiscountAmt').prop("readonly", false);
-                    // }
+                    if (rowCout <= 1) {
+                        $('#DiscountPer').val(0);
+                        $('#DiscountPer').prop("readonly", false);
+                        $('#DiscountAmt').val(0);
+                        $('#DiscountAmt').prop("readonly", false);
+                    }
                 },
                 error: function (response, status, xhr) {
                     alert(response.responseText);
@@ -1492,11 +1492,11 @@
                         
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
-                        if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '') {
+                        if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '' && $('#DiscountPer').val() != undefined) {
                             $('#DiscountPer').prop("readonly", "true");
                         }
 
-                        if ($('#DiscountAmt').val() != 0 && $('#DiscountAmt').val() != '0' && $('#DiscountAmt').val() != '') {
+                        if ($('#DiscountAmt').val() != 0 && $('#DiscountAmt').val() != '0' && $('#DiscountAmt').val() != '' && $('#DiscountAmt').val() != undefined {
                             $('#DiscountAmt').prop("readonly", "true");
                         }
 
@@ -1624,6 +1624,26 @@
 
             $('#lblItemNetAmount').text(sum.toFixed(2));
         }
+        
+        function onDiscountChange(){
+              const DP = $('#DiscountPer') === "0" || $('#DiscountPer').val() === "" ? 0 : parseFloat($('#DiscountPer').val());
+              var PRRate = $('#PRRate').val() === "0" || $('#PRRate').val() === "" ? 0 : parseFloat($('#PRRate').val());
+              var Amount = $('#ItemAmount').val() === "0" || $('#ItemAmount').val() === "" ? 0 : parseFloat($('#ItemAmount').val());
+              const RejectedQty = $('#RejectedQty').val() == "0" || $('#RejectedQty').val() === "" ? 0 : parseInt($('#RejectedQty').val());
+
+               if (RejectedQty > 0 && Rate > 0) {
+                Amount = RejectedQty * PRRate;
+            }
+            else {
+                Amount;
+            }
+
+            if (DP !== 0) {
+                const DA = ((Amount * DP) / 100);
+                $('#DiscRs').val(DA.toFixed(2));
+                Amount = Amount - DA;
+            }
+        }
 
         function BasicItemGridTotal() {
             var columnCount = $('#divAddPurchaseRejectionList tr td').length;
@@ -1692,6 +1712,14 @@
         $('#DebitNotePurchaseRejection').change(function () {
             FillCustomerName();
             FillSubvoucher();
+        });
+        
+        $('#DiscountAmt' ).change(function () {
+            onDiscountChange();
+        });
+        
+        $('#DiscountPer' ).change(function () {
+            onDiscountChange();
         });
 
         $('#SA').change(function () {

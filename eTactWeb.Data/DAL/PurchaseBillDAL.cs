@@ -1252,27 +1252,28 @@ public class PurchaseBillDAL
         {
             var SqlParams = new List<dynamic>();
 
-            DateTime EntryDt = new DateTime();
-            DateTime VouchDate = new DateTime();
-            DateTime InvDate = new DateTime();
-            DateTime GateDate = new DateTime();
-            DateTime MrnDate = new DateTime();
-            DateTime AppDate = new DateTime();
-            DateTime CurrentDate = new DateTime();
+            //DateTime EntryDt = new DateTime();
+            //DateTime VouchDate = new DateTime();
+            //DateTime InvDate = new DateTime();
+            //DateTime GateDate = new DateTime();
+            //DateTime MrnDate = new DateTime();
+            //DateTime CurrentDate = new DateTime();
+            //DateTime AppDate = new DateTime();
 
-            EntryDt = ParseDate(model.EntryDate);
-            VouchDate = ParseDate(model.VouchDate);
-            InvDate = ParseDate(model.InvDate);
-            GateDate = ParseDate(model.StrGateDate);
-            MrnDate = ParseDate(model.StrMRNEntryDate);
-            CurrentDate = DateTime.Today;
+            var AppDate = "";
+            var EntryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+            var VouchDate = CommonFunc.ParseFormattedDate(model.VouchDate);
+            var InvDate = CommonFunc.ParseFormattedDate(model.InvDate);
+            var GateDate = CommonFunc.ParseFormattedDate(model.StrGateDate);
+            var MrnDate = CommonFunc.ParseFormattedDate(model.StrMRNEntryDate);
+            var CurrentDate = CommonFunc.ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
 
             SqlParams.Add(new SqlParameter("@Flag", model.Mode == "COPY" ? "INSERT" : model.Mode));
             //SqlParams.Add(new SqlParameter("@ID", model.ID));
             if (model.Mode == "INSERT")
             {
                 SqlParams.Add(new SqlParameter("@EntryID", 0));
-                EntryDt = DateTime.Today;
+                EntryDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
             }
             else
             {
@@ -1280,7 +1281,7 @@ public class PurchaseBillDAL
             }
             if (model.Mode == "POA")
             {
-                AppDate = ParseDate(model.ApprovedDate);
+                AppDate = CommonFunc.ParseFormattedDate(model.ApprovedDate);
                 SqlParams.Add(new SqlParameter("@ApprovedDate", AppDate == default ? string.Empty : AppDate));
                 SqlParams.Add(new SqlParameter("@Approved", model.Approved));
                 SqlParams.Add(new SqlParameter("@Approvedby", model.Approvedby));
@@ -1415,16 +1416,16 @@ public class PurchaseBillDAL
                 flag = !string.IsNullOrEmpty(flag) ? flag : "DisplayPendingData";
                 MRNType = !string.IsNullOrEmpty(MRNType) ? MRNType : "MRN";
                 dashboardtype = !string.IsNullOrEmpty(dashboardtype) ? dashboardtype : "SUMMARY";
-                //firstdate = (firstdate != null) ? Convert.ToDateTime(firstdate) : firstDayOfMonth;
-                //todate = (todate != null) ? Convert.ToDateTime(todate) : today;
-                DateTime fromDate = firstdate.HasValue ? firstdate.Value.Date : firstDayOfMonth.Date;
-                DateTime toDate = todate.HasValue ? todate.Value.Date : today.Date;
+                firstdate = (firstdate != null) ? Convert.ToDateTime(firstdate) : firstDayOfMonth;
+                todate = (todate != null) ? Convert.ToDateTime(todate) : today;
+                string fromDate = firstdate.HasValue ? CommonFunc.ParseFormattedDate(firstdate.Value.Date.ToString()) : CommonFunc.ParseFormattedDate(firstDayOfMonth.Date.ToString());
+                string toDate = todate.HasValue ? CommonFunc.ParseFormattedDate(todate.Value.Date.ToString()) : CommonFunc.ParseFormattedDate(today.Date.ToString());
                 oCmd.Parameters.AddWithValue("@flag", flag);
                 oCmd.Parameters.AddWithValue("@MRNTYpe", MRNType);
                 //oCmd.Parameters.AddWithValue("@Fromdate", firstdate);
                 //oCmd.Parameters.AddWithValue("@ToDate", todate);
-                oCmd.Parameters.AddWithValue("@Fromdate", fromDate.ToString("yyyy-MM-dd"));
-                oCmd.Parameters.AddWithValue("@Todate", toDate.ToString("yyyy-MM-dd"));
+                oCmd.Parameters.AddWithValue("@Fromdate", fromDate);
+                oCmd.Parameters.AddWithValue("@Todate", toDate);
                 oCmd.Parameters.AddWithValue("@SummaryDetail", dashboardtype.ToUpper());
                 oCmd.Parameters.AddWithValue("@VendorName", !string.IsNullOrEmpty(model.PartyName) && model.PartyName != "0" ? model.PartyName : string.Empty);
                 oCmd.Parameters.AddWithValue("@Mrnno", !string.IsNullOrEmpty(model.MRNNo) && model.MRNNo != "0" ? model.MRNNo : string.Empty);

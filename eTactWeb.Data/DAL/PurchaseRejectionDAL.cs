@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -506,6 +507,8 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                fromBillDate = fromBillDate != null  ? CommonFunc.ParseFormattedDate(fromBillDate) : string.Empty;
+                toBillDate = toBillDate != null ? CommonFunc.ParseFormattedDate(toBillDate) : string.Empty;
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "PopupData"));
                 SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", DebitNotePurchaseRejection));
@@ -552,34 +555,37 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@UpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdatedDate", DateTime.Today));
+                    SqlParams.Add(new SqlParameter("@LastUpdatedDate", upDt));
                 }
                 else
                 {
                     SqlParams.Add(new SqlParameter("@flag", "INSERT"));
                 }
 
-                DateTime purchaseRejectionInvoiceDt = new DateTime();
-                DateTime purchaseRejectionVoucherDt = new DateTime();
-                DateTime purchaseRejectionEntryDt = new DateTime();
-                DateTime lastUpdationDt = new DateTime();
-                DateTime actualDt = new DateTime();
+                //DateTime purchaseRejectionInvoiceDt = new DateTime();
+                //DateTime purchaseRejectionVoucherDt = new DateTime();
+                //DateTime purchaseRejectionEntryDt = new DateTime();
+                //DateTime lastUpdationDt = new DateTime();
+                //DateTime actualDt = new DateTime();
 
-                purchaseRejectionInvoiceDt = CommonFunc.ParseDate(model.PurchaseRejectionInvoiceDate);
-                purchaseRejectionVoucherDt = CommonFunc.ParseDate(model.PurchaseRejectionVoucherDate);
-                purchaseRejectionEntryDt = CommonFunc.ParseDate(model.PurchaseRejEntryDate);
-                actualDt = CommonFunc.ParseDate(model.ActualEntryDate);
+                var purchaseRejectionInvoiceDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionInvoiceDate);
+                var purchaseRejectionVoucherDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionVoucherDate);
+                var purchaseRejectionEntryDt = CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate);
+                var actualDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                
 
                 SqlParams.Add(new SqlParameter("@PurchaseRejEntryId", model.PurchaseRejEntryId));
                 SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", model.PurchaseRejYearCode));
                 SqlParams.Add(new SqlParameter("@PurchaseRejEntryDate", purchaseRejectionEntryDt == default ? string.Empty : purchaseRejectionEntryDt));
                 SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", model.DebitNotePurchaseRejection));
                 SqlParams.Add(new SqlParameter("@PurchaseRejInvoiceNo", model.PurchaseRejectionInvoiceNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@InvoiceNo", model.PurchaseRejectionInvoiceNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@InvoiceDate", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
                 SqlParams.Add(new SqlParameter("@InvoiceTime", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
                 SqlParams.Add(new SqlParameter("@SubVoucherName", model.SubVoucherName ?? string.Empty));
@@ -595,6 +601,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CurrencyId", model.CurrencyId ?? 0));
                 SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerm ?? string.Empty));
+                //SqlParams.Add(new SqlParameter("@PaymentTerm", Convert.ToInt32(!string.IsNullOrEmpty(model.PaymentTerm) ? 1 : 0)));
                 //SqlParams.Add(new SqlParameter("@PaymentCreditDay", model.PaymentCreditDay));
                 SqlParams.Add(new SqlParameter("@GSTNO", model.GSTNO ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", model.DomesticExportNEPZ ?? string.Empty));
@@ -616,7 +623,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", actualDt == default ? string.Empty : actualDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
                 SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUpdationDate", lastUpdationDt == default ? string.Empty : lastUpdationDt));
+                SqlParams.Add(new SqlParameter("@LastUpdationDate", upDt == default ? string.Empty : upDt));
                 SqlParams.Add(new SqlParameter("@BalanceSheetClosed", model.BalanceSheetClosed));
                 //SqlParams.Add(new SqlParameter("@AttachmentFilePath1", model.AttachmentFilePath1 ?? string.Empty));
                 //SqlParams.Add(new SqlParameter("@AttachmentFilePath2", model.AttachmentFilePath2 ?? string.Empty));
