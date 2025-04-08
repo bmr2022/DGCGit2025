@@ -1337,7 +1337,44 @@
                             </ul>
                         </li>
                         <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#">Requisition Without BOM &raquo; </a>
+                            <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-action="ReqWithoutBom" asp-controller="ReqWithoutBom" id="ReqWithoutBom">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        New Requisition
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item ReqWithoutBom" asp-action="Dashboard" asp-controller="ReqWithoutBom" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                            </ul>
+                        </li>
 
+                        <li>
+                            <a class="dropdown-item" href="#">Return From Department Main &raquo; </a>
+                            <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-action="ReturnFromDepartmentMain" asp-controller="ReturnFromDepartmentMain" id="ReturnFromDepartmentMain">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        New Return From Department
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item ReturnFromDepartmentMain" asp-action="Dashboard" asp-controller="ReturnFromDepartmentMain" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day).ToString("dd/MM/yyyy")" asp-route-Todate="@DateTime.Today.ToString("dd/MM/yyyy")" asp-route-Flag="True">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                            </ul>
+                        </li>
+                        
                         <li>
                             <a class="dropdown-item" href="#">Job Work Issue &raquo; </a>
                             <ul class="submenu dropdown-menu">
@@ -1421,8 +1458,6 @@
                                 <li>
                             </ul>
                         </li>
-
-
 
                         <li><hr class="dropdown-divider"></li>
                         <li>
