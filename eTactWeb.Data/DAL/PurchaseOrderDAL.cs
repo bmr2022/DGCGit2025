@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Reflection;
 using static eTactWeb.DOM.Models.Common;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Common = eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL;
 
@@ -1275,25 +1276,17 @@ public class PurchaseOrderDAL
         {
             var SqlParams = new List<dynamic>();
 
-            DateTime EntryDt = new DateTime();
-            DateTime PoDt = new DateTime();
-            DateTime WEFDate = new DateTime();
-            DateTime PoCloseDt = new DateTime();
-            DateTime AmmDt = new DateTime();
-            //DateTime RefDt = new DateTime();
-            //DateTime QuotDt = new DateTime();
-            DateTime AppDate = new DateTime();
-            DateTime AmmAppDate = new DateTime();
-            DateTime FirstLvlAppDate = new DateTime();
-            EntryDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.EntryDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            PoDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.PODate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            WEFDate = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.WEF), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            PoCloseDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.POCloseDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            AmmDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.AmmDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            var EntryDt = Common.CommonFunc.ParseFormattedDate(model.EntryDate);
+           var PoDt = Common.CommonFunc.ParseFormattedDate(model.PODate);
+           var WEFDate = Common.CommonFunc.ParseFormattedDate(model.WEF);
+           var PoCloseDt = Common.CommonFunc.ParseFormattedDate(model.POCloseDate);
+           var AmmDt = Common.CommonFunc.ParseFormattedDate(model.AmmDate);
             //RefDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.RefDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            DateTime? RefDt = DateTime.TryParseExact(CommonFunc.ParseFormattedDate(model.RefDate ?? ""), "dd/MMM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate) ? parsedDate : (DateTime?)null;
+            //DateTime? RefDt = DateTime.TryParseExact(CommonFunc.ParseFormattedDate(model.RefDate ?? ""), "dd/MMM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate) ? parsedDate : (DateTime?)null;
+            var RefDt = Common.CommonFunc.ParseFormattedDate(model.RefDate);
             //QuotDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.QuotDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            DateTime? QuotDt = DateTime.TryParseExact(CommonFunc.ParseFormattedDate(model.QuotDate ?? ""), "dd/MMM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate1) ? parsedDate1 : (DateTime?)null;
+            //DateTime? QuotDt = DateTime.TryParseExact(CommonFunc.ParseFormattedDate(model.QuotDate ?? ""), "dd/MMM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate1) ? parsedDate1 : (DateTime?)null;
+            var QuotDt = Common.CommonFunc.ParseFormattedDate(model.QuotDate);
             //EntryDt = ParseDate(model.EntryDate);
             //PoDt = ParseDate(model.PODate);
             //WEFDate = ParseDate(model.WEF);
@@ -1320,9 +1313,14 @@ public class PurchaseOrderDAL
             {
                 SqlParams.Add(new SqlParameter("@POAmendYearcode", model.AmmYearCode));
 
-                AmmAppDate = ParseDate(model.AmmApprovedDate);
-                AppDate = ParseDate(model.ApprovedDate);
-                FirstLvlAppDate = ParseDate(model.FirstLvlApprovedDate);
+                //AmmAppDate = ParseDate(model.AmmApprovedDate);
+                //AppDate = ParseDate(model.ApprovedDate);
+                //FirstLvlAppDate = ParseDate(model.FirstLvlApprovedDate);
+
+                var AmmAppDate = model.AmmApprovedDate != null ? Common.CommonFunc.ParseFormattedDate(model.AmmApprovedDate) : string.Empty;
+                var AppDate = model.ApprovedDate != null ? Common.CommonFunc.ParseFormattedDate(model.ApprovedDate) : string.Empty;
+                var FirstLvlAppDate = model.FirstLvlApprovedDate != null ? Common.CommonFunc.ParseFormattedDate(model.FirstLvlApprovedDate) : string.Empty;
+
                 SqlParams.Add(new SqlParameter("@ApprovedDate", AppDate == default ? string.Empty : AppDate));
                 SqlParams.Add(new SqlParameter("@AmendApproveDate", AmmAppDate == default ? string.Empty : AmmAppDate));
                 SqlParams.Add(new SqlParameter("@Approval1LevelDate", AmmAppDate == default ? string.Empty : AmmAppDate));

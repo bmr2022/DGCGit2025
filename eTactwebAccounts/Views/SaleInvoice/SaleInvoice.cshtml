@@ -1733,6 +1733,7 @@
                     $.notify('Something Went Wrong, Please Try Again.', "error");
                 }
             }).done(function () {
+                debugger
                 //alert('inside ajax');
                 GetTaxPartItem();
                 GetDbCrDetail();
@@ -2350,6 +2351,8 @@
                                 FillSOSchedule();
                                 FillSchYearCode();
                                 $('#SaleSchYearCode').trigger("change");
+                                $('#SchNo').val(obj[0].SchNo);
+                                $('#SaleSchYearCode').val(obj[0].SaleSchYearCode);
                                 // FillItems($('#TypeItemServAssets').val());
                                 if ($('#SaleBillJobwork').val() == 'J') {
                                     JWItemList($('#TypeItemServAssets').val());
