@@ -791,7 +791,8 @@ public class PurchaseOrderDAL
                 {
                     MainModel.EntryID = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["POEntryID"]);
                     MainModel.YearCode = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["POYearCode"]);
-                    MainModel.EntryDate = oDataSet.Tables[0].Rows[0]["EntryDate"].ToString();
+                   // MainModel.EntryDate = oDataSet.Tables[0].Rows[0]["EntryDate"].ToString();
+                    MainModel.EntryDate = CommonFunc.FormatToDDMMYYYY(oDataSet.Tables[0].Rows[0]["EntryDate"].ToString());
                     MainModel.Branch = oDataSet.Tables[0].Rows[0]["CC"].ToString();
                     MainModel.POFor = oDataSet.Tables[0].Rows[0]["POFor"].ToString();
                     MainModel.POPrefix = oDataSet.Tables[0].Rows[0]["POPrefix"].ToString();
@@ -803,7 +804,7 @@ public class PurchaseOrderDAL
                     MainModel.OrderType = oDataSet.Tables[0].Rows[0]["OrderType"].ToString();
                     MainModel.OrderNo = Convert.ToInt32(oDataSet.Tables[0].Rows[0]["OrderNo"]);
                     MainModel.PONo = oDataSet.Tables[0].Rows[0]["PONo"].ToString();
-                    MainModel.PODate = oDataSet.Tables[0].Rows[0]["PODate"].ToString();
+                    MainModel.PODate = CommonFunc.FormatToDDMMYYYY(oDataSet.Tables[0].Rows[0]["PODate"].ToString());
                     MainModel.WEF = oDataSet.Tables[0].Rows[0]["WEF"].ToString();
                     MainModel.POCloseDate = oDataSet.Tables[0].Rows[0]["POCloseDate"].ToString();
                     MainModel.QuotNo = oDataSet.Tables[0].Rows[0]["QuotNo"].ToString();
