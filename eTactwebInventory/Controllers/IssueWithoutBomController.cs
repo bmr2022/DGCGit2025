@@ -625,6 +625,7 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> DeleteByID(int ID, int YC,int ActualEntryBy,string EntryByMachine, string FromDate, string ToDate, string REQNo, string WCName, string PartCode, string ItemName)
         {
             var getData = _IIssueWOBOM.GetDataForDelete(ID,YC);
+            EntryByMachine = Environment.MachineName;
 
             long[] ICArray = new long[getData.Result.Result.Rows.Count];
             string[] batchNoArray = new string[getData.Result.Result.Rows.Count];

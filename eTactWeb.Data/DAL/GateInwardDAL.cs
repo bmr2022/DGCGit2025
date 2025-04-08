@@ -187,6 +187,8 @@ public class GateInwardDAL
                 SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                //model.GateNo = _IDataLogic.GetEntryID("GateMain", Constants.FinincialYear, "GateNo").ToString();
                 model.GateNo = _IDataLogic.GetEntryID("GateMain", Constants.FinincialYear, "GateNo","Gateyearcode").ToString();
+                SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
+                SqlParams.Add(new SqlParameter("@lastupdated", DateTime.Now));
             }
 
             SqlParams.Add(new SqlParameter("@EntryID", model.EntryId));
@@ -220,7 +222,6 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
             SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
             SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntrybyMachineName ?? ""));
-           
 
             SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
