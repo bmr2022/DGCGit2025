@@ -170,25 +170,23 @@ public class GateInwardDAL
             entDt = ParseDate(model.EntryDate);
             bilDt = ParseDate(model.BiltyDate);
             invDt = ParseDate(model.InvoiceDate);
+            model.UpdatedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            DateTime updDt = DateTime.Now;
+            updDt = ParseDate(model.UpdatedDate);
 
             //DateTime Invoicedt = DateTime.ParseExact(model.InvoiceDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             if (model.Mode == "U" || model.Mode == "V")
             {
-                model.UpdatedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                DateTime updDt = DateTime.Now;
-                updDt = ParseDate(model.UpdatedDate);
+               
                 SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
-                SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
-                SqlParams.Add(new SqlParameter("@lastupdated", updDt.ToString("yyyy/MM/dd")));
+                
             }
             else
             {
                 SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                //model.GateNo = _IDataLogic.GetEntryID("GateMain", Constants.FinincialYear, "GateNo").ToString();
                 model.GateNo = _IDataLogic.GetEntryID("GateMain", Constants.FinincialYear, "GateNo","Gateyearcode").ToString();
-                SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
-                SqlParams.Add(new SqlParameter("@lastupdated", DateTime.Now));
             }
 
             SqlParams.Add(new SqlParameter("@EntryID", model.EntryId));
@@ -222,6 +220,8 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
             SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
             SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntrybyMachineName ?? ""));
+            SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
+            SqlParams.Add(new SqlParameter("@lastupdated", updDt.ToString("yyyy/MM/dd")));
 
             SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);

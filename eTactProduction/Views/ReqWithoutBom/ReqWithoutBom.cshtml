@@ -5,7 +5,14 @@
 
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
-
+<style>
+    #ReqWithoutBom th {
+        background-color: #127387;
+        position: sticky;
+        top: -15px;
+        z-index: 1;
+    }
+</style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="ReqWithoutBom" autocomplete="off" class="form-horizontal">
@@ -23,8 +30,8 @@
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         print
                         </a>*@
-                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" 
-                        asp-controller="ReqWithoutBom" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" target="_blank">
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
+                           asp-controller="ReqWithoutBom" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" target="_blank">
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
                         </a>
@@ -51,7 +58,7 @@
                                 BACK
                             </a>
                         </div>
-                        @if (Model.Mode != "V"  )
+                        @if (Model.Mode != "V")
                         {
                             <div class="col-auto">
                                 @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
@@ -61,7 +68,7 @@
                                     REFRESH
                                 </a>
                             </div>
-                            @if (Model.Mode == "U"  )
+                            @if (Model.Mode == "U")
                             {
                                 @*Model.Mode = "U";*@
                                 <div class="col-auto">
@@ -72,7 +79,7 @@
                                     </button>
                                 </div>
                             }
-                           
+
                             else
                             {
                                 <div class="col-auto">
@@ -129,7 +136,7 @@
                                     <label asp-for="REQNo" class="form-label" style="color: red;">Req No*</label>
                                     @if (Model.Mode != "U" && Model.Mode != "V")
                                     {
-                                        <input asp-for="REQNo" class="form-control form-control-sm" style="width:56px;" readonly  />
+                                        <input asp-for="REQNo" class="form-control form-control-sm" style="width:56px;" readonly />
                                     }
                                     else
                                     {
@@ -138,10 +145,10 @@
                                 </div>
                                 <div class="col-lg">
                                     <label asp-for="ReqDate" class="form-label" style="color: red;">Req Date*</label>
-                                    <input asp-for="ReqDate " class="form-control"  readonly/>
+                                    <input asp-for="ReqDate " class="form-control" readonly />
                                     @if (@Model.Mode == "U" || @Model.Mode == "V")
                                     {
-                                        <input id="hiddenReqDate" type="hidden" class="form-control" value="@Model.ReqDate" readonly/>
+                                        <input id="hiddenReqDate" type="hidden" class="form-control" value="@Model.ReqDate" readonly />
                                     }
                                 </div>
 
@@ -192,7 +199,7 @@
                                 </div>
                                 <div class="col-lg">
                                     <label asp-for="WODate" class="form-label">WO Date</label>
-                                    <input asp-for="WODate" class="form-control" readonly/>
+                                    <input asp-for="WODate" class="form-control" readonly />
                                 </div>
 
                             </div>
@@ -337,9 +344,9 @@
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="card">
-                                <div class="card-body overflow-auto pb-0">
+                                <div class="card-body overflow-auto pb-0" style="max-height:200px;">
                                     <table class="table table-hover table-bordered table-striped">
-                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                        <thead class="bg-gradient card-headerBG text-light small" id="ReqWithoutBom" style="white-space:nowrap">
                                             <tr>
                                                 <th>Action</th>
                                                 <th>Item Name</th>
@@ -495,24 +502,21 @@
 </div>
 
 
-@section Scripts{
+@section Scripts {
     <script>
         $('#submitBTN').click(function (e) {
-            
+
             e.preventDefault();
-            if($('#divReqWithoutBomAdded tr td').length <= 1) {
+            if ($('#divReqWithoutBomAdded tr td').length <= 1) {
                 $.notify('Grid Should Have Atleast 1 Item...!', "error");
             }
-            else 
-            {
-                if($('#FromDepartmentId').find(":selected").data('depttype') == "production" ||   $('#FromDepartmentId').find(":selected").data('depttype') == "R&D")
-                {   
-                    if($('#WorkCenterId').val() == null){
+            else {
+                if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
+                    if ($('#WorkCenterId').val() == null) {
                         //$.notify("Please fill Work Center");
-                        AddErrorCls('WorkCenterId');   
+                        AddErrorCls('WorkCenterId');
                     }
-                    else
-                    {
+                    else {
                         RemoveErrorCls('WorkCenterId');
                         $("form").submit();
                     }
@@ -521,9 +525,9 @@
                     RemoveErrorCls('WorkCenterId');
                     $("form").submit();
                 }
-               
-                    
-                
+
+
+
             }
         });
 
@@ -531,8 +535,7 @@
             e.preventDefault();
             if (!validateUpdate()) return;
 
-            else 
-            {
+            else {
                 if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
                     if ($('#WorkCenterId').val() == null) {
                         //$.notify("Please fill Work Center");
@@ -608,7 +611,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetNewEntry")",
-                async:false,
+                async: false,
                 dataType: "json",
                 data: { "YearCode": $('#YearCode').val() },
                 success: function (result, status, error) {
@@ -628,16 +631,9 @@
         });
 
         $(document).ready(function () {
-          
+
             fillDepartMent();
             fillProjectNoandYC();
-         
-            //$('#Qty').rules("remove", "required");
-            //$('#PendQty').rules("remove", "required");
-            //$('#StoreId').rules("remove", "required");
-            //$('#TotalStock').rules("remove", "required");
-            //$('#AltQty').rules("remove", "required");
-            // $('#Qty,#PendQty,#StoreId,#TotalStock,#AltQty').removeAttr("required");
             $('#Unit').rules("remove", "required");
             $('#Qty').rules("remove", "required");
             $('#PendQty').rules("remove", "required");
@@ -656,9 +652,8 @@
                 $('#WODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#WODate').css("pointer-events", "none");
                 GetNewEntry();
-            } 
-            else 
-            {
+            }
+            else {
                 if ($("#FromDepartmentId").val() != '6') {
                     $('#WorkCenterId').prop("disabled", true);
                 } else {
@@ -675,11 +670,10 @@
             $('#ItemCode').select2();
             $('#ProjectNo').select2();
             $('#CostCenterId').select2();
-            GetFormRights();
-            
+            //GetFormRights();
+
             //$('#UpdateButton').prop("disabled",true);
-            if ($('#Mode').val() != '') 
-            {
+            if ($('#Mode').val() != '') {
                 $('#PartCode').rules("remove", "required");
                 $('#ItemCode').rules("remove", "required");
                 $('#Unit').rules("remove", "required");
@@ -719,20 +713,17 @@
             $('#REQNo').rules("remove", "required");
 
 
-             // $('#YearCode').val(new Date().getFullYear());
+            // $('#YearCode').val(new Date().getFullYear());
             $('#AltQty').prop("readonly", true);
             // Outputs: 05/05/2023
-           
-            if ($('#Mode').val() == "U") 
-            {
-              
-                
-               // var formattedDate1 = getFormattedDate($('#hiddenEntryDate').val());
-                var formattedDate2 = getFormattedDate($('#hiddenReqDate').val());
-                var formattedDate3 = getFormattedDate($('#hiddenExpectedDate').val());
+
+            if ($('#Mode').val() == "U") {
+                debugger
+                var formattedDate2 = getFormattedDateOnly($('#hiddenReqDate').val());
+                var formattedDate3 = getFormattedDateOnly($('#hiddenExpectedDate').val());
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' });
 
-               // $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+                // $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
                 $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
                 $('#ExpectedDate').datepicker("option", "mindate", 'now');
 
@@ -762,19 +753,15 @@
 
                 var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-                console.log(formattedDate1);
-                console.log(formattedDate2);
-
-                $('#EntryDate').datepicker("option", "minDate", formattedFromDate);
-                $('#EntryDate').datepicker("option", "maxDate", formattedToDate);
-                $('#ReqDate').datepicker("option", "minDate", formattedFromDate);
-                $('#ReqDate').datepicker("option", "maxDate", formattedToDate);
+                $('#EntryDate').datepicker("option", "minDate", formattedDate2);
+                $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
+                $('#ReqDate').datepicker("option", "minDate", formattedDate2);
+                $('#ReqDate').datepicker("option", "maxDate", formattedDate2);
 
             }
-            else 
-            {
+            else {
                 GetServerDate();
-              
+
                 var finFromDate = $('#FinFromDate').val();
                 var finToDate = $('#FinToDate').val();
 
@@ -793,19 +780,19 @@
                     "Nov": "11",
                     "Dec": "12"
                 };
-             
-                 var formattedFromDate = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-                 var dateParts2 = finToDate.split("/");
-                 var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-                var today = new Date(); 
+
+                var formattedFromDate = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                var dateParts2 = finToDate.split("/");
+                var formattedToDate = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+                var today = new Date();
 
                 var minDate = new Date();
                 minDate.setDate(minDate.getDate() - 30);
 
                 $("#EntryDate").datepicker({
                     dateFormat: "yy-mm-dd",
-                    minDate: minDate, 
-                    maxDate: today 
+                    minDate: minDate,
+                    maxDate: today
                 });
 
                 var formattedDate = today.toISOString().split('T')[0];
@@ -815,7 +802,7 @@
                 $("#EntryDate").val(formattedDate);
 
             }
-           
+
             fillItems();
             fillWO();
             fillWC();
@@ -888,10 +875,10 @@
         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate","Routing")",
+                url: "@Url.Action("GetServerDate", "Routing")",
                 async: false,
                 success: function (result, status, error) {
-                     
+
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -923,14 +910,14 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             if (flag == "QtyChange") {
                                 //$('#AltQty').val(obj.Result.Table[0].AltUnitValue).toFixed(5);
-                                var altUnitValue = parseFloat(obj.Result.Table[0].AltUnitValue); 
-                                $('#AltQty').val(altUnitValue.toFixed(5)); 
+                                var altUnitValue = parseFloat(obj.Result.Table[0].AltUnitValue);
+                                $('#AltQty').val(altUnitValue.toFixed(5));
 
                             }
                             else {
-                               // $('#Qty').val(obj.Result.Table[0].ActualUnitValue).toFixed(5);
-                               var actualUnitValue = parseFloat(obj.Result.Table[0].ActualUnitValue); 
-                               $('#Qty').val(actualUnitValue.toFixed(5)); 
+                                // $('#Qty').val(obj.Result.Table[0].ActualUnitValue).toFixed(5);
+                                var actualUnitValue = parseFloat(obj.Result.Table[0].ActualUnitValue);
+                                $('#Qty').val(actualUnitValue.toFixed(5));
 
                             }
                         }
@@ -949,25 +936,31 @@
             }
         });
 
-        function getFormattedDate(inputDate) {
-             ;
-            var dateParts = inputDate.split("/");
-            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        function getFormattedDateOnly(inputDateTime) {
+            debugger
+            if (!inputDateTime) {
+                console.error("Invalid or undefined inputDateTime:", inputDateTime);
+                return "";
+            }
 
-            // Extract the date components
-            var day = parseInt(dateParts[0], 10);
-            var monthIndex = monthNames.indexOf(dateParts[1]);
-            var year = parseInt(dateParts[2], 10);
+            try {
+                var [datePart] = inputDateTime.split(/\s+/); // Get only the date part
+                var [day, month, year] = datePart.split("/").map(Number);
 
-            // Create a new Date object using the extracted components
-            var date = new Date(year, monthIndex, day);
+                // Handle 2-digit year
+                year += (year < 100) ? 2000 : 0;
 
-            // Format the date as "dd/MM/yyyy"
-            var formattedDate = ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear();
-
-            return formattedDate;
-            console.log(formattedDate);
+                return (
+                    ("0" + day).slice(-2) + "/" +
+                    ("0" + month).slice(-2) + "/" +
+                    year
+                );
+            } catch (err) {
+                console.error("Error while extracting date:", err, inputDateTime);
+                return "";
+            }
         }
+
         $('#AltQty').keyup(function () {
             var qty = parseFloat($(this).val());
 
@@ -1139,14 +1132,14 @@
         }
 
         $('#ReqDate').change(function () {
-             
+
             var reqDate = $(this).datepicker('getDate');
             $('#ExpectedDate').datepicker('option', 'minDate', reqDate);
             $('#ExpectedDate').val($('#ReqDate').val());
-           // $('#ExpectedDate').datepicker("option", "mindate", $('#ReqDate').val());
+            // $('#ExpectedDate').datepicker("option", "mindate", $('#ReqDate').val());
         });
 
-       
+
 
 
         function fillWO() {
@@ -1203,20 +1196,16 @@
                 type: "POST",
                 url: "@Url.Action("FillWorkCenter")",
                 dataType: "json",
-                success: function (result, status, error) 
-                {
-                     
-                    if (result != null) 
-                    {
-                        
+                success: function (result, status, error) {
+
+                    if (result != null) {
+
                         var obj = $.parseJSON(result);
 
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') 
-                        {
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#WorkCenterId').empty();
                             // $('#WorkCenterId').append('<option disabled selected>-Select-</option>');
-                            $.each(obj.Result.Table, function (index, val) 
-                            {
+                            $.each(obj.Result.Table, function (index, val) {
                                 if ($('#hiddenWorkCenter').val() == val.EntryID) {
                                     $('#WorkCenterId').append('<option value="' + val.EntryID +
                                         '" selected>' + val.WorkCenterDescription + '</option>');
@@ -1229,8 +1218,7 @@
                         }
                     }
                 },
-                error: function (xhr, status, error)
-                {
+                error: function (xhr, status, error) {
                     alert("Error: " + error);
                 }
             });
@@ -1494,7 +1482,7 @@
 
         function PartCodeChange(ID) {
             copyToClipboardForDropdown('#PartCode');
-            alert('unit'+$('#PartCode').find(':selected').data('unit'));
+            alert('unit' + $('#PartCode').find(':selected').data('unit'));
             $('#Unit').val($('#PartCode').find(':selected').data('unit'));
             $('#AltUnit').val($('#PartCode').find(':selected').data('altunit'));
             $('#ItemBinRackNo').val($('#PartCode').find(':selected').data('bin'));

@@ -1359,7 +1359,7 @@
                 $('#AddChildPartbtn').hide();
                 $('#StoreTransferdiv').hide();
                 $('#Rejtransferdiv').hide();
-                GetServerDate();
+                
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
                 /* $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
                 /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -1597,8 +1597,8 @@
                 CheckBreakdownDifference(fromDateStr, toTimeStr);
                 CheckDifference(fromDateStr, toTimeStr);
                 CheckOperatorDifference(fromDateStr, toTimeStr);
+                GetServerDate();
                 CheckProdDate();
-
             }
             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
 
@@ -1872,17 +1872,12 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-
+                    debugger
                     var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 
                     var ActualProdDate = parseDateToFormat($('#ActualProdDate').val().split("-").join("/"));
                     $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualProdDate);
-
-
-
-                   
-
                     // $('#Isschallandate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", startdate);
                 },
             });
