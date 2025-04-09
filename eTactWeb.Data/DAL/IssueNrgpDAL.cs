@@ -683,7 +683,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@NetAmount", model.NetTotal));
                 SqlParams.Add(new SqlParameter("@Completed", model.Completed));
                 SqlParams.Add(new SqlParameter("@FullyReturned", model.FullyReturned));
-                SqlParams.Add(new SqlParameter("@TotalGSTAmt", model.TotalGSTAmt));
+                SqlParams.Add(new SqlParameter("@TotalGSTAmt", model.TotalAmount));
                  SqlParams.Add(new SqlParameter("@FromDepartId", model.FromDepartId));
                 SqlParams.Add(new SqlParameter("@VehicleNo", model.VehicleNo));
                 SqlParams.Add(new SqlParameter("@Remark", model.Remark));
