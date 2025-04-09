@@ -1004,6 +1004,7 @@
                 $("#AccountCode").find("option[value='" + desiredValue + "']").prop("selected", true).trigger("change");
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val().split(" ")[0]));
                 //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]));
+              debugger
                 $('#RGPNRGP').val($('#hiddenRGPNRGP').val());
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                  var ChallanDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
@@ -1025,6 +1026,7 @@
                 }
 
                 fillAccount();
+                        TotalNetAmount();
 
             }
             else

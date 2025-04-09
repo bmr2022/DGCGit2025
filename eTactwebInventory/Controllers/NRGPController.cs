@@ -308,7 +308,7 @@ namespace eTactWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-       // [Route("{controller}/Index")]
+        [Route("{controller}/Index")]
         public async Task<IActionResult> IssueNRGP(IssueNRGPModel model)
         {
             try
@@ -856,7 +856,7 @@ namespace eTactWeb.Controllers
                     Item.YearCode,
                     Item.PONO ?? "",
                     Item.POYearCode,
-                    Item.PODate ?? "",
+                    Item.PODate == null ? string.Empty : ParseFormattedDate(Item.PODate.Split(" ")[0]),
                     Item.POAmendementNo,
                     Item.SEQNo,
                     Item.ItemCode,
