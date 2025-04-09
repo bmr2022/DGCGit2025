@@ -1869,19 +1869,16 @@
         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate")",
+                url: "@Url.Action("GetServerDate", "SaleOrder")",
                 async: false,
                 success: function (result, status, error) {
-                    debugger
-                    var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
-                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-
-                    var ActualProdDate = parseDateToFormat($('#ActualProdDate').val().split("-").join("/"));
-                    $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualProdDate);
-                    // $('#Isschallandate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", startdate);
-                },
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                }
             });
         }
+
+        
 
         function getFormattedDate() {
             var today = new Date();
