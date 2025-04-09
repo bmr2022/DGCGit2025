@@ -965,7 +965,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Dispatchto", model.DispatchTo ?? ""));
                 SqlParams.Add(new SqlParameter("@UId", model.UID));
                 SqlParams.Add(new SqlParameter("@NetAmount", model.NetTotal));
-                SqlParams.Add(new SqlParameter("@TotalAmount", model.TolApprVal));
+                SqlParams.Add(new SqlParameter("@TotalAmount", model.TotalAmtAftrDiscount));
+                SqlParams.Add(new SqlParameter("@TotalGstAmt",model.TotalAmtAftrDiscount));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.Today));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.CreatedBy));
