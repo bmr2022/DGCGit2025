@@ -24,11 +24,12 @@ namespace eTactWeb.Controllers
 {
     public class JobWorkIssueController : Controller
     {
+        private readonly IConfiguration _iconfiguration;
         private readonly IDataLogic _IDataLogic;
         private readonly IJobWorkIssue _IJobWorkIssue;
         private readonly ILogger<JobWorkIssueController> _logger;
         private readonly IMemoryCache _MemoryCache;
-        private readonly IConfiguration _iconfiguration;
+ 
         private readonly IIssueWithoutBom _IIssueWOBOM;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
@@ -73,23 +74,31 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
             }
+            //webReport.Report.SetParameterValue("entryparam", EntryId);
+            //webReport.Report.SetParameterValue("yearparam", YearCode);      
+            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            //webReport.Report.Prepare();
+            //foreach (var dataSource in webReport.Report.Dictionary.DataSources)
+            //{
+            //    if (dataSource is TableDataSource tableDataSource)
+            //    {
+            //        tableDataSource.Enabled = true;
+            //        tableDataSource.Init(); // Refresh the data source
+            //    }
+            //}
+            //return View(webReport);
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
-    
-         
-            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            webReport.Report.Prepare();
-            foreach (var dataSource in webReport.Report.Dictionary.DataSources)
-            {
-                if (dataSource is TableDataSource tableDataSource)
-                {
-                    tableDataSource.Enabled = true;
-                    tableDataSource.Init(); // Refresh the data source
-                }
-            }
+            webReport.Report.Refresh();
             return View(webReport);
+
+
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
         {
