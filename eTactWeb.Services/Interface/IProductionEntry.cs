@@ -36,6 +36,7 @@ public interface IProductionEntry
     Task<ResponseResult> GetItems(string ProdAgainst, int YearCode);
     Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode);
     Task<ResponseResult> FillMachineName();
+    Task<ProductionEntryModel> FillScrapData(int FGItemCode, decimal FgProdQty, string BomNo);
     Task<ResponseResult> FillSuperwiser();
     Task<ResponseResult> FillOperator();
     Task<ResponseResult> FillOperatorName();

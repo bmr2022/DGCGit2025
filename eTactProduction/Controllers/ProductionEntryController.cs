@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Globalization;
 using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Controllers
 {
@@ -393,7 +394,6 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType)
         {
-            //model.Mode = "Search";
             var model = new ProductionEntryDashboard();
             model = await _IProductionEntry.GetDashboardDetailData(FromDate, ToDate, SlipNo, ItemName, PartCode, ProdPlanNo, ProdSchNo, ReqNo, DashboardType);
             model.DashboardType = "Detail";
@@ -834,6 +834,27 @@ namespace eTactWeb.Controllers
             var JSON = await _IProductionEntry.FillTool();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        public async Task<IActionResult> FillScrapData(int FGItemCode, decimal FgProdQty, string BomNo)
+        {
+            var model = new ProductionEntryModel();
+            try
+            {
+                var response = await _IProductionEntry.FillScrapData(FGItemCode, FgProdQty, BomNo);
+                model.ScrapDetailGrid = response.ScrapDetailGrid;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            _MemoryCache.Set("KeyProductionEntryScrapdetail", model.ScrapDetailGrid, cacheEntryOptions);
+            return PartialView("_ProductionEntryScrapDetail", model);
         }
         public async Task<JsonResult> FillShiftTime(int ShiftId)
         {
