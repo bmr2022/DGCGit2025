@@ -806,6 +806,7 @@ namespace eTactWeb.Data.DAL
                         ReqQty = Convert.ToDecimal(row["ReqQty"]),
                         AltReqQty = Convert.ToDecimal(row["AltReqQty"]),
                         StoreId = Convert.ToInt32(row["StoreId"]),
+                        WCId = Convert.ToInt32(row["wcid"]),
                         StoreName = row["StoreName"].ToString(),
                         BatchNo = row["BatchNo"].ToString(),
                         uniqueBatchNo = row["uniqueBatchNo"].ToString(),

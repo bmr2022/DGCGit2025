@@ -847,6 +847,13 @@ namespace eTactWeb.Controllers
             {
                 throw ex;
             }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            _MemoryCache.Set("KeyProductionEntryScrapdetail", model.ScrapDetailGrid, cacheEntryOptions);
             return PartialView("_ProductionEntryScrapDetail", model);
         }
         public async Task<JsonResult> FillShiftTime(int ShiftId)
