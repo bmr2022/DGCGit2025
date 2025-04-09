@@ -508,7 +508,7 @@ namespace eTactWeb.Data.DAL
                         TxRemark = row["Remarks"].ToString()
                     });
                 }
-                model.TaxDetailGrid.TaxDetailGridd = TaxList;
+                model.TaxDetailGridd = TaxList;
             }
 
             return model;

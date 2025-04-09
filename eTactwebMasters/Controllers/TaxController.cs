@@ -1238,7 +1238,7 @@ public class TaxController : Controller
                         {
                             if (item.ItemCode == ToInt32(PC))
                             {
-                                Amt += item.Amount;
+                                Amt += item.IssQty*item.PurchasePrice;
                             }
                         }
                         else

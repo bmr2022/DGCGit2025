@@ -361,7 +361,7 @@
                                                     </td>
                                                     <td><input asp-for="StockQty" style="width:50px !important" readonly /></td>
                                                     <td><input asp-for="BatchStockQty" style="width:50px !important" readonly /></td>
-                                                    <td><input asp-for="PurchasePrice" class="form-control" style="width:70px !important" readonly /></td>
+                                                    <td><input asp-for="PurchasePrice" class="form-control" style="width:70px !important"  /></td>
 
                                                     <td><input asp-for="IssQty" style="width:50px; !important" class="form-control" /></td>
                                                     <td><input asp-for="Unit" class="form-control" style="width:50px !important" readonly /></td>
@@ -571,6 +571,7 @@
                             <div class="row g-2 gx-3">
                                 <div class="col-12 text-center">
                                     <input asp-for="CreatedBy" type="hidden" class="form-control" readonly />
+                                    <input id="ItemNetAmount" type="hidden" class="form-control" readonly />
                                     <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount" asp-for="TotalAmount"></span></strong>
                                     <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
                                 </div>
@@ -1052,14 +1053,29 @@
                 sum += parseFloat($('#GridAmount-' + i).text());
             }
             $('#lblItemNetAmount').text(sum.toFixed(2));
+            $('#ItemNetAmount').val(sum);
+            $('#AmtAftrDiscount').val(sum.toFixed(2));
 
             var rowCountTax = $('#divTaxGrid tr').length;
             var sumTax = 0;
-            for (var i = 1; i <= rowCountTax; i++) {
 
-                sumTax = parseFloat($('#txGridAmount-' + i).text()) + parseFloat($('#lblItemNetAmount').text());
+            // Get the item net amount safely
+            var itemNetText = $('#lblItemNetAmount').text().trim();
+            var itemnetamount = parseFloat(itemNetText) || 0;
+
+            for (var i = 1; i <= rowCountTax; i++) {
+                var taxText = $('#txGridAmount-' + i).text().trim();
+                var taxAmount = parseFloat(taxText);
+
+                if (!isNaN(taxAmount)) {
+                    sumTax += taxAmount;
+                }
             }
-            $('#NetTotall').val(sumTax);
+
+            // Calculate and set the final total
+            var netTotal = sumTax + itemnetamount;
+            $('#NetTotal').val(netTotal.toFixed(2));
+
 
 
 
@@ -2076,7 +2092,7 @@
         });
 
         function GetItemRate() {
-
+            debugger
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetItemRate")",
@@ -2198,6 +2214,7 @@
                         }
                         GetBatchStockQty();
                         GetStockQty();
+                        GetItemRate();
                     }
                 },
                 error: function (req, status, error) {
@@ -2369,6 +2386,7 @@
                     }
                     $('#TolApprVal').val(TotApproxVal.toFixed(2));
                     $('#lblItemNetAmount').text(sum.toFixed(2));
+                    $('#ItemNetAmount').val(sum.toFixed(2));
                     var rowCountTax = $('#divTaxGrid tr').length;
                     var sumTax = 0;
 
