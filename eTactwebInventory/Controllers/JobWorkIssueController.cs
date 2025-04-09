@@ -173,6 +173,8 @@ namespace eTactWeb.Controllers
 
             _MemoryCache.Set("KeyJobWorkIssue", MainModel, cacheEntryOptions);
             _MemoryCache.Set("JobWorkIssue", MainModel, cacheEntryOptions);
+            _MemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd, cacheEntryOptions);
+            
             HttpContext.Session.SetString("JobWorkIssue", JsonConvert.SerializeObject(MainModel));
             return View(MainModel);
         }
@@ -215,11 +217,14 @@ namespace eTactWeb.Controllers
                 else
                     JWGrid = GetDetailTable(JobWorkGridDetail, "");
                 var Result = new ResponseResult();
+                
                 if (TaxGrid != null)
                 {
                     TaxDetailDT = GetTaxDetailTable(TaxGrid);
-                    Result = await _IJobWorkIssue.SaveJobWorkIssue(model, JWGrid, TaxDetailDT);
+
+                    
                 }
+                Result = await _IJobWorkIssue.SaveJobWorkIssue(model, JWGrid, TaxDetailDT);
                 if (Result != null)
                 {
                     if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
@@ -337,7 +342,7 @@ namespace eTactWeb.Controllers
                 MainModel.ChallanDate = ParseDate(MainModel.ChallanDate).ToString();
                 //_MemoryCache.Set("KeyJobWorkIssue", MainModel.JobDetailGrid, cacheEntryOptions);
                 _MemoryCache.Set("KeyJobWorkIssueEdit", MainModel.JobDetailGrid, cacheEntryOptions);
-                _MemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGrid.TaxDetailGridd, cacheEntryOptions);
+                _MemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd, cacheEntryOptions);
             }
             else
             {

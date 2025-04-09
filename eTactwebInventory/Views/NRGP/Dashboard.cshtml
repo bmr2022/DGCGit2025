@@ -402,6 +402,7 @@
         //}
 
         function BackButtonData(event, ChallanNo, YearCode) {
+            debugger
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
@@ -595,14 +596,14 @@
 
         function CheckGateEntryExists(event, ID, YC) {
             event.preventDefault();
-
+            debugger
             $.ajax({
                 url: "@Url.Action("CheckGateEntry")",
                 method: 'POST',
                 data: { "ID": ID, "Mode": "U", "YC": YC },
                 dataType: 'json',
                 success: function (data) {
-
+                    debugger
                     var obj = $.parseJSON(data);
                     if (obj.Result[0].Result == "GateEntryNo") {
                         $.notify(obj.Result[0].StatusText, "error");
