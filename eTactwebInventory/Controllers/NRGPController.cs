@@ -50,8 +50,8 @@ namespace eTactWeb.Controllers
             _iconfiguration = configuration; 
         }
 
-        // [Route("{controller}/Index")]
-        [HttpGet]
+        [Route("{controller}/Index")]
+        //[HttpGet]
         public async Task<ActionResult> IssueNRGP(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "",string RGPNRGP="", string PartCode = "", string ItemName = "", string ChallanNo = "", string ChallanType = "", string DashboardType = "")
         {
             var model = new IssueNRGPModel();

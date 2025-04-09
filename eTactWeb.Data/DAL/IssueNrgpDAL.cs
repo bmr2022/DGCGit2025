@@ -422,8 +422,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@RGPNRGP", model.RGPNRGP));
                 SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
                 SqlParams.Add(new SqlParameter("@PartCode", model.PartCode));
-                SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(model.FromDate)));
-                SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(model.ToDate)));
+                SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate((model.FromDate).Split(" ")[0])));
+                SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate((model.ToDate).Split(" ")[0])));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueNRGP", SqlParams);
             }
             catch (Exception ex)
