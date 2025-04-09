@@ -21,6 +21,7 @@ namespace eTactWeb.DOM.Models
         public string? WorkCenter {  get; set; }
         public string? MachineName {  get; set; }
         public string? OperatorName {  get; set; }
+        public int? ProcessId {  get; set; }
         public string? Process {  get; set; }
         public string? ReportType { get; set; }
         public IList<ProductionEntryReportDetail>? ProductionEntryReportDetail { get; set; }
@@ -58,7 +59,7 @@ namespace eTactWeb.DOM.Models
         public string? BOMDate { get; set; }
         public string? TransferToWCSTr { get; set; }
 
-        
+        public int? ProcessId { get; set; }
         public string? TransferToWCStr { get; set; }
 
         public string? MachineName { get; set; }

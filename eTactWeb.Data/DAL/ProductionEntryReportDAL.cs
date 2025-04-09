@@ -295,6 +295,9 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ProdSchNo", ProdSchNo);
                     oCmd.Parameters.AddWithValue("@ReqNo", ReqNo);
                     oCmd.Parameters.AddWithValue("@WorkcenterName", WorkCenter);
+                    oCmd.Parameters.AddWithValue("@ProcessId", Process);
+                    oCmd.Parameters.AddWithValue("@Operator", OperatorName);
+                    oCmd.Parameters.AddWithValue("@machineName", MachineName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
