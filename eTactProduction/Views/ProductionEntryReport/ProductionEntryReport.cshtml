@@ -56,9 +56,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px;">
                                     <label asp-for="FGPartCode" class="form-label">FG PartCode</label>
-                                    <select asp-for="FGPartCode" class="form-select"></select>
+                                    <select asp-for="FGPartCode" class="form-select FGPartCode"></select>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
                                     <label asp-for="FGItemName" class="form-label">FG ItemName</label>
@@ -102,33 +102,33 @@
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
                                     <label asp-for="Process" class="form-label">Process</label>
+                                    <input type="hidden" asp-for="ProcessId" value="@Model.ProcessId" />
                                     <select asp-for="Process" class="form-select"></select>
                                 </div>
-                                <div class="row">
+                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
+                                    <label asp-for="ReportType" class="form-label" style="width:150px">ReportType</label>
+                                    <select asp-for="ReportType" class="form-select" onchange="GetProductionReport()" style="width:200px">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="DETAIL">Detail</option>
+                                        <option value="Date Wise FG Consolidated">Date Wise FG Consolidated</option>
+                                        <option value="Machine Wise FG Production SUmmary">Machine Wise FG Production Summary</option>
+                                        <option value="RM Wise Consumption Summary">RM Wise Consumption Summary</option>
+                                        <option value="RM Wise Consumption Detail">RM Wise Consumption Detail</option>
+                                        <option value="RM Total Consumption">RM Total Consumption</option>
+                                        <option value="BreakDown Detail">BreakDown Detail</option>
+                                        <option value="Machine Wise BreakDown Summary">Machine Wise BreakDown Summary</option>
+                                        <option value="Operator Detail Report">Operator Detail Report</option>
+                                        <option value="Operator Summary Report">Operator Summary Report</option>
+                                        <option value="Production QC Deatil">Production QC Detail</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
+                                    <label class="form-label">Global search</label>
+                                    <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
+                                </div>
+                                <div class="row" style="margin-top:10px;">
                                     <div class="col d-flex align-items-center">
-                                        <div class="me-2">
-                                            <label asp-for="ReportType" class="form-label">Report Type</label>
-                                            <div>
-                                                <select asp-for="ReportType" class="form-select" onchange="GetProductionReport()">
-                                                    <option disabled value="">-Select-</option>
-                                                    <option selected value="DETAIL">Detail</option>
-                                                    <option value="Date Wise FG Consolidated">Date Wise FG Consolidated</option>
-                                                    <option value="Machine Wise FG Production SUmmary">Machine Wise FG Production Summary</option>
-                                                    <option value="RM Wise Consumption Summary">RM Wise Consumption Summary</option>
-                                                    <option value="RM Wise Consumption Detail">RM Wise Consumption Detail</option>
-                                                    <option value="RM Total Consumption">RM Total Consumption</option>
-                                                    <option value="BreakDown Detail">BreakDown Detail</option>
-                                                    <option value="Machine Wise BreakDown Summary">Machine Wise BreakDown Summary</option>
-                                                    <option value="Operator Detail Report">Operator Detail Report</option>
-                                                    <option value="Operator Summary Report">Operator Summary Report</option>
-                                                    <option value="Production QC Deatil">Production QC Detail</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="me-2">
-                                            <label class="form-label">Global search</label>
-                                            <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
-                                        </div>
+                                      
                                         <button class="btn btn-sm btn-outline-info me-2" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetProductionReport();">
                                             <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                         </button>
@@ -147,7 +147,7 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="H_SAGrid">
                                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                                        <strong id="reportHeading" style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                                     </button>
                                 </h2>
                                 <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
@@ -199,19 +199,30 @@
     <script>
         $(document).ready(function () {
             GetServerDate();
-            FillFGPartCode();
-            FillFGItemName();
-            FillRMPartCode();
-            FillRMItemName();
-            FillProdSlipNo();
-            FillProdPlanNo();
-            FillProdSchNo();
-            FillReqNo();
-            FillWorkCenter();
-            FillMachinName();
-            FillOperatorName();
-            FillProcess();
-            GetProductionReport();
+            // FillFGPartCode();
+            // FillFGItemName();
+            // FillRMPartCode();
+            // FillRMItemName();
+            // FillProdSlipNo();
+            // FillProdPlanNo();
+            // FillProdSchNo();
+            // FillReqNo();
+            // FillWorkCenter();
+            // FillMachinName();
+            // FillOperatorName();
+            // FillProcess();
+            //GetProductionReport();
+            $('#ReportType').on('select2:open', function () {
+                setTimeout(function () {
+                    $('.select2-results__option').each(function (index) {
+                        if ((index + 1) % 2 === 1) {
+                            $(this).addClass('light-green');
+                        } else {
+                            $(this).addClass('light-blue');
+                        }
+                    });
+                }, 0);
+            });
             $('#FGPartCode').select2();
             $('#FGItemName').select2();
             $('#RMPartCode').select2();
@@ -226,7 +237,7 @@
             $('#Process').select2();
             $('#ReportType').select2();
         });
-
+        GetProductionReportName();
         $('#FromDate').change(function(){
             FillFGPartCode();
             FillFGItemName();
@@ -294,6 +305,62 @@
                 $('#rejqtyDiv').show();
                 $('#rmconsqty').hide();
             }
+        }
+        $('#ReportType').on('change', function () {
+            GetProductionReportName();
+        });
+        function GetProductionReportName() {
+            debugger
+            const reportType = document.querySelector('[name="ReportType"]').value;
+            const headingElement = document.getElementById("reportHeading");
+
+            let headingText = '';
+
+            switch (reportType) {
+                case "DETAIL":
+                    headingText = "DETAIL GRID";
+                    break;
+                case "Date Wise FG Consolidated":
+                    headingText = "DATE WISE FG CONSOLIDATED";
+                    break;
+                case "Machine Wise FG Production SUmmary":
+                    headingText = "MACHINE WISE FG PRODUCTION SUMMARY";
+                    break;
+                case "RM Wise Consumption Summary":
+                    headingText = "RM WISE CONSUMPTION SUMMARY";
+                    break;
+                case "RM Wise Consumption Detail":
+                    headingText = "RM WISE CONSUMPTION DETAIL";
+                    break;
+                case "RM Total Consumption":
+                    headingText = "RM TOTAL CONSUMPTION";
+                    break;
+                case "BreakDown Detail":
+                    headingText = "BREAKDOWN DETAIL";
+                    break;
+                case "Machine Wise BreakDown Summary":
+                    headingText = "MACHINE WISE BREAKDOWN SUMMARY";
+                    break;
+                case "Operator Detail Report":
+                    headingText = "OPERATOR DETAIL REPORT";
+                    break;
+                case "Operator Summary Report":
+                    headingText = "OPERATOR SUMMARY REPORT";
+                    break;
+                case "Production QC Deatil":
+                    headingText = "PRODUCTION QC DETAIL";
+                    break;
+                default:
+                    headingText = "ITEM DETAIL GRID";
+                    break;
+            }
+
+            headingElement.innerHTML = `
+                    <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>
+                    ${headingText}
+                `;
+
+            
         }
 
         function GetProductionReport() {
@@ -761,7 +828,7 @@
                             $('#Process').empty();
                             $('#Process').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#Process').append('<option value="' + val.Process +
+                                $('#Process').append('<option value="' + val.processid +
                                     '">' + val.Process + '</option>');
                             });
                         }
@@ -791,5 +858,65 @@
         font-size: 15px;
         vertical-align: super;
     }
+
+  /*   #FGPartCode + .select2-container--default .select2-selection--single {
+        background-color: #e0ffe0 !important;
+    }
+ */
+    #FGPartCode + .select2 .select2-selection {
+        background-color: #e0ffe0 !important; 
+    }
+
+
+    #select2-FGPartCode-results {
+        background-color: #e0ffe0 !important; 
+    }
+
+    #FGItemName + .select2 .select2-selection {
+        background-color: #e0ffe0 !important; 
+    }
+
+
+    #select2-FGItemName-results {
+        background-color: #e0ffe0 !important; 
+    }
+
+    #RMPartCode + .select2 .select2-selection {
+        background-color: #ffe6e6 !important;
+    }
+
+
+    #select2-RMPartCode-results {
+        background-color: #ffe6e6 !important;
+    }
+
+    #RMItemName + .select2 .select2-selection {
+        background-color: #ffe6e6 !important;
+    }
+
+
+    #select2-RMItemName-results {
+        background-color: #ffe6e6 !important;
+    }
+
+    #WorkCenter + .select2 .select2-selection {
+        background-color: #eeccff !important;
+    }
+
+
+    #select2-WorkCenter-results {
+        background-color: #eeccff !important;
+    }
+
+    .select2-results__option.light-green {
+      
+        color: black;
+    }
+
+
+    .select2-results__option.light-blue {
+        color: rgb(102, 0, 51);
+    }
+   
 
 </style>

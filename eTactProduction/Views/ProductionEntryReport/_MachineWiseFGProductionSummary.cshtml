@@ -46,7 +46,7 @@
                             <td>@item.FGPartCode</td>
                             <td>@item.FGItemName</td>
                             <td>@item.Workcenter</td>
-                            <td>@item.StageDescription</td>
+                            <td>@item.StageDescription<input type="hidden"asp-for="ProcessId" value="@item.ProcessId" /></td>
                             <td id="ProdQty-@Cntr">@item.FGProdQty</td>
                             <td id="OkQty-@Cntr">@item.FGOKQty</td>
                             <td id="RejQty-@Cntr">@item.FGRejQty</td>

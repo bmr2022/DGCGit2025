@@ -418,13 +418,13 @@
 
         }
         function GetConsumptionDetailsData() {
-               
+               debugger
             var reportType = $('#ReportType').val(); 
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
-            var FGPartCode = $('#FGPartCode').val();
+            var FGItemCode = $('#FGPartCode').val();
             //var FGItemName = $('#FGItemName').val();
-            var RMPartCode = $('#RMPartCode').val();
+            var RMItemCode = $('#RMPartCode').val();
             var Yearcode = $('#YearCode').val();
             var Storeid = $('#StoreName').val();
             var WorkCenterid = $('#WorkCenterName').val();
@@ -440,9 +440,9 @@
                     ReportType: reportType,
                     FromDate: fromDate,
                     ToDate: toDate,
-                    FGPartCode:FGPartCode,
+                    FGItemCode: FGItemCode,
                     //FGItemName: FGItemName,
-                    RMPartCode: RMPartCode,
+                    RMItemCode: RMItemCode,
                     WorkCenterid: WorkCenterid,
                     Storeid: Storeid
                     //RMItemName:RMItemName
