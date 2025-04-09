@@ -696,6 +696,54 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
+    public async Task<ProductionEntryModel> FillScrapData(int FGItemCode,decimal FgProdQty,string BomNo)
+    {
+        DataSet? oDataSet = new DataSet();
+        var model = new ProductionEntryModel();
+        try
+        {
+            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+            {
+                SqlCommand oCmd = new SqlCommand("SP_ProductionEntry", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                oCmd.Parameters.AddWithValue("@Flag", "FillScrapData");
+                oCmd.Parameters.AddWithValue("@FGItemCode", FGItemCode);
+                oCmd.Parameters.AddWithValue("@FGProdQty", FgProdQty);
+                oCmd.Parameters.AddWithValue("@Bomno", BomNo);
+                await myConnection.OpenAsync();
+                using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                {
+                    oDataAdapter.Fill(oDataSet);
+                }
+            }
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                model.ScrapDetailGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                  select new ProductionEntryItemDetail
+                                                  {
+                                                      ScrapItemCode = string.IsNullOrEmpty(dr["ScrapItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ScrapItemCode"].ToString()),
+                                                      ScrapPartCode = dr["ScrapPartCode"].ToString() ?? "",
+                                                      ScrapItemName = dr["ScrapItemName"].ToString() ?? "",
+                                                      ScrapQty = string.IsNullOrEmpty(dr["ProdNetWt"].ToString()) ? 0 : Convert.ToDecimal(dr["ProdNetWt"].ToString()),
+                                                      Scrapunit = dr["ScrapUnit"].ToString() ?? "",
+                                                      ScrapType = dr["ScrapType"].ToString() ?? "",
+                                                      TransferToWCStore = dr["ScrapStore"].ToString() ?? "",
+                                                      StoreTransferScrap = dr["StoreTransferScrap"].ToString() ?? "",
+                                                      TransferToStoreId = string.IsNullOrEmpty(dr["Storeid"].ToString()) ? 0 : Convert.ToInt32(dr["Storeid"].ToString()),
+                                                  }).OrderBy(x => x.SeqNo).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return model;
+    }
     public async Task<ResponseResult> GetLastProddate(int YearCode)
     {
         var _ResponseResult = new ResponseResult();

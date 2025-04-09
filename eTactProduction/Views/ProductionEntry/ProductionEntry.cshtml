@@ -1323,12 +1323,6 @@
             FillTool();
             FillShiftTime();
             CheckAutoOrManual();
-/*             if ($('#StoreTransfer').val() == "S") {
-                FillStore();
-            }
-            else {
-                FillTransferWorkCenter();
-            } */
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
 
                 fillEntryandGate();
@@ -1930,6 +1924,10 @@
             }
         })
 
+        $('#BOMNo').change(function () {
+            FillScrapData();
+        })
+
         function fillEntryandGate() {
 
             $.ajax({
@@ -2128,18 +2126,19 @@
             });
         }
 
-        $('#Fromtime').change(function () {
-
-        })
-        $('#ToTime').change(function () {
-
-        })
-        $('#BreakfromTime').change(function () {
-
-        })
-        $('#BreaktoTime').change(function () {
-
-        })
+        function FillScrapData() {
+            debugger
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillScrapData")",
+                data: { "FGItemCode": parseInt($('#FGItemCode').val()), "FgProdQty" : parseFloat($('#ProdQty').val()), "BomNo" : $('#BOMNo').val() },
+                async: false,
+                success: function (data) {
+                    debugger
+                    $('#divScrapDetailGrid').empty().append(data);
+                }
+            });
+        }
 
         function FillSuperwiser() {
 
@@ -2269,6 +2268,7 @@
         $('#ProdQty').change(function () {
             $('#divProductionEntryGrid').empty();
             $('#divAddProductionEntryGrid').empty();
+            FillScrapData();
         });
         $('#WorkCenter').change(function () {
             $('#divProductionEntryGrid').empty();
@@ -3831,6 +3831,7 @@
             $('#ProdPlan').val('');
             $('#ProdPlanYear').val(0);
             $('#ProdPlanDate').val(0);
+            FillScrapData();
         });
 
         function GetItemNameForPendingProduction() {

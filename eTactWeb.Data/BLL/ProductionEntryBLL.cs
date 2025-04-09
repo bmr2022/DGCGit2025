@@ -142,6 +142,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.GetUnit(RmItemCode);
         }
+        public async Task<ProductionEntryModel> FillScrapData(int FGItemCode, decimal FgProdQty, string BomNo)
+        {
+            return await _ProductionEntryDAL.FillScrapData(FGItemCode,FgProdQty,BomNo);
+        }
         public async Task<ResponseResult> GetScrapUnit(int ScrapItemCode)
         {
             return await _ProductionEntryDAL.GetScrapUnit(ScrapItemCode);
