@@ -21,15 +21,13 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly ITransferFromWorkCenter _ITransferFromWorkCenter;
         private readonly ILogger<TransferFromWorkCenterController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
-        public TransferFromWorkCenterController(ILogger<TransferFromWorkCenterController> logger, IDataLogic iDataLogic, ITransferFromWorkCenter ITransferFromWorkCenter, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public TransferFromWorkCenterController(ILogger<TransferFromWorkCenterController> logger, IDataLogic iDataLogic, ITransferFromWorkCenter ITransferFromWorkCenter, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ITransferFromWorkCenter = ITransferFromWorkCenter;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -38,7 +36,7 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Transfer From WorkCenter Detail";
             TempData.Clear();
-            _MemoryCache.Remove("KeyTransferFromWorkCenterGrid");
+            HttpContext.Session.Remove("KeyTransferFromWorkCenterGrid");
             var MainModel = new TransferFromWorkCenterModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
@@ -48,14 +46,6 @@ namespace eTactWeb.Controllers
             MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
             string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
             HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", serializedGrid);
-            //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            //{
-            //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-            //    SlidingExpiration = TimeSpan.FromMinutes(55),
-            //    Size = 1024,
-            //};
-
-            //_MemoryCache.Set("KeyTransferFromWorkCenterGrid", MainModel, cacheEntryOptions);
             return View(serializedGrid);
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
@@ -99,7 +89,7 @@ namespace eTactWeb.Controllers
             MainModel.TransferMatYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            _MemoryCache.Remove("KeyTransferFromWorkCenterGrid");
+            HttpContext.Session.Remove("KeyTransferFromWorkCenterGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _ITransferFromWorkCenter.GetViewByID(ID, YC).ConfigureAwait(false);
@@ -107,13 +97,6 @@ namespace eTactWeb.Controllers
                 MainModel.ID = ID;
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                 HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", serializedGrid);
-                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                //{
-                //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                //    SlidingExpiration = TimeSpan.FromMinutes(55),
-                //    Size = 1024,
-                //};
-                //_MemoryCache.Set("KeyTransferFromWorkCenterGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
             else
             {

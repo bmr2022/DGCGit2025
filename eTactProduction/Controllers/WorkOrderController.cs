@@ -23,19 +23,15 @@ namespace eTactWeb.Controllers
     public class WorkOrderController : Controller
     {
         private readonly IDataLogic _IDataLogic;
-        //private readonly IGateInward _IGateInward;
         public IWorkOrder _IworkOrder { get; }
-
         private readonly ILogger<WorkOrderController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment IWebHostEnvironment { get; }
 
-        public WorkOrderController(ILogger<WorkOrderController> logger, IDataLogic iDataLogic, IWorkOrder iWorkOrder, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public WorkOrderController(ILogger<WorkOrderController> logger, IDataLogic iDataLogic, IWorkOrder iWorkOrder, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IworkOrder = iWorkOrder;
-            _MemoryCache = iMemoryCache;
             IWebHostEnvironment = iWebHostEnvironment;
         }
 
@@ -51,16 +47,8 @@ namespace eTactWeb.Controllers
             }
             ViewData["Title"] = "WorkOrder Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyWorkOrderGrid");
+            HttpContext.Session.Remove("KeyWorkOrderGrid");
             var MainModel = new RoutingModel();
-
-            // var model = await BindModel(MainModel);
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
 
             if (model.Mode != "U")
             {
@@ -72,7 +60,8 @@ namespace eTactWeb.Controllers
             model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
-            _MemoryCache.Set("KeyWorkOrderGrid", model, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("KeyWorkOrderGrid", serializedGrid);
             return View(model);
         }
 
@@ -93,7 +82,12 @@ namespace eTactWeb.Controllers
             {
                 var WorkOrderDetail = new DataTable();
 
-                _MemoryCache.TryGetValue("KeyWorkOrderGrid", out List<WorkOrderDetail> WODetailGrid);
+                string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
+                List<WorkOrderDetail> WODetailGrid = new List<WorkOrderDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    WODetailGrid = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                }
                 if (WODetailGrid == null)
                 {
                     ModelState.Clear();
@@ -123,13 +117,7 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
                         }
-                        //if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                        //{
-                        //    ViewBag.isSuccess = false;
-                        //    TempData["500"] = "500";
-                        //    _logger.LogError("\n \n ******** LogError ******** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                        //    return View("Error", Result);
-                        //}
+
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             ViewBag.isSuccess = false;
@@ -160,7 +148,12 @@ namespace eTactWeb.Controllers
                             //return View("Error", Result);
                         }
                     }
-                    _MemoryCache.TryGetValue("KeyWorkOrderGrid", out List<WorkOrderDetail> WODetail);
+                    string woData = HttpContext.Session.GetString("KeyWorkOrderGrid");
+                    List<WorkOrderDetail> WODetail = new List<WorkOrderDetail>();
+                    if (!string.IsNullOrEmpty(woData))
+                    {
+                        WODetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(woData);
+                    }
                     model.WorkDetailGrid = WODetail;
                     ModelState.Clear();
                     return View(model);
@@ -176,7 +169,6 @@ namespace eTactWeb.Controllers
                     StatusText = "Error",
                     Result = ex
                 };
-
 
                 return View("Error", ResponseResult);
             }
@@ -323,7 +315,7 @@ namespace eTactWeb.Controllers
         }
         public IActionResult ClearGrid()
         {
-            _MemoryCache.Remove("KeyWorkOrderGrid");
+            HttpContext.Session.Remove("KeyWorkOrderGrid");
             var MainModel = new WorkOrderModel();
             return PartialView("_WorkOrderGrid", MainModel);
         }
@@ -331,7 +323,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new WorkOrderModel();
-            _MemoryCache.TryGetValue("KeyWorkOrderGrid", out IList<WorkOrderDetail> GridDetail);
+            string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
+            List<WorkOrderDetail> GridDetail = new List<WorkOrderDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                GridDetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+            }
             var WOGrid = GridDetail.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(WOGrid);
             return Json(JsonString);
@@ -346,31 +343,6 @@ namespace eTactWeb.Controllers
 
                 var dt = time.ToString(format);
                 return Json(formattedDate);
-                //string apiUrl = "https://worldtimeapi.org/api/ip";
-
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        string content = await response.Content.ReadAsStringAsync();
-                //        JObject jsonObj = JObject.Parse(content);
-
-                //        string datetimestring = (string)jsonObj["datetime"];
-                //        var formattedDateTime = datetimestring.Split(" ")[0];
-
-                //        DateTime parsedDate = DateTime.ParseExact(formattedDateTime, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                //        string formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //        return Json(formattedDate);
-                //    }
-                //    else
-                //    {
-                //        string errorContent = await response.Content.ReadAsStringAsync();
-                //        throw new HttpRequestException($"Failed to fetch server date and time. Status Code: {response.StatusCode}. Content: {errorContent}");
-                //    }
-                //}
             }
             catch (HttpRequestException ex)
             {
@@ -385,22 +357,6 @@ namespace eTactWeb.Controllers
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
             }
         }
-        //public static DateTime ParseDate(string dateString)
-        //{
-        //    if (string.IsNullOrEmpty(dateString))
-        //    {
-        //        return default;
-        //    }
-
-        //    if (DateTime.TryParseExact(dateString, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
-        //    {
-        //        return parsedDate;
-        //    }
-        //    else
-        //    {
-        //        return DateTime.Parse(dateString);
-        //    }
-        //}
 
         public static string ParseDate(string dateString)
         {
@@ -428,7 +384,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyWorkOrderGrid");
+                HttpContext.Session.Remove("KeyWorkOrderGrid");
                 var model = new WorkOrderMainDashboard();
                 var FromDt = HttpContext.Session.GetString("FromDate");
                 model.FromDate = Convert.ToDateTime(FromDt).ToString("dd/MM/yyyy");
@@ -458,10 +414,7 @@ namespace eTactWeb.Controllers
                             model.SummaryDetail = SummaryDetail;
                         }
                     }
-                    //model.FromDate = new DateTime(DateTime.Today.Year, 4, 1);
-                    //model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31);
                 }
-              //  model.SummaryDetail = "Summary";
                 return View(model);
             }
             catch (Exception ex)
@@ -603,7 +556,12 @@ namespace eTactWeb.Controllers
                 var seqNo = 0;
                 foreach (var item in model)
                 {
-                    _MemoryCache.TryGetValue("KeyWorkOrderGrid", out IList<WorkOrderDetail> WODetail);
+                    string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
+                    List<WorkOrderDetail> WODetail = new List<WorkOrderDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        WODetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                    }
                     if (item != null)
                     {
                         item.OrderWEF = item.OrderWEF == "" ? string.Empty : ParseDate(item.OrderWEF);
@@ -639,7 +597,8 @@ namespace eTactWeb.Controllers
                         WorkOrderDetails = WorkOrderDetails.Where(x => x != null).ToList();
                         MainModel.WorkDetailGrid = WorkOrderDetails;
 
-                        _MemoryCache.Set("KeyWorkOrderGrid", MainModel.WorkDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.WorkDetailGrid);
+                        HttpContext.Session.SetString("KeyWorkOrderGrid", serializedGrid);
                     }
                 }
                 return PartialView("_WorkOrderGrid", MainModel);
@@ -652,7 +611,13 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo)
         {
             var MainModel = new WorkOrderModel();
-            _MemoryCache.TryGetValue("KeyWorkOrderGrid", out List<WorkOrderDetail> WorkOrderDetail);
+            string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
+            List<WorkOrderDetail> WorkOrderDetail = new List<WorkOrderDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                WorkOrderDetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+            }
+            
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (WorkOrderDetail != null && WorkOrderDetail.Count > 0)
@@ -668,14 +633,8 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.WorkDetailGrid = WorkOrderDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-                _MemoryCache.Set("KeyWorkOrderGrid", MainModel.WorkDetailGrid, cacheEntryOptions);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.WorkDetailGrid);
+                HttpContext.Session.SetString("KeyWorkOrderGrid", serializedGrid);
             }
             return PartialView("_WorkOrderGrid", MainModel);
         }
@@ -737,7 +696,7 @@ namespace eTactWeb.Controllers
             //_logger.LogInformation("\n \n ******** Page Gate Inward ******** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new WorkOrderModel();
-            _MemoryCache.Remove("KeyWorkOrderGrid");
+            HttpContext.Session.Remove("KeyWorkOrderGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IworkOrder.GetViewByID(ID, YC, Mode).ConfigureAwait(false);
@@ -746,13 +705,9 @@ namespace eTactWeb.Controllers
                 MainModel.CC = HttpContext.Session.GetString("Branch");
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyWorkOrderGrid", MainModel.WorkDetailGrid, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.WorkDetailGrid);
+                HttpContext.Session.SetString("KeyWorkOrderGrid", serializedGrid);
             }
             else
             {
@@ -762,6 +717,5 @@ namespace eTactWeb.Controllers
             }
             return View("WorkOrder", MainModel);
         }
-
     }
 }

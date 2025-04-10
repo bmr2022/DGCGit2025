@@ -11,17 +11,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IInventoryAgingReport _IInventoryAgingReport { get; }
-
         private readonly ILogger<InventoryAgingReportController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public InventoryAgingReportController(ILogger<InventoryAgingReportController> logger, IDataLogic iDataLogic, IInventoryAgingReport iInventoryAgingReport, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public InventoryAgingReportController(ILogger<InventoryAgingReportController> logger, IDataLogic iDataLogic, IInventoryAgingReport iInventoryAgingReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IInventoryAgingReport = iInventoryAgingReport;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -71,9 +68,6 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_InventoryAgingReportDetailGrid", model);
             }
-           
-
-
             return null;
         }
     }

@@ -16,14 +16,12 @@ namespace eTactWeb.Controllers
         public ITransferMaterialReport _ITransferMaterialReport { get; set;}
         private readonly ILogger<TransferMaterialReportController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public TransferMaterialReportController(ILogger<TransferMaterialReportController> logger, IDataLogic iDataLogic, ITransferMaterialReport ITransferMaterialReport, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public TransferMaterialReportController(ILogger<TransferMaterialReportController> logger, IDataLogic iDataLogic, ITransferMaterialReport ITransferMaterialReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ITransferMaterialReport = ITransferMaterialReport;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

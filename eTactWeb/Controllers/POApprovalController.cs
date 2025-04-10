@@ -11,14 +11,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IPOApproval _IPOApproval;
         private readonly ILogger<POApprovalController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public POApprovalController(ILogger<POApprovalController> logger, IDataLogic iDataLogic, IPOApproval iPOApproval, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public POApprovalController(ILogger<POApprovalController> logger, IDataLogic iDataLogic, IPOApproval iPOApproval, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IPOApproval = iPOApproval;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
 
@@ -103,7 +101,7 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowPODetail(int ID, int YC, string PONo, string TypeOfApproval)
         {
-            _MemoryCache.Remove("KeyPoApprovalDetail");
+            HttpContext.Session.Remove("KeyPoApprovalDetail");
             var MainModel = new List<POApprovalDetail>();
             MainModel = await _IPOApproval.ShowPODetail(ID, YC, PONo, TypeOfApproval).ConfigureAwait(true);
             //string JsonString = JsonConvert.SerializeObject(JSON);

@@ -11,14 +11,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IPOCancel _IPOCancel;
         private readonly ILogger<POCancelController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public POCancelController(ILogger<POCancelController> logger, IDataLogic iDataLogic, IPOCancel iPOCancel, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public POCancelController(ILogger<POCancelController> logger, IDataLogic iDataLogic, IPOCancel iPOCancel, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IPOCancel = iPOCancel;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
 
@@ -45,10 +43,9 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowPODetail(int ID, int YC, string PONo, string TypeOfCancle)
         {
-            _MemoryCache.Remove("KeyPoCancleDetail");
+            HttpContext.Session.Remove("KeyPoCancleDetail");
             var MainModel = new List<POCancleDetail>();
             MainModel = await _IPOCancel.ShowPODetail(ID, YC, PONo, TypeOfCancle).ConfigureAwait(true);
-            //string JsonString = JsonConvert.SerializeObject(JSON);
             return View(MainModel);
         }
 
@@ -75,7 +72,6 @@ namespace eTactWeb.Controllers
                                 message = dt.Rows[0][1].ToString();
                         }
                     }
-
 
                     var model1 = new POCancelModel();
                     ViewBag.isSuccess = true;

@@ -13,14 +13,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IPartCodePartyWise _IPartCodePartyWise;
         private readonly ILogger<PartCodePartyWiseController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public PartCodePartyWiseController(ILogger<PartCodePartyWiseController> logger, IDataLogic iDataLogic, IPartCodePartyWise iPartCodePartyWise, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public PartCodePartyWiseController(ILogger<PartCodePartyWiseController> logger, IDataLogic iDataLogic, IPartCodePartyWise iPartCodePartyWise, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IPartCodePartyWise = iPartCodePartyWise;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
         [Route("{controller}/Index")]
@@ -28,7 +26,7 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Part Code Party Wise";
             TempData.Clear();
-            _MemoryCache.Remove("KeyPartCodePartyWiseGrid");
+            HttpContext.Session.Remove("KeyPartCodePartyWiseGrid");
             var model = new PartCodePartyWiseModel();
             model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
             model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
@@ -49,19 +47,16 @@ namespace eTactWeb.Controllers
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new PartCodePartyWiseModel();
-            _MemoryCache.Remove("KeyPartCodePartyWiseGrid");
+            HttpContext.Session.Remove("KeyPartCodePartyWiseGrid");
             if (!string.IsNullOrEmpty(Mode) && ItemCode > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IPartCodePartyWise.GetViewByID(ItemCode).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ItemCode = ItemCode;
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyPartCodePartyWiseGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyPartCodePartyWiseGrid", serializedGrid);
             }
             else
             {
@@ -100,8 +95,13 @@ namespace eTactWeb.Controllers
             {
                 var GIGrid = new DataTable();
 
-                _MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out IList<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail);
-
+                string modelJson = HttpContext.Session.GetString("KeyPartCodePartyWiseGrid");
+                List<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail = new List<PartCodePartyWiseItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    PartCodePartyWiseItemDetail = JsonConvert.DeserializeObject<List<PartCodePartyWiseItemDetail>>(modelJson);
+                }
+ 
                 var MainModel = new PartCodePartyWiseModel();
                 var ProductionEntryGrid = new List<PartCodePartyWiseItemDetail>();
                 var ProductionGrid = new List<PartCodePartyWiseItemDetail>();
@@ -133,7 +133,7 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            _MemoryCache.Remove(GIGrid);
+                            HttpContext.Session.Remove("KeyPartCodePartyWiseGrid");
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -239,8 +239,12 @@ namespace eTactWeb.Controllers
             {
                 if (model.Mode == "U")
                 {
-                    _MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out IList<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail);
-
+                    string modelJson = HttpContext.Session.GetString("KeyPartCodePartyWiseGrid");
+                    List<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail = new List<PartCodePartyWiseItemDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        PartCodePartyWiseItemDetail = JsonConvert.DeserializeObject<List<PartCodePartyWiseItemDetail>>(modelJson);
+                    }
                     var MainModel = new PartCodePartyWiseModel();
                     var ProductionEntryGrid = new List<PartCodePartyWiseItemDetail>();
                     var ProductionGrid = new List<PartCodePartyWiseItemDetail>();
@@ -277,7 +281,8 @@ namespace eTactWeb.Controllers
                             Size = 1024,
                         };
 
-                        _MemoryCache.Set("KeyPartCodePartyWiseGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                        HttpContext.Session.SetString("KeyPartCodePartyWiseGrid", serializedGrid);
                     }
                     else
                     {
@@ -288,7 +293,12 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    _MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out IList<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyPartCodePartyWiseGrid");
+                    List<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail = new List<PartCodePartyWiseItemDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        PartCodePartyWiseItemDetail = JsonConvert.DeserializeObject<List<PartCodePartyWiseItemDetail>>(modelJson);
+                    }
 
                     var MainModel = new PartCodePartyWiseModel();
                     var ProductionEntryGrid = new List<PartCodePartyWiseItemDetail>();
@@ -320,14 +330,8 @@ namespace eTactWeb.Controllers
 
                         MainModel.ItemDetailGrid = ProductionGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyPartCodePartyWiseGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                        HttpContext.Session.SetString("KeyPartCodePartyWiseGrid", serializedGrid);
                     }
                     else
                     {
@@ -347,8 +351,12 @@ namespace eTactWeb.Controllers
             var MainModel = new PartCodePartyWiseModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out IList<PartCodePartyWiseItemDetail> ItemDetailGrid);
-
+                string modelJson = HttpContext.Session.GetString("KeyPartCodePartyWiseGrid");
+                List<PartCodePartyWiseItemDetail> ItemDetailGrid = new List<PartCodePartyWiseItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ItemDetailGrid = JsonConvert.DeserializeObject<List<PartCodePartyWiseItemDetail>>(modelJson);
+                }
                 //_MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out List<ItemDetailGrid> ItemDetailGrid);
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
@@ -365,20 +373,19 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = ItemDetailGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyPartCodePartyWiseGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyPartCodePartyWiseGrid", serializedGrid);
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out IList<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail);
-
+                string modelJson = HttpContext.Session.GetString("KeyPartCodePartyWiseGrid");
+                List<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail = new List<PartCodePartyWiseItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    PartCodePartyWiseItemDetail = JsonConvert.DeserializeObject<List<PartCodePartyWiseItemDetail>>(modelJson);
+                }
+  
                 //_MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out List<ItemDetailGrid> ItemDetailGrid);
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
@@ -402,7 +409,8 @@ namespace eTactWeb.Controllers
                         Size = 1024,
                     };
 
-                    _MemoryCache.Set("KeyPartCodePartyWiseGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyPartCodePartyWiseGrid", serializedGrid);
                 }
             }
 
@@ -413,11 +421,19 @@ namespace eTactWeb.Controllers
             IList<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail = new List<PartCodePartyWiseItemDetail>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out PartCodePartyWiseItemDetail);
+                string modelJson = HttpContext.Session.GetString("KeyPartCodePartyWiseGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    PartCodePartyWiseItemDetail = JsonConvert.DeserializeObject<List<PartCodePartyWiseItemDetail>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out PartCodePartyWiseItemDetail);
+                string modelJson = HttpContext.Session.GetString("KeyPartCodePartyWiseGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    PartCodePartyWiseItemDetail = JsonConvert.DeserializeObject<List<PartCodePartyWiseItemDetail>>(modelJson);
+                }
             }
             IEnumerable<PartCodePartyWiseItemDetail> SSGrid = PartCodePartyWiseItemDetail;
             if (PartCodePartyWiseItemDetail != null)
@@ -435,15 +451,12 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> GetListForUpdate(int ItemCode)
         {
-            _MemoryCache.Remove("KeyPartCodePartyWiseGrid");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
+            HttpContext.Session.Remove("KeyPartCodePartyWiseGrid");
             var model = await _IPartCodePartyWise.GetListForUpdate(ItemCode);
-            _MemoryCache.Set("KeyPartCodePartyWiseGrid", model.ItemDetailGrid, cacheEntryOptions);
+
+            string serializedGrid = JsonConvert.SerializeObject(model.ItemDetailGrid);
+            HttpContext.Session.SetString("KeyPartCodePartyWiseGrid", serializedGrid);
+
             if (model.ItemDetailGrid != null && model.ItemDetailGrid.Count > 0)
             {
                 model.Mode="U";
@@ -481,7 +494,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyPartCodePartyWiseGrid");
+                HttpContext.Session.Remove("KeyPartCodePartyWiseGrid");
                 var model = new PartCodePartyWiseDashboard();
                 var Result = await _IPartCodePartyWise.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;

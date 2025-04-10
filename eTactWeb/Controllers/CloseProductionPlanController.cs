@@ -12,17 +12,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public ICloseProductionPlan _ICloseProductionPlan { get; }
-
         private readonly ILogger<CloseProductionPlanController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public CloseProductionPlanController(ILogger<CloseProductionPlanController> logger, IDataLogic iDataLogic, ICloseProductionPlan iCloseProductionPlan, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public CloseProductionPlanController(ILogger<CloseProductionPlanController> logger, IDataLogic iDataLogic, ICloseProductionPlan iCloseProductionPlan, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ICloseProductionPlan = iCloseProductionPlan;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -44,8 +41,7 @@ namespace eTactWeb.Controllers
             MainModel.EntryByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
            
-            _MemoryCache.Remove("CloseProductionPlanGrid");
-
+            HttpContext.Session.Remove("CloseProductionPlanGrid");
             
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {

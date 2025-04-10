@@ -10,14 +10,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly ISOCancel _ISOCancel;
         private readonly ILogger<SOCancelController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public SOCancelController(ILogger<SOCancelController> logger, IDataLogic iDataLogic, ISOCancel iSOCancel, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public SOCancelController(ILogger<SOCancelController> logger, IDataLogic iDataLogic, ISOCancel iSOCancel, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ISOCancel = iSOCancel;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
 
