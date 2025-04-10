@@ -508,7 +508,8 @@
             var dateParts2 = finToDate.split("/");
 
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-            if ($('#Mode').val() == "POA" || $('#Mode').val() == "POC") {
+            if ($('#Mode').val() == "POA" || $('#Mode').val() == "POC")
+            {
                 $('#PN1').prop("disabled", "false");
                 $('#PN1').prop("checked", "true");
                 $('#PN1').change().trigger("change");
@@ -516,7 +517,8 @@
                 $('#IN1').trigger("change");
             }
 
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") 
+            {
                 PendingIndentDetail(true);
                 //FillItems();
                 $('.DH').fadeIn();
@@ -550,7 +552,8 @@
                 $('#AmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AmendmentDt);
 
             }
-            else {
+            else
+            {
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 //$("#PODate,#POCloseDate,#AmmDate,#AmendmentDate").datepicker({
                 //    dateFormat: 'dd/mm/yy',

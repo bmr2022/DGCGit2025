@@ -25,7 +25,8 @@
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="PurchaseRejection" asp-controller="PurchaseRejection" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
+    <form asp-action="PurchaseRejection" asp-controller="PurchaseRejection" autocomplete="off" method="post" class="form-horizontal" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
@@ -371,8 +372,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="accordion-item">
+                <div class="accordion-item">
                 <h2 class="accordion-header" id="H_TaxDetail">
                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
                         <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
@@ -427,15 +427,14 @@
                     </div>
                 </div>
             </div>
-
-            <div class="accordion-item">
+                <div class="accordion-item">
                 @* <partial name="_DrCrTable" /> *@
                 @await Html.PartialAsync("_DrCrTable", Model)
             </div>
-            <div class="accordion-item">
+                <div class="accordion-item">
                 @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel == null ? new AdjustmentModel() : Model.adjustmentModel)
             </div>
-            <div class="accordion-item">
+                <div class="accordion-item">
                 <h2 class="accordion-header" id="HPanel4">
                     <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
                         <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
@@ -447,7 +446,7 @@
                 </div>
 
             </div>
-
+            </div>
         </div>
 
         <div class="card-footer p-3">
@@ -534,7 +533,14 @@
                 NewEntryId();
                 $('#divAddPurchaseRejectionPopupDataGrid').empty();
             }
-
+             $("input, select, textarea").each(function () {
+                var $field = $(this);
+                var rules = $field.rules();
+                if (rules && rules.required) {
+                    $field.rules("remove", "required");
+                }
+            });
+            $("form").validate().resetForm();
             $('#PartCode').select2();
             $('#ItemCode').select2();
             $('#AccountCode').select2();
@@ -816,6 +822,7 @@
             var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
             $('#divAddPurchaseRejectionPopupDataGrid').html(NoData);
             BasicItemGridTotal();
+            BasicTotal();
         }
 
         function DeleteItemRow(itemCode) {
@@ -1107,11 +1114,11 @@
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
                             $('#Unit').val("");
-                            $('#Unit').val(obj.Result.Table[0].Unit);
+                            $('#Unit').val(obj.Result.Table[0]?.Unit);
                             $('#AltUnit').val("");
-                            $('#AltUnit').val(obj.Result.Table[0].AlternateUnit);
+                            $('#AltUnit').val(obj.Result.Table[0]?.AlternateUnit);
                             $('#HSNNo').val("");
-                            $('#HSNNo').val(obj.Result.Table[0].HsnNo);
+                            $('#HSNNo').val(obj.Result.Table[0]?.HsnNo);
                         }
                     }
                 }
@@ -1404,6 +1411,7 @@
                 $('#divAddPurchaseRejectionPopupDataGrid').empty();
                 $('#divAddPurchaseRejectionPopupDataGrid').append(html);
             }
+            BasicTotal();
         });
 
         $('#AddPopDataInGrid').click(function (e) {
@@ -1481,7 +1489,7 @@
                         $('#Unit,#AltUnit').val("");
                         $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount').val(0);
                         BasicItemGridTotal();
-
+                        
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
                         if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '') {

@@ -33,7 +33,7 @@ public class PurchaseOrderController : Controller
 {
     private readonly IMemoryCacheService _iMemoryCacheService;
     private readonly IWebHostEnvironment _IWebHostEnvironment;
-    private readonly IConfiguration iconfiguration;
+    private readonly IConfiguration _iconfiguration;
     public WebReport webReport;
 
     public PurchaseOrderController(IPurchaseOrder iPurchaseOrder, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PurchaseOrderModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
@@ -46,7 +46,7 @@ public class PurchaseOrderController : Controller
         EncryptDecrypt = encryptDecrypt;
         CI = new CultureInfo("en-GB");
         _IWebHostEnvironment = iWebHostEnvironment;
-        iconfiguration = configuration;
+        _iconfiguration = configuration;
     }
 
     public ILogger<PurchaseOrderModel> _Logger { get; set; }
@@ -76,12 +76,19 @@ public class PurchaseOrderController : Controller
             webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
 
         }
+        //webReport.Report.SetParameterValue("entryparam", EntryId);
+        //webReport.Report.SetParameterValue("yearparam", YearCode);
+        //webReport.Report.SetParameterValue("ponoparam", PONO);
+        //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+        //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+        // return View(webReport);
+        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("entryparam", EntryId);
         webReport.Report.SetParameterValue("yearparam", YearCode);
-        webReport.Report.SetParameterValue("ponoparam", PONO);
-        my_connection_string = iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-        
+        webReport.Report.Refresh();
         return View(webReport);
     }
   
@@ -113,7 +120,7 @@ public class PurchaseOrderController : Controller
             report.SetParameterValue("ponoparam", PONO);
 
             // Set connection string
-            string myConnectionString = iconfiguration.GetConnectionString("eTactDB");
+            string myConnectionString = _iconfiguration.GetConnectionString("eTactDB");
             report.SetParameterValue("MyParameter", myConnectionString);
 
             // Prepare the report (generate data)
@@ -360,7 +367,7 @@ public class PurchaseOrderController : Controller
 
     public async Task<PurchaseOrderModel> BindModels(PurchaseOrderModel model)
     {
-        CommonFunc.LogException<PurchaseOrderModel>.LogInfo(_Logger, "********** Mohan Kumar *************");
+        CommonFunc.LogException<PurchaseOrderModel>.LogInfo(_Logger, "********** Nusrat Khan *************");
 
         _Logger.LogInformation("********** Binding Model *************");
 
@@ -986,7 +993,7 @@ public class PurchaseOrderController : Controller
                     Result = await IPurchaseOrder.SavePurchaseOrder(ItemDetailDT, DelieveryScheduleDT, TaxDetailDT, IndentDetailDT, model);
                 }
 
-                if (Result != null)
+                 if (Result != null)
                 {
                     MainModel.Mode = "INSERT";
                     model.Mode = "INSERT";
