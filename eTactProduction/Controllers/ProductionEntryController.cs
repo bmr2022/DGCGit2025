@@ -1224,12 +1224,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        //public async Task<JsonResult> GetPopUpData(int AccountCode, int IssYear, string FinYearFromDate, string billchallandate, string prodUnProd, string BOMINd, int RMItemCode, string RMPartcode, string RMItemNAme, string ACCOUNTNAME, int Processid)
-        //{
-        //    var JSON = await _IProductionEntry.GetPopUpData("JOBWORKISSUESUMMARY", AccountCode, IssYear, FinYearFromDate, billchallandate, prodUnProd, BOMINd, RMItemCode, RMPartcode, RMItemNAme, ACCOUNTNAME, Processid);
-        //    string JsonString = JsonConvert.SerializeObject(JSON);
-        //    return Json(JsonString);
-        //}
         public async Task<JsonResult> GetPOList(string Code, string Type, int Year, int DocTypeId)
         {
             var JSON = await _IProductionEntry.GetPoNumberDropDownList("PENDINGPOLIST", Type, "SP_GateMainDetail", Code, Year, DocTypeId);

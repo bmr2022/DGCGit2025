@@ -8,6 +8,12 @@
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
+    #GridLabels th {
+        background-color: #127387;
+        position: sticky;
+        top: 0px;
+        z-index: 1;
+    }
     .disabled-link {
         pointer-events: none; /* Disables clicking */
         color: gray; /* Makes it look disabled */
@@ -159,8 +165,9 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;">
                                     <label asp-for="IssueToStoreWC" class="form-label" style="color:red">Issue To Store/Wc*</label>
                                     <select class="form-select" asp-for="IssueToStoreWC">
+                                        <option value="" selected>-Select-</option>
                                         <option value="S">Store</option>
-                                        <option value="W" selected>WorkCenter</option>
+                                        <option value="W">WorkCenter</option>
                                     </select>
                                 </div>
 
@@ -356,8 +363,8 @@
                         </div>
 
                         <div class="card">
-                            <div class="card-body overflow-auto pb-0">
-                                <table class="table table-hover table-bordered table-striped">
+                            <div class="card-body overflow-auto pb-0" style="max-height:240px;">
+                                <table class="table table-hover table-bordered table-striped" id="GridLabels">
                                     <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                         <tr>
                                             <th>Action</th>
@@ -748,6 +755,7 @@
                 $('#TransferMatSlipDate').val(TransferMatSlipDate);
                 var ProdStatus = "@Model.PRODSTATUSProdUnProdRej";
                 $('#PRODSTATUSProdUnProdRej').val(ProdStatus).trigger("change");
+                FillStoreName();
             }
             else {
                 GetEntryId();

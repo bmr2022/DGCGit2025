@@ -160,7 +160,7 @@ namespace eTactWeb.Data.DAL
                         ItemWeight=Convert.ToDecimal(row["ItemWeight"].ToString()),
                     });
                 }
-                model.ItemDetailGrid = TransferFromWorkCenterDetail;
+                model.ItemDetailGrid = TransferFromWorkCenterDetail.OrderBy(x=>x.SeqNo).ToList();
             }
             return model;
         }
