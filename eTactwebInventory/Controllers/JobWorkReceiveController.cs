@@ -143,7 +143,7 @@ namespace eTactWeb.Controllers
                 else
                 {
                     model.CC = HttpContext.Session.GetString("Branch");
-                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     if (model.Mode == "U")
                     {
                         model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -554,7 +554,7 @@ namespace eTactWeb.Controllers
                 ChallanGrid.Columns.Add("POYearCode", typeof(int));
                 ChallanGrid.Columns.Add("SchNo", typeof(string));
                 ChallanGrid.Columns.Add("SchYearCode", typeof(int));
-                ChallanGrid.Columns.Add("BOMIND", typeof(char));
+                ChallanGrid.Columns.Add("BOMIND", typeof(string));
                 ChallanGrid.Columns.Add("BOMNO", typeof(int));
                 ChallanGrid.Columns.Add("BOMEffDate", typeof(string));
                 ChallanGrid.Columns.Add("Produnprod", typeof(string));
@@ -574,7 +574,7 @@ namespace eTactWeb.Controllers
                     Item.POYearCode,
                     Item.SchNo,
                     Item.SchYearCode,
-                    Item.BOMInd,
+                    Item.BOMInd ?? string.Empty,
                     Item.BOMrevno,
                     ParseFormattedDate(Item.BOMRevDate),
                     Item.ProdUpProd
