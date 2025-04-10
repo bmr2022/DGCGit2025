@@ -100,7 +100,7 @@ namespace eTactWeb.Data.DAL
             return _EmployeeMasterModel;
         }
 
-        public async Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode)
+        public async Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode, string ReportType)
         {
             DataSet? oDataSet = new DataSet();
 
@@ -112,7 +112,7 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+                    oCmd.Parameters.AddWithValue("@Flag", ReportType);
                     oCmd.Parameters.AddWithValue("@EmpCode", EmpCode);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -123,27 +123,51 @@ namespace eTactWeb.Data.DAL
 
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
-                    model.EmployeeMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                               select new EmployeeMasterModel
-                                               {
-                                                   EmpId = Convert.ToInt32(dr["Emp_Id"]),
-                                                   EmpCode = dr["Emp_Code"].ToString(),
-                                                   Name = dr["Emp_Name"].ToString(),
-                                                   Department = dr["DeptName"].ToString(),
-                                                   Shift = dr["ShiftName"].ToString(),
-                                                   Designation = dr["Designation"].ToString(),
-                                                   Category = dr["Category"].ToString(),
-                                                   NatureOfDuties = dr["NatureOfDuties"].ToString(),
-                                                   DateOfJoining = dr["DateOfJoining"].ToString(),
-                                                   EntryDate = dr["Entry_Date"].ToString(),
-                                                   DateOfResignation = dr["ResignationDate"].ToString(),
-                                                   DOB = dr["DOB"].ToString(),
-                                                   Active = dr["active"].ToString()
-                                               }).ToList();
+                    if(ReportType== "DashBoardSummary")
+                    {
+                        model.EmployeeMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                    select new EmployeeMasterModel
+                                                    {
+                                                        EmpId = Convert.ToInt32(dr["Emp_Id"]),
+                                                        EmpCode = dr["Emp_Code"].ToString(),
+                                                        Name = dr["Emp_Name"].ToString(),
+                                                        Department = dr["DeptName"].ToString(),
+                                                        Shift = dr["ShiftName"].ToString(),
+                                                        Designation = dr["Designation"].ToString(),
+                                                        Category = dr["Category"].ToString(),
+                                                        NatureOfDuties = dr["NatureOfDuties"].ToString(),
+                                                        DateOfJoining = dr["DateOfJoining"].ToString(),
+                                                        EntryDate = dr["Entry_Date"].ToString(),
+                                                        DateOfResignation = dr["ResignationDate"].ToString(),
+                                                        DOB = dr["DOB"].ToString(),
+                                                        Active = dr["active"].ToString()
+                                                    }).ToList();
+                    }
+
+                
+                    if(ReportType== "DashBoardDetail")
+                    {
+                        model.EmployeeMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                    select new EmployeeMasterModel
+                                                    {
+                                                        EmpId = Convert.ToInt32(dr["Emp_Id"]),
+                                                        EmpCode = dr["Emp_Code"].ToString(),
+                                                        Name = dr["Emp_Name"].ToString(),
+                                                        Department = dr["DeptName"].ToString(),
+                                                        Shift = dr["ShiftName"].ToString(),
+                                                        Designation = dr["Designation"].ToString(),
+                                                        Category = dr["Category"].ToString(),
+                                                        NatureOfDuties = dr["NatureOfDuties"].ToString(),
+                                                        DateOfJoining = dr["DateOfJoining"].ToString(),
+                                                        EntryDate = dr["Entry_Date"].ToString(),
+                                                        DateOfResignation = dr["ResignationDate"].ToString(),
+                                                        DOB = dr["DOB"].ToString(),
+                                                        Active = dr["active"].ToString()
+                                                    }).ToList();
+                    }
+
                 }
-
-
-
+                   
             }
             catch (Exception ex)
             {

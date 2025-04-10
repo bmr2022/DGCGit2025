@@ -36,9 +36,9 @@ namespace eTactWeb.Data.BLL
             return _EmployeeMasterDAL.GetFormRights(uId);
         }
 
-        public async Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode)
+        public async Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode, string ReportType)
         {
-            return await _EmployeeMasterDAL.GetSearchData(model, EmpCode);
+            return await _EmployeeMasterDAL.GetSearchData(model, EmpCode,ReportType);
         }
         public async Task<ResponseResult> GetEmpIdandEmpCode(string designation, string department)
         {
