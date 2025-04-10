@@ -354,7 +354,7 @@ namespace eTactWeb.Controllers
                             return View("Error", Result);
                         }
                     }
-                    return RedirectToAction(nameof(ProductionEntryDashboard));
+                    return RedirectToAction(nameof(ProductionEntry));
                 }
             }
             catch (Exception ex)

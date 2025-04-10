@@ -96,7 +96,7 @@
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ScheduleNo" class="control-label">Sch No</label>
                                     <input asp-for="ScheduleNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
@@ -105,7 +105,11 @@
                                     <label asp-for="PODate" class="control-label">PO Date</label>
                                     <input type="text" asp-for="PODate" class="form-control" readonly />
                                     @* <input asp-for="PODate"  class="form-control"  />*@
-
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="POCloseDate" class="control-label">PO Exp.</label>
+                                    <input type="text" asp-for="POCloseDate" class="form-control" readonly="readonly" />
+                                    @*<input asp-for="POCloseDate"   class="form-control" readonly disabled />*@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TentetiveConfirm" class="control-label">Tent Confirm</label>
@@ -119,15 +123,7 @@
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="SchAmendmentDate" class="startdate">Date</label>
-                                    @* <input asp-for="SchAmendmentDate"   class="form-control" />*@
 
-                                    <input type="text" asp-for="SchAmendmentDate" class="form-control" readonly />
-                                    @*  <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                    </div>*@
-                                </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ModeOfTransport" class="control-label">Mode</label>
                                     <input asp-for="ModeOfTransport" class="form-control" />
@@ -136,24 +132,28 @@
                                     <label asp-for="SchAmendmentNo" class="control-label">Sch Amd No</label>
                                     <input asp-for="SchAmendmentNo" class="form-control" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="POCloseDate" class="control-label">PO Exp.</label>
-                                    <input type="text" asp-for="POCloseDate" class="form-control" readonly="readonly" />
-                                    @*<input asp-for="POCloseDate"   class="form-control" readonly disabled />*@
-                                </div>
+
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ScheduleDate" class="control-label">Sch Date</label>
                                     <input type="text" asp-for="ScheduleDate" class="form-control" readonly />
                                     @*      <input asp-for="ScheduleDate" class="form-control" />*@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="SchEffFromDate" class="startdate">PO Eff.</label>
+                                    <label asp-for="SchEffFromDate" class="startdate">Eff FromDate</label>
                                     <input type="text" asp-for="SchEffFromDate" readonly class="form-control" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="SchEffTillDate" class="startdate">Eff Till Date</label>
                                     <input type="text" asp-for="SchEffTillDate" readonly class="form-control" />
                                     @*<input asp-for="SchEffTillDate"  class="form-control" />*@
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="SchAmendmentDate" class="startdate">PS Amend Date</label>
+                                    @* <input asp-for="SchAmendmentDate"   class="form-control" />*@
+                                    <input type="text" asp-for="SchAmendmentDate" class="form-control" readonly />
+                                    @*  <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>*@
                                 </div>
                                 <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="DeliveryAddress" class="control-label">Delivery Address</label>
@@ -659,8 +659,27 @@
                 $('#DeliveryDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
                 $('#DeliveryDate').datepicker("option", "maxDate", $('#SchEffTillDate').val());
 
-                    FillEntryDate();
+                FillEntryDate();
 
+            }
+            else if ($('#Mode').val() == "PSA" || $('#Mode').val() == "PSU") {
+                debugger
+                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#ScheduleDate').val()));
+                $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchEffFromDate').val()));
+                $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchEffTillDate').val()));
+                $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchAmendmentDate').val()));
+                debugger
+                $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val()));
+                $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val()));
+                $('#SchAmendmentDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
+                $('#SchAmendmentDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
+                $('#DeliveryDate')
+                    .datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+                var effFromDate = $('#SchEffFromDate').datepicker('getDate');
+                var effToDate = $('#SchEffTillDate').datepicker('getDate');
+                $('#DeliveryDate').datepicker("option", "minDate", effFromDate);
+                $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
             }
             else {
 
@@ -903,16 +922,20 @@
 
         $('#SchEffFromDate').change(function () {
             ClearGrid();
+            debugger
             var effFromDate = $('#SchEffFromDate').datepicker('getDate');
             $('#DeliveryDate').datepicker("option", "minDate", effFromDate);
             $('#SchEffTillDate').datepicker("option", "minDate", effFromDate);
+            $('#SchAmendmentDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
         });
 
         $('#SchEffTillDate').change(function () {
             ClearGrid();
+            debugger
             var effToDate = $('#SchEffTillDate').datepicker('getDate');
             $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
             /*     //$('#SchEffTillDate').datepicker("option","minDate",effFromDate); */
+            $('#SchAmendmentDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
         });
 
         function updateDates(dateString, ID) {
@@ -1068,9 +1091,10 @@
         }
 
         function FillEntryDate() {
+            debugger
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
-
+            debugger
             var dateParts1 = finFromDate.split("/");
             var monthNames = {
                 "Jan": "01",
@@ -1098,6 +1122,7 @@
 
             $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
             $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+
         }
 
         /* //PO No chage */
