@@ -127,9 +127,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueNRGPDAL.GetDashboardData(model);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC,string machineName, int actuaEntryBy)
         {
-            return await _IssueNRGPDAL.DeleteByID(ID, YC);
+            return await _IssueNRGPDAL.DeleteByID(ID, YC,machineName,actuaEntryBy);
         }
         public async Task<IssueNRGPModel> GetViewByID(int ID, int YC, string Mode)
         {

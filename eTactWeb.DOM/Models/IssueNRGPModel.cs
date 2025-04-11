@@ -147,6 +147,7 @@ namespace eTactWeb.DOM.Models
         public string AgainstChallanType { get; set; }
         public float PendQty { get; set; }
         public float PendAltQty { get; set; }
+        public int ActualEnteredEMpBy { get; set; }
         public List<IssueNRGPDashboard>? INNDashboard { get; set; }
     }
 

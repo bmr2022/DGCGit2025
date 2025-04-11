@@ -901,7 +901,7 @@ public static class CommonFunc
                 }
                 else if (Tbname == "IssueNRGP" || table.TableName == "IssueNRGP")
                 {
-                    if (typeProperty.PropertyInfo.Name != "INDasboard" && typeProperty.PropertyInfo.Name != "INNDashboard"
+                    if (typeProperty.PropertyInfo.Name != "INDasboard" && typeProperty.PropertyInfo.Name != "INNDashboard"&& typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy"
                         && typeProperty.PropertyInfo.Name != "ChallanTypeList" && typeProperty.PropertyInfo.Name != "SummaryDetail")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

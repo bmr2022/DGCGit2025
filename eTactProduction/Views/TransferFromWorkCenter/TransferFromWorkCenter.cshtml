@@ -772,9 +772,9 @@
                 $('.AF').fadeOut();
                 $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 var TransferMatEntrydate = $('#TransferMatEntrydate').val().split(" ")[0];
-                $('#TransferMatEntrydate').val(TransferMatEntrydate);
+                $('#TransferMatEntrydate').val(parseDateToFormat(TransferMatEntrydate));
                 var TransferMatSlipDate = $('#TransferMatSlipDate').val().split(" ")[0];
-                $('#TransferMatSlipDate').val(TransferMatSlipDate);
+                $('#TransferMatSlipDate').val(parseDateToFormat(TransferMatSlipDate));
                 var ProdStatus = "@Model.PRODSTATUSProdUnProdRej";
                 $('#PRODSTATUSProdUnProdRej').val(ProdStatus).trigger("change");
                 if ($('#IssueToStoreWC').val() == "S") {
@@ -812,8 +812,8 @@
 
                 console.log(formattedDate1);
                 console.log(formattedDate2);
-                $('#TransferMatEntrydate,#TransferMatSlipDate,#ProdDate,#QcCleaningDate').datepicker("option", "minDate", formattedDate1);
-                $('#TransferMatEntrydate,#TransferMatSlipDate,#ProdDate,#QcCleaningDate').datepicker("option", "maxDate", formattedDate2);
+                $('#TransferMatEntrydate,#TransferMatSlipDate,#ProdDate,#QcCleaningDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+                $('#TransferMatEntrydate,#TransferMatSlipDate,#ProdDate,#QcCleaningDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
                 // $('#TransferMatEntrydate,#TransferMatSlipDate,#ActualEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 // $('#ProdDate,#QcCleaningDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             }
@@ -842,19 +842,17 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     
                     console.log(result);
                     if (result != null) {
-
                         var today = new Date();
                         var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
-
+                        debugger
                         if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                            $('#TransferMatEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                            $('#TransferMatSlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                            //$('#ActualEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                            $('#ProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                            $('#QcCleaningDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                            $('#TransferMatEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                            $('#TransferMatSlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                            //$('#ActualEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                            $('#ProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                            $('#QcCleaningDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                         }
                     }
                 }
