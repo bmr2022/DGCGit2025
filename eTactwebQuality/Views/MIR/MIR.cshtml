@@ -1075,6 +1075,8 @@
                         var rowCount = $('#divMIRGrid tr').length;
                         $('#totalMirRows').text(rowCount);
                         fillAllStoreOnEdit(i, obj[0].OkRecStore, obj[0].RejRecStore, obj[0].HoldStoreId, obj[0].RewokStoreId);
+                        FillOkRecStore(i);
+
                         //fillEmpOnEdit(i);
                     }
                     $('.ReUploadFile').fadeOut();
@@ -2003,8 +2005,8 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#OkRecStore-' + j).empty();
-                            $('#OkRecStore-' + j).append('<option disabled value="0" selected>-Select-</option>');
+                            // $('#OkRecStore-' + j).empty();
+                            // $('#OkRecStore-' + j).append('<option disabled value="0" selected>-Select-</option>');
                             $('#RejRecStore-' + j).empty();
                             $('#RejRecStore-' + j).append('<option disabled value="0" selected>-Select-</option>');
                             $('#HoldStoreId-' + j).empty();
@@ -2012,10 +2014,10 @@
                             $('#RewokStoreId-' + j).empty();
                             $('#RewokStoreId-' + j).append('<option disabled value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                if (val.entryid != 4) {
-                                    $('#OkRecStore-' + j).append('<option selected value="' + val.entryid +
-                                        '">' + val.store_name + '</option>');
-                                }
+                                // if (val.entryid != 4) {
+                                //     $('#OkRecStore-' + j).append('<option selected value="' + val.entryid +
+                                //         '">' + val.store_name + '</option>');
+                                // }
                                 if (val.entryid != 1) {
                                     $('#RejRecStore-' + j).append('<option value="' + val.entryid +
                                         '">' + val.store_name + '</option>');
@@ -2025,7 +2027,7 @@
                                 $('#RewokStoreId-' + j).append('<option value="' + val.entryid +
                                     '">' + val.store_name + '</option>');
                             });
-                            $('#OkRecStore-' + j).val(okRec);
+                            // $('#OkRecStore-' + j).val(okRec);
                             $('#RejRecStore-' + j).val(RejStore);
                             $('#HoldStoreId-' + j).val(holdStore);
                             $('#RewokStoreId-' + j).val(rewokStore);

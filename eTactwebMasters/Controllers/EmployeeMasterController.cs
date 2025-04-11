@@ -162,13 +162,21 @@ namespace eTactWeb.Controllers
             
         }
 
-        public async Task<IActionResult> GetSearchData(string EmpCode, string Name)
+        public async Task<IActionResult> GetSearchData(string EmpCode, string ReportType)
         {
             var model = new EmployeeMasterModel();
             model.Mode = "Search";
-            model = await _IEmployeeMaster.GetSearchData(model, EmpCode).ConfigureAwait(true);
+            model = await _IEmployeeMaster.GetSearchData(model, EmpCode, ReportType).ConfigureAwait(true);
             model.EmployeeMasterList = model.EmployeeMasterList?.DistinctBy(x => x.EmpId).ToList() ?? new List<EmployeeMasterModel>();
-            return PartialView("_EmployeeMasterDashboard", model);
+            if (ReportType== "DashBoardSummary")
+            {
+                return PartialView("_EmployeeMasterDashboardSummary", model);
+            }
+            if (ReportType== "DashBoardDetail")
+            {
+                return PartialView("_EmployeeMasterDashboardDetail", model);
+            }
+            return null;
         }
 
         public async Task<IActionResult> DeleteByID(int ID, string EmpName)

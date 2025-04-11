@@ -80,6 +80,7 @@ public class JWIssQDashboard : JWIssueDashboard
 [Serializable()]
 public class JobWorkGridDetail : TaxModel
 {
+    public string? VendJwAllowToSelectBatchNo { get; set; }
     public int? SeqForBatch { get; set; }
     public string? Stockable { get; set; }
     public string? ItemServAssets { get; set; }
@@ -148,6 +149,7 @@ public class JobWorkIssueModel : JobWorkGridDetail
     public string? FinFromDate { get; set; }
     public string? FinToDate { get; set; }
     public string? ChangeEventTriggered { get; set; }
+    public string? VendJwAllowToSelectBatchNo { get; set; }
     public float? Distance { get; set; }
     public int EntryId { get; set; }
     public int YearCode { get; set; }

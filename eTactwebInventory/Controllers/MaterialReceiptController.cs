@@ -77,8 +77,8 @@ namespace eTactWeb.Controllers
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-            webReport.Report.SetParameterValue("MrnEntryparam", EntryId);
-            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("@MrnNoparam", MrnNo);
+            webReport.Report.SetParameterValue("MrnYearcodeparam ", YearCode);
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
             return View(webReport);
