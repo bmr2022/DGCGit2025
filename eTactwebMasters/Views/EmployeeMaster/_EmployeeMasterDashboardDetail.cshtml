@@ -1,0 +1,272 @@
+﻿@model eTactWeb.DOM.Models.EmployeeMasterModel
+<div class="card-body table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="EmployeeMasterTable">
+        <thead class="bg-gradient card-headerBG text-light" style="position: sticky; top: 0;" id="EmployeeHeadTable">
+            <tr>
+                <th>Action</th>
+                <th>Sr#</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp ID</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Code</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Branch</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Designation</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Department</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Category</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> DOB</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Date Of Joining</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Resignation Date</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Shift</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Nature Of Duties</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Active</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry Date</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Gender</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Nationality</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Marital Status</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Blood Group</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Mobile No 1</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Mobile No 2</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Email ID</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Current Address</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Permanent Address</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emergency Contact Name</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emergency Contact No</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emergency Contact Relation</th>
+
+                <!-- Salary -->
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Bank Name</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Bank A/C No</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Aadhar No</th>
+                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PAN No</th>
+                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> IBAN/Swift</th>
+                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Payment Mode</th>
+                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PF No</th>
+                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> ESI No</th>
+                <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Gross Salary</th>
+                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Basic Salary</th>
+                <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> CTC</th>
+                <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PF Applicable</th>
+                <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> ESI Applicable</th>
+                <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PF Applicable On</th>
+                <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> ESI Applicable On</th>
+                <th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Apply PF On Amt</th>
+                <th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Apply ESI On Amt</th>
+                <th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Salary Calculation Basis</th>
+                <th data-columnno="45" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Salary Basis Hours</th>
+                <th data-columnno="46" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> OT Applicable</th>
+                <th data-columnno="47" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Leave Applicable</th>
+                <th data-columnno="48" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Late Marking Applicable</th>
+                <th data-columnno="49" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Fix Salary Amount</th>
+
+                <!-- Job & Work Detail -->
+                <th data-columnno="50" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Dept ID</th>
+                <th data-columnno="51" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Desig ID</th>
+                <th data-columnno="52" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Reporting Manager</th>
+                <th data-columnno="53" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Employee Type</th>
+                <th data-columnno="54" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Shift ID</th>
+                <th data-columnno="55" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Grade ID</th>
+                <th data-columnno="56" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Probation Period</th>
+                <th data-columnno="57" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Confirm Date</th>
+                <th data-columnno="58" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Reference 1</th>
+                <th data-columnno="59" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Reference 2</th>
+                <th data-columnno="60" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Through</th>
+
+                <!-- Document/ID Proof -->
+                <th data-columnno="61" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Passport</th>
+                <th data-columnno="62" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Work Permit/Visa</th>
+                <th data-columnno="63" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Driving Licence</th>
+                <th data-columnno="64" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Medical Insurance</th>
+
+                <!-- Upload Section -->
+                <th data-columnno="65" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Thumb Path</th>
+                <th data-columnno="66" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Aadhar Card</th>
+
+                <!-- Exit Detail -->
+                <th data-columnno="67" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Notice Period</th>
+                <th data-columnno="68" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Gratuty Eligibility</th>
+                <th data-columnno="69" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Resignation Date</th>
+                <th data-columnno="70" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Active</th>
+
+            </tr>
+        </thead>
+        <tbody id="EmployeeMasterBody">
+            @if (Model.EmployeeMasterList == null)
+            {
+                <tr class="text-center">
+                    <td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td>
+                </tr>
+            }
+            else
+            {
+                var @Cntr = 0;
+                foreach (var employee in Model.EmployeeMasterList)
+                {
+                    Cntr = Cntr + 1;
+                    <tr>
+                        <td style="white-space: nowrap; text-align: center;">
+                            <div id="container">
+                                <a class="table-link link-success" asp-controller="EmployeeMaster" asp-action="EmployeeMaster"
+                                   asp-route-ID="@employee.EmpId" asp-route-Mode="V">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                                <a class="table-link link-primary" asp-controller="EmployeeMaster" asp-action="EmployeeMaster"
+                                   asp-route-ID="@employee.EmpId" asp-route-Mode="U">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                                <a class="table-link link-danger" asp-controller="EmployeeMaster" onclick="confirmDelete(event)" asp-action="DeleteByID"
+                                   asp-route-ID="@employee.EmpId">
+                                    <span class="fa-stack">
+                                        <i class="fa fa-square fa-stack-2x"></i>
+                                        <i class="fa fa-trash fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        </td>
+                        <th>@Cntr</th>
+                        <th>@employee.EmpId</th>
+                        <th>@employee.EmpCode</th>
+                        <th>@employee.Name</th>
+                        <th>@employee.Branch</th>
+                        <th>@employee.Designation</th>
+                        <th>@employee.Department</th>
+                        <th>@employee.Category</th>
+                        <th>@employee.DOB</th>
+                        <th>@employee.DateOfJoining</th>
+                        <th>@employee.ResignationDate</th>
+                        <th>@employee.Shift</th>
+                        <th>@employee.NatureOfDuties</th>
+                        <th>@employee.Active</th>
+                        <th>@employee.EntryDate</th>
+                        <th>@employee.Gender</th>
+                        <th>@employee.Nationality</th>
+                        <th>@employee.MaritalStatus</th>
+                        <th>@employee.BloodGroup</th>
+                        <th>@employee.MobileNo</th>
+                        <th>@employee.MobileNo2</th>
+                        <th>@employee.EmailId</th>
+                        <th>@employee.CurrentAddress</th>
+                        <th>@employee.permanentAddress</th>
+                        <th>@employee.EmergencyContact</th>
+                        <th>@employee.EmergencyContactRelation</th>
+                        <th>@employee.BankName</th>
+                        <th>@employee.AccountNo</th>
+                        <th>@employee.AdharNo</th>
+                        <th>@employee.PANNo</th>
+                        <th>@employee.SwiftCode</th>
+                        <th>@employee.PaymentMode</th>
+                        <th>@employee.PFNo</th>
+                        <th>@employee.ESINo</th>
+                        <th>@employee.GrossSalary</th>
+                        <th>@employee.BasicSalary</th>
+                        <th>@employee.CalculatePfOn</th>
+                        <th>@employee.PFApplicable</th>
+                        <th>@employee.ESIApplicable</th>
+                        <th>@employee.PFApplicable</th>
+                        <th>@employee.ESIApplicable</th>
+                        <th>@employee.ApplyPFFonmAmt</th>
+                        <th>@employee.ApplyESIFonmAmt</th>
+                        <th>@employee.SalaryCalculation</th>
+                        <th>@employee.SalaryBasisHr</th>
+                        <th>@employee.OTApplicable</th>
+                        <th>@employee.LeaveApplicable</th>
+                        <th>@employee.LateMarkingCalculationApplicable</th>
+                        <th>@employee.ESIApplicable</th>
+                        <th>@employee.FixSalaryAmt</th>
+                        <th>@employee.DateOfJoining</th>
+                        <th>@employee.JobDepartmentId</th>
+                        <th>@employee.JobDesignationId</th>
+                        <th>@employee.ReportingMg</th>
+                        <th>@employee.EmployeeType</th>
+                        <th>@employee.JObShiftId</th>
+                        <th>@employee.EmpGrade</th>
+                        <th>@employee.ProbationPeriod</th>
+                        <th>@employee.DateOfConfirmation</th>
+                        <th>@employee.JobReference1</th>
+                        <th>@employee.JobReference2</th>
+                        <th>@employee.JoiningThrough</th>
+                        <th>@employee.PassportNo</th>
+                        <th>@employee.WorkPeritVisa</th>
+                        <th>@employee.DrivingLicenseNo</th>
+                        <th>@employee.MedicalInsuranceDetail</th>
+                        <th>@employee.ThumbUnPress</th>
+                        <th>@employee.AdharNo</th>
+                        <th>@employee.NoticPeriod</th>
+                        <th>@employee.GratutyEligibility</th>
+                        <th>@employee.ResignationDate</th>
+                        <th>@employee.Active</th>
+
+
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1; /* Adjust margin as needed */
+            margin-right: 10px;
+        }
+
+    #ItemCatTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #ItemHeadTable th {
+        background-color: #127387;
+        position: sticky;
+        top: -18px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to Delete this entry?")) {
+                var linkUrl = $(event.currentTarget).attr("href");
+                window.location.href = linkUrl;
+            }
+        }
+        $("#sendToExcel").click(function () {
+            $("#EmployeeMasterTable").table2excel({
+                filename: "EmployeeMasterTable.xls"
+            });
+        });
+
+    </script>
+}

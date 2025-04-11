@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
 
         public int EmpId { get; set; }
         public string? EmpCode { get; set; }
+        public string? ReportType { get; set; }
         public string Name { get; set; }
         public string? Designation { get; set; }
         public IList<TextValue>? DesignationList { get; set; }
@@ -64,6 +65,7 @@ namespace eTactWeb.DOM.Models
         public string CalculatePfOn { get; set; }
         public string SalaryCalculation { get; set; }
         public decimal SalaryBasis { get; set; }
+        public decimal SalaryBasisHr { get; set; }
         public string PFApplicable { get; set; }
         public decimal ApplyPFFonmAmt { get; set; }
         public decimal ApplyESIFonmAmt { get; set; }

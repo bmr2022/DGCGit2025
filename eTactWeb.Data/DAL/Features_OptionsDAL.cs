@@ -930,8 +930,9 @@ namespace eTactWeb.Data.DAL
 
 
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("Sp_FeaturesOptions", SqlParams);
-
+               // _ResponseResult = await _IDataLogic.ExecuteDataTable("Sp_FeaturesOptions", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("Sp_FeaturesOptions", SqlParams).ConfigureAwait(false);
+             
 
             }
             catch (Exception ex)

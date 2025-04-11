@@ -136,6 +136,7 @@
                                     <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
                                     <input type="hidden" asp-for="Mode" value="@Model.Mode" />
                                     <input type="hidden" asp-for="ChangeEventTriggered" value="@Model.ChangeEventTriggered" />
+                                    <input type="hidden" asp-for="VendJwAllowToSelectBatchNo" value="Y" />
                                     <label asp-for="EntryId" class="form-label" style="color: blue;">Entry Id</label>
                                     <input asp-for="EntryId " class="form-control" readonly />
                                 </div>
@@ -1568,16 +1569,19 @@
             return [day, month, year].join('/');
         }
         var fifoBatch = "";//batch no FIFO feature
+        var VendJwAllowToSelectBatchNo = "";
         function functionFeatureOption() {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("CheckFeatureOption")",
                 dataType: "json",
                 success: function (result, status, error) {
+                    debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var allowOption = obj.Result.Table[0].AllowBackDateJOBWorkIssue;
-                        fifoBatch = obj.Result.Table[0].FIFOBasedBatchInventory;//batch no FIFO feature
+                        fifoBatch = obj.Result.Table[0].FIFOBasedBatchInventory;
+                        VendJwAllowToSelectBatchNo = obj.Result.Table[0].VendJwAllowToSelectBatchNo;
                         console.log(allowOption);
                         if (allowOption == 'Y') {
                             //$('#EntryDate').prop("readonly", false);
@@ -2018,13 +2022,92 @@
 
 
         $('#StoreId').change(function () {
+            debugger
+            var ItemCode = $('#ItemCode').val();
+            
+            $('#BatchNo,#UniqueBatchNo').empty();
+            $('#StockQty,#BatchStockQty').val('');
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("FillCurrentBatchINStore", "NRGP")',
+                data: {
+                    StoreId: $('#StoreId').val(),
+                    StoreName: $('#StoreId').find(':selected').text(),
+                    ItemCode: $('#ItemCode').val(),
+                    TransDate: $('#ChallanDate').val(),
+                    YearCode: $('#YearCode').val(),
+                    BatchNo: $('#BatchNo').val()
+                },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#BatchNo').empty();
+                            $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
+
+                            var seenValues = {};
+                            $.each(obj.Result, function (index, val) {
+                                if (!seenValues[val.batchno]) {
+                                    seenValues[val.batchno] = true;
+                                    $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                }
+                            });
+
+                            var itemArrayLength = itemBatchArray.length;
+                            if (itemArrayLength > 0) {
+                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
+                                    return item.itemcode === parseInt(ItemCode);
+                                });
+                                $('#BatchNo option').each(function () {
+                                    var optionValue = $(this).val();
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.batchno === optionValue;
+                                    });
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+                            }
+
+                            if (fifoBatch == "Y") {
+                                 $("#BatchNo option:not(:eq(1))").prop("disabled", true);//select one
+                                 //$("#BatchNo option").prop("disabled", false);//allow select all
+                            }else{
+                                  $("#BatchNo option").prop("disabled", false);//allow select all
+                                
+                                //$("#BatchNo option:not(:eq(1))").prop("disabled", true);//allow one
+                            }
+                            /* if (VendJwAllowToSelectBatchNo == "Y") {
+                                $("#BatchNo option:not(:eq(1))").prop("disabled", flase);
+                            }else{
+                                $("#BatchNo option").prop("disabled", true);
+                            } */
+
+                        } else {
+                            $('#BatchNo').empty().append('<option value="0" disabled selected>-Select-</option>');
+                            $('#uniquebatchno').empty().append('<option value="0" disabled selected>-Select-</option>');
+                        }
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        });
+
+
+      /*   $('#StoreId').change(function () {
              
             var ItemCode = $('#ItemCode').val();
             $('#BatchNo,#UniqueBatchNo').empty();
             $('#StockQty,#BatchStockQty').val('');
             $.ajax({
                 type: "POST",
-                 /* url: '@Url.Action("GetBatchNumber")',  */
+                
                 url: '@Url.Action("FillCurrentBatchINStore","NRGP")',
                 data: { StoreId: $('#StoreId').val(), StoreName: $('#StoreId').find(':selected').text(), ItemCode: $('#ItemCode').val(), TransDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val() },
                 dataType: "json",
@@ -2089,7 +2172,7 @@
                 }
             });
             //GetBatchStockQty();
-        });
+        }); */
 
         function GetItemRate() {
             debugger

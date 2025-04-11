@@ -352,9 +352,14 @@
 
                                 </div>
                                 <div class="col-auto">
-                                    <button class="ItemBtn btn btn-sm btn-outline-danger" style="width:150px;" type="button">
+                                    <button class="ItemBtn btn btn-sm btn-outline-danger" style="width:150px;margin-top:30px;" type="button">
                                         <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
                                     </button>
+                                   
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="margin-top:20px;">
+                                    <label class="form-label">Global search</label>
+                                    <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
                                 </div>
                             </div>
                         </div>
@@ -591,6 +596,23 @@
 
 @section Scripts {
     <script>
+        var currentSearchColumn = null;
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divTransferGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
 
         $('.submitBTN').click(function (e) {
             e.preventDefault();

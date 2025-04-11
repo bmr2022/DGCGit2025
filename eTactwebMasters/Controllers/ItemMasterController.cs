@@ -46,7 +46,7 @@ public class ItemMasterController : Controller
 
         return Json(Result);
     }
-    public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue, string UniversalPartCode = "", int pageNumber = 1, int pageSize = 500)
+    public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue, string UniversalPartCode = "", int pageNumber = 1, int pageSize = 10)
     {
         ItemMasterModel model = new ItemMasterModel
         {
@@ -235,6 +235,7 @@ public class ItemMasterController : Controller
         var Result = _IDataLogic.isDuplicate(Colval, ColName, "Item_Master");
         return Json(Result);
     }
+    [HttpGet]
     public async Task<IActionResult> ItemDetail(int ID, string Mode)
     {
         ItemMasterModel model = new ItemMasterModel();
@@ -248,7 +249,7 @@ public class ItemMasterController : Controller
             model.BomRequired = "N";
             model.JobWorkItem = "N";
             model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-
+            model.Mode = null;
         }
         else
         {

@@ -100,7 +100,7 @@ namespace eTactWeb.Data.DAL
             return _EmployeeMasterModel;
         }
 
-        public async Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode)
+        public async Task<EmployeeMasterModel> GetSearchData(EmployeeMasterModel model, string EmpCode, string ReportType)
         {
             DataSet? oDataSet = new DataSet();
 
@@ -112,7 +112,7 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    oCmd.Parameters.AddWithValue("@Flag", model.Mode);
+                    oCmd.Parameters.AddWithValue("@Flag", ReportType);
                     oCmd.Parameters.AddWithValue("@EmpCode", EmpCode);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -123,27 +123,121 @@ namespace eTactWeb.Data.DAL
 
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
-                    model.EmployeeMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                               select new EmployeeMasterModel
-                                               {
-                                                   EmpId = Convert.ToInt32(dr["Emp_Id"]),
-                                                   EmpCode = dr["Emp_Code"].ToString(),
-                                                   Name = dr["Emp_Name"].ToString(),
-                                                   Department = dr["DeptName"].ToString(),
-                                                   Shift = dr["ShiftName"].ToString(),
-                                                   Designation = dr["Designation"].ToString(),
-                                                   Category = dr["Category"].ToString(),
-                                                   NatureOfDuties = dr["NatureOfDuties"].ToString(),
-                                                   DateOfJoining = dr["DateOfJoining"].ToString(),
-                                                   EntryDate = dr["Entry_Date"].ToString(),
-                                                   DateOfResignation = dr["ResignationDate"].ToString(),
-                                                   DOB = dr["DOB"].ToString(),
-                                                   Active = dr["active"].ToString()
-                                               }).ToList();
+                    if(ReportType== "DashBoardSummary")
+                    {
+                        model.EmployeeMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                    select new EmployeeMasterModel
+                                                    {
+                                                        EmpId = dr["Emp_Id"] != DBNull.Value ? Convert.ToInt32(dr["Emp_Id"]) : 0,
+                                                        EmpCode = dr["Emp_Code"]?.ToString() ?? string.Empty,
+                                                        Name = dr["Emp_Name"]?.ToString() ?? string.Empty,
+                                                        Branch = dr["branchCC"]?.ToString() ?? string.Empty,
+                                                        Designation = dr["Designation"]?.ToString() ?? string.Empty,
+                                                        Department = dr["DeptName"]?.ToString() ?? string.Empty,
+                                                        Category = dr["Category"]?.ToString() ?? string.Empty,
+                                                        DOB = dr["DOB"] != DBNull.Value ? Convert.ToDateTime(dr["DOB"]).ToString("yyyy-MM-dd") : string.Empty,
+                                                        DateOfJoining = dr["DateOfJoining"] != DBNull.Value ? Convert.ToDateTime(dr["DateOfJoining"]).ToString("yyyy-MM-dd") : string.Empty,
+                                                        ResignationDate = dr["ResignationDate"] != DBNull.Value ? Convert.ToDateTime(dr["ResignationDate"]).ToString("yyyy-MM-dd") : string.Empty,
+
+                                                        Shift = dr["ShiftName"]?.ToString() ?? string.Empty,
+                                                        NatureOfDuties = dr["NatureOfDuties"]?.ToString() ?? string.Empty,
+                                                        Active = dr["Active"]?.ToString() ?? string.Empty,
+
+                                                        EntryDate = dr["Entry_Date"] != DBNull.Value ? Convert.ToDateTime(dr["Entry_Date"]).ToString("yyyy-MM-dd") : string.Empty,
+                                                        Gender = dr["Gender"]?.ToString() ?? string.Empty,
+                                                        Nationality = dr["Nationality"]?.ToString() ?? string.Empty,
+                                                        MaritalStatus = dr["MaritalStatus"]?.ToString() ?? string.Empty,
+                                                        BloodGroup = dr["BloodGroup"]?.ToString() ?? string.Empty,
+                                                        MobileNo = dr["MobileNo1"]?.ToString() ?? string.Empty,
+                                                        MobileNo2 = dr["MobileNo2"]?.ToString() ?? string.Empty,
+                                                        EmailId = dr["EmailId"]?.ToString() ?? string.Empty,
+                                                        CurrentAddress = dr["CurrentAddress"]?.ToString() ?? string.Empty,
+                                                        permanentAddress = dr["PermanentAddress"]?.ToString() ?? string.Empty,
+                                                        EmergencyContact = dr["EmergancyContactNo"]?.ToString() ?? string.Empty,
+                                                        EmergencyContactRelation = dr["EmergancyContactRelation"]?.ToString() ?? string.Empty,
+
+                                                    }).ToList();
+                    }
+
+                
+                    if(ReportType== "DashBoardDetail")
+                    {
+                        model.EmployeeMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                    select new EmployeeMasterModel
+                                                    {
+                                                        EmpId = dr["Emp_Id"] != DBNull.Value ? Convert.ToInt32(dr["Emp_Id"]) : 0,
+                                                        EmpCode = dr["Emp_Code"]?.ToString() ?? string.Empty,
+                                                        Name = dr["Emp_Name"]?.ToString() ?? string.Empty,
+                                                        Branch = dr["branchCC"]?.ToString() ?? string.Empty,
+                                                        Designation = dr["Designation"]?.ToString() ?? string.Empty,
+                                                        Department = dr["DeptName"]?.ToString() ?? string.Empty,
+                                                        Category = dr["Category"]?.ToString() ?? string.Empty,
+                                                        DOB = dr["DOB"] != DBNull.Value ? Convert.ToDateTime(dr["DOB"]).ToString("yyyy-MM-dd") : string.Empty,
+                                                        DateOfJoining = dr["DateOfJoining"] != DBNull.Value ? Convert.ToDateTime(dr["DateOfJoining"]).ToString("yyyy-MM-dd") : string.Empty,
+                                                        ResignationDate = dr["ResignationDate"] != DBNull.Value ? Convert.ToDateTime(dr["ResignationDate"]).ToString("yyyy-MM-dd") : string.Empty,
+                                                        Shift = dr["ShiftName"]?.ToString() ?? string.Empty,
+                                                        NatureOfDuties = dr["NatureOfDuties"]?.ToString() ?? string.Empty,
+                                                        Active = dr["Active"]?.ToString() ?? string.Empty,
+                                                        EntryDate = dr["Entry_Date"] != DBNull.Value ? Convert.ToDateTime(dr["Entry_Date"]).ToString("yyyy-MM-dd") : string.Empty,
+                                                        Gender = dr["Gender"]?.ToString() ?? string.Empty,
+                                                        Nationality = dr["Nationality"]?.ToString() ?? string.Empty,
+                                                        MaritalStatus = dr["MaritalStatus"]?.ToString() ?? string.Empty,
+                                                        BloodGroup = dr["BloodGroup"]?.ToString() ?? string.Empty,
+                                                        MobileNo = dr["MobileNo1"]?.ToString() ?? string.Empty,
+                                                        MobileNo2 = dr["MobileNo2"]?.ToString() ?? string.Empty,
+                                                        EmailId = dr["EmailId"]?.ToString() ?? string.Empty,
+                                                        CurrentAddress = dr["CurrentAddress"]?.ToString() ?? string.Empty,
+                                                        permanentAddress = dr["PermanentAddress"]?.ToString() ?? string.Empty,
+                                                        EmergencyContact = dr["EmergancyContactNo"]?.ToString() ?? string.Empty,
+                                                        EmergencyContactRelation = dr["EmergancyContactRelation"]?.ToString() ?? string.Empty,
+                                                        BankName = dr["BankName"]?.ToString() ?? string.Empty,
+                                                        AccountNo = dr["BankAccountNo"]?.ToString() ?? string.Empty,
+                                                        AdharNo = dr["AadharCardNoCountryCardNo"]?.ToString() ?? string.Empty,
+                                                        PANNo = dr["PANNOTaxIdentificationNo"]?.ToString() ?? string.Empty,
+                                                        SwiftCode = dr["IBANSwiftCode"]?.ToString() ?? string.Empty,
+                                                        PaymentMode = dr["PaymentMode"]?.ToString() ?? string.Empty,
+                                                        PFNo = dr["PFNo"]?.ToString() ?? string.Empty,
+                                                        ESINo = dr["ESINo"]?.ToString() ?? string.Empty,
+                                                        GrossSalary = dr["GrossSalary"] != DBNull.Value ? Convert.ToDecimal(dr["GrossSalary"]) : 0,
+                                                        BasicSalary = dr["BasicSalary"] != DBNull.Value ? Convert.ToDecimal(dr["BasicSalary"]) : 0,
+                                                        CalculatePfOn = dr["CTC"]?.ToString() ?? string.Empty,
+                                                        PFApplicable = dr["PFApplicable"]?.ToString() ?? string.Empty,
+                                                        ESIApplicable = dr["ESIApplicable"]?.ToString() ?? string.Empty,
+                                                        ApplyPFFonmAmt = dr["ApplyPFonAmt"] != DBNull.Value ? Convert.ToDecimal(dr["ApplyPFonAmt"]) : 0,
+                                                        ApplyESIFonmAmt = dr["ApplyESIonAmt"] != DBNull.Value ? Convert.ToDecimal(dr["ApplyESIonAmt"]) : 0,
+                                                        SalaryCalculation = dr["SalaryCalculationBasisOn"]?.ToString() ?? string.Empty,
+                                                       
+                                                        SalaryBasisHr = dr["SalaryBasisHrs"] != DBNull.Value ? Convert.ToDecimal(dr["SalaryBasisHrs"]) : 0,
+                                                        OTApplicable = dr["OTApplicable"]?.ToString() ?? string.Empty,
+                                                        LeaveApplicable = dr["LeaveApplicable"]?.ToString() ?? string.Empty,
+                                                        LateMarkingCalculationApplicable = dr["LateMarkingApplicable"]?.ToString() ?? string.Empty,
+                                                        FixSalaryAmt = dr["FixSalaryAmount"] != DBNull.Value ? Convert.ToDecimal(dr["FixSalaryAmount"]) : 0,
+                                                        JobDepartmentId = dr["DeptId"] != DBNull.Value ? Convert.ToInt32(dr["DeptId"]) : 0,
+                                                        JobDesignationId = dr["DesigId"] != DBNull.Value ? Convert.ToInt32(dr["DesigId"]) : 0,
+                                                        ReportingMg = dr["ReportingManager"]?.ToString() ?? string.Empty,
+                                                        EmployeeType = dr["EmpType"]?.ToString() ?? string.Empty,
+                                                        JObShiftId = dr["ShiftId"] != DBNull.Value ? Convert.ToInt32(dr["ShiftId"]) : 0,
+                                                        EmpGrade = dr["GradeId"]?.ToString() ?? string.Empty,
+                                                        ProbationPeriod = dr["ProbationPeriod"] != DBNull.Value ? Convert.ToInt32(dr["ProbationPeriod"]) : 0,
+                                                   
+                                                        DateOfConfirmation = dr["DateOfConfirm"] != DBNull.Value ? Convert.ToDateTime(dr["DateOfConfirm"]).ToString("yyyy-MM-dd") : string.Empty,
+                                                        JobReference1 = dr["Referance1"]?.ToString() ?? string.Empty,
+                                                        JobReference2 = dr["Referencetwo"]?.ToString() ?? string.Empty,
+                                                        JoiningThrough = dr["Through"]?.ToString() ?? string.Empty,
+                                                        PassportNo = dr["NationalIdPassport"]?.ToString() ?? string.Empty,
+                                                        WorkPeritVisa = dr["WorkPermitVisa"]?.ToString() ?? string.Empty,
+                                                        DrivingLicenseNo = dr["DrivingLicence"]?.ToString() ?? string.Empty,
+                                                        MedicalInsuranceDetail = dr["MedicalInsuranceDetail"]?.ToString() ?? string.Empty,
+                                                        ThumbUnPress = dr["ThumbPath"]?.ToString() ?? string.Empty,
+                                                        NoticPeriod = dr["NoticePeriod"] != DBNull.Value ? Convert.ToInt32(dr["NoticePeriod"]) : 0,
+
+                                                        GratutyEligibility = dr["GratutyEligibility"]?.ToString() ?? string.Empty,
+
+                                                    }).ToList();
+                    }
+
                 }
-
-
-
+                   
             }
             catch (Exception ex)
             {

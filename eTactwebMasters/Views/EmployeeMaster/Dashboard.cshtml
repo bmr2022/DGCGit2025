@@ -27,6 +27,14 @@
                                 <label for="state" class="control-label">Employee Code</label>
                                 <input asp-for="EmpCode" class="form-control form-control-sm" id="EmpCode" data-val="false" />
                             </div>
+                            <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
+                                <label asp-for="ReportType" class="control-label">ReportType</label>
+                                <select asp-for="ReportType" class="form-control form-control-sm"  data-val="false">
+                                    <option value="DashBoardSummary"selected>Summary</option>
+                                    <option value="DashBoardDetail">Detail</option>
+                                   
+                                </select>
+                            </div>
                             <div class="col-auto">
                                 <label class="form-label">Global Search</label>
                                 <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -49,7 +57,14 @@
                 <div class="progress my-3 mb-3" style="height: 4px;">
                     <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div class="card" id="divDashboardGrid">
+                    <div class="card-body">
+                        <div class="card overflow-auto">
+                            <div class="card-body" id="divDashboardGrid">
+                                <partial name="_EmployeeMasterDashboardSummary" />
+                            </div>
+                        </div>
+                    </div>
+               @*  <div class="card" id="divDashboardGrid">
                     <div class="card-body table-responsive" style="max-height:350px;">
                         <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="EmployeeMasterTable">
                             <thead class="bg-gradient card-headerBG text-light" style="position:static;" top: 0;" id="EmployeeHeadTable">
@@ -124,16 +139,16 @@
                                             <td>@Html.DisplayFor(modelItem => employee.Active)</td>
                                             <td>@employee.DateOfResignation.Split(" ")[0]</td>
                                             <td>@Html.DisplayFor(modelItem => employee.NatureOfDuties)</td>
-                                            @* <td>@Html.DisplayFor(modelItem => employee.AadharCardNumber)</td> *@
-                                            @* <td>@Html.DisplayFor(modelItem => employee.CompanyCardNumber)</td> *@
+                                          <td>@Html.DisplayFor(modelItem => employee.AadharCardNumber)</td>
+                                             <td>@Html.DisplayFor(modelItem => employee.CompanyCardNumber)</td> 
                                         </tr>
                                     }
                                 }
                             </tbody>
-                        </table>
+                        </table> 
                     </div>
                     <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
-                </div>
+                </div> *@
             </div>
         </div>
     </form>
@@ -237,7 +252,7 @@
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
                 type: "POST",
-                data: { "EmpCode": $('#EmpCode').val() },
+                data: { "EmpCode": $('#EmpCode').val(), "ReportType": $('#ReportType').val() },
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);

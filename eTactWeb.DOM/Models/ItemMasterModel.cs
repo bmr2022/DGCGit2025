@@ -7,7 +7,8 @@ namespace eTactWeb.DOM.Models
     [Serializable()]
     public class FeatureOption
     {
-        public bool AllowPartCode { get; set; }
+        //public bool AllowPartCode { get; set; }
+        public bool AllowPartCode { get; set; } = true;
         public bool DuplicateItemName { get; set; }
      
     }
