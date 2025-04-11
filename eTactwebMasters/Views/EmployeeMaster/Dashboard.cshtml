@@ -29,11 +29,12 @@
                             </div>
                             <div class="col col-auto col-md-2 col-sm-6 col-xs-6">
                                 <label asp-for="ReportType" class="control-label">ReportType</label>
-                                <select asp-for="ReportType" class="form-control form-control-sm" id="Branch" data-val="false">
-                                    <option value="DashBoardSummary">Summary</option>
+                                <select asp-for="ReportType" class="form-control form-control-sm"  data-val="false">
+                                    <option value="DashBoardSummary"selected>Summary</option>
                                     <option value="DashBoardDetail">Detail</option>
                                    
                                 </select>
+                            </div>
                             <div class="col-auto">
                                 <label class="form-label">Global Search</label>
                                 <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -63,10 +64,9 @@
                             </div>
                         </div>
                     </div>
-                <div class="card" id="divDashboardGrid">
+               @*  <div class="card" id="divDashboardGrid">
                     <div class="card-body table-responsive" style="max-height:350px;">
-
-                        @* <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="EmployeeMasterTable">
+                        <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="EmployeeMasterTable">
                             <thead class="bg-gradient card-headerBG text-light" style="position:static;" top: 0;" id="EmployeeHeadTable">
                                 <tr>
                                     <th style="width: 100px; text-align: center;">Action</th>
@@ -145,10 +145,10 @@
                                     }
                                 }
                             </tbody>
-                        </table> *@
+                        </table> 
                     </div>
                     <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
-                </div>
+                </div> *@
             </div>
         </div>
     </form>

@@ -4,14 +4,18 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using System;
 using System.ComponentModel;
 using System.Data;
+using System.Drawing.Printing;
 using System.Net;
 using System.Runtime.Caching;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
+using DataTable = System.Data.DataTable;
 
 namespace eTactWeb.Controllers;
 
@@ -414,7 +418,7 @@ public class BomController : Controller
         return PartialView("_BomGrid", model);
     }
 
-    public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string GlobalSearch = "")
+    public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string GlobalSearch = "", int pageNumber = 1, int pageSize = 10)
     {
         //BomDashboard model = new BomDashboard
         //{
@@ -428,7 +432,7 @@ public class BomController : Controller
 
         var model = new BomDashboard();
         var oDataSet = await _IBom.GetBomDashboard("Dashboard").ConfigureAwait(false);
-
+      
         if (oDataSet.Tables.Count != 0)
         {
             model.DTDashboard = oDataSet.Tables[0];
@@ -461,16 +465,138 @@ public class BomController : Controller
                                         Value = dr["RMItemName"].ToString(),
                                     }).DistinctBy(x => x.Value).ToList();
         }
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
+       
+        //int totalRecords = bomList.Count;
+        //var pagedList = bomList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-        model.FGPartCode = FGPartCode;
-        model.FGItemName = FGItemName;
-        model.RMPartCode = RMPartCode;
-        model.RMItemName = RMItemName;
-        model.BomRevNo = BomRevNo;
-        model.DashboardType = DashboardType;
+        //model.BomList = pagedList;
+        //model.TotalRecords = totalRecords;
+        //model.PageNumber = pageNumber;
+        //model.PageSize = pageSize;
 
-        model.DTDashboard = model.DTDashboard == null ? new DataTable() : model.DTDashboard;
+
+        //model.FGPartCode = FGPartCode;
+        //model.FGItemName = FGItemName;
+        //model.RMPartCode = RMPartCode;
+        //model.RMItemName = RMItemName;
+        //model.BomRevNo = BomRevNo;
+        //model.DashboardType = DashboardType;
+
+        model.DTDashboard = model.DTDashboard == null ? new System.Data.DataTable() : model.DTDashboard;
+        var DTDashboardPage = model.DTDashboard;
+        //int skip = (pageNumber - 1) * pageSize;
+        //var paginatedRows = model.DTDashboard.AsEnumerable()
+        //    .Skip(skip)
+        //    .Take(pageSize);
+
+        //model.DTDashboard = paginatedRows.CopyToDataTable();
+        //model.TotalRecords = model.DTDashboard.Rows.Count;
+        //List<BomModel> bomList = new List<BomModel>();
+
+        model.TotalRecords = model.DTDashboard.Rows.Count;
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+
+        // Apply pagination directly on DataTable
+        var pagedRows = model.DTDashboard.AsEnumerable()
+                                 .Skip((pageNumber - 1) * pageSize)
+                                 .Take(pageSize);
+
+        // Check if any rows exist to avoid CopyToDataTable() crash
+        model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : model.DTDashboard.Clone();
+        //if (DTDashboardPage != null && DTDashboardPage.Rows.Count > 0)
+        //{
+        //    //DataTable dt = oDataSet.Tables[0];
+
+        //    //bomList = dt.AsEnumerable()
+        //    //            .Select(dr => new BomModel
+
+
+        //    bomList = DTDashboardPage.AsEnumerable()
+        //                 .Select(dr => new BomModel
+
+        //                 {
+        //                     BomNo = int.TryParse(dr["BomNo"]?.ToString(), out int bomNo) ? bomNo : 0,
+        //                     FGPartCode = dr["FGPartCode"].ToString(),
+        //                     FGItemName = dr["FGItem"].ToString(),
+        //                     BomQty = decimal.TryParse(dr["BomQty"]?.ToString(), out decimal BomQty) ? BomQty : 0,
+
+        //                     RMPartCode = dr["RMPartCode"].ToString(),
+        //                     RMItemName = dr["RMItemName"].ToString(),
+        //                     Qty = decimal.TryParse(dr["Qty"]?.ToString(), out decimal Qty) ? Qty : 0,
+        //                     Unit = dr["Unit"].ToString(),
+        //                     AltPartcode1 = dr["AltPartcode1"].ToString(),
+        //                     AltItemName1 = dr["AltItem1"].ToString(),
+        //                     AltPartcode2 = dr["AltPartcode2"].ToString(),
+        //                     AltItemName2 = dr["AltItem2"].ToString(),
+        //                     AltQty1 = decimal.TryParse(dr["AltQty1"]?.ToString(), out decimal AltQty1) ? AltQty1 : 0,
+        //                     AltQty2 = decimal.TryParse(dr["AltQty2"]?.ToString(), out decimal AltQty2) ? AltQty2 : 0,
+
+        //                     UsedStageId = dr["UsedStageId"].ToString(),
+        //                     IssueToJOBwork = dr["IssueToJoBwork"].ToString(),
+        //                     DirectProcess = dr["DirectProcess"].ToString(),
+        //                     RecFrmCustJobwork = dr["RecFrmCustJobwork"].ToString(),
+        //                     PkgItem = dr["PkgItem"].ToString(),
+        //                     RunnerQty = decimal.TryParse(dr["RunnerQty"]?.ToString(), out decimal RunnerQty) ? RunnerQty : 0,
+
+        //                     Remark = dr["Remark"].ToString(),
+        //                     RunnerItemCode = int.TryParse(dr["RunnerItemCode"]?.ToString(), out int RunnerItemCode) ? RunnerItemCode : 0,
+
+        //                     GrossWt = decimal.TryParse(dr["GrossWt"]?.ToString(), out var grossWt) ? grossWt : 0,
+        //                     NetWt = decimal.TryParse(dr["NetWt"]?.ToString(), out var netWt) ? netWt : 0,
+        //                     Scrap = decimal.TryParse(dr["Scrap"]?.ToString(), out var scrap) ? scrap : 0,
+        //                     BurnQty = decimal.TryParse(dr["BurnQty"]?.ToString(), out var burnQty) ? burnQty : 0,
+
+        //                     Location = dr["Location"].ToString(),
+        //                     MPNNo = dr["MPNNo"].ToString()
+        //                 }).ToList();
+        //}
+        //_MemoryCache.Set("KeyBomList", bomList, cacheEntryOptions);
+        //model.TotalRecords = bomList.Count();
+        //model.PageNumber = pageNumber;
+        //model.PageSize = pageSize;
+        //var paginatedList = bomList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        //model.DTDashboard = ToDataTable(paginatedList);
         return View(model);
+    }
+    public static System.Data.DataTable ToDataTable<T>(List<T> items)
+    {
+        System.Data.DataTable dataTable = new System.Data.DataTable(typeof(T).Name);
+
+        // Get all the properties
+        var props = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+        foreach (var prop in props)
+        {
+            Type propType = prop.PropertyType;
+
+            // Handle nullable types
+            if (propType.IsGenericType && propType.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                propType = Nullable.GetUnderlyingType(propType);
+            }
+
+            dataTable.Columns.Add(prop.Name, propType ?? typeof(object));
+        }
+
+        foreach (var item in items)
+        {
+            var values = new object[props.Length];
+            for (int i = 0; i < props.Length; i++)
+            {
+                values[i] = props[i].GetValue(item, null);
+            }
+
+            dataTable.Rows.Add(values);
+        }
+
+        return dataTable;
     }
 
     // POST: BomController/Delete/5
@@ -969,9 +1095,9 @@ public class BomController : Controller
         }
     }
 
-    private static DataTable GetBomDetailTable(List<ImportBomData> DetailList)
+    private static System.Data.DataTable GetBomDetailTable(List<ImportBomData> DetailList)
     {
-        var BOMGrid = new DataTable();
+        var BOMGrid = new System.Data.DataTable();
 
         BOMGrid.Columns.Add("SeqNo", typeof(int));
         BOMGrid.Columns.Add("FGPartCode", typeof(string));
