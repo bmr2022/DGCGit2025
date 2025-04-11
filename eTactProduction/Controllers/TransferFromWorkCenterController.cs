@@ -142,29 +142,9 @@ namespace eTactWeb.Controllers
                     {
                         TransferGrid = GetDetailTable(TransferFromWorkCenterDetail);
                     }
-                    var ChechedData = await _ITransferFromWorkCenter.ChkWIPStockBeforeSaving(model.IssueFromWCid, model.TransferMatEntrydate, model.TransferMatYearCode, TransferGrid);
-                    if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
-                    {
-                        if (ChechedData.Result != null)
-                        {
-                            DataTable dt = ChechedData.Result;
-
-                            List<string> errors = new List<string>();
-
-                            foreach (DataRow row in dt.Rows)
-                            {
-                                string itemName = row["ItemName"].ToString();
-                                string batchNo = row["BatchNo"].ToString();
-                                decimal availableQty = Convert.ToDecimal(row["CalWIPStock"]);
-
-                                errors.Add($"{itemName} + {batchNo} has only {availableQty} quantity available in stock.");
-                            }
-
-                            return Json(new { success = false, errors = errors });
-                        }
-                    }
-                    else
-                    {
+                    //var ChechedData = await _ITransferFromWorkCenter.ChkWIPStockBeforeSaving(model.IssueFromWCid, model.TransferMatEntrydate, model.TransferMatYearCode, TransferGrid);
+                    //if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
+                    //{
                         var Result = await _ITransferFromWorkCenter.SaveTransferFromWorkCenter(model, TransferGrid);
 
                         if (Result != null)
@@ -189,8 +169,25 @@ namespace eTactWeb.Controllers
                                 return View("Error", Result);
                             }
                         }
-                    }
-                    return RedirectToAction(nameof(TransferFromWorkCenter));
+                        return RedirectToAction(nameof(TransferFromWorkCenter));
+                    //}
+                    //else
+                    //{
+                    //    DataTable dt = ChechedData.Result;
+
+                    //    List<string> errors = new List<string>();
+
+                    //    foreach (DataRow row in dt.Rows)
+                    //    {
+                    //        string itemName = row["ItemName"].ToString();
+                    //        string batchNo = row["BatchNo"].ToString();
+                    //        decimal availableQty = Convert.ToDecimal(row["CalWIPStock"]);
+
+                    //        errors.Add($"{itemName} + {batchNo} has only {availableQty} quantity available in stock.");
+                    //    }
+
+                    //    return Json(new { success = false, errors = errors });
+                    //}
                 }
             }
             catch (Exception ex)
