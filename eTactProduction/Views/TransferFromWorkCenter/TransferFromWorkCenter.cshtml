@@ -1436,8 +1436,10 @@
                                     }
                                     $('#Unit').val(obj[0].Unit);
                                     $('#AltUnit').val(obj[0].AltUnit);
-                                    $('#BatchStock').val(obj[0].BatchStock);
-                                    $('#TotalStock').val(obj[0].TotalStock);
+                                    GetBatchWorkCenterQty();
+                                    GetWorkCenterTotalQty();
+                                    /* $('#BatchStock').val(obj[0].BatchStock);
+                                    $('#TotalStock').val(obj[0].TotalStock); */
                                     $('#TransferQty').val(obj[0].TransferQty);
                                     $('#AltTransferQty').val(obj[0].AltTransferQty);
                                     $('#ProcessName').val(obj[0].ProcessName);
