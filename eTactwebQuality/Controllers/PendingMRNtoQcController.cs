@@ -30,6 +30,7 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> PendingMRNtoQc()
         {
             ViewData["Title"] = "Pending MRN to QC Details";
+            ViewBag.YearCode = HttpContext.Session.GetString("YearCode");
             TempData.Clear();
             _MemoryCache.Remove("KeyPendingMRNToQC");
             var MainModel = new PendingMRNToQC();

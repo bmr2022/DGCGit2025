@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="04/11/2025 12:39:44" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Styles Name="Standard">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtUf9qSyRY6iqqB9/tWkSqYoi1YHo8P3ZHfWXex8dTW9a1vfTV2zCnSqoqIQZEFKJrlCioIjJgD04y8npqOeOIXZdAySN9Yembst22oIAA2G/wylFo1XLX63pxQari4GIyagoEmUJaAoZyoOXJkA27b4=">
+      <TableDataSource Name="VMRNMainDetail" Alias="SPReportMRN" DataType="System.Int32" Enabled="true" TableName="VMRNMainDetail" SelectCommand="exec SPReportMRN @Flag='Detail',@MRNType='SingleMRN',@MRNNO ='MRNMR2025/00041',@MRNyearcode =2025">
+        <Column Name="pono" DataType="System.String"/>
+        <Column Name="RecQty" DataType="System.Decimal"/>
+        <Column Name="MRNNo" DataType="System.String"/>
+        <Column Name="SchNo" DataType="System.String"/>
+        <Column Name="PoDate" DataType="System.DateTime"/>
+        <Column Name="GateNo" DataType="System.String"/>
+        <Column Name="QCCompleted" DataType="System.String"/>
+        <Column Name="MRNQCCompleted" DataType="System.String"/>
+        <Column Name="Rate" DataType="System.Decimal"/>
+        <Column Name="BillQty" DataType="System.Decimal"/>
+        <Column Name="partcode" DataType="System.String"/>
+        <Column Name="DocName" DataType="System.String"/>
+        <Column Name="TotalAmt" DataType="System.Decimal"/>
+        <Column Name="NetAmt" DataType="System.Decimal"/>
+        <Column Name="Currency" DataType="System.String"/>
+        <Column Name="DeptName" DataType="System.String"/>
+        <Column Name="ActualEntryDate" DataType="System.DateTime"/>
+        <Column Name="FOC" DataType="System.String"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="PoType" DataType="System.String"/>
+        <Column Name="unit" DataType="System.String"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="SupplierBatchNo" DataType="System.String"/>
+        <Column Name="ShelfLife" DataType="System.Decimal"/>
+        <Column Name="ShortExcessQty" DataType="System.Decimal"/>
+        <Column Name="Amount" DataType="System.Decimal"/>
+        <Column Name="Batchno" DataType="System.String"/>
+        <Column Name="Uniquebatchno" DataType="System.String"/>
+        <Column Name="VendAddress" DataType="System.String"/>
+        <Column Name="mrnDate" DataType="System.DateTime"/>
+        <Column Name="VendorName" DataType="System.String"/>
+        <Column Name="GDate" DataType="System.DateTime"/>
+        <Column Name="Invoiceno" DataType="System.String"/>
+        <Column Name="InvoiceDate" DataType="System.DateTime"/>
+        <Column Name="SchDate" DataType="System.DateTime"/>
+        <Column Name="ItemName" DataType="System.String"/>
+        <Column Name="altqty" DataType="System.Double"/>
+        <Column Name="NeedTochkQC" DataType="System.String"/>
+        <Column Name="ActualEntryByEMp" DataType="System.String"/>
+        <Column Name="UpdatedByEmp" DataType="System.String"/>
+        <Column Name="LastUpdateDate" DataType="System.DateTime"/>
+        <Column Name="RecInStore" DataType="System.String"/>
+        <Column Name="MRNType" DataType="System.String"/>
+        <Column Name="EntryDate" DataType="System.DateTime"/>
+        <Column Name="Remark1" DataType="System.String"/>
+        <Column Name="ShelfLife1" DataType="System.Double"/>
+        <Column Name="EntryByMachineName" DataType="System.String"/>
+        <CommandParameter Name="MrnNoparam" DataType="22" Expression="MrnNoparam"/>
+        <CommandParameter Name="MrnYearcodeparam" Expression="MrnYearcodeparam"/>
+        <CommandParameter Name="MRNTypeparam" DataType="22" Expression="MRNTypeparam"/>
+        <CommandParameter Name="Flagparam" DataType="22" Expression="Flagparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Relation Name="VMRNMainDetail_Company_Detail" ParentDataSource="VMRNMainDetail" ChildDataSource="null" ParentColumns="cc" ChildColumns="CC" Enabled="true"/>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
+  </Dictionary>
+  <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="45.8">
+      <TextObject Name="Text25" Left="28.35" Top="17.45" Width="321.3" Height="18.9" Text="GOODS/MATERIAL  RECEIPT NOTE" Font="Arial, 12pt, style=Bold, Underline" TextFill.Color="MediumBlue"/>
+      <TextObject Name="Text59" Left="538.65" Top="26.9" Width="75.6" Height="18.9" Text="Print Date" Font="Arial, 10pt, style=Bold" Style="Header"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="49.65" Width="1047.06" Height="28.35"/>
+    <GroupHeaderBand Name="GroupHeader2" Top="81.84" Width="1047.06" Height="68.25" Condition="[Company_Detail.SPReportMRN.MRNNo]">
+      <TextObject Name="Text3" Left="18.9" Top="28.35" Width="75.6" Height="18.9" Text="Gate No :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text27" Left="255.15" Top="28.35" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text29" Left="18.9" Top="49.35" Width="85.05" Height="18.9" Text="Invoice No:" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text30" Left="255.15" Top="49.35" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text31" Left="472.5" Top="28.35" Width="94.5" Height="18.9" Text="Entry Date :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text32" Left="472.5" Top="49.35" Width="94.5" Height="18.9" Text="Document :" Font="Arial, 10pt, style=Bold"/>
+      <LineObject Name="Line2" Top="8" Width="1048.95" Border.Style="Dash"/>
+      <TextObject Name="Text60" Left="18.9" Top="9.45" Width="75.6" Height="18.9" Text="MRN No :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text61" Left="255.15" Top="9.45" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text117" Left="746.55" Top="28.35" Width="47.25" Height="18.9" Text="FOC :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text118" Left="746.55" Top="47.25" Width="94.5" Height="18.9" Text="Rec Store :" Font="Arial, 10pt, style=Bold"/>
+      <GroupHeaderBand Name="GroupHeader3" Top="153.94" Width="1047.06" Height="75.6" Condition="[Company_Detail.SPReportMRN.MRNNo]">
+        <TextObject Name="Text94" Left="18.9" Width="103.95" Height="28.35" Text="Vendor Name :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text95" Left="18.9" Top="37.8" Width="103.95" Height="28.35" Text="Address :" Font="Arial, 10pt, style=Bold"/>
+        <LineObject Name="Line3" Top="66.15" Width="1048.95" Border.Style="Dash"/>
+        <GroupHeaderBand Name="GroupHeader4" Top="233.38" Width="1047.06" Height="47.25" Condition="[Company_Detail.SPReportMRN.MRNNo]">
+          <TextObject Name="Text34" Left="28.35" Width="94.5" Height="28.35" Text="Part Code" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text35" Left="132.3" Width="85.05" Height="28.35" Text="Item Name" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text36" Left="216.15" Top="2" Width="37.8" Height="37.8" Text="Bill Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text37" Left="604.8" Width="37.8" Height="28.35" Text="Unit" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text79" Left="9.45" Width="28.35" Height="28.35" Text="S No" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text85" Left="283.5" Width="37.8" Height="37.8" Text="Rec Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text86" Left="378.3" Width="47.25" Height="37.8" Text="OK Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text87" Left="448.55" Width="37.8" Height="37.8" Text="Rej Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text88" Left="491.4" Width="47.25" Height="37.8" Text="Hold Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text89" Left="548.1" Width="37.8" Height="37.8" Text="Rew Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text40" Left="947" Width="37.8" Height="28.35" Text="PO NO" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text41" Left="988.65" Width="47.25" Height="28.35" Text="Sch No" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text90" Left="330.75" Width="37.8" Height="47.25" Text="Shrt/Exc" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text92" Left="642.6" Width="47.25" Height="28.35" Text="Rate" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <LineObject Name="Line6" Top="47.25" Width="1048.95" Border.Style="Dash"/>
+          <TextObject Name="Text104" Left="746.55" Width="47.25" Height="28.35" Text="BatchNo" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text105" Left="812.7" Width="66.15" Height="47.25" Text="Unique Batch No" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text106" Left="689.85" Width="47.25" Height="28.35" Text="Amt" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <DataBand Name="Data1" Top="284.48" Width="1047.06" EvenStyle="EvenRows" DataSource="VMRNMainDetail"/>
+        </GroupHeaderBand>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter2" Top="288.33" Width="1047.06" Height="66.15">
+        <TextObject Name="Text55" Left="66.15" Width="103.95" Height="18.9" Text="TOTAL  :" HorzAlign="Justify" VertAlign="Bottom" Font="Arial, 10pt, style=Bold"/>
+        <LineObject Name="Line4" Left="-122.85" Top="28.35" Width="1171.8" Border.Style="Dash"/>
+        <LineObject Name="Line5" Width="1048.95" Border.Style="Dash"/>
+        <TextObject Name="Text115" Left="9.45" Top="28.35" Width="85.05" Height="18.9" Text="Enterd By :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text116" Left="9.45" Top="47.25" Width="85.05" Height="18.9" Text="Date   :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text119" Left="330.75" Top="28.35" Width="94.5" Height="18.9" Text="Updated By :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text120" Left="330.75" Top="47.25" Width="94.5" Height="18.9" Text="Remark :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text121" Left="718.2" Top="28.35" Width="122.85" Height="18.9" Text="Store Incharge :" Font="Arial, 10pt, style=Bold"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="358.32" Width="1047.06" Height="18.9">
+      <TextObject Name="Text4" Width="1047.06" Height="18.9" Dock="Fill" Text="[PageN]" HorzAlign="Right" Font="Arial, 10pt" Style="Footer"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

@@ -443,11 +443,12 @@
 
         function showDetail() {
               debugger
+                 var yearCode = '@ViewBag.YearCode';
             if (!ValidateShow()) return;
             var data = {
                 "Flag": "MRNDATA",
                 "MRNJW": $('#MrnJW').val(),
-                "YearCode": 2023,
+                "YearCode": yearCode,
                 "FromDate": $('#FromDate').val(),
                 "ToDate": $('#ToDate').val(),
                 "AccountCode": $('#VendorName').val(),
