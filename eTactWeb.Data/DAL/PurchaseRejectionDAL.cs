@@ -555,13 +555,13 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
-                    SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    SqlParams.Add(new SqlParameter("@flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@UpdatedBy", model.LastUpdatedBy));
                     SqlParams.Add(new SqlParameter("@LastUpdatedDate", DateTime.Today));
                 }
                 else
                 {
-                    SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
+                    SqlParams.Add(new SqlParameter("@flag", "INSERT"));
                 }
 
                 DateTime purchaseRejectionInvoiceDt = new DateTime();
@@ -575,68 +575,63 @@ namespace eTactWeb.Data.DAL
                 purchaseRejectionEntryDt = CommonFunc.ParseDate(model.PurchaseRejEntryDate);
                 actualDt = CommonFunc.ParseDate(model.ActualEntryDate);
 
-                SqlParams.Add(new SqlParameter("@EntryID", model.PurchaseRejEntryId));
-                SqlParams.Add(new SqlParameter("@YearCode", model.PurchaseRejYearCode));
-                SqlParams.Add(new SqlParameter("@EntryDate", purchaseRejectionEntryDt == default ? string.Empty : purchaseRejectionEntryDt));
-                SqlParams.Add(new SqlParameter("@Mrnno", model.MIRNo ?? string.Empty)); //check
-                SqlParams.Add(new SqlParameter("@mrnyearcode", model.MIRYearCode)); //check
-                SqlParams.Add(new SqlParameter("@MRNDate", model.MIRDate)); //check
-                SqlParams.Add(new SqlParameter("@Gateno", model.MIRDate)); //check
-
-
-                SqlParams.Add(new SqlParameter("@InvNo", model.PurchaseRejectionInvoiceNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@PurchaseRejEntryId", model.PurchaseRejEntryId));
+                SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", model.PurchaseRejYearCode));
+                SqlParams.Add(new SqlParameter("@PurchaseRejEntryDate", purchaseRejectionEntryDt == default ? string.Empty : purchaseRejectionEntryDt));
+                SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", model.DebitNotePurchaseRejection));
+                SqlParams.Add(new SqlParameter("@PurchaseRejInvoiceNo", model.PurchaseRejectionInvoiceNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@InvoiceDate", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
+                SqlParams.Add(new SqlParameter("@InvoiceTime", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
                 SqlParams.Add(new SqlParameter("@SubVoucherName", model.SubVoucherName ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@PurchVoucherNo", model.PurchaseRejectionVoucherNo ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@VoucherDate", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
-                //SqlParams.Add(new SqlParameter("@AgainstSalePurchase", model.AgainstSalePurchase ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@PurchaserejVoucherNo", model.PurchaseRejectionVoucherNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@VoucherNo", model.PurchaseRejectionVoucherNo ?? string.Empty));
+                //SqlParams.Add(new SqlParameter("@VoucherDate", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
                 SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
-                SqlParams.Add(new SqlParameter("@CustVendAddress", model.CustVendAddress ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@StateNameofSupply", model.StateNameofSupply ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@VendoreAddress", model.CustVendAddress ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@StateName", model.StateNameofSupply ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@StateCode", model.StateCode ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@CityofSupply", model.CityofSupply ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@CountryOfSupply", model.CountryOfSupply ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@City", model.CityofSupply ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@Country", model.CountryOfSupply ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@CurrencyId", model.CurrencyId ?? 0));
+                SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerm ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@PaymentCreditDay", model.PaymentCreditDay));
+                //SqlParams.Add(new SqlParameter("@PaymentCreditDay", model.PaymentCreditDay));
                 SqlParams.Add(new SqlParameter("@GSTNO", model.GSTNO ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@GstRegUnreg", model.GSTRegistered ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", model.DomesticExportNEPZ ?? string.Empty));
+                //SqlParams.Add(new SqlParameter("@GSTRegistered", model.GSTRegistered ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Transporter", model.Transporter ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Vehicleno", model.Vehicleno ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@Distance", model.Distance ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@BillAmt", model.BillAmt));
                 SqlParams.Add(new SqlParameter("@RoundOffAmt", model.RoundOffAmt));
                 SqlParams.Add(new SqlParameter("@RoundoffType", model.RoundoffType ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Taxableamt", model.Taxableamt));
                 SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.ToatlDiscountPercent));
                 SqlParams.Add(new SqlParameter("@TotalDiscountAmount", model.TotalDiscountAmount));
-                SqlParams.Add(new SqlParameter("@NetAmt", model.NetAmt));
-                SqlParams.Add(new SqlParameter("@Remark", model.Remark ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@InvNetAmt", model.NetAmt));
+                SqlParams.Add(new SqlParameter("@PurchaserejRemark", model.Remark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Uid", model.Uid));
-                //SqlParams.Add(new SqlParameter("@ItemService", model.ItemService ?? string.Empty));
-                //SqlParams.Add(new SqlParameter("@INVOICETYPE", model.INVOICETYPE ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@MachineName", model.MachineName ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", actualDt == default ? string.Empty : actualDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
                 SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
                 SqlParams.Add(new SqlParameter("@LastUpdationDate", lastUpdationDt == default ? string.Empty : lastUpdationDt));
-                //SqlParams.Add(new SqlParameter("@EntryFreezToAccounts", model.EntryFreezToAccounts));
                 SqlParams.Add(new SqlParameter("@BalanceSheetClosed", model.BalanceSheetClosed));
-                //SqlParams.Add(new SqlParameter("@EInvNo", model.EInvNo ?? string.Empty));
-                //SqlParams.Add(new SqlParameter("@EinvGenerated", model.EinvGenerated));
-                SqlParams.Add(new SqlParameter("@AttachmentFilePath1", model.AttachmentFilePath1 ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@AttachmentFilePath2", model.AttachmentFilePath2 ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@AttachmentFilePath3", model.AttachmentFilePath3 ?? string.Empty));
+                //SqlParams.Add(new SqlParameter("@AttachmentFilePath1", model.AttachmentFilePath1 ?? string.Empty));
+                //SqlParams.Add(new SqlParameter("@AttachmentFilePath2", model.AttachmentFilePath2 ?? string.Empty));
+                //SqlParams.Add(new SqlParameter("@AttachmentFilePath3", model.AttachmentFilePath3 ?? string.Empty));
 
                 //SqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.SaleBillEntryId));
 
-                SqlParams.Add(new SqlParameter("@DTItemGrid", PRGrid));
+                SqlParams.Add(new SqlParameter("@Dtdeatil", PRGrid));
                 SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));
 
                 SqlParams.Add(new SqlParameter("@DRCRDATA", DrCrDetailDT));
                 SqlParams.Add(new SqlParameter("@AgainstRef", AdjDetailDT));
                 SqlParams.Add(new SqlParameter("@dtAgaintBillNo", DTAgainstBillDetail));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSP_PurchaseBillMainDetail", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPPurchaseRejectionMainDetail", SqlParams);
 
             }
             catch (Exception ex)

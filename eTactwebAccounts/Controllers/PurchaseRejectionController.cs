@@ -7,6 +7,7 @@ using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using System.Data;
 using System.Net;
+using System.Globalization;
 
 namespace eTactWeb.Controllers
 {
@@ -120,6 +121,7 @@ namespace eTactWeb.Controllers
                     {
                         TaxDetailDT = GetTaxDetailTable(TaxGrid);
                     }
+
                     if (DTAgainstBillDetail != null)
                     {
                         DTAgainstBillDetail = GetAgainstDetailTable(PurchaseRejectionAgainstBillDetail, MainModel);
@@ -187,7 +189,7 @@ namespace eTactWeb.Controllers
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
-                            var errNum = Result.Result.Message.ToString().Split(":")[1];
+                            var errNum = Result?.Result?.Message.ToString().Split(":")[1];
                             model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
                             if (errNum == " 2627")
                             {
@@ -310,12 +312,6 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("PurchaseRejYearCode", typeof(int));
             DTSSGrid.Columns.Add("PurchaseRejInvoiceNo", typeof(string));
             DTSSGrid.Columns.Add("PurchaseRejVoucherNo", typeof(string));
-            //DTSSGrid.Columns.Add("AgainstSalebillBillNo", typeof(string));
-            //DTSSGrid.Columns.Add("AgainstSaleBillYearCode", typeof(int));
-            //DTSSGrid.Columns.Add("AgainstSaleBilldate", typeof(string));
-            //DTSSGrid.Columns.Add("AgainstSaleBillEntryId", typeof(int));
-            //DTSSGrid.Columns.Add("AgainstSalebillVoucherNo", typeof(string));
-            //DTSSGrid.Columns.Add("SaleBillTYpe", typeof(string));
             DTSSGrid.Columns.Add("AgainstPurchasebillBillNo", typeof(string));
             DTSSGrid.Columns.Add("AgainstPurchaseBillYearCode", typeof(int));
             DTSSGrid.Columns.Add("AgainstPurchaseBilldate", typeof(string));
@@ -339,11 +335,6 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("POYearCode", typeof(int));
             DTSSGrid.Columns.Add("PoRate", typeof(float));
             DTSSGrid.Columns.Add("poammno", typeof(string));
-            //DTSSGrid.Columns.Add("SONO", typeof(string));
-            //DTSSGrid.Columns.Add("SOYearcode", typeof(int));
-            //DTSSGrid.Columns.Add("SODate", typeof(string));
-            //DTSSGrid.Columns.Add("CustOrderNo", typeof(string));
-            //DTSSGrid.Columns.Add("SOEntryId", typeof(int));
             DTSSGrid.Columns.Add("BatchNo", typeof(string));
             DTSSGrid.Columns.Add("UniqueBatchNo", typeof(string));
 
@@ -357,12 +348,6 @@ namespace eTactWeb.Controllers
                      (model != null ? model.PurchaseRejYearCode : 0),
                     Item.PurchaseRejectionInvoiceNo,
                     Item.PurchaseRejectionVoucherNo,
-                    //Item.AgainstSaleBillBillNo,
-                    //Item.AgainstSaleBillYearCode,
-                    //Item.AgainstSaleBillDate == null ? string.Empty : (Item.AgainstSaleBillDate.Split(" ")[0]),
-                    //Item.AgainstSaleBillEntryId,
-                    //Item.AgainstSaleBillVoucherNo,
-                    //Item.SaleBillType,
                     Item.AgainstPurchaseBillBillNo,
                     Item.AgainstPurchaseBillYearCode,
                     Item.AgainstPurchaseBillDate == null ? string.Empty : (Item.AgainstPurchaseBillDate.Split(" ")[0]),
@@ -386,11 +371,6 @@ namespace eTactWeb.Controllers
                     Item.POYearCode,
                     Item.PoRate,
                     Item.PoAmmNo,
-                   //Item.SONO,
-                   //Item.SOYearCode,
-                   //Item.SODate == null ? string.Empty : (Item.SODate.Split(" ")[0]),
-                   //Item.CustOrderNo,
-                   //Item.SOEntryId,
                     Item.BatchNo,
                     Item.UniqueBatchNo
                     });
@@ -401,18 +381,18 @@ namespace eTactWeb.Controllers
         private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
         {
             DataTable Table = new();
-            Table.Columns.Add("TxSeqNo", typeof(int));
-            Table.Columns.Add("TxType", typeof(string));
-            Table.Columns.Add("TxItemCode", typeof(int));
-            Table.Columns.Add("TxTaxType", typeof(int));
-            Table.Columns.Add("TxAccountCode", typeof(int));
-            Table.Columns.Add("TxPercentg", typeof(float));
-            Table.Columns.Add("TxAdInTxable", typeof(string));
-            Table.Columns.Add("TxRoundOff", typeof(string));
-            Table.Columns.Add("TxAmount", typeof(float));
-            Table.Columns.Add("TxRefundable", typeof(string));
-            Table.Columns.Add("TxOnExp", typeof(float));
-            Table.Columns.Add("TxRemark", typeof(string));
+            Table.Columns.Add("SeqNo", typeof(int));
+            Table.Columns.Add("Type", typeof(string));
+            Table.Columns.Add("ItemCode", typeof(int));
+            Table.Columns.Add("TaxType", typeof(int));
+            Table.Columns.Add("AccountCode", typeof(int));
+            Table.Columns.Add("Percentg", typeof(float));
+            Table.Columns.Add("AdInTxable", typeof(string));
+            Table.Columns.Add("RoundOff", typeof(string));
+            Table.Columns.Add("Amount", typeof(float));
+            Table.Columns.Add("Refundable", typeof(string));
+            Table.Columns.Add("OnExp", typeof(float));
+            Table.Columns.Add("Remark", typeof(string));
 
             foreach (TaxModel Item in TaxDetailList)
             {
@@ -436,7 +416,6 @@ namespace eTactWeb.Controllers
 
             return Table;
         }
-
         public async Task<JsonResult> NewEntryId(int YearCode)
         {
             var JSON = await _purchRej.NewEntryId(YearCode);
