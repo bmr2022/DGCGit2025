@@ -755,7 +755,12 @@
                 $('#TransferMatSlipDate').val(TransferMatSlipDate);
                 var ProdStatus = "@Model.PRODSTATUSProdUnProdRej";
                 $('#PRODSTATUSProdUnProdRej').val(ProdStatus).trigger("change");
-                FillStoreName();
+                if ($('#IssueToStoreWC').val() == "S") {
+                    FillStoreName();
+                }
+                else if ($('#IssueToStoreWC').val() == "W") {
+                    FillToWorkCenter();
+                }
             }
             else {
                 GetEntryId();
