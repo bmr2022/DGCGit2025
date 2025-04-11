@@ -22,7 +22,7 @@ else
             <td><input id="PartCode-@item.SeqNo" value="@item.RmPartCode" readonly /></td>
             <td><input id="ItemName-@item.SeqNo" value="@item.RmItemName" readonly><input type="hidden" id="RmItemCode-@item.SeqNo" value="@item.RmItemCode"></td>
             <td><input id="ReqQty-@item.SeqNo" value="@(string.Format("{0:0.##}", item.TotalReqRMQty))" style="width:70px;background-color:blue;color:white" type="number" readonly></td>
-            <td><input id="IssueQty-@item.SeqNo" value="@(string.Format("{0:0.##}", item.ConsumedRMQTY))" style="width:70px;" type="number" readonly onchange="IssQtyChange(@item.SeqNo)"></td>
+            <td><input id="IssueQty-@item.SeqNo" value="@(string.Format("{0:0.######}", item.ConsumedRMQTY))" style="width:70px;" type="number" readonly onchange="IssQtyChange(@item.SeqNo)"></td>
             <td><input id="unit-@item.SeqNo" style="height: 30px;width:50px !important;" value="@item.RmUnit" readonly></td>
             <td><input id="ProdQty-@item.SeqNo" value="@(string.Format("{0:0.##}", item.FGProdQty))" style="width:70px;" type="number" readonly></td>
             <td><input id="TotalStock-@item.SeqNo" value="@(string.Format("{0:0.##}", item.TotalStock))" style="width:70px;background-color:green;color:white" type="number" readonly></td>
