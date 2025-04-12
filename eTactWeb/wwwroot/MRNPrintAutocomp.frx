@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="04/11/2025 12:39:44" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="04/12/2025 07:31:34" ReportInfo.CreatorVersion="2023.2.0.0">
   <Styles Name="Standard">
     <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
     <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
@@ -9,8 +9,8 @@
     <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtUf9qSyRY6iqqB9/tWkSqYoi1YHo8P3ZHfWXex8dTW9a1vfTV2zCnSqoqIQZEFKJrlCioIjJgD04y8npqOeOIXZdAySN9Yembst22oIAA2G/wylFo1XLX63pxQari4GIyagoEmUJaAoZyoOXJkA27b4=">
-      <TableDataSource Name="VMRNMainDetail" Alias="SPReportMRN" DataType="System.Int32" Enabled="true" TableName="VMRNMainDetail" SelectCommand="exec SPReportMRN @Flag='Detail',@MRNType='SingleMRN',@MRNNO ='MRNMR2025/00041',@MRNyearcode =2025">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtY3Ug2AaGWs0+v2WzvD/9ONRKS+QUpguwBGYh70i9FMZhUEDcBuUa62uMyzpYRZWTduF5TuJ6/3Bnzt+/T6i2i3eOecLU09N5HLE+TzLJ1Cf9UyBga+YCEeA/76QzkBwVO1y9c1NwZN/somXO1o0JIk=">
+      <TableDataSource Name="VMRNMainDetail" Alias="SPReportMRN" DataType="System.Int32" Enabled="true" TableName="VMRNMainDetail" SelectCommand="exec SPReportMRN @Flag='Detail',@MRNType='SingleMRN',@MRNNO =@MrnNoparam,@MRNyearcode =@MrnYearcodeparam">
         <Column Name="pono" DataType="System.String"/>
         <Column Name="RecQty" DataType="System.Decimal"/>
         <Column Name="MRNNo" DataType="System.String"/>
@@ -58,22 +58,23 @@
         <Column Name="Remark1" DataType="System.String"/>
         <Column Name="ShelfLife1" DataType="System.Double"/>
         <Column Name="EntryByMachineName" DataType="System.String"/>
+        <Column Name="Com_Name" DataType="System.String"/>
+        <Column Name="OfficeAdd1" DataType="System.String"/>
         <CommandParameter Name="MrnNoparam" DataType="22" Expression="MrnNoparam"/>
-        <CommandParameter Name="MrnYearcodeparam" Expression="MrnYearcodeparam"/>
-        <CommandParameter Name="MRNTypeparam" DataType="22" Expression="MRNTypeparam"/>
-        <CommandParameter Name="Flagparam" DataType="22" Expression="Flagparam"/>
+        <CommandParameter Name="MrnYearcodeparam" DataType="22" Expression="MrnYearcodeparam"/>
       </TableDataSource>
     </MsSqlDataConnection>
     <Relation Name="VMRNMainDetail_Company_Detail" ParentDataSource="VMRNMainDetail" ChildDataSource="null" ParentColumns="cc" ChildColumns="CC" Enabled="true"/>
     <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
   </Dictionary>
   <ReportPage Name="Page1" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="45.8">
-      <TextObject Name="Text25" Left="28.35" Top="17.45" Width="321.3" Height="18.9" Text="GOODS/MATERIAL  RECEIPT NOTE" Font="Arial, 12pt, style=Bold, Underline" TextFill.Color="MediumBlue"/>
-      <TextObject Name="Text59" Left="538.65" Top="26.9" Width="75.6" Height="18.9" Text="Print Date" Font="Arial, 10pt, style=Bold" Style="Header"/>
+    <ReportTitleBand Name="ReportTitle1" Width="1047.06" Height="102.5">
+      <TextObject Name="Text25" Top="74.15" Width="1039.5" Height="18.9" Text="GOODS/MATERIAL  RECEIPT NOTE" HorzAlign="Center" Font="Arial, 12pt, style=Bold, Underline" TextFill.Color="MediumBlue"/>
+      <TextObject Name="Text59" Left="963.9" Top="83.6" Width="75.6" Height="18.9" Text="Print Date" Font="Arial, 10pt, style=Bold" Style="Header"/>
+      <TextObject Name="Text239" Width="1039.5" Height="28.35" Text="[SPReportMRN.Com_Name]" HorzAlign="Center" Font="Arial, 18pt"/>
+      <TextObject Name="Text240" Top="37.8" Width="1039.5" Height="28.35" Text="[SPReportMRN.OfficeAdd1]" HorzAlign="Center" Font="Arial, 14pt"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="49.65" Width="1047.06" Height="28.35"/>
-    <GroupHeaderBand Name="GroupHeader2" Top="81.84" Width="1047.06" Height="68.25" Condition="[Company_Detail.SPReportMRN.MRNNo]">
+    <GroupHeaderBand Name="GroupHeader2" Top="106.35" Width="1047.06" Height="68.25" Condition="[SPReportMRN.MRNNo]">
       <TextObject Name="Text3" Left="18.9" Top="28.35" Width="75.6" Height="18.9" Text="Gate No :" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text27" Left="255.15" Top="28.35" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text29" Left="18.9" Top="49.35" Width="85.05" Height="18.9" Text="Invoice No:" Font="Arial, 10pt, style=Bold"/>
@@ -85,14 +86,23 @@
       <TextObject Name="Text61" Left="255.15" Top="9.45" Width="75.6" Height="18.9" Text="Date :" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text117" Left="746.55" Top="28.35" Width="47.25" Height="18.9" Text="FOC :" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text118" Left="746.55" Top="47.25" Width="94.5" Height="18.9" Text="Rec Store :" Font="Arial, 10pt, style=Bold"/>
-      <GroupHeaderBand Name="GroupHeader3" Top="153.94" Width="1047.06" Height="75.6" Condition="[Company_Detail.SPReportMRN.MRNNo]">
-        <TextObject Name="Text94" Left="18.9" Width="103.95" Height="28.35" Text="Vendor Name :" Font="Arial, 10pt, style=Bold"/>
-        <TextObject Name="Text95" Left="18.9" Top="37.8" Width="103.95" Height="28.35" Text="Address :" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text122" Left="103.95" Top="9.45" Width="94.5" Height="18.9" Text="[SPReportMRN.MRNNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text123" Left="103.95" Top="28.35" Width="94.5" Height="18.9" Text="[SPReportMRN.GateNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text124" Left="103.95" Top="47.25" Width="94.5" Height="18.9" Text="[SPReportMRN.Invoiceno]" Font="Arial, 10pt"/>
+      <TextObject Name="Text125" Left="330.75" Top="47.25" Width="94.5" Height="18.9" Text="[SPReportMRN.InvoiceDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text126" Left="330.75" Top="28.35" Width="94.5" Height="18.9" Text="[SPReportMRN.GDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text127" Left="330.75" Top="9.45" Width="94.5" Height="18.9" Text="[SPReportMRN.mrnDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text128" Left="567" Top="28.35" Width="94.5" Height="18.9" Text="[SPReportMRN.ActualEntryDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <GroupHeaderBand Name="GroupHeader3" Top="178.44" Width="1047.06" Height="66.15" Condition="[SPReportMRN.MRNNo]">
+        <TextObject Name="Text94" Left="18.9" Width="103.95" Height="28.35" Text="Vendor :" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text95" Left="18.9" Top="28.35" Width="103.95" Height="28.35" Text="Address :" Font="Arial, 10pt, style=Bold"/>
         <LineObject Name="Line3" Top="66.15" Width="1048.95" Border.Style="Dash"/>
-        <GroupHeaderBand Name="GroupHeader4" Top="233.38" Width="1047.06" Height="47.25" Condition="[Company_Detail.SPReportMRN.MRNNo]">
+        <TextObject Name="Text129" Left="122.85" Width="500.85" Height="18.9" Text="[SPReportMRN.VendorName]" Font="Arial, 10pt"/>
+        <TextObject Name="Text130" Left="122.85" Top="28.35" Width="567" Height="18.9" Text="[SPReportMRN.VendAddress]" Font="Arial, 10pt"/>
+        <GroupHeaderBand Name="GroupHeader4" Top="248.44" Width="1047.06" Height="47.25" Condition="[SPReportMRN.MRNNo]">
           <TextObject Name="Text34" Left="28.35" Width="94.5" Height="28.35" Text="Part Code" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text35" Left="132.3" Width="85.05" Height="28.35" Text="Item Name" Font="Arial, 10pt, style=Bold"/>
-          <TextObject Name="Text36" Left="216.15" Top="2" Width="37.8" Height="37.8" Text="Bill Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text36" Left="225.6" Top="2" Width="37.8" Height="37.8" Text="Bill Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text37" Left="604.8" Width="37.8" Height="28.35" Text="Unit" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text79" Left="9.45" Width="28.35" Height="28.35" Text="S No" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text85" Left="283.5" Width="37.8" Height="37.8" Text="Rec Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
@@ -101,19 +111,34 @@
           <TextObject Name="Text88" Left="491.4" Width="47.25" Height="37.8" Text="Hold Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text89" Left="548.1" Width="37.8" Height="37.8" Text="Rew Qty" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text40" Left="947" Width="37.8" Height="28.35" Text="PO NO" Font="Arial, 10pt, style=Bold"/>
-          <TextObject Name="Text41" Left="988.65" Width="47.25" Height="28.35" Text="Sch No" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text41" Left="998.1" Width="47.25" Height="28.35" Text="Sch No" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text90" Left="330.75" Width="37.8" Height="47.25" Text="Shrt/Exc" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
           <TextObject Name="Text92" Left="642.6" Width="47.25" Height="28.35" Text="Rate" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
           <LineObject Name="Line6" Top="47.25" Width="1048.95" Border.Style="Dash"/>
-          <TextObject Name="Text104" Left="746.55" Width="47.25" Height="28.35" Text="BatchNo" Font="Arial, 10pt, style=Bold"/>
-          <TextObject Name="Text105" Left="812.7" Width="66.15" Height="47.25" Text="Unique Batch No" Font="Arial, 10pt, style=Bold"/>
-          <TextObject Name="Text106" Left="689.85" Width="47.25" Height="28.35" Text="Amt" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
-          <DataBand Name="Data1" Top="284.48" Width="1047.06" EvenStyle="EvenRows" DataSource="VMRNMainDetail"/>
+          <TextObject Name="Text104" Left="812.7" Width="47.25" Height="28.35" Text="BatchNo" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text105" Left="878.85" Width="66.15" Height="47.25" Text="Unique Batch No" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text106" Left="727.65" Width="47.25" Height="28.35" Text="Amt" HorzAlign="Right" Font="Arial, 10pt, style=Bold"/>
+          <GroupHeaderBand Name="GroupHeader1" Top="299.53" Width="1047.06" Height="18.9" Condition="[SPReportMRN.partcode]">
+            <TextObject Name="Text131" Left="28.35" Width="94.5" Height="18.9" Text="[SPReportMRN.partcode]" Font="Arial, 10pt"/>
+            <TextObject Name="Text132" Left="122.85" Width="94.5" Height="18.9" Text="[SPReportMRN.ItemName]" Font="Arial, 10pt"/>
+            <TextObject Name="Text133" Left="217.35" Width="66.15" Height="18.9" Text="[SPReportMRN.BillQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text134" Left="283.5" Width="47.25" Height="18.9" Text="[SPReportMRN.RecQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text135" Left="330.75" Width="47.25" Height="18.9" Text="[SPReportMRN.ShortExcessQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text136" Left="642.6" Width="75.6" Height="18.9" Text="[SPReportMRN.Rate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text137" Left="595.35" Width="56.7" Height="18.9" Text="[SPReportMRN.unit]" Font="Arial, 10pt"/>
+            <TextObject Name="Text138" Left="718.2" Width="94.5" Height="18.9" Text="[SPReportMRN.Amount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+            <TextObject Name="Text139" Left="812.7" Width="56.7" Height="18.9" Text="[SPReportMRN.Batchno]" Font="Arial, 10pt"/>
+            <TextObject Name="Text140" Left="878.85" Width="66.15" Height="18.9" Text="[SPReportMRN.Uniquebatchno]" Font="Arial, 10pt"/>
+            <TextObject Name="Text141" Left="945" Width="47.25" Height="18.9" Text="[SPReportMRN.pono]" Font="Arial, 10pt"/>
+            <TextObject Name="Text142" Left="992.25" Width="56.7" Height="18.9" Text="[SPReportMRN.SchNo]" Font="Arial, 10pt"/>
+            <TextObject Name="Text238" Left="9.45" Width="18.9" Height="18.9" Text="[Row#]" HorzAlign="Center" Font="Arial, 8pt"/>
+            <DataBand Name="Data1" Top="322.28" Width="1047.06" EvenStyle="EvenRows" DataSource="VMRNMainDetail"/>
+          </GroupHeaderBand>
         </GroupHeaderBand>
       </GroupHeaderBand>
-      <GroupFooterBand Name="GroupFooter2" Top="288.33" Width="1047.06" Height="66.15">
+      <GroupFooterBand Name="GroupFooter2" Top="326.13" Width="1047.06" Height="66.15">
         <TextObject Name="Text55" Left="66.15" Width="103.95" Height="18.9" Text="TOTAL  :" HorzAlign="Justify" VertAlign="Bottom" Font="Arial, 10pt, style=Bold"/>
-        <LineObject Name="Line4" Left="-122.85" Top="28.35" Width="1171.8" Border.Style="Dash"/>
+        <LineObject Name="Line4" Left="-9.45" Top="28.35" Width="1058.4" Border.Style="Dash"/>
         <LineObject Name="Line5" Width="1048.95" Border.Style="Dash"/>
         <TextObject Name="Text115" Left="9.45" Top="28.35" Width="85.05" Height="18.9" Text="Enterd By :" Font="Arial, 10pt, style=Bold"/>
         <TextObject Name="Text116" Left="9.45" Top="47.25" Width="85.05" Height="18.9" Text="Date   :" Font="Arial, 10pt, style=Bold"/>
@@ -122,8 +147,5 @@
         <TextObject Name="Text121" Left="718.2" Top="28.35" Width="122.85" Height="18.9" Text="Store Incharge :" Font="Arial, 10pt, style=Bold"/>
       </GroupFooterBand>
     </GroupHeaderBand>
-    <PageFooterBand Name="PageFooter1" Top="358.32" Width="1047.06" Height="18.9">
-      <TextObject Name="Text4" Width="1047.06" Height="18.9" Dock="Fill" Text="[PageN]" HorzAlign="Right" Font="Arial, 10pt" Style="Footer"/>
-    </PageFooterBand>
   </ReportPage>
 </Report>
