@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using eTactWeb.DOM.Models;
 using System.Globalization;
+using System.Drawing.Printing;
 
 namespace eTactWeb.Controllers
 {
@@ -35,11 +36,27 @@ namespace eTactWeb.Controllers
             model.StockRegisterDetail = new List<StockRegisterDetail>();
             return View(model);
         }
-        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate,string PartCode,string ItemName, string ItemGroup,string ItemType,int StoreId,string ReportType,string BatchNo,string UniqueBatchNo)
+        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate,string PartCode,string ItemName, string ItemGroup,string ItemType,int StoreId,string ReportType,string BatchNo,string UniqueBatchNo, int pageNumber = 1, int pageSize = 10)
         {
             var model = new StockRegisterModel();
-            model = await _IStockRegister.GetStockRegisterData(FromDate, ToDate,PartCode,ItemName,ItemGroup,ItemType,StoreId,ReportType,BatchNo,UniqueBatchNo);
+            //model = await _IStockRegister.GetStockRegisterData(FromDate, ToDate,PartCode,ItemName,ItemGroup,ItemType,StoreId,ReportType,BatchNo,UniqueBatchNo);
             model.ReportMode= ReportType;
+            var allData = model;
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            var fullList = (await _IStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, StoreId, ReportType, BatchNo, UniqueBatchNo))?.StockRegisterDetail ?? new List<StockRegisterDetail>();
+           
+            model.TotalRecords = fullList.Count();
+            model.PageNumber = pageNumber;
+            model.StockRegisterDetail = fullList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageSize = pageSize;
+           
+            _MemoryCache.Set("KeyStockList", fullList, cacheEntryOptions);
             return PartialView("_StockRegisterGrid", model);
         }
 

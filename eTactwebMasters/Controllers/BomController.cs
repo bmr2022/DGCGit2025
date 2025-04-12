@@ -418,7 +418,7 @@ public class BomController : Controller
         return PartialView("_BomGrid", model);
     }
 
-    public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string GlobalSearch = "", int pageNumber = 1, int pageSize = 10)
+    public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string GlobalSearch = "", int pageNumber = 1, int pageSize = 50)
     {
         //BomDashboard model = new BomDashboard
         //{
@@ -472,15 +472,6 @@ public class BomController : Controller
             Size = 1024,
         };
        
-        //int totalRecords = bomList.Count;
-        //var pagedList = bomList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-
-        //model.BomList = pagedList;
-        //model.TotalRecords = totalRecords;
-        //model.PageNumber = pageNumber;
-        //model.PageSize = pageSize;
-
-
         //model.FGPartCode = FGPartCode;
         //model.FGItemName = FGItemName;
         //model.RMPartCode = RMPartCode;
@@ -490,114 +481,107 @@ public class BomController : Controller
 
         model.DTDashboard = model.DTDashboard == null ? new System.Data.DataTable() : model.DTDashboard;
         var DTDashboardPage = model.DTDashboard;
-        //int skip = (pageNumber - 1) * pageSize;
-        //var paginatedRows = model.DTDashboard.AsEnumerable()
-        //    .Skip(skip)
-        //    .Take(pageSize);
-
-        //model.DTDashboard = paginatedRows.CopyToDataTable();
-        //model.TotalRecords = model.DTDashboard.Rows.Count;
-        //List<BomModel> bomList = new List<BomModel>();
+        _MemoryCache.Set("KeyBomList", DTDashboardPage, cacheEntryOptions);
 
         model.TotalRecords = model.DTDashboard.Rows.Count;
         model.PageNumber = pageNumber;
         model.PageSize = pageSize;
 
-        // Apply pagination directly on DataTable
         var pagedRows = model.DTDashboard.AsEnumerable()
                                  .Skip((pageNumber - 1) * pageSize)
                                  .Take(pageSize);
 
-        // Check if any rows exist to avoid CopyToDataTable() crash
         model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : model.DTDashboard.Clone();
-        //if (DTDashboardPage != null && DTDashboardPage.Rows.Count > 0)
-        //{
-        //    //DataTable dt = oDataSet.Tables[0];
-
-        //    //bomList = dt.AsEnumerable()
-        //    //            .Select(dr => new BomModel
-
-
-        //    bomList = DTDashboardPage.AsEnumerable()
-        //                 .Select(dr => new BomModel
-
-        //                 {
-        //                     BomNo = int.TryParse(dr["BomNo"]?.ToString(), out int bomNo) ? bomNo : 0,
-        //                     FGPartCode = dr["FGPartCode"].ToString(),
-        //                     FGItemName = dr["FGItem"].ToString(),
-        //                     BomQty = decimal.TryParse(dr["BomQty"]?.ToString(), out decimal BomQty) ? BomQty : 0,
-
-        //                     RMPartCode = dr["RMPartCode"].ToString(),
-        //                     RMItemName = dr["RMItemName"].ToString(),
-        //                     Qty = decimal.TryParse(dr["Qty"]?.ToString(), out decimal Qty) ? Qty : 0,
-        //                     Unit = dr["Unit"].ToString(),
-        //                     AltPartcode1 = dr["AltPartcode1"].ToString(),
-        //                     AltItemName1 = dr["AltItem1"].ToString(),
-        //                     AltPartcode2 = dr["AltPartcode2"].ToString(),
-        //                     AltItemName2 = dr["AltItem2"].ToString(),
-        //                     AltQty1 = decimal.TryParse(dr["AltQty1"]?.ToString(), out decimal AltQty1) ? AltQty1 : 0,
-        //                     AltQty2 = decimal.TryParse(dr["AltQty2"]?.ToString(), out decimal AltQty2) ? AltQty2 : 0,
-
-        //                     UsedStageId = dr["UsedStageId"].ToString(),
-        //                     IssueToJOBwork = dr["IssueToJoBwork"].ToString(),
-        //                     DirectProcess = dr["DirectProcess"].ToString(),
-        //                     RecFrmCustJobwork = dr["RecFrmCustJobwork"].ToString(),
-        //                     PkgItem = dr["PkgItem"].ToString(),
-        //                     RunnerQty = decimal.TryParse(dr["RunnerQty"]?.ToString(), out decimal RunnerQty) ? RunnerQty : 0,
-
-        //                     Remark = dr["Remark"].ToString(),
-        //                     RunnerItemCode = int.TryParse(dr["RunnerItemCode"]?.ToString(), out int RunnerItemCode) ? RunnerItemCode : 0,
-
-        //                     GrossWt = decimal.TryParse(dr["GrossWt"]?.ToString(), out var grossWt) ? grossWt : 0,
-        //                     NetWt = decimal.TryParse(dr["NetWt"]?.ToString(), out var netWt) ? netWt : 0,
-        //                     Scrap = decimal.TryParse(dr["Scrap"]?.ToString(), out var scrap) ? scrap : 0,
-        //                     BurnQty = decimal.TryParse(dr["BurnQty"]?.ToString(), out var burnQty) ? burnQty : 0,
-
-        //                     Location = dr["Location"].ToString(),
-        //                     MPNNo = dr["MPNNo"].ToString()
-        //                 }).ToList();
-        //}
-        //_MemoryCache.Set("KeyBomList", bomList, cacheEntryOptions);
-        //model.TotalRecords = bomList.Count();
-        //model.PageNumber = pageNumber;
-        //model.PageSize = pageSize;
-        //var paginatedList = bomList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-        //model.DTDashboard = ToDataTable(paginatedList);
+      
         return View(model);
     }
-    public static System.Data.DataTable ToDataTable<T>(List<T> items)
+    [HttpGet]
+   public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+{
+    BomDashboard model = new BomDashboard();
+
+    if (string.IsNullOrWhiteSpace(searchString))
     {
-        System.Data.DataTable dataTable = new System.Data.DataTable(typeof(T).Name);
-
-        // Get all the properties
-        var props = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-
-        foreach (var prop in props)
-        {
-            Type propType = prop.PropertyType;
-
-            // Handle nullable types
-            if (propType.IsGenericType && propType.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
-                propType = Nullable.GetUnderlyingType(propType);
-            }
-
-            dataTable.Columns.Add(prop.Name, propType ?? typeof(object));
-        }
-
-        foreach (var item in items)
-        {
-            var values = new object[props.Length];
-            for (int i = 0; i < props.Length; i++)
-            {
-                values[i] = props[i].GetValue(item, null);
-            }
-
-            dataTable.Rows.Add(values);
-        }
-
-        return dataTable;
+        return PartialView("_BomDashboardGrid", model); // return empty model (or paginated full list)
     }
+
+    if (!_MemoryCache.TryGetValue("KeyBomList", out DataTable bomViewModel) || bomViewModel == null)
+    {
+        return PartialView("_BomDashboardGrid", model); // no data in memory
+    }
+
+    // Clone the structure of the original DataTable
+    DataTable filteredTable = bomViewModel.Clone();
+
+    // Filter rows based on the search string (case-insensitive)
+    foreach (DataRow row in bomViewModel.Rows)
+    {
+        foreach (DataColumn column in bomViewModel.Columns)
+        {
+            if (column.DataType == typeof(string))
+            {
+                var cellValue = row[column]?.ToString();
+                if (!string.IsNullOrEmpty(cellValue) &&
+                    cellValue.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                {
+                    filteredTable.ImportRow(row);
+                    break; // match found in this row, no need to check other columns
+                }
+            }
+        }
+    }
+
+    // Total records after search
+    model.TotalRecords = filteredTable.Rows.Count;
+    model.PageNumber = pageNumber;
+    model.PageSize = pageSize;
+
+    // Paging the filtered rows
+    var pagedRows = filteredTable.AsEnumerable()
+                                 .Skip((pageNumber - 1) * pageSize)
+                                 .Take(pageSize);
+
+    model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : filteredTable.Clone();
+
+    return PartialView("_BomDashboardGrid", model);
+}
+
+
+    //public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+    //{
+    //    BomDashboard model = new BomDashboard();
+    //    if (string.IsNullOrWhiteSpace(searchString))
+    //    {
+    //        return PartialView("_BomGrid", new List<BomDashboard>());
+    //    }
+
+    //    if (!_MemoryCache.TryGetValue("KeyBomList", out DataTable bomViewModel) || bomViewModel == null)
+    //    {
+    //        return PartialView("_BomGrid", new List<BomDashboard>());
+    //    }
+    //    DataTable filteredTable = bomViewModel.Clone();
+    //    foreach (DataRow row in bomViewModel.Rows)
+    //    {
+    //        foreach (DataColumn column in bomViewModel.Columns)
+    //        {
+    //            if (column.DataType == typeof(string))
+    //            {
+    //                var cellValue = row[column]?.ToString();
+    //                if (!string.IsNullOrEmpty(cellValue) &&
+    //                    cellValue.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+    //                {
+    //                    filteredTable.ImportRow(row);
+    //                    break; // No need to check other columns
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    model.TotalRecords = model.DTDashboard.Rows.Count;
+    //    model.PageNumber = pageNumber;
+    //    model.PageSize = pageSize;
+    //    return PartialView("_BomGrid", model);
+    //}
 
     // POST: BomController/Delete/5
     [HttpPost]
@@ -800,7 +784,15 @@ public class BomController : Controller
         model = await _IBom.GetDetailSearchData(model);
 
         //var Result = System.Text.Json.JsonSerializer.Serialize(model);
-        return PartialView("_BomDashboardGrid", model);
+        if(model.DashboardType== "Summary")
+        {
+            return PartialView("_BomDashboardGrid", model);
+        }
+        if(model.DashboardType== "Detail")
+        {
+            return PartialView("_BomDashboardDetailGrid", model);
+        }
+        return null;
     }
 
 
