@@ -146,6 +146,56 @@
                 </div>
             </div>
         </div>
+       @*  pagination *@
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            @* <div>
+                <button type="button" class="btn btn-link bg-graident" onclick="window.location.back()">
+                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK
+                </button>
+            </div> *@
+            @{
+                int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+            }
+            @if (Model.TotalRecords > 0) // Ensure pagination always shows when records exist
+            {
+                <ul class="pagination d-flex align-items-center">
+                    @if (Model.PageNumber > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
+                        </li>
+                    }
+
+                    @if (Model.PageNumber > 3)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = 1, pageSize = Model.PageSize })">1</a></li>
+                        <li class="page-item disabled"><a class="page-link">...</a></li>
+                    }
+
+                    @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+                    {
+                        <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.PageNumber < totalPages - 2)
+                    {
+                        <li class="page-item disabled"><a class="page-link">...</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = totalPages, pageSize = Model.PageSize })">@totalPages</a>
+                        </li>
+                    }
+
+                    @if (Model.PageNumber < totalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
     </div>
 </div>
 
@@ -507,3 +557,52 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-table2excel@1.1.1/dist/jquery.table2excel.min.js"></script>
 
 }
+
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+        margin: 20px auto;
+        gap: 5px; /* Space between buttons */
+        white-space: nowrap; /* Keeps it in a single line */
+    }
+
+    .page-item {
+        display: inline-block;
+    }
+
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        text-decoration: none;
+        color: black;
+        border: 1px solid #ddd;
+        font-size: 16px;
+        background-color: white;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+
+    .page-item.active .page-link {
+        background-color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .page-item.disabled .page-link {
+        background-color: #f0f0f0;
+        color: #999;
+        cursor: default;
+    }
+
+    .page-link:hover:not(.disabled):not(.active) {
+        background-color: #ddd;
+    }
+
+</style>
