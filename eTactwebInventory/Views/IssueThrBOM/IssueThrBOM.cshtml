@@ -897,7 +897,7 @@
         }
 
         function FillAltBatchUnique(i, flag) {
-
+            debugger
             if (flag == "batchOnly") {
                 var data = {
                     "ItemCode": $('#MainGridAltItemName-' + i).val(),
@@ -914,6 +914,7 @@
                     data: data,
                     async: false,
                     success: function (data) {
+                        debugger
                         if (data != null) {
                             var obj = $.parseJSON(data);
                             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
