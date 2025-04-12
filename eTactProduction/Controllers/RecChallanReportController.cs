@@ -27,10 +27,10 @@ namespace eTactProduction.Controllers
             model.RecChallanReportGrid = new List<RecChallanReportModel>();
             return View(model);
         }
-        public async Task<IActionResult> GetInventoryAgingReportDetailsData(string fromDate, string toDate, int EntryId, int YearCode)
+        public async Task<IActionResult> GetRecChallanReportGridData(string fromDate, string toDate, int EntryId, int YearCode)
         {
             var model = new RecChallanReportModel();
-            model = await _IRecChallanReport.GetInventoryAgingReportDetailsData( fromDate,  toDate,  EntryId,  YearCode);
+            model = await _IRecChallanReport.GetRecChallanReportGridData( fromDate,  toDate,  EntryId,  YearCode);
 
             return PartialView("_RecChallanReportGrid", model);
            

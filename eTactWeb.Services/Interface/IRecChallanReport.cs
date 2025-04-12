@@ -9,6 +9,6 @@ namespace eTactWeb.Services.Interface
 {
     public interface IRecChallanReport
     {
-        Task<RecChallanReportModel> GetInventoryAgingReportDetailsData(string fromDate, string toDate, int EntryId, int YearCode);
+        Task<RecChallanReportModel> GetRecChallanReportGridData(string fromDate, string toDate, int EntryId, int YearCode);
     }
 }
