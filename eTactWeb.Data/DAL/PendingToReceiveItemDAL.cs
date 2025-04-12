@@ -27,7 +27,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
-        public async Task<ResponseResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate)
+        public async Task<ResponseResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate,string partcode,string itemname)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -45,6 +45,8 @@ namespace eTactWeb.Data.DAL
                 //SqlParams.Add(new SqlParameter("@ToDate", todt.ToString("yyyy/MM/dd")));
                 SqlParams.Add(new SqlParameter("@FromDate", fromdt));
                 SqlParams.Add(new SqlParameter("@ToDate", todt));
+                SqlParams.Add(new SqlParameter("@ItemName", itemname));
+                SqlParams.Add(new SqlParameter("@PartCode", partcode));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ReceiveMaterialInStore", SqlParams);
             }
