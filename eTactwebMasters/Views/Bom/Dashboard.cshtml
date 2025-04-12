@@ -148,11 +148,11 @@
         </div>
        @*  pagination *@
         <div class="card-footer d-flex justify-content-between align-items-center">
-            <div>
+            @* <div>
                 <button type="button" class="btn btn-link bg-graident" onclick="window.location.back()">
                     <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK
                 </button>
-            </div>
+            </div> *@
             @{
                 int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
             }
