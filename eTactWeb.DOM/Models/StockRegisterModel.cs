@@ -20,7 +20,9 @@ namespace eTactWeb.DOM.Models
         public string? ReportMode { get; set; }
         public string? BatchNo { get; set; }
         public string? UniqueBatchNo { get; set; }
-
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public IList<StockRegisterDetail>? StockRegisterDetail { get; set; }
     }
     public class StockRegisterDetail
