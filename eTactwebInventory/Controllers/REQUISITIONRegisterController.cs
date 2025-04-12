@@ -9,18 +9,15 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IREQUISITIONRegister _IREQUISITIONRegister { get; }
-
         private readonly ILogger<REQUISITIONRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public REQUISITIONRegisterController(ILogger<REQUISITIONRegisterController> logger, IDataLogic iDataLogic, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IREQUISITIONRegister REQUISITIONRegister)
+        public REQUISITIONRegisterController(ILogger<REQUISITIONRegisterController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IREQUISITIONRegister REQUISITIONRegister)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IREQUISITIONRegister = REQUISITIONRegister;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

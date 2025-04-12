@@ -14,14 +14,12 @@ namespace eTactWeb.Controllers
 
         private readonly ILogger<MinimumMaximaumLevelController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public MinimumMaximaumLevelController(ILogger<MinimumMaximaumLevelController> logger, IDataLogic iDataLogic, IMinimumMaximaumLevel iMinimumMaximaumLevel, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public MinimumMaximaumLevelController(ILogger<MinimumMaximaumLevelController> logger, IDataLogic iDataLogic, IMinimumMaximaumLevel iMinimumMaximaumLevel, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IMinimumMaximaumLevel = iMinimumMaximaumLevel;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

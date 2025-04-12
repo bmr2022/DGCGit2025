@@ -17,14 +17,12 @@ namespace eTactWeb.Controllers
         public IStockRegister _IStockRegister { get; }
         private readonly ILogger<StockRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public StockRegisterController(ILogger<StockRegisterController> logger, IDataLogic iDataLogic, IStockRegister iStockRegister, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public StockRegisterController(ILogger<StockRegisterController> logger, IDataLogic iDataLogic, IStockRegister iStockRegister, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IStockRegister = iStockRegister;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -82,14 +80,9 @@ namespace eTactWeb.Controllers
                 model.PageNumber = pageNumber;
                 model.PageSize = pageSize;
             }
-            // Optional: Cache full list if needed
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            _MemoryCache.Set("KeyStockList", fullList, cacheEntryOptions);
+
+            string serializedGrid = JsonConvert.SerializeObject(fullList);
+            HttpContext.Session.SetString("KeyStockList", serializedGrid);
 
             return PartialView("_StockRegisterGrid", model);
         }
@@ -101,8 +94,13 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_StockRegisterGrid", new List<StockRegisterModel>());
             }
-
-            if (!_MemoryCache.TryGetValue("KeyStockList", out IList<StockRegisterDetail> stockRegisterViewModel) || stockRegisterViewModel == null)
+            string modelJson = HttpContext.Session.GetString("KeyStockList");
+            List<StockRegisterDetail> stockRegisterViewModel = new List<StockRegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterViewModel = JsonConvert.DeserializeObject<List<StockRegisterDetail>>(modelJson);
+            }
+            if ( stockRegisterViewModel == null)
             {
                 return PartialView("_StockRegisterGrid", new List<StockRegisterModel>());
             }
@@ -172,31 +170,6 @@ namespace eTactWeb.Controllers
 
                 var dt = time.ToString(format);
                 return Json(formattedDate);
-                //string apiUrl = "https://worldtimeapi.org/api/ip";
-
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        string content = await response.Content.ReadAsStringAsync();
-                //        JObject jsonObj = JObject.Parse(content);
-
-                //        string datetimestring = (string)jsonObj["datetime"];
-                //        var formattedDateTime = datetimestring.Split(" ")[0];
-
-                //        DateTime parsedDate = DateTime.ParseExact(formattedDateTime, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                //        string formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //        return Json(formattedDate);
-                //    }
-                //    else
-                //    {
-                //        string errorContent = await response.Content.ReadAsStringAsync();
-                //        throw new HttpRequestException($"Failed to fetch server date and time. Status Code: {response.StatusCode}. Content: {errorContent}");
-                //    }
-                //}
             }
             catch (HttpRequestException ex)
             {
@@ -214,7 +187,14 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> ExportStockRegisterToExcel(string ReportType)
         {
-            if (!_MemoryCache.TryGetValue("KeyStockList", out IList<StockRegisterDetail> stockRegisterList))
+            string modelJson = HttpContext.Session.GetString("KeyStockList");
+            List<StockRegisterDetail> stockRegisterList = new List<StockRegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<StockRegisterDetail>>(modelJson);
+            }
+
+            if (stockRegisterList == null)
                 return NotFound("No data available to export.");
 
             using var workbook = new XLWorkbook();

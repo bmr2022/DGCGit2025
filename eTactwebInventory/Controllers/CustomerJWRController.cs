@@ -17,16 +17,14 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly ICustomerJWR _ICustomerJWR;
         private readonly ILogger<CustomerJWRController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IConfiguration iconfiguration;
 
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public CustomerJWRController(ILogger<CustomerJWRController> logger, IDataLogic iDataLogic, ICustomerJWR iCustomerJWR, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public CustomerJWRController(ILogger<CustomerJWRController> logger, IDataLogic iDataLogic, ICustomerJWR iCustomerJWR, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ICustomerJWR = iCustomerJWR;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -36,7 +34,7 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Customer JWR";
             TempData.Clear();
-            _MemoryCache.Remove("KeyCustomerJWRDetailGrid");
+            HttpContext.Session.Remove("KeyCustomerJWRDetailGrid");
             var MainModel = new CustomerJobWorkReceiveModel();
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -46,13 +44,6 @@ namespace eTactWeb.Controllers
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
 
             return View(MainModel);
         }
@@ -67,13 +58,13 @@ namespace eTactWeb.Controllers
             try
             {
                 var CustJWRGrid = new DataTable();
-                _MemoryCache.TryGetValue("KeyCustomerJWRDetailGrid", out List<CustomerJobWorkReceiveDetail> CustomerJWRDetail);
-                //if (CustomerJWRDetail == null)
-                //{
-                //    //do nothing
-                //}
-                //else
-                //{
+                string modelJson = HttpContext.Session.GetString("KeyCustomerJWRDetailGrid");
+                List<CustomerJobWorkReceiveDetail> CustomerJWRDetail = new List<CustomerJobWorkReceiveDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    CustomerJWRDetail = JsonConvert.DeserializeObject<List<CustomerJobWorkReceiveDetail>>(modelJson);
+                }
+
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ReceivedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.CC = HttpContext.Session.GetString("Branch");
@@ -91,7 +82,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("KeyCustomerJWRDetailGrid");
+                        HttpContext.Session.Remove("KeyCustomerJWRDetailGrid");
                         var MainModel = new CustomerJobWorkReceiveModel();
                         MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                         MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -103,19 +94,13 @@ namespace eTactWeb.Controllers
                         MainModel.CC = HttpContext.Session.GetString("Branch");
                         MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
                         return View(MainModel);
                     }
                     if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        _MemoryCache.Remove("KeyCustomerJWRDetailGrid");
+                        HttpContext.Session.Remove("KeyCustomerJWRDetailGrid");
                         var MainModel = new CustomerJobWorkReceiveModel();
                         MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                         MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -127,12 +112,6 @@ namespace eTactWeb.Controllers
                         MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         MainModel.EmployeeList = await _ICustomerJWR.GetEmployeeList();
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
                         return View(MainModel);
                     }
                     if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -208,7 +187,7 @@ namespace eTactWeb.Controllers
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.EmployeeList = await _ICustomerJWR.GetEmployeeList();
             MainModel.CC = HttpContext.Session.GetString("Branch");
-            _MemoryCache.Remove("KeyCustomerJWRDetailGrid");
+            HttpContext.Session.Remove("KeyCustomerJWRDetailGrid");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -221,13 +200,8 @@ namespace eTactWeb.Controllers
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 MainModel.CC = HttpContext.Session.GetString("Branch");
                 MainModel.EmployeeList = await _ICustomerJWR.GetEmployeeList();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyCustomerJWRDetailGrid", MainModel.CustomerJWRGrid, cacheEntryOptions);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.CustomerJWRGrid);
+                HttpContext.Session.SetString("KeyCustomerJWRDetailGrid", serializedGrid);
             }
             else
             {
@@ -285,18 +259,18 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyCustomerJWRDetailGrid", out IList<CustomerJobWorkReceiveDetail> CustomerJobWorkReceiveDetail);
+                string modelJson = HttpContext.Session.GetString("KeyCustomerJWRDetailGrid");
+                List<CustomerJobWorkReceiveDetail> CustomerJobWorkReceiveDetail = new List<CustomerJobWorkReceiveDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    CustomerJobWorkReceiveDetail = JsonConvert.DeserializeObject<List<CustomerJobWorkReceiveDetail>>(modelJson);
+                }
 
                 var MainModel = new CustomerJobWorkReceiveModel();
                 var MaterialReceiptGrid = new List<CustomerJobWorkReceiveDetail>();
                 var MaterialGrid = new List<CustomerJobWorkReceiveDetail>();
                 var SSGrid = new List<CustomerJobWorkReceiveDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+
                 var seqNo = 0;
                 foreach (var item in model)
                 {
@@ -317,7 +291,8 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.CustomerJWRGrid = MaterialGrid;
 
-                        _MemoryCache.Set("KeyCustomerJWRDetailGrid", MainModel.CustomerJWRGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel);
+                        HttpContext.Session.SetString("KeyReqThroughBOMGrid", serializedGrid);
                     }
                 }
                 return PartialView("_CustomerJWRGrid", MainModel);
@@ -330,7 +305,12 @@ namespace eTactWeb.Controllers
 
         public IActionResult EditItemRow(int SeqNo)
         {
-            _MemoryCache.TryGetValue("KeyCustomerJWRDetailGrid", out List<CustomerJobWorkReceiveDetail> CustomerJWRGrid);
+            string modelJson = HttpContext.Session.GetString("KeyCustomerJWRDetailGrid");
+            List<CustomerJobWorkReceiveDetail> CustomerJWRGrid = new List<CustomerJobWorkReceiveDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                CustomerJWRGrid = JsonConvert.DeserializeObject<List<CustomerJobWorkReceiveDetail>>(modelJson);
+            }
 
             var SSGrid = CustomerJWRGrid.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
@@ -353,31 +333,6 @@ namespace eTactWeb.Controllers
 
                 var dt = time.ToString(format);
                 return Json(formattedDate);
-                //string apiUrl = "https://worldtimeapi.org/api/ip";
-
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        string content = await response.Content.ReadAsStringAsync();
-                //        JObject jsonObj = JObject.Parse(content);
-
-                //        string datetimestring = (string)jsonObj["datetime"];
-                //        var formattedDateTime = datetimestring.Split(" ")[0];
-
-                //        DateTime parsedDate = DateTime.ParseExact(formattedDateTime, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                //        string formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //        return Json(formattedDate);
-                //    }
-                //    else
-                //    {
-                //        string errorContent = await response.Content.ReadAsStringAsync();
-                //        throw new HttpRequestException($"Failed to fetch server date and time. Status Code: {response.StatusCode}. Content: {errorContent}");
-                //    }
-                //}
             }
             catch (HttpRequestException ex)
             {
@@ -392,27 +347,6 @@ namespace eTactWeb.Controllers
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
             }
         }
-        //private async Task<CustomerJobWorkReceiveModel> BindModel(CustomerJobWorkReceiveModel model)
-        //{
-        //    var oDataSet = new DataSet();
-        //    var _List = new List<TextValue>();
-        //    oDataSet = await _ICustomerJWR.BindAllDropDowns("BINDALLDROPDOWN");
-        //    model.EmployeeList = _List;
-        //    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-        //    {
-        //        foreach (DataRow row in oDataSet.Tables[0].Rows)
-        //        {
-        //            _List.Add(new TextValue
-        //            {
-        //                Value = row["Emp_Id"].ToString(),
-        //                Text = row["EmpNameCode"].ToString()
-        //            });
-        //        }
-        //        model.EmployeeList = _List;
-        //        _List = new List<TextValue>();
-        //    }
-        //    return model;
-        //}
         private static DataTable GetDetailTable(IList<CustomerJobWorkReceiveDetail> DetailList)
         {
             var CustJWRGrid = new DataTable();
@@ -504,7 +438,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyCustomerJWRDetailGrid");
+                HttpContext.Session.Remove("KeyCustomerJWRDetailGrid"); 
                 var model = new CustomerJWRQDashboard();
                 var Result = await _ICustomerJWR.GetDashboardData(FromDate,ToDate,VendorName,ChallanNo,PartCode,ItemName,MrnNo).ConfigureAwait(true);
 
@@ -559,7 +493,13 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo)
         {
             var MainModel = new CustomerJobWorkReceiveModel();
-            _MemoryCache.TryGetValue("KeyCustomerJWRDetailGrid", out List<CustomerJobWorkReceiveDetail> CustomerJWRGrid);
+            string modelJson = HttpContext.Session.GetString("KeyCustomerJWRDetailGrid");
+            List<CustomerJobWorkReceiveDetail> CustomerJWRGrid = new List<CustomerJobWorkReceiveDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                CustomerJWRGrid = JsonConvert.DeserializeObject<List<CustomerJobWorkReceiveDetail>>(modelJson);
+            }
+            
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (CustomerJWRGrid != null && CustomerJWRGrid.Count > 0)
@@ -584,9 +524,8 @@ namespace eTactWeb.Controllers
 
                 if (CustomerJWRGrid.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyCustomerJWRDetailGrid");
+                    HttpContext.Session.Remove("KeyCustomerJWRDetailGrid");
                 }
-                //_MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
             return PartialView("_CustomerJWRGrid", MainModel);
         }

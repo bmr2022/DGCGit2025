@@ -176,31 +176,7 @@ namespace eTactWeb.Controllers
 
                 var dt = time.ToString(format);
                 return Json(formattedDate);
-                //string apiUrl = "https://worldtimeapi.org/api/ip";
-
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        string content = await response.Content.ReadAsStringAsync();
-                //        JObject jsonObj = JObject.Parse(content);
-
-                //        string datetimestring = (string)jsonObj["datetime"];
-                //        var formattedDateTime = datetimestring.Split(" ")[0];
-
-                //        DateTime parsedDate = DateTime.ParseExact(formattedDateTime, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                //        string formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //        return Json(formattedDate);
-                //    }
-                //    else
-                //    {
-                //        string errorContent = await response.Content.ReadAsStringAsync();
-                //        throw new HttpRequestException($"Failed to fetch server date and time. Status Code: {response.StatusCode}. Content: {errorContent}");
-                //    }
-                //}
+                
             }
             catch (HttpRequestException ex)
             {
@@ -217,30 +193,7 @@ namespace eTactWeb.Controllers
         }
         public IActionResult AddissueThrBom(List<IssueThrBomDetail> model)
         {
-            //if (model != null)
-            //{
-            //    foreach (var listItem in model)
-            //    {
-            //        int YC = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            //        var FinStartDate = HttpContext.Session.GetString("FromDate");
-            //        //first get batchno's
-            //        //listItem.IssuedDate = ParseFormattedDate(listItem.IssuedDate);
-            //        var Batchno = _IssueThrBom.FillBatchUnique(listItem.ItemCode, YC, listItem.StoreName, listItem.BatchNo, listItem.IssuedDate ?? DateTime.Today.ToString(), FinStartDate);
-            //        if (Batchno.Result.Result != null)
-            //        {
-            //            var i = 0;
-            //            foreach (var batchList in Batchno.Result.Result.Rows)
-            //            {
-            //                var checkTransDate = _IPendingMaterialToIssueThrBOM.CheckTransDate(listItem.ItemCode, listItem.IssuedDate, Batchno.Result.Result.Rows[i].ItemArray[1].ToString(), Batchno.Result.Result.Rows[i].ItemArray[2].ToString(), YC);
-            //                if (checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0] != "Successful")
-            //                {
-            //                    return Json(checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0]);
-            //                }
-            //                i++;
-            //            }
-            //        }
-            //    }
-            //}
+            
             try
             {
                 _MemoryCache.Remove("KeyPendingToIssueThrBOM");
@@ -302,14 +255,5 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-
-        //public async Task<JsonResult> EnableOrDisableIssueDate()
-        //{
-        //    var JSON = await _IPendingMaterialToIssueThrBOM.EnableOrDisableIssueDate();
-        //    string JsonString = JsonConvert.SerializeObject(JSON);
-        //    return Json(JsonString);
-        //}
-
-
     }
 }

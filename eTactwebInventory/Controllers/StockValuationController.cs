@@ -11,17 +11,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IStockValuation _IStockValuation { get; }
-
         private readonly ILogger<StockValuationController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public StockValuationController(ILogger<StockValuationController> logger, IDataLogic iDataLogic, IStockValuation iStockValuation, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public StockValuationController(ILogger<StockValuationController> logger, IDataLogic iDataLogic, IStockValuation iStockValuation, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IStockValuation = iStockValuation;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

@@ -13,18 +13,15 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IMRNRegister _IMRNRegister { get; }
-
         private readonly ILogger<MRNRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public MRNRegisterController(ILogger<MRNRegisterController> logger, IDataLogic iDataLogic, IMRNRegister iMRNRegister, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public MRNRegisterController(ILogger<MRNRegisterController> logger, IDataLogic iDataLogic, IMRNRegister iMRNRegister, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IMRNRegister = iMRNRegister;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

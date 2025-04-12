@@ -20,16 +20,14 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly ILogger<CustomerJWIController> _logger;
         private readonly ICustomerJobWorkIssue _ICustomerJobWorkIssue;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
 
-        public CustomerJWIController(IDataLogic iDataLogic, ILogger<CustomerJWIController> logger, ICustomerJobWorkIssue iCustomerJobWorkIssue, IMemoryCache memoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public CustomerJWIController(IDataLogic iDataLogic, ILogger<CustomerJWIController> logger, ICustomerJobWorkIssue iCustomerJobWorkIssue, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _IDataLogic = iDataLogic;
             _logger = logger;
             _ICustomerJobWorkIssue = iCustomerJobWorkIssue;
-            _MemoryCache = memoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -60,8 +58,7 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Customer JWI";
             TempData.Clear();
-            _MemoryCache.Remove("KeyCustJWIGrid");
-
+            HttpContext.Session.Remove("KeyCustJWIGrid");
             var MainModel = new CustomerJobWorkIssueModel();
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -104,9 +101,10 @@ namespace eTactWeb.Controllers
                     SlidingExpiration = TimeSpan.FromMinutes(55),
                     Size = 1024,
                 };
-                _MemoryCache.Set("KeyCustIssue", MainModel, cacheEntryOptions);
-                _MemoryCache.Set("CustIssue", MainModel, cacheEntryOptions);
-                HttpContext.Session.SetString("CustIssue", JsonConvert.SerializeObject(MainModel));
+                string serializedKeyGrid = JsonConvert.SerializeObject(MainModel);
+                HttpContext.Session.SetString("KeyCustIssue", serializedKeyGrid);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel);
+                HttpContext.Session.SetString("CustIssue", serializedGrid);
             }
             else
             {
@@ -134,8 +132,18 @@ namespace eTactWeb.Controllers
                 var JWIGrid = new DataTable();
                 var ChallanGrid = new DataTable();
                 var mainmodel2 = model;
-                _MemoryCache.TryGetValue("KeyCustJWIGrid", out List<CustomerJobWorkIssueDetail> CustJWIDetail);
-                _MemoryCache.TryGetValue("KeyCWIAdjustGrid", out List<CustomerJobWorkIssueDetail> CWIAdjustDetail);
+                string modelJson = HttpContext.Session.GetString("KeyCustJWIGrid");
+                List<CustomerJobWorkIssueDetail> CustJWIDetail = new List<CustomerJobWorkIssueDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    CustJWIDetail = JsonConvert.DeserializeObject<List<CustomerJobWorkIssueDetail>>(modelJson);
+                }
+                string modelCWIJson = HttpContext.Session.GetString("KeyCWIAdjustGrid");
+                List<CustomerJobWorkIssueDetail> CWIAdjustDetail = new List<CustomerJobWorkIssueDetail>();
+                if (!string.IsNullOrEmpty(modelCWIJson))
+                {
+                    CWIAdjustDetail = JsonConvert.DeserializeObject<List<CustomerJobWorkIssueDetail>>(modelCWIJson);
+                }
 
                 mainmodel2.CustJWIDetailGrid = CustJWIDetail;
                 var GIGrid = new DataTable();
@@ -176,7 +184,8 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            _MemoryCache.Remove(GIGrid);
+                            HttpContext.Session.Remove("KeyCustJWIGrid");
+                            HttpContext.Session.Remove("KeyCWIAdjustGrid");
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -191,35 +200,13 @@ namespace eTactWeb.Controllers
                                 ViewBag.isSuccess = false;
                                 TempData["2627"] = "2627";
                                 _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                                //var model2 = await BindModels(null);
-                                //model2.FinFromDate = HttpContext.Session.GetString("FromDate");
-                                //model2.FinToDate = HttpContext.Session.GetString("ToDate");
-                                //model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                                //model2.CC = HttpContext.Session.GetString("Branch");
-                                //model2.PreparedByEmp = HttpContext.Session.GetString("EmpName");
-                                //model2.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                                //model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                                //return View(model2);
                             }
                             else
                             {
                                 ViewBag.isSuccess = false;
                                 TempData["500"] = "500";
-                                //var model2 = new CustomerJobWorkIssueModel();
-                                //model2.FinFromDate = HttpContext.Session.GetString("FromDate");
-                                //model2.FinToDate = HttpContext.Session.GetString("ToDate");
-                                //model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                                //model2.CC = HttpContext.Session.GetString("Branch");
-                                //model2.EntryByEmp = HttpContext.Session.GetString("EmpName");
-                                //model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                                //model2.CustJWIDetailGrid = CustJWIDetail;
                                 return View(model);
                             }
-
-                            //ViewBag.isSuccess = false;
-                            //TempData["500"] = "500";
-                            //_logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            //return View("Error", Result);
                         }
                     }
                     var model1 = new CustomerJobWorkIssueModel();
@@ -229,8 +216,6 @@ namespace eTactWeb.Controllers
                     model1.CC = HttpContext.Session.GetString("Branch");
                     model1.EntryByEmp = HttpContext.Session.GetString("EmpName");
                     model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    //return RedirectToAction(nameof(Dashboard));
-                    // return RedirectToAction("Index", "GateInward", new { ID = 0 });
                     return View(model1);
 
                 }
@@ -343,12 +328,9 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyCustJWIGrid");
+                HttpContext.Session.Remove("KeyCustJWIGrid");
                 var model = new CustJWIssQDashboard();
                 ReportType ??= "SUMMARY";
-
-                //FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy");
-                //ToDate = new DateTime(now.Year + 1, 3, 31).ToString("dd/MM/yyyy");
 
                 var Result = await _ICustomerJobWorkIssue.GetDashboardData(FromDate, ToDate, ReportType).ConfigureAwait(true);
                 if (Result != null)
@@ -360,28 +342,10 @@ namespace eTactWeb.Controllers
                         var DT = DS.Tables[0].DefaultView.ToTable(true, "ChallanNo", "ChallanDate", "CustomerName", "CustomerAddress", "CustState",
                             "CustStateCode", "CustJwIssEntryId", "CustJwIssYearCode");
                         model.CustJWIssQDashboard = CommonFunc.DataTableToList<CustJWIssQDashboard>(DT, "CustomerJWI");
-                        //foreach (var row in DS.Tables[0].AsEnumerable())
-                        //{
-                        //    _List.Add(new TextValue()
-                        //    {
-                        //        Text = row["ChallanNo"].ToString(),
-                        //        Value = row["ChallanNo"].ToString()
-                        //    });
-                        //}
                         var _ChallanList = _List.DistinctBy(x => x.Value).ToList();
                         model.ChallanList = _ChallanList;
                         _List = new List<TextValue>();
                     }
-                    //if (Flag != "True")
-                    //{
-                    //    model.FromDate1 = FromDate;
-                    //    model.ToDate1 = ToDate;
-                    //    model.Reporttype = ReportType;
-                    //    model.Account_Code = AccountCode;
-                    //    model.ChallanNo = ChallanNo;
-                    //    model.PartCode = PartCode;
-                    //    model.ItemName = ItemName;
-                    //}
                 }
                 return View(model);
             }
@@ -512,25 +476,6 @@ namespace eTactWeb.Controllers
         {
             return View();
         }
-        //[HttpPost]
-        //public async Task<IActionResult> GetAdjustedChallanDetailsData(List<CustomerJobWorkIssueModel> model, int YearCode, string EntryDate, string ChallanDate, int AccountCode)
-        //{
-        //    try
-        //    {
-        //        if (model == null || !model.Any())
-        //        {
-        //            return Json(new { success = false, message = "No data received." });
-        //        }
-
-        //        var result = _ICustomerJobWorkIssue.GetAdjustedChallanDetailsData(model, YearCode, EntryDate, ChallanDate, AccountCode);
-
-        //        return PartialView("_CustomerJwisschallanAdjustment", result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = ex.Message });
-        //    }
-        //}
 
         public async Task<JsonResult> GetAdjustedChallanDetailsData(string model,int AccountCode, int YearCode, string EntryDate, string ChallanDate)
         {
@@ -596,61 +541,6 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        //private static DataTable GetAdjustedChallanTable(List<CustomerJobWorkIssueDetail> DTTItemGrid)
-        //{
-        //    try
-        //    {
-        //        var ChallanGrid = new DataTable();
-        //        //ChallanGrid.Columns.Add("SeqNo", typeof(int));
-        //        ChallanGrid.Columns.Add("ItemCode", typeof(int));
-        //        ChallanGrid.Columns.Add("Unit", typeof(string));
-        //        ChallanGrid.Columns.Add("BillQty", typeof(float));
-        //        ChallanGrid.Columns.Add("JWRate", typeof(float));
-        //        ChallanGrid.Columns.Add("ProcessId", typeof(int));
-        //        ChallanGrid.Columns.Add("SONO", typeof(string));
-        //        ChallanGrid.Columns.Add("CustOrderNo", typeof(string));
-        //        ChallanGrid.Columns.Add("SOYearCode", typeof(int));
-        //        ChallanGrid.Columns.Add("SchNo", typeof(string));
-        //        ChallanGrid.Columns.Add("SchYearcode", typeof(int));
-        //        ChallanGrid.Columns.Add("BOMIND", typeof(string));
-        //        ChallanGrid.Columns.Add("BOMNO", typeof(int));
-        //        ChallanGrid.Columns.Add("BOMEffDate", typeof(DateTime));
-        //        ChallanGrid.Columns.Add("Produnprod", typeof(string));
-        //        ChallanGrid.Columns.Add("fromChallanOrSalebill", typeof(string));
-        //        ChallanGrid.Columns.Add("ItemAdjustmentRequired", typeof(string));
-
-        //        foreach (var Item in DTTItemGrid)
-        //        {
-        //            ChallanGrid.Rows.Add(
-        //                new object[]
-        //                {
-        //            Item.ItemCode,
-        //            Item.Unit,
-        //            Item.Qty,
-        //            Item.Rate,
-        //            Item.ProcessId,
-        //            Item.GridSONO,
-        //            Item.CustOrderNo,
-        //            Item.SOYear,
-        //            Item.SchNo,
-        //            Item.SchYearcode,
-        //            Item.BOMInd,
-        //            Item.BOMNO,
-        //            Item.Bomdate,
-        //            Item.ProduceUnproduce,
-        //            Item.fromChallanOrSalebill,
-        //            Item.ItemAdjustmentRequired
-
-        //                });
-        //        }
-        //        ChallanGrid.Dispose();
-        //        return ChallanGrid;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-        //}
 
         private static DataTable GetAdjustedChallanTable(List<CustomerJobWorkIssueDetail> DTTItemGrid)
         {
@@ -732,7 +622,13 @@ namespace eTactWeb.Controllers
                 var seqNo = 0;
                 foreach (var item in model)
                 {
-                    _MemoryCache.TryGetValue("KeyCWIAdjustGrid", out IList<CustomerJobWorkIssueDetail> CustomerJobWorkIssueDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyCWIAdjustGrid");
+                    List<CustomerJobWorkIssueDetail> CustomerJobWorkIssueDetail = new List<CustomerJobWorkIssueDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        CustomerJobWorkIssueDetail = JsonConvert.DeserializeObject<List<CustomerJobWorkIssueDetail>>(modelJson);
+                    }
+                    
                     if (item != null)
                     {
                         if (CustomerJobWorkIssueDetail == null)
@@ -750,7 +646,8 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.CustJWIDetailGrid = JobWorkReceiveGrid;
 
-                        _MemoryCache.Set("KeyCWIAdjustGrid", MainModel.CustJWIDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.CustJWIDetailGrid);
+                        HttpContext.Session.SetString("KeyCWIAdjustGrid", serializedGrid);
                     }
                 }
                 return PartialView("_CustomerJwisschallanAdjustment", MainModel);
@@ -764,13 +661,16 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                // Retrieve the existing grid data from memory cache
-                _MemoryCache.TryGetValue("KeyCustJWIGrid", out IList<CustomerJobWorkIssueDetail> GridDetail);
+                string modelJson = HttpContext.Session.GetString("KeyCustJWIGrid");
+                List<CustomerJobWorkIssueDetail> GridDetail = new List<CustomerJobWorkIssueDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<CustomerJobWorkIssueDetail>>(modelJson);
+                }
 
                 var MainModel = new CustomerJobWorkIssueModel();
                 var SSGrid = new List<CustomerJobWorkIssueDetail>();
 
-                // If no data is found in the cache, initialize with the new item
                 if (model != null)
                 {
                     if (GridDetail == null)
@@ -793,13 +693,9 @@ namespace eTactWeb.Controllers
                         }
                     }
                     MainModel.CustJWIDetailGrid = SSGrid;
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-                    _MemoryCache.Set("KeyCustJWIGrid", SSGrid, cacheEntryOptions);
+
+                    string serializedGrid = JsonConvert.SerializeObject(SSGrid);
+                    HttpContext.Session.SetString("KeyCustJWIGrid", serializedGrid);
                 }
                 else
                 {
@@ -818,7 +714,12 @@ namespace eTactWeb.Controllers
         public IActionResult EditItemRow(int SEQNo)
         {
             var model = new CustomerJobWorkIssueModel();
-            _MemoryCache.TryGetValue("KeyCustJWIGrid", out List<CustomerJobWorkIssueDetail> ReturnFromDepartmentDetail);
+            string modelJson = HttpContext.Session.GetString("KeyCustJWIGrid");
+            List<CustomerJobWorkIssueDetail> ReturnFromDepartmentDetail = new List<CustomerJobWorkIssueDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                ReturnFromDepartmentDetail = JsonConvert.DeserializeObject<List<CustomerJobWorkIssueDetail>>(modelJson);
+            }
             var SSGrid = ReturnFromDepartmentDetail.Where(x => x.SEQNo == SEQNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
@@ -827,7 +728,12 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> DeleteItemRow(int SEQNo)
         {
             var MainModel = new CustomerJobWorkIssueModel();
-            _MemoryCache.TryGetValue("KeyCustJWIGrid", out List<CustomerJobWorkIssueDetail> RequisitionDetail);
+            string modelJson = HttpContext.Session.GetString("KeyCustJWIGrid");
+            List<CustomerJobWorkIssueDetail> RequisitionDetail = new List<CustomerJobWorkIssueDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                RequisitionDetail = JsonConvert.DeserializeObject<List<CustomerJobWorkIssueDetail>>(modelJson);
+            }
             int Indx = Convert.ToInt32(SEQNo) - 1;
 
             if (RequisitionDetail != null && RequisitionDetail.Count > 0)
@@ -843,17 +749,9 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.CustJWIDetailGrid = RequisitionDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-
                 if (RequisitionDetail.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyCustJWIGrid");
+                    HttpContext.Session.Remove("KeyCustJWIGrid");
                 }
             }
             return PartialView("_CustomerJWIDetailGrid", MainModel);
