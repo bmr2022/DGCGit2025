@@ -433,8 +433,7 @@
                 var rowCount = $('#divISTGrid tr').length;
                 for (var i = 1; i <= rowCount; i++) {
                     var itemCodee = parseInt($('#GridItemCode-' + i).val());
-                    var 
-                    o = $('#GridBatchNo-' + i).text();
+                    var batchNoo = $('#GridBatchNo-' + i).text();
                     var uniquebatchnoo = $('#GridUniqueBatchno-' + i).text();
                     var Seqno = $('#SeqNo-' + i).val();
                     itemBatchArray.push({
@@ -503,7 +502,8 @@
                 FillRecStoreStock();
             } else {
                 //FillWIPStock();
-                FillCurrentWIPBatchINStore();
+                /* FillCurrentWIPBatchINStore(); */
+                FillStockBatchNo();
                 GetWIPStockBatchWise();
             }
         }
@@ -515,7 +515,8 @@
                 FillRecStoreStock();
             } else {
                 // FillWIPStock();
-                FillCurrentWIPBatchINStore();
+                /* FillCurrentWIPBatchINStore(); */
+                FillStockBatchNo();
                 GetWIPStockBatchWise();
             }
         }
@@ -1026,7 +1027,8 @@
                 FillLotStock();
                 FillRecStoreStock();
             } else {
-                FillCurrentWIPUniqueBatchINStore();
+                /* FillCurrentWIPUniqueBatchINStore(); */
+                FillStockUniqueBatchNo();
                 GetWIPStockBatchWise();
                 FillLotStock();
             }
