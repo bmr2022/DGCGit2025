@@ -94,6 +94,7 @@ namespace eTactWeb.DOM.Models
         public decimal ItemWeight {  get; set; }
         public string? ReceivebyEmpName {  get; set; }
         public IList<TransferFromWorkCenterDetail>? ItemDetailGrid { get; set; }
+        public List<string> WIPErrorList { get; set; } = new List<string>();
     }
     public class TransferFromWorkCenterDetail: TimeStamp
     {

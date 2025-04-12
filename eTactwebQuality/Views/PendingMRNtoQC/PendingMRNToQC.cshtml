@@ -444,6 +444,7 @@
         function showDetail() {
               debugger
                  var yearCode = '@ViewBag.YearCode';
+                 alert('year'+yearCode);
             if (!ValidateShow()) return;
             var data = {
                 "Flag": "MRNDATA",
@@ -467,6 +468,7 @@
                     if (data != null) {
                           
                         var obj = $.parseJSON(data);
+                             alert(JSON.stringify(obj, null, 2));
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             var html1 = '';
                             $('#divPendMRNGrid').empty();
