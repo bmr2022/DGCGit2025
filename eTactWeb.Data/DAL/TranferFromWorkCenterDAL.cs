@@ -691,7 +691,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int EmpID)
         {
             var _ResponseResult = new ResponseResult();
             var entrydt = ParseDate(EntryDate);
@@ -705,6 +705,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@cc", CC));
                 SqlParams.Add(new SqlParameter("@EntryByMachineNo", EntryByMachineName));
                 SqlParams.Add(new SqlParameter("@TransferMatEntrydate", entrydt));
+                SqlParams.Add(new SqlParameter("@EnteredEMPID", EmpID));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
             }
             catch (Exception ex)
