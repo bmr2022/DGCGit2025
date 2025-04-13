@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -47,7 +48,28 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId,string TransferMatEntryDate,int TransferMatYearCode, DataTable TransferGrid)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ChkWIPStockBeforeSaving"));
+                SqlParams.Add(new SqlParameter("@WCId", WcId));
+                SqlParams.Add(new SqlParameter("@TransferMatEntrydate", ParseFormattedDate(TransferMatEntryDate)));
+                SqlParams.Add(new SqlParameter("@TransferMatYearCode", TransferMatYearCode));
+                SqlParams.Add(new SqlParameter("@DTItemGrid", TransferGrid));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
+            return _ResponseResult;
+        }
         internal async Task<TransferFromWorkCenterModel> GetViewByID(int ID, int YearCode)
         {
             var model = new TransferFromWorkCenterModel();
@@ -325,11 +347,9 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime ChallanDt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@WCID", WcId));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", ChallanDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", ParseFormattedDate(TillDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(Flag, SqlParams);
             }
             catch (Exception ex)
@@ -347,10 +367,9 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime tilldt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@WCID", WcId));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", tilldt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", ParseFormattedDate(TillDate)));
                 SqlParams.Add(new SqlParameter("@BATCHNO", BatchNo));
                 SqlParams.Add(new SqlParameter("@Uniquebatchno", UniqueBatchNo));
 
@@ -672,7 +691,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int EmpID)
         {
             var _ResponseResult = new ResponseResult();
             var entrydt = ParseDate(EntryDate);
@@ -686,6 +705,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@cc", CC));
                 SqlParams.Add(new SqlParameter("@EntryByMachineNo", EntryByMachineName));
                 SqlParams.Add(new SqlParameter("@TransferMatEntrydate", entrydt));
+                SqlParams.Add(new SqlParameter("@EnteredEMPID", EmpID));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
             }
             catch (Exception ex)

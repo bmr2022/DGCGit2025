@@ -435,7 +435,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -444,6 +444,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
+                SqlParams.Add(new SqlParameter("@MachinName", machineName));
+                SqlParams.Add(new SqlParameter("@ActualEnteredBy", actuaEntryBy));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
             }

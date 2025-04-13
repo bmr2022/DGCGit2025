@@ -42,6 +42,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.FillStoreName();
         }
+        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, DataTable TransferGrid)
+        {
+            return await _TranferFromWorkCenterDAL.ChkWIPStockBeforeSaving(WcId,TransferMatEntryDate,TransferMatYearCode,TransferGrid);
+        }
         public async Task<ResponseResult> FillProcessName()
         {
             return await _TranferFromWorkCenterDAL.FillProcessName();
@@ -90,9 +94,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.GetDashboardDetailData(FromDate, ToDate,TransferMatSlipNo,ItemName,PartCode,TransferFromWC,TransferToWC, TransferToStore, ProdSlipNo,ProdSchNo,DashboardType);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int EmpID)
         {
-            return await _TranferFromWorkCenterDAL.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate);
+            return await _TranferFromWorkCenterDAL.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate,EmpID);
         }
         public async Task<ResponseResult> CheckEditOrDelete(int TransferEntryId, int TransferYearCode)
         {

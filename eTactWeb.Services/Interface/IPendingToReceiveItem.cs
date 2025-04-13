@@ -15,7 +15,7 @@ namespace eTactWeb.Services.Interface
         Task<DataSet> BindProdSlipNo(string Flag, string FromDate, string ToDate);
         Task<DataSet> BindStoreName(string Flag, string FromDate, string ToDate);
         Task<DataSet> BindProdType(string Flag, string FromDate, string ToDate);
-        Task<ResponseResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate);
+        Task<ResponseResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate,string partcode,string itemname);
         Task<ResponseResult> GetDataReceiveItem(DataTable DisplayPendReceiveItem);
     }
 }

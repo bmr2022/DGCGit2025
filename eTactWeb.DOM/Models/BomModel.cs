@@ -17,6 +17,10 @@ namespace eTactWeb.DOM.Models
         public IList<TextValue>? RMPartCodeList { get; set; }
         public string? BomRevNo { get; set; }
         public string? DashboardType { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public IList<BomModel>? BomList { get; set; }
     }
 
     public class BomModel : TimeStamp
@@ -49,6 +53,12 @@ namespace eTactWeb.DOM.Models
 
         [Required]
         public int BomNo { get; set; }
+        public string? FGPartCode { get; set; }
+        public string? FGItemName { get; set; }
+          public string? RMPartCode { get; set; }
+        public string? RMItemName { get; set; }
+        public string? AltPartcode1 { get; set; }
+        public string? AltPartcode2 { get; set; }
 
         [Required]
         public decimal BomQty { get; set; }
@@ -125,6 +135,9 @@ namespace eTactWeb.DOM.Models
             };
 
         public IList<BomViewModel> ExcelDataList { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     }
     public class BomViewModel // Excel Data
     {

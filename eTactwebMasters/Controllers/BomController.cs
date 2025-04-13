@@ -4,14 +4,18 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using System;
 using System.ComponentModel;
 using System.Data;
+using System.Drawing.Printing;
 using System.Net;
 using System.Runtime.Caching;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
+using DataTable = System.Data.DataTable;
 
 namespace eTactWeb.Controllers;
 
@@ -414,7 +418,7 @@ public class BomController : Controller
         return PartialView("_BomGrid", model);
     }
 
-    public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string GlobalSearch = "")
+    public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string GlobalSearch = "", int pageNumber = 1, int pageSize = 50)
     {
         //BomDashboard model = new BomDashboard
         //{
@@ -428,7 +432,7 @@ public class BomController : Controller
 
         var model = new BomDashboard();
         var oDataSet = await _IBom.GetBomDashboard("Dashboard").ConfigureAwait(false);
-
+      
         if (oDataSet.Tables.Count != 0)
         {
             model.DTDashboard = oDataSet.Tables[0];
@@ -461,17 +465,123 @@ public class BomController : Controller
                                         Value = dr["RMItemName"].ToString(),
                                     }).DistinctBy(x => x.Value).ToList();
         }
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
+       
+        //model.FGPartCode = FGPartCode;
+        //model.FGItemName = FGItemName;
+        //model.RMPartCode = RMPartCode;
+        //model.RMItemName = RMItemName;
+        //model.BomRevNo = BomRevNo;
+        //model.DashboardType = DashboardType;
 
-        model.FGPartCode = FGPartCode;
-        model.FGItemName = FGItemName;
-        model.RMPartCode = RMPartCode;
-        model.RMItemName = RMItemName;
-        model.BomRevNo = BomRevNo;
-        model.DashboardType = DashboardType;
+        model.DTDashboard = model.DTDashboard == null ? new System.Data.DataTable() : model.DTDashboard;
+        var DTDashboardPage = model.DTDashboard;
+        _MemoryCache.Set("KeyBomList", DTDashboardPage, cacheEntryOptions);
 
-        model.DTDashboard = model.DTDashboard == null ? new DataTable() : model.DTDashboard;
+        model.TotalRecords = model.DTDashboard.Rows.Count;
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+
+        var pagedRows = model.DTDashboard.AsEnumerable()
+                                 .Skip((pageNumber - 1) * pageSize)
+                                 .Take(pageSize);
+
+        model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : model.DTDashboard.Clone();
+      
         return View(model);
     }
+    [HttpGet]
+   public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+{
+    BomDashboard model = new BomDashboard();
+
+    if (string.IsNullOrWhiteSpace(searchString))
+    {
+        return PartialView("_BomDashboardGrid", model); // return empty model (or paginated full list)
+    }
+
+    if (!_MemoryCache.TryGetValue("KeyBomList", out DataTable bomViewModel) || bomViewModel == null)
+    {
+        return PartialView("_BomDashboardGrid", model); // no data in memory
+    }
+
+    // Clone the structure of the original DataTable
+    DataTable filteredTable = bomViewModel.Clone();
+
+    // Filter rows based on the search string (case-insensitive)
+    foreach (DataRow row in bomViewModel.Rows)
+    {
+        foreach (DataColumn column in bomViewModel.Columns)
+        {
+            if (column.DataType == typeof(string))
+            {
+                var cellValue = row[column]?.ToString();
+                if (!string.IsNullOrEmpty(cellValue) &&
+                    cellValue.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                {
+                    filteredTable.ImportRow(row);
+                    break; // match found in this row, no need to check other columns
+                }
+            }
+        }
+    }
+
+    // Total records after search
+    model.TotalRecords = filteredTable.Rows.Count;
+    model.PageNumber = pageNumber;
+    model.PageSize = pageSize;
+
+    // Paging the filtered rows
+    var pagedRows = filteredTable.AsEnumerable()
+                                 .Skip((pageNumber - 1) * pageSize)
+                                 .Take(pageSize);
+
+    model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : filteredTable.Clone();
+
+    return PartialView("_BomDashboardGrid", model);
+}
+
+
+    //public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+    //{
+    //    BomDashboard model = new BomDashboard();
+    //    if (string.IsNullOrWhiteSpace(searchString))
+    //    {
+    //        return PartialView("_BomGrid", new List<BomDashboard>());
+    //    }
+
+    //    if (!_MemoryCache.TryGetValue("KeyBomList", out DataTable bomViewModel) || bomViewModel == null)
+    //    {
+    //        return PartialView("_BomGrid", new List<BomDashboard>());
+    //    }
+    //    DataTable filteredTable = bomViewModel.Clone();
+    //    foreach (DataRow row in bomViewModel.Rows)
+    //    {
+    //        foreach (DataColumn column in bomViewModel.Columns)
+    //        {
+    //            if (column.DataType == typeof(string))
+    //            {
+    //                var cellValue = row[column]?.ToString();
+    //                if (!string.IsNullOrEmpty(cellValue) &&
+    //                    cellValue.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+    //                {
+    //                    filteredTable.ImportRow(row);
+    //                    break; // No need to check other columns
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    model.TotalRecords = model.DTDashboard.Rows.Count;
+    //    model.PageNumber = pageNumber;
+    //    model.PageSize = pageSize;
+    //    return PartialView("_BomGrid", model);
+    //}
 
     // POST: BomController/Delete/5
     [HttpPost]
@@ -674,7 +784,15 @@ public class BomController : Controller
         model = await _IBom.GetDetailSearchData(model);
 
         //var Result = System.Text.Json.JsonSerializer.Serialize(model);
-        return PartialView("_BomDashboardGrid", model);
+        if(model.DashboardType== "Summary")
+        {
+            return PartialView("_BomDashboardGrid", model);
+        }
+        if(model.DashboardType== "Detail")
+        {
+            return PartialView("_BomDashboardDetailGrid", model);
+        }
+        return null;
     }
 
 
@@ -969,9 +1087,9 @@ public class BomController : Controller
         }
     }
 
-    private static DataTable GetBomDetailTable(List<ImportBomData> DetailList)
+    private static System.Data.DataTable GetBomDetailTable(List<ImportBomData> DetailList)
     {
-        var BOMGrid = new DataTable();
+        var BOMGrid = new System.Data.DataTable();
 
         BOMGrid.Columns.Add("SeqNo", typeof(int));
         BOMGrid.Columns.Add("FGPartCode", typeof(string));

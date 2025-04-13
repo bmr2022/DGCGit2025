@@ -3382,9 +3382,10 @@
 
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#TargetQty').empty();
-                            $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
-                            $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
+                            $('#TargetQty').val(0);
+                            $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(3));
+                            $('#ProdQty').val(0);
+                            $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(3));
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var ProdQty = '@Model.ProdQty'
@@ -3409,9 +3410,10 @@
 
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#TargetQty').empty();
-                            $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
-                            $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(2));
+                            $('#TargetQty').val(0);
+                            $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(3));
+                            $('#ProdQty').val(0);
+                            $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(3));
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var ProdQty = '@Model.ProdQty'
