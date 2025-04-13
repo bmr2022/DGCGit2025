@@ -21,12 +21,12 @@ else
             <td><input readonly style="width:50px" value="@item.SeqNo" /></td>
             <td><input id="PartCode-@item.SeqNo" value="@item.RmPartCode" readonly /></td>
             <td><input id="ItemName-@item.SeqNo" value="@item.RmItemName" readonly><input type="hidden" id="RmItemCode-@item.SeqNo" value="@item.RmItemCode"></td>
-            <td><input id="ReqQty-@item.SeqNo" value="@(string.Format("{0:0.##}", item.TotalReqRMQty))" style="width:70px;background-color:blue;color:white" type="number" readonly></td>
-            <td><input id="IssueQty-@item.SeqNo" value="@(string.Format("{0:0.##}", item.ConsumedRMQTY))" style="width:70px;" type="number" readonly onchange="IssQtyChange(@item.SeqNo)"></td>
+            <td><input id="ReqQty-@item.SeqNo" value="@(string.Format("{0:0.######}", item.TotalReqRMQty))" style="width:70px;background-color:blue;color:white" type="number" readonly></td>
+            <td><input id="IssueQty-@item.SeqNo" value="@(string.Format("{0:0.######}", item.ConsumedRMQTY))" style="width:70px;" type="number" readonly onchange="IssQtyChange(@item.SeqNo)"></td>
             <td><input id="unit-@item.SeqNo" style="height: 30px;width:50px !important;" value="@item.RmUnit" readonly></td>
-            <td><input id="ProdQty-@item.SeqNo" value="@(string.Format("{0:0.##}", item.FGProdQty))" style="width:70px;" type="number" readonly></td>
-            <td><input id="TotalStock-@item.SeqNo" value="@(string.Format("{0:0.##}", item.TotalStock))" style="width:70px;background-color:green;color:white" type="number" readonly></td>
-            <td><input id="BatchStock-@item.SeqNo" value="@(string.Format("{0:0.##}", item.BatchStock))" style="width:70px;" type="number" readonly></td>
+            <td><input id="ProdQty-@item.SeqNo" value="@(string.Format("{0:0.######}", item.FGProdQty))" style="width:70px;" type="number" readonly></td>
+            <td><input id="TotalStock-@item.SeqNo" value="@(string.Format("{0:0.######}", item.TotalStock))" style="width:70px;background-color:green;color:white" type="number" readonly></td>
+            <td><input id="BatchStock-@item.SeqNo" value="@(string.Format("{0:0.######}", item.BatchStock))" style="width:70px;" type="number" readonly></td>
             <td><input readonly id="BatchNo-@item.SeqNo" style="width:70px;" value="@item.BatchNo"></td>
             <td><input readonly id="UniqueBatchNo-@item.SeqNo" style="width:150px;" value="@item.UniqueBatchNo"></td>
             <td><input id="Batchdate-@item.SeqNo" value="@item.BatchDate" style="width:100px;" readonly></td>
