@@ -562,7 +562,7 @@
                 var date = new Date(year, month, day);
                 var mindate = date.toString();
 
-                debugger
+                 
                 var MIRInputDate = $('#MRNDate').val();
                 var MIRparts = MIRInputDate.split('/');
                 var MIRday = parseInt(MIRparts[0], 10);
@@ -1061,7 +1061,7 @@
         }
 
         function EditItemRowFromGrid(SeqNo) {
-            debugger
+             
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
                 type: "POST",
@@ -2008,7 +2008,7 @@
         }
 
         function fillAllStoreOnEdit(j, okRec, RejStore, holdStore, rewokStore) {
-            debugger
+             
             var rowCount = $('#divMIRGrid tr').length;
             $.ajax({
                 type: "POST",

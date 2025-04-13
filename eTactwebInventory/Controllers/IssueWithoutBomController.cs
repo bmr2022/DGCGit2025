@@ -71,7 +71,8 @@ namespace eTactWeb.Controllers
                 MainModel = await _IIssueWOBOM.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
-                MainModel = await BindModel(MainModel).ConfigureAwait(false);
+                MainModel = await BindModel(MainModel);
+                //MainModel = await BindModel(MainModel).ConfigureAwait(false);
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTime.Now.AddMinutes(60),

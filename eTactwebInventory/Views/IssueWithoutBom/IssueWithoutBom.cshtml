@@ -1441,7 +1441,7 @@
         }
 
         function fillGridFromMemoryCache() {
-            debugger   
+                
             $.ajax({
                 url: "@Url.Action("FillGridFromMemoryCache")",
                 type: "POST",
@@ -1583,6 +1583,9 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#MainGridLotStock-'+i).val(obj.Result[0].lotstock);
                             $('#MainGridTotalStock-' + i).val(obj.Result[0].totalstock);
+
+                            var issQty = parseFloat($('#MainGridReqQty-' + i).val()) <= parseFloat($('#MainGridLotStock-' + i).val()) ? $('#MainGridReqQty-' + i).val() : $('#MainGridLotStock-' + i).val();
+                            $('#MainGridIssueQty-' + i).val(issQty);
                         }
                         else{
                             $('#MainGridLotStock-'+i).val(0);
@@ -1680,7 +1683,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteScannedItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                data: { "SeqNo": SeqNo },   
                 async: false,
                 success: function (data, status, xhr) {
                     $('#divIssueByScanning').html(data);

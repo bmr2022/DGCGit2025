@@ -206,7 +206,7 @@
 
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-             debugger
+              
             $("#FromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate1.split(" ")[0]));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate2.split(" ")[0]));
             //$('#FromDate').datepicker("option", "minDate", formattedDate1);
@@ -442,7 +442,7 @@
         }
 
         function showDetail() {
-              debugger
+               
                  var yearCode = '@ViewBag.YearCode';
                  /* alert('year'+yearCode); */
             if (!ValidateShow()) return;
@@ -464,7 +464,7 @@
                 type: "POST",
                 data: data,
                 success: function (data) {
-                    debugger
+                     
                     if (data != null) {
                           
                         var obj = $.parseJSON(data);
