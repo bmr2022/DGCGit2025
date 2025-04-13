@@ -2124,14 +2124,14 @@
         }
 
         function FillScrapData() {
-            debugger
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillScrapData")",
                 data: { "FGItemCode": parseInt($('#FGItemCode').val()), "FgProdQty" : parseFloat($('#ProdQty').val()), "BomNo" : $('#BOMNo').val() },
                 async: false,
                 success: function (data) {
-                    debugger
+                     
                     $('#divScrapDetailGrid').empty().append(data);
                 }
             });

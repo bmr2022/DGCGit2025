@@ -1004,7 +1004,7 @@
                 $("#AccountCode").find("option[value='" + desiredValue + "']").prop("selected", true).trigger("change");
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val().split(" ")[0]));
                 //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]));
-              debugger
+               
                 $('#RGPNRGP').val($('#hiddenRGPNRGP').val());
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                  var ChallanDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
@@ -1171,7 +1171,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result[0] == undefined) {
@@ -2469,7 +2469,7 @@
         });
 
         function BasicTotal() {
-            debugger
+             
             var columnCount = $('#divIssueNRGPGrid tr td').length;
             //var taxRowCount = $('#divTaxGrid tr').length;
             var sum = 0;

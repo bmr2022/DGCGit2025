@@ -1733,7 +1733,7 @@
                     $.notify('Something Went Wrong, Please Try Again.', "error");
                 }
             }).done(function () {
-                debugger
+                 
                 //alert('inside ajax');
                 GetTaxPartItem();
                 GetDbCrDetail();
@@ -2336,12 +2336,12 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-                            debugger
+                             
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
                             EditDeleteBatchValidation = true;
-                            debugger
+                             
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 FillSONO();
                                 $('#SONO').val(obj[0].SONO);
@@ -3374,7 +3374,7 @@
                     // alert(result);
                     var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
                     var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
-                    debugger
+                     
                     if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                         //  alert('right');
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -3385,7 +3385,7 @@
                     } else {
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]));
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
-                        debugger
+                         
                         var currentYear = getFinancialYear();
                         if ($('#SaleBillYearCode').val() == currentYear) {
                             $('#SaleBillDate').prop("disabled", false);
@@ -3504,7 +3504,7 @@
         }
 
         function PressBack() {
-            debugger
+             
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
