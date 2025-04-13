@@ -3383,9 +3383,9 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#TargetQty').val(0);
-                            $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(3));
+                            $('#TargetQty').val(Number(obj.Result[0].QtyPendForProd.toFixed(6)));
                             $('#ProdQty').val(0);
-                            $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(3));
+                            $('#ProdQty').val(Number(obj.Result[0].QtyPendForProd.toFixed(6)));
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var ProdQty = '@Model.ProdQty'
@@ -3411,9 +3411,9 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#TargetQty').val(0);
-                            $('#TargetQty').val(obj.Result[0].QtyPendForProd.toFixed(3));
+                            $('#TargetQty').val(Number(obj.Result[0].QtyPendForProd.toFixed(6)));
                             $('#ProdQty').val(0);
-                            $('#ProdQty').val(obj.Result[0].QtyPendForProd.toFixed(3));
+                            $('#ProdQty').val(Number(obj.Result[0].QtyPendForProd.toFixed(6)));
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var ProdQty = '@Model.ProdQty'
@@ -3760,7 +3760,7 @@
 
             if ($('#ProdAgainstPlanManual').val() == 'UNPLANNED') {
                 var Target = Number(parseFloat($('#unTarget').val()).toFixed(6));
-                var ProdQty = Number(parseFloat($('#ProdQty').val())toFixed(6));
+                var ProdQty = Number(parseFloat($('#ProdQty').val()).toFixed(6));
                 if (ProdQty > Target) {
                     $.notify("ProdQty cannot be greater than TargetQty", "error");
                 }
@@ -3768,7 +3768,7 @@
                     $.notify("ProdQty cannot be less than 0", "error");
                 }
                 else {
-                    var PendQty = Number((Target - ProdQty).toFixed(3));
+                    var PendQty = Number((Target - ProdQty).toFixed(6));
                     $('#PendQty').val(0);
                     $('#PendQty').val(PendQty);
                 }
@@ -3783,7 +3783,7 @@
                     $.notify("ProdQty cannot be less than 0", "error");
                 }
                 else {
-                    var PendQty = Number((Target - ProdQty).toFixed(3));
+                    var PendQty = Number((Target - ProdQty).toFixed(6));
                     $('#PendQty').val(0);
                     $('#PendQty').val(PendQty);
                 }
@@ -4337,7 +4337,7 @@
                     if (sums.hasOwnProperty(partCode)) {
                         var sumThirdColumn = sums[partCode];
                         var secondColumnValue = secondColumnValues[partCode];
-                        if (sumThirdColumn !== secondColumnValue) {
+                        if (Number(sumThirdColumn.toFixed(6)) !== Number(secondColumnValue.toFixed(6))) {
                             AddErrorCls('IssueQty');
                             Err = 1;
                             $.notify(`For part code ${partCode},is not consumed TotalQty`, 'error');
@@ -4576,7 +4576,7 @@
                     $.notify("ProdQty cannot be less than 0", "error");
                 }
                 else {
-                    var PendQty = (Target - ProdQty).toFixed(3);
+                    var PendQty = Number((Target - ProdQty).toFixed(6));
                     $('#PendQty').val(0);
                     $('#PendQty').val(PendQty);
 
@@ -4594,7 +4594,7 @@
                     $.notify("ProdQty cannot be less than 0", "error");
                 }
                 else {
-                    var PendQty = Number((TargetQty - ProdQty).toFixed(3));
+                    var PendQty = Number((TargetQty - ProdQty).toFixed(6));
                     $('#PendQty').val(0);
                     $('#PendQty').val(PendQty);
                 }
