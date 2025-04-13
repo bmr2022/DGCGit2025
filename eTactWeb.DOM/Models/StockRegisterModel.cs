@@ -77,5 +77,8 @@ namespace eTactWeb.DOM.Models
         public decimal? Assembly { get; set; }
         public decimal? Manual { get; set; }
         public decimal? PaintShop { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     }
 }
