@@ -238,7 +238,7 @@
         $(function () 
         {
 
-
+            debugger
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
             var REQNoBack = sessionStorage.getItem('REQNoBack');
@@ -420,7 +420,7 @@
         }
 
         function FillStoreName() {
-
+            debugger
             $.ajax({
                 url: "@Url.Action("FillStoreName", "IssueWithoutBOM")",
                 type: "POST",
@@ -802,7 +802,7 @@
         // }
 
         function showDetail() {
-
+            debugger
             $('#checkLabel,#TryAltItem').hide();
             $('#TryAltItem').prop("checked", false);
             if ($('#FromStore').val() == null) {

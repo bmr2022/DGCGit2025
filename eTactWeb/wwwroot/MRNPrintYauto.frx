@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="04/13/2025 11:01:30" ReportInfo.CreatorVersion="2023.2.0.0" PrintSettings.Duplex="Simplex">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/29/2023 15:17:39" ReportInfo.Modified="04/13/2025 12:19:36" ReportInfo.CreatorVersion="2023.2.0.0" PrintSettings.Duplex="Simplex">
   <Styles Name="Standard">
     <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
     <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
@@ -9,7 +9,7 @@
     <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtY3Ug2AaGWs0+v2WzvD/9ONRKS+QUpguwBGYh70i9FMZhUEDcBuUa62uMyzpYRZWTduF5TuJ6/3Bnzt+/T6i2i3eOecLU09N5HLE+TzLJ1Cf9UyBga+YCEeA/76QzkBwVBRbWf760y+sdFcsYYbKKgU=">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtY3Ug2AaGWs0+v2WzvD/9ONRKS+QUpguwBGYh70i9FMZhUEDcBuUa62uMyzpYRZWTduF5TuJ6/3Bnzt+/T6i2i3eOecLU09N5HLE+TzLJ1Cf9UyBga+YCEeA/76QzkBwVKaiYi6fyxZ5U9reWTAbuDA=">
       <TableDataSource Name="Table1" Alias="GetMRNMIRDetails1" DataType="System.Int32" Enabled="true" SelectCommand="exec GetMRNMIRDetails @MRN_No =@MrnNoparam,@Year_Code=@MrnYearcodeparam">
         <Column Name="Rec_Qty" DataType="System.Decimal"/>
         <Column Name="Accepted_Qty" DataType="System.Double"/>
