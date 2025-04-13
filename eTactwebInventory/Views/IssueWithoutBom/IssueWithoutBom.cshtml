@@ -9,8 +9,8 @@
 }
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <partial name="_AllowBatchChangeBox"/>
-    <partial name="_IssueWithScanner"/>
+    <partial name="_AllowBatchChangeBox" />
+    <partial name="_IssueWithScanner" />
     <form asp-action="IssueWithoutBom" autocomplete="off" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
@@ -61,7 +61,7 @@
                                     REFRESH
                                 </a>
                             </div>
-                            @if (Model.Mode == "U"  )
+                            @if (Model.Mode == "U")
                             {
                                 @*Model.Mode = "U";*@
                                 <div class="col-auto">
@@ -72,7 +72,7 @@
                                     </button>
                                 </div>
                             }
-                            
+
                             else
                             {
                                 <div class="col-auto">
@@ -109,7 +109,7 @@
                                     <input asp-for="Mode" value="@Model.Mode" class="form-control" type="hidden" />
                                     <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
                                     <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
-                                   
+
                                 </div>
                                 <div class="col-lg">
                                     <label asp-for="YearCode" class="form-label">Year Code</label>
@@ -120,7 +120,6 @@
                                     <input asp-for="EntryDate" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg">
-
                                     <label asp-for="CC" class="form-label">Branch</label>
                                     <input asp-for="CC" class="form-control" readonly />
                                 </div>
@@ -130,18 +129,18 @@
                                 </div>
                                 <div class="col-lg">
                                     <label asp-for="IssueDate" class="form-label" style="color:red">Issue Date*</label>
-                                    <input asp-for="IssueDate" class="form-control" readonly value="@Model.IssueDate"/>
+                                    <input asp-for="IssueDate" class="form-control" readonly value="@Model.IssueDate" />
                                 </div>
                                 <div class="col-lg">
                                     <label asp-for="MachineCode" class="form-label">Mach Code</label>
                                     <input asp-for="MachineCode" class="form-control" value="@Environment.MachineName" readonly />
                                 </div>
-                               @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ReqNo" class="form-label">Req No</label>
-                                    <input asp-for="ReqNo" value="@Model.ReqNo" class="form-control" readonly />
+                                @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <label asp-for="ReqNo" class="form-label">Req No</label>
+                                <input asp-for="ReqNo" value="@Model.ReqNo" class="form-control" readonly />
                                 </div>*@
 
-                               <div class="col-lg">
+                                <div class="col-lg">
                                     <label asp-for="ReqNo" class="form-label" style="color:red">Req No*</label>
                                     <input asp-for="ReqNo" value="@Model.ReqNo" style="width:103px;" class="form-control form-control-lg" readonly />
                                     <input asp-for="ReqNo1" type="hidden" value="@Model.ReqNo" />
@@ -165,16 +164,16 @@
 
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" >
+                    <h2 class="accordion-header">
                         <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Without BOM Grid</strong>
                         </button>
                         <button class="GridButton btn btn-sm btn-outline-danger" style="width:150px;" type="button">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
                         </button>
-                        
+
                     </h2>
-                     
+
                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
@@ -240,13 +239,13 @@
                         </div>
 
                         @*<div class=" col-4 col-auto">
-                            <div class="row justify-content-around">
-                                <div class="col-auto">
-                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3 mb-3">
-                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="row justify-content-around">
+                        <div class="col-auto">
+                        <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3 mb-3">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                        </button>
+                        </div>
+                        </div>
                         </div>*@
 
 
@@ -289,7 +288,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                           
+
                         </div>
                         <div class="progress my-2 mb-3" style="height: 4px;">
                             <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -297,7 +296,7 @@
                     </div>
 
                 </div>
-                
+
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="OtherGrid">
                         <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
@@ -318,12 +317,12 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
                                     <label asp-for="IssuedByDepCode" class="form-label" style="color:red">Issue by Dep*</label>
                                     <select class="form-select" asp-for="IssuedByDepCode" style="width: 100%;">
-                                            <option value="">-Select-</option>
+                                        <option value="">-Select-</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                     <label asp-for="RecDept" class="form-label" style="color:red">Rec Dep Code*</label>
-                                    <input asp-for="RecDepCode" type="hidden"/>
+                                    <input asp-for="RecDepCode" type="hidden" />
                                     <p class="form-control">@Model.RecDept</p>
                                 </div>
                                 <div class="col-auto">
@@ -338,7 +337,7 @@
                                 </div>
                                 <div class="col-auto">
                                     <label asp-for="Remark" class="form-label">Remark</label>
-                                    <input asp-for="Remark" class="form-control"/>
+                                    <input asp-for="Remark" class="form-control" />
                                 </div>
                                 <div class="col-auto">
                                     <label asp-for="ActualEnteredBy" class="form-label">Created By</label>
@@ -405,7 +404,7 @@
                                                 REFRESH
                                             </a>
                                         </div>
-                                        @if (Model.Mode == "U"  )
+                                        @if (Model.Mode == "U")
                                         {
                                             @*Model.Mode = "U";*@
                                             <div class="col-auto">
@@ -416,7 +415,7 @@
                                                 </button>
                                             </div>
                                         }
-                                        
+
                                         else
                                         {
                                             <div class="col-auto">
@@ -438,12 +437,12 @@
 </div>
 
 @section Scripts
-    {
+{
     <script>
         var ICName = []; // for checkstockbeforesaving function
         var ICName2 = []; // for checkrequisitionbeforesaving function
         $('#submitBTN').click(function (e) {
-               
+
             e.preventDefault();
             if ($('#divIssueWOBOMGridAdd tr td').length <= 1) {
                 $.notify('Grid Should Have Atleast 1 Item...!', "error");
@@ -459,51 +458,52 @@
             }
             else {
                 var rowCount = $('#divIssueWOBOMGridAdd tr').length;
-                for(var i=1;i<=rowCount;i++){
+                for (var i = 1; i <= rowCount; i++) {
                     CheckStockBeforeSaving(i);
                 }
-                for(var i=1;i<=rowCount;i++){
+                for (var i = 1; i <= rowCount; i++) {
                     CheckRequisitionBeforeSaving(i);
                 }
-                if(ICName.length >0){
+
+                if (ICName.length > 0) {
                     var ICNameArray = ICName;
                     var delimiter = ",";
                     var displayICName = ICNameArray.join(delimiter);
 
-                    $.notify("Stock not sufficient for "+displayICName,"error");
+                    $.notify("Stock not sufficient for " + displayICName, "error");
                     //$("#result").text(concatenatedString);
                 }
-                else if(ICName2.length > 0){
+                else if (ICName2.length > 0) {
                     var ICName2Array = ICName2;
                     var delimiter = ",";
                     var displayICName = ICName2Array.join(delimiter);
 
-                    $.notify("Requisition upto maximum limit already issued for "+displayICName,"error");
+                    $.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
                 }
-                else{
+                else {
                     $("form").submit();
                 }
             }
         });
 
-        function CheckStockBeforeSaving(i){
-             
+        function CheckStockBeforeSaving(i) {
+
             ICName = [];
 
-             $.ajax({
+            $.ajax({
                 url: "@Url.Action("CheckStockBeforeSaving")",
                 type: "POST",
                 data: { "ItemCode": $('#MainItemCodeAdd-' + i).val(), "StoreId": $('#MainStoreIdAdd-' + i).val(), "TillDate": $('#IssueDate').val(), "BatchNo": $('#MainBatchNoAdd-' + i).text(), "UniqBatchNo": $('#MainUniqBatchNoAdd-' + i).text() },
-                async:false,
+                async: false,
                 success: function (data) {
-                    var IC = $('#MainItemCodeAdd-' + i).val();                    
+                    var IC = $('#MainItemCodeAdd-' + i).val();
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             var stockDB = parseFloat(obj.Result[0].STOCK);
-                            var issueQty = parseFloat($('#MainIssueQty-'+i).text());
-                            if(stockDB < issueQty){
-                                ICName.push($('#MainPartCodeAdd-'+i).text());
+                            var issueQty = parseFloat($('#MainIssueQty-' + i).text());
+                            if (stockDB < issueQty) {
+                                ICName.push($('#MainPartCodeAdd-' + i).text());
                             }
                         }
                     }
@@ -513,11 +513,11 @@
                 }
             });
 
-           
+
         }
 
         function PressBack() {
-               
+
             sessionStorage.setItem('REQNoBack', $('#REQNoBack').val());
             sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
             sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
@@ -529,23 +529,23 @@
             sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
             sessionStorage.setItem('FromStoreBack', $('#FromStoreBack').val());
 
-            
+
 
             window.history.back();
         }
 
 
-        function AltUnitConversion(i,flag){
-            var AltQty,IssueQty = 0;
-            if(flag == "IssueQtyChange"){
+        function AltUnitConversion(i, flag) {
+            var AltQty, IssueQty = 0;
+            if (flag == "IssueQtyChange") {
                 AltQty = 0;
-                IssueQty=$('#MainGridIssueQty-' + i).val();
-            }else{
+                IssueQty = $('#MainGridIssueQty-' + i).val();
+            } else {
                 IssueQty = 0;
-                AltQty=$('#MainGridAltQty-' + i).val();
+                AltQty = $('#MainGridAltQty-' + i).val();
             }
-             
-               $.ajax({
+
+            $.ajax({
                 url: "@Url.Action("AltUnitConversion")",
                 type: "POST",
                 data: { "ItemCode": $('#MainGridItemCode-' + i).val(), "AltQty": AltQty, "UnitQty": IssueQty },
@@ -553,11 +553,11 @@
                 success: function (data) {
                     if (data != null) {
                         var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') { 
-                            if(flag == "IssueQtyChange"){
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            if (flag == "IssueQtyChange") {
                                 $('#MainGridAltQty-' + i).val(obj.Result[0].AltUnitValue);
                             }
-                            else{
+                            else {
                                 $('#MainGridIssueQty-' + i).val(obj.Result[0].ActualUnitValue);
                             }
                         }
@@ -569,7 +569,7 @@
             });
         }
 
-        function CheckRequisitionBeforeSaving(i){
+        function CheckRequisitionBeforeSaving(i) {
             ICName2 = [];
             $.ajax({
                 url: "@Url.Action("CheckRequisitionBeforeSaving")",
@@ -577,14 +577,14 @@
                 data: { "ReqNo": $('#ReqNo').val(), "ReqDate": $('#ReqDate').val(), "ItemCode": $('#MainItemCodeAdd-' + i).val() },
                 async: false,
                 success: function (data) {
-                     
+
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             var PendQty = obj.Result[0].PendQty;
-                            var IssueQty = $('#MainIssueQty-'+i).val();
-                            if(PendQty < IssueQty){
-                                ICName2.push($('#MainPartCodeAdd-'+i).text());
+                            var IssueQty = $('#MainIssueQty-' + i).val();
+                            if (PendQty < IssueQty) {
+                                ICName2.push($('#MainPartCodeAdd-' + i).text());
                             }
                         }
                     }
@@ -597,7 +597,7 @@
 
         function EnableOrDisableIssueDate() {
             $.ajax({
-                url: "@Url.Action("EnableOrDisableIssueDate","PendingRequisitionToIssue")",
+                url: "@Url.Action("EnableOrDisableIssueDate", "PendingRequisitionToIssue")",
                 type: "POST",
                 success: function (data) {
                     if (data != null) {
@@ -621,17 +621,17 @@
             });
         }
 
-        $('#IssueDate').change(function(){
+        $('#IssueDate').change(function () {
             var rowCounter = $('#divIssueWOBOMGrid tr').length;
             for (var i = 1; i <= rowCounter; i++) {
-                $('#MainGridBatchNo-'+i).empty();
-                $('#MainGridUniqueBatchNo-'+i).empty();
+                $('#MainGridBatchNo-' + i).empty();
+                $('#MainGridUniqueBatchNo-' + i).empty();
             }
             fillBatchNO();
             //fillBatchUnique(i, "unique");
         });
 
-        function GetIssueScanFeature(){
+        function GetIssueScanFeature() {
             $.ajax({
                 url: "@Url.Action("GetIssueScanFeature")",
                 type: "POST",
@@ -641,10 +641,10 @@
 
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#IssueWithScanner').val(obj.Result[0].IssueWithScanner);
-                            if($('#IssueWithScanner').val() == "Y"){
-                                $('.GridButton').prop("disabled",true)
+                            if ($('#IssueWithScanner').val() == "Y") {
+                                $('.GridButton').prop("disabled", true)
                                 $('#IssueWithScannerBox').modal("show");
-                                $('#IssueByScanButton').css('background-color','rgb(248 255 178)');
+                                $('#IssueByScanButton').css('background-color', 'rgb(248 255 178)');
                             }
                         }
                     }
@@ -655,11 +655,11 @@
             });
         }
 
-        $('#IssueByScanButton').click(function(){
+        $('#IssueByScanButton').click(function () {
             $('#IssueWithScannerBox').modal("show");
         });
 
-        $('#ScanUniqueBatchNo').keyup(function(){
+        $('#ScanUniqueBatchNo').keyup(function () {
             if ($('#ScanUniqueBatchNo').val() == '') {
                 $.notify("Please scan the Unique batch No", "error");
                 return false;
@@ -668,9 +668,9 @@
             $.ajax({
                 url: "@Url.Action("GetItemDetailFromUniqBatch")",
                 type: "POST",
-                data: { "UniqBatchNo": $('#ScanUniqueBatchNo').val(), "YearCode": $('#YearCode').val(), "TransDate": $('#IssueDate').val(),"ReqNo":$('#ReqNo').val(),"ReqYearCode":$('#ReqyearCode').val(),"ReqDate":$('#ReqDate').val() },
-                success: function (data,status,xhr) {
-                     
+                data: { "UniqBatchNo": $('#ScanUniqueBatchNo').val(), "YearCode": $('#YearCode').val(), "TransDate": $('#IssueDate').val(), "ReqNo": $('#ReqNo').val(), "ReqYearCode": $('#ReqyearCode').val(), "ReqDate": $('#ReqDate').val() },
+                success: function (data, status, xhr) {
+
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -693,13 +693,13 @@
             });
         });
 
-        $('#AddWithScanningUniq').click(function(){
+        $('#AddWithScanningUniq').click(function () {
 
         });
 
-        $('#AddScannedToMainGrid').click(function(){
+        $('#AddScannedToMainGrid').click(function () {
             var rowCount = $('#divIssueByScanning tr').length;
-             
+
             //verifyStock();
             var ItemData = [];
             for (let i = 1; i <= rowCount; i++) {
@@ -711,7 +711,7 @@
                     "ItemCode": parseInt($('#ScannedItemCode-' + i).val()),
                     "ItemName": $('#ScannedItemName-' + i).text(),
                     "PartCode": $('#ScannedPartCode-' + i).text(),
-                    "ReqQty": $('#ScannedReqQty-'+i).text(),
+                    "ReqQty": $('#ScannedReqQty-' + i).text(),
                     "StoreId": 0,
                     "StoreName": "",
                     "BatchNo": $('#ScannedBatchNo-' + i).text(),
@@ -728,7 +728,7 @@
                     "WCId": 0,
                     "AltItemCode": 0,
                     "CostCenterId": 0,
-                    "ItemSize":"",
+                    "ItemSize": "",
                     "ItemColor": "",
                     "ProjectNo": "",
                     "ProjectYearCode": 0,
@@ -737,13 +737,13 @@
                     "OriginalItemCode": parseInt($('#ScannedItemCode-' + i).val())
                 });
             }
-             
+
             $.ajax({
                 url: "@Url.Action("AddtoIssueWOBomGrid")",
                 type: "POST",
                 data: { model: ItemData },
                 success: function (data, status, xhr) {
-                     
+
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -766,13 +766,13 @@
         });
 
         function fillDepartment() {
-             
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillDept")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     
+
                     if (result != null) {
 
                         var obj = $.parseJSON(result);
@@ -797,28 +797,28 @@
 
 
         $(document).ready(function () {
-             debugger
-          fillDepartment();
+            debugger
+            fillDepartment();
             //$('#IssueByScanButton').hide(); $('#BomStatus')
             //$('#RecByEmpCode').append('<option disabled value="" selected>-Select-</option>');
             $('#IssueByScanBtn').css('background-color', 'rgb(248 255 178)');
 
-            $("#Remark").rules("remove","required");
+            $("#Remark").rules("remove", "required");
             if ('@Model.Mode' != "U" && '@Model.Mode' != "V") {
                 GetNewEntry();
                 fillGridFromMemoryCache();
                 var rowCount = $('#divIssueWOBOMGrid tr').length;
-                 
-                for(var i=1;i<=rowCount;i++){
+
+                for (var i = 1; i <= rowCount; i++) {
                     GetAlternateItemCodes(i);
                 }
                 GetIssueScanFeature();
-            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                
-           // $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            $('#IssueDate').datepicker("option", "maxDate", 'now');
-            $('#EntryDate').datepicker("option", "maxDate", 'now');
-            
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+                // $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#IssueDate').datepicker("option", "maxDate", 'now');
+                $('#EntryDate').datepicker("option", "maxDate", 'now');
+
             }
             fillCC();
 
@@ -828,7 +828,7 @@
 
             var inputFromDateStr = $('#FromDate').val();
             var parsedFromDate = new Date(inputFromDateStr);
-            
+
             var inputToDateStr = $('#ToDate').val();
             var parsedToDate = new Date(inputToDateStr);
 
@@ -836,19 +836,29 @@
                 var formattedDate = (parsedFromDate.getDate() < 10 ? '0' : '') + parsedFromDate.getDate() + '/' +
                     ((parsedFromDate.getMonth() + 1) < 10 ? '0' : '') + (parsedFromDate.getMonth() + 1) + '/' +
                     parsedFromDate.getFullYear();
-                    var formattedDate1 = (parsedToDate.getDate() < 10 ? '0' : '') + parsedToDate.getDate() + '/' +
+                var formattedDate1 = (parsedToDate.getDate() < 10 ? '0' : '') + parsedToDate.getDate() + '/' +
                     ((parsedToDate.getMonth() + 1) < 10 ? '0' : '') + (parsedToDate.getMonth() + 1) + '/' +
                     parsedToDate.getFullYear();
                 //$("#dateDiv").text(formattedDate);
                 $('#IssueDate').datepicker("option", "minDate", formattedDate);
                 $('#EntryDate').datepicker("option", "minDate", formattedDate);
-               //$('#EntryDate').datepicker("option", "maxDate", formattedDate1);
+                //$('#EntryDate').datepicker("option", "maxDate", formattedDate1);
             }
             $('#IssueSlipNo', '#IssueDate', '#MachineCode', '#Remark').rules("remove", "required");
             EnableOrDisableIssueDate();
 
-            if('@Model.Mode' == "U"){
-                 
+            $('#ActualEntrydate').rules("remove", "required");
+            $('#LastUpdationDate').rules("remove", "required");
+            $('#Remark').rules("remove", "required");
+            $('#ReqyearCode').rules("remove", "required");
+            $('#IssueSlipNo').rules("remove", "required");
+            $('#CC').rules("remove", "required");
+            $('#EntryDate').rules("remove", "required");
+            $('#YearCode').rules("remove", "required");
+            $('#EntryId').rules("remove", "required");
+
+            if ('@Model.Mode' == "U") {
+
                 //const inputDate = $('#IssueDate').val();
                 ////const entryDate = $('#EntryDate').val();
 
@@ -869,7 +879,7 @@
                 //console.log(formattedDate4);
                 //$('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate4);
                 ////$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate5);
-                
+
                 //EnableOrDisableIssueDate();
 
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
@@ -881,50 +891,50 @@
                 var reqDate = parseDateToFormat($('#ReqDate').val().split(" ")[0]);
                 $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", reqDate);
             }
-            
+
             var FormattedDate = $('#ReqDate').val().split("T")[0].split("-").reverse().join("/");
             $('#ReqDate').val(FormattedDate);
         });
 
-        function IssueQtyValidation(i){            
-            var Qty = parseFloat($("#MainGridIssueQty-"+ i).val());
+        function IssueQtyValidation(i) {
+            var Qty = parseFloat($("#MainGridIssueQty-" + i).val());
 
             if (Qty <= 0) {
                 $.notify("Issue Qty cannot be less than 0", "error");
-                $("#MainGridIssueQty-"+ i).val(0);
-            }           
+                $("#MainGridIssueQty-" + i).val(0);
+            }
         }
 
-        $('#IssuedByDepCode').change(function (){
+        $('#IssuedByDepCode').change(function () {
             $('#IssuedByDepCode').val($('#IssuedByDepCode').val())
         })
 
-        function GetAlternateItemCodes(i){
-            var IC = $('#MainGridItemCode-'+i).val();
+        function GetAlternateItemCodes(i) {
+            var IC = $('#MainGridItemCode-' + i).val();
             $.ajax({
-                    url: "@Url.Action("GetAlternateItemCode","PendingRequisitionToIssue")",
-                    type: "POST",
-                    data: { MainIC : IC },
-                    async:false,
-                    success: function (data, status, xhr) {
-                         
-                        if(data!=null){
-                            var obj = $.parseJSON(data);
-                            if(obj.StatusCode == 200 && obj.StatusText == 'Success'){
+                url: "@Url.Action("GetAlternateItemCode", "PendingRequisitionToIssue")",
+                type: "POST",
+                data: { MainIC: IC },
+                async: false,
+                success: function (data, status, xhr) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             //$('#MainGridAltPartCode-'+i).prop('checked', false);
-                            $('#MainGridAltPartCode-'+i).empty();
+                            $('#MainGridAltPartCode-' + i).empty();
                             $('#MainGridAltItemName-' + i).empty();
-                            
-                            $('#MainGridAltItemName-'+i).append('<option disabled selected>-Select-</option>');
+
+                            $('#MainGridAltItemName-' + i).append('<option disabled selected>-Select-</option>');
                             $('#MainGridAltPartCode-' + i).append('<option disabled selected>-Select-</option>');
-                           
+
 
                             $.each(obj.Result.Table, function (index, val) {
                                 $('#MainGridAltPartCode-' + i).append('<option value="' + val.AlternateItemCode + '">' + val.PartCode + '</option>');
 
                                 $('#MainGridAltItemName-' + i).append('<option value="' + val.AlternateItemCode + '">' + val.ItemName + '</option>');
 
-                                
+
                             });
 
 
@@ -938,54 +948,54 @@
                             //    $('#AltItemName'+i).css("font-weight","bolder");
                             //    $('#AltPartCode'+i).css("font-weight","bolder");
                             //$('#AltItemName' + i).attr("size", "60%");
-                            }
                         }
-                    },
-                    error: function (result, status, xhr) {
-                        $.notify(result.responseText, "error");
-                        console.log(result.responseText);
                     }
-                });
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                    console.log(result.responseText);
+                }
+            });
         }
 
-        function AltPartCodeChange(ID,i) {            
-            SetAltPartCodeItemName(ID,i);
+        function AltPartCodeChange(ID, i) {
+            SetAltPartCodeItemName(ID, i);
             FillAltBatchUnique(i, "batchOnly");
-            $('#MainGridIssuedAltItem-'+i).val("Y");
-            $('#MainGridItemCode-' + i).val($("#MainGridAltItemName-"+i).val());
+            $('#MainGridIssuedAltItem-' + i).val("Y");
+            $('#MainGridItemCode-' + i).val($("#MainGridAltItemName-" + i).val());
         }
 
-        function AltItemNameChange(ID,i) {
-            SetAltPartCodeItemName(ID,i); 
-            $('#MainGridIssuedAltItem-'+i).val("Y");
-            $('#MainGridItemCode-' + i).val($("#MainGridAltItemName-"+i).val());            
+        function AltItemNameChange(ID, i) {
+            SetAltPartCodeItemName(ID, i);
+            $('#MainGridIssuedAltItem-' + i).val("Y");
+            $('#MainGridItemCode-' + i).val($("#MainGridAltItemName-" + i).val());
         }
 
-        function SetAltPartCodeItemName(ID,i) {
+        function SetAltPartCodeItemName(ID, i) {
             if (!ID) return;
             else {
                 var v = $('#' + ID).val();
                 if (ID.includes('PartCode')) {
-                    $("#MainGridAltItemName-"+i).val(v);
+                    $("#MainGridAltItemName-" + i).val(v);
                 }
 
                 if (ID.includes('ItemName')) {
-                    $("#MainGridAltPartCode-"+i).val(v);
+                    $("#MainGridAltPartCode-" + i).val(v);
                 }
             }
-            
+
         }
 
-        function FillAltBatchUnique(i,flag){
-             
+        function FillAltBatchUnique(i, flag) {
+
             if (flag == "batchOnly") {
                 var data = {
-                "ItemCode": $('#MainGridAltItemName-' + i).val(),
-                "YearCode": YearCode,
-                "StoreName": $('#MainGridStorename-' + i).val(),
-                "BatchNo":  '',
-                "IssuedDate": $('#IssueDate').val()
-            }
+                    "ItemCode": $('#MainGridAltItemName-' + i).val(),
+                    "YearCode": YearCode,
+                    "StoreName": $('#MainGridStorename-' + i).val(),
+                    "BatchNo": '',
+                    "IssuedDate": $('#IssueDate').val()
+                }
                 var batchNoArray = [];
                 var filteredBatch = [];
                 $.ajax({
@@ -994,7 +1004,7 @@
                     data: data,
                     async: false,
                     success: function (data) {
-                         
+
                         if (data != null) {
                             var obj = $.parseJSON(data);
                             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -1080,12 +1090,12 @@
         }
 
         function GetNewEntry() {
-              
+
             $.ajax({
                 url: "@Url.Action("GetNewEntry")",
                 type: "POST",
                 success: function (data) {
-                     
+
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
@@ -1102,27 +1112,27 @@
         }
 
         function fillBatchNO() {
-               
+
             var rowCounter = $('#divIssueWOBOMGrid tr').length;
             for (var i = 1; i <= rowCounter; i++) {
-                if($('#MainGridIssuedAltItem-'+i).val()=="Y"){
-                      
-                    FillAltBatchUnique(i,"batchOnly");
-                }else{
-                     
+                if ($('#MainGridIssuedAltItem-' + i).val() == "Y") {
+
+                    FillAltBatchUnique(i, "batchOnly");
+                } else {
+
                     fillBatchUnique(i, "batchOnly");
                 }
             }
         }
 
         function fillBatchUnique(i, flag) {
-               
+
             if (flag == "batchOnly") {
                 var data = {
                     "ItemCode": $('#MainGridItemCode-' + i).val(),
                     "YearCode": @yearCode,
                     "StoreName": $('#MainGridStorename-' + i).val() == "-Select-" ? "" : $('#MainGridStorename-' + i).val(),
-                    "BatchNo":  '',
+                    "BatchNo": '',
                     "IssuedDate": $('#IssueDate').val()
                 }
                 var batchNoArray = [];
@@ -1133,23 +1143,23 @@
                     data: data,
                     async: false,
                     success: function (data) {
-                            
+
                         if (data != null) {
                             var obj = $.parseJSON(data);
                             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                                 $('#MainGridBatchNo-' + i).empty();
                                 $('#MainGridBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
                                 $.each(obj.Result, function (index, val) {
-                                     
+
                                     if (filteredBatch.includes(val.batchno)) {
                                         // do nothing
                                     }
                                     else {
-                                         
+
                                         $('#MainGridBatchNo-' + i).append('<option value = ' + val.batchno + ' > ' + val.batchno + ' </option>');
                                     }
                                     $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
-                                     
+
                                     batchNoArray.push(val.batchno);
                                     filteredBatch = batchNoArray.filter((value, index, self) => self.indexOf(value) === index);
                                 });
@@ -1176,14 +1186,14 @@
                     data: data,
                     async: false,
                     success: function (data) {
-                         
+
                         if (data != null) {
                             var obj = $.parseJSON(data);
                             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                                 $('#MainGridUniqueBatchNo-' + i).empty();
                                 $('#MainGridUniqueBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
                                 $.each(obj.Result, function (index, val) {
-                                     
+
                                     $('#MainGridUniqueBatchNo-' + i).append('<option value = ' + val.UniqueBatchNo + ' > ' + val.UniqueBatchNo + ' </option>');
                                 });
                             }
@@ -1200,43 +1210,39 @@
         function validateInsert(i) {
             var Err = 0;
 
-            if($("#MainGridStockable-"+i).val() == "Y"){
+            if ($("#MainGridStockable-" + i).val() == "Y") {
                 if ($('#MainGridBatchNo-' + i).val() == null) {
-                $('MainGridBatchNo-' + i).css("border", "1px solid red");
-                $.notify("Batch No is required for "+$('#MainGridPartCode-'+i).val()+"","error");
-                Err = 1;
-                }
-                else {
-                    $('MainGridBatchNo-' + i).css("border", "1px solid black");
-                }
-                if ($('#MainGridUniqueBatchNo-' + i).val() == null) {
-                    $('MainGridUniqueBatchNo-' + i).css("border", "1px solid red");
-                    $.notify("Unique Batch No is required for "+$('#MainGridPartCode-'+i).val()+"","error");
+                    $('MainGridBatchNo-' + i).css("border", "1px solid red");
+                    $.notify("Batch No is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
                     Err = 1;
                 }
-                else {
-                    $('MainGridUniqueBatchNo-' + i).css("border", "1px solid black");
-                }
             }
-           
+            else {
+                $('MainGridBatchNo-' + i).css("border", "1px solid black");
+            }
+
+            if ($('#MainGridUniqueBatchNo-' + i).val() == null) {
+                $.notify("UniqueBatchNo is required for " + $('#MainGridUniqueBatchNo-' + i).val() + "", "error");
+                Err = 1;
+            } else {
+                $('MainGridUniqueBatchNo-' + i).css("border", "1px solid black");
+            }
 
 
-
-             
             if (parseFloat($('#MainGridIssueQty-' + i).val()) <= 0) {
-                $('MainGridIssueQty-' + i).css("border", "1px solid red");                
-                $.notify("Issue Qty is required for "+$('#MainGridPartCode-'+i).val()+"","error");
+                $('MainGridIssueQty-' + i).css("border", "1px solid red");
+                $.notify("Issue Qty is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
                 Err = 1;
             }
             else {
-                if(parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridReqQty-' + i).val())){
+                if (parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridReqQty-' + i).val())) {
                     $('MainGridIssueQty-' + i).css("border", "1px solid red");
-                $.notify("Issue Qty cannot be more than Req Qty","error");
-                Err = 1;
+                    $.notify("Issue Qty cannot be more than Req Qty", "error");
+                    Err = 1;
                 }
-                else{
-                $('MainGridIssueQty-' + i).css("border", "1px solid black");
-                } 
+                else {
+                    $('MainGridIssueQty-' + i).css("border", "1px solid black");
+                }
 
                 //if(parseFloat($('#MainGridIssueQty-' + i).val()) > parseFloat($('#MainGridReqQty-' + i).val())){
                 //    $('MainGridIssueQty-' + i).css("border", "1px solid red");
@@ -1262,8 +1268,8 @@
             }
             //verifyStock();
             var ItemData = [];
-             var BatchNoArray = [];
-              
+            var BatchNoArray = [];
+
             for (let i = 1; i <= rowCount; i++) {
 
                 ItemData.push({
@@ -1288,7 +1294,7 @@
                     "AltUnit": $('#MainGridAltUnit-' + i).val(),
                     "Rate": $('#MainGridRate-' + i).val(),
                     "Remark": $('#MainGridRemark-' + i).val(),
-                    "WorkCenter": $('#MainGridWorkCenter-'+i).val(),
+                    "WorkCenter": $('#MainGridWorkCenter-' + i).val(),
                     "WCId": $('#MainGridWCId-' + i).val(),
                     "AltItemCode": $('#MainGridAltItemName-' + i).val(),
                     "CostCenterId": $('#MainGridCostCenter-' + i).val(),
@@ -1296,20 +1302,20 @@
                     "ItemColor": $('#MainGridItemColor-' + i).val(),
                     "ProjectNo": $('#MainGridProjectNo-' + i).val(),
                     "ProjectYearCode": $('#MainGridProjectYearCode-' + i).val(),
-                    "StdPacking": $('#MainGridStdPacking-'+i).val(),
-                    "IssuedAlternateItem": $('#MainGridIssuedAltItem-'+i).val(),
+                    "StdPacking": $('#MainGridStdPacking-' + i).val(),
+                    "IssuedAlternateItem": $('#MainGridIssuedAltItem-' + i).val(),
                     "OriginalItemCode": $('#MainGridOGItemCode-' + i).val(),
-                    "StdPacking": $('#MainGridStdPacking-'+i).val()
+                    "StdPacking": $('#MainGridStdPacking-' + i).val()
                 });
 
                 BatchNoArray.push({
-                    "BatchNo" : $('#MainGridBatchNo-' + i).val(),
-                    "UniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i).val()
+                    "BatchNo": $('#MainGridBatchNo-' + i).val(),
+                    "UniqueBatchNo": $('#MainGridUniqueBatchNo-' + i).val()
                 });
-               
+
 
             }
-              
+
             console.log(BatchNoArray);
 
             $.ajax({
@@ -1328,11 +1334,11 @@
                         $('#divIssueWOBOMGridAdd').html(data);
                         $('#divIssueWOBOMGrid').empty();
                         $.notify("Item Added to Grid", "success");
-                         for (let i = 1; i <= rowCount; i++) {
-                            $('#MainGridBatchNo-'+i+' option[value="' + BatchNoArray[i-1].BatchNo + '"]').remove();
+                        for (let i = 1; i <= rowCount; i++) {
+                            $('#MainGridBatchNo-' + i + ' option[value="' + BatchNoArray[i - 1].BatchNo + '"]').remove();
                             $('#MainGridUniqueBatchNo-' + i + ' option[value="' + BatchNoArray[i - 1].UniqueBatchNo + '"]').remove();
-                            
-                         }
+
+                        }
                     }
                     //    alert(success);
                 },
@@ -1370,13 +1376,13 @@
             $.ajax({
                 url: "@Url.Action("GetIsStockable")",
                 type: "POST",
-                data : {"ItemCode" : $('#MainGridItemCode-'+i).val()},
+                data: { "ItemCode": $('#MainGridItemCode-' + i).val() },
                 success: function (data) {
                     console.log(data);
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $("#MainGridStockable-"+i).val(obj.Result[0].Stockable);
+                            $("#MainGridStockable-" + i).val(obj.Result[0].Stockable);
                         }
                     }
                 },
@@ -1386,14 +1392,14 @@
             });
         }
 
-        function fillProjectNo(i){
-            
+        function fillProjectNo(i) {
+
             $.ajax({
                 url: "@Url.Action("FillProjectNo")",
                 type: "POST",
-                async:false,
+                async: false,
                 success: function (data) {
-                     
+
                     console.log(data);
                     if (data != null) {
                         var obj = $.parseJSON(data);
@@ -1401,7 +1407,7 @@
                             $('#MainGridProjectNo-' + i).empty();
                             $('#MainGridProjectNo-' + i).append('<option value=0 selected disabled>-Select-</option>');
                             $.each(obj.Result.Table, function (index, val) {
-                                $('#MainGridProjectNo-' + i).append('<option value=' + val.ProjectName + ' data-projyearcode='+val.YearCode+'>' + val.ProjectName + '</option>');
+                                $('#MainGridProjectNo-' + i).append('<option value=' + val.ProjectName + ' data-projyearcode=' + val.YearCode + '>' + val.ProjectName + '</option>');
                             });
                         }
                     }
@@ -1416,7 +1422,7 @@
             $.ajax({
                 url: "@Url.Action("FillStoreName")",
                 type: "POST",
-                async:false,
+                async: false,
                 success: function (data) {
                     //console.log(data);
                     if (data != null) {
@@ -1425,7 +1431,7 @@
                             $('#MainGridStorename-' + i).empty();
                             $('#MainGridStorename-' + i).append('<option value=0 selected disabled>-Select-</option>');
                             $.each(obj.Result.Table, function (index, val) {
-                                $('#MainGridStorename-' + i).append('<option value=' + val.entryid + '>'+val.store_name+'</option>');
+                                $('#MainGridStorename-' + i).append('<option value=' + val.entryid + '>' + val.store_name + '</option>');
                             });
                         }
                     }
@@ -1436,18 +1442,18 @@
             });
         }
 
-        function ProjectNumberChange(i){
-            $('#MainGridProjectYearCode-'+i).val($('#MainGridProjectNo-' + i).find(":selected").data('projyearcode'));
+        function ProjectNumberChange(i) {
+            $('#MainGridProjectYearCode-' + i).val($('#MainGridProjectNo-' + i).find(":selected").data('projyearcode'));
         }
 
         function fillGridFromMemoryCache() {
-                
+
             $.ajax({
                 url: "@Url.Action("FillGridFromMemoryCache")",
                 type: "POST",
-                async:false,
+                async: false,
                 success: function (data) {
-                         
+
                     if (data != null) {
                         $('#divIssueWOBOMGrid').html(data);
                         $('#ReqNo').val($('#MainREQNo').val());
@@ -1457,39 +1463,39 @@
                         $('#ReqDate').val($('#MainREQDate').val());
                         $('#RecDepCode').val($('#MainReqDeptID').val());
                         $('#RecDept').val($('#MainReqDept').val());
-                        
+
                         //$('#IssueDate').val($('#IssuedDateMemory').val());
                         //$('#MachineCode').val($('#MachineCodeMemory').val());
-                       // $('#IssueDate').datepicker("option", "maxDate", 'now');
+                        // $('#IssueDate').datepicker("option", "maxDate", 'now');
                         $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                         $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-                        fillBatchNO();                   
-                        
+                        fillBatchNO();
+
 
                         var rowCounter = $('#divIssueWOBOMGrid tr').length;
                         for (var i = 1; i <= rowCounter; i++) {
-                           fillBatchUnique(i, "unique&batch");
-                           GetIsStockable(i);
-                           FillStoreName(i);
+                            fillBatchUnique(i, "unique&batch");
+                            GetIsStockable(i);
+                            FillStoreName(i);
                         }
                         for (var i = 1; i <= rowCounter; i++) {
-                             
+
                             //var currVal = $('#MainGridBatchNoInput-'+i).val();
                             $('#MainGridBatchNo-' + i).val($('#MainGridBatchNoInput-' + i).val());
-                            $('#MainGridUniqueBatchNo-'+i).val($('#MainGridUniqueBatchNo1-'+i).val());
+                            $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
                             $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                            $('#MainGridUniqueBatchNo-'+i).css("pointer-events","none");
-                            $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');                            
+                            $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                            $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
 
                         }
                         for (var i = 1; i <= rowCounter; i++) {
                             FillLotandTotalStock(i);
                             fillProjectNo(i);
                             $('#MainGridBatchNo-' + i).val($('#MainGridBatchNoInput-' + i).val());
-                            $('#MainGridUniqueBatchNo-'+i).val($('#MainGridUniqueBatchNo1-'+i).val());
+                            $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
                             $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                            $('#MainGridUniqueBatchNo-'+i).css("pointer-events","none");
+                            $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
                             $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
 
                         }
@@ -1503,40 +1509,40 @@
 
         var Allowed = false;
 
-        function AllowBatchChange(i){
-            
-           if(Allowed == true){
-               //do nothing
-               return;
-           }else{
-               
-               GetAllowBatch();
+        function AllowBatchChange(i) {
 
-               if($('#AllowBatchChange').val()=="Y"){
+            if (Allowed == true) {
+                //do nothing
+                return;
+            } else {
+
+                GetAllowBatch();
+
+                if ($('#AllowBatchChange').val() == "Y") {
                     $('#errormessage').hide();
-                   $('#AllowBatchChangeBox').modal("show");
-               }else{
-                   $.notify("Batch Change is not allowed");
-               }
+                    $('#AllowBatchChangeBox').modal("show");
+                } else {
+                    $.notify("Batch Change is not allowed");
+                }
 
-           }            
+            }
         }
 
-        $('#confirmCheck').click(function(){
-            if($('#batchPassCode').val() == $('#AllowBatchChangePassWord').val()){
+        $('#confirmCheck').click(function () {
+            if ($('#batchPassCode').val() == $('#AllowBatchChangePassWord').val()) {
                 var rowCounter = $('#divIssueWOBOMGrid tr').length;
-                Allowed=true;
+                Allowed = true;
                 for (var i = 1; i <= rowCounter; i++) {
                     $('#MainGridBatchNo-' + i).css("pointer-events", "auto");
                     $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "auto");
                 }
                 $('#AllowBatchChangeBox').modal("hide");
-            }else{
+            } else {
                 $('#errormessage').show();
             }
         });
 
-        function GetAllowBatch(){
+        function GetAllowBatch() {
             $.ajax({
                 url: "@Url.Action("GetAllowBatch")",
                 type: "POST",
@@ -1558,37 +1564,37 @@
         }
 
         function BatchNumberChange(i) {
-            if($('#MainGridIssuedAltItem-'+i).val()=="Y"){
+            if ($('#MainGridIssuedAltItem-' + i).val() == "Y") {
                 FillAltBatchUnique(i, "unique&batch");
-            }else{
-                fillBatchUnique(i, "unique&batch");           
+            } else {
+                fillBatchUnique(i, "unique&batch");
             }
         }
 
         function UniqBatchNumberChange(i) {
-            FillLotandTotalStock(i);       
+            FillLotandTotalStock(i);
         }
 
-        function FillLotandTotalStock(i){
-             
+        function FillLotandTotalStock(i) {
+
             $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
-                data : {ItemCode:$('#MainGridItemCode-'+i).val(),StoreId:$('#MainGridStoreId-'+i).val(),TillDate : $('#IssueDate').val(),BatchNo:$('#MainGridBatchNo-'+i).val(),UniqBatchNo:$('#MainGridUniqueBatchNo-'+i).val()},
+                data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).val() },
                 async: false,
                 success: function (data) {
-                     
+
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#MainGridLotStock-'+i).val(obj.Result[0].lotstock);
+                            $('#MainGridLotStock-' + i).val(obj.Result[0].lotstock);
                             $('#MainGridTotalStock-' + i).val(obj.Result[0].totalstock);
 
                             var issQty = parseFloat($('#MainGridReqQty-' + i).val()) <= parseFloat($('#MainGridLotStock-' + i).val()) ? $('#MainGridReqQty-' + i).val() : $('#MainGridLotStock-' + i).val();
                             $('#MainGridIssueQty-' + i).val(issQty);
                         }
-                        else{
-                            $('#MainGridLotStock-'+i).val(0);
+                        else {
+                            $('#MainGridLotStock-' + i).val(0);
                             $('#MainGridTotalStock-' + i).val(0);
                         }
                     }
@@ -1683,7 +1689,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteScannedItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },   
+                data: { "SeqNo": SeqNo },
                 async: false,
                 success: function (data, status, xhr) {
                     $('#divIssueByScanning').html(data);
@@ -1699,37 +1705,37 @@
                 }
             });
         }
-        function DeleteFromMemoryGrid(SeqNo){
+        function DeleteFromMemoryGrid(SeqNo) {
             $.ajax({
                 url: '@Url.Action("DeleteFromMemoryGrid")',
                 type: "POST",
                 data: { "SeqNo": SeqNo },
                 async: false,
                 success: function (data, status, xhr) {
-                     
+
                     $('#divIssueWOBOMGrid').html(data);
                     $.notify("Item deleted from Grid", "info");
-                    fillBatchNO();                   
-                        
+                    fillBatchNO();
 
-                        var rowCounter = $('#divIssueWOBOMGrid tr').length;
-                        for (var i = 1; i <= rowCounter; i++) {
-                           fillBatchUnique(i, "unique&batch");
-                        }
-                        for (var i = 1; i <= rowCounter; i++) {
-                            $('#MainGridBatchNo-'+i).val($('#MainGridBatchNo-'+i).val());
-                            $('#MainGridUniqueBatchNo-'+i).val($('#MainGridUniqueBatchNo1-'+i).val());
-                            $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                            $('#MainGridUniqueBatchNo-'+i).css("pointer-events","none");
-                        }
-                        for (var i = 1; i <= rowCounter; i++) {
-                            FillLotandTotalStock(i);
-                            fillProjectNo(i);
-                            $('#MainGridBatchNo-'+i).val($('#MainGridBatchNo-'+i).val());
-                            $('#MainGridUniqueBatchNo-'+i).val($('#MainGridUniqueBatchNo1-'+i).val());
-                            $('#MainGridBatchNo-' + i).css("pointer-events", "none");
-                            $('#MainGridUniqueBatchNo-'+i).css("pointer-events","none");
-                        }
+
+                    var rowCounter = $('#divIssueWOBOMGrid tr').length;
+                    for (var i = 1; i <= rowCounter; i++) {
+                        fillBatchUnique(i, "unique&batch");
+                    }
+                    for (var i = 1; i <= rowCounter; i++) {
+                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo-' + i).val());
+                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                    }
+                    for (var i = 1; i <= rowCounter; i++) {
+                        FillLotandTotalStock(i);
+                        fillProjectNo(i);
+                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo-' + i).val());
+                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                    }
                 },
                 error: function (response, status, xhr) {
                     alert(response.responseText);
@@ -1779,22 +1785,22 @@
 
                         $('#divIssueWOBOMGrid').append(html);
                         fillBatchNO();
-                        $('#MainGridBatchNo-'+i).val(obj[0].BatchNo);
-                        if($('#MainGridIssuedAltItem-'+i).val()=="Y"){
-                            FillAltBatchUnique(i,"unique");
+                        $('#MainGridBatchNo-' + i).val(obj[0].BatchNo);
+                        if ($('#MainGridIssuedAltItem-' + i).val() == "Y") {
+                            FillAltBatchUnique(i, "unique");
                         }
-                        else{
+                        else {
                             fillBatchUnique(i, "unique");
                         }
-                         
+
                         var valueToAdd = obj[0].uniqueBatchNo;
 
-                        if ($('#MainGridUniqueBatchNo-'+i +' option[value="' + valueToAdd + '"]').length === 0) {
-                            $('#MainGridUniqueBatchNo-'+i).append('<option value="' + valueToAdd + '">' + valueToAdd + '</option>');
+                        if ($('#MainGridUniqueBatchNo-' + i + ' option[value="' + valueToAdd + '"]').length === 0) {
+                            $('#MainGridUniqueBatchNo-' + i).append('<option value="' + valueToAdd + '">' + valueToAdd + '</option>');
                         } else {
-                            $('#MainGridUniqueBatchNo-'+i).val(obj[0].uniqueBatchNo);
+                            $('#MainGridUniqueBatchNo-' + i).val(obj[0].uniqueBatchNo);
                         }
-                        
+
                     }
                     //$('#divMIRModuleGrid').html(data);
                     //$.notify('Item Deleted from Grid.', "info");
@@ -1824,5 +1830,4 @@
         color: #000;
     }
 
-    
 </style>                   
