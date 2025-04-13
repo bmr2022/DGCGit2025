@@ -59,20 +59,20 @@ namespace eTactWeb.DOM.Models
         public int seqno { get; set; }
         public string? ReqNo1 { get; set; }
         public string? ReqDate1 { get; set; }
-        public string ReqyearCode1 { get; set; }
+        public string?  ReqyearCode1 { get; set; }
         public int ReqEntryId {  get; set; }
         public int ItemCode { get; set; }
         public string? IssuedDate { get; set; }
-        public string ItemName { get; set; }
-        public string DeptName { get; set; }
-        public string PartCode { get; set; }
+        public string?  ItemName { get; set; }
+        public string? DeptName { get; set; }
+        public string? PartCode { get; set; }
         public decimal ReqQty { get; set; }
         public int StoreId { get; set; }
-        public string StoreName { get; set; }
-        public string BatchNo { get; set; }
-        public string uniqueBatchNo { get; set; }
+        public string? StoreName { get; set; }
+        public string? BatchNo { get; set; }
+        public string? uniqueBatchNo { get; set; }
         public decimal IssueQty { get; set; }
-        public string Unit { get; set; }
+        public string? Unit { get; set; }
         public decimal LotStock { get; set; }
         public decimal TotalStock { get; set; }
         public decimal AltQty { get; set; }
@@ -80,19 +80,27 @@ namespace eTactWeb.DOM.Models
         public decimal Rate { get; set; }
         public string Remark { get; set; }
         public int WCId { get; set; }
-        public string WorkCenter { get; set; }
+        public string? WorkCenter { get; set; }
         public int AltItemCode { get; set; }
         public int CostCenterId { get; set; }
-        public string ItemSize { get; set; }
-        public string ItemColor { get; set; }
-        public string ProjectNo { get; set; }
+        public string? ItemSize { get; set; }
+        public string? ItemColor { get; set; }
+        public string? ProjectNo { get; set; }
         public int ProjectYearCode { get; set; }
         public string? MachineCodee { get; set; }
         public float? StdPacking { get; set; }
         public string? IssuedAlternateItem { get; set; }
         public int? OriginalItemCode { get; set; }
         public int ReqDepartmentID { get; set; }
-        public string ReqDept { get; set;}
+        public string? ReqDept { get; set;}
+
+        public int IssWOBOMEntryId { get; set; }
+        public int IssWOBOMYearCode { get; set; }
+        public string? IssWOBOMEntryDate { get; set; }
+        public string? PreFix { get; set; }
+        public string? IssWOBOMSlipNo { get; set; }
+        public string? IssWOBOMIssueDate { get; set; }
+        public int IssuedByEmpCode { get; set; }
     }
     public class IssueWithoutBomDashboard : IssueWOBomMainDashboard
     {
