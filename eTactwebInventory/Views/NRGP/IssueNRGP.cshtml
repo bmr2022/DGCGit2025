@@ -2076,7 +2076,7 @@
             $('#Amount').val(parseFloat(qty * rate));
             SetminQty();
             SetAltQty();
-            TotalhiddenAmount();
+            /* TotalhiddenAmount(); */
         });
         $('#Rate').keyup(function () {
             var qty = parseFloat($('#Qty').val());
@@ -2096,7 +2096,7 @@
                 qty = 0;
             }
             $('#Amount').val(parseFloat(qty * rate));
-            TotalhiddenAmount();
+            /* TotalhiddenAmount(); */
         });
 
         $("#AC1").change(function () {

@@ -59,7 +59,49 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyStockList", fullList, cacheEntryOptions);
             return PartialView("_StockRegisterGrid", model);
         }
+        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+        {
+            StockRegisterModel model = new StockRegisterModel();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_StockRegisterGrid", new List<StockRegisterModel>());
+            }
 
+            if (!_MemoryCache.TryGetValue("KeyStockList", out IList<StockRegisterDetail> stockRegisterViewModel) || stockRegisterViewModel == null)
+            {
+                return PartialView("_StockRegisterGrid", new List<StockRegisterModel>());
+            }
+
+            List<StockRegisterDetail> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = stockRegisterViewModel.ToList(); 
+            }
+            else
+            {
+                filteredResults = stockRegisterViewModel
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+                
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = stockRegisterViewModel.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.StockRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            return PartialView("_StockRegisterGrid", model);
+        }
         public async Task<JsonResult> GetAllItems()
         {
             var JSON = await _IStockRegister.GetAllItems();
