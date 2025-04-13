@@ -34,7 +34,7 @@ else
                 <input id="MainGridStoreId-@Cntr" type="hidden" value="@item.StoreId" />
             </td>
            
-            <td><input id="MainGridIssueQty-@Cntr" onchange="AltUnitConversion(@Cntr,'IssueQtyChange')" onkeyup="IssueQtyValidation(@Cntr)" type="number" style="width:60px;" value="@item.IssueQty" /></td>
+            <td><input id="MainGridIssueQty-@Cntr" onchange="AltUnitConversion(@Cntr,'IssueQtyChange')" onkeyup="IssueQtyValidation(@Cntr)" type="number" style="width:90px;" value="@item.IssueQty" /></td>
             <td onclick="AllowBatchChange(@Cntr)">
                 <input type="hidden" id="MainGridBatchNoInput-@Cntr" value="@item.BatchNo" />
                 <input type="hidden" id="AllowBatchChange" />
@@ -50,7 +50,7 @@ else
             </td>
             <td><input readonly id="MainGridUnit-@Cntr" type="text" style="width:35px;" value="@item.Unit" /></td>
             <td><input id="MainGridLotStock-@Cntr" type="text" style="width:50px;" value="@item.LotStock" readonly /></td>
-            <td><input id="MainGridTotalStock-@Cntr" type="text" style="width:50px;" value="@item.TotalStock" readonly /></td>
+            <td><input id="MainGridTotalStock-@Cntr" type="text" style="width:90px;" value="@item.TotalStock" readonly /></td>
             <td><input id="MainGridAltQty-@Cntr" onchange="AltUnitConversion(@Cntr,'AltQtyChange')" type="text" style="width:50px;" value="@item.AltQty" /></td>
             <td><input readonly id="MainGridAltUnit-@Cntr" type="text" style="width:50px;" value="@item.AltUnit" /></td>
             <td><input readonly id="MainGridStdPacking-@Cntr" type="text" style="width:50px;" value="@item.StdPacking" /></td>

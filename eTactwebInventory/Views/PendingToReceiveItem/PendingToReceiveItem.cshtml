@@ -1,7 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.PendingToReceiveItemModel
 
 @{
-    ViewData["Title"] = "Pending Receive Item to QC Details";
+    ViewData["Title"] = "Pending To Receive Item In Store ";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
@@ -25,7 +25,7 @@
     <div class="card rounded border-light bg-gradient">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
-                Pending Receive Item to QC
+                Pending To Receive Item In Store
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     @*<a asp-action="ReqWithoutBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                     <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
@@ -111,7 +111,7 @@
                             </div>
                             <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                 <button class="btn btn-sm btn-outline-primary" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" onclick="CheckDataforQc()">
-                                    <i class="fa fa-check-circle" aria-hidden="true"></i> Check Qc
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i> Receive Material
                                 </button>
                             </div>
                         </div>
