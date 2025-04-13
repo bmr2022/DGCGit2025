@@ -140,7 +140,7 @@
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="SlipDate" class="form-label" style="color: blue;">Slip Date*</label>
-                                    <input asp-for="SlipDate" class="form-control" readonly disabled />
+                                    <input asp-for="SlipDate" class="form-control" readonly  />
                                 </div>
                                 <div class="col-lg" style="width=300">
                                     <label asp-for="CC" class="form-label">Branch</label>
@@ -457,6 +457,13 @@
             $('#PartCode').rules("remove", "required");
             $('#ItemCode').rules("remove", "required");
             $('#ActualEntryByName').rules("remove", "required");
+            $('#TotalStockQty').rules("remove", "required");
+            $('#LotStockQty ').rules("remove", "required");
+            $('#Qty').rules("remove", "required");
+            $('#AltQty').rules("remove", "required");
+            $('#AltUnit').rules("remove", "required");
+            $('#Rate').rules("remove", "required");
+            $('#RecStoreStock').rules("remove", "required");
 
         });
 
@@ -1623,8 +1630,12 @@
                     $('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 
 
-                    $('#EntryDate,#SlipDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
-                    $('#EntryDate,#SlipDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
+                    $('#EntryDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
+                    $('#SlipDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
+
+
+                    $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
+                    $('#SlipDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
                 }
             });
         }
