@@ -521,7 +521,7 @@
             }
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
-            debugger
+             
             var dateParts1 = finFromDate.split("/");
             var monthNames = {
                 "Jan": "01",
@@ -544,12 +544,12 @@
 
             console.log(formattedDate1);
             console.log(formattedDate2);
-            debugger
+             
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate1));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(formattedDate2));
             $('#FromDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
             $('#ToDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
-            debugger
+             
             FillGateNo();
         });
 
@@ -1047,7 +1047,7 @@
                             $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
                         }
                         else {
-                            debugger
+                             
                             var obj = $.parseJSON(data);
                             DeleteItemRow(SeqNo);
                             $('#divCustJWRGrid').empty();

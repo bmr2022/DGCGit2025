@@ -1576,7 +1576,7 @@
                 url: "@Url.Action("CheckFeatureOption")",
                 dataType: "json",
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var allowOption = obj.Result.Table[0].AllowBackDateJOBWorkIssue;
@@ -2022,7 +2022,7 @@
 
 
         $('#StoreId').change(function () {
-            debugger
+             
             var ItemCode = $('#ItemCode').val();
             
             $('#BatchNo,#UniqueBatchNo').empty();
@@ -2175,7 +2175,7 @@
         }); */
 
         function GetItemRate() {
-            debugger
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetItemRate")",
@@ -2194,7 +2194,7 @@
                         else {
                             $('#PurchasePrice').val(obj.Result[0].Rate);
 
-                            if (parseInt(obj.Result[0].Rate) == 0) {
+                            if (parseFloat(obj.Result[0].Rate) == 0) {
                                 $('#PurchasePrice').prop("readonly", false);
                             }
                         }
@@ -2335,7 +2335,6 @@
 
                 var GridItemCode = $('#GridIC-' + i).val();
                 if (GridItemCode == parseInt($('#ItemCode').val())) {
-                    //maxRowCount = Math.max(maxRowCount, rows[i].id);
                     maxRowCount = Math.max(maxRowCount, i);
                 }
             }
@@ -2343,7 +2342,6 @@
 
                 var GridItemCode = parseInt($('#GridIC-' + i).val());
                 if (GridItemCode == parseInt($('#ItemCode').val())) {
-                    //maxRowCount = Math.max(maxRowCount, rows[i].id);
                     var NewSeqNo = parseInt($('#SeqForBatch-' + maxRowCount).val());
                     SeqForBatch = NewSeqNo + 1;
                     break;
@@ -2374,11 +2372,11 @@
                 "StoreName": StoreName,
                 "BatchNo": $('#BatchNo').val(),
                 "UniqueBatchNo": $('#UniqueBatchNo').val(),
-                "StockQty": parseInt($('#StockQty').val()),
+                "StockQty": parseFloat($('#StockQty').val()),
                 "BatchStockQty": $('#BatchStockQty').val(),
                 "RecScrapPartCode": $('#RecScrapPartCode').find(':selected').text() == '-Select-' ? "NA" : $('#RecScrapPartCode').find(':selected').text(),
                 "RecScrapItemName": $('#RecScrapItemCode').find(':selected').text() == '-Select-' ? "NA" : $('#RecScrapItemCode').find(':selected').text(),
-                "RecScrapCode": parseInt($('#RecScrapPartCode').val()),
+                "RecScrapCode": parseFloat($('#RecScrapPartCode').val()),
                 "RecScrapQty": $('#RecScrapQty').val(),
                 "AltQTy": $('#AltQTy').val(),
                 "AltUnit": $('#AltUnit').val(),
@@ -2404,7 +2402,6 @@
                 "Mode": $('#Mode').val(),
                 "SeqForBatch": SeqForBatch,
             }
-
 
             $.ajax({
                 url: "@Url.Action("AddJobWorkIssueDetail")",
@@ -2589,17 +2586,6 @@
             });
         });
 
-
-        //$('#IssQty').change(function () {
-        //    var Qty = parseInt($('#IssQty').val());
-        //    var rate = parseInt($('#Rate').val());
-        //    $('#Amount').val(Qty * rate);
-        //});
-        //$('#Rate').change(function () {
-        //    var Qty = parseInt($('#IssQty').val());
-        //    var rate = parseInt($('#Rate').val());
-        //    $('#Amount').val(Qty * rate);
-        //});
         $('#Amount').change(function () {
             var stockQty = parseFloat($('#StockQty').val());
             var batchStock = parseFloat($('#BatchStockQty').val());
@@ -2707,7 +2693,6 @@
         function ValidateJW_Grid() {
 
             var Err = 0;
-            //GetPrevQty();
             var stockQty = parseFloat($('#StockQty').val());
             var batchStock = parseFloat($('#BatchStockQty').val());
             var qty = parseFloat($('#IssQty').val());
@@ -2734,19 +2719,8 @@
                 RemoveErrorCls('IssQty');
             }
 
-            //if ($('#JobWorkNewRework').val() == 'Rework') {
-
-            //    $('#Rate').rules("remove", "required");
-            //    RemoveErrorCls('Rate');
-            //    //$('#Amount').val(0.00)
-            //} else {
-            //    if (parseInt($('#Rate').val()) == 0 || $('#Rate').val() == '') {
-            //        $('#Rate').val(0);
-            //        $.notify("Rate is required","error");
-            //        Err = 1;
-            //    }
-            //}
-            if (parseInt($('#PurchasePrice').val()) <= 0) {
+            if (parseFloat($('#PurchasePrice').val()) <= 0) {
+                $.notify("Purchase Price is required", "error");
                 AddErrorCls('PurchasePrice');
                 Err = 1;
             }
@@ -2755,7 +2729,7 @@
             }
              
             if ($('#JobWorkNewRework').val() !== 'Rework') {
-                if (parseInt($('#Rate').val()) <= 0) {
+                if (parseFloat($('#Rate').val()) <= 0) {
                     AddErrorCls('Rate');
                     Err = 1;
                 }
@@ -2763,15 +2737,6 @@
                     RemoveErrorCls('Rate');
                 }
             }
-            //if (parseInt($('#Amount').val()) <= 0 || $('#Amount').val() == '') {
-            //    AddErrorCls('Amount');
-            //    $.notify("Amount is required", "error");
-            //    Err = 1;
-            //}
-            //else {
-            //    RemoveErrorCls('Amount');
-            //}
-
 
             if (recSqty > qty) {
                 $.notify("Rec Scrap Qty cannot be greater than Iss Qty", "error");
@@ -2781,6 +2746,7 @@
             else {
                 RemoveErrorCls('RecScrapQty');
             }
+
             if (recqty > qty) {
                 $.notify("Rec Qty cannot be greater than Iss Qty", "error");
                 AddErrorCls('RecQty');
@@ -2789,14 +2755,6 @@
             else {
                 RemoveErrorCls('RecQty');
             }
-            //if (qty > batchStock) {
-            //    $.notify("Qty cannot be greater than Batch Stock Qty", "error");
-            //    AddErrorCls('IssQty');
-            //    Err = 1;
-            //}
-            //else {
-            //    RemoveErrorCls('IssQty');
-            //}
 
             if (qty > stockQty) {
                 $.notify("Qty cannot be greater than Stock Qty", "error");
@@ -2806,6 +2764,7 @@
             else {
                 RemoveErrorCls('IssQty');
             }
+
             if ($('#PartCode').prop('selectedIndex') == 0 || $('#ItemCode').prop('selectedIndex') == 0) {
                 AddErrorCls('PartCode'), AddErrorCls('ItemCode');
                 Err = 1;
@@ -2813,6 +2772,7 @@
             else {
                 RemoveErrorCls('PartCode'), RemoveErrorCls('ItemCode');
             }
+
             if ($('#Stockable').val() == "Y" && $('#ItemServAssets').val() == 'Item') {
                 if ($('#BatchNo').prop('selectedIndex') == 0) {
                     AddErrorCls('BatchNo');
@@ -2843,6 +2803,7 @@
                     RemoveErrorCls('Rate');
                 }
             }
+
             if ($('#Mode').val() != "U") {
                 if ($('#BomStatus').prop('selectedIndex') == 0) {
                     AddErrorCls('BomStatus');
@@ -2852,6 +2813,7 @@
                     RemoveErrorCls("BomStatus");
                 }
             }
+
             if ($('#StoreId').prop('selectedIndex') == 0) {
                 AddErrorCls('StoreId');
                 Err = 1;
@@ -2859,6 +2821,7 @@
             else {
                 RemoveErrorCls('StoreId');
             }
+
             if ($('#AccountCode').prop('selectedIndex') == 0) {
                 AddErrorCls('AccountCode');
                 Err = 1;
@@ -2866,6 +2829,7 @@
             else {
                 RemoveErrorCls('AccountCode');
             }
+
             if ($('#DeliveryAdd').val() == null || $('#DeliveryAdd').val() == "") {
                 AddErrorCls('DeliveryAdd');
                 Err = 1;
@@ -2873,14 +2837,15 @@
             else {
                 RemoveErrorCls('DeliveryAdd');
             }
+
             if ($('#VehicleNo').val() === '' || /^.{10}$/.test($('#VehicleNo').val())) {
                 RemoveErrorCls('VehicleNo');
             } else {
                 AddErrorCls('VehicleNo');
                 $.notify('Vehicle No should have 10 digits', "error");
                 Err = 1;
-                //errorSpan.textContent = 'Please enter 10 digits or leave it empty.';
             }
+
             if ($('#Distance').val() != "") {
                 if (/^\d+(\.\d{0,2})?$/.test(parseFloat($('#Distance').val())) && parseFloat($('#Distance').val()) >= 0) {
                     RemoveErrorCls('Distance');
@@ -2902,7 +2867,6 @@
 
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
             if (Err == 1) return false;
-
             return true;
         }
 
