@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Globalization;
 using System.Net;
+using System.Reflection;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
 
@@ -142,52 +143,32 @@ namespace eTactWeb.Controllers
                     {
                         TransferGrid = GetDetailTable(TransferFromWorkCenterDetail);
                     }
-                    //var ChechedData = await _ITransferFromWorkCenter.ChkWIPStockBeforeSaving(model.IssueFromWCid, model.TransferMatEntrydate, model.TransferMatYearCode, TransferGrid);
-                    //if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
-                    //{
-                        var Result = await _ITransferFromWorkCenter.SaveTransferFromWorkCenter(model, TransferGrid);
 
-                        if (Result != null)
+                    var Result = await _ITransferFromWorkCenter.SaveTransferFromWorkCenter(model, TransferGrid);
+
+                    if (Result != null)
+                    {
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                         {
-                            if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-                            {
-                                ViewBag.isSuccess = true;
-                                TempData["200"] = "200";
-                                _MemoryCache.Remove(TransferGrid);
-                            }
-                            if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
-                            {
-                                ViewBag.isSuccess = true;
-                                TempData["202"] = "202";
-                            }
-                            if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                            {
-
-                                ViewBag.isSuccess = false;
-                                TempData["500"] = "500";
-                                _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                                return View("Error", Result);
-                            }
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                            _MemoryCache.Remove(TransferGrid);
                         }
-                        return RedirectToAction(nameof(TransferFromWorkCenter));
-                    //}
-                    //else
-                    //{
-                    //    DataTable dt = ChechedData.Result;
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["202"] = "202";
+                        }
+                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
 
-                    //    List<string> errors = new List<string>();
-
-                    //    foreach (DataRow row in dt.Rows)
-                    //    {
-                    //        string itemName = row["ItemName"].ToString();
-                    //        string batchNo = row["BatchNo"].ToString();
-                    //        decimal availableQty = Convert.ToDecimal(row["CalWIPStock"]);
-
-                    //        errors.Add($"{itemName} + {batchNo} has only {availableQty} quantity available in stock.");
-                    //    }
-
-                    //    return Json(new { success = false, errors = errors });
-                    //}
+                            ViewBag.isSuccess = false;
+                            TempData["500"] = "500";
+                            _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                            return View("Error", Result);
+                        }
+                    }
+                    return RedirectToAction(nameof(TransferFromWorkCenter));
                 }
             }
             catch (Exception ex)
@@ -204,6 +185,41 @@ namespace eTactWeb.Controllers
 
                 return View("Error", ResponseResult);
             }
+        }
+        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode)
+        {
+            var TransferGrid = new DataTable();
+
+            _MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
+            TransferGrid = GetDetailTable(TransferFromWorkCenterDetail);
+            var ChechedData = await _ITransferFromWorkCenter.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferGrid);
+            if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
+            {
+                DataTable dt = ChechedData.Result;
+
+                List<string> errorMessages = new List<string>();
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    string itemName = row["ItemName"].ToString();
+                    string batchNo = row["BatchNo"].ToString();
+                    decimal availableQty = Convert.ToDecimal(row["CalWIPStock"]);
+
+                    string error = $"{itemName} + {batchNo} has only {availableQty} quantity available in stock.";
+                    errorMessages.Add(error);
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    errors = errorMessages
+                });
+            }
+            return Json(new
+            {
+                success = true,
+                message = "No errors found."
+            });
         }
         public async Task<JsonResult> GetFormRights()
         {
@@ -690,7 +706,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, string FromDate = "", string ToDate = "", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "")
         {
-           // int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+            // int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
             int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             var Result = await _ITransferFromWorkCenter.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, EmpID);
 
