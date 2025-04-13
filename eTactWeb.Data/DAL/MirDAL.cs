@@ -834,13 +834,13 @@ namespace eTactWeb.Data.DAL
                 DateTime mirDt = new DateTime();
                 DateTime mrnDt = new DateTime();
                 DateTime invDt = new DateTime();
-                DateTime EntryDate = new DateTime();
+                // EntryDate = new DateTime();
 
 
                 mirDt = ParseDate(model.MIRDate);
                 mrnDt = ParseDate(model.MRNDate);
                 invDt = ParseDate(model.INVDate);
-                EntryDate = ParseDate(model.EntryDate);
+                var EntryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
 
 
                 if (model.Mode == "U")
@@ -855,7 +855,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EntryId", model.EntryId));
                 //SqlParams.Add(new SqlParameter("@YearCode", DateTime.Now.Year));
                 SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
-                SqlParams.Add(new SqlParameter("@EntryDate", EntryDate == default ? string.Empty : EntryDate));
+                SqlParams.Add(new SqlParameter("@EntryDate", mirDt == default ? string.Empty : mirDt));
                 SqlParams.Add(new SqlParameter("@MIRNo", model.MIRNo == null ? "" : model.MIRNo));
                 SqlParams.Add(new SqlParameter("@MIRDate", mirDt == default ? string.Empty : mirDt));
                 SqlParams.Add(new SqlParameter("@MRNJWCustJW", model.MRNJWCustJW == null ? "" : model.MRNJWCustJW));

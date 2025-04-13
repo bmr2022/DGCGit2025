@@ -690,7 +690,9 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, string FromDate = "", string ToDate = "", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "")
         {
-            var Result = await _ITransferFromWorkCenter.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate);
+           // int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+            int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _ITransferFromWorkCenter.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, EmpID);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

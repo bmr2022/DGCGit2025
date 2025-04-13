@@ -707,7 +707,7 @@
         }
 
         function alertDOO() {
-            alert("Hello");
+            // alert("Hello");
         }
         // function GetFormRights() {
         //     $.ajax({
@@ -1023,11 +1023,11 @@
                     $.notify('Item Deleted from Grid.', "info");
                 },
                 error: function (response, status, xhr) {
-                    alert(response.responseText);
+                    //alert(response.responseText);
                     $.notify(response.responseText, "error");
                 },
                 failure: function (response, status, xhr) {
-                    alert(response.responseText);
+                   // alert(response.responseText);
                     $.notify(response.responseText, "error");
                 },
             });
@@ -1099,11 +1099,11 @@
                     //$.notify('Item Deleted from Grid.', "info");
                 },
                 error: function (response, status, xhr) {
-                    alert(response.responseText);
+                    //alert(response.responseText);
                     $.notify(response.responseText, "error");
                 },
                 failure: function (response, status, xhr) {
-                    alert(response.responseText);
+                   // alert(response.responseText);
                     $.notify(response.responseText, "error");
                 }
             });
@@ -1136,11 +1136,11 @@
                     $.notify('Item Deleted from Grid.', "info");
                 },
                 error: function (response, status, xhr) {
-                    alert(response.responseText);
+                   // alert(response.responseText);
                     $.notify(response.responseText, "error");
                 },
                 failure: function (response, status, xhr) {
-                    alert(response.responseText);
+                   // alert(response.responseText);
                     $.notify(response.responseText, "error");
                 }
             });
@@ -1434,7 +1434,7 @@
                     $('#DeviationQty-' + i).val(0);
                 }
                 if (accQty + rejQty + holdQty + reWorkQty + devQty > recQty) {
-                    alert("Rec Qty must be equal to AccQty + RejQty + HoldQty + ReWorkQty + DevQty");
+                    //alert("Rec Qty must be equal to AccQty + RejQty + HoldQty + ReWorkQty + DevQty");
                     $('#DeviationQty-' + i).val(devQty);
                 }
                 flag = true;
@@ -1743,7 +1743,7 @@
                     $.notify(result.responseText, "error");
                 },
                 failure: function (result, status, xhr) {
-                    alert(response.responseText);
+                    //alert(response.responseText);
                 },
                 complete: function () {
 
@@ -1788,7 +1788,7 @@
                     console.log(result.responseText)
                 },
                 failure: function (result, status, xhr) {
-                    alert(response.responseText);
+                    //alert(response.responseText);
                 },
                 complete: function () {
 
