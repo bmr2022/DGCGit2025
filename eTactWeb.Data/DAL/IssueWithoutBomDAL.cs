@@ -129,9 +129,9 @@ namespace eTactWeb.Data.DAL
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueWithoutBomM", SqlParams);
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
-                    
+
                     _ResponseResult.Result.Tables[0].TableName = "EmployeeList";
-                    
+
 
                     oDataSet = _ResponseResult.Result;
                 }
@@ -195,76 +195,84 @@ namespace eTactWeb.Data.DAL
 
         private static IssueWithoutBom PrepareView(DataSet DS, ref IssueWithoutBom? model)
         {
-            var ItemGrid = new List<IssueWithoutBomDetail>();
-            DS.Tables[0].TableName = "IssWOBomMain";
-            DS.Tables[1].TableName = "IssWOBomDetail";
-            int cnt = 1;
-            model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWOBOMEntryId"]);
-            model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWOBOMYearCode"]);
-            model.EntryDate = DS.Tables[0].Rows[0]["IssWOBOMEntryDate"].ToString();
-            model.PreFix = DS.Tables[0].Rows[0]["PreFix"].ToString();
-            model.IssueSlipNo = DS.Tables[0].Rows[0]["IssWOBOMSlipNo"].ToString();
-            model.IssueDate = DS.Tables[0].Rows[0]["IssWOBOMIssueDate"].ToString();
-            model.IssuedByEmpCode =Convert.ToInt32((DS.Tables[0].Rows[0]["IssuedByEmpCode"]));
-            model.IssuedByEmpName=DS.Tables[0].Rows[0]["IssuedByEmpCodeName"].ToString();
-            model.IssuedByDepCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssuedByDepCode"]);
-            model.RecDepCode = Convert.ToInt32(DS.Tables[0].Rows[0]["RecDepCode"]);
-            model.RecDept = DS.Tables[0].Rows[0]["RecDepCodeName"].ToString();
-            model.RecByEmpCode = Convert.ToInt32((DS.Tables[0].Rows[0]["RecByEmpCode"]));
-            model.MachineCode = DS.Tables[0].Rows[0]["Machinecode"].ToString();
-            model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString();
-            model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]);
-            model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
-            model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"].ToString());
-            model.ActualEnteredByName = DS.Tables[0].Rows[0]["ActualEntryByEmpName"].ToString();
-            model.ActualEntrydate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
-
-            if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString()))
+            try
             {
-                model.LastupdatedByName = DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString();
-                model.LastupdatedBy = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString()) ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"]);
-                model.LastUpdationDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdationDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdationDate"]);
-            }
+                var ItemGrid = new List<IssueWithoutBomDetail>();
+                DS.Tables[0].TableName = "IssWOBomMain";
+                DS.Tables[1].TableName = "IssWOBomDetail";
+                int cnt = 1;
+                model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWOBOMEntryId"]);
+                model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssWOBOMYearCode"]);
+                model.EntryDate = DS.Tables[0].Rows[0]["IssWOBOMEntryDate"].ToString();
+                model.PreFix = DS.Tables[0].Rows[0]["PreFix"].ToString();
+                model.IssueSlipNo = DS.Tables[0].Rows[0]["IssWOBOMSlipNo"].ToString();
+                model.IssueDate = DS.Tables[0].Rows[0]["IssWOBOMIssueDate"].ToString();
+                model.IssuedByEmpCode = Convert.ToInt32((DS.Tables[0].Rows[0]["IssuedByEmpCode"]));
+                model.IssuedByEmpName = DS.Tables[0].Rows[0]["IssuedByEmpCodeName"].ToString();
+                model.IssuedByDepCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssuedByDepCode"]);
+                model.RecDepCode = Convert.ToInt32(DS.Tables[0].Rows[0]["RecDepCode"]);
+                model.RecDept = DS.Tables[0].Rows[0]["RecDepCodeName"].ToString();
+                model.RecByEmpCode = Convert.ToInt32((DS.Tables[0].Rows[0]["RecByEmpCode"]));
+                model.MachineCode = DS.Tables[0].Rows[0]["Machinecode"].ToString();
+                model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString();
+                model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]);
+                model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
+                model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"].ToString());
+                model.ActualEnteredByName = DS.Tables[0].Rows[0]["ActualEntryByEmpName"].ToString();
+                model.ActualEntrydate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
 
-            if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
-            {
-                foreach (DataRow row in DS.Tables[1].Rows)
+                if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString()))
                 {
-                    ItemGrid.Add(new IssueWithoutBomDetail
-                    {
-                        seqno = cnt++,
-                        //ReqNo = row["ReqNo"].ToString(),
-                        //ReqDate = row["ReqDate"].ToString(),
-                        //ReqyearCode = Convert.ToInt32(row["ReqYearCode"]),
-                        ItemCode = Convert.ToInt32(row["ItemCode"]),
-                        ItemName = row["Item_Name"].ToString(),
-                        PartCode = row["PartCode"].ToString(),
-                        ReqQty = Convert.ToDecimal(row["ReqQty"]),
-                        StoreId = Convert.ToInt32(row["StoreId"]),
-                        BatchNo = row["BatchNo"].ToString(),
-                        uniqueBatchNo = row["uniqueBatchNo"].ToString(),
-                        IssueQty = Convert.ToDecimal(row["IssueQty"]),
-                        Unit = row["Unit"].ToString(),
-                        LotStock = Convert.ToDecimal(row["LotStock"]),
-                        TotalStock = Convert.ToDecimal(row["TotalStock"]),
-                        AltQty = Convert.ToDecimal(row["AltQty"]),
-                        AltUnit = row["AltUnit"].ToString(),
-                        Rate = Convert.ToDecimal(row["Rate"]),
-                        Remark = row["Remark"].ToString(),
-                        WorkCenter = row["WorkCenterDescription"].ToString(),
-                        AltItemCode = Convert.ToInt32(row["AltItemCode"]),
-                        CostCenterId = Convert.ToInt32(row["CostCenterId"]),
-                        ItemSize = row["ItemSize"].ToString(),
-                        ItemColor = row["ItemColor"].ToString(),
-                        ProjectNo = row["ProjectNo"].ToString(),
-                        ProjectYearCode = Convert.ToInt32(row["ProjectYearcode"]),
-                        StoreName = row["Store_Name"].ToString()
-                    });
+                    model.LastupdatedByName = DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString();
+                    model.LastupdatedBy = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString()) ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"]);
+                    model.LastUpdationDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["LastUpdationDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdationDate"]);
                 }
-                model.ItemDetailGrid = ItemGrid;
-            }
 
+                if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+                {
+                    foreach (DataRow row in DS.Tables[1].Rows)
+                    {
+                        ItemGrid.Add(new IssueWithoutBomDetail
+                        {
+                            seqno = cnt++,
+                            //ReqNo = row["ReqNo"].ToString(),
+                            //ReqDate = row["ReqDate"].ToString(),
+                            //ReqyearCode = Convert.ToInt32(row["ReqYearCode"]),
+                            ItemCode = Convert.ToInt32(row["ItemCode"]),
+                            ItemName = row["Item_Name"].ToString(),
+                            PartCode = row["PartCode"].ToString(),
+                            ReqQty = Convert.ToDecimal(row["ReqQty"]),
+                            StoreId = Convert.ToInt32(row["StoreId"]),
+                            BatchNo = row["BatchNo"].ToString(),
+                            uniqueBatchNo = row["uniqueBatchNo"].ToString(),
+                            IssueQty = Convert.ToDecimal(row["IssueQty"]),
+                            Unit = row["Unit"].ToString(),
+                            LotStock = Convert.ToDecimal(row["LotStock"]),
+                            TotalStock = Convert.ToDecimal(row["TotalStock"]),
+                            AltQty = Convert.ToDecimal(row["AltQty"]),
+                            AltUnit = row["AltUnit"].ToString(),
+                            Rate = Convert.ToDecimal(row["Rate"]),
+                            Remark = row["Remark"].ToString(),
+                            WorkCenter = row["WorkCenterDescription"].ToString(),
+                            AltItemCode = Convert.ToInt32(row["AltItemCode"]),
+                            CostCenterId = Convert.ToInt32(row["CostCenterId"]),
+                            ItemSize = row["ItemSize"].ToString(),
+                            ItemColor = row["ItemColor"].ToString(),
+                            ProjectNo = row["ProjectNo"].ToString(),
+                            ProjectYearCode = Convert.ToInt32(row["ProjectYearcode"]),
+                            StoreName = row["Store_Name"].ToString()
+                        });
+                    }
+                    model.ItemDetailGrid = ItemGrid;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var Message = ex.Message;
+            }
             return model;
+
         }
         public static DateTime ParseDate(string dateString)
         {
@@ -385,8 +393,8 @@ namespace eTactWeb.Data.DAL
                                                      IssueSlipNo = dr["IssueSlipNo"].ToString(),
                                                      IssueDate = dr["IssueDate"].ToString(),
                                                      WorkCenterDescription = dr["WorkCenterDescription"].ToString(),
-                                                    // ActualEnteredBy = Convert.ToInt32(dr["ActualEnteredBy"]),
-                                                    //MachineCode = dr["Machinecode"].ToString(),
+                                                     // ActualEnteredBy = Convert.ToInt32(dr["ActualEnteredBy"]),
+                                                     //MachineCode = dr["Machinecode"].ToString(),
                                                  }).ToList();
                 }
                 //var ilst = model.AccountMasterList.Select(m => new TextValue
@@ -488,7 +496,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<ResponseResult> DeleteByID(int ID, int YearCode,int ActualEnteredBy,string EntryByMachine)
+        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEnteredBy, string EntryByMachine)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -590,7 +598,7 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Itemcode", ItemCode));
                 SqlParams.Add(new SqlParameter("@ALtQty", AltQty));
-                SqlParams.Add(new SqlParameter("@UnitQty", UnitQty));                
+                SqlParams.Add(new SqlParameter("@UnitQty", UnitQty));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AltUnitConversion", SqlParams);
             }
@@ -693,7 +701,7 @@ namespace eTactWeb.Data.DAL
         {
             var _ResponseResult = new ResponseResult();
             DateTime reqDt = new DateTime();
-            reqDt= ParseDate(ReqDate);
+            reqDt = ParseDate(ReqDate);
 
             try
             {
@@ -745,7 +753,7 @@ namespace eTactWeb.Data.DAL
 
             try
             {
-                
+
                 var SqlParams = new List<dynamic>();
                 DateTime issuedDate = DateTime.Today;
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
@@ -766,7 +774,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate,string BatchNo,string UniqBatchNo)
+        public async Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -792,7 +800,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        
+
         public async Task<ResponseResult> GetReqQtyForScan(string ReqNo, int ReqYearCode, string ReqDate, int ItemCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -804,7 +812,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "GetReqForScan"));
                 SqlParams.Add(new SqlParameter("@ReqNo", ReqNo));
                 SqlParams.Add(new SqlParameter("@ReqYearCode", ReqYearCode));
-                SqlParams.Add(new SqlParameter("@ReqDate",ReqDate));
+                SqlParams.Add(new SqlParameter("@ReqDate", ReqDate));
                 SqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithoutBomM", SqlParams);
