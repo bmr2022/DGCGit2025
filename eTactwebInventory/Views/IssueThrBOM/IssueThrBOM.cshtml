@@ -738,7 +738,7 @@
         }
 
         function fillIssueThrGridFromMemoryCache() {
-            debugger 
+              
             $.ajax({
                 url: "@Url.Action("FillThrGridFromMemoryCache")",
                 type: "POST",
@@ -759,7 +759,7 @@
                         $('#WONO').val($('#MainGridWONO').val());
                         fillBatchNO();
 
-                        debugger
+                         
                         var rowCounter = $('#divIssueThrBOMGrid tr').length;
                         for (var i = 1; i <= rowCounter; i++) {
                             fillBatchUnique(i, "unique&batch");
@@ -1047,7 +1047,7 @@
                 });
             }
             else {
-                debugger
+                 
                 var data = {
                     "ItemCode": $('#MainGridItemCode-' + i).val(),
                     "YearCode": @yearCode,
@@ -1102,19 +1102,22 @@
         }
 
         function FillLotandTotalStock(i) {
-            debugger
+             
             $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
                 data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).val() },
                 async: false,
                 success: function (data) {
-                    debugger
+                     
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#MainGridLotStock-' + i).val(obj.Result[0].lotstock);
                             $('#MainGridTotalStock-' + i).val(obj.Result[0].totalstock);
+
+                            var issQty = parseFloat($('#MainGridReqQty-' + i).val()) <= parseFloat($('#MainGridLotStock-' + i).val()) ? $('#MainGridReqQty-' + i).val() : $('#MainGridLotStock-' + i).val();
+                            $('#MainGridIssueQty-' + i).val(issQty);
                         }
                         else {
                             $('#MainGridLotStock-' + i).val(0);

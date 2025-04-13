@@ -1084,7 +1084,7 @@
         }
         $('#GridButton').click(function (e) {
             e.preventDefault();
-            debugger
+             
             var SchData = {
                 SalaryHead: $('#SalaryHead').val(),
                 SalaryHeadId: $('#SalaryHeadId').val(),
@@ -1181,7 +1181,7 @@
         }
         $('#GridButtonEduction').click(function (e) {
             e.preventDefault();
-            debugger
+             
             var SchData = {
                 Qualification: $('#Qualification').val(),
                 Univercity_Sch: $('#Univercity_Sch').val(),
@@ -1274,7 +1274,7 @@
 
         $('#GridButtonExperiance').click(function (e) {
             e.preventDefault();
-            debugger
+             
             var SchData = {
                 CompanyName: $('#CompanyName').val(),
                 CFromDate: $('#CFromDate').val(),
@@ -1412,7 +1412,7 @@
             });
         }
         function GetSalaryMode() {
-            debugger
+             
             var SalaryHeadId = $('#SalaryHead').val();
             $.ajax({
                 url: '@Url.Action("GetSalaryMode", "EmployeeMaster")',
