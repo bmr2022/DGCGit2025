@@ -120,7 +120,6 @@
                                     <input asp-for="EntryDate" class="form-control" readonly />
                                 </div>
                                 <div class="col-lg">
-
                                     <label asp-for="CC" class="form-label">Branch</label>
                                     <input asp-for="CC" class="form-control" readonly />
                                 </div>
@@ -458,28 +457,12 @@
                 return false;
             }
             else {
-                var isBatchNo = false;
-                var isUniqueBatchNo = false;
                 var rowCount = $('#divIssueWOBOMGridAdd tr').length;
                 for (var i = 1; i <= rowCount; i++) {
                     CheckStockBeforeSaving(i);
                 }
                 for (var i = 1; i <= rowCount; i++) {
                     CheckRequisitionBeforeSaving(i);
-                }
-
-                var rowIssueWOGridCount = $('#divIssueWOBOMGridAdd tr').length;
-
-                for (var j = 1;j <=rowIssueWOGridCount;j++) {
-                    if ($('#MainBatchNoAdd-' + j).val() == null) {
-                        isBatchNo = true;
-                        break;
-                    }
-
-                    if ($('#MainUniqBatchNoAdd-' + j).val() == null) {
-                        isUniqueBatchNo = true;
-                        break;
-                    }
                 }
 
                 if (ICName.length > 0) {
@@ -496,14 +479,6 @@
                     var displayICName = ICName2Array.join(delimiter);
 
                     $.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
-                }
-                else if (isBatchNo) {
-                    isBatchNo = false;
-                    $.notify("Fill batchNo first...!", "error");
-                }
-                else if (isUniqueBatchNo) {
-                    isBatchNo = false;
-                    $.notify("Fill uniqueBatchNo first...!", "error");
                 }
                 else {
                     $("form").submit();
@@ -1241,21 +1216,17 @@
                     $.notify("Batch No is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
                     Err = 1;
                 }
-                else {
-                    $('MainGridBatchNo-' + i).css("border", "1px solid black");
-                }
-                if ($('#MainGridUniqueBatchNo-' + i).val() == null) {
-                    $('MainGridUniqueBatchNo-' + i).css("border", "1px solid red");
-                    $.notify("Unique Batch No is required for " + $('#MainGridPartCode-' + i).val() + "", "error");
-                    Err = 1;
-                }
-                else {
-                    $('MainGridUniqueBatchNo-' + i).css("border", "1px solid black");
-                }
+            }
+            else {
+                $('MainGridBatchNo-' + i).css("border", "1px solid black");
             }
 
-
-
+            if ($('#MainGridUniqueBatchNo-' + i).val() == null) {
+                $.notify("UniqueBatchNo is required for " + $('#MainGridUniqueBatchNo-' + i).val() + "", "error");
+                Err = 1;
+            } else {
+                $('MainGridUniqueBatchNo-' + i).css("border", "1px solid black");
+            }
 
 
             if (parseFloat($('#MainGridIssueQty-' + i).val()) <= 0) {
