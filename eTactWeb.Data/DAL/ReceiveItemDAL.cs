@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -351,13 +352,13 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime entryDate = new DateTime();
-                DateTime updationDate = new DateTime();
-                DateTime recmatDate=new DateTime();
+                //DateTime entryDate = new DateTime();
+                //DateTime updationDate = new DateTime();
+                //DateTime recmatDate=new DateTime();
 
-                entryDate=ParseDate(model.RecMatEntryDate);
-                updationDate=ParseDate(model.UpdatedOn);
-                recmatDate=ParseDate(model.RecMatSlipDate);
+                var entryDate =CommonFunc.ParseFormattedDate(model.RecMatEntryDate);
+                var updationDate=CommonFunc.ParseFormattedDate(model.UpdatedOn);
+                var recmatDate=CommonFunc.ParseFormattedDate(model.RecMatSlipDate);
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
@@ -381,7 +382,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Uid", model.UID));
                 SqlParams.Add(new SqlParameter("@RecMatSlipDate", recmatDate));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
-                SqlParams.Add(new SqlParameter("@ReceiveDate", recmatDate));
+                SqlParams.Add(new SqlParameter("@ReceiveDate", entryDate));
+                
 
                 SqlParams.Add(new SqlParameter("@DTSSGrid", ReceiveItemDetail));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ReceiveMaterialInStore", SqlParams);

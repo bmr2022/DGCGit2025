@@ -53,7 +53,7 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> TransferFromWorkCenter(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "",string StoreName = "",string ProdSlipNo="",string ProdSchNo="", string Searchbox = "", string DashboardType = "" )//, ILogger logger)
+        public async Task<ActionResult> TransferFromWorkCenter(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "")//, ILogger logger)
         {
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
@@ -142,33 +142,53 @@ namespace eTactWeb.Controllers
                     {
                         TransferGrid = GetDetailTable(TransferFromWorkCenterDetail);
                     }
+                    //var ChechedData = await _ITransferFromWorkCenter.ChkWIPStockBeforeSaving(model.IssueFromWCid, model.TransferMatEntrydate, model.TransferMatYearCode, TransferGrid);
+                    //if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
+                    //{
+                        var Result = await _ITransferFromWorkCenter.SaveTransferFromWorkCenter(model, TransferGrid);
 
-                    var Result = await _ITransferFromWorkCenter.SaveTransferFromWorkCenter(model, TransferGrid);
+                        if (Result != null)
+                        {
+                            if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                            {
+                                ViewBag.isSuccess = true;
+                                TempData["200"] = "200";
+                                _MemoryCache.Remove(TransferGrid);
+                            }
+                            if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                            {
+                                ViewBag.isSuccess = true;
+                                TempData["202"] = "202";
+                            }
+                            if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                            {
 
-                    if (Result != null)
-                    {
-                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-                        {
-                            ViewBag.isSuccess = true;
-                            TempData["200"] = "200";
-                            _MemoryCache.Remove(TransferGrid);
+                                ViewBag.isSuccess = false;
+                                TempData["500"] = "500";
+                                _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                                return View("Error", Result);
+                            }
                         }
-                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
-                        {
-                            ViewBag.isSuccess = true;
-                            TempData["202"] = "202";
-                        }
-                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                        {
+                        return RedirectToAction(nameof(TransferFromWorkCenter));
+                    //}
+                    //else
+                    //{
+                    //    DataTable dt = ChechedData.Result;
 
-                            ViewBag.isSuccess = false;
-                            TempData["500"] = "500";
-                            _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            return View("Error", Result);
-                        }
-                    }
+                    //    List<string> errors = new List<string>();
+
+                    //    foreach (DataRow row in dt.Rows)
+                    //    {
+                    //        string itemName = row["ItemName"].ToString();
+                    //        string batchNo = row["BatchNo"].ToString();
+                    //        decimal availableQty = Convert.ToDecimal(row["CalWIPStock"]);
+
+                    //        errors.Add($"{itemName} + {batchNo} has only {availableQty} quantity available in stock.");
+                    //    }
+
+                    //    return Json(new { success = false, errors = errors });
+                    //}
                 }
-                return RedirectToAction(nameof(TransferFromWorkCenter));
             }
             catch (Exception ex)
             {
@@ -345,7 +365,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> GetBatchNumber(int ItemCode, int YearCode, float WcId, string TransDate, string BatchNo)
         {
-            if(BatchNo == "-Select-")
+            if (BatchNo == "-Select-")
             {
                 BatchNo = "";
             }
@@ -664,13 +684,15 @@ namespace eTactWeb.Controllers
         {
             //model.Mode = "Search";
             var model = new TransferFromWorkCenterDashboard();
-            model = await _ITransferFromWorkCenter.GetDashboardDetailData(FromDate, ToDate, TransferMatSlipNo,ItemName,PartCode,TransferFromWC,TransferToWC,TransferToStore,ProdSlipNo,ProdSchNo, DashboardType);
+            model = await _ITransferFromWorkCenter.GetDashboardDetailData(FromDate, ToDate, TransferMatSlipNo, ItemName, PartCode, TransferFromWC, TransferToWC, TransferToStore, ProdSlipNo, ProdSchNo, DashboardType);
             model.DashboardType = "DETAIL";
             return PartialView("_TransferFromWorkCenterDashboardDetail", model);
         }
         public async Task<IActionResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, string FromDate = "", string ToDate = "", string TransferSlipNo = "", string ItemName = "", string PartCode = "", string FromWorkCenter = "", string ToWorkCenter = "", string StoreName = "", string ProdSlipNo = "", string ProdSchNo = "", string Searchbox = "", string DashboardType = "")
         {
-            var Result = await _ITransferFromWorkCenter.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate);
+           // int EmpID = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+            int EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _ITransferFromWorkCenter.DeleteByID(ID, YC, CC, EntryByMachineName, EntryDate, EmpID);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -688,7 +710,7 @@ namespace eTactWeb.Controllers
                 TempData["500"] = "500";
             }
 
-            return RedirectToAction("TransferFromWorkCenterDashboard", new { EntryDate = EntryDate, Flag = "False", CC = CC, EntryByMachineName = EntryByMachineName,FromDate=FromDate,ToDate=ToDate,TransferSlipNo=TransferSlipNo,ItemName=ItemName,PartCode=PartCode,FromWorkCenter=FromWorkCenter,ToWorkCenter=ToWorkCenter,StoreName=StoreName,ProdSlipNo=ProdSlipNo,ProdSchNo=ProdSchNo,DashboardType=DashboardType });
+            return RedirectToAction("TransferFromWorkCenterDashboard", new { EntryDate = EntryDate, Flag = "False", CC = CC, EntryByMachineName = EntryByMachineName, FromDate = FromDate, ToDate = ToDate, TransferSlipNo = TransferSlipNo, ItemName = ItemName, PartCode = PartCode, FromWorkCenter = FromWorkCenter, ToWorkCenter = ToWorkCenter, StoreName = StoreName, ProdSlipNo = ProdSlipNo, ProdSchNo = ProdSchNo, DashboardType = DashboardType });
         }
         public async Task<JsonResult> CheckEditOrDelete(int TransferEntryId, int TransferYearCode)
         {

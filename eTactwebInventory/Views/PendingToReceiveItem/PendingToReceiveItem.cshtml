@@ -204,7 +204,9 @@
             var data = {
                 "Flag": "PendingToRec",
                 "FromDate": $('#FromDate').val(),
-                "ToDate": $('#ToDate').val()
+                "ToDate": $('#ToDate').val(),
+                "partcode": $('#PartCode').val(),
+                "itemname": $('#ItemName').val(),
             }
 
             $.ajax({
@@ -234,7 +236,7 @@
                                     '<td> <input id="ItemCode' + i + '" type="hidden" value="' + val.itemcode + '"/>' + val.itemname + '</td>' +
                                     '<td>' + val.TransferQty + '</td>' +
                                     '<td>' + val.Unit + '</td>' +
-                                    '<td>' + val.AltTransferQty + '</td>' +
+                                    '<td>' + val.TransferQty + '</td>' +
                                     '<td>' + val.AltUnit + '</td>' +
                                     '<td> <input id="RecStoreId' + i + '" type="hidden" value="' + val.TostoreId + '"/>' + val.StoreName + '</td>' +
                                     '<td id="TransferEntry' + i + '">' + val.TransferMatEntryId + '</td>' +

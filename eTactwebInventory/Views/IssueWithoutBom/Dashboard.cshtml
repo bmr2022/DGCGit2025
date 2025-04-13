@@ -209,6 +209,7 @@
             sessionStorage.removeItem('WorkCenterBack');
             sessionStorage.removeItem('DashboardTypeBack');
             sessionStorage.removeItem('GlobalSearchBack');
+               GetSearchData();
         });
 
         var currentSearchColumn = null;
@@ -294,6 +295,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#divDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
+                     // alert("Data received: " + data);
                 },
                 error: function (response) {
                     alert(response.responseText);

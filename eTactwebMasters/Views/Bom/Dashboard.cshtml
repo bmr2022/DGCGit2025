@@ -99,12 +99,11 @@
                                 <input type="text" class="form-control" asp-for="RMItemName" />
 
                             </div>
-                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-                                <label asp-for="BomRevNo" class="form-label">Bom Rev No</label>
-                                <input type="text" class="form-control" asp-for="BomRevNo" />
-
+                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="width:60px;">
+                                <label asp-for="BomRevNo" class="form-label">RevNo</label>
+                                <input type="text" class="form-control" asp-for="BomRevNo" style="width:50px;" />
                             </div>
-                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12"style="width:100px;">
                                 <label asp-for="DashboardType" class="form-label">Type</label>
                                 <select type="text" class="form-select" asp-for="DashboardType" onchange="GetSearchData();">
                                     <option value="" disabled>-Select-</option>
@@ -118,7 +117,7 @@
                                 <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
 
-                            <div class="col-lg-3 col-md-8 col-sm-6 col-xs-12 d-flex justify-content-evenly mt-3">
+                            <div class="col-lg-3 col-md-8 col-sm-6 col-xs-12 d-flex justify-content-evenly mt-3" style="margin-left:20px;">
                                 <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
@@ -144,15 +143,16 @@
                 <div class="card-body" id="divDashboardGrid">
                     <partial name="_BomDashboardGrid" />
                 </div>
+                <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
             </div>
         </div>
        @*  pagination *@
         <div class="card-footer d-flex justify-content-between align-items-center">
-            <div>
+            @* <div>
                 <button type="button" class="btn btn-link bg-graident" onclick="window.location.back()">
                     <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK
                 </button>
-            </div>
+            </div> *@
             @{
                 int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
             }
@@ -162,7 +162,7 @@
                     @if (Model.PageNumber > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Previous</a>
+                            <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Prev</a>
                         </li>
                     }
 
@@ -223,7 +223,8 @@
             $('#BomRevNo').val(bomRevNoBack == "" ? $('#BomRevNo').val() : bomRevNoBack);
             $('#DashboardType').val(summaryDetailBack == "" ? $('#DashboardType').val() : summaryDetailBack);
             $('#search-box').val(globalSearchBack == "" ? $('#search-box').val() : globalSearchBack);
-
+            var dashGrid = $('#divDashboardGrid tr').length;
+            $('#totalRows').text(dashGrid);
 
             localStorage.removeItem('FGPartCodeBack');
             localStorage.removeItem('FGItemNameBack');
@@ -279,6 +280,28 @@
                 minLength: 1
             });
         }
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+
+            $.ajax({
+                url: "/Bom/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString },
+                success: function (data) {
+                    console.log(data);
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    //$('.ShowAllDiv').empty();
+                    //$('.ShowAllDiv').append(data);
+                    var dashGrid = $('#divDashboardGrid tr').length;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function () {
+                    alert("Error fetching search results.");
+                }
+            });
+        });
 
         function GetFormRights() {
             $.ajax({

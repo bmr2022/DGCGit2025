@@ -14,12 +14,14 @@
         top: 0px;
         z-index: 1;
     }
+
     .disabled-link {
         pointer-events: none; /* Disables clicking */
         color: gray; /* Makes it look disabled */
         text-decoration: none; /* Removes underline */
         cursor: not-allowed; /* Changes cursor */
     }
+
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a !important;
@@ -355,7 +357,7 @@
                                     <button class="ItemBtn btn btn-sm btn-outline-danger" style="width:150px;margin-top:30px;" type="button">
                                         <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
                                     </button>
-                                   
+
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="margin-top:20px;">
                                     <label class="form-label">Global search</label>
@@ -627,7 +629,7 @@
         });
 
         function ValidateTransfer_SubmitGrid() {
-
+            debugger
             var Err = 0;
             if ($('#divTransferGrid').is(':empty') || $('#divTransferGrid').text().trim() === "NO DATA ADDED") {
                 AddErrorCls('PRODSTATUSProdUnProdRej');
@@ -687,6 +689,8 @@
                     RemoveErrorCls('IssueToStoreWC');
                 }
             }
+            //ChkWIPStockBeforeSaving();
+
             Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
             if (Err == 1) return false;
             return true;
@@ -768,7 +772,7 @@
             $('#Remark').rules("remove", "required");
             $('.AF').fadeOut();
             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
-                 
+
                 $('.AF').fadeOut();
                 $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 var TransferMatEntrydate = $('#TransferMatEntrydate').val().split(" ")[0];
@@ -836,12 +840,13 @@
         }
 
         function GetServerDate() {
-             
+
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
+
                     console.log(result);
                     if (result != null) {
                         var today = new Date();
@@ -977,6 +982,42 @@
                             }
                         }
                     }
+                }
+            });
+        }
+
+        function ChkWIPStockBeforeSaving() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ChkWIPStockBeforeSaving")",
+                dataType: "json",
+                data: { "WcId": parseInt($('#IssueFromWc').val()), "TransferMatEntryDate": $('#TransferMatEntrydate').val(), "TransferMatYearCode": parseInt($('#TransferMatYearCode').val()) },
+                success: function (result) {
+                    if (result != null) {
+                        if (result.success === false && result.errors && result.errors.length > 0) {
+                            result.errors.forEach(function (msg) {
+                                $.notify(msg, {
+                                    className: 'error',
+                                    globalPosition: 'top right',
+                                    autoHideDelay: 5000
+                                });
+                            });
+                        } else if (result.success === true) {
+                            $.notify("Stock check passed successfully!", {
+                                className: 'success',
+                                globalPosition: 'top right',
+                                autoHideDelay: 3000
+                            });
+
+                            // Continue logic here if needed
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $.notify("Error checking stock: " + error, {
+                        className: 'error',
+                        globalPosition: 'top right'
+                    });
                 }
             });
         }
