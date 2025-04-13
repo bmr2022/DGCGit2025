@@ -868,7 +868,7 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style="width:120px">
                                     <label asp-for="RewYearcode" class="form-label">Rew Year Code</label>
                                     <input asp-for="RewYearcode" class="form-control" readonly />
-                                </div> 
+                                </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-9">
                                     <label asp-for="QCOffered" class="form-label">QC Offered</label>
                                     <input asp-for="QCOffered" class="form-control" readonly />
@@ -1177,8 +1177,8 @@
                 return false;
             }
             if ($('#ProdAgainstPlanManual').val() == 'UNPLANNED') {
-                var Target = parseFloat($('#unTarget').val());
-                var ProdQty = parseFloat($('#ProdQty').val());
+                var Target = Number(parseFloat($('#unTarget').val()).toFixed(6));
+                var ProdQty = Number(parseFloat($('#ProdQty').val()).toFixed(6));
                 if (ProdQty > Target) {
                     $.notify("ProdQty cannot be greater than TargetQty", "error");
                     Err = 1;
@@ -1194,8 +1194,8 @@
                 }
 
             } else {
-                var TargetQty = parseFloat($('#TargetQty').val());
-                var ProdQty = parseFloat($('#ProdQty').val());
+                var TargetQty = Number(parseFloat($('#TargetQty').val()).toFixed(6));
+                var ProdQty = Number(parseFloat($('#ProdQty').val()).toFixed(6));
                 if (ProdQty > TargetQty) {
                     $.notify("ProdQty cannot be greater than TargetQty", "error");
                     Err = 1;
@@ -1353,14 +1353,14 @@
                 $('#AddChildPartbtn').hide();
                 $('#StoreTransferdiv').hide();
                 $('#Rejtransferdiv').hide();
-                
+
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
                 /* $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
                 /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#EntryDate').datepicker("option", "minDate", formattedDate1);
                 $('#EntryDate').datepicker("option", "maxDate", formattedDate2); */
-              /*   $('#ActualProdDate').datepicker("option", "minDate", formattedDate1);
-                $('#ActualProdDate').datepicker("option", "maxDate", formattedDate2); */
+                /*   $('#ActualProdDate').datepicker("option", "minDate", formattedDate1);
+                  $('#ActualProdDate').datepicker("option", "maxDate", formattedDate2); */
                 //$('#ProdPlanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#ReWorkEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -1665,21 +1665,21 @@
                 var desiredValue = $('#hiddenProdAgain').val();
                 if (desiredValue == 'REQUISITION') {
                     $('#ProdAgainstPlanManual').append('<option value="PRODSCHEDULE">Against Plan Sch</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                    <option selected value="REQUISITION">Against Requisition</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                    <option value="UNPLANNED">UnPlanned</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                   ');
-                }
-                else if (desiredValue == 'PRODSCHEDULE') {
-                    $('#ProdAgainstPlanManual').append('<option selected value="PRODSCHEDULE">Against Plan Sch</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                            <option value="REQUISITION">Against Requisition</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                            <option selected value="REQUISITION">Against Requisition</option>\
                                                                                                                                                                                                                                                                                                                                                                                                             <option value="UNPLANNED">UnPlanned</option>\
                                                                                                                                                                                                                                                                                                                                                                                                            ');
                 }
+                else if (desiredValue == 'PRODSCHEDULE') {
+                    $('#ProdAgainstPlanManual').append('<option selected value="PRODSCHEDULE">Against Plan Sch</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                                    <option value="REQUISITION">Against Requisition</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                                    <option value="UNPLANNED">UnPlanned</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                                   ');
+                }
                 else if (desiredValue == 'UNPLANNED') {
                     $('#ProdAgainstPlanManual').append('<option value="PRODSCHEDULE">Against Plan Sch</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                                    <option value="REQUISITION">Against Requisition</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                                    <option selected value="UNPLANNED">UnPlanned</option>\
-                                                                                                                                                                                                                                                                                                                                                                                                                   ');
+                                                                                                                                                                                                                                                                                                                                                                                                                            <option value="REQUISITION">Against Requisition</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                                            <option selected value="UNPLANNED">UnPlanned</option>\
+                                                                                                                                                                                                                                                                                                                                                                                                                           ');
                 }
                 $('#ProdAgainstPlanManual').change();
                 $('#Store').change();
@@ -1836,7 +1836,7 @@
                 });
             }
             else if ($('#Store').val() == 'S') {
-                 FillIssStore();
+                FillIssStore();
             }
         })
 
@@ -1872,7 +1872,7 @@
             });
         }
 
-        
+
 
         function getFormattedDate() {
             var today = new Date();
@@ -1893,10 +1893,10 @@
             else if ($('#StartupRej').val() > 0) {
                 $('#StoreTransferdiv').show();
                 $('#Rejtransferdiv').show();
-                var StartupRej = parseFloat($('#StartupRej').val());
-                var QcRejQty = parseFloat($('#QcRejQty ').val());
+                var StartupRej = Number(parseFloat($('#StartupRej').val()).toFixed(6));
+                var QcRejQty = Number(parseFloat($('#QcRejQty').val()).toFixed(6));
                 var BothPlusQty = StartupRej + QcRejQty;
-                if (BothPlusQty > parseFloat($('#ProdQty').val())) {
+                if (BothPlusQty > Number(parseFloat($('#ProdQty').val()).toFixed(6))) {
                     $.notify("ProdQty cannot Less that StartupRej + QcRejQty", "error");
                 }
             }
@@ -1912,10 +1912,10 @@
             else if ($('#QcRejQty').val() > 0) {
                 $('#StoreTransferdiv').show();
                 $('#Rejtransferdiv').show();
-                var StartupRej = parseFloat($('#StartupRej').val());
-                var QcRejQty = parseFloat($('#QcRejQty ').val());
+                var StartupRej = Number(parseFloat($('#StartupRej').val()).toFixed(6));
+                var QcRejQty = Number(parseFloat($('#QcRejQty').val()).toFixed(6));
                 var BothPlusQty = StartupRej + QcRejQty;
-                if (BothPlusQty > parseFloat($('#ProdQty').val())) {
+                if (BothPlusQty > Number(parseFloat($('#ProdQty').val()).toFixed(6))) {
                     $.notify("ProdQty cannot Less that StartupRej + QcRejQty", "error");
                 }
             }
@@ -2124,14 +2124,14 @@
         }
 
         function FillScrapData() {
-             
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillScrapData")",
-                data: { "FGItemCode": parseInt($('#FGItemCode').val()), "FgProdQty" : parseFloat($('#ProdQty').val()), "BomNo" : $('#BOMNo').val() },
+                data: { "FGItemCode": parseInt($('#FGItemCode').val()), "FgProdQty": parseFloat($('#ProdQty').val()), "BomNo": $('#BOMNo').val() },
                 async: false,
                 success: function (data) {
-                     
+
                     $('#divScrapDetailGrid').empty().append(data);
                 }
             });
@@ -3392,7 +3392,7 @@
                                 $('#ProdQty').val(ProdQty);
                             }
                         }
-                       
+
                     }
                 }
             });
@@ -3759,8 +3759,8 @@
         $('#ProdQty').change(function () {
 
             if ($('#ProdAgainstPlanManual').val() == 'UNPLANNED') {
-                var Target = parseFloat($('#unTarget').val());
-                var ProdQty = parseFloat($('#ProdQty').val());
+                var Target = Number(parseFloat($('#unTarget').val()).toFixed(6));
+                var ProdQty = Number(parseFloat($('#ProdQty').val())toFixed(6));
                 if (ProdQty > Target) {
                     $.notify("ProdQty cannot be greater than TargetQty", "error");
                 }
@@ -3768,14 +3768,14 @@
                     $.notify("ProdQty cannot be less than 0", "error");
                 }
                 else {
-                    var PendQty = (Target - ProdQty).toFixed(3);
+                    var PendQty = Number((Target - ProdQty).toFixed(3));
                     $('#PendQty').val(0);
                     $('#PendQty').val(PendQty);
                 }
 
             } else {
-                var TargetQty = parseFloat($('#TargetQty').val());
-                var ProdQty = parseFloat($('#ProdQty').val());
+                var TargetQty = Number(parseFloat($('#TargetQty').val()).toFixed(6));
+                var ProdQty = Number(parseFloat($('#ProdQty').val()).toFixed(6));
                 if (ProdQty > TargetQty) {
                     $.notify("ProdQty cannot be greater than TargetQty", "error");
                 }
@@ -3783,7 +3783,7 @@
                     $.notify("ProdQty cannot be less than 0", "error");
                 }
                 else {
-                    var PendQty = (TargetQty - ProdQty).toFixed(3);
+                    var PendQty = Number((Target - ProdQty).toFixed(3));
                     $('#PendQty').val(0);
                     $('#PendQty').val(PendQty);
                 }
@@ -4154,8 +4154,9 @@
                                 var isSelected = (val.BomNo == BomNo) ? "selected" : "";
                                 $('#BOMNo').append('<option ' + isSelected + ' value="' + val.BomNo + '">' + val.BomNo + '</option>')
                             })
-
-                            $('#BomEffecDate').val(BomEffecDate.split("T")[0]);
+                            if (BomEffecDate != null) {
+                                $('#BomEffecDate').val(BomEffecDate.split("T")[0]);
+                            }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var bomno = $('#BOMNo').val();
                                 $('#BOMNo').val(bomno).trigger("change");
@@ -4239,8 +4240,8 @@
                         var row = $('#divProductionEntryGrid tr').length
                         var i = 1;
                         for (i = 1; i <= row; i++) {
-                            var ReqQty = parseFloat($('#ReqQty-' + i).val());
-                            var TotalStock = parseFloat($('#TotalStock-' + i).val());
+                            var ReqQty = Number(parseFloat($('#ReqQty-' + i).val()).toFixed(6));
+                            var TotalStock = Number(parseFloat($('#TotalStock-' + i).val()).toFixed(6));
                             if (ReqQty > TotalStock) {
                                 document.getElementById('itemGrid-' + i).style.backgroundColor = '#ed6262';
                             }
@@ -4278,9 +4279,9 @@
 
         function IssQtyChange(i) {
 
-            var IssQty = parseFloat($('#IssueQty' + i).val());
-            var TotalStock = parseFloat($('#TotalStock' + i).val());
-            var BatchStock = parseFloat($('#BatchStock' + i).val());
+            var IssQty = Number(parseFloat($('#IssueQty' + i).val()).toFixed(6));
+            var TotalStock = Number(parseFloat($('#TotalStock' + i).val()).toFixed(6));
+            var BatchStock = Number(parseFloat($('#BatchStock' + i).val()).toFixed(6));
             if (IssQty > TotalStock || IssQty > BatchStock) {
                 $.notify('ConsumedQty cannot greater than Stock', "error");
             }
@@ -4303,7 +4304,7 @@
         })
 
         function ValidatePE_Grid() {
-
+            debugger
             var Err = 0;
             if ($('#divProductionEntryGrid  tr').length == 0) {
                 Err = 1;
@@ -4316,16 +4317,16 @@
                 for (var i = 1; i <= rowCount; i++) {
                     Totalqty.push({
                         "PartCode": $('#PartCode-' + i).val(),
-                        "ReqQty": $('#ReqQty-' + i).val(),
-                        "IssueQty": $('#IssueQty-' + i).val()
+                        "ReqQty": Number(parseFloat($('#ReqQty-' + i).val()).toFixed(6)),
+                        "IssueQty": Number(parseFloat($('#IssueQty-' + i).val()).toFixed(6))
                     })
                 }
                 var sums = {};
                 var secondColumnValues = {};
                 for (var i = 0; i < Totalqty.length; i++) {
                     var partCode = Totalqty[i].PartCode;
-                    var secondColumnValue = parseFloat(Totalqty[i].ReqQty);
-                    var thirdColumnValue = parseFloat(Totalqty[i].IssueQty);
+                    var secondColumnValue = Number(parseFloat(Totalqty[i].ReqQty).toFixed(6));
+                    var thirdColumnValue = Number(parseFloat(Totalqty[i].IssueQty).toFixed(6));
                     if (!sums[partCode]) {
                         sums[partCode] = 0;
                         secondColumnValues[partCode] = secondColumnValue;
@@ -4565,8 +4566,8 @@
                 RemoveErrorCls('BOMNo');
             }
             if ($('#ProdAgainstPlanManual').val() == 'UNPLANNED') {
-                var Target = parseFloat($('#unTarget').val());
-                var ProdQty = parseFloat($('#ProdQty').val());
+                var Target = Number(parseFloat($('#unTarget').val()).toFixed(6));
+                var ProdQty = Number(parseFloat($('#ProdQty').val()).toFixed(6));
                 if (ProdQty > Target) {
                     $.notify("ProdQty cannot be greater than TargetQty", "error");
                     Err = 1;
@@ -4583,8 +4584,8 @@
 
             } else {
 
-                var TargetQty = parseFloat($('#TargetQty').val());
-                var ProdQty = parseFloat($('#ProdQty').val());
+                var TargetQty = Number(parseFloat($('#TargetQty').val()).toFixed(6));
+                var ProdQty = Number(parseFloat($('#ProdQty').val()).toFixed(6));
                 if (ProdQty > TargetQty) {
                     $.notify("ProdQty cannot be greater than TargetQty", "error");
                     Err = 1;
@@ -4593,7 +4594,7 @@
                     $.notify("ProdQty cannot be less than 0", "error");
                 }
                 else {
-                    var PendQty = (TargetQty - ProdQty).toFixed(3);
+                    var PendQty = Number((TargetQty - ProdQty).toFixed(3));
                     $('#PendQty').val(0);
                     $('#PendQty').val(PendQty);
                 }
@@ -4612,8 +4613,8 @@
                 var row = $('#divProductionEntryGrid tr').length
                 var i = 1;
                 for (i = 1; i <= row; i++) {
-                    var ReqQty = parseFloat($('#ReqQty-' + i).val());
-                    var TotalStock = parseFloat($('#TotalStock-' + i).val());
+                    var ReqQty = Number(parseFloat($('#ReqQty-' + i).val()).toFixed(6));
+                    var TotalStock = Number(parseFloat($('#TotalStock-' + i).val()).toFixed(6));
                     if (ReqQty > TotalStock) {
                         document.getElementById('itemGrid-' + i).style.backgroundColor = '#ed6262';
                     }
@@ -4840,6 +4841,7 @@
 
         function GridButton(event) {
             event.preventDefault();
+            debugger
             if (!CheckAllowToAddNegativeStock()) return;
             var rowCount = $('#divProductionEntryGrid tr').length;
             var ItemData = [];
@@ -4850,28 +4852,28 @@
                     "PartCode": $('#PartCode-' + i).val(),
                     "ItemName": $('#ItemName-' + i).val(),
                     "ConsumedRMItemCode": $('#RmItemCode-' + i).val(),
-                    "ReqQty": $('#ReqQty-' + i).val(),
-                    "IssueQty": $('#IssueQty-' + i).val(),
+                    "ReqQty": Number(parseFloat($('#ReqQty-' + i).val()).toFixed(6)),
+                    "IssueQty": Number(parseFloat($('#IssueQty-' + i).val()).toFixed(6)),
                     "unit": $('#unit-' + i).val(),
-                    "MainIssueQty": $('#MainIssueQty-' + i).val(),
-                    "ProdQty": $('#ProdQty-' + i).val(),
-                    "TotalStock": $('#TotalStock-' + i).val(),
-                    "BatchStock": $('#BatchStock-' + i).val(),
-                    "AltQty": $('#AltQty-' + i).val(),
+                    "MainIssueQty": Number(parseFloat($('#MainIssueQty-' + i).val()).toFixed(6)),
+                    "ProdQty": Number(parseFloat($('#ProdQty-' + i).val()).toFixed(6)),
+                    "TotalStock": Number(parseFloat($('#TotalStock-' + i).val()).toFixed(6)),
+                    "BatchStock": parseFloat($('#BatchStock-' + i).val()),
+                    "AltQty": Number(parseFloat($('#AltQty-' + i).val()).toFixed(6)),
                     "AltUnit": $('#AltUnit-' + i).val(),
-                    "NetWt": $('#NetWt-' + i).val(),
-                    "GrossWt": $('#GrossWt-' + i).val(),
+                    "NetWt": Number(parseFloat($('#NetWt-' + i).val()).toFixed(6)),
+                    "GrossWt": Number(parseFloat($('#GrossWt-' + i).val()).toFixed(6)),
                     "Batchwise": $('#Batchwise-' + i).val(),
                     "BatchNo": $('#BatchNo-' + i).val(),
                     "UniqueBatchNo": $('#UniqueBatchNo-' + i).val(),
-                    "PendQty": $('#PendQty-' + i).val(),
+                    "PendQty": Number(parseFloat($('#PendQty-' + i).val()).toFixed(6)),
                     "StdPacking": $('#StdPacking-' + i).val(),
                     "PendAfterIssue": $('#PendAfterIssue-' + i).val(),
                     "StoreName": $('#StoreName-' + i).val(),
                     "Batchdate": $('#Batchdate-' + i).val(),
-                    "Rate": $('#Rate-' + i).val(),
+                    "Rate": Number(parseFloat($('#Rate-' + i).val()).toFixed(6)),
                     "DetailRemark": $('#DetailRemark-' + i).val(),
-                    "RemainingStock": $('#RemainingStock-' + i).val(),
+                    "RemainingStock": Number(parseFloat($('#RemainingStock-' + i).val()).toFixed(6)),
                     "ProdType": $('#ProdType').val(),
                     "ProdEntryAllowToAddRMItem": $('#ProdEntryAllowToAddRMItem').val()
                 });
@@ -5157,20 +5159,20 @@
         }
 
         function ScrapGrid(event) {
-             
+
             event.preventDefault();
             if (!ValidateScrap_Grid()) return;
             var TransferToStoreId = 0;
             var TransferToWC = 0;
             var TransferToWCStore = $('#StoreTransferScrap').val();
-            if(TransferToWCStore == "S"){
+            if (TransferToWCStore == "S") {
                 TransferToStoreId = $('#TransferToWCStore').val();
             }
-            else{
+            else {
                 TransferToWC = $('#TransferToWCStore').val();
             }
             var ScrapData = {
-                "ScrapItemName": $('#ScrapItemName').find(':selected').text(),  
+                "ScrapItemName": $('#ScrapItemName').find(':selected').text(),
                 "ScrapPartCode": $('#ScrapPartCode').find(':selected').text(),
                 "ScrapItemCode": $('#ScrapItemCode').val(),
                 "ScrapType": $('#ScrapType').val(),
@@ -5178,7 +5180,7 @@
                 "Scrapunit": $('#Scrapunit').val(),
                 "StoreTransferScrap": $('#StoreTransferScrap').val(),
                 "TransferToWCStore": $('#TransferToWCStore').find(':selected').text(),
-                "TransferToStoreId" : parseInt($('#TransferToWCStore').val()),
+                "TransferToStoreId": parseInt($('#TransferToWCStore').val()),
                 "TransferToWC": parseInt($('#TransferToWCStore').val())
             }
 
