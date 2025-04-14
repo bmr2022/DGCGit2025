@@ -640,6 +640,11 @@
             }
         });
 
+        $('#MIRDate').on("change", function () {
+            var selectedDate = $(this).datepicker("getDate");
+            $('#EntryDate').datepicker("setDate", selectedDate);
+        });
+
         function GetNewEntry() {
 
             $.ajax({

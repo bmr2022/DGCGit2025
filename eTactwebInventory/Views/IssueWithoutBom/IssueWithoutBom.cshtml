@@ -1591,7 +1591,7 @@
                             $('#MainGridTotalStock-' + i).val(obj.Result[0].totalstock);
 
                             var issQty = parseFloat($('#MainGridReqQty-' + i).val()) <= parseFloat($('#MainGridLotStock-' + i).val()) ? $('#MainGridReqQty-' + i).val() : $('#MainGridLotStock-' + i).val();
-                            $('#MainGridIssueQty-' + i).val(issQty);
+                            // $('#MainGridIssueQty-' + i).val(issQty);
                         }
                         else {
                             $('#MainGridLotStock-' + i).val(0);
