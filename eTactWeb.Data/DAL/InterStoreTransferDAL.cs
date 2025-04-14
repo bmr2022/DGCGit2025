@@ -356,11 +356,11 @@ namespace eTactWeb.Data.DAL
             {
 
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime SADt = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime SADt = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                SADt = ParseDate(model.SlipDate);
+                var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var SADt = CommonFunc.ParseFormattedDate(model.SlipDate);
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
@@ -385,7 +385,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@IssuedBy", model.IssuedBy));
                 SqlParams.Add(new SqlParameter("@Remark", model.Remark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@ActulEntryBy", model.ActualEntryBy));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", eTactWeb.Data.Common.CommonFunc.ParseFormattedDate( DateTime.Now.ToString())));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", CommonFunc.ParseFormattedDate( DateTime.Now.ToString())));
                 SqlParams.Add(new SqlParameter("@TransferReason", model.TransferReason ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
                 SqlParams.Add(new SqlParameter("@Uid", model.Uid));
