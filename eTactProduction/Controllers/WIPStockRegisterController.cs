@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using eTactWeb.DOM.Models;
 using System.Globalization;
+using System.Drawing.Printing;
 
 namespace eTactWeb.Controllers
 {
@@ -41,6 +42,21 @@ namespace eTactWeb.Controllers
             var model = new WIPStockRegisterModel();
             model = await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, WCID, ReportType, BatchNo, UniqueBatchNo, WorkCenter);
             model.ReportMode= ReportType;
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            //var fullList = (await _IStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, StoreId, ReportType, BatchNo, UniqueBatchNo))?.StockRegisterDetail ?? new List<StockRegisterDetail>();
+
+            //model.TotalRecords = fullList.Count();
+            //model.PageNumber = pageNumber;
+            //model.StockRegisterDetail = fullList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            //model.PageSize = pageSize;
+
+            //_MemoryCache.Set("KeyStockList", fullList, cacheEntryOptions);
             return PartialView("_WIPStockRegisterGrid", model);
         }
         public async Task<JsonResult> GetAllWorkCenter()

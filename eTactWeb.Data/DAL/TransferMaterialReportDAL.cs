@@ -256,6 +256,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ProdPlanNo", ProdPlanNo);
                     oCmd.Parameters.AddWithValue("@ProdSchNo", ProdSchNo);
                     oCmd.Parameters.AddWithValue("@processName", ProcessName);
+                    oCmd.Parameters.AddWithValue("@ItemCode", PartCode);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -299,6 +300,31 @@ namespace eTactWeb.Data.DAL
                         model.TransferMaterialReportDetail = TransferReport;
                     }
                 }
+                else if (ReportType == "TransferMaterial Deatil")//done & working
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow row in oDataSet.Tables[0].Rows)
+                        {
+                            var poDetail = CommonFunc.DataRowToClass<TransferMaterialReportDetail>(row);
+                            TransferReport.Add(poDetail);
+                        }
+                        model.TransferMaterialReportDetail = TransferReport;
+                    }
+                }
+                else if (ReportType == "TransferMaterial Date Wise Summary")//done & working
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow row in oDataSet.Tables[0].Rows)
+                        {
+                            var poDetail = CommonFunc.DataRowToClass<TransferMaterialReportDetail>(row);
+                            TransferReport.Add(poDetail);
+                        }
+                        model.TransferMaterialReportDetail = TransferReport;
+                    }
+                }
+
             }
             catch (Exception ex)
             {
