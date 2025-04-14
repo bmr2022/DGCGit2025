@@ -128,7 +128,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
-                SqlParams.Add(new SqlParameter("@EntryDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@EntryDate", CommonFunc.ParseFormattedDate(EntryDate)));
                 SqlParams.Add(new SqlParameter("@ActulEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@MAchineName", MachineName));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_InterStoreTransferMainDetail", SqlParams);
@@ -361,6 +361,7 @@ namespace eTactWeb.Data.DAL
 
                 var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
                 var SADt = CommonFunc.ParseFormattedDate(model.SlipDate);
+                var ActEntDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
@@ -385,7 +386,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@IssuedBy", model.IssuedBy));
                 SqlParams.Add(new SqlParameter("@Remark", model.Remark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@ActulEntryBy", model.ActualEntryBy));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", CommonFunc.ParseFormattedDate( DateTime.Now.ToString())));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActEntDt));
                 SqlParams.Add(new SqlParameter("@TransferReason", model.TransferReason ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
                 SqlParams.Add(new SqlParameter("@Uid", model.Uid));
