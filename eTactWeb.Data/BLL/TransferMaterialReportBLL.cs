@@ -35,6 +35,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _TransferMaterialReportDAL.FillToStore(FromDate, ToDate);
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _TransferMaterialReportDAL.GetReportName();
+        }
         public async Task<ResponseResult> FillPartCode(string FromDate, string ToDate)
         {
             return await _TransferMaterialReportDAL.FillPartCode(FromDate, ToDate);
