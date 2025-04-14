@@ -529,11 +529,11 @@
                 $('#IN1').trigger("change");
                 var EntryDate = $('#EntryDate').val().split("-").join("/");
                 EntryDate = parseDateToFormat(EntryDate.split(" ")[0]);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
 
                 var PODt = $('#PODate').val().split("-").join("/");
                 PODt = parseDateToFormat(PODt.split(" ")[0]);
-                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODt);
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(PODt));
 
                 var WEFDt = $('#WEF').val().split("-").join("/");
                 WEFDt = parseDateToFormat(WEFDt.split(" ")[0]);
@@ -577,8 +577,8 @@
                 $('#RefDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-                $('#EntryDate').datepicker("option", "minDate", formattedDate1);
-                $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
+                $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+                $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
                 var today = new (Date);
                 $("#PODate,#POCloseDate,#AmmDate,#AmendmentDate").datepicker({
                     dateFormat: 'dd/mm/yy',
@@ -587,7 +587,7 @@
 
 
                 $("#RefDate").datepicker({ dateFormat: 'dd/mm/yy', maxDate: today });
-                $('#PODate').datepicker("option", "maxDate", formattedDate2);
+                $('#PODate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
 
                 $('.AF').fadeOut();
                 $('.Schedule').fadeOut();
@@ -707,8 +707,8 @@
 
 
 
-            $('#EntryDate').datepicker("option", "minDate", formattedDate1);
-            $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
+            $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+            $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
             var today = new (Date);
 
 

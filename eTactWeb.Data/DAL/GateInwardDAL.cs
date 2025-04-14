@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Reflection.PortableExecutable;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.DOM.Models.GateInwardModel;
+using common = eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL;
 
@@ -163,16 +164,11 @@ public class GateInwardDAL
         {
 
             var SqlParams = new List<dynamic>();
-            DateTime bilDt = new DateTime();
-            DateTime entDt = new DateTime();
-            DateTime invDt = new DateTime();
-
-            entDt = ParseDate(model.EntryDate);
-            bilDt = ParseDate(model.BiltyDate);
-            invDt = ParseDate(model.InvoiceDate);
-            model.UpdatedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            DateTime updDt = DateTime.Now;
-            updDt = ParseDate(model.UpdatedDate);
+            
+           var entDt = common.CommonFunc.ParseFormattedDate(model.EntryDate);
+           var bilDt = common.CommonFunc.ParseFormattedDate(model.BiltyDate);
+           var invDt = common.CommonFunc.ParseFormattedDate(model.InvoiceDate);
+          var  updDt = common.CommonFunc.ParseFormattedDate(model.UpdatedDate);
 
             //DateTime Invoicedt = DateTime.ParseExact(model.InvoiceDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
@@ -193,7 +189,7 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
             SqlParams.Add(new SqlParameter("@GateNo", model.GateNo ?? ""));
             SqlParams.Add(new SqlParameter("@CompGateNo", model.CompGateNo ?? ""));
-            SqlParams.Add(new SqlParameter("@GDate", entDt.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@GDate", entDt == default ? string.Empty : entDt));
             SqlParams.Add(new SqlParameter("@EntryDate", entDt == default ? string.Empty : entDt));
             SqlParams.Add(new SqlParameter("@EntryTime", model.EntryTime ?? ""));
             SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
@@ -214,14 +210,14 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@GrossWeight", model.GrossWeight == null ? 0.0 : model.GrossWeight));
             SqlParams.Add(new SqlParameter("@NetWeight", model.NetWeight == null ? 0.0 : model.NetWeight));
             SqlParams.Add(new SqlParameter("@address", model.Address ?? ""));
-            SqlParams.Add(new SqlParameter("@ShowPOTillDate", model.ShowPOTillDate == null ? "" : bilDt.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@ShowPOTillDate", bilDt == default ? string.Empty : bilDt));
             SqlParams.Add(new SqlParameter("@ModeOfTransport", model.ModeOfTransport ?? ""));
             SqlParams.Add(new SqlParameter("@PreparedByEmpId", model.PreparedByEmpId));
             SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
             SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
             SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntrybyMachineName ?? ""));
             SqlParams.Add(new SqlParameter("@lastUpdatedBy", model.UpdatedBy));
-            SqlParams.Add(new SqlParameter("@lastupdated", updDt.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@lastupdated", updDt == default ? string.Empty : updDt));
 
             SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
