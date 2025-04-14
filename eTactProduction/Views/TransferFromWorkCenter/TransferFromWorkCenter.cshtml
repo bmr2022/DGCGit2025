@@ -39,6 +39,7 @@
 </style>
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <form asp-action="TransferFromWorkCenter" autocomplete="off" class="form-horizontal">
+
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>Transfer From WorkCenter : @Model.TransferMatYearCode</strong>
@@ -617,15 +618,24 @@
 
 
         $('.submitBTN').click(function (e) {
-            e.preventDefault();
+            debugger
+           e.preventDefault();
             if (!ValidateTransfer_SubmitGrid()) return;
-            $('form').submit();
+            ChkWIPStockBeforeSaving(function (isValid) {
+                if (isValid) {
+                    $('form').submit(); // proceed only if no stock errors
+                }
+            });
         });
 
         $('.UpdateButton').click(function (e) {
-            if (!ValidateTransfer_SubmitGrid()) return;
             e.preventDefault();
-            $('form').submit();
+            if (!ValidateTransfer_SubmitGrid()) return;
+            ChkWIPStockBeforeSaving(function (isValid) {
+                if (isValid) {
+                    $('form').submit(); // proceed only if no stock errors
+                }
+            });
         });
 
         function ValidateTransfer_SubmitGrid() {
@@ -689,7 +699,6 @@
                     RemoveErrorCls('IssueToStoreWC');
                 }
             }
-            //ChkWIPStockBeforeSaving();
 
             Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
             if (Err == 1) return false;
@@ -986,31 +995,27 @@
             });
         }
 
-        function ChkWIPStockBeforeSaving() {
+        function ChkWIPStockBeforeSaving(callback) {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ChkWIPStockBeforeSaving")",
                 dataType: "json",
-                data: { "WcId": parseInt($('#IssueFromWc').val()), "TransferMatEntryDate": $('#TransferMatEntrydate').val(), "TransferMatYearCode": parseInt($('#TransferMatYearCode').val()) },
-                success: function (result) {
-                    if (result != null) {
-                        if (result.success === false && result.errors && result.errors.length > 0) {
-                            result.errors.forEach(function (msg) {
-                                $.notify(msg, {
-                                    className: 'error',
-                                    globalPosition: 'top right',
-                                    autoHideDelay: 5000
-                                });
+                data: {
+                    "WcId": parseInt($('#IssueFromWc').val()),
+                    "TransferMatEntryDate": $('#TransferMatEntrydate').val(),
+                    "TransferMatYearCode": parseInt($('#TransferMatYearCode').val())
+                },
+                success: function (response) {
+                    if (response.success === false) {
+                        response.errors.forEach(function (err) {
+                            $.notify(err, {
+                                className: 'error',
+                                globalPosition: 'top right'
                             });
-                        } else if (result.success === true) {
-                            $.notify("Stock check passed successfully!", {
-                                className: 'success',
-                                globalPosition: 'top right',
-                                autoHideDelay: 3000
-                            });
-
-                            // Continue logic here if needed
-                        }
+                        });
+                        callback(false); // indicate failure
+                    } else {
+                        callback(true); // indicate success
                     }
                 },
                 error: function (xhr, status, error) {
@@ -1018,9 +1023,11 @@
                         className: 'error',
                         globalPosition: 'top right'
                     });
+                    callback(false); // prevent submission on error
                 }
             });
         }
+
 
         function FillWorkCenter() {
             $.ajax({

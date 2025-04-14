@@ -951,7 +951,9 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "AgainstChallanNoEntryId" && typeProperty.PropertyInfo.Name != "AgainstChallanNo"
                         && typeProperty.PropertyInfo.Name != "AgainstChallanYearCode" && typeProperty.PropertyInfo.Name != "AgainstChallanType" && typeProperty.PropertyInfo.Name != "closed"
                         && typeProperty.PropertyInfo.Name != "ItemColor" && typeProperty.PropertyInfo.Name != "ItemSize" && typeProperty.PropertyInfo.Name != "ItemModel"
-                        && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty")
+                        && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "PendAltQty"
+                        && typeProperty.PropertyInfo.Name != "ActualEnteredEMpBy") 
+
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);

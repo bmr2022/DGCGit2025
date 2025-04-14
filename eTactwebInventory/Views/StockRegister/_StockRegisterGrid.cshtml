@@ -102,8 +102,9 @@ else
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a></td>
+                                       
                                 <th>@Cntr</th>
-                                <td>@item.StoreName</td>
+                                <td>@item.StoreName<input type="hidden" asp-for="TotalRecords" value="@item.TotalRecords" /></td>
                                 <td>@item.TransactionType</td>
                                 @if (item.TransDate != null)
                                 {
@@ -160,8 +161,9 @@ else
             </tbody>
         </table>
     </div>
+
 }
-<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
 
 <style>
 
