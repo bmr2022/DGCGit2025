@@ -87,11 +87,12 @@
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select" onchange="GetTransferMaterialReport()">
                                         <option disabled value="">-Select-</option>
+                                        <option value="TransferMaterial Deatil">TransferMaterial Deatil</option>
+                                        <option value="TransferMaterial Date Wise Summary">TransferMaterial Date Wise Summary</option>
                                         <option selected value="Detail">Detail</option>
                                         <option value="FromWcAndItemWiseConsolidated">From Wc And ItemWise Consolidated</option>
                                         <option value="FromWcAndItem+DateWiseConsolidated">From Wc And Item+DateWise Consolidated</option>
-                                        <option value="TransferMaterial Deatil">TransferMaterial Deatil</option>
-                                        <option value="TransferMaterial Date Wise Summary">TransferMaterial Date Wise Summary</option>
+                                        
                                     </select>
                                 </div>
                                 <div class="col d-flex align-items-center">
