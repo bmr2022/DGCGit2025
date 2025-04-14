@@ -11,6 +11,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface ITransferFromWorkCenter
     {
+        Task<ResponseResult> GetReportName();
         Task<ResponseResult> GetFormRights(int userID);
         Task<TransferFromWorkCenterModel> GetViewByID(int ID, int YearCode);
         Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName);

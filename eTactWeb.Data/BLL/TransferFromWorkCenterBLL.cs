@@ -26,6 +26,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.GetFormRights(userID);
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _TranferFromWorkCenterDAL.GetReportName();
+        }
         public async Task<TransferFromWorkCenterModel> GetViewByID(int ID, int YearCode)
         {
             return await _TranferFromWorkCenterDAL.GetViewByID(ID, YearCode);
