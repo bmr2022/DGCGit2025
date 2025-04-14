@@ -10,6 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface ITransferMaterialReport
     {
+        Task<ResponseResult> GetReportName();
         Task<ResponseResult> FillFromWorkCenter(string FromDate, string ToDate);
         Task<ResponseResult> FillToWorkCenter(string FromDate, string ToDate);
         Task<ResponseResult> FillToStore(string FromDate, string ToDate);

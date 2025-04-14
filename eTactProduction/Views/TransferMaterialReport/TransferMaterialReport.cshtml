@@ -9,7 +9,7 @@
 
     <div class="card-header card-headerBG text-light bg-gradient">
         <h5>
-            <strong>Production Entry Report</strong>
+            <strong>Transfer Material Report</strong>
             <span class="d-flex float-end" style="margin-top:-2px;">
                 @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
 
@@ -51,11 +51,17 @@
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                     <label asp-for="PartCode" class="form-label">PartCode</label>
-                                    <select asp-for="PartCode" class="form-select"></select>
+                                    <input type="hidden" asp-for="ItemCode" value="@Model.ItemCode" />
+                                    <select asp-for="PartCode" class="form-select">
+                                        <option value="@Model.ItemCode">-Select-</option>
+                                    </select>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                     <label asp-for="ItemName" class="form-label">ItemName</label>
-                                    <select asp-for="ItemName" class="form-select"></select>
+                                    <input type="hidden" asp-for="ItemCode" value="@Model.ItemCode" />
+                                    <select asp-for="ItemName" class="form-select">
+                                        <option value="@Model.ItemCode">-Select-</option>
+                                    </select>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:150px">
                                     <label asp-for="TransferSlipNo" class="form-label">Transfer SlipNo</label>
@@ -81,9 +87,12 @@
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select" onchange="GetTransferMaterialReport()">
                                         <option disabled value="">-Select-</option>
+                                        <option value="TransferMaterial Deatil">TransferMaterial Deatil</option>
+                                        <option value="TransferMaterial Date Wise Summary">TransferMaterial Date Wise Summary</option>
                                         <option selected value="Detail">Detail</option>
                                         <option value="FromWcAndItemWiseConsolidated">From Wc And ItemWise Consolidated</option>
                                         <option value="FromWcAndItem+DateWiseConsolidated">From Wc And Item+DateWise Consolidated</option>
+                                        
                                     </select>
                                 </div>
                                 <div class="col d-flex align-items-center">
@@ -108,7 +117,7 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="H_SAGrid">
                                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Transfer Material Report Grid</strong>
                                     </button>
                                 </h2>
                                 <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
@@ -170,7 +179,7 @@
             FillProdPlanNo();
             FillProdSchNo();
             FillProcessName();
-            GetTransferMaterialReport();
+            //GetTransferMaterialReport();
             $('#PartCode').select2();
             $('#ItemName').select2();
             $('#FromWorkCenter').select2();
@@ -210,7 +219,15 @@
             FillProdSchNo();
             FillProcessName();
         })
-
+        $('#ItemName').change(function () {
+            debugger
+            $('#ItemCode').val($('#ItemName').val());
+               
+        }); 
+        $('#PartCode').change(function () {
+            $('#ItemCode').val($('#PartCode').val());
+               
+        });
         function HideShow() {
 
             if ($('#ReportType').val() == 'Detail') {
@@ -261,7 +278,7 @@
                 type: "POST",
                 url: "@Url.Action("GetTransferMaterialReport")",
                 async: false,
-                data: { "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "FromWorkCenter": $('#FromWorkCenter').val(), "ToWorkCenter": $('#ToWorkCenter').val(), "Tostore": $('#Tostore').val(), "PartCode": $('#PartCode').val(), "ItemName": $('#ItemName').val(), "TransferSlipNo": $('#TransferSlipNo').val(), "ProdSlipNo": $('#ProdSlipNo').val(), "ProdPlanNo": $('#ProdPlanNo').val(), "ProdSchNo": $('#ProdSchNo').val(), "ProcessName": $('#ProcessName').val() },
+                data: { "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "FromWorkCenter": $('#FromWorkCenter').val(), "ToWorkCenter": $('#ToWorkCenter').val(), "Tostore": $('#Tostore').val(), "PartCode": $('#ItemCode').val(), "ItemName": $('#ItemCode').val(), "TransferSlipNo": $('#TransferSlipNo').val(), "ProdSlipNo": $('#ProdSlipNo').val(), "ProdPlanNo": $('#ProdPlanNo').val(), "ProdSchNo": $('#ProdSchNo').val(), "ProcessName": $('#ProcessName').val() },
                 success: function (result, status, error) {
                     $('#divTransferMaterialGrid').empty();
                     $('#divTransferMaterialGrid').html(result);
@@ -307,27 +324,66 @@
             $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
         }
 
-        function countAllTotal() {
+        // function countAllTotal() {
 
-            var rowCount = $('#divStockRegisterBody tr').length;
+        //     var rowCount = $('#divStockRegisterBody tr').length;
+        //     var TransferQty = 0;
+        //     var AltTransferQty = 0;
+        //     var OkQty = 0;
+        //     var RejQty = 0;
+        //     var RmConsQty = 0;
+        //     for (var i = 1; i <= rowCount; i++) {
+        //         TransferQty += $('#TransferQty-' + i).text() == '' ? 0 : parseFloat($('#TransferQty-' + i).text());
+        //         AltTransferQty += $('#AltTransferQty-' + i).text() == '' ? 0 : parseFloat($('#AltTransferQty-' + i).text());
+        //         OkQty += $('#OkQty-' + i).text() == '' ? 0 : parseFloat($('#OkQty-' + i).text());
+        //         RejQty += $('#RejQty-' + i).text() == '' ? 0 : parseFloat($('#RejQty-' + i).text());
+        //         RmConsQty += $('#RMConsQty-' + i).text() == '' ? 0 : parseFloat($('#RMConsQty-' + i).text());
+        //     }
+
+        //     $('#TotalTransferQty').val(isNaN(TransferQty) ? 0 : TransferQty);
+        //     $('#TotalAltTransferQty').val(isNaN(AltTransferQty) ? 0 : AltTransferQty);
+        //     //$('#TotalAltTransferQty').val(isNaN(OkQty) ? 0 : OkQty);
+        //     $('#TotalRejQty').val(isNaN(RejQty) ? 0 : RejQty);
+        //     $('#TotalRMConsQty').val(isNaN(RmConsQty) ? 0 : RmConsQty);
+        // }
+
+        function countAllTotal() {
+            debugger
             var TransferQty = 0;
             var AltTransferQty = 0;
             var OkQty = 0;
             var RejQty = 0;
             var RmConsQty = 0;
-            for (var i = 1; i <= rowCount; i++) {
-                TransferQty += $('#TransferQty-' + i).text() == '' ? 0 : parseFloat($('#TransferQty-' + i).text());
-                AltTransferQty += $('#AltTransferQty-' + i).text() == '' ? 0 : parseFloat($('#AltTransferQty-' + i).text());
-                OkQty += $('#OkQty-' + i).text() == '' ? 0 : parseFloat($('#OkQty-' + i).text());
-                RejQty += $('#RejQty-' + i).text() == '' ? 0 : parseFloat($('#RejQty-' + i).text());
-                RmConsQty += $('#RMConsQty-' + i).text() == '' ? 0 : parseFloat($('#RMConsQty-' + i).text());
-            }
 
-            $('#TotalTransferQty').val(isNaN(TransferQty) ? 0 : TransferQty);
-            $('#TotalAltTransferQty').val(isNaN(AltTransferQty) ? 0 : AltTransferQty);
-            //$('#TotalAltTransferQty').val(isNaN(OkQty) ? 0 : OkQty);
-            $('#TotalRejQty').val(isNaN(RejQty) ? 0 : RejQty);
-            $('#TotalRMConsQty').val(isNaN(RmConsQty) ? 0 : RmConsQty);
+            $('[id^="TransferQty-"]').each(function () {
+                var val = parseFloat($(this).text());
+                TransferQty += isNaN(val) ? 0 : val;
+            });
+
+            $('[id^="AltTransferQty-"]').each(function () {
+                var val = parseFloat($(this).text());
+                AltTransferQty += isNaN(val) ? 0 : val;
+            });
+
+            $('[id^="OkQty-"]').each(function () {
+                var val = parseFloat($(this).text());
+                OkQty += isNaN(val) ? 0 : val;
+            });
+
+            $('[id^="RejQty-"]').each(function () {
+                var val = parseFloat($(this).text());
+                RejQty += isNaN(val) ? 0 : val;
+            });
+
+            $('[id^="RMConsQty-"]').each(function () {
+                var val = parseFloat($(this).text());
+                RmConsQty += isNaN(val) ? 0 : val;
+            });
+
+            $('#TotalTransferQty').val(TransferQty);
+            $('#TotalAltTransferQty').val(AltTransferQty);
+            $('#TotalRejQty').val(RejQty);
+            $('#TotalRMConsQty').val(RmConsQty);
         }
 
 
@@ -422,7 +478,7 @@
                             $('#PartCode').empty();
                             $('#PartCode').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#PartCode').append('<option value="' + val.PartCode +
+                                $('#PartCode').append('<option value="' + val.ItemCode +
                                     '">' + val.PartCode + '</option>');
                             });
                         }
@@ -447,13 +503,46 @@
                             $('#ItemName').empty();
                             $('#ItemName').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#ItemName').append('<option value="' + val.ItemName +
+                                $('#ItemName').append('<option value="' + val.ItemCode +
                                     '">' + val.ItemName + '</option>');
                             });
                         }
                     }
                 }
             });
+        }
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+            var cntId = e.target.id;
+
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
         }
 
         function FillTransferSlipNo() {

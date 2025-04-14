@@ -12,6 +12,7 @@ namespace eTactWeb.DOM.Models
         public string? ToDate { get; set; }
         public string? PartCode {  get; set; }
         public string? ItemName {  get; set; }
+        public int? ItemCode {  get; set; }
         public string? FromWorkCenter {  get; set; }
         public string? ToWorkCenter {  get; set; }
         public string? Tostore {  get; set; }   
@@ -29,13 +30,22 @@ namespace eTactWeb.DOM.Models
         public string? TransferMatEntrydate {  get; set; }
         public string? TransferMatSlipNo { get; set; }
         public string? TransferMatSlipDate {  get; set; }
+        public string? Status {  get; set; }
+        public string? SlipNo {  get; set; }
+        public string? TransfDate {  get; set; }
+        public string? IssFromWC {  get; set; }
+        public string? TOWC {  get; set; }
+        public string? TransferTo {  get; set; }
         public string? PRODSTATUSProdUnProdRej {  get; set; }
         public string? IssueToStoreWC {  get; set; }
         public string? TransferFromWC {  get; set; }
         public string? TransferToWC { get; set; }
         public string? TransferToStore {  get; set; }
+        public string? TOStore {  get; set; }
         public string? PartCode {  get; set; }
         public string? ItemName {  get; set; }
+        public int? ItemCode {  get; set; }
+        public string? IssuedByEmp {  get; set; }
         public decimal TransferQty {  get; set; }
         public decimal QCOkQty {  get; set; }
         public decimal ProdQty {  get; set; }

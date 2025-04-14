@@ -5,12 +5,14 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using eTactWeb.DOM.Models;
 using System.Globalization;
+using FastReport.Web;
 
 namespace eTactWeb.Controllers
 {
     public class TransferMaterialReportController : Controller
     {
         private readonly IDataLogic _IDataLogic;
+        public WebReport webReport;
         public ITransferMaterialReport _ITransferMaterialReport { get; set;}
         private readonly ILogger<TransferMaterialReportController> _logger;
         private readonly IConfiguration iconfiguration;
@@ -31,6 +33,41 @@ namespace eTactWeb.Controllers
             var model = new TransferMaterialReportModel();
             model.TransferMaterialReportDetail = new List<TransferMaterialReportDetail>();
             return View(model);
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
+        {
+
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            webReport = new WebReport();
+            var ReportName = _ITransferMaterialReport.GetReportName();
+            ViewBag.EntryId = EntryId;
+            ViewBag.YearCode = YearCode;
+            ViewBag.PONO = PONO;
+            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
+
+            }
+            //webReport.Report.SetParameterValue("entryparam", EntryId);
+            //webReport.Report.SetParameterValue("yearparam", YearCode);
+            //webReport.Report.SetParameterValue("ponoparam", PONO);
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            // return View(webReport);
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
         }
         public async Task<JsonResult> GetServerDate()
         {

@@ -1,8 +1,10 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using FastReport.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Data;
 using System.Globalization;
@@ -15,18 +17,21 @@ namespace eTactWeb.Controllers
 {
     public class TransferFromWorkCenterController : Controller
     {
+        public WebReport webReport;
         private readonly IDataLogic _IDataLogic;
         private readonly ITransferFromWorkCenter _ITransferFromWorkCenter;
         private readonly ILogger<TransferFromWorkCenterController> _logger;
         private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public TransferFromWorkCenterController(ILogger<TransferFromWorkCenterController> logger, IDataLogic iDataLogic, ITransferFromWorkCenter ITransferFromWorkCenter, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        private readonly IConfiguration iconfiguration;
+        public TransferFromWorkCenterController(ILogger<TransferFromWorkCenterController> logger, IDataLogic iDataLogic, ITransferFromWorkCenter ITransferFromWorkCenter, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ITransferFromWorkCenter = ITransferFromWorkCenter;
             _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
+            this.iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
         public async Task<IActionResult> TransferFromWorkCenter()
@@ -51,6 +56,36 @@ namespace eTactWeb.Controllers
 
             _MemoryCache.Set("KeyTransferFromWorkCenterGrid", MainModel, cacheEntryOptions);
             return View(MainModel);
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
+        {
+
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            webReport = new WebReport();
+            var ReportName = _ITransferFromWorkCenter.GetReportName();
+            ViewBag.EntryId = EntryId;
+            ViewBag.YearCode = YearCode;
+            ViewBag.PONO = PONO;
+            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
+
+            }
+         
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
         }
         [Route("{controller}/Index")]
         [HttpGet]
