@@ -787,7 +787,7 @@ public class GateInwardDAL
             }
             SqlParams.Add(new SqlParameter("@PONO", poNo));
             SqlParams.Add(new SqlParameter("@docTypeId", docTypeId));
-            SqlParams.Add(new SqlParameter("@InvoiceDate", InvoiceDate));
+            SqlParams.Add(new SqlParameter("@InvoiceDate", CommonFunc.ParseFormattedDate( InvoiceDate)));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
