@@ -31,7 +31,7 @@ namespace eTactWeb.Data.DAL
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
-        public async Task<StockRegisterModel> GetStockRegisterData(string FromDate, string ToDate, string PartCode,string ItemName, string ItemGroup, string ItemType,int StoreId, string ReportType,string BatchNo,string UniqueBatchNo)
+        public async Task<StockRegisterModel> GetStockRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int StoreId, string ReportType, string BatchNo, string UniqueBatchNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new StockRegisterModel();
@@ -107,6 +107,7 @@ namespace eTactWeb.Data.DAL
                                                          AltRecQty = Convert.ToDecimal(dr["AltRecQty"].ToString()),
                                                          AltIssQty = Convert.ToDecimal(dr["AltIssQty"].ToString()),
                                                          GroupName = string.IsNullOrEmpty(dr["Group_name"].ToString()) ? "" : dr["Group_name"].ToString(),
+                                                         SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                          //package = string.IsNullOrEmpty(dr["package"].ToString()) ? "" : dr["package"].ToString()
                                                      }).ToList();
                     }
@@ -130,15 +131,16 @@ namespace eTactWeb.Data.DAL
                                                          MinLevel = Convert.ToDecimal(dr["MInLvl"]),
                                                          AltUnit = string.IsNullOrEmpty(dr["AltUnit"].ToString()) ? "" : dr["AltUnit"].ToString(),
                                                          AltStock = Convert.ToInt32(dr["AltStock"]),
-                                                         AvgRate = Convert.ToDecimal(dr["AvgRate"]),                                                         
-                                                         Amount = Convert.ToDecimal(dr["AvgRate"]) * Convert.ToDecimal(dr["TotalStock"].ToString()),                                                         
+                                                         AvgRate = Convert.ToDecimal(dr["AvgRate"]),
+                                                         Amount = Convert.ToDecimal(dr["AvgRate"]) * Convert.ToDecimal(dr["TotalStock"].ToString()),
                                                          GroupName = string.IsNullOrEmpty(dr["Group_name"].ToString()) ? "" : dr["Group_name"].ToString(),
                                                          BinNo = string.IsNullOrEmpty(dr["BinNo"].ToString()) ? "" : dr["BinNo"].ToString(),
                                                          MaximumLevel = Convert.ToDecimal(dr["MaximumLevel"]),
                                                          ReorderLevel = Convert.ToDecimal(dr["ReorderLevel"]),
+                                                         SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                      }).ToList();
                     }
-                } 
+                }
                 else if (ReportType == "SHOWALLSTORESTOCK")//done & working
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
@@ -155,8 +157,8 @@ namespace eTactWeb.Data.DAL
                                                          ItemType = string.IsNullOrEmpty(dr["ITEMTYPE"].ToString()) ? "" : dr["ITEMTYPE"].ToString(),
                                                          ItemGroup = string.IsNullOrEmpty(dr["itemgroup"].ToString()) ? "" : dr["itemgroup"].ToString(),
                                                          MAINSTORE = string.IsNullOrEmpty(dr["MAIN STORE"].ToString()) ? 0 : Convert.ToDecimal(dr["MAIN STORE"].ToString()),
-                                                         REJSTORE = string.IsNullOrEmpty(dr["REJ STORE"].ToString()) ? 0 : Convert.ToDecimal(dr["REJ STORE"].ToString()),
-                                                         
+                                                         //REJSTORE = string.IsNullOrEmpty(dr["REJ STORE"].ToString()) ? 0 : Convert.ToDecimal(dr["REJ STORE"].ToString()),
+                                                         //SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                      }).ToList();
                     }
                 }
@@ -184,7 +186,8 @@ namespace eTactWeb.Data.DAL
                                                          UniquebatchNo = string.IsNullOrEmpty(dr["Uniquebatchno"].ToString()) ? "" : dr["Uniquebatchno"].ToString(),
                                                          EntryId = Convert.ToInt32(dr["entryid"].ToString()),
                                                          AltRecQty = Convert.ToDecimal(dr["AltRecQty"].ToString()),
-                                                         GroupName = string.IsNullOrEmpty(dr["Group_name"].ToString()) ? "" : dr["Group_name"].ToString()
+                                                         GroupName = string.IsNullOrEmpty(dr["Group_name"].ToString()) ? "" : dr["Group_name"].ToString(),
+                                                         //SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                      }).ToList();
                     }
                 }
@@ -211,10 +214,11 @@ namespace eTactWeb.Data.DAL
                                                          Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToDecimal(dr["Rate"]) * (string.IsNullOrEmpty(dr["IssQty"].ToString()) ? 0 : Convert.ToDecimal(dr["IssQty"])),
                                                          BatchNo = string.IsNullOrEmpty(dr["batchno"].ToString()) ? "" : dr["batchno"].ToString(),
                                                          UniquebatchNo = string.IsNullOrEmpty(dr["Uniquebatchno"].ToString()) ? "" : dr["Uniquebatchno"].ToString(),
-                                                         EntryId = string.IsNullOrEmpty(dr["entryid"].ToString()) ? 0 :Convert.ToInt32(dr["entryid"]),
-                                                         AltRecQty = string.IsNullOrEmpty(dr["AltRecQty"].ToString()) ? 0 :Convert.ToDecimal(dr["AltRecQty"]),
-                                                         AltIssQty = string.IsNullOrEmpty(dr["AltIssQty"].ToString()) ? 0 :Convert.ToDecimal(dr["AltIssQty"]),
-                                                         GroupName = string.IsNullOrEmpty(dr["Group_name"].ToString()) ? "" : dr["Group_name"].ToString()
+                                                         EntryId = string.IsNullOrEmpty(dr["entryid"].ToString()) ? 0 : Convert.ToInt32(dr["entryid"]),
+                                                         AltRecQty = string.IsNullOrEmpty(dr["AltRecQty"].ToString()) ? 0 : Convert.ToDecimal(dr["AltRecQty"]),
+                                                         AltIssQty = string.IsNullOrEmpty(dr["AltIssQty"].ToString()) ? 0 : Convert.ToDecimal(dr["AltIssQty"]),
+                                                         GroupName = string.IsNullOrEmpty(dr["Group_name"].ToString()) ? "" : dr["Group_name"].ToString(),
+                                                         //SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                      }).ToList();
                     }
                 }
@@ -252,7 +256,8 @@ namespace eTactWeb.Data.DAL
                                                          Address2 = string.IsNullOrEmpty(dr["Address2"].ToString()) ? "" : dr["Address2"].ToString(),
                                                          BatchNo = string.IsNullOrEmpty(dr["batchno"].ToString()) ? "" : dr["batchno"].ToString(),
                                                          UniquebatchNo = string.IsNullOrEmpty(dr["uniquebatchno"].ToString()) ? "" : dr["uniquebatchno"].ToString(),
-                                                        }).ToList();
+                                                         SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
+                                                     }).ToList();
                     }
                 }
                 else if (ReportType == "SHOWALLSTORE+WIPSTOCK")
@@ -271,10 +276,10 @@ namespace eTactWeb.Data.DAL
                                                          ItemType = string.IsNullOrEmpty(dr["ITEMTYPE"].ToString()) ? "" : dr["ITEMTYPE"].ToString(),
                                                          ItemGroup = string.IsNullOrEmpty(dr["itemgroup"].ToString()) ? "" : dr["itemgroup"].ToString(),
                                                          MAINSTORE = string.IsNullOrEmpty(dr["MAIN STORE"].ToString()) ? 0 : Convert.ToDecimal(dr["MAIN STORE"].ToString()),
-                                                         REJSTORE = string.IsNullOrEmpty(dr["REJ STORE"].ToString()) ? 0 : Convert.ToDecimal(dr["REJ STORE"].ToString()),
+                                                         //REJSTORE = string.IsNullOrEmpty(dr["REJ STORE"].ToString()) ? 0 : Convert.ToDecimal(dr["REJ STORE"].ToString()),
                                                          QCSTORE = string.IsNullOrEmpty(dr["QC STORE"].ToString()) ? 0 : Convert.ToDecimal(dr["QC STORE"].ToString()),
-                                                         Assembly = string.IsNullOrEmpty(dr["Assembly"].ToString()) ? 0 : Convert.ToDecimal(dr["Assembly"].ToString())
-                                                       
+                                                         Assembly = string.IsNullOrEmpty(dr["Assembly"].ToString()) ? 0 : Convert.ToDecimal(dr["Assembly"].ToString()),
+                                                         //SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                      }).ToList();
                     }
                 }
@@ -294,8 +299,8 @@ namespace eTactWeb.Data.DAL
                                                          ItemType = string.IsNullOrEmpty(dr["ITEMTYPE"].ToString()) ? "" : dr["ITEMTYPE"].ToString(),
                                                          ItemGroup = string.IsNullOrEmpty(dr["itemgroup"].ToString()) ? "" : dr["itemgroup"].ToString(),
                                                          MAINSTORE = string.IsNullOrEmpty(dr["MAIN STORE"].ToString()) ? 0 : Convert.ToDecimal(dr["MAIN STORE"].ToString()),
-                                                         Assembly = string.IsNullOrEmpty(dr["Assembly"].ToString()) ? 0 : Convert.ToDecimal(dr["Assembly"].ToString())
-                                                       
+                                                         Assembly = string.IsNullOrEmpty(dr["Assembly"].ToString()) ? 0 : Convert.ToDecimal(dr["Assembly"].ToString()),
+                                                         //SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                      }).ToList();
                     }
                 }
