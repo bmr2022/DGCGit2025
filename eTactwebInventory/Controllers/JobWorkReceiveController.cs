@@ -654,6 +654,8 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        [HttpPost]
         public async Task<JsonResult> GetAdjustedChallan(string DTTItemGrid, int AccountCode, int YearCode, string FinYearFromDate, string billchallandate, string GateNo, int GateYearCode)
         {
             try
