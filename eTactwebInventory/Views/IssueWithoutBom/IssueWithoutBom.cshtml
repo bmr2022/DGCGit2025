@@ -456,6 +456,10 @@
                 $.notify('Rec By Emp Code is required', "error");
                 return false;
             }
+            else if ($('#IssuedByDepCode').prop('selectedIndex') <= 0) {
+                $.notify('Rec By Emp Code is required', "error");
+                return false;
+            }
             else {
                 var rowCount = $('#divIssueWOBOMGridAdd tr').length;
                 for (var i = 1; i <= rowCount; i++) {
@@ -1723,7 +1727,7 @@
                         fillBatchUnique(i, "unique&batch");
                     }
                     for (var i = 1; i <= rowCounter; i++) {
-                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo-' + i).val());
+                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNoInput-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
                         $('#MainGridBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
@@ -1731,7 +1735,7 @@
                     for (var i = 1; i <= rowCounter; i++) {
                         FillLotandTotalStock(i);
                         fillProjectNo(i);
-                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo-' + i).val());
+                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNoInput-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
                         $('#MainGridBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
