@@ -42,7 +42,7 @@ else
                     <option value="0" selected disabled>-Select-</option>
                 </select>
             </td>
-            <td><input id="MainGridIssueQty-@Cntr" style="width:100px;background-color:lightpink" onchange="AltUnitConversion(@Cntr,'IssueQtyChange')" onkeyup="IssueQtyValidation(@Cntr)" type="number" value="@item.IssueQty" /></td>
+            <td><input id="MainGridIssueQty-@Cntr" style="width:100px;background-color:lightpink" onchange="AltUnitConversion(@Cntr,'IssueQtyChange')" onkeyup="IssueQtyValidation(@Cntr)" type="number" value="@item.IssueQty.ToString("F6")" /></td>
             <td><input readonly id="MainGridUnit-@Cntr" type="text" style="width:50px;" value="@item.Unit" /></td>
             <td><input id="MainGridLotStock-@Cntr" type="text" style="width:50px;" value="@item.LotStock" readonly /></td>
             <td><input id="MainGridTotalStock-@Cntr" type="text" style="width:50px;" value="@item.TotalStock" readonly /></td>
