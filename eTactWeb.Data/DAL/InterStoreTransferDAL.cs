@@ -122,13 +122,14 @@ namespace eTactWeb.Data.DAL
         internal async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy,string MachineName)
         {
             var _ResponseResult = new ResponseResult();
+            var etrDt = CommonFunc.ParseFormattedDate(EntryDate);
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
-                SqlParams.Add(new SqlParameter("@EntryDate", CommonFunc.ParseFormattedDate(EntryDate)));
+                SqlParams.Add(new SqlParameter("@EntryDate", etrDt));
                 SqlParams.Add(new SqlParameter("@ActulEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@MAchineName", MachineName));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_InterStoreTransferMainDetail", SqlParams);
