@@ -430,13 +430,14 @@ namespace eTactWeb.Data.DAL
                 var entDt = ParseFormattedDate(model.EntryDate);
                 var gatedate = ParseFormattedDate(model.GateDate);
                 var invoiceDt = ParseFormattedDate(model.InvoiceDate);
+                var upDt = ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
                 if (model.Mode == "U")
                 {
 
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@updatedBy", model.UpdatedBy));
-                    SqlParams.Add(new SqlParameter("@updatedon", DateTime.Now));
+                    SqlParams.Add(new SqlParameter("@updatedon", upDt));
                 }
                 else
                 {

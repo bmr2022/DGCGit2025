@@ -767,13 +767,13 @@ namespace eTactWeb.Controllers
                     Item.seqno,
                     Item.ItemCode,//FGItemCode -> change
                     Item.ItemCode,//RMItemCode
-                    Item.ReqQty,
-                    Item.ReqQty, // altrecqty
+                    Item.ReqQty.ToString("F6"),
+                    Item.ReqQty.ToString("F6"), // altrecqty
                     Item.StoreId,
                     Item.BatchNo ?? "",
                     Item.uniqueBatchNo ?? "",
-                    Item.IssueQty,
-                    Item.IssueQty, // altissueqty
+                    Item.IssueQty.ToString("F6"),
+                    Item.IssueQty.ToString("F6"), // altissueqty
                     Item.PendQty, // pendqty
                     Item.Unit,
                     Item.AltUnit ?? "",

@@ -8,6 +8,15 @@ else if (Model.ReportType == "FromWcAndItem+DateWiseConsolidated")
 {
     <partial name="_FromWcAndItem+DateWiseConsolidated" />
 }
+else if (Model.ReportType == "TransferMaterial Deatil")
+{
+    <partial name="_TransferMaterialDeatil" />
+}
+else if (Model.ReportType == "TransferMaterial Date Wise Summary")
+{
+    <partial name="_TransferMaterialDateWiseSummary" />
+}
+
 else
 {
     <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
@@ -119,8 +128,8 @@ else
                                 <td>@item.TransferFromWC</td>
                                 <td>@item.TransferToWC</td>
                                 <td>@item.TransferToStore</td>
-                                <td>@item.PartCode</td>
-                                <td>@item.ItemName</td>
+                                <td>@item.PartCode<input type="hidden" asp-for="@item.ItemCode" value="@item.ItemCode" /></td>
+                                <td>@item.ItemName<input type="hidden" asp-for="@item.ItemCode" value="@item.ItemCode" /></td>
                                 <td id="TransferQty-@Cntr">@item.TransferQty</td>
                                 <td>@item.QCOkQty</td>
                                 <td>@item.ProdQty</td>

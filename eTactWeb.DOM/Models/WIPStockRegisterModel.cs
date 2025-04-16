@@ -20,7 +20,9 @@ namespace eTactWeb.DOM.Models
         public string? ReportMode { get; set; }
         public string? BatchNo { get; set; }
         public string? UniqueBatchNo { get; set; }
-
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public IList<WIPStockRegisterDetail>? WIPStockRegisterDetail { get; set; }
     }
 
@@ -73,5 +75,8 @@ namespace eTactWeb.DOM.Models
         public string? ToDate { get; set; }
         public string? Address { get; set; }
         public string? Address2 { get; set; }
-        }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+    }
 }

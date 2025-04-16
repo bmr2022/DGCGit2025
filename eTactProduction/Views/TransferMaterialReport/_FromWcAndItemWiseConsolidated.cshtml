@@ -45,8 +45,8 @@
                             <td>@item.TransferFromWC</td>
                             <td>@item.TransferToWC</td>
                             <td>@item.TransferToStore</td>
-                            <td>@item.PartCode</td>
-                            <td>@item.ItemName</td>
+                            <td>@item.PartCode<input type="hidden" asp-for="@item.ItemCode" value="@item.ItemCode" /></td>
+                            <td>@item.ItemName<input type="hidden" asp-for="@item.ItemCode" value="@item.ItemCode" /></td>
                             <td id="TransferQty-@Cntr">@item.TransferQty</td>
                             <td>@item.Unit</td>
                             <td id="AltTransferQty-@Cntr">@item.AltTransferQty</td>

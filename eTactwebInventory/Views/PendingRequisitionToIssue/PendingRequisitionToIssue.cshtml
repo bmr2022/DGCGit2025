@@ -238,7 +238,7 @@
         $(function () 
         {
 
-            debugger
+            /* debugger */
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
             var REQNoBack = sessionStorage.getItem('REQNoBack');
@@ -420,7 +420,7 @@
         }
 
         function FillStoreName() {
-            debugger
+            
             $.ajax({
                 url: "@Url.Action("FillStoreName", "IssueWithoutBOM")",
                 type: "POST",
@@ -437,9 +437,15 @@
                                 nameOfStore.push(val.store_name);
                                 $('#FromStore').append('<option selected value=' + val.entryid + '>' + val.store_name + '</option>');
                             });
-                            $('#FromStore option').filter(function () {
-                                return $(this).val() === "1";
-                            }).prop('selected', true);
+                           /*  $('#FromStore option').filter(function () {
+                                return $(this).val() === "16";
+                                return $(this).text().trim() === "MAIN STORE";
+                            }).prop('selected', true); */
+
+                            var mainStore = obj.Result.Table.find(x => x.Store_type && x.Store_type.trim().toUpperCase() === "MAIN STORE");
+                            if (mainStore) {
+                                $('#FromStore').val(mainStore.entryid);
+                            }
                         }
                     }
                 },
@@ -802,7 +808,7 @@
         // }
 
         function showDetail() {
-            debugger
+            /* debugger */
             $('#checkLabel,#TryAltItem').hide();
             $('#TryAltItem').prop("checked", false);
             if ($('#FromStore').val() == null) {

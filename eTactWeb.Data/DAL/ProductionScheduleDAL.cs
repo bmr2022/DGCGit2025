@@ -512,36 +512,37 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var upDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
                     SqlParams.Add(new SqlParameter("@LatUpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdateDate", DateTime.Today));
+                    SqlParams.Add(new SqlParameter("@LastUpdateDate", upDt));
                 }
                 else
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
 
-                DateTime entDt = new DateTime();
-                DateTime ProdSchDate = new DateTime();
-                DateTime FromSchDt = new DateTime();
-                DateTime ToSchDt = new DateTime();
-                DateTime EffFromDt = new DateTime();
-                DateTime EffTillDt = new DateTime();
-                DateTime Revdt = new DateTime();
-                DateTime Actudt = new DateTime();
-                DateTime lastUpdatedDate = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime ProdSchDate = new DateTime();
+                //DateTime FromSchDt = new DateTime();
+                //DateTime ToSchDt = new DateTime();
+                //DateTime EffFromDt = new DateTime();
+                //DateTime EffTillDt = new DateTime();
+                //DateTime Revdt = new DateTime();
+                //DateTime Actudt = new DateTime();
+                //DateTime lastUpdatedDate = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                ProdSchDate = ParseDate(model.ProdSchDate);
-                FromSchDt = ParseDate(model.FinFromDate);
-                ToSchDt = ParseDate(model.FinToDate);
-                EffFromDt = ParseDate(model.EffectiveFrom);
-                EffTillDt = ParseDate(model.EffectiveTill);
-                Revdt = ParseDate(model.RevDate);
-                Actudt = ParseDate(model.ActualEntryDate);
+                var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var ProdSchDate = CommonFunc.ParseFormattedDate(model.ProdSchDate);
+                var FromSchDt = CommonFunc.ParseFormattedDate(model.FinFromDate);
+                var ToSchDt = CommonFunc.ParseFormattedDate(model.FinToDate);
+                var EffFromDt = CommonFunc.ParseFormattedDate(model.EffectiveFrom);
+                var EffTillDt = CommonFunc.ParseFormattedDate(model.EffectiveTill);
+                var Revdt = CommonFunc.ParseFormattedDate(model.RevDate);
+                var Actudt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
                 //lastUpdatedDate = ParseDate(model.LastUpdatedDate);
 
                 SqlParams.Add(new SqlParameter("@EntryId", model.EntryID));

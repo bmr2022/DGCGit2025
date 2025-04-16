@@ -28,6 +28,25 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _httpContextAccessor = httpContextAccessor;
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillFromWorkCenter(string FromDate, string ToDate)
         {
             var _ResponseResult = new ResponseResult();
@@ -243,6 +262,7 @@ namespace eTactWeb.Data.DAL
                     };
                     DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                   
                     oCmd.Parameters.AddWithValue("@Flag", ReportType);
                     oCmd.Parameters.AddWithValue("@fromdate", fromDt.ToString("yyyy/MM/dd"));
                     oCmd.Parameters.AddWithValue("@todate", toDt.ToString("yyyy/MM/dd"));
@@ -256,6 +276,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ProdPlanNo", ProdPlanNo);
                     oCmd.Parameters.AddWithValue("@ProdSchNo", ProdSchNo);
                     oCmd.Parameters.AddWithValue("@processName", ProcessName);
+                    oCmd.Parameters.AddWithValue("@ItemCode", PartCode);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -299,6 +320,31 @@ namespace eTactWeb.Data.DAL
                         model.TransferMaterialReportDetail = TransferReport;
                     }
                 }
+                else if (ReportType == "TransferMaterial Deatil")//done & working
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow row in oDataSet.Tables[0].Rows)
+                        {
+                            var poDetail = CommonFunc.DataRowToClass<TransferMaterialReportDetail>(row);
+                            TransferReport.Add(poDetail);
+                        }
+                        model.TransferMaterialReportDetail = TransferReport;
+                    }
+                }
+                else if (ReportType == "TransferMaterial Date Wise Summary")//done & working
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow row in oDataSet.Tables[0].Rows)
+                        {
+                            var poDetail = CommonFunc.DataRowToClass<TransferMaterialReportDetail>(row);
+                            TransferReport.Add(poDetail);
+                        }
+                        model.TransferMaterialReportDetail = TransferReport;
+                    }
+                }
+
             }
             catch (Exception ex)
             {

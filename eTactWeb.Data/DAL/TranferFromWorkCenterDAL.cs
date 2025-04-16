@@ -27,6 +27,25 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetFormRights(int userID)
         {
             var _ResponseResult = new ResponseResult();
@@ -448,21 +467,21 @@ namespace eTactWeb.Data.DAL
             {
 
                 var SqlParams = new List<dynamic>();
-                DateTime transDt = new DateTime();
-                DateTime transSlipDt = new DateTime();
-                DateTime actualDt = new DateTime();
-                //DateTime lastupdationDt = new DateTime();
+                var transDt = "";
+                var transSlipDt = "";
+                var actualDt = DateTime.Now.ToString("dd/MM/yyyy");
+                var lastupdationDt = DateTime.Now.ToString("dd/MM/yyyy");
 
-                transDt = ParseDate(model.TransferMatEntrydate);
-                transSlipDt=ParseDate(model.TransferMatSlipDate);
-                //actualDt=ParseDate(model.ActualEntrydate);
-                //lastupdationDt=ParseDate(model.UpdatedOn);
+                transDt = CommonFunc.ParseFormattedDate(model.TransferMatEntrydate);
+                transSlipDt= CommonFunc.ParseFormattedDate(model.TransferMatSlipDate);
+                actualDt= CommonFunc.ParseFormattedDate(actualDt);
+                lastupdationDt= CommonFunc.ParseFormattedDate(lastupdationDt);
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.UpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdationDate", DateTime.Now));
+                    SqlParams.Add(new SqlParameter("@LastUpdationDate", lastupdationDt));
                 }
                 else
                 {
@@ -487,7 +506,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
                 SqlParams.Add(new SqlParameter("@EntryByMachineNo", model.EntryByMachineNo ?? ""));
                 SqlParams.Add(new SqlParameter("@ActualEntryByEmpid", model.ActualEnteredBy == 0 ? 0.0 : model.ActualEnteredBy));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", actualDt));
 
                 SqlParams.Add(new SqlParameter("@DTItemGrid", TransferGrid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);

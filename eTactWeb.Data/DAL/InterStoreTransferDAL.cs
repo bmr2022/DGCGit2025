@@ -122,13 +122,14 @@ namespace eTactWeb.Data.DAL
         internal async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy,string MachineName)
         {
             var _ResponseResult = new ResponseResult();
+            var etrDt = CommonFunc.ParseFormattedDate(EntryDate);
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YC));
-                SqlParams.Add(new SqlParameter("@EntryDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@EntryDate", etrDt));
                 SqlParams.Add(new SqlParameter("@ActulEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@MAchineName", MachineName));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_InterStoreTransferMainDetail", SqlParams);
@@ -356,17 +357,19 @@ namespace eTactWeb.Data.DAL
             {
 
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime SADt = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime SADt = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                SADt = ParseDate(model.SlipDate);
+                var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var SADt = CommonFunc.ParseFormattedDate(model.SlipDate);
+                var ActEntDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdatetionDate", DateTime.Now));
+                    SqlParams.Add(new SqlParameter("@LastUpdatetionDate", upDt));
                 }
                 else
                 {
@@ -385,7 +388,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@IssuedBy", model.IssuedBy));
                 SqlParams.Add(new SqlParameter("@Remark", model.Remark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@ActulEntryBy", model.ActualEntryBy));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", eTactWeb.Data.Common.CommonFunc.ParseFormattedDate( DateTime.Now.ToString())));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActEntDt == default ? string.Empty : ActEntDt));
                 SqlParams.Add(new SqlParameter("@TransferReason", model.TransferReason ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
                 SqlParams.Add(new SqlParameter("@Uid", model.Uid));

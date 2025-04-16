@@ -636,7 +636,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
+                var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
                 if (model.OpeningType == "CustomerJobwork")
                 {
                     if (model.Mode == "U" || model.Mode == "V")
@@ -651,9 +651,9 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
                     SqlParams.Add(new SqlParameter("@EntryID", model.EntryID));
                     SqlParams.Add(new SqlParameter("@AccountCode", model.Accountcode));
-                    DateTime parsedEntryDate = ParseDate(model.EntryDate);
-                    string formattedEntryDate = parsedEntryDate.ToString("yyyy-MM-dd");
-                    SqlParams.Add(new SqlParameter("@EntryDate", formattedEntryDate));
+                    //DateTime parsedEntryDate = ParseDate(model.EntryDate);
+                    //string formattedEntryDate = parsedEntryDate.ToString("yyyy-MM-dd");
+                    SqlParams.Add(new SqlParameter("@EntryDate", entDt == default ? string.Empty : entDt));
                     SqlParams.Add(new SqlParameter("@MAchineName", model.MachineName));
 
                     SqlParams.Add(new SqlParameter("@DTCustJWItemGrid", GIGrid));
@@ -673,9 +673,9 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
                     SqlParams.Add(new SqlParameter("@EntryID", model.EntryID));
                     SqlParams.Add(new SqlParameter("@AccountCode", model.Accountcode));
-                    DateTime parsedEntryDate = ParseDate(model.EntryDate);
-                    string formattedEntryDate = parsedEntryDate.ToString("yyyy-MM-dd");
-                    SqlParams.Add(new SqlParameter("@EntryDate", formattedEntryDate));
+                    //DateTime parsedEntryDate = ParseDate(model.EntryDate);
+                    //string formattedEntryDate = parsedEntryDate.ToString("yyyy-MM-dd");
+                    SqlParams.Add(new SqlParameter("@EntryDate", entDt == default ? string.Empty : entDt));
                     //SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.UpdatedBy));
                     //SqlParams.Add(new SqlParameter("@LastUpdatedDate", model.UpdatedOn));
                     //SqlParams.Add(new SqlParameter("@MAchineName", model.MachineName));
@@ -697,15 +697,17 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@FormTypeCustJWNRGP", "vendorjobwork"));
                     SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
                     SqlParams.Add(new SqlParameter("@EntryID", model.EntryID));
-                    DateTime parsedEntryDate = ParseDate(model.EntryDate);
-                    string formattedEntryDate = parsedEntryDate.ToString("yyyy-MM-dd");
+                   
+                    var formattedEntryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
+                    var createdDate = CommonFunc.ParseFormattedDate(model.CreatedOn.ToString());
+                    var upDate = CommonFunc.ParseFormattedDate(model.UpdatedOn.ToString());
                     SqlParams.Add(new SqlParameter("@EntryDate", formattedEntryDate));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.UpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdatedDate", model.UpdatedOn));
+                    SqlParams.Add(new SqlParameter("@LastUpdatedDate", upDate));
                     SqlParams.Add(new SqlParameter("@MAchineName", model.MachineName));
                     SqlParams.Add(new SqlParameter("@AccountCode", model.Accountcode));
                     SqlParams.Add(new SqlParameter("@ActualEntryById", model.CreatedBy));
-                    SqlParams.Add(new SqlParameter("@ActualEntryDate", model.CreatedOn));
+                    SqlParams.Add(new SqlParameter("@ActualEntryDate", createdDate));
 
                     SqlParams.Add(new SqlParameter("@DTVendJWItemGrid", GIGrid));
                 }

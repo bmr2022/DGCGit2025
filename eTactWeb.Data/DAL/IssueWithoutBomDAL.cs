@@ -216,7 +216,10 @@ namespace eTactWeb.Data.DAL
                 model.MachineCode = DS.Tables[0].Rows[0]["Machinecode"].ToString();
                 model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString();
                 model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]);
+               
                 model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
+                model.ReqNo = DS.Tables[0].Rows[0]["ReqNo"].ToString();
+                model.ReqyearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ReqYearCode"]);
                 model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"].ToString());
                 model.ActualEnteredByName = DS.Tables[0].Rows[0]["ActualEntryByEmpName"].ToString();
                 model.ActualEntrydate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
@@ -255,12 +258,20 @@ namespace eTactWeb.Data.DAL
                             Remark = row["Remark"].ToString(),
                             WorkCenter = row["WorkCenterDescription"].ToString(),
                             AltItemCode = Convert.ToInt32(row["AltItemCode"]),
+                            WCId = Convert.ToInt32(row["WCId"]),
                             CostCenterId = Convert.ToInt32(row["CostCenterId"]),
                             ItemSize = row["ItemSize"].ToString(),
                             ItemColor = row["ItemColor"].ToString(),
                             ProjectNo = row["ProjectNo"].ToString(),
                             ProjectYearCode = Convert.ToInt32(row["ProjectYearcode"]),
-                            StoreName = row["Store_Name"].ToString()
+                            StoreName = row["Store_Name"].ToString(),
+                            OriginalItemCode = Convert.ToInt32(row["OriginalitemCode"]),
+                            StdPacking = Convert.ToSingle(row["StdPacking"]),
+                            ReqNo1 = row["ReqNo"].ToString(),
+                            ReqDate1 = row["ReqDate"].ToString(),
+                            ReqyearCode1 = row["ReqYearCode"].ToString(),
+
+
                         });
                     }
                     model.ItemDetailGrid = ItemGrid;
@@ -299,13 +310,13 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime ReqDate = new DateTime();
-                DateTime issDate = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime ReqDate = new DateTime();
+                //DateTime issDate = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                ReqDate = ParseDate(model.ReqDate);
-                issDate = ParseDate(model.IssueDate);
+                var entDt =ParseFormattedDate(model.EntryDate);
+                var ReqDate = ParseFormattedDate(model.ReqDate);
+                var issDate = ParseFormattedDate(model.IssueDate);
                 if (model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));

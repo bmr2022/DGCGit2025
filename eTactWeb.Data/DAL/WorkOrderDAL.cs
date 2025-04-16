@@ -293,37 +293,41 @@ namespace eTactWeb.Data
             var _ResponseResult = new ResponseResult();
             try
             {
+                var upDt=DateTime.Now.ToString("dd/MM/yyyy");
+                upDt= CommonFunc.ParseFormattedDate(upDt);
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdateBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdatedDate", DateTime.Today));
+                    SqlParams.Add(new SqlParameter("@LastUpdatedDate", upDt));
                 }
                 else
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
 
-                DateTime entDt = new DateTime();
-                DateTime EffDt = new DateTime();
-                DateTime EffTillDt = new DateTime();
-                DateTime Wodt = new DateTime();
-                DateTime Appdt = new DateTime();
-                DateTime closedt = new DateTime();
-                DateTime deacdt = new DateTime();
-                DateTime Actudt = new DateTime();
-                DateTime Worevdt = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime EffDt = new DateTime();
+                //DateTime EffTillDt = new DateTime();
+                //DateTime Wodt = new DateTime();
+                //DateTime Appdt = new DateTime();
+                //DateTime closedt = new DateTime();
+                //DateTime deacdt = new DateTime();
+                //DateTime Actudt = new DateTime();
+                //DateTime Worevdt = new DateTime();
 
-                entDt = ParseDate(model.Entrydate);
-                EffDt = ParseDate(model.EffectiveFrom);
-                EffTillDt = ParseDate(model.EffectiveTill);
-                Wodt = ParseDate(model.WODate);
-                Appdt = ParseDate(model.ApprovedDate);
-                closedt = ParseDate(model.closedate);
-                deacdt = ParseDate(model.DeactivateDate);
-                Actudt = ParseDate(model.ActualEntryDate);
-                Worevdt = ParseDate(model.WorevDate);
+                var entDt = CommonFunc.ParseFormattedDate(model.Entrydate);
+                var EffDt = CommonFunc.ParseFormattedDate(model.EffectiveFrom);
+                var EffTillDt = CommonFunc.ParseFormattedDate(model.EffectiveTill);
+                var Wodt = CommonFunc.ParseFormattedDate(model.WODate);
+                var Appdt = CommonFunc.ParseFormattedDate(model.ApprovedDate);
+                var closedt = CommonFunc.ParseFormattedDate(model.closedate);
+                var deacdt = CommonFunc.ParseFormattedDate(model.DeactivateDate);
+                var Actudt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var Worevdt = CommonFunc.ParseFormattedDate(model.WorevDate);
+                var frmonthdt = DateTime.Now.ToString("dd/MM/yyyy");
+                frmonthdt = CommonFunc.ParseFormattedDate(frmonthdt);
 
 
                 SqlParams.Add(new SqlParameter("@EntryId", model.Entryid));
@@ -331,7 +335,7 @@ namespace eTactWeb.Data
                 SqlParams.Add(new SqlParameter("@Yearcode", model.YearCode));
                 SqlParams.Add(new SqlParameter("@EffectiveFrom", EffDt == default ? string.Empty : EffDt));
                 SqlParams.Add(new SqlParameter("@EffectiveTill", EffTillDt == default ? string.Empty : EffTillDt));
-                SqlParams.Add(new SqlParameter("@ForMonth", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@ForMonth", frmonthdt));
                 SqlParams.Add(new SqlParameter("@WONO", model.WONO));
                 SqlParams.Add(new SqlParameter("@WODate", Wodt == default ? string.Empty : Wodt));
                 SqlParams.Add(new SqlParameter("@workcenterId", model.workcenterId));

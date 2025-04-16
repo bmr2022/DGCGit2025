@@ -947,6 +947,9 @@
                             allElementsAdjusted = false;
                         }
                     }
+
+                    console.log("Adjustchallan:", Adjustchallan);
+                    console.log("ResultArray:", resultArray);
                     if (allElementsAdjusted) {
                         $("form").submit();
                     } else {
@@ -2275,6 +2278,7 @@
             
             $.ajax({
                 url: "@Url.Action("GetAdjustedChallan")",
+                 type: "POST",
                 data: { DTTItemGrid: JSON.stringify(Data), AccountCode: parseInt($('#AccountCode').val()), GateYearcode: parseInt($('#GateYearCode').val()), Gateno: $('#GateNo').val(), yearCode: $('#YearCode').val(), billchallandate: $('#EntryDate').val(), FromFinStartDate: $('#FromDate').val() },
                 success: function (result, status, xhr) {
                     // if (result != null) {

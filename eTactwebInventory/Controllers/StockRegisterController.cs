@@ -36,7 +36,8 @@ namespace eTactWeb.Controllers
             model.StockRegisterDetail = new List<StockRegisterDetail>();
             return View(model);
         }
-        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate,string PartCode,string ItemName, string ItemGroup,string ItemType,int StoreId,string ReportType,string BatchNo,string UniqueBatchNo, int pageNumber = 1, int pageSize = 10)
+        [HttpGet]
+        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate,string PartCode,string ItemName, string ItemGroup,string ItemType,int StoreId,string ReportType,string BatchNo,string UniqueBatchNo, int pageNumber = 1, int pageSize = 100)
         {
             var model = new StockRegisterModel();
             //model = await _IStockRegister.GetStockRegisterData(FromDate, ToDate,PartCode,ItemName,ItemGroup,ItemType,StoreId,ReportType,BatchNo,UniqueBatchNo);
@@ -53,7 +54,7 @@ namespace eTactWeb.Controllers
            
             model.TotalRecords = fullList.Count();
             model.PageNumber = pageNumber;
-            model.StockRegisterDetail = fullList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.StockRegisterDetail = fullList;
             model.PageSize = pageSize;
            
             _MemoryCache.Set("KeyStockList", fullList, cacheEntryOptions);

@@ -773,7 +773,7 @@
                             $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
                         }
                         for (var i = 1; i <= rowCounter; i++) {
-                            FillLotandTotalStock(i);
+                             FillLotandTotalStock(i);
                             fillProjectNo(i);
                             $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                             $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
@@ -1117,7 +1117,7 @@
                             $('#MainGridTotalStock-' + i).val(obj.Result[0].totalstock);
 
                             var issQty = parseFloat($('#MainGridReqQty-' + i).val()) <= parseFloat($('#MainGridLotStock-' + i).val()) ? $('#MainGridReqQty-' + i).val() : $('#MainGridLotStock-' + i).val();
-                            $('#MainGridIssueQty-' + i).val(issQty);
+                            // $('#MainGridIssueQty-' + i).val(issQty);
                         }
                         else {
                             $('#MainGridLotStock-' + i).val(0);

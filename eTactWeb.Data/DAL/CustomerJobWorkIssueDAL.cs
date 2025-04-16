@@ -8,6 +8,7 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+ 
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
@@ -619,15 +620,15 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERTInChallan"));
                 }
-                DateTime entryDt = new DateTime();
-                DateTime challanDt = new DateTime();
-                DateTime dtEntry = new DateTime();
-                DateTime RemovalTime = new DateTime();
+                //DateTime entryDt = new DateTime();
+                //DateTime challanDt = new DateTime();
+                //DateTime dtEntry = new DateTime();
+                //DateTime RemovalTime = new DateTime();
 
-                entryDt = ParseDate(model.EntryDate);
-                challanDt = ParseDate(model.ChallanDate);
-                dtEntry = ParseDate(model.DateEntry);
-                RemovalTime = ParseDate(model.EntryTime);
+                var entryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var challanDt = CommonFunc.ParseFormattedDate(model.ChallanDate);
+                var dtEntry = CommonFunc.ParseFormattedDate(model.DateEntry);
+                var RemovalTime = CommonFunc.ParseFormattedDate(model.EntryTime);
 
                 SqlParams.Add(new SqlParameter("@CustJwIssEntryid", model.EntryId));
                 SqlParams.Add(new SqlParameter("@CustJwIssYearCode", model.YearCode));
