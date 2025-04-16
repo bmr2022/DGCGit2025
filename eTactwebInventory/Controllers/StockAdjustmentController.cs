@@ -976,189 +976,205 @@ namespace eTactWeb.Controllers
         [HttpPost]
         public IActionResult UploadExcel(IFormFile excelFile)
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            List<StockAdjustmentModel> data = new List<StockAdjustmentModel>();
-
-            using (var stream = excelFile.OpenReadStream())
-            using (var package = new ExcelPackage(stream))
+            try
             {
-                var worksheet = package.Workbook.Worksheets[0];
-                for (int row = 2; row <= worksheet.Dimension.Rows; row++)
+
+
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                List<StockAdjustmentModel> data = new List<StockAdjustmentModel>();
+
+                using (var stream = excelFile.OpenReadStream())
+                using (var package = new ExcelPackage(stream))
                 {
-
-                    //var itemCatCode = IStockAdjust.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
-                    var itemCode = IStockAdjust.GetItemCode(worksheet.Cells[row, 2].Value.ToString());
-                    var storeIdResult = 0;
-                    var WCResult = 0;
-
-
-                    //var duplicatePartCode = IStockAdjust.isDuplicate(worksheet.Cells[row, 1].Value.ToString(), "PartCode", "Item_Master");
-                    //var duplicateItemName = IStockAdjust.isDuplicate(worksheet.Cells[row, 2].Value.ToString(), "Item_Name", "Item_Master");
-
-                    //var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
-                    //var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
-
-                    //var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
-
-                    //  ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
-
-                    int itemCCode = 0;
-                    string itemName = "";
-
-                    if (itemCode.Result.Result != null)
+                    var worksheet = package.Workbook.Worksheets[0];
+                    for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                     {
-                        itemCCode = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
-                        itemName = itemCode.Result.Result.Rows.Count <= 0 ? "" : itemCode.Result.Result.Rows[0].ItemArray[1];
+
+                        //var itemCatCode = IStockAdjust.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
+                        var itemCode = IStockAdjust.GetItemCode(worksheet.Cells[row, 2].Value.ToString());
+                        var storeIdResult = 0;
+                        var WCResult = 0;
+
+
+                        //var duplicatePartCode = IStockAdjust.isDuplicate(worksheet.Cells[row, 1].Value.ToString(), "PartCode", "Item_Master");
+                        //var duplicateItemName = IStockAdjust.isDuplicate(worksheet.Cells[row, 2].Value.ToString(), "Item_Name", "Item_Master");
+
+                        //var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
+                        //var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
+
+                        //var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
+
+                        //  ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
+
+                        int itemCCode = 0;
+                        string itemName = "";
+
+                        if (itemCode.Result.Result != null)
+                        {
+                            itemCCode = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
+                            itemName = itemCode.Result.Result.Rows.Count <= 0 ? "" : itemCode.Result.Result.Rows[0].ItemArray[1];
+                        }
+                        var StockAdjustmentDate = IStockAdjust.GetmaxStockAdjustDate("GetEachItemsSADate", itemCCode);
+
+                        var StockDateResult = StockAdjustmentDate.Result.Result != null && StockAdjustmentDate.Result.Result.Rows.Count > 0 ? StockAdjustmentDate.Result.Result.Rows[0].ItemArray[0] : "";
+
+
+                        var GetStoreTotalStock = 0;
+                        var WorkCenterTotalStock = 0;
+                        var StoreLotStockResult = 0;
+                        var WCLotStockResult = 0;
+
+                        var batchno = worksheet.Cells[row, 8].Value.ToString();
+                        var uniquebatchno = worksheet.Cells[row, 9].Value.ToString();
+
+                        if (worksheet.Cells[row, 1].Value.ToString() == "S")
+                        {
+                            var storeId = IStockAdjust.GetStoreId(worksheet.Cells[row, 3].Value.ToString());
+                            storeIdResult = storeId.Result.Result != null && storeId.Result.Result.Rows.Count > 0 ? (int)storeId.Result.Result.Rows[0].ItemArray[0] : 0;
+                            var StoreTotalStock = IStockAdjust.FillTotalStock(itemCCode, storeIdResult);
+                            GetStoreTotalStock = StoreTotalStock.Result.Result != null && StoreTotalStock.Result.Result.Rows.Count > 0 ? (int)StoreTotalStock.Result.Result.Rows[0].ItemArray[0] : 0;
+                            var StoreLotStock = IStockAdjust.FillLotStock(itemCCode, storeIdResult, uniquebatchno, batchno);
+                            StoreLotStockResult = StoreLotStock.Result.Result != null && StoreLotStock.Result.Result.Rows.Count > 0 ? (int)StoreLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
+                        }
+                        else
+                        {
+                            var WCId = IStockAdjust.GetWorkCenterId(worksheet.Cells[row, 4].Value.ToString());
+                            WCResult = WCId.Result.Result != null && WCId.Result.Result.Rows.Count > 0 ? (int)WCId.Result.Result.Rows[0].ItemArray[0] : 0;
+                            var WCTotalStock = IStockAdjust.GETWIPotalSTOCK(itemCCode, WCResult);
+                            WorkCenterTotalStock = WCTotalStock.Result.Result != null && WCTotalStock.Result.Result.Rows.Count > 0 ? (int)WCTotalStock.Result.Result.Rows[0].ItemArray[0] : 0;
+                            var WIPLotStock = IStockAdjust.GetWIPStockBatchWise(itemCCode, WCResult, uniquebatchno, batchno);
+                            WCLotStockResult = WIPLotStock.Result.Result != null && WIPLotStock.Result.Result.Rows.Count > 0 ? (int)WIPLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
+                        }
+                        var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                        var AltQty = IStockAdjust.GetAltUnitQty(itemCCode, 0, worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock);
+                        var AltQtyResult = AltQty.Result.Result != null && AltQty.Result.Result.Rows.Count > 0 ? (int)AltQty.Result.Result.Rows[0].ItemArray[0] : 0;
+                        var Rate = IStockAdjust.FillRateAmount(itemCCode, YearCode, uniquebatchno, batchno);
+                        var ActualRate = Rate.Result.Result != null && Rate.Result.Result.Rows.Count > 0 ? (int)Rate.Result.Result.Rows[0].ItemArray[0] : 0;
+
+                        var ActualStock = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString());
+                        var AdjQty = ActualStock - (worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult);
+                        var AdjType = AdjQty > 0 ? "+" : "-";
+                        var Amount = (worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock) * ActualRate;
+
+                        //data.Add(new StockAdjustmentModel()
+                        //{
+                        //    StoreWorkCenter = worksheet.Cells[row, 1].Value.ToString(),
+                        //    PartCode = worksheet.Cells[row, 2].Value.ToString(),
+                        //    ItemName = itemName,
+                        //    StoreName = worksheet.Cells[row, 3].Value == null ? string.Empty : worksheet.Cells[row, 3].Value.ToString(),
+                        //    WCName = worksheet.Cells[row, 4].Value == null ? string.Empty : worksheet.Cells[row, 4].Value.ToString(),
+                        //    ActualStockQty = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString()),
+                        //    Unit = worksheet.Cells[row, 6].Value.ToString(),
+                        //    altUnit = worksheet.Cells[row, 7].Value.ToString() == null ? string.Empty : worksheet.Cells[row, 7].Value.ToString(),
+                        //    batchno = worksheet.Cells[row, 8].Value.ToString(),
+                        //    uniqbatchno = worksheet.Cells[row, 9].Value.ToString(),
+                        //    reasonOfAdjustment = worksheet.Cells[row, 10].Value.ToString() == null ? string.Empty : worksheet.Cells[row, 10].Value.ToString(),
+                        //    TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
+                        //    LotStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult,
+                        //    AltQty = AltQtyResult,
+                        //    AdjQty = Math.Abs(AdjQty),
+                        //    AdjType = AdjType,
+                        //    Rate = ActualRate,
+                        //    Amount = Amount,
+                        //    ItemCode = itemCCode,
+                        //    Wcid = WCResult,
+                        //    Storeid = storeIdResult,
+                        //    StockAdjustmentDate ="01/feb/2025"
+                        //    //StockDateResult.ToString()
+                        //});
+
+                        data.Add(new StockAdjustmentModel()
+                        {
+                            StoreWorkCenter = worksheet.Cells[row, 1].Value.ToString(),
+                            PartCode = worksheet.Cells[row, 2].Value.ToString(),
+                            ItemName = itemName,
+                            StoreName = worksheet.Cells[row, 3].Value?.ToString() ?? string.Empty,
+                            WCName = worksheet.Cells[row, 4].Value?.ToString() ?? string.Empty,
+                            ActualStockQty = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString()),
+                            Unit = worksheet.Cells[row, 6].Value.ToString(),
+                            altUnit = worksheet.Cells[row, 7].Value?.ToString() ?? string.Empty,
+                            batchno = worksheet.Cells[row, 8].Value.ToString(),
+                            uniqbatchno = worksheet.Cells[row, 9].Value.ToString(),
+                            reasonOfAdjustment = worksheet.Cells[row, 10].Value?.ToString() ?? string.Empty,
+                            TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
+                            LotStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult,
+                            AltQty = AltQtyResult,
+                            AdjQty = Math.Abs(AdjQty),
+                            AdjType = AdjType,
+                            Rate = ActualRate,
+                            Amount = Amount,
+                            ItemCode = itemCCode,
+                            Wcid = WCResult,
+                            Storeid = storeIdResult,
+                            StockAdjustmentDate = "01/feb/2025"
+                            //StockDateResult.ToString()
+                        });
                     }
-                    var StockAdjustmentDate = IStockAdjust.GetmaxStockAdjustDate("GetEachItemsSADate", itemCCode);
-
-                    var StockDateResult = StockAdjustmentDate.Result.Result != null && StockAdjustmentDate.Result.Result.Rows.Count > 0 ? StockAdjustmentDate.Result.Result.Rows[0].ItemArray[0] : "";
-
-
-                    var GetStoreTotalStock = 0;
-                    var WorkCenterTotalStock = 0;
-                    var StoreLotStockResult = 0;
-                    var WCLotStockResult = 0;
-
-                    var batchno = worksheet.Cells[row, 8].Value.ToString();
-                    var uniquebatchno = worksheet.Cells[row, 9].Value.ToString();
-
-                    if (worksheet.Cells[row, 1].Value.ToString() == "S")
-                    {
-                        var storeId = IStockAdjust.GetStoreId(worksheet.Cells[row, 3].Value.ToString());
-                        storeIdResult = storeId.Result.Result != null && storeId.Result.Result.Rows.Count > 0 ? (int)storeId.Result.Result.Rows[0].ItemArray[0] : 0;
-                        var StoreTotalStock = IStockAdjust.FillTotalStock(itemCCode, storeIdResult);
-                        GetStoreTotalStock = StoreTotalStock.Result.Result != null && StoreTotalStock.Result.Result.Rows.Count > 0 ? (int)StoreTotalStock.Result.Result.Rows[0].ItemArray[0] : 0;
-                        var StoreLotStock = IStockAdjust.FillLotStock(itemCCode, storeIdResult, uniquebatchno, batchno);
-                        StoreLotStockResult = StoreLotStock.Result.Result != null && StoreLotStock.Result.Result.Rows.Count > 0 ? (int)StoreLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
-                    }
-                    else
-                    {
-                        var WCId = IStockAdjust.GetWorkCenterId(worksheet.Cells[row, 4].Value.ToString());
-                        WCResult = WCId.Result.Result != null && WCId.Result.Result.Rows.Count > 0 ? (int)WCId.Result.Result.Rows[0].ItemArray[0] : 0;
-                        var WCTotalStock = IStockAdjust.GETWIPotalSTOCK(itemCCode, WCResult);
-                        WorkCenterTotalStock = WCTotalStock.Result.Result != null && WCTotalStock.Result.Result.Rows.Count > 0 ? (int)WCTotalStock.Result.Result.Rows[0].ItemArray[0] : 0;
-                        var WIPLotStock = IStockAdjust.GetWIPStockBatchWise(itemCCode, WCResult, uniquebatchno, batchno);
-                        WCLotStockResult = WIPLotStock.Result.Result != null && WIPLotStock.Result.Result.Rows.Count > 0 ? (int)WIPLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
-                    }
-                    var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                    var AltQty = IStockAdjust.GetAltUnitQty(itemCCode, 0, worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock);
-                    var AltQtyResult = AltQty.Result.Result != null && AltQty.Result.Result.Rows.Count > 0 ? (int)AltQty.Result.Result.Rows[0].ItemArray[0] : 0;
-                    var Rate = IStockAdjust.FillRateAmount(itemCCode, YearCode, uniquebatchno, batchno);
-                    var ActualRate = Rate.Result.Result != null && Rate.Result.Result.Rows.Count > 0 ? (int)Rate.Result.Result.Rows[0].ItemArray[0] : 0;
-
-                    var ActualStock = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString());
-                    var AdjQty = ActualStock - (worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult);
-                    var AdjType = AdjQty > 0 ? "+" : "-";
-                    var Amount = (worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock) * ActualRate;
-
-                    //data.Add(new StockAdjustmentModel()
-                    //{
-                    //    StoreWorkCenter = worksheet.Cells[row, 1].Value.ToString(),
-                    //    PartCode = worksheet.Cells[row, 2].Value.ToString(),
-                    //    ItemName = itemName,
-                    //    StoreName = worksheet.Cells[row, 3].Value == null ? string.Empty : worksheet.Cells[row, 3].Value.ToString(),
-                    //    WCName = worksheet.Cells[row, 4].Value == null ? string.Empty : worksheet.Cells[row, 4].Value.ToString(),
-                    //    ActualStockQty = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString()),
-                    //    Unit = worksheet.Cells[row, 6].Value.ToString(),
-                    //    altUnit = worksheet.Cells[row, 7].Value.ToString() == null ? string.Empty : worksheet.Cells[row, 7].Value.ToString(),
-                    //    batchno = worksheet.Cells[row, 8].Value.ToString(),
-                    //    uniqbatchno = worksheet.Cells[row, 9].Value.ToString(),
-                    //    reasonOfAdjustment = worksheet.Cells[row, 10].Value.ToString() == null ? string.Empty : worksheet.Cells[row, 10].Value.ToString(),
-                    //    TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
-                    //    LotStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult,
-                    //    AltQty = AltQtyResult,
-                    //    AdjQty = Math.Abs(AdjQty),
-                    //    AdjType = AdjType,
-                    //    Rate = ActualRate,
-                    //    Amount = Amount,
-                    //    ItemCode = itemCCode,
-                    //    Wcid = WCResult,
-                    //    Storeid = storeIdResult,
-                    //    StockAdjustmentDate ="01/feb/2025"
-                    //    //StockDateResult.ToString()
-                    //});
-
-                    data.Add(new StockAdjustmentModel()
-                    {
-                        StoreWorkCenter = worksheet.Cells[row, 1].Value.ToString(),
-                        PartCode = worksheet.Cells[row, 2].Value.ToString(),
-                        ItemName = itemName,
-                        StoreName = worksheet.Cells[row, 3].Value?.ToString() ?? string.Empty,
-                        WCName = worksheet.Cells[row, 4].Value?.ToString() ?? string.Empty,
-                        ActualStockQty = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString()),
-                        Unit = worksheet.Cells[row, 6].Value.ToString(),
-                        altUnit = worksheet.Cells[row, 7].Value?.ToString() ?? string.Empty,
-                        batchno = worksheet.Cells[row, 8].Value.ToString(),
-                        uniqbatchno = worksheet.Cells[row, 9].Value.ToString(),
-                        reasonOfAdjustment = worksheet.Cells[row, 10].Value?.ToString() ?? string.Empty,
-                        TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
-                        LotStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult,
-                        AltQty = AltQtyResult,
-                        AdjQty = Math.Abs(AdjQty),
-                        AdjType = AdjType,
-                        Rate = ActualRate,
-                        Amount = Amount,
-                        ItemCode = itemCCode,
-                        Wcid = WCResult,
-                        Storeid = storeIdResult,
-                        StockAdjustmentDate = "01/feb/2025"
-                        //StockDateResult.ToString()
-                    });
                 }
-            }
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            var model = new StockAdjustmentModel();
-            model.ImportMode = "Y";
-            model.ExcelDetailGrid = data;
-            var SAGrid = new DataTable();
-            SAGrid = GetExcelDetailTable(model.ExcelDetailGrid);
-
-            List<StockAdjustmentDetail> list = new List<StockAdjustmentDetail>();
-            int cnt = 1;
-            foreach (DataRow row in SAGrid.Rows)
-            {
-                var GetItems = IStockAdjust.GetItems(Convert.ToInt32(row["ItemCode"]));
-                var GetWorkCenmterName = IStockAdjust.GetWCName(Convert.ToInt32(row["wcid"]));
-                var GetStoreName = IStockAdjust.GetStoreName(Convert.ToInt32(row["storeid"]));
-
-                StockAdjustmentDetail stockDetail = new StockAdjustmentDetail
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
-
-                    SeqNo = cnt++,
-                    ItemCode = Convert.ToInt32(row["ItemCode"]),
-                    Unit = row["Unit"].ToString(),
-                    LotStock = Convert.ToInt32(row["LotStock"]),
-                    TotalStock = Convert.ToInt32(row["TotalStock"]),
-                    altUnit = row["altUnit"].ToString(),
-                    AltQty = Convert.ToInt32(row["AltQty"]),
-                    ActualStockQty = Convert.ToInt32(row["ActuleStockQty"]),
-                    AdjQty = Convert.ToInt32(row["AdjQty"]),
-                    AdjType = row["AdjType"].ToString(),
-                    Storeid = Convert.ToInt32(row["storeid"]),
-                    Wcid = Convert.ToInt32(row["wcid"].ToString()),
-                    Rate = Convert.ToInt32(row["rate"]),
-                    Amount = Convert.ToInt32(row["Amount"].ToString()),
-                    batchno = row["batchno"].ToString(),
-                    uniqbatchno = row["uniquebatchno"].ToString(),
-                    reasonOfAdjustment = row["reasonOfAdjustment"].ToString(),
-                    PartCode = GetItems.Result.Result.Rows.Count <= 0 ? "" : GetItems.Result.Result.Rows[0].ItemArray[1],
-                    ItemName = GetItems.Result.Result.Rows.Count <= 0 ? "" : GetItems.Result.Result.Rows[0].ItemArray[0],
-                    WCName = GetWorkCenmterName.Result.Result.Rows.Count <= 0 ? "" : GetWorkCenmterName.Result.Result.Rows[0].ItemArray[0],
-                    StoreName = GetStoreName.Result.Result.Rows.Count <= 0 ? "" : GetStoreName.Result.Result.Rows[0].ItemArray[0]
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
                 };
-                list.Add(stockDetail);
+                var model = new StockAdjustmentModel();
+                model.ImportMode = "Y";
+                model.ExcelDetailGrid = data;
+                var SAGrid = new DataTable();
+                SAGrid = GetExcelDetailTable(model.ExcelDetailGrid);
+
+                List<StockAdjustmentDetail> list = new List<StockAdjustmentDetail>();
+                int cnt = 1;
+                foreach (DataRow row in SAGrid.Rows)
+                {
+                    var GetItems = IStockAdjust.GetItems(Convert.ToInt32(row["ItemCode"]));
+                    var GetWorkCenmterName = IStockAdjust.GetWCName(Convert.ToInt32(row["wcid"]));
+                    var GetStoreName = IStockAdjust.GetStoreName(Convert.ToInt32(row["storeid"]));
+
+                    StockAdjustmentDetail stockDetail = new StockAdjustmentDetail
+                    {
+
+                        SeqNo = cnt++,
+                        ItemCode = Convert.ToInt32(row["ItemCode"]),
+                        Unit = row["Unit"].ToString(),
+                        LotStock = Convert.ToInt32(row["LotStock"]),
+                        TotalStock = Convert.ToInt32(row["TotalStock"]),
+                        altUnit = row["altUnit"].ToString(),
+                        AltQty = Convert.ToInt32(row["AltQty"]),
+                        ActualStockQty = Convert.ToInt32(row["ActuleStockQty"]),
+                        AdjQty = Convert.ToInt32(row["AdjQty"]),
+                        AdjType = row["AdjType"].ToString(),
+                        Storeid = Convert.ToInt32(row["storeid"]),
+                        Wcid = Convert.ToInt32(row["wcid"].ToString()),
+                        Rate = Convert.ToInt32(row["rate"]),
+                        Amount = Convert.ToInt32(row["Amount"].ToString()),
+                        batchno = row["batchno"].ToString(),
+                        uniqbatchno = row["uniquebatchno"].ToString(),
+                        reasonOfAdjustment = row["reasonOfAdjustment"].ToString(),
+                        PartCode = GetItems.Result.Result.Rows.Count <= 0 ? "" : GetItems.Result.Result.Rows[0].ItemArray[1],
+                        ItemName = GetItems.Result.Result.Rows.Count <= 0 ? "" : GetItems.Result.Result.Rows[0].ItemArray[0],
+                        WCName = GetWorkCenmterName.Result.Result.Rows.Count <= 0 ? "" : GetWorkCenmterName.Result.Result.Rows[0].ItemArray[0],
+                        StoreName = GetStoreName.Result.Result.Rows.Count <= 0 ? "" : GetStoreName.Result.Result.Rows[0].ItemArray[0]
+                    };
+                    list.Add(stockDetail);
+                }
+
+
+                IMemoryCache.Set("KeyStockAdjustGrid", list, cacheEntryOptions);
+
+                return PartialView("_StockAdjustGrid", model);
             }
-
-
-            IMemoryCache.Set("KeyStockAdjustGrid", list, cacheEntryOptions);
-
-            return PartialView("_StockAdjustGrid", model);
+            catch (Exception ex)
+            {
+                LogException<StockAdjustmentController>.WriteException(Logger, ex);
+                var ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+                return View("Error", ResponseResult);
+            }
         }
 
         public async Task<JsonResult> GetDashItemName(string FromDate, string ToDate)

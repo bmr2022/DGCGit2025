@@ -331,7 +331,7 @@
             $('.DH').fadeOut();
             if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
                 GetTaxPartItem();
-               // FillItems();
+                // FillItems();
                 $('#lblItemNetAmount').text($('#ItemNetAmount').val());
                 $('#AccountCode').prop('disabled', true);
                 if ($('#POType').val() == "OPEN") {
@@ -427,7 +427,7 @@
                 type: "POST",
                 url: "@Url.Action("AddIndentDetail")",
                 contentType: "application/json; charset=utf-8",
-                async:false,
+                async: false,
                 data: JSON.stringify(itemDataArray),
                 success: function (response) {
                     if (response == "Duplicate Item") {
@@ -451,8 +451,7 @@
             $(this).attr("tabindex", ++tabIndx);
         });
 
-        $(document).ready(function ()
-        {
+        $(document).ready(function () {
 
 
             if ($('#OrderType').val() == 'Import') {
@@ -508,8 +507,7 @@
             var dateParts2 = finToDate.split("/");
 
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-            if ($('#Mode').val() == "POA" || $('#Mode').val() == "POC")
-            {
+            if ($('#Mode').val() == "POA" || $('#Mode').val() == "POC") {
                 $('#PN1').prop("disabled", "false");
                 $('#PN1').prop("checked", "true");
                 $('#PN1').change().trigger("change");
@@ -517,8 +515,7 @@
                 $('#IN1').trigger("change");
             }
 
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") 
-            {
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 PendingIndentDetail(true);
                 //FillItems();
                 $('.DH').fadeIn();
@@ -552,8 +549,7 @@
                 $('#AmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AmendmentDt);
 
             }
-            else
-            {
+            else {
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 //$("#PODate,#POCloseDate,#AmmDate,#AmendmentDate").datepicker({
                 //    dateFormat: 'dd/mm/yy',
@@ -668,7 +664,7 @@
                     url: "@Url.Action("FillIndentDetail")",
                     data: { "itemName": itemName, "partCode": partCode, "itemCode": itemCode },
                     dataType: "json",
-                    async:false,
+                    async: false,
                     success: function (result, status, error) {
 
                         if (result != null) {
@@ -863,7 +859,7 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                async:false,
+                async: false,
                 success: function (result) {
                     if (result == "Not Done") {
                         $.notify("Pend Qty cannot be less than 0!Please Try again!", "error");
@@ -913,7 +909,7 @@
                 type: "POST",
                 url: "@Url.Action("GetPendQty")",
                 dataType: "json",
-                async:false,
+                async: false,
                 data: { "PoNo": $('#PONo').val(), "POYearcode": $('#YearCode').val(), "AccountCode": $("#AccountCode").val(), "SchNo": "", "SchYerCode": 0 },
                 success: function (result, status, error) {
 
@@ -933,7 +929,7 @@
                 type: "POST",
                 url: "@Url.Action("NewAmmEntryId")",
                 dataType: "json",
-                async:false,
+                async: false,
                 data: { "PoAmendYearCode": $('#YearCode').val() },
                 success: function (result, status, error) {
 
@@ -952,9 +948,9 @@
                 type: "POST",
                 url: "@Url.Action("FillVendors")",
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (result, status, error) {
-
+                    debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#AccountCode').empty();
@@ -965,6 +961,11 @@
                             $('#AccountCode').append('<option value="' + val.AccountCode + '" data-gstregister="' + val.GSTRegistered + '" data-state="' + val.State + '">' + val.AccountName + '</option>');
                             $('#ShipTo').append('<option value="' + val.AccountCode + '">' + val.AccountName + '</option>');
                         });
+
+                        if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "POA") {
+                            var shipTo = @Html.Raw(Json.Serialize(Model.ShipTo));
+                            $('#ShipTo').val(shipTo).trigger('change.select2');
+                        }
                     }
                 }
             });
@@ -1007,7 +1008,7 @@
                 type: "GET",
                 url: "@Url.Action("FillEntryandPONumber")",
                 dataType: "json",
-                async:false,
+                async: false,
                 data: { "YearCode": $('#YearCode').val() },
                 success: function (result, status, error) {
                     if (result != null) {
@@ -1021,7 +1022,7 @@
                 type: "GET",
                 url: "@Url.Action("FillPONumber")",
                 dataType: "json",
-                async:false,
+                async: false,
                 data: { "YearCode": $('#YearCode').val(), "OrderType": $('#OrderType').val(), "PoDate": $('#PODate').val() },
                 success: function (result, status, error) {
                     if (result != null) {
@@ -1043,7 +1044,7 @@
                 type: "GET",
                 url: "@Url.Action("CheckLockYear")",
                 dataType: "json",
-                async:false,
+                async: false,
                 data: { "YearCode": $('#YearCode').val() },
                 success: function (result, status, error) {
                     if (result != null) {
@@ -1080,7 +1081,7 @@
                     type: "GET",
                     url: "@Url.Action("AltUnitConversion")",
                     dataType: "json",
-                    async:false,
+                    async: false,
                     data: { ItemCode: $('#PartCode').val(), AltQty: $(this).val(), UnitQty: 0 },
                     success: function (data, status, error) {
                         if (data != null) {
@@ -1118,22 +1119,21 @@
         }
         var isItemSelected = false;
         function FillItems() {
-              
+
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("FillItems")",
                 dataType: "json",
-                async:false,
+                async: false,
                 data: { Type: $('#POTypeServItem').val(), ShowAllItem: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
                 success: function (result, status, error) {
-                      
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == "Success") {
                             $('#PartCode,#ItemCode').empty();
                             $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
-                            if (isItemSelected)
-                            {
+                            if (isItemSelected) {
                                 const distinctItems = Array.from(
                                     itemDataArray.reduce((map, item) => map.set(item.ItemCode, item), new Map()).values()
                                 );
@@ -1143,8 +1143,7 @@
                                     $('#ItemCode').append("<option value=" + val.ItemCode + " data-unipartcode = " + val.PartCode + ">" + val.ItemName + "</option>");
                                 });
                             }
-                            else
-                            {
+                            else {
 
                                 $.each(obj.Result.Table, function (index, val) {
                                     $('#PartCode').append("<option value=" + val.Item_Code + " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription + ">" + val.PartCode + "</option>");
@@ -1274,7 +1273,7 @@
         });
 
         $('#WEF').change(function () {
-             
+
             var poEffDate = $(this).val();
             var poDate = $('#PODate').val();
             if (poEffDate < poDate) {
@@ -1331,7 +1330,7 @@
                 type: "GET",
                 url: "@Url.Action("AltUnitConversion")",
                 dataType: "json",
-                async:false,
+                async: false,
                 data: { ItemCode: $('#PartCode').val(), AltQty: 0, UnitQty: $('#POQty').val() },
                 success: function (data, status, error) {
                     if (data != null) {
@@ -1527,7 +1526,7 @@
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
-                async:false,
+                async: false,
                 success: function (data) {
                     if (data != null) {
                         var obj = $.parseJSON(data);
@@ -1576,7 +1575,7 @@
             $.getJSON({
                 url: '@Url.Action("GetItemPartCode", "SaleOrder")',
                 data: { Code: $('#' + ID).val() },
-                async:false,
+                async: false,
                 success: function (result, status, xhr) {
                     if (result) {
                         var obj = JSON.parse(result);
@@ -1773,7 +1772,7 @@
             $.ajax({
                 url: "@Url.Action("ResetGridItems")",
                 type: "GET",
-                async:false,
+                async: false,
                 success: await function (result, status, xhr) {
                     if (result == 200) {
                         ClearItem();
@@ -1876,7 +1875,7 @@
                 url: "@Url.Action("GetPartyList")",
                 data: { Check: $('#PN1').is(':checked') == true ? 'T' : 'F' },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (data, status, error) {
 
                     var obj = $.parseJSON(data);
@@ -1953,7 +1952,7 @@
                 url: "@Url.Action("GetPartyList")",
                 data: { Check: $('#PN2').is(':checked') == true ? 'T' : 'F' },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (data, status, error) {
                     $('#ShipTo').empty();
                     $('#ShipTo').append('<option>-Select-</option>');
@@ -2009,28 +2008,28 @@
 
         $('#IN1').change(function () {
 
-                    $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
-        $.ajax({
-            type: "GET",
-            url: "@Url.Action("FillItems")",
-            dataType: "json",
-            async:false,
-            data: { Type: 'Item', ShowAllItem: $('#IN1').val() == 'true' ? 'Y' : 'N' },
-            success: function (result, status, error) {
-                if (result != null) {
-                    var obj = $.parseJSON(result);
-                    if (obj.StatusCode == 200 && obj.StatusText == "Success") {
-                        $('#PartCode,#ItemCode').empty();
-                        $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
-                        $.each(obj.Result.Table, function (index, val) {
-                            $('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
-                            $('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
-                        });
-                    }
+            $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FillItems")",
+                dataType: "json",
+                async: false,
+                data: { Type: 'Item', ShowAllItem: $('#IN1').val() == 'true' ? 'Y' : 'N' },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                            $('#PartCode,#ItemCode').empty();
+                            $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
+                            $.each(obj.Result.Table, function (index, val) {
+                                $('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
+                                $('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
+                            });
+                        }
 
+                    }
                 }
-            }
-        });
+            });
         });
 
 
@@ -2135,7 +2134,7 @@
                 url: '@Url.Action("GetTaxPartItem", "Tax")',
                 data: { SessionName: '@ViewData["PageName"]' },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: await function (data, status, error) {
                     $('#TxPartCode').empty();
                     $('#TxPartCode').append('<option>-Select-</option>');
@@ -2161,31 +2160,32 @@
             });
         }
 
-        $('.PartialSave').click(function (e) 
-        {
+        $('.PartialSave').click(function (e) {
             e.preventDefault();
             $('#TypeOfSave').val("PS");
             var poGrid = $('#divPOItemList tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
-            if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                return false;
+            if ($('#POFor').val() != 'For Purchase(Sample)') {
+                if (!checkPartCodeMusthaveAtLeastOneTax()) {
+                    return false;
+                }
             }
             if (poGrid <= 1) {
                 $.notify("PO Grid should at least have one item", "error");
                 return;
             }
-            else
-            {
-                if ($('#GSTRegistered').val() == "Y" || $('#OrderType').val() != "Domestic") 
-                {
-                    if (taxGrid >= 1) {
-                        for (var i = 1; i <= txRowCount; i++) {
-                            var txType = $('#txGridType-' + i).text();
-                            var txname = $('#txGridName-' + i).text();
-                            if (txType == '' || txname == '') {
-                                $.notify("TaxType Or TaxName cannot be null", "error");
-                                return;
+            else {
+                if ($('#POFor').val() != 'For Purchase(Sample)') {
+                    if ($('#GSTRegistered').val() == "Y" || $('#OrderType').val() != "Domestic") {
+                        if (taxGrid >= 1) {
+                            for (var i = 1; i <= txRowCount; i++) {
+                                var txType = $('#txGridType-' + i).text();
+                                var txname = $('#txGridName-' + i).text();
+                                if (txType == '' || txname == '') {
+                                    $.notify("TaxType Or TaxName cannot be null", "error");
+                                    return;
+                                }
                             }
                         }
                     }
@@ -2198,12 +2198,14 @@
                         return;
                     }
                     else {
-                        for (var i = 1; i <= txRowCount; i++) {
-                            var txType = $('#txGridType-' + i).text();
-                            var txname = $('#txGridName-' + i).text();
-                            if (txType == '' || txname == '') {
-                                $.notify("TaxType Or TaxName cannot be null", "error");
-                                return;
+                        if ($('#POFor').val() != 'For Purchase(Sample)') {
+                            for (var i = 1; i <= txRowCount; i++) {
+                                var txType = $('#txGridType-' + i).text();
+                                var txname = $('#txGridName-' + i).text();
+                                if (txType == '' || txname == '') {
+                                    $.notify("TaxType Or TaxName cannot be null", "error");
+                                    return;
+                                }
                             }
                         }
                     }
@@ -2238,9 +2240,8 @@
             return errorPartCode.length == 0;
         }
 
-        $('button[type="submit"]').click(function (e) 
-        {
-             
+        $('button[type="submit"]').click(function (e) {
+
             e.preventDefault();
             $('#TypeOfSave').val("NS");
             var poGrid = $('#divPOItemList tr td').length;
@@ -2257,13 +2258,14 @@
                         return false;
                     }
                 }
-
-                if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                    return false;
+                if ($('#POFor').val() != 'For Purchase(Sample)') {
+                    if (!checkPartCodeMusthaveAtLeastOneTax()) {
+                        return false;
+                    }
                 }
             }
 
-           
+
 
             if (poGrid <= 1) {
                 $.notify("PO Grid should at least have one item", "error");
@@ -2277,85 +2279,90 @@
                 }
             }
             else {
-
-                if ($('#AccountCode').find(':selected').data('gstregister') == "Y" || $('#OrderType').val() != "Domestic") {
-                    if (taxGrid >= 1) {
-                        for (var i = 1; i <= txRowCount; i++) {
-                            var txType = $('#txGridType-' + i).text();
-                            var txname = $('#txGridName-' + i).text();
-                            if (txType == '' || txname == '') {
-                                $.notify("TaxType Or TaxName cannot be null", "error");
+                if ($('#POFor').val() != 'For Purchase(Sample)') {
+                    if ($('#AccountCode').find(':selected').data('gstregister') == "Y" || $('#OrderType').val() != "Domestic") {
+                        if (taxGrid >= 1) {
+                            for (var i = 1; i <= txRowCount; i++) {
+                                var txType = $('#txGridType-' + i).text();
+                                var txname = $('#txGridName-' + i).text();
+                                if (txType == '' || txname == '') {
+                                    $.notify("TaxType Or TaxName cannot be null", "error");
+                                    return;
+                                }
+                            }
+                        } else if ($('#ItemsForDepartment').val() == "3") {
+                            if ($('#ResposibleEmplforQC').val() == '') {
+                                $.notify("Responsible employee for QC is required", "error");
                                 return;
                             }
                         }
-                    } else if ($('#ItemsForDepartment').val() == "3") {
-                        if ($('#ResposibleEmplforQC').val() == '') {
-                            $.notify("Responsible employee for QC is required", "error");
-                            return;
-                        }
+
+
+                        $("form").submit();
                     }
+                    else {
 
-
-                    $("form").submit();
-                }
-                else {
-
-                    // $('#GSTRegistered').val()
-                    if ($('#AccountCode').find(':selected').data('gstregister') == "Y") {
-                        if (taxGrid <= 1) {
-                            $.notify("Tax Grid should at least have one item", "error");
-                            return;
+                        // $('#GSTRegistered').val()
+                        if ($('#AccountCode').find(':selected').data('gstregister') == "Y") {
+                            if (taxGrid <= 1) {
+                                $.notify("Tax Grid should at least have one item", "error");
+                                return;
+                            }
+                        } else if ($('#ItemsForDepartment').val() == "3") {
+                            if ($('#ResposibleEmplforQC').val() == '') {
+                                $.notify("Responsible employee for QC is required", "error");
+                                return;
+                            }
                         }
-                    } else if ($('#ItemsForDepartment').val() == "3") {
-                        if ($('#ResposibleEmplforQC').val() == '') {
-                            $.notify("Responsible employee for QC is required", "error");
-                            return;
-                        }
+
                     }
-                   
                 }
             }
-          
+
             $("form").submit();
 
 
         });
 
-
         $('#submitBTN').click(function () {
-             
-           // alert("inside");
             $('#TypeOfSave').val("NS");
 
             var poGrid = $('#divPOItemList tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
-
-            
-
+            debugger
+            // GST Registered Vendor
             if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
-
-                if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                    return false;
+                if ($('#POFor').val() != 'For Purchase(Sample)') {
+                    if (!checkPartCodeMusthaveAtLeastOneTax()) {
+                        return false;
+                    }
                 }
-                else if (poGrid <= 1) {
+
+                if (poGrid <= 1) {
                     $.notify("PO Grid should at least have one item", "error");
                     return;
                 }
-                else if (taxGrid <= 1) {
-                    $.notify("Tax Grid should at least have one item", "error");
-                    return;
-                }
-                else if ($('#ItemsForDepartment').val() == "3") {
-                    if ($('#ResposibleEmplforQC').val() == '') {
-                        $.notify("Responsible employee for QC is required", "error");
+
+                if ($('#POFor').val() != 'For Purchase(Sample)') {
+                    if (taxGrid <= 1) {
+                        $.notify("Tax Grid should at least have one item", "error");
                         return;
                     }
                 }
-                else if ($('#AccountCode').val() == '0') {
-                    $.notify("Vendor Name is required", "error");
+
+                if ($('#ItemsForDepartment').val() == "3" && $('#ResposibleEmplforQC').val() == '') {
+                    $.notify("Responsible employee for QC is required", "error");
+                    return;
                 }
-                else {
+
+                if ($('#AccountCode').val() == '0') {
+                    $.notify("Vendor Name is required", "error");
+                    return;
+                }
+                debugger
+                // Extra validation for "not sample"
+                if ($('#POFor').val() != 'For Purchase(Sample)') {
                     for (var i = 1; i <= txRowCount; i++) {
                         var txType = $('#txGridType-' + i).text();
                         var txname = $('#txGridName-' + i).text();
@@ -2363,32 +2370,31 @@
                             $.notify("TaxType Or TaxName cannot be null", "error");
                             return;
                         }
-                        else {
-                           // print("1");
-                            $("form").submit();
-                        }
                     }
-
                 }
+
+                // Everything valid, submit
+                $("form").submit();
             }
+            // Non-GST Registered Vendor
             else {
                 if (poGrid <= 1) {
                     $.notify("PO Grid should at least have one item", "error");
                     return;
                 }
-                else if ($('#AccountCode').val() == '0') {
+
+                if ($('#AccountCode').val() == '0') {
                     $.notify("Vendor Name is required", "error");
+                    return;
                 }
-                else if ($('#ItemsForDepartment').val() == "3") {
-                    if ($('#ResposibleEmplforQC').val() == '') {
-                        $.notify("Responsible employee for QC is required", "error");
-                        return;
-                    }
+
+                if ($('#ItemsForDepartment').val() == "3" && $('#ResposibleEmplforQC').val() == '') {
+                    $.notify("Responsible employee for QC is required", "error");
+                    return;
                 }
-                else {
-                   // print("2");
-                    $("form").submit();
-                }
+
+                // Everything valid, submit
+                $("form").submit();
             }
         });
 
@@ -2408,9 +2414,10 @@
             // }
 
             if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
-
-                if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                    return false;
+                if ($('#POFor').val() != 'For Purchase(Sample)') {
+                    if (!checkPartCodeMusthaveAtLeastOneTax()) {
+                        return false;
+                    }
                 }
                 else if (poGrid <= 1) {
                     $.notify("PO Grid should at least have one item", "error");
@@ -2430,18 +2437,19 @@
                     $.notify("Vendor Name is required", "error");
                 }
                 else {
-                    for (var i = 1; i <= txRowCount; i++) {
-                        var txType = $('#txGridType-' + i).text();
-                        var txname = $('#txGridName-' + i).text();
-                        if (txType == '' || txname == '') {
-                            $.notify("TaxType Or TaxName cannot be null", "error");
-                            return;
-                        }
-                        else {
-                            $("form").submit();
+                    if ($('#POFor').val() != 'For Purchase(Sample)') {
+                        for (var i = 1; i <= txRowCount; i++) {
+                            var txType = $('#txGridType-' + i).text();
+                            var txname = $('#txGridName-' + i).text();
+                            if (txType == '' || txname == '') {
+                                $.notify("TaxType Or TaxName cannot be null", "error");
+                                return;
+                            }
+                            else {
+                                $("form").submit();
+                            }
                         }
                     }
-
                 }
             }
             else {
@@ -2472,7 +2480,7 @@
             let IsError = 0;
 
             $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
-             
+
             if ($('#PartCode').prop('selectedIndex') == 0) {
                 AddErrorCls('PartCode');
                 IsError = 1;
@@ -2674,7 +2682,7 @@
                 url: '@Url.Action("EditItemRow")',
                 type: "POST",
                 data: { PartCode: PartCode, SeqNo: SeqNo },
-                async:false,
+                async: false,
                 success: await function (data, status, xhr) {
 
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -2749,7 +2757,7 @@
                 url: "@Url.Action("ClearTaxGrid")",
                 data: { YearCode: $('#YearCode').val() },
                 dataType: "json",
-                async:false,
+                async: false,
                 success: function (result, status, error) {
                     $('#divTaxGrid').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
@@ -2945,7 +2953,7 @@
                 type: "POST",
                 url: '@Url.Action("AddSchedule")',
                 data: Data,
-                async:false,
+                async: false,
                 success: function (resp, status, error) {
                     if (resp) {
                         $('#POGrid').html(resp);

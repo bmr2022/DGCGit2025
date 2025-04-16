@@ -197,6 +197,7 @@
                                                 <th style="color:yellow">Issue Qty*</th>
                                                 <th style="color:yellow">Batch No*</th>
                                                 <th style="color:yellow">Unique Batch No*</th>
+                                                <th>Work Center</th>
                                                 <th>Unit</th>
                                                 <th>Lot Stock</th>
                                                 <th>Total Stock</th>
@@ -205,7 +206,7 @@
                                                 <th>Std Packing</th>
                                                 <th>Rate</th>
                                                 <th>Remark</th>
-                                                <th>Work Center</th>
+                                                
                                                 <th>Alt Part Code</th>
                                                 <th>Alt Item Name</th>
                                                 <th>Original Part Code</th>
@@ -265,6 +266,7 @@
                                             <th>Batch No</th>
                                             <th>Unique Batch No</th>
                                             <th>Issue Qty</th>
+                                            <th>Work Center</th>
                                             <th>Unit</th>
                                             <th>Lot Stock</th>
                                             <th>Total Stock</th>
@@ -273,8 +275,9 @@
                                             <th>Std Packing</th>
                                             <th>Rate</th>
                                             <th>Remark</th>
-                                            <th>Work Center</th>
+                                            
                                             <th>Alt Item Code</th>
+                                            <th>Original Item Code</th>
                                             <th>Cost Center</th>
                                             <th>Item Size</th>
                                             <th>Item Color</th>
@@ -453,6 +456,10 @@
                 return false;
             }
             else if ($('#RecByEmpCode').prop('selectedIndex') <= 0) {
+                $.notify('Rec By Emp Code is required', "error");
+                return false;
+            }
+            else if ($('#IssuedByDepCode').prop('selectedIndex') <= 0) {
                 $.notify('Rec By Emp Code is required', "error");
                 return false;
             }
@@ -1271,6 +1278,12 @@
             var BatchNoArray = [];
 
             for (let i = 1; i <= rowCount; i++) {
+                if ($('#MainGridWorkCenter-' + i).val() == '') {
+                    $('#gridWorkcenterAdd-' + i).css('background-color', 'red');
+                }
+            }
+
+            for (let i = 1; i <= rowCount; i++) {
 
                 ItemData.push({
                     // "ReqNo1": $('#MainGridReqNo-' + i).val(),
@@ -1491,6 +1504,7 @@
                         }
                         for (var i = 1; i <= rowCounter; i++) {
                             FillLotandTotalStock(i);
+                            console.log("lot stock"+$('#MainGridLotStock-'+i).val())
                             fillProjectNo(i);
                             $('#MainGridBatchNo-' + i).val($('#MainGridBatchNoInput-' + i).val());
                             $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
@@ -1580,7 +1594,7 @@
             $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
-                data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).val() },
+                data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim() },
                 async: false,
                 success: function (data) {
 
@@ -1723,7 +1737,7 @@
                         fillBatchUnique(i, "unique&batch");
                     }
                     for (var i = 1; i <= rowCounter; i++) {
-                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo-' + i).val());
+                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNoInput-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
                         $('#MainGridBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
@@ -1731,7 +1745,7 @@
                     for (var i = 1; i <= rowCounter; i++) {
                         FillLotandTotalStock(i);
                         fillProjectNo(i);
-                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo-' + i).val());
+                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNoInput-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
                         $('#MainGridBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
@@ -1781,7 +1795,7 @@
                         var html = '';
                         $('#divIssueWOBOMGrid').empty();
                         var i = 1;
-                        html += '<tr id="itemGrid-' + i + '"><td><a class="table-link link-danger" onclick="DeleteFromMemoryGrid(' + i + ')"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i></span></a></td><td><input id="MainGridItemname-' + i + '" value=' + JSON.stringify(obj[0].ItemName) + ' readonly ></td><td><input id="MainGridPartCode-' + i + '" value=' + obj[0].PartCode + ' readonly ></td><td><input value=' + obj[0].ReqQty + '  id="MainGridReqQty-' + i + '"></td><td><input value=' + JSON.stringify(obj[0].StoreName) + ' id="MainGridStorename-' + i + '"></td><td><input value="' + obj[0].IssueQty + '"  id="MainGridIssueQty-' + i + '" /></td><td><select onchange="BatchNumberChange(' + i + ')" id="MainGridBatchNo-' + i + '"></select></td><td><select onchange="UniqBatchNumberChange(' + i + ')" id="MainGridUniqueBatchNo-' + i + '"></select></td><td><input value=' + obj[0].Unit + ' id="MainGridUnit-' + i + '" /></td><td><input  value=' + obj[0].LotStock + ' id="MainGridLotStock-' + i + '" /></td><td><input value="' + obj[0].TotalStock + '" id="MainGridTotalStock-' + i + '" /></td><td><input value=' + obj[0].AltQty + ' id="MainGridAltQty-' + i + '" /></td><td><input id="MainGridAltUnit-' + i + '"  value=' + obj[0].AltUnit + ' ></td><td><input id="MainGridRate-' + i + '" value=' + obj[0].Rate + ' readonly ></td><td><input id="MainGridRemark-' + i + '" readonly value=' + obj[0].Remark + '  ></td><td><input id="MainGridWorkCenter-' + i + '" readonly value=' + obj[0].WorkCenter + '  ></td><td><input id="MainGridAltItemCode-' + i + '" value=' + obj[0].AltItemCode + ' readonly ></td><td><input id="MainGridCostCenter-' + i + '" value=' + obj[0].CostCenterId + ' readonly ></td><td><input id="MainGridItemSize-' + i + '" readonly value=' + obj[0].ItemSize + '  ></td><td><input id="MainGridItemColor-' + i + '" value=' + obj[0].ItemColor + ' readonly ></td><td><input  id="MainGridProjectNo-' + i + '" value=' + obj[0].ProjectNo + '></td><td><input value=' + obj[0].ProjectYearCode + ' readonly id="MainGridProjectYearCode-' + i + '" ></td><td><input type="hidden" readonly id="MainGridItemCode-' + i + '" value=' + obj[0].ItemCode + ' ></td><td><input type="hidden" id="MainGridStoreId-' + i + '" value=' + obj[0].StoreId + ' ></td><td><input type="hidden"  id="MainGridWCId-' + i + '" value=' + obj[0].WCId + '></td></tr>';
+                        html += '<tr id="itemGrid-' + i + '"><td><a class="table-link link-danger" onclick="DeleteFromMemoryGrid(' + i + ')"><span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i></span></a></td><td><input id="MainGridItemname-' + i + '" value=' + JSON.stringify(obj[0].ItemName) + ' readonly ></td><td><input id="MainGridPartCode-' + i + '" value=' + obj[0].PartCode + ' readonly ></td><td><input value=' + obj[0].ReqQty + '  id="MainGridReqQty-' + i + '"></td><td><input value=' + JSON.stringify(obj[0].StoreName) + ' id="MainGridStorename-' + i + '"></td><td><input value="' + obj[0].IssueQty + '"  id="MainGridIssueQty-' + i + '" /></td><td><select onchange="BatchNumberChange(' + i + ')" id="MainGridBatchNo-' + i + '"></select></td><td><select onchange="UniqBatchNumberChange(' + i + ')" id="MainGridUniqueBatchNo-' + i + '"></select></td><td><input id="MainGridWorkCenter-' + i + '" readonly value=' + obj[0].WorkCenter + '  ></td><td><input value=' + obj[0].Unit + ' id="MainGridUnit-' + i + '" /></td><td><input  value=' + obj[0].LotStock + ' id="MainGridLotStock-' + i + '" /></td><td><input value="' + obj[0].TotalStock + '" id="MainGridTotalStock-' + i + '" /></td><td><input value=' + obj[0].AltQty + ' id="MainGridAltQty-' + i + '" /></td><td><input id="MainGridAltUnit-' + i + '"  value=' + obj[0].AltUnit + ' ></td>             <td><input readonly id="MainGridStdPacking-' + i + '" type="text" style="width:50px;" value="'+obj[0].StdPacking+'" /></td><td> <input id="MainGridRate-' + i + '" value = ' + obj[0].Rate + ' readonly > </td><td><input id="MainGridRemark-' + i + '" readonly value=' + obj[0].Remark + '  ></td > <td><input id="MainGridAltItemCode-' + i + '" value = ' + obj[0].AltItemCode + ' readonly > </td><td><input id="MainGridCostCenter-' + i + '" value=' + obj[0].CostCenterId + ' readonly ></td > <td><input id="MainGridItemSize-' + i + '" readonly value=' + obj[0].ItemSize + ' > </td><td><input id="MainGridItemColor-' + i + '" value=' + obj[0].ItemColor + ' readonly ></td > <td><input  id="MainGridProjectNo-' + i + '" value = ' + obj[0].ProjectNo + ' > </td><td><input value=' + obj[0].ProjectYearCode + ' readonly id="MainGridProjectYearCode-' + i + '" ></td > <td><input type="hidden" readonly id="MainGridItemCode-' + i + '" value=' + obj[0].ItemCode + ' > </td><td><input type="hidden" id="MainGridStoreId-' + i + '" value=' + obj[0].StoreId + ' ></td > <td><input type="hidden"  id = "MainGridWCId-' + i + '" value=' + obj[0].WCId + ' > </td></tr > ';
 
                         $('#divIssueWOBOMGrid').append(html);
                         fillBatchNO();
