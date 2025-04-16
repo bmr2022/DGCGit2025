@@ -26,7 +26,7 @@ else
             @*<td><input readonly id="MainGridReqNo-@Cntr" type="text" value="@item.ReqNo" /></td>
     <td><input readonly id="MainGridReqDate-@Cntr" type="text" value="@item.ReqDate" /></td>
     <td><input readonly id="MainGridReqYearCode-@Cntr" type="text" value="@item.ReqyearCode" /></td>*@
-            <td><input value="@item.ReqDepartmentID" id="MainReqDeptID" type="hidden" /><input value="@item.ReqDept" id="MainReqDept" type="hidden" /><input readonly class="itemname" id="MainGridItemname-@Cntr" type="text" style="width:250px;" value="@item.ItemName" /><input value="@item.ReqNo1" id="MainREQNo" type="hidden" /><input value="@item.ReqyearCode1" id="MainREQYearCode" type="hidden" /><input value="@item.ReqDate1" id="MainREQDate" type="hidden" /><input type="hidden" id="MainGridItemCode-@Cntr" value="@item.ItemCode" /><input type="hidden" id="MainGridStockable-@Cntr" /></td>
+            <td><input value="@item.ReqDepartmentID" id="MainReqDeptID" type="hidden" /><input value="@item.ReqDept" id="MainReqDept" type="hidden" /><input readonly class="itemname" id="MainGridItemname-@Cntr" type="text" style="width:225px;" value="@item.ItemName" /><input value="@item.ReqNo1" id="MainREQNo" type="hidden" /><input value="@item.ReqyearCode1" id="MainREQYearCode" type="hidden" /><input value="@item.ReqDate1" id="MainREQDate" type="hidden" /><input type="hidden" id="MainGridItemCode-@Cntr" value="@item.ItemCode" /><input type="hidden" id="MainGridStockable-@Cntr" /></td>
             <td><input readonly id="MainGridPartCode-@Cntr" type="text" style="width:80px;" value="@item.PartCode" /><input type="hidden" id="IssuedDateMemory" value="@item.IssuedDate" /></td>
             <td><input id="MainGridReqQty-@Cntr" type="text" value="@item.ReqQty.ToString("F6")" style="width:90px;background-color:lightgoldenrodyellow" readonly /><input type="hidden" id="MachineCodeMemory" value="@item.MachineCodee" /></td>
             <td>
@@ -48,6 +48,8 @@ else
 
                 </select>
             </td>
+            <td><input readonly id="MainGridWorkCenter-@Cntr" type="text" value="@item.WorkCenter" style="width:90px" /><input id="MainGridWCId-@Cntr" type="hidden" value="@item.WCId" /></td>
+
             <td><input readonly id="MainGridUnit-@Cntr" type="text" style="width:35px;" value="@item.Unit" /></td>
             <td><input id="MainGridLotStock-@Cntr" type="text" style="width:50px;" value="@item.LotStock" readonly /></td>
             <td><input id="MainGridTotalStock-@Cntr" type="text" style="width:90px;" value="@item.TotalStock" readonly /></td>
@@ -56,7 +58,6 @@ else
             <td><input readonly id="MainGridStdPacking-@Cntr" type="text" style="width:50px;" value="@item.StdPacking" /></td>
             <td><input id="MainGridRate-@Cntr" type="text" style="width:50px;" disabled value="@item.Rate" /></td>
             <td><input id="MainGridRemark-@Cntr" type="text" value="@item.Remark" /></td>
-            <td><input readonly id="MainGridWorkCenter-@Cntr" type="text" value="@item.WorkCenter" /><input id="MainGridWCId-@Cntr" type="hidden" value="@item.WCId" /></td>
             @*<td><input readonly id="MainGridAltItemCode-@Cntr" type="text" value="@item.AltItemCode" /></td>*@
             <td><select id="MainGridAltPartCode-@Cntr" onchange="AltPartCodeChange(this.id,@Cntr)"><option value="0" selected disabled>-Select-</option></select></td>
             <td><select id="MainGridAltItemName-@Cntr" onchange="AltItemNameChange(this.id,@Cntr)"><option value="0" selected disabled>-Select-</option></select></td>

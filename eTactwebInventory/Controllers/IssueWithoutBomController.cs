@@ -648,6 +648,7 @@ namespace eTactWeb.Controllers
                     }
                 }
             }
+            ActualEntryBy= Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
             var Result = await _IIssueWOBOM.DeleteByID(ID, YC,ActualEntryBy,EntryByMachine);
 
