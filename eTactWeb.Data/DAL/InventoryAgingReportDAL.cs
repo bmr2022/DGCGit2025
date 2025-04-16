@@ -127,10 +127,11 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-
+                    var fromDt = CommonFunc.ParseFormattedDate(fromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(toDate);
                     command.Parameters.AddWithValue("@flag", ReportType);
-                    command.Parameters.AddWithValue("@Fromdate", fromDate);
-                    command.Parameters.AddWithValue("@ToDate", toDate);
+                    command.Parameters.AddWithValue("@Fromdate", fromDt);
+                    command.Parameters.AddWithValue("@ToDate", toDt);
                     command.Parameters.AddWithValue("@CurrentDate", CurrentDate);
                     command.Parameters.AddWithValue("@Storeid", Storeid);
                     command.Parameters.AddWithValue("@WCID", WorkCenterid);

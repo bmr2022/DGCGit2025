@@ -260,12 +260,12 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                   
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                     oCmd.Parameters.AddWithValue("@Flag", ReportType);
-                    oCmd.Parameters.AddWithValue("@fromdate", fromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@todate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@fromdate", fromDt);
+                    oCmd.Parameters.AddWithValue("@todate", toDt);
                     oCmd.Parameters.AddWithValue("@FromWorkcenterName", FromWorkCenter);
                     oCmd.Parameters.AddWithValue("@ToWorkcenterName", ToWorkCenter);
                     oCmd.Parameters.AddWithValue("@IssuedToStore", Tostore);

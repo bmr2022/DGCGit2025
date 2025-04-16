@@ -316,15 +316,16 @@ public class PurchaseScheduleDAL
         try
         {
             var SqlParams = new List<dynamic>();
-            DateTime fromDt = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            DateTime toDt = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+            var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
+
             SqlParams.Add(new SqlParameter("@Flag", "SEARCH"));
             SqlParams.Add(new SqlParameter("@vendorName", model.VendorName));
             SqlParams.Add(new SqlParameter("@PONo", model.PONO));
             SqlParams.Add(new SqlParameter("@ScheduleNo", model.SchNo));
             SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
-            SqlParams.Add(new SqlParameter("@StartDate", fromDt.ToString("yyyy/MM/dd")));
-            SqlParams.Add(new SqlParameter("@EndDate", toDt.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@StartDate", fromDt));
+            SqlParams.Add(new SqlParameter("@EndDate", toDt));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseSchedule", SqlParams);
         }
@@ -342,15 +343,15 @@ public class PurchaseScheduleDAL
         try
         {
             var SqlParams = new List<dynamic>();
-            DateTime fromDt = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            DateTime toDt = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+            var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
             SqlParams.Add(new SqlParameter("@Flag", "DETAILSEARCH"));
             SqlParams.Add(new SqlParameter("@vendorName", model.VendorName));
             SqlParams.Add(new SqlParameter("@PONo", model.PONO));
             SqlParams.Add(new SqlParameter("@ScheduleNo", model.SchNo));
             SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
-            SqlParams.Add(new SqlParameter("@StartDate", fromDt.ToString("yyyy/MM/dd")));
-            SqlParams.Add(new SqlParameter("@EndDate", toDt.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@StartDate", fromDt));
+            SqlParams.Add(new SqlParameter("@EndDate", toDt));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseSchedule", SqlParams);
         }
@@ -628,24 +629,25 @@ public class PurchaseScheduleDAL
         try
         {
             var SqlParams = new List<dynamic>();
-            DateTime entDt = new DateTime();
-            DateTime poDt = new DateTime();
-            DateTime poAmdDt = new DateTime();
-            DateTime schDt = new DateTime();
-            DateTime schAmdDt = new DateTime();
-            DateTime schEffFromDt = new DateTime();
-            DateTime schEffToDate = new DateTime();
-            DateTime AppDate = new DateTime();
-            DateTime AmmAppDate = new DateTime();
+            //DateTime entDt = new DateTime();
+            //DateTime poDt = new DateTime();
+            //DateTime poAmdDt = new DateTime();
+            //DateTime schDt = new DateTime();
+            //DateTime schAmdDt = new DateTime();
+            //DateTime schEffFromDt = new DateTime();
+            //DateTime schEffToDate = new DateTime();
+            //DateTime AppDate = new DateTime();
+            //DateTime AmmAppDate = new DateTime();
 
-            entDt = ParseDate(model.EntryDate);
-            poDt = ParseDate(model.PODate);
-            poAmdDt = ParseDate(model.POAmendDate);
-            schDt = ParseDate(model.ScheduleDate);
-            schAmdDt = ParseDate(model.SchAmendmentDate);
-            schEffFromDt = ParseDate(model.SchEffFromDate);
-            schEffToDate = ParseDate(model.SchEffTillDate);
-
+           var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+           var poDt = CommonFunc.ParseFormattedDate(model.PODate);
+           var poAmdDt = CommonFunc.ParseFormattedDate(model.POAmendDate);
+           var schDt = CommonFunc.ParseFormattedDate(model.ScheduleDate);
+           var schAmdDt = CommonFunc.ParseFormattedDate(model.SchAmendmentDate);
+           var schEffFromDt = CommonFunc.ParseFormattedDate(model.SchEffFromDate);
+           var schEffToDate = CommonFunc.ParseFormattedDate(model.SchEffTillDate);
+            var AmmAppDate = "";
+            var AppDate = "";
             if (model.Mode == "UPDATE")
             {
                 SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
@@ -687,8 +689,8 @@ public class PurchaseScheduleDAL
             SqlParams.Add(new SqlParameter("@CC", model.CC));
             if (model.Mode == "PSA")
             {
-                AmmAppDate = ParseDate(model.AmmApprovedDate);
-                AppDate = ParseDate(model.ApprovedDate);
+                AmmAppDate = CommonFunc.ParseFormattedDate(model.AmmApprovedDate);
+                AppDate = CommonFunc.ParseFormattedDate(model.ApprovedDate);
                 SqlParams.Add(new SqlParameter("@SchAmmAppDate", AppDate == default ? string.Empty : AppDate));
                 SqlParams.Add(new SqlParameter("@SchApprovalDate", AmmAppDate == default ? string.Empty : AmmAppDate));
 

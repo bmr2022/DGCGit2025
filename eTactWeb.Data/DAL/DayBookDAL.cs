@@ -81,9 +81,12 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
 
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                     command.Parameters.AddWithValue("@flag", "DAYBOOK");
-                    command.Parameters.Add(new SqlParameter("@Date", ParseFormattedDate(FromDate)));
-                    command.Parameters.Add(new SqlParameter("@ToDate", ParseFormattedDate(ToDate)));
+                    command.Parameters.Add(new SqlParameter("@Date", fromDt));
+                    command.Parameters.Add(new SqlParameter("@ToDate", toDt));
                     command.Parameters.AddWithValue("@LedgerHead", Ledger);
                     command.Parameters.AddWithValue("@amtcr", CrAmt);
                     command.Parameters.AddWithValue("@amtdr", DrAmt);

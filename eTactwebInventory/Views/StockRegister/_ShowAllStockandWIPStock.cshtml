@@ -87,20 +87,22 @@
             @if (Model.PageNumber > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("GetStockRegisterData", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Pre</a>
+                    <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber - 1)); return false;">Previous</a>
                 </li>
             }
 
             @if (Model.PageNumber > 3)
             {
-                <li class="page-item"><a class="page-link" href="@Url.Action("GetStockRegisterData", new { pageNumber = 1, pageSize = Model.PageSize })">1</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="loadPage(1); return false;">1</a>
+                </li>
                 <li class="page-item disabled"><a class="page-link">...</a></li>
             }
 
             @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
             {
                 <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("GetStockRegisterData", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+                    <a class="page-link" href="#" onclick="loadPage(@i); return false;">@i</a>
                 </li>
             }
 
@@ -108,44 +110,20 @@
             {
                 <li class="page-item disabled"><a class="page-link">...</a></li>
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("GetStockRegisterData", new { pageNumber = totalPages, pageSize = Model.PageSize })">@totalPages</a>
+                    <a class="page-link" href="#" onclick="loadPage(@totalPages); return false;">@totalPages</a>
                 </li>
             }
 
             @if (Model.PageNumber < totalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("GetStockRegisterData", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+                    <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber + 1)); return false;">Next</a>
                 </li>
             }
         </ul>
     }
 </div>
-<script>
-    $(document).ready(function () {
-        debugger
-        $('.pagination a').each(function () {
-            let href = $(this).attr('href');
-            if (href) {
-                const fromDate = $('#FromDate').val();
-                const toDate = $('#ToDate').val();
-                const reportType = $('#ReportType').val();
 
-                const separator = href.indexOf('?') !== -1 ? '&' : '?';
-                const updatedHref = `${href}${separator}fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&reportType=${encodeURIComponent(reportType)}`;
-                $(this).attr('href', updatedHref);
-            }
-        });
-        $(document).on('click', '.pagination a', function (e) {
-            e.preventDefault();
-            var url = $(this).attr('href');
-
-            $.get(url, function (data) {
-                $('#divStockMainRegister').html(data);
-            });
-        });
-    });
-</script>
 <style>
 
     .sort-icon {

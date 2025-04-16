@@ -1277,11 +1277,7 @@
             var ItemData = [];
             var BatchNoArray = [];
 
-            for (let i = 1; i <= rowCount; i++) {
-                if ($('#MainGridWorkCenter-' + i).val() == '') {
-                    $('#gridWorkcenterAdd-' + i).css('background-color', 'red');
-                }
-            }
+            
 
             for (let i = 1; i <= rowCount; i++) {
 
@@ -1344,12 +1340,25 @@
                         $.notify('Lot Stock Or Total Stock cannot be zero or less than Req Qty', "info");
                     }
                     else {
+                        for (let i = 1; i <= rowCount; i++) {
+                            if ($('#MainGridWorkCenter-' + i).val() == '' || $('#MainGridWorkCenter-' + i).val() == 'null' || $('#MainGridWorkCenter-' + i).val() == 0) {
+                                $('#gridWorkcenterAdd-' + i).css('background-color', 'red');
+                                $.notify('workcenter not available for' + $('#MainGridPartCode-' + i).val(), "info");
+                            }
+                        }
                         $('#divIssueWOBOMGridAdd').html(data);
                         $('#divIssueWOBOMGrid').empty();
                         $.notify("Item Added to Grid", "success");
                         for (let i = 1; i <= rowCount; i++) {
+
+
+
                             $('#MainGridBatchNo-' + i + ' option[value="' + BatchNoArray[i - 1].BatchNo + '"]').remove();
                             $('#MainGridUniqueBatchNo-' + i + ' option[value="' + BatchNoArray[i - 1].UniqueBatchNo + '"]').remove();
+
+                           
+                                
+                            
 
                         }
                     }

@@ -60,8 +60,10 @@ namespace eTactWeb.Data.DAL
                     DateTime currentDate = DateTime.Today;
                     DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                     command.Parameters.AddWithValue("@flag", "VoucherDetail");
-                    command.Parameters.Add(new SqlParameter("fromDate", ParseFormattedDate(FromDate)));
-                    command.Parameters.Add(new SqlParameter("@ToDate", ParseFormattedDate(ToDate)));
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+                    command.Parameters.Add(new SqlParameter("fromDate", fromDt));
+                    command.Parameters.Add(new SqlParameter("@ToDate", toDt));
                     command.Parameters.AddWithValue("@ACCOUNTCODE", AccountCode);
                     command.Parameters.AddWithValue("@ReportType", ReportType);
 

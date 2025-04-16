@@ -41,16 +41,15 @@ namespace eTactWeb.Data.DAL
                 //oCmd.Parameters.AddWithValue("@fromDate", fromDt.ToString("yyyy/MM/dd"));
                 //oCmd.Parameters.AddWithValue("@todate", toDt.ToString("yyyy/MM/dd"));
 
-                DateTime fromDt = DateTime.ParseExact(FromDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
-                DateTime toDt = DateTime.ParseExact(ToDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
-
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
 
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillItemName"));
                 //SqlParams.Add(new SqlParameter("@Fromdate", FromDate));
                 //SqlParams.Add(new SqlParameter("@todate", ToDate));
-                SqlParams.Add(new SqlParameter("@Fromdate", fromDt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@todate", toDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@Fromdate", fromDt));
+                SqlParams.Add(new SqlParameter("@todate", toDt));
                 
                 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPreportIndet", SqlParams);

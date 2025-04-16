@@ -248,6 +248,9 @@
                         </button>
 
                     </h2>
+                    @* <button class="deletenullbatch btn btn-sm btn-outline-danger" onclick="DeleteAllFromMemoryGrid()" style="width:150px;" type="button">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>Delete
+                    </button> *@
 
                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
@@ -572,7 +575,20 @@
             if ('@Model.Mode' != "U" && '@Model.Mode' != "V") {
                 GetNewEntry();
                 fillIssueThrGridFromMemoryCache();
+
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+                var totalrows = $('#divIssueThrBOMGrid tr').length;
+
+                for (let i = 1; i <= totalrows; i++) {
+                    var batchVal = $('#MainGridBatchNo-' + i).val();
+                    var issueqty = $('#MainGridIssueQty-' + i).val();
+
+                    if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty<=0) {
+                        // Change background color of the whole row
+                        $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                    }
+                }
             }
             fillFGDataList();
             //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -1376,6 +1392,61 @@
             });
         }
 
+        function DeleteAllFromMemoryGrid() {
+
+            $.ajax({
+                url: '@Url.Action("DeleteRowsWithNullBatchNo")',
+                type: "POST",
+                
+                async: false,
+                success: function (data, status, xhr) {
+
+                    $('#divIssueThrBOMGrid').html(data);
+                    $.notify("Item deleted from Grid", "info");
+                    fillBatchNO();
+
+
+                    var rowCounter = $('#divIssueThrBOMGrid tr').length;
+                    for (var i = 1; i <= rowCounter; i++) {
+                        fillBatchUnique(i, "unique&batch");
+                    }
+                    for (var i = 1; i <= rowCounter; i++) {
+                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                    }
+                    for (var i = 1; i <= rowCounter; i++) {
+                        FillLotandTotalStock(i);
+                        fillProjectNo(i);
+                        $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                        $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                        $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                        $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                        $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                        var batchVal = $('#MainGridBatchNo-' + i).val();
+                        var issueqty = $('#MainGridIssueQty-' + i).val();
+
+                        if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0) {
+                            // Change background color of the whole row
+                            $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                        }
+                    }
+                },
+                error: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
+
+
         function DeleteFromMemoryGrid(SeqNo) {
 
             $.ajax({
@@ -1409,6 +1480,14 @@
                         $('#MainGridBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                        var batchVal = $('#MainGridBatchNo-' + i).val();
+                        var issueqty = $('#MainGridIssueQty-' + i).val();
+
+                        if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0) {
+                            // Change background color of the whole row
+                            $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                        }
                     }
                 },
                 error: function (response, status, xhr) {

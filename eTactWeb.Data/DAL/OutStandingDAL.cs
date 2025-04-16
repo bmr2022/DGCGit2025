@@ -86,6 +86,7 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+                var tillDt = CommonFunc.ParseFormattedDate(TillDate);
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand command = new SqlCommand("AccSpLedgerOutstanding", connection)
@@ -95,7 +96,7 @@ namespace eTactWeb.Data.DAL
 
                     command.Parameters.AddWithValue("@Flag", "Outstanding");
                     command.Parameters.AddWithValue("@outstandingType", outstandingType);
-                    command.Parameters.AddWithValue("@TillDate", ParseFormattedDate(TillDate));
+                    command.Parameters.AddWithValue("@TillDate", tillDt);
                     command.Parameters.AddWithValue("@Groupname", GroupName);
                     command.Parameters.AddWithValue("@AccountNamwList", AccountNamwList);
                     command.Parameters.AddWithValue("@ShowOnlyApprovedBill", ShowOnlyApprovedBill);
