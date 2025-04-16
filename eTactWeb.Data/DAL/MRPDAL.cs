@@ -147,17 +147,17 @@ namespace eTactWeb.Data.DAL
             {
 
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime MRPDt = new DateTime();
-                DateTime EffDt = new DateTime();
-                DateTime MrpRevDt = new DateTime();
-                DateTime MRPfirstDt = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime MRPDt = new DateTime();
+                //DateTime EffDt = new DateTime();
+                //DateTime MrpRevDt = new DateTime();
+                //DateTime MRPfirstDt = new DateTime();
 
-                entDt = ParseDate(model.Entry_Date);
-                MRPDt = ParseDate(model.MRPDate);
-                EffDt = ParseDate(model.EffectiveFromDate);
-                MrpRevDt = ParseDate(model.MRPREvDate);
-                MRPfirstDt = ParseDate(model.MrpFirstDate);
+                var entDt = CommonFunc.ParseFormattedDate(model.Entry_Date);
+                var MRPDt = CommonFunc.ParseFormattedDate(model.MRPDate);
+                var EffDt = CommonFunc.ParseFormattedDate(model.EffectiveFromDate);
+                var MrpRevDt = CommonFunc.ParseFormattedDate(model.MRPREvDate);
+                var MRPfirstDt = CommonFunc.ParseFormattedDate(model.MrpFirstDate);
 
 
                 if (model.Mode == "U" || model.Mode == "V")
@@ -172,15 +172,15 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@EntryID", model.EntryID));
                 SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
-                SqlParams.Add(new SqlParameter("@EntryDate", entDt == default ? string.Empty : entDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@EntryDate", entDt == default ? string.Empty : entDt));
                 SqlParams.Add(new SqlParameter("@MRPNO", model.MRPNo));
-                SqlParams.Add(new SqlParameter("@MRPDate", MRPDt == default ? string.Empty : MRPDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@MRPDate", MRPDt == default ? string.Empty : MRPDt));
                 SqlParams.Add(new SqlParameter("@MRPRevNo", model.MRPRevNo));
                 SqlParams.Add(new SqlParameter("@CreatedByEmpId", model.CreatedByEmpId));
-                SqlParams.Add(new SqlParameter("@MRPREvDate", MrpRevDt == default ? string.Empty : MrpRevDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@MRPREvDate", MrpRevDt == default ? string.Empty : MrpRevDt));
                 SqlParams.Add(new SqlParameter("@FirstMonth", model.FirstMonth == 0 ? 0 : model.FirstMonth));
-                SqlParams.Add(new SqlParameter("@EffectiveFromDate", EffDt == default ? string.Empty : EffDt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@MrpFirstDate", MRPfirstDt == default ? string.Empty : MRPfirstDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@EffectiveFromDate", EffDt == default ? string.Empty : EffDt));
+                SqlParams.Add(new SqlParameter("@MrpFirstDate", MRPfirstDt == default ? string.Empty : MRPfirstDt));
                 SqlParams.Add(new SqlParameter("@MrpComplete", model.MrpComplete ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@UID", model.UID));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
@@ -274,18 +274,18 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime StDt = new DateTime();
-                StDt = ParseDate(model.FromDate);
-                DateTime EndDt = new DateTime();
-                EndDt = ParseDate(model.ToDate);
+                //DateTime StDt = new DateTime();
+               var StDt = CommonFunc.ParseFormattedDate(model.FromDate);
+                //DateTime EndDt = new DateTime();
+               var EndDt = CommonFunc.ParseFormattedDate(model.ToDate);
                 DateTime now = DateTime.Now;
                 DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@MRPNo", model.MRPNo));
-                SqlParams.Add(new SqlParameter("@FromDate", StDt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@ToDate", EndDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@FromDate", StDt));
+                SqlParams.Add(new SqlParameter("@ToDate", EndDt));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRP", SqlParams);
             }

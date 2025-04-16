@@ -62,9 +62,12 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
 
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                     // command.Parameters.AddWithValue("@flag", "GROUPSUMMARYFORM");
-                    command.Parameters.Add(new SqlParameter("@FromDate", ParseFormattedDate(FromDate)));
-                    command.Parameters.Add(new SqlParameter("@ToDate", ParseFormattedDate(ToDate)));
+                    command.Parameters.Add(new SqlParameter("@FromDate", fromDt));
+                    command.Parameters.Add(new SqlParameter("@ToDate", toDt));
                     command.Parameters.AddWithValue("@GroupCode", GroupCode);
                     command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
                     command.Parameters.AddWithValue("@FromFormName", "GROUPSUMMARYFORM");

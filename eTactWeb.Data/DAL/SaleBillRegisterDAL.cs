@@ -31,7 +31,7 @@ namespace eTactWeb.Data.DAL
         }
         //3
         public async Task<SaleBillRegisterModel> GetSaleBillRegisterData(string ReportType, string FromDate, string ToDate, string docname, string SONo, string Schno, string PartCode, string ItemName, string SaleBillNo, string CustomerName, string HSNNO, string GSTNO)
-  {
+        {
             DataSet? oDataSet = new DataSet();
             var model = new SaleBillRegisterModel();
             try
@@ -56,8 +56,9 @@ namespace eTactWeb.Data.DAL
                             CommandType = CommandType.StoredProcedure
                         };
                     }
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                     oCmd.Parameters.AddWithValue("@Flag", ReportType);
                     //oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
                     //oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));

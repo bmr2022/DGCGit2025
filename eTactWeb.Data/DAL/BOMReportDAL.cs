@@ -194,6 +194,7 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+                var currentDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand command = new SqlCommand("SPBOMReport", connection)
@@ -203,7 +204,7 @@ namespace eTactWeb.Data.DAL
                     if (ReportType == "BOMSTOCK"|| ReportType == "BOMSTOCK(WITH SUB BOM)"|| ReportType == "BOMSTOCK(DIRECT CHILD)")
                     {
                         command.Parameters.AddWithValue("@Flag", ReportType);
-                        command.Parameters.AddWithValue("@CurrentDate", DateTime.Now);
+                        command.Parameters.AddWithValue("@CurrentDate", currentDt);
                         command.Parameters.AddWithValue("@Storeid", Storeid);
                         command.Parameters.AddWithValue("@Yearcode", Yearcode);
                         command.Parameters.AddWithValue("@FGPartcode", FGPartCode ?? string.Empty);
