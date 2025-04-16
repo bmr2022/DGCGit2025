@@ -168,7 +168,7 @@ public class GateInwardDAL
            var entDt = common.CommonFunc.ParseFormattedDate(model.EntryDate);
            var bilDt = common.CommonFunc.ParseFormattedDate(model.BiltyDate);
            var invDt = common.CommonFunc.ParseFormattedDate(model.InvoiceDate);
-          var  updDt = common.CommonFunc.ParseFormattedDate(model.UpdatedDate);
+           var  updDt = common.CommonFunc.ParseFormattedDate(model.UpdatedDate);
 
             //DateTime Invoicedt = DateTime.ParseExact(model.InvoiceDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 

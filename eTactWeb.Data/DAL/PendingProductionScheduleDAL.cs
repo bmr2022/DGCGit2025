@@ -158,12 +158,13 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+               
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "ShowPendingProdSchDetail"));
-                SqlParams.Add(new SqlParameter("@fromDate", fromdt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@ToDate", todt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@fromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
                 SqlParams.Add(new SqlParameter("@storeid", StoreId));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@ProdSchNo", ProdSchNo));

@@ -656,13 +656,13 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
 
-                DateTime entDt = new DateTime();
-                DateTime ChallanDt = new DateTime();
-                DateTime ActualEntryDt = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime ChallanDt = new DateTime();
+                //DateTime ActualEntryDt = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                ChallanDt = ParseDate(model.ChallanDate);
-                ActualEntryDt = ParseDate(model.ActualEntryDate);
+               var entDt = ParseFormattedDate(model.EntryDate);
+               var ChallanDt = ParseFormattedDate(model.ChallanDate);
+               var ActualEntryDt =ParseFormattedDate(model.ActualEntryDate);
 
                 if (model.Mode == "U")
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
@@ -675,7 +675,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EntryTime", model.EntryTime));
                 SqlParams.Add(new SqlParameter("@RGPNRGP", model.RGPNRGP == null ? "" : model.RGPNRGP));
                 SqlParams.Add(new SqlParameter("@ChallanNo", model.ChallanNo));
-                SqlParams.Add(new SqlParameter("@ChallanDate", model.ChallanDate == default ? string.Empty : ChallanDt));
+                SqlParams.Add(new SqlParameter("@ChallanDate", ChallanDt == default ? string.Empty : ChallanDt));
                 SqlParams.Add(new SqlParameter("@ChallanType", model.ChallanType == "-Select-" ? "" : model.ChallanType));
                 SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
                 SqlParams.Add(new SqlParameter("@DeliveryAddress", model.DeliveryAddress));
@@ -694,7 +694,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EmpId", model.EmpId));
                 SqlParams.Add(new SqlParameter("@Uid", model.Uid));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate == default ? string.Empty : ActualEntryDt));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDt == default ? string.Empty : ActualEntryDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredEMpBy));
                 SqlParams.Add(new SqlParameter("@MachinName", model.MachineName));
                 SqlParams.Add(new SqlParameter("@Transporter", model.Transporter));

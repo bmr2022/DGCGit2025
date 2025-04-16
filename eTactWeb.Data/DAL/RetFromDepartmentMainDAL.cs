@@ -182,16 +182,21 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
-                DateTime entryDt = new DateTime();
-                DateTime reqDt = new DateTime();
-                DateTime retDt = new DateTime();
-                DateTime rettDt = new DateTime();
-                DateTime woDt = new DateTime();
+                //DateTime entryDt = new DateTime();
+                //DateTime reqDt = new DateTime();
+                //DateTime retDt = new DateTime();
+                //DateTime rettDt = new DateTime();
+                //DateTime woDt = new DateTime();
 
-                entryDt = ParseDate(model.EntryDate);
-                reqDt = ParseDate(model.ReqDate);
-                retDt = ParseDate(model.ReturnDate);
-                rettDt = ParseDate(model.ReturnnDate);
+                var entryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var reqDt = CommonFunc.ParseFormattedDate(model.ReqDate);
+                var retDt = CommonFunc.ParseFormattedDate(model.ReturnDate);
+                var rettDt = CommonFunc.ParseFormattedDate(model.ReturnnDate);
+                var Update = DateTime.Now.ToString("dd/MM/yyyy");
+                var upDt = CommonFunc.ParseFormattedDate(Update);
+                var AppDate = DateTime.Now.ToString("dd/MM/yyyy");
+                var appDt = CommonFunc.ParseFormattedDate(AppDate);
+                var toDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
                 SqlParams.Add(new SqlParameter("@RetFromDepEntryId", model.EntryId));
                 SqlParams.Add(new SqlParameter("@RetFromDepYearCode", model.YearCode));
@@ -204,10 +209,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", rettDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", 1));
                 SqlParams.Add(new SqlParameter("@LastUpdatedBy", 102));
-                SqlParams.Add(new SqlParameter("@LastUpdatedDate", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@LastUpdatedDate", upDt));
                 SqlParams.Add(new SqlParameter("@Approved", "Y"));
                 SqlParams.Add(new SqlParameter("@ReceivedByEmpId", 1003));
-                SqlParams.Add(new SqlParameter("@ApprovalDate", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@ApprovalDate", appDt));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMC));
 
                 SqlParams.Add(new SqlParameter("@ItemCode", model.ItemCode));
@@ -219,7 +224,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@itemName", model.ItemName));
                 SqlParams.Add(new SqlParameter("@ShowAllItem","Y"));
                 SqlParams.Add(new SqlParameter("@Fromdate", DateTime.Now.AddDays(-30)));
-                SqlParams.Add(new SqlParameter("@Todate", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@Todate", toDt));
                 SqlParams.Add(new SqlParameter("@DashTypeSummDetail", "Summary"));
                 SqlParams.Add(new SqlParameter("@DTSSGrid", ReqGrid));
 

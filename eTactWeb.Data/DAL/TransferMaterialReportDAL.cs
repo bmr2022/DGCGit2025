@@ -262,6 +262,7 @@ namespace eTactWeb.Data.DAL
                     };
                     DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                   
                     oCmd.Parameters.AddWithValue("@Flag", ReportType);
                     oCmd.Parameters.AddWithValue("@fromdate", fromDt.ToString("yyyy/MM/dd"));
                     oCmd.Parameters.AddWithValue("@todate", toDt.ToString("yyyy/MM/dd"));

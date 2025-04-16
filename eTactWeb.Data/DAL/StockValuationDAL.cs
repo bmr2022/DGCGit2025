@@ -99,9 +99,10 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-
-                    command.Parameters.AddWithValue("@FromDate", FromDate);
-                    command.Parameters.AddWithValue("@CurrentDate", ToDate);
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+                    command.Parameters.AddWithValue("@FromDate", fromDt);
+                    command.Parameters.AddWithValue("@CurrentDate", toDt);
                     command.Parameters.AddWithValue("@StoreId", StoreId);
                     command.Parameters.AddWithValue("@Flag", ReportType);
                     command.Parameters.AddWithValue("@itemcode", ItemCode);

@@ -36,15 +36,15 @@ namespace eTactWeb.Data.DAL
                 //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 //SqlParams.Add(new SqlParameter("@StartDate", StartDate));
                 //SqlParams.Add(new SqlParameter("@EndDate", EndDate));
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
 
-                DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@FlagForPendingExisting", Flag));
                 //SqlParams.Add(new SqlParameter("@FromDate", fromdt.ToString("yyyy/MM/dd")));
                 //SqlParams.Add(new SqlParameter("@ToDate", todt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@FromDate", fromdt));
-                SqlParams.Add(new SqlParameter("@ToDate", todt));
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
                 SqlParams.Add(new SqlParameter("@ItemName", itemname));
                 SqlParams.Add(new SqlParameter("@PartCode", partcode));
 

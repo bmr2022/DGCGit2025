@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.SqlServer.Server;
@@ -338,24 +339,27 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Clear();
-                DateTime entDt = new DateTime();
-                DateTime ReqDate = new DateTime();
-                DateTime issDate = new DateTime();
-                DateTime woDate = new DateTime();
-                
+                //DateTime entDt = new DateTime();
+                //DateTime ReqDate = new DateTime();
+                //DateTime issDate = new DateTime();
+                //DateTime woDate = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                ReqDate = ParseDate(model.ReqDate);
-                issDate = ParseDate(model.IssueDate);
+               var woDate = "";
+               var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+               var ReqDate = CommonFunc.ParseFormattedDate(model.ReqDate);
+               var issDate = CommonFunc.ParseFormattedDate(model.IssueDate);
+               var upDt = CommonFunc.ParseFormattedDate(model.LastUpdationDate.ToString("dd/MM/yyyy"));
+                var jobCardDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+
                 if (model.WoDate != null) 
                 {
-                    woDate = ParseDate(model.WoDate);
+                   woDate = CommonFunc.ParseFormattedDate(model.WoDate);
                 }
                 if (model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastupdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdationDate", model.LastUpdationDate));
+                    SqlParams.Add(new SqlParameter("@LastUpdationDate", upDt));
                 }
                 else
                 {
@@ -384,7 +388,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ReqDate", ReqDate == default ? string.Empty : ReqDate));
                 SqlParams.Add(new SqlParameter("@jobCardNo", model.JobCardNo));
                 SqlParams.Add(new SqlParameter("@JObCardYearcode", model.JobYearCode));
-                SqlParams.Add(new SqlParameter("@JobCardDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@JobCardDate", jobCardDt));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
                 SqlParams.Add(new SqlParameter("@UID", model.Uid));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));

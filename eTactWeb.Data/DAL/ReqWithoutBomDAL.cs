@@ -479,15 +479,17 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
-                DateTime entryDt = new DateTime();
-                DateTime reqDt = new DateTime();
-                DateTime expDt = new DateTime();
-                DateTime woDt = new DateTime();
-                entryDt = ParseDate(model.EntryDate);
+                var entryDt="";
+                var reqDt = "";
+                var expDt = "";
+                var woDt = "";
+                entryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
                 //reqDt = ParseDate(model.ReqDate);
-                reqDt= ParseDate(model.ReqDate);
-                expDt = ParseDate(model.ExpectedDate);
-                woDt = ParseDate(model.WODate);
+                reqDt= CommonFunc.ParseFormattedDate(model.ReqDate);
+                expDt = CommonFunc.ParseFormattedDate(model.ExpectedDate);
+                woDt = CommonFunc.ParseFormattedDate(model.WODate);
+               var cancleDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+               var approveDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
 
                 SqlParams.Add(new SqlParameter("@EntryId", model.EntryId));
@@ -510,13 +512,13 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
                 SqlParams.Add(new SqlParameter("@Completed", "N"));
                 SqlParams.Add(new SqlParameter("@Cancel", "N"));
-                SqlParams.Add(new SqlParameter("@CancelDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@CancelDate", cancleDt));
                 SqlParams.Add(new SqlParameter("@CancelReason", model.CancelReason));
                 SqlParams.Add(new SqlParameter("@EneterdBy", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@RequByEmpId", model.RequByEmpId));
                 SqlParams.Add(new SqlParameter("@NeedApproval", model.NeedApproval));
                 SqlParams.Add(new SqlParameter("@Approved", model.Approved));
-                SqlParams.Add(new SqlParameter("@ApproveDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@ApproveDate", approveDt));
                 SqlParams.Add(new SqlParameter("@ApproveBy", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@LineRejEntryId", model.LineRejEntryId));
                 SqlParams.Add(new SqlParameter("@LineRejYearCode", model.LineRejYearCode));

@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -272,17 +273,17 @@ namespace eTactWeb.Data.DAL
             {
 
                 var SqlParams = new List<dynamic>();
-                DateTime IssEntryDate = new DateTime();
-                DateTime IssSlipDate = new DateTime();
-                DateTime ackDate = new DateTime();
-                DateTime entryDate = new DateTime();
-                DateTime lastDate = new DateTime();
-
-                IssEntryDate = ParseDate(model.IssAgtProdSchEntryDate);
-                IssSlipDate=ParseDate(model.IssAgtProdSchSlipDate);
-                ackDate=ParseDate(model.AckDate);
-                entryDate = ParseDate(model.ActualEntryDate);
-                lastDate = ParseDate(model.LastUpdatedDate);
+                //DateTime IssEntryDate = new DateTime();
+                //DateTime IssSlipDate = new DateTime();
+                //DateTime ackDate = new DateTime();
+                //DateTime entryDate = new DateTime();
+                //DateTime lastDate = new DateTime();
+               
+                var IssEntryDate = CommonFunc.ParseFormattedDate(model.IssAgtProdSchEntryDate);
+                var IssSlipDate = CommonFunc.ParseFormattedDate(model.IssAgtProdSchSlipDate);
+                var ackDate = CommonFunc.ParseFormattedDate(model.AckDate);
+                var entryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var lastDate = CommonFunc.ParseFormattedDate(model.LastUpdatedDate);
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {

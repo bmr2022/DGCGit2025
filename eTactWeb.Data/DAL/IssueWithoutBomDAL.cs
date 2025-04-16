@@ -299,13 +299,13 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime ReqDate = new DateTime();
-                DateTime issDate = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime ReqDate = new DateTime();
+                //DateTime issDate = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                ReqDate = ParseDate(model.ReqDate);
-                issDate = ParseDate(model.IssueDate);
+                var entDt =ParseFormattedDate(model.EntryDate);
+                var ReqDate = ParseFormattedDate(model.ReqDate);
+                var issDate = ParseFormattedDate(model.IssueDate);
                 if (model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));

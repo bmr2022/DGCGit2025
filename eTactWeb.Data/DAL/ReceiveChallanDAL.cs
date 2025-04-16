@@ -373,23 +373,26 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime ChallanDt = new DateTime();
-                DateTime CreatedDate = new DateTime();
-                DateTime MRNDt = new DateTime();
-                DateTime GateDt = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime ChallanDt = new DateTime();
+                //DateTime CreatedDate = new DateTime();
+                //DateTime MRNDt = new DateTime();
+                //DateTime GateDt = new DateTime();
 
-                entDt = ParseDate(model.Entrydate);
-                ChallanDt = ParseDate(model.ChallanDate);
-                GateDt = ParseDate(model.GateDate);
-                MRNDt = ParseDate(model.MRNDate);
+               var entDt = CommonFunc.ParseFormattedDate(model.Entrydate);
+               var ChallanDt = CommonFunc.ParseFormattedDate(model.ChallanDate);
+               var GateDt = CommonFunc.ParseFormattedDate(model.GateDate);
+               var MRNDt = CommonFunc.ParseFormattedDate(model.MRNDate);
+               var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+               var entryDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+               var createdDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
-                    SqlParams.Add(new SqlParameter("@UpdatedOn", DateTime.Now));
+                    SqlParams.Add(new SqlParameter("@UpdatedOn", upDt));
                 }
                 else
                 {
@@ -399,7 +402,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EntryId", model.EntryId));
                 SqlParams.Add(new SqlParameter("@YearCode", model.Yearcode));
                 //SqlParams.Add(new SqlParameter("@EntryDate", entDt == default ? string.Empty : entDt));
-                SqlParams.Add(new SqlParameter("@EntryDate", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@EntryDate", entryDt));
                 SqlParams.Add(new SqlParameter("@RetNonRetChallan", model.RetNotRetChallan ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@MRNNo", model.MRNNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@AgainstMRNOrGAte", model.AgainstMRNNOrGate ?? string.Empty));
@@ -407,10 +410,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@AgainstMRNYearCode", model.AgainstMRNYearCode));
                 SqlParams.Add(new SqlParameter("@BillChallan", model.BillOrChallan ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@gateno", model.gateno ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@GateDate", GateDt == default ? string.Empty : GateDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@GateDate", GateDt == default ? string.Empty : GateDt));
                 SqlParams.Add(new SqlParameter("@GateYearCode", model.GateYearCode));
                 SqlParams.Add(new SqlParameter("@ChallanNo", model.ChallanNo ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@Challandate", ChallanDt == default ? string.Empty : ChallanDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@Challandate", ChallanDt == default ? string.Empty : ChallanDt));
                 SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
                 SqlParams.Add(new SqlParameter("@TruckNo", model.TruckNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@TransPort", model.TransPort ?? string.Empty));
@@ -430,7 +433,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@FocChallan", model.ForChallan ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.MachineName ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CreatedByEmpid", model.CreatedByEmpid));
-                SqlParams.Add(new SqlParameter("@CreatedOn", (DateTime.Today).ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@CreatedOn", createdDt));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@UID", model.UID));
 
