@@ -507,9 +507,13 @@
         $('#submitBTN').click(function (e) {
 
             e.preventDefault();
+            // if ($("WorkCenterId").val()=='' || $("WorkCenterId").val()==0) {
+            //     $.notify('Work center is not selected for this ReqNo...!');
+            // }
             if ($('#divReqWithoutBomAdded tr td').length <= 1) {
                 $.notify('Grid Should Have Atleast 1 Item...!', "error");
             }
+
             else {
                 if ($('#FromDepartmentId').find(":selected").data('depttype') == "production" || $('#FromDepartmentId').find(":selected").data('depttype') == "R&D") {
                     if ($('#WorkCenterId').val() == null) {
@@ -1201,7 +1205,7 @@
 
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#WorkCenterId').empty();
-                            // $('#WorkCenterId').append('<option disabled selected>-Select-</option>');
+                             $('#WorkCenterId').append('<option disabled selected>-Select-</option>');
                             $.each(obj.Result.Table, function (index, val) {
                                 if ($('#hiddenWorkCenter').val() == val.EntryID) {
                                     $('#WorkCenterId').append('<option value="' + val.EntryID +
@@ -1450,7 +1454,7 @@
                 success: function (result, status, xhr) {
                     if (result) {
                         var obj = JSON.parse(result);
-                        alert('Parsed Result: ' + JSON.stringify(obj, null, 2));
+                        // alert('Parsed Result: ' + JSON.stringify(obj, null, 2));
                         if (!obj) {
                             $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
                         }
@@ -1479,7 +1483,7 @@
 
         function PartCodeChange(ID) {
             copyToClipboardForDropdown('#PartCode');
-            alert('unit' + $('#PartCode').find(':selected').data('unit'));
+            // alert('unit' + $('#PartCode').find(':selected').data('unit'));
             $('#Unit').val($('#PartCode').find(':selected').data('unit'));
             $('#AltUnit').val($('#PartCode').find(':selected').data('altunit'));
             $('#ItemBinRackNo').val($('#PartCode').find(':selected').data('bin'));

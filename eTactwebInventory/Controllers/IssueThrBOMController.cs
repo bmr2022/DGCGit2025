@@ -624,6 +624,49 @@ namespace eTactWeb.Controllers
             return PartialView("_IssueThrBOMMemoryGrid", MainModel);
         }
 
+
+        public IActionResult DeleteRowsWithNullBatchNo()
+        {
+            var MainModel = new IssueThrBom();
+
+            if (_MemoryCache.TryGetValue("KeyIssThrBom", out List<IssueThrBomDetail> IssueThrBomGrid)
+                && IssueThrBomGrid != null && IssueThrBomGrid.Count > 0)
+            {
+                // Remove all rows where batchno is null (or string.IsNullOrWhiteSpace if needed)
+                IssueThrBomGrid = IssueThrBomGrid
+                    .Where(x => !string.IsNullOrWhiteSpace(x.BatchNo))
+                    .ToList();
+
+                // Reassign sequence numbers
+                int newSeq = 1;
+                foreach (var item in IssueThrBomGrid)
+                {
+                    item.seqno = newSeq++;
+                }
+
+                MainModel.ItemDetailGrid = IssueThrBomGrid;
+
+                if (IssueThrBomGrid.Count == 0)
+                {
+                    _MemoryCache.Remove("KeyIssThrBom");
+                }
+                else
+                {
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("KeyIssThrBom", IssueThrBomGrid, cacheEntryOptions);
+                }
+            }
+
+            return PartialView("_IssueThrBOMMemoryGrid", MainModel);
+        }
+
+
         public IActionResult DeleteItemRow(int SeqNo)
         {
             var MainModel = new IssueThrBom();
