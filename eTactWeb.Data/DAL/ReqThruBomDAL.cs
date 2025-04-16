@@ -259,18 +259,18 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
 
-                DateTime woDt = new DateTime();
-                DateTime entryDt = new DateTime();
-                DateTime reqDt = new DateTime();
-                DateTime cancelDt = DateTime.Now;
-                DateTime approveDt = DateTime.Now;
-                DateTime reqTime = DateTime.Now;
-                woDt = ParseDate(model.WODate);
-                entryDt = ParseDate(model.EntryDate);
-                reqDt = ParseDate(model.ReqDate);
-                cancelDt = ParseDate(model.EntryDate);
-                approveDt = ParseDate(model.EntryDate);
-                reqTime = ParseDate(model.ReqTime);
+                //DateTime woDt = new DateTime();
+                //DateTime entryDt = new DateTime();
+                //DateTime reqDt = new DateTime();
+                var cancelDt = DateTime.Now.ToString("dd/MM/yyyy");
+                var approveDt = DateTime.Now.ToString("dd/MM/yyyy");
+                var reqTime = DateTime.Now.ToString("dd/MM/yyyy");
+                var woDt = CommonFunc.ParseFormattedDate(model.WODate);
+                var entryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var reqDt = CommonFunc.ParseFormattedDate(model.ReqDate);
+                cancelDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                approveDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                reqTime = CommonFunc.ParseFormattedDate(model.ReqTime);
 
                 if (model.Mode == "U")
                 {

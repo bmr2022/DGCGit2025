@@ -915,6 +915,9 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var timeofremovalDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                var actentDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+
                 var SqlParams = new List<dynamic>();
                 var Types = 'S';
                 var BomsStatus = 'I';
@@ -926,15 +929,18 @@ namespace eTactWeb.Data.DAL
                 {
                     BomsStatus = 'B';
                 }
-                DateTime entDt = new DateTime();
+                var entDt = "";
                 if (model.EntryDate != null)
                 {
-                    entDt = DateTime.ParseExact(model.EntryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                    //entDt = DateTime.ParseExact(model.EntryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 }
-                DateTime challanDt = new DateTime();
+                //DateTime challanDt = new DateTime();
+                var challanDt = "";
                 if (model.ChallanDate != null)
                 {
-                    challanDt = DateTime.ParseExact(model.ChallanDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    challanDt = CommonFunc.ParseFormattedDate(model.ChallanDate);
+                    //challanDt = DateTime.ParseExact(model.ChallanDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 }
                 if (model.Mode == "U")
                 {
@@ -945,10 +951,10 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@EntryID", model.EntryId));
                 SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
-                SqlParams.Add(new SqlParameter("@EntryDate", entDt == new DateTime() ? DateTime.Today : entDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@EntryDate",  entDt == default ? string.Empty : entDt));
                 SqlParams.Add(new SqlParameter("@JobWorkNewRework", model.JobWorkNewRework));
                 SqlParams.Add(new SqlParameter("@JWChallanNo", model.JWChallanNo));
-                SqlParams.Add(new SqlParameter("@ChallanDate", challanDt == new DateTime() ? DateTime.Today : challanDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@ChallanDate", challanDt == default ? string.Empty : challanDt));
                 SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
                 SqlParams.Add(new SqlParameter("@DeliveryAdd", model.DeliveryAdd));
                 SqlParams.Add(new SqlParameter("@VendorStateCode", model.VendorStateCode ?? ""));
@@ -959,7 +965,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Types", Types));
                 SqlParams.Add(new SqlParameter("@Gsttype", model.GstType ?? ""));
                 SqlParams.Add(new SqlParameter("@EnterdByEmpid", model.CreatedBy));
-                SqlParams.Add(new SqlParameter("@timeofremoval", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@timeofremoval", timeofremovalDt));
                 SqlParams.Add(new SqlParameter("@Processdays", model.Processdays));
                 SqlParams.Add(new SqlParameter("@transpoterName", model.TransporterName ?? ""));
                 SqlParams.Add(new SqlParameter("@vehicleno", model.VehicleNo ?? ""));
@@ -969,7 +975,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@TotalAmount", model.TotalAmtAftrDiscount));
                 SqlParams.Add(new SqlParameter("@TotalGstAmt",model.TotalAmtAftrDiscount));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", actentDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@Distance", model.Distance));
                 SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));

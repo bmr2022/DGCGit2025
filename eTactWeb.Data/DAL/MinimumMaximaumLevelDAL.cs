@@ -92,10 +92,11 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
+                    var currentDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                     command.Parameters.AddWithValue("@Flag", ReportType);
                     command.Parameters.AddWithValue("@PartCode", PartCode);
                     command.Parameters.AddWithValue("@Yearcode", Yearcode);
-                    command.Parameters.AddWithValue("@CurrentDate", DateTime.Now);
+                    command.Parameters.AddWithValue("@CurrentDate", currentDt);
                     command.Parameters.AddWithValue("@StoreName", StoreName);
                  
                     await connection.OpenAsync();

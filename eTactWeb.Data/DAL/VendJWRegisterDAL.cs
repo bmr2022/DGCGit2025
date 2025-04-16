@@ -44,30 +44,30 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime issfromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime isstoDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var issfromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var isstoDt = CommonFunc.ParseFormattedDate(ToDate);
                     //DateTime recfromDt = DateTime.ParseExact(RecFromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     //DateTime rectoDt = DateTime.ParseExact(RecToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     oCmd.Parameters.AddWithValue("@flag", ReportMode);
                     oCmd.Parameters.AddWithValue("@flagIssueRecRECO", IssueChallanType==null ? "" : IssueChallanType);
                     if (IssueChallanType=="REC")
                     {
-                        oCmd.Parameters.AddWithValue("@RecFromDate", issfromDt.ToString("yyyy/MM/dd"));
-                        oCmd.Parameters.AddWithValue("@RecTodate", isstoDt.ToString("yyyy/MM/dd"));
+                        oCmd.Parameters.AddWithValue("@RecFromDate", issfromDt);
+                        oCmd.Parameters.AddWithValue("@RecTodate", isstoDt);
                         oCmd.Parameters.AddWithValue("@RecChallanNo", RecChallanNo);
                     }
                     else if (IssueChallanType=="ISSUE")
                     {
-                        oCmd.Parameters.AddWithValue("@IssFromDate", issfromDt.ToString("yyyy/MM/dd"));
-                        oCmd.Parameters.AddWithValue("@Isstodate", isstoDt.ToString("yyyy/MM/dd"));
+                        oCmd.Parameters.AddWithValue("@IssFromDate", issfromDt);
+                        oCmd.Parameters.AddWithValue("@Isstodate", isstoDt);
                         oCmd.Parameters.AddWithValue("@IssueChallanno", IssChallanNo);
                     }
                     else if (IssueChallanType=="RECO")
                     {
-                        oCmd.Parameters.AddWithValue("@RecFromDate", issfromDt.ToString("yyyy/MM/dd"));
-                        oCmd.Parameters.AddWithValue("@RecTodate", isstoDt.ToString("yyyy/MM/dd"));
-                        oCmd.Parameters.AddWithValue("@IssFromDate", issfromDt.ToString("yyyy/MM/dd"));
-                        oCmd.Parameters.AddWithValue("@Isstodate", isstoDt.ToString("yyyy/MM/dd"));
+                        oCmd.Parameters.AddWithValue("@RecFromDate", issfromDt);
+                        oCmd.Parameters.AddWithValue("@RecTodate", isstoDt);
+                        oCmd.Parameters.AddWithValue("@IssFromDate", issfromDt);
+                        oCmd.Parameters.AddWithValue("@Isstodate", isstoDt);
                         oCmd.Parameters.AddWithValue("@RecChallanNo", RecChallanNo);
                         oCmd.Parameters.AddWithValue("@IssueChallanno", IssChallanNo);
                     }

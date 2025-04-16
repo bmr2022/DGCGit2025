@@ -120,18 +120,21 @@ namespace eTactWeb.Data.DAL
             {
 
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime stockDt = new DateTime();
+                var entDt = "";
+                var stockDt = "";
+                // DateTime entDt = new DateTime();
+                //DateTime stockDt = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                stockDt = ParseDate(model.StockAdjustmentDate);
+                entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+                stockDt = CommonFunc.ParseFormattedDate(model.StockAdjustmentDate);
+               var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@UpdatedbyEmp", model.UpdatedByEmp));
-                    SqlParams.Add(new SqlParameter("@UpdatedOn", DateTime.Now));
+                    SqlParams.Add(new SqlParameter("@UpdatedOn", upDt));
                 }
                 else
                 {

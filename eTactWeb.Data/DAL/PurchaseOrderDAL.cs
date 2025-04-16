@@ -984,6 +984,7 @@ public class PurchaseOrderDAL
 
         try
         {
+            var endDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "PURCHAMMDASHBOARD"));
             SqlParams.Add(new SqlParameter("@OrderType", ""));
@@ -994,7 +995,7 @@ public class PurchaseOrderDAL
             SqlParams.Add(new SqlParameter("@PartCode", ""));
             SqlParams.Add(new SqlParameter("@Branch", ""));
             SqlParams.Add(new SqlParameter("@StartDate", "01/jan/2023"));
-            SqlParams.Add(new SqlParameter("@EndDate", DateTime.Today));
+            SqlParams.Add(new SqlParameter("@EndDate", endDt));
             SqlParams.Add(new SqlParameter("@VendorName", ""));
 
             var ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseOrder", SqlParams);
@@ -1029,6 +1030,7 @@ public class PurchaseOrderDAL
 
         try
         {
+            var endDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
             var SqlParams = new List<dynamic>();
             DateTime now = DateTime.Now;
             DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
@@ -1042,7 +1044,7 @@ public class PurchaseOrderDAL
             SqlParams.Add(new SqlParameter("@PartCode", ""));
             SqlParams.Add(new SqlParameter("@Branch", ""));
             SqlParams.Add(new SqlParameter("@StartDate", firstDayOfMonth));
-            SqlParams.Add(new SqlParameter("@EndDate", DateTime.Today));
+            SqlParams.Add(new SqlParameter("@EndDate", endDt));
             SqlParams.Add(new SqlParameter("@VendorName", ""));
 
             var ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseOrder", SqlParams);
@@ -1276,17 +1278,17 @@ public class PurchaseOrderDAL
         {
             var SqlParams = new List<dynamic>();
 
-            var EntryDt = Common.CommonFunc.ParseFormattedDate(model.EntryDate);
-           var PoDt = Common.CommonFunc.ParseFormattedDate(model.PODate);
-           var WEFDate = Common.CommonFunc.ParseFormattedDate(model.WEF);
-           var PoCloseDt = Common.CommonFunc.ParseFormattedDate(model.POCloseDate);
-           var AmmDt = Common.CommonFunc.ParseFormattedDate(model.AmmDate);
+            var EntryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+           var PoDt = CommonFunc.ParseFormattedDate(model.PODate);
+           var WEFDate = CommonFunc.ParseFormattedDate(model.WEF);
+           var PoCloseDt =CommonFunc.ParseFormattedDate(model.POCloseDate);
+           var AmmDt =CommonFunc.ParseFormattedDate(model.AmmDate);
             //RefDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.RefDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
             //DateTime? RefDt = DateTime.TryParseExact(CommonFunc.ParseFormattedDate(model.RefDate ?? ""), "dd/MMM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate) ? parsedDate : (DateTime?)null;
-            var RefDt = Common.CommonFunc.ParseFormattedDate(model.RefDate);
+            var RefDt =CommonFunc.ParseFormattedDate(model.RefDate);
             //QuotDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.QuotDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
             //DateTime? QuotDt = DateTime.TryParseExact(CommonFunc.ParseFormattedDate(model.QuotDate ?? ""), "dd/MMM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate1) ? parsedDate1 : (DateTime?)null;
-            var QuotDt = Common.CommonFunc.ParseFormattedDate(model.QuotDate);
+            var QuotDt = CommonFunc.ParseFormattedDate(model.QuotDate);
             //EntryDt = ParseDate(model.EntryDate);
             //PoDt = ParseDate(model.PODate);
             //WEFDate = ParseDate(model.WEF);

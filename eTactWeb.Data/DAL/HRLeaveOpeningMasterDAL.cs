@@ -169,6 +169,9 @@ namespace eTactWeb.Data.DAL
         public async Task<ResponseResult> SaveMainData(HRLeaveOpeningMasterModel model,DataTable GIGrid)
         {
             var _ResponseResult = new ResponseResult();
+            var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+            var actEntDt =CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+            var updatedDt = CommonFunc.ParseFormattedDate(model.UpdatedOn);
 
             try
             {
@@ -188,16 +191,16 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@ShiftId", model.ShiftId));
                     sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
                     sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
-                    sqlParams.Add(new SqlParameter("@EntryDate",
-               string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : DateTime.Parse(model.EntryDate).ToString("dd/MMM/yyyy")));
-                    sqlParams.Add(new SqlParameter("@ActualEntryDate",
-                     string.IsNullOrEmpty(model.ActualEntryDate) ? DBNull.Value : DateTime.Parse(model.ActualEntryDate).ToString("dd/MMM/yyyy")));
+                    sqlParams.Add(new SqlParameter("@EntryDate", entDt));
+                    sqlParams.Add(new SqlParameter("@ActualEntryDate", actEntDt));
+                    //sqlParams.Add(new SqlParameter("@EntryDate",string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : DateTime.Parse(model.EntryDate).ToString("dd/MMM/yyyy")));
+                    //sqlParams.Add(new SqlParameter("@ActualEntryDate", string.IsNullOrEmpty(model.ActualEntryDate) ? DBNull.Value : DateTime.Parse(model.ActualEntryDate).ToString("dd/MMM/yyyy")));
 
                     sqlParams.Add(new SqlParameter("@dt", GIGrid));
                     sqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
                    
-                    sqlParams.Add(new SqlParameter("@UpdatedOn",
-                    string.IsNullOrEmpty(model.UpdatedOn) ? DBNull.Value : DateTime.Parse(model.UpdatedOn).ToString("dd/MMM/yyyy")));
+                    sqlParams.Add(new SqlParameter("@UpdatedOn",updatedDt));
+                    //sqlParams.Add(new SqlParameter("@UpdatedOn",string.IsNullOrEmpty(model.UpdatedOn) ? DBNull.Value : DateTime.Parse(model.UpdatedOn).ToString("dd/MMM/yyyy")));
 
                 }
                 else
@@ -216,10 +219,10 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
                     sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
                     sqlParams.Add(new SqlParameter("@dt", GIGrid));
-                    sqlParams.Add(new SqlParameter("@EntryDate",
-               string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : DateTime.Parse(model.EntryDate).ToString("dd/MMM/yyyy")));
-                    sqlParams.Add(new SqlParameter("@ActualEntryDate",
-                     string.IsNullOrEmpty(model.ActualEntryDate) ? DBNull.Value : DateTime.Parse(model.ActualEntryDate).ToString("dd/MMM/yyyy")));
+                    sqlParams.Add(new SqlParameter("@EntryDate", entDt));
+                    sqlParams.Add(new SqlParameter("@ActualEntryDate", actEntDt));
+                    // sqlParams.Add(new SqlParameter("@EntryDate", string.IsNullOrEmpty(model.EntryDate) ? DBNull.Value : DateTime.Parse(model.EntryDate).ToString("dd/MMM/yyyy")));
+                    //sqlParams.Add(new SqlParameter("@ActualEntryDate", string.IsNullOrEmpty(model.ActualEntryDate) ? DBNull.Value : DateTime.Parse(model.ActualEntryDate).ToString("dd/MMM/yyyy")));
 
                     //sqlParams.Add(new SqlParameter("@dt", GIGrid);
 

@@ -396,20 +396,21 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime InDt = new DateTime();
-                DateTime AppDt = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime InDt = new DateTime();
+                //DateTime AppDt = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                InDt = ParseDate(model.IndentDate);
-                AppDt = ParseDate(model.ApprovedDate);
+               var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+               var InDt = CommonFunc.ParseFormattedDate(model.IndentDate);
+               var AppDt = CommonFunc.ParseFormattedDate(model.ApprovedDate);
+               var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdationDate", DateTime.Now));
+                    SqlParams.Add(new SqlParameter("@LastUpdationDate", upDt));
                     SqlParams.Add(new SqlParameter("@Approved", model.Approved == null ? string.Empty : model.Approved));
                 }
                 else

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -146,10 +147,13 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    
-                        command.Parameters.AddWithValue("@flag", ReportType);
-                        command.Parameters.AddWithValue("@fromdate", fromDate);
-                        command.Parameters.AddWithValue("@todate", toDate);
+
+                    var fromDtt = CommonFunc.ParseFormattedDate(fromDate);
+                    var toDtt = CommonFunc.ParseFormattedDate(toDate);
+
+                    command.Parameters.AddWithValue("@flag", ReportType);
+                        command.Parameters.AddWithValue("@fromdate", fromDtt);
+                        command.Parameters.AddWithValue("@todate", toDtt);
                         command.Parameters.AddWithValue("@Storeid", Storeid);
                         command.Parameters.AddWithValue("@WCID", WorkCenterid);
                         command.Parameters.AddWithValue("@FGItemcode", FGItemCode );

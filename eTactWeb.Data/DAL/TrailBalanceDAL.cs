@@ -31,6 +31,8 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand command = new SqlCommand("AccSpTrailBalancesheetProfitLossGroupLedger", connection)
@@ -39,8 +41,8 @@ namespace eTactWeb.Data.DAL
                     };
 
                     //command.Parameters.AddWithValue("@flag", "PRIMARYGROUPSUMMARY");
-                    command.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
-                    command.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
+                    command.Parameters.AddWithValue("@FromDate", fromDt);
+                    command.Parameters.AddWithValue("@ToDate", toDt);
                     //command.Parameters.AddWithValue("@EntryByMachine", EntryByMachine);
                     command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
                     command.Parameters.AddWithValue("@FromFormName", "TRAIL");

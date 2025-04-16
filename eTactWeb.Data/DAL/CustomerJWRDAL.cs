@@ -188,13 +188,15 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = new DateTime();
-                DateTime gatedate = new DateTime();
-                DateTime challanDt = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime gatedate = new DateTime();
+                //DateTime challanDt = new DateTime();
 
-                entDt = ParseDate(model.EntryDate);
-                gatedate = ParseDate(model.GateDate);
-                challanDt = ParseDate(model.ChallanDate);
+               var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+               var gatedate = CommonFunc.ParseFormattedDate(model.GateDate);
+               var challanDt = CommonFunc.ParseFormattedDate(model.ChallanDate);
+               var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+               var actentDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
 
 
@@ -203,7 +205,7 @@ namespace eTactWeb.Data.DAL
 
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@updatedBy", model.UpdatedBy));
-                    SqlParams.Add(new SqlParameter("@updatedon", DateTime.Now));
+                    SqlParams.Add(new SqlParameter("@updatedon", upDt));
                 }
                 else
                 {
@@ -230,7 +232,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Closed", model.Closed));
                 SqlParams.Add(new SqlParameter("@QcCheck", model.QcCheck));
                 SqlParams.Add(new SqlParameter("@QcCompleted", model.QcCompleted));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.Today));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", actentDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
                 SqlParams.Add(new SqlParameter("@StoreId", model.RecStoreId));

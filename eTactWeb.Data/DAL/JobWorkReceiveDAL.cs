@@ -942,13 +942,13 @@ namespace eTactWeb.Data.DAL
                 //invDt = ParseDate(model.InvoiceDate);
 
 
-                DateTime GateDt = new DateTime();
-                DateTime entDt = new DateTime();
-                DateTime invDt = new DateTime();
-                entDt = ParseDate(model.EntryDate);
-                GateDt = ParseDate(model.GateDate);
+                //DateTime GateDt = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime invDt = new DateTime();
+               var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+               var GateDt = CommonFunc.ParseFormattedDate(model.GateDate);
 
-                invDt = ParseDate(model.InvDate);
+               var invDt = CommonFunc.ParseFormattedDate(model.InvDate);
 
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "U" || model.Mode == "V")
@@ -959,7 +959,7 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
-                var currentDate = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate((DateTime.Now).ToString());
+                var currentDate =CommonFunc.ParseFormattedDate((DateTime.Now).ToString("dd/MM/yyyy"));
 
                 SqlParams.Add(new SqlParameter("@EntryID", model.EntryId));
                 SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));

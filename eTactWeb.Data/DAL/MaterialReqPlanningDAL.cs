@@ -133,13 +133,14 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure,
                         CommandTimeout = 300
                     };
-
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     command.Parameters.AddWithValue("@flag", ReportType);
                     command.Parameters.Add(new SqlParameter("@mrpno", mrpno));
                     command.Parameters.Add(new SqlParameter("@months", Month));
                     command.Parameters.AddWithValue("@year_code", YearCode);
-                    command.Parameters.AddWithValue("@FromDate", FromDate);
-                    command.Parameters.AddWithValue("@ToDate", ToDate);
+                    command.Parameters.AddWithValue("@FromDate", fromDt);
+                    command.Parameters.AddWithValue("@ToDate", toDt);
                    
 
                     await connection.OpenAsync();

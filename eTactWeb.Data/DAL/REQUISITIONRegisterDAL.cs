@@ -43,13 +43,14 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime issfromDt = DateTime.ParseExact(fromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime isstoDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var fromDt = CommonFunc.ParseFormattedDate(fromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                     oCmd.Parameters.AddWithValue("@flag", Flag);
                     oCmd.Parameters.AddWithValue("@ReqType", ReqType);
                     oCmd.Parameters.AddWithValue("@REQNo", REQNo == null ? "" : REQNo);
-                    oCmd.Parameters.AddWithValue("@fromDate", issfromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", isstoDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@fromDate", fromDt);
+                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@Partcode", Partcode == null ? "" : ItemName);
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName == null ? "" : Partcode);
                     oCmd.Parameters.AddWithValue("@FromstoreId", FromstoreId);

@@ -281,8 +281,6 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     var fromDt = CommonFunc.ParseFormattedDate(FromDate);
                     var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     oCmd.Parameters.AddWithValue("@ReportType", ReportType);
@@ -297,9 +295,9 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ProdSchNo", ProdSchNo);
                     oCmd.Parameters.AddWithValue("@ReqNo", ReqNo);
                     oCmd.Parameters.AddWithValue("@WorkcenterName", WorkCenter);
-                    oCmd.Parameters.AddWithValue("@ProcessId", Process);
+                    oCmd.Parameters.AddWithValue("@processName", Process);
                     oCmd.Parameters.AddWithValue("@Operator", OperatorName);
-                    oCmd.Parameters.AddWithValue("@machineName", MachineName);
+                    //oCmd.Parameters.AddWithValue("@machineName", MachineName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
