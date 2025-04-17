@@ -1446,8 +1446,21 @@
             });
         }
 
+        var tempIssueQtyMap = {};
 
         function DeleteFromMemoryGrid(SeqNo) {
+            $('#divIssueThrBOMGrid tr').each(function (index) {
+                let i = index + 1;
+
+                let itemName = $('#MainGridItemname-' + i).val();
+                let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                let issueQtyVal = $('#MainGridIssueQty-' + i).val();
+
+                if (itemName && uniqueBatchNo) {
+                    let key = itemName + '|' + uniqueBatchNo;
+                    tempIssueQtyMap[key] = issueQtyVal;
+                }
+            });
 
             $.ajax({
                 url: '@Url.Action("DeleteFromMemoryGrid")',
@@ -1466,17 +1479,33 @@
                         fillBatchUnique(i, "unique&batch");
                     }
                     for (var i = 1; i <= rowCounter; i++) {
+                       
                         $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                        let itemName = $('#MainGridItemname-' + i).val();
+                        let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                        let key = itemName + '|' + uniqueBatchNo;
+
+                        let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
+                        
+                        $('#MainGridIssueQty-' + i).val(restoredIssueQty);
                         $('#MainGridBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
                     }
                     for (var i = 1; i <= rowCounter; i++) {
+                       
                         FillLotandTotalStock(i);
                         fillProjectNo(i);
                         $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                        let itemName = $('#MainGridItemname-' + i).val();
+                        let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                        let key = itemName + '|' + uniqueBatchNo;
+
+                        let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
+                      
+                        $('#MainGridIssueQty-' + i).val(restoredIssueQty);
                         $('#MainGridBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
                         $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');

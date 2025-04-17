@@ -58,6 +58,8 @@ namespace eTactWeb.DOM.Models
         public double? Amount { get; set; }       
         public double? WIPStock { get; set; }            
         public double? TotalStock { get; set; }            
+        public double? TotalReqQty { get; set; }            
+        public double? ShortExcess { get; set; }            
         public long? WCID { get; set; }    
         public string? FGUnit { get; set; }    
         public string? RMUnit { get; set; }    

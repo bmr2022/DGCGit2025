@@ -58,9 +58,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _BOMReportDAL.FillWorkCenterName();
         } 
-        public async Task<BOMReportModel> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid)
+        public async Task<BOMReportModel> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid,float calculateQty)
         {
-            return await _BOMReportDAL.GetBomTreeDetailsData( fromDate,toDate, Yearcode, ReportType, FGPartCode, RMPartCode, Storeid);
+            return await _BOMReportDAL.GetBomTreeDetailsData( fromDate,toDate, Yearcode, ReportType, FGPartCode, RMPartCode, Storeid, calculateQty);
         }
     }
 }

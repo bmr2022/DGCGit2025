@@ -395,9 +395,9 @@
                 success: function (data) {
 
                     $('#divStockMainRegister').empty();
-                    $('#divStockMainRegister').append(data);
-                    var dashGrid = $('#divStockMainRegister tr').length;
-                    $('#totalRows').text(dashGrid);
+                    $('#divStockMainRegister').html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+                    countAllTotal();
                 },
                 error: function () {
                     console.log("Error fetching search results.");

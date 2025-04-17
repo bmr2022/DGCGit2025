@@ -89,10 +89,10 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid)
+        public async Task<IActionResult> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid,float calculateQty)
         {
             var model = new BOMReportModel();
-            model = await _IBOMReport.GetBomTreeDetailsData(fromDate, toDate, Yearcode,ReportType, FGPartCode, RMPartCode, Storeid);
+            model = await _IBOMReport.GetBomTreeDetailsData(fromDate, toDate, Yearcode,ReportType, FGPartCode, RMPartCode, Storeid, calculateQty);
 
             if (ReportType == "BOMTREE")
             {
