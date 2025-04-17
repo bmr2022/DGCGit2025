@@ -110,6 +110,10 @@
                                     </select>
                                     <span asp-validation-for="StoreName" class="text-danger"></span>
                                 </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="display:none" id="BomStokeCalculateQty">
+                                    <label  class="form-label">Calculate Qty</label>
+                                    <input type="text" class="form-control" id="calculateQty" />
+                                </div>
 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="bomStokeCenter" style="display:none">
                                     <label asp-for="WorkCenterName" class="form-label">Work Center Name</label>
@@ -218,6 +222,18 @@
             $("#ReportType").change(function () {
                 let reportType = $(this).val();
                 loadReportFields(reportType);
+                $('#divStockRegisterBody tr').each(function () {
+                    let $row = $(this);
+                    let $cell = $row.find('td[id^="ShortExcess-"]'); // find the TD by ID
+
+                    if ($cell.length > 0) {
+                        let val = parseFloat($cell.text().trim());
+
+                        if (!isNaN(val) && val <= 0) {
+                            $row.css('color', 'red'); // ✅ apply red text to the full row
+                        }
+                    }
+                });
             });
 
             // Load initial report type if set
@@ -256,10 +272,34 @@
         $('#ReportType').change(function () {
             handleReportType(); // Reuse the function to handle report type changes
         });
+        $('#divStockRegisterBody tr').each(function () {
+            let $row = $(this);
+            let $cell = $row.find('td[id^="ShortExcess-"]'); // find the TD by ID
+
+            if ($cell.length > 0) {
+                let val = parseFloat($cell.text().trim());
+
+                if (!isNaN(val) && val <= 0) {
+                    $row.css('color', 'red'); // ✅ apply red text to the full row
+                }
+            }
+        });
 
         // When StoreName dropdown value changes
         $('#StoreName').change(function () {
             GetBomTreeDetailsData(); // Call details function when StoreName is selected
+            $('#divStockRegisterBody tr').each(function () {
+                let $row = $(this);
+                let $cell = $row.find('td[id^="ShortExcess-"]'); // find the TD by ID
+
+                if ($cell.length > 0) {
+                    let val = parseFloat($cell.text().trim());
+
+                    if (!isNaN(val) && val <= 0) {
+                        $row.css('color', 'red'); // ✅ apply red text to the full row
+                    }
+                }
+            });
         });
 
         // Function to handle ReportType changes
@@ -269,15 +309,18 @@
             if (reportType === "BOMTREE" || reportType === "DirectBOM") {
                 GetBomTreeDetailsData(); // Call details function for BOMTREE and DirectBOM
                 $('#BomStokeStoreName').hide(); // Hide BOM STOCK fields
+                $('#BomStokeCalculateQty').hide(); // Hide BOM STOCK fields
                 $('#bomStokeCenter').hide(); // Hide BOM STOCK fields
             } else if (reportType === "BOMSTOCK" || reportType === "BOMSTOCK(WITH SUB BOM)" || reportType === "BOMSTOCK(DIRECT CHILD)") {
                 $('#BomStokeStoreName').show(); // Show BOM STOCK fields
+                $('#BomStokeCalculateQty').show(); // Show BOM STOCK fields
                 $('#bomStokeCenter').show(); // Show BOM STOCK fields
                 if ($('#StoreName').val() === "") { // Assuming an input field for Center Name
                     $.notify("Store Name is required.", "warn");
                 }
             } else {
                 $('#BomStokeStoreName').hide(); // Hide BOM STOCK fields for other report types
+                $('#BomStokeCalculateQty').hide(); // Hide BOM STOCK fields for other report types
                 $('#bomStokeCenter').hide(); // Hide BOM STOCK fields for other report types
             }
         }
@@ -507,6 +550,7 @@
             var RMPartCode = $('#RMPartCode').val();
             var Yearcode = $('#YearCode').val();
             var Storeid = $('#StoreName').val();
+            var calculateQty = $('#calculateQty').val();
             //var RMItemName = $('#RMItemName').val();
 
             $.ajax({
@@ -520,13 +564,26 @@
                     //FGItemName: FGItemName,
                     RMPartCode: RMPartCode,
                     Yearcode: Yearcode,
-                    Storeid: Storeid
+                    Storeid: Storeid,
+                    calculateQty: calculateQty
                     //RMItemName:RMItemName
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
 
                     var totalRows = $('#divStockMainRegister tr').length;
+                    $('#divStockRegisterBody tr').each(function () {
+                        let $row = $(this);
+                        let $cell = $row.find('td[id^="ShortExcess-"]'); // find the TD by ID
+
+                        if ($cell.length > 0) {
+                            let val = parseFloat($cell.text().trim());
+
+                            if (!isNaN(val) && val <= 0) {
+                                $row.css('color', 'red'); // ✅ apply red text to the full row
+                            }
+                        }
+                    });
                     $('#totalRows').text(totalRows);
                     countAllTotal();
                 },

@@ -187,7 +187,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<BOMReportModel> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid)
+        public async Task<BOMReportModel> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid,float calculateQty)
         {
             var resultList = new BOMReportModel();
             DataSet oDataSet = new DataSet();
@@ -207,6 +207,7 @@ namespace eTactWeb.Data.DAL
                         command.Parameters.AddWithValue("@CurrentDate", currentDt);
                         command.Parameters.AddWithValue("@Storeid", Storeid);
                         command.Parameters.AddWithValue("@Yearcode", Yearcode);
+                        command.Parameters.AddWithValue("@CalForQty", calculateQty);
                         command.Parameters.AddWithValue("@FGPartcode", FGPartCode ?? string.Empty);
                         command.Parameters.AddWithValue("@RMpartcode", RMPartCode ?? string.Empty);
                     }
@@ -342,6 +343,8 @@ namespace eTactWeb.Data.DAL
                                                         WIPStock = row["WIPStock"] != DBNull.Value ? Convert.ToDouble(row["WIPStock"]) : 0.0,
                                                         Rate = row["Rate"] != DBNull.Value ? Convert.ToDouble(row["Rate"]) : 0.0,
                                                         Amount = row["Amount"] != DBNull.Value ? Convert.ToDouble(row["Amount"]) : 0.0,
+                                                        TotalReqQty = row["TotalReqQty"] != DBNull.Value ? Convert.ToDouble(row["TotalReqQty"]) : 0.0,
+                                                        ShortExcess = row["ShortExcess"] != DBNull.Value ? Convert.ToDouble(row["ShortExcess"]) : 0.0,
                                                         ForTheStore = row["ForTheStore"]?.ToString(),
                                                         ForWorkCeneter = row["ForWorkCeneter"]?.ToString()
                                                     }).ToList();
@@ -366,7 +369,9 @@ namespace eTactWeb.Data.DAL
                                                         TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToDouble(row["TotalStock"]) : 0.0,
                                                         Rate = row["Rate"] != DBNull.Value ? Convert.ToDouble(row["Rate"]) : 0.0,
                                                         Amount = row["Amount"] != DBNull.Value ? Convert.ToDouble(row["Amount"]) : 0.0,
-                                                        ReqQty = row["ReqQty"] != DBNull.Value ? Convert.ToInt32(row["ReqQty"]) : 0,
+                                                        ReqQty = row["ReqQty"] != DBNull.Value ? Convert.ToDouble(row["ReqQty"]) : 0.0,
+                                                        TotalReqQty = row["TotalReqQty"] != DBNull.Value ? Convert.ToDouble(row["TotalReqQty"]) : 0.0,
+                                                        ShortExcess = row["ShortExcess"] != DBNull.Value ? Convert.ToDouble(row["ShortExcess"]) : 0.0,
                                                         BomRevNo = row["BomRevNo"] != DBNull.Value ? Convert.ToInt32(row["BomRevNo"]) : 0,
                                                         ForTheStore = row["ForTheStore"]?.ToString(),
                                                         ForWorkCeneter = row["ForWorkCeneter"]?.ToString()

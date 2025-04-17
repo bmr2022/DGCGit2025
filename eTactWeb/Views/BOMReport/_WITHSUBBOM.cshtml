@@ -15,9 +15,9 @@
                 <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Unit</th>
                 <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Stock</th>
                 <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>WIP Stock</th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
                 <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Req Qty</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalReqQty</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ShortExcess</th>
                 <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sub BOM</th>
                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Rev No</th>
                 <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>For The Store</th>
@@ -58,9 +58,10 @@
                             <td>@item.RMUnit</td>
                             <td id="totStoreStockG-@Cntr" style="background-color:#DAE0E2">@item.StoreStock</td>
                             <td id="totWIPStockG-@Cntr" style="background-color:antiquewhite">@item.WIPStock</td>
-                            <td>@item.Rate</td>
-                            <td id="totAmountG-@Cntr" style="background-color:#ADD8E6">@item.Amount</td>
+
                             <td>@item.NetReqQty</td>
+                            <td id="TotalReqQty-@Cntr">@item.TotalReqQty</td>
+                            <td id="ShortExcess-@Cntr" style="background-color:#ADD8E6">@item.ShortExcess</td>
                             <td>@item.SubBOM</td>
                             <td>@item.BomRevNo</td>
                             <td>@item.ForTheStore</td>

@@ -13,7 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetBOMTree();
         Task<ResponseResult> GetDirectBOMTree();
         Task<ResponseResult> GetBOMStockTree();
-        Task<BOMReportModel> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid);
+        Task<BOMReportModel> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid,float calculateQty);
         Task<ResponseResult> FillFinishPartCode();
         Task<ResponseResult> FillFinishItemName();
         Task<ResponseResult> FillRMItemName();
