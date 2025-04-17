@@ -217,30 +217,30 @@ namespace eTactWeb.Controllers
         }
         public IActionResult AddissueThrBom(List<IssueThrBomDetail> model)
         {
-            if (model != null)
-            {
-                foreach (var listItem in model)
-                {
-                    int YC = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                    var FinStartDate = HttpContext.Session.GetString("FromDate");
-                    //first get batchno's
-                    //listItem.IssuedDate = ParseFormattedDate(listItem.IssuedDate);
-                    var Batchno = _IssueThrBom.FillBatchUnique(listItem.ItemCode, YC, listItem.StoreName, listItem.BatchNo, listItem.IssuedDate ?? DateTime.Today.ToString(), FinStartDate);
-                    if (Batchno.Result.Result != null)
-                    {
-                        var i = 0;
-                        foreach (var batchList in Batchno.Result.Result.Rows)
-                        {
-                            var checkTransDate = _IPendingMaterialToIssueThrBOM.CheckTransDate(listItem.ItemCode, listItem.IssuedDate, Batchno.Result.Result.Rows[i].ItemArray[1].ToString(), Batchno.Result.Result.Rows[i].ItemArray[2].ToString(), YC);
-                            if (checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0] != "Successful")
-                            {
-                                return Json(checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0]);
-                            }
-                            i++;
-                        }
-                    }
-                }
-            }
+            //if (model != null)
+            //{
+            //    foreach (var listItem in model)
+            //    {
+            //        int YC = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            //        var FinStartDate = HttpContext.Session.GetString("FromDate");
+            //        //first get batchno's
+            //        //listItem.IssuedDate = ParseFormattedDate(listItem.IssuedDate);
+            //        var Batchno = _IssueThrBom.FillBatchUnique(listItem.ItemCode, YC, listItem.StoreName, listItem.BatchNo, listItem.IssuedDate ?? DateTime.Today.ToString(), FinStartDate);
+            //        if (Batchno.Result.Result != null)
+            //        {
+            //            var i = 0;
+            //            foreach (var batchList in Batchno.Result.Result.Rows)
+            //            {
+            //                var checkTransDate = _IPendingMaterialToIssueThrBOM.CheckTransDate(listItem.ItemCode, listItem.IssuedDate, Batchno.Result.Result.Rows[i].ItemArray[1].ToString(), Batchno.Result.Result.Rows[i].ItemArray[2].ToString(), YC);
+            //                if (checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0] != "Successful")
+            //                {
+            //                    return Json(checkTransDate.Result.Result.Tables[0].Rows[0].ItemArray[0]);
+            //                }
+            //                i++;
+            //            }
+            //        }
+            //    }
+            //}
             try
             {
                 _MemoryCache.Remove("KeyPendingToIssueThrBOM");

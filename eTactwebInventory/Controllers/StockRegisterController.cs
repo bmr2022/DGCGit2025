@@ -37,30 +37,65 @@ namespace eTactWeb.Controllers
             return View(model);
         }
         [HttpGet]
-        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate,string PartCode,string ItemName, string ItemGroup,string ItemType,int StoreId,string ReportType,string BatchNo,string UniqueBatchNo, int pageNumber = 1, int pageSize = 100)
+        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int StoreId, string ReportType, string BatchNo, string UniqueBatchNo, int pageNumber = 1, int pageSize = 500,string SearchBox="")
         {
             var model = new StockRegisterModel();
-            //model = await _IStockRegister.GetStockRegisterData(FromDate, ToDate,PartCode,ItemName,ItemGroup,ItemType,StoreId,ReportType,BatchNo,UniqueBatchNo);
-            model.ReportMode= ReportType;
-            var allData = model;
+            model.ReportMode = ReportType;
+            var fullList = (await _IStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, StoreId, ReportType, BatchNo, UniqueBatchNo))?.StockRegisterDetail ?? new List<StockRegisterDetail>();
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = fullList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+
+                // Apply server-side paging here
+                model.StockRegisterDetail = fullList
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+            }
+            else
+            {
+                List<StockRegisterDetail> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = fullList.ToList();
+                }
+                else
+                {
+                    filteredResults = fullList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = fullList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.StockRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            // Optional: Cache full list if needed
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024,
             };
-
-            var fullList = (await _IStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, StoreId, ReportType, BatchNo, UniqueBatchNo))?.StockRegisterDetail ?? new List<StockRegisterDetail>();
-           
-            model.TotalRecords = fullList.Count();
-            model.PageNumber = pageNumber;
-            model.StockRegisterDetail = fullList;
-            model.PageSize = pageSize;
-           
             _MemoryCache.Set("KeyStockList", fullList, cacheEntryOptions);
+
             return PartialView("_StockRegisterGrid", model);
         }
-        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 500)
         {
             StockRegisterModel model = new StockRegisterModel();
             if (string.IsNullOrWhiteSpace(searchString))
