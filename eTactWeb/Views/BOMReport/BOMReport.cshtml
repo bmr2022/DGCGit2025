@@ -61,7 +61,7 @@
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
-                                    <select asp-for="ReportType" class="form-select" onchange="GetBomTreeDetailsData();">
+                                    <select asp-for="ReportType" class="form-select" >
                                         <option disabled value="">-Select-</option>
                                         <option value="BOMTREE" selected>BOM TREE</option>
                                         <option value="BOMSTOCK">BOM STOCK</option>
@@ -254,7 +254,7 @@
             $('#BomRevNo').select2();
 
             //GetBOMTree();
-            //GetBomTreeDetailsData();
+           
             FillFinishItemName();
             FillFinishPartCode();
             FillRMPartCode();
@@ -264,7 +264,7 @@
             // var ReportType = $('#ReportType').val();
             //  
             // if (ReportType == "BOMTREE" || ReportType == "DirectBOM"){
-            //     GetBomTreeDetailsData();
+           
             // }
             handleReportType();
         });
@@ -307,7 +307,7 @@
             var reportType = $('#ReportType').val();
              
             if (reportType === "BOMTREE" || reportType === "DirectBOM") {
-                GetBomTreeDetailsData(); // Call details function for BOMTREE and DirectBOM
+                /* GetBomTreeDetailsData(); // Call details function for BOMTREE and DirectBOM */
                 $('#BomStokeStoreName').hide(); // Hide BOM STOCK fields
                 $('#BomStokeCalculateQty').hide(); // Hide BOM STOCK fields
                 $('#bomStokeCenter').hide(); // Hide BOM STOCK fields
