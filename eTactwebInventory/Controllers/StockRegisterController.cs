@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using eTactWeb.DOM.Models;
 using System.Globalization;
 using System.Drawing.Printing;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers
 {
@@ -14,12 +15,10 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IStockRegister _IStockRegister { get; }
-
         private readonly ILogger<StockRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-
         public StockRegisterController(ILogger<StockRegisterController> logger, IDataLogic iDataLogic, IStockRegister iStockRegister, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
@@ -37,7 +36,7 @@ namespace eTactWeb.Controllers
             return View(model);
         }
         [HttpGet]
-        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int StoreId, string ReportType, string BatchNo, string UniqueBatchNo, int pageNumber = 1, int pageSize = 500,string SearchBox="")
+        public async Task<IActionResult> GetStockRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int StoreId, string ReportType, string BatchNo, string UniqueBatchNo, int pageNumber = 1, int pageSize = 500, string SearchBox = "")
         {
             var model = new StockRegisterModel();
             model.ReportMode = ReportType;
@@ -112,7 +111,7 @@ namespace eTactWeb.Controllers
 
             if (string.IsNullOrWhiteSpace(searchString))
             {
-                filteredResults = stockRegisterViewModel.ToList(); 
+                filteredResults = stockRegisterViewModel.ToList();
             }
             else
             {
@@ -124,7 +123,7 @@ namespace eTactWeb.Controllers
                                       value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
                     .ToList();
 
-                
+
                 if (filteredResults.Count == 0)
                 {
                     filteredResults = stockRegisterViewModel.ToList();
@@ -143,7 +142,8 @@ namespace eTactWeb.Controllers
             var JSON = await _IStockRegister.GetAllItems();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
-        }public async Task<JsonResult> GetAllItemGroups()
+        }
+        public async Task<JsonResult> GetAllItemGroups()
         {
 
             var JSON = await _IStockRegister.GetAllItemGroups();
@@ -209,6 +209,125 @@ namespace eTactWeb.Controllers
                 // Log any other unexpected exceptions
                 Console.WriteLine($"Unexpected Exception: {ex.Message}");
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> ExportStockRegisterToExcel(string ReportType)
+        {
+            if (!_MemoryCache.TryGetValue("KeyStockList", out IList<StockRegisterDetail> stockRegisterList))
+                return NotFound("No data available to export.");
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Stock Register");
+
+            var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<StockRegisterDetail>>>
+            {
+                { "STOCKSUMMARY", ExportStockSummary },
+                { "STOCKDETAIL", ExportStockDetail }
+                // Add more report types here if needed
+            };
+
+            if (reportGenerators.TryGetValue(ReportType, out var generator))
+            {
+                generator(worksheet, stockRegisterList);
+            }
+            else
+            {
+                return BadRequest("Invalid report type.");
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "StockRegisterReport.xlsx"
+            );
+        }
+        private void ExportStockSummary(IXLWorksheet sheet, IList<StockRegisterDetail> list)
+        {
+            string[] headers = {
+        "Sr#", "Store Name", "Part Code", "Item Name", "Opn Stk", "Rec Qty", "Iss Qty", "Tot Stk",
+        "Std Packing", "Unit", "Avg Rate", "Amount", "Min Level", "Alt Unit", "Alt Stock",
+        "Group Name", "Bin No", "Maximum Level", "Reorder Level"
+    };
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.StoreName;
+                sheet.Cell(row, 3).Value = item.PartCode;
+                sheet.Cell(row, 4).Value = item.ItemName;
+                sheet.Cell(row, 5).Value = item.OpnStk;
+                sheet.Cell(row, 6).Value = item.RecQty;
+                sheet.Cell(row, 7).Value = item.IssQty;
+                sheet.Cell(row, 8).Value = item.TotStk;
+                sheet.Cell(row, 9).Value = item.StdPacking;
+                sheet.Cell(row, 10).Value = item.Unit;
+                sheet.Cell(row, 11).Value = item.AvgRate;
+                sheet.Cell(row, 12).Value = item.Amount;
+                sheet.Cell(row, 13).Value = item.MinLevel;
+                sheet.Cell(row, 14).Value = item.AltUnit;
+                sheet.Cell(row, 15).Value = item.AltStock;
+                sheet.Cell(row, 16).Value = item.GroupName;
+                sheet.Cell(row, 17).Value = item.BinNo;
+                sheet.Cell(row, 18).Value = item.MaximumLevel;
+                sheet.Cell(row, 19).Value = item.ReorderLevel;
+                row++;
+            }
+        }
+
+        private void ExportStockDetail(IXLWorksheet sheet, IList<StockRegisterDetail> list)
+        {
+            string[] headers = {
+        "Sr#", "Store Name", "Transaction Type", "Trans Date", "Part Code", "Item Name", "Opn Stk",
+        "Rec Qty", "Iss Qty", "Tot Stk", "Unit", "Rate", "Amount", "Min Level", "Alt Unit",
+        "Alt Stock", "Bill No", "Bill Date", "Party Name", "MRN No", "Batch No", "Unique Batch No",
+        "Entry Id", "Alt Rec Qty", "Alt Iss Qty", "Group Name", "Package"
+    };
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.StoreName;
+                sheet.Cell(row, 3).Value = item.TransactionType;
+                sheet.Cell(row, 4).Value = item.TransDate;
+                sheet.Cell(row, 5).Value = item.PartCode;
+                sheet.Cell(row, 6).Value = item.ItemName;
+                sheet.Cell(row, 7).Value = item.OpnStk;
+                sheet.Cell(row, 8).Value = item.RecQty;
+                sheet.Cell(row, 9).Value = item.IssQty;
+                sheet.Cell(row, 10).Value = item.TotStk;
+                sheet.Cell(row, 11).Value = item.Unit;
+                sheet.Cell(row, 12).Value = item.Rate;
+                sheet.Cell(row, 13).Value = item.Amount;
+                sheet.Cell(row, 14).Value = item.MinLevel;
+                sheet.Cell(row, 15).Value = item.AltUnit;
+                sheet.Cell(row, 16).Value = item.AltStock;
+                sheet.Cell(row, 17).Value = item.BillNo;
+                sheet.Cell(row, 18).Value = item.BillDate;
+                sheet.Cell(row, 19).Value = item.PartyName;
+                sheet.Cell(row, 20).Value = item.MRNNo;
+                sheet.Cell(row, 21).Value = item.BatchNo;
+                sheet.Cell(row, 22).Value = item.UniquebatchNo;
+                sheet.Cell(row, 23).Value = item.EntryId;
+                sheet.Cell(row, 24).Value = item.AltRecQty;
+                sheet.Cell(row, 25).Value = item.AltIssQty;
+                sheet.Cell(row, 26).Value = item.GroupName;
+                sheet.Cell(row, 27).Value = item.package;
+                row++;
             }
         }
     }

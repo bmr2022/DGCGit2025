@@ -625,7 +625,7 @@ public static class CommonFunc
                       && typeProperty.PropertyInfo.Name != "CostcenetrGroupName"
                       && typeProperty.PropertyInfo.Name != "Active" && typeProperty.PropertyInfo.Name != "RateApplicableOnUnit" && typeProperty.PropertyInfo.Name != "CC"
                       && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "rate" && typeProperty.PropertyInfo.Name != "OldRate" && typeProperty.PropertyInfo.Name != "POQty"
-                      && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "Description" && typeProperty.PropertyInfo.Name != "AltPOQty" && typeProperty.PropertyInfo.Name != "AltUnit" &&
+                      && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "Description" && typeProperty.PropertyInfo.Name != "AltPOQty" && typeProperty.PropertyInfo.Name != "AltUnit" && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval" &&
                        typeProperty.PropertyInfo.Name != "DiscPer" && typeProperty.PropertyInfo.Name != "DiscRs"
                       && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "AdditionalRate"
                       && typeProperty.PropertyInfo.Name != "OldRate" && typeProperty.PropertyInfo.Name != "Remark"
@@ -634,7 +634,7 @@ public static class CommonFunc
                       && typeProperty.PropertyInfo.Name != "PkgStd" && typeProperty.PropertyInfo.Name != "AmmendmentNo"
                       && typeProperty.PropertyInfo.Name != "AmmendmentNo" && typeProperty.PropertyInfo.Name != "AmmendmentDate"
                       && typeProperty.PropertyInfo.Name != "AmmendmentReason" && typeProperty.PropertyInfo.Name != "FirstMonthTentQty"
-                      && typeProperty.PropertyInfo.Name != "SecMonthTentQty" && typeProperty.PropertyInfo.Name != "SizeDetail"
+                      && typeProperty.PropertyInfo.Name != "SecMonthTentQty" && typeProperty.PropertyInfo.Name != "SizeDetail" && typeProperty.PropertyInfo.Name != "EntryByMachineName"
                       && typeProperty.PropertyInfo.Name != "Colour" && typeProperty.PropertyInfo.Name != "CostCenter" && typeProperty.PropertyInfo.Name != "TolLimitQty"
                       && typeProperty.PropertyInfo.Name != "Active" && typeProperty.PropertyInfo.Name != "RateApplicableOnUnit" && typeProperty.PropertyInfo.Name != "HSNNo")
                     {

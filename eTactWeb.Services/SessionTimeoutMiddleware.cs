@@ -31,7 +31,7 @@ namespace eTactWeb.Services
             }
 
             // Check if the session is active
-            if (context.Session.GetString("EmpID") == null)
+            if (context.Session.GetString("UID") == null)
             {
                 context.Response.Redirect("/");
                 return;

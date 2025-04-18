@@ -309,14 +309,8 @@
         }
 
         $('#sendToExcel').click(function () {
-            let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
-                }
-            });
+            var reportType = $('#ReportType').val(); // assuming there's a dropdown or input with id="ReportType"
+            window.location.href = '/StockRegister/ExportStockRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
         });
 
         //$(document).on('select2:select', '#ItemName,#PartCode', function (e) {
