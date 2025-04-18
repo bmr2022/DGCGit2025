@@ -103,12 +103,15 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
-                SqlParams.Add(new SqlParameter("@FromDate", fromdt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@ToDate", todt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
                 SqlParams.Add(new SqlParameter("@ProdSlipNo", ProdSlipNo == null ? "" : ProdSlipNo));
                 SqlParams.Add(new SqlParameter("@partcode", PartCode == null ? "" : PartCode));
                 SqlParams.Add(new SqlParameter("@ItemName", ItemName == null ? "" : ItemName));
@@ -129,12 +132,16 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
-                SqlParams.Add(new SqlParameter("@FromDate", fromdt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@ToDate", todt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
                 SqlParams.Add(new SqlParameter("@DisplayPendForQC", DisplayPendForQC));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_InProcessQC", SqlParams);
