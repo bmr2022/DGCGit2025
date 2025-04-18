@@ -13,10 +13,12 @@ namespace eTactWeb.DOM.Models
         public int StoreId { get; set; }        
         public string? ReportType { get; set; }
         public string? Type { get; set; }
+        public int? ItemCode { get; set; }
         public string? PartCode { get; set; }
         public string? ItemName { get; set; }
         public string ItemGroup { get; set; }
-        public string ItemType { get; set; }
+        public string ItemGroupName { get; set; }
+        public string? ItemType { get; set; }
         public string? ReportMode { get; set; }
         public string? BatchNo { get; set; }
         public string? UniqueBatchNo { get; set; }
