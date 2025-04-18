@@ -251,8 +251,8 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("Stockable", typeof(string));
             DTSSGrid.Columns.Add("BatchNo", typeof(string));
             DTSSGrid.Columns.Add("UniqueBatchNo", typeof(string));
-            DTSSGrid.Columns.Add("LotStock", typeof(string));
-            DTSSGrid.Columns.Add("TotalStock", typeof(string));
+            DTSSGrid.Columns.Add("LotStock", typeof(float));
+            DTSSGrid.Columns.Add("TotalStock", typeof(float));
             DTSSGrid.Columns.Add("ItemAmount", typeof(float));
             DTSSGrid.Columns.Add("UnitRate", typeof(string));
             DTSSGrid.Columns.Add("PurchBillQty", typeof(float));
@@ -384,14 +384,14 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("SeqNo", typeof(int));
             Table.Columns.Add("Type", typeof(string));
             Table.Columns.Add("ItemCode", typeof(int));
-            Table.Columns.Add("TaxType", typeof(int));
-            Table.Columns.Add("AccountCode", typeof(int));
-            Table.Columns.Add("Percentg", typeof(float));
-            Table.Columns.Add("AdInTxable", typeof(string));
-            Table.Columns.Add("RoundOff", typeof(string));
-            Table.Columns.Add("Amount", typeof(float));
-            Table.Columns.Add("Refundable", typeof(string));
-            Table.Columns.Add("OnExp", typeof(float));
+            Table.Columns.Add("TaxTypeID", typeof(int));
+            Table.Columns.Add("TaxAccountCode", typeof(int));
+            Table.Columns.Add("TaxPercentg", typeof(decimal));
+            Table.Columns.Add("AddInTaxable", typeof(string));
+            Table.Columns.Add("RountOff", typeof(string));
+            Table.Columns.Add("Amount", typeof(decimal));
+            Table.Columns.Add("TaxRefundable", typeof(string));
+            Table.Columns.Add("TaxOnExp", typeof(decimal));
             Table.Columns.Add("Remark", typeof(string));
 
             foreach (TaxModel Item in TaxDetailList)
