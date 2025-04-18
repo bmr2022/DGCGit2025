@@ -211,9 +211,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
-                SqlParams.Add(new SqlParameter("@transDate", issueDate.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@transDate", CommonFunc.ParseFormattedDate( issueDate.ToString())));
                 SqlParams.Add(new SqlParameter("@batchno", BatchNo));
-                SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
+                SqlParams.Add(new SqlParameter("@FinStartDate", CommonFunc.ParseFormattedDate(FinStartDate)));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStore", SqlParams);
             }

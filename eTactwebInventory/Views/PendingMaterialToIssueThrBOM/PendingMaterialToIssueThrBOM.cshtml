@@ -805,6 +805,7 @@
         });
 
         function showToTransfer(i) {
+            debugger
                   
            $('#ReqNo').val();
 
@@ -903,6 +904,7 @@
         }
 
         function TransferToIssueWithDblClick(k) {
+            debugger
             //if (!validateTransfer()) { console.log("do nothing"); }
             //else {
                   
@@ -961,6 +963,7 @@
                         var FromStoreId = $('#FromStore').val();
                         var url = '/IssueThrBOM/Index/?';
                         url = url + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#ReqNo').val() + "&ReqYearCode=" + $('#ReqYearCode').val() + "&WCName=" + $('#WorkCenter').val() + "&DeptName=" + $('#DeptName').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&GlobalSearch=" + $('#search-box').val() + "&FromStoreBack=" + FromStoreId
+                         alert("Redirecting to: " + url);
                         window.location.href = url;
                         }
                     },

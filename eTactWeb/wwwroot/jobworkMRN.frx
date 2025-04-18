@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/18/2025 16:46:44" ReportInfo.Modified="04/18/2025 17:09:04" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Styles Name="Standard">
+    <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
+    <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Group" Font="Arial, 10pt, style=Bold"/>
+    <Style Name="Data" Font="Arial, 10pt"/>
+    <Style Name="Footer" Font="Arial, 10pt"/>
+    <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
+  </Styles>
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHE+UVBHO0O0957hJkIVu0s2gqsOYKXH+IkHcEIANOn/f5j6CYuoQEiDFM7MGNOYsneTeupHMrcT0zBNm8CNxrKLsCLVfl59uldkGKFs01QHGclYBwLjW13D+cDajcvxqBqBiIhW6FyLrFt/9p6qVRc00zARAxQn+AaC0JRcL+weCRBbaBcrWbCyz7dVTX2As7pVSahrUfiTt3jQhbrnd2g==">
+      <TableDataSource Name="Table" Alias="spreportJobworkMRN" DataType="System.Int32" Enabled="true" SelectCommand="exec spreportJobworkMRN @Mrn_No='VJW2025/00002',@Year_Code =2025">
+        <Column Name="Year_Code" DataType="System.Int64"/>
+        <Column Name="Entry_Id" DataType="System.Int64"/>
+        <Column Name="Item_Code" DataType="System.Int64"/>
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="Mrn_No" DataType="System.String"/>
+        <Column Name="Entry_Date" DataType="System.DateTime"/>
+        <Column Name="Part_Code" DataType="System.String"/>
+        <Column Name="Bill_Qty" DataType="System.Double"/>
+        <Column Name="Accepted_Qty" DataType="System.Double"/>
+        <Column Name="Rejected_Qty" DataType="System.Double"/>
+        <Column Name="Hold_Qty" DataType="System.Double"/>
+        <Column Name="ChallanNo" DataType="System.String"/>
+        <Column Name="ChallanDate" DataType="System.DateTime"/>
+        <Column Name="Com_Name" DataType="System.String"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="Default_type" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="Qty" DataType="System.Double"/>
+        <Column Name="Rate" DataType="System.Double"/>
+        <Column Name="Amount" DataType="System.Double"/>
+        <Column Name="Stage_Description" DataType="System.String"/>
+        <Column Name="PO_No" DataType="System.String"/>
+        <Column Name="PO_Date" DataType="System.DateTime"/>
+        <Column Name="Gate_No" DataType="System.String"/>
+        <Column Name="G_Date" DataType="System.DateTime"/>
+        <Column Name="SchNo" DataType="System.String"/>
+        <CommandParameter Name="mrnnoparam" DataType="22" Expression="mrnnoparam"/>
+        <CommandParameter Name="yearcodeparam" Expression="yearcodeparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="56.7">
+      <TextObject Name="Text1" Left="207.9" Top="9.45" Width="321.3" Height="37.8" Text="JOBWORK MRN" Font="Arial, 24pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="60.55" Width="718.2" Height="28.35">
+      <TextObject Name="Text6" Left="56.7" Width="94.5" Height="18.9" Text="Partcode" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="170.1" Width="132.3" Height="18.9" Text="Item Description" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="283.5" Width="132.3" Height="18.9" Text="Bill Qty" Font="Arial, 10pt"/>
+      <TextObject Name="Text10" Left="387.45" Width="132.3" Height="18.9" Text="Accepted Qty" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="481.95" Width="132.3" Height="18.9" Text="Rejected Qty" Font="Arial, 10pt"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="92.74" Width="718.2" Height="37.8" Condition="[spreportJobworkMRN.Part_Code]">
+      <TextObject Name="Text2" Left="47.25" Width="103.95" Height="18.9" Text="[spreportJobworkMRN.Part_Code]" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="170.1" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Item_Name]" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="283.5" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Bill_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text5" Left="387.45" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Accepted_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text8" Left="481.95" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Rejected_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <DataBand Name="Data1" Top="134.39" Width="718.2" EvenStyle="EvenRows" DataSource="Table"/>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="138.23" Width="718.2"/>
+  </ReportPage>
+</Report>
