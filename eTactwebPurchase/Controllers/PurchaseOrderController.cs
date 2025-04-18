@@ -76,12 +76,6 @@ public class PurchaseOrderController : Controller
             webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
 
         }
-        //webReport.Report.SetParameterValue("entryparam", EntryId);
-        //webReport.Report.SetParameterValue("yearparam", YearCode);
-        //webReport.Report.SetParameterValue("ponoparam", PONO);
-        //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-        //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-        // return View(webReport);
         my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
         webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
