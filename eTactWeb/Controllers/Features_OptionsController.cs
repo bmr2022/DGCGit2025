@@ -65,7 +65,7 @@ string AccAllowBackdateVoucherEntry,
 string AccBackdateVoucherEntryPassword,
 string AccAllowToChangeVoucherDateInPurchBill,
 string AccPurchaseVoucherPrintoutFilename,
-string AccPurchaseBillInvoicePrintoutFilename)
+string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJobWorkIss)
         {
             _logger.LogInformation("\n \n ********** Page Features_Options ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
 
@@ -116,6 +116,7 @@ string AccPurchaseBillInvoicePrintoutFilename)
                 MainModel.AllowBAtchEditable = AllowBAtchEditable;
                 MainModel.AllowBAtchEditablePAssword = AllowBAtchEditablePAssword;
                 MainModel.FIFOBasedBatchInventory = FIFOBasedBatchInventory;
+                MainModel.FIFOBasedBatchInventoryInJobWorkIss = FIFOBasedBatchInventoryInJobWorkIss;
                 MainModel.AllowBackdateReqWOBOM = AllowBackdateReqWOBOM;
                 MainModel.MaxDurationForReqToBePend = MaxDurationForReqToBePend;
                 MainModel.IssueWithScanner = IssueWithScanner;

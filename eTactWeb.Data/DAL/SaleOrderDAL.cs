@@ -710,23 +710,24 @@ namespace eTactWeb.Data.DAL
                 // {
                 //     CommandType = CommandType.StoredProcedure
                 // };
-                DateTime soDt = new DateTime();
-                DateTime wef = new DateTime();
-                DateTime soclDt = new DateTime();
-                DateTime QDt = new DateTime();
-                DateTime AmmEDt = new DateTime();
-                DateTime soconDt = new DateTime();
-                DateTime soDlDt = new DateTime();
+                //DateTime soDt = new DateTime();
+                //DateTime wef = new DateTime();
+                //DateTime soclDt = new DateTime();
+                //DateTime QDt = new DateTime();
+                //DateTime AmmEDt = new DateTime();
+                //DateTime soconDt = new DateTime();
+                //DateTime soDlDt = new DateTime();
                 if (model.Mode == "SOA")
                     SqlParams.Add(new SqlParameter("@SOAmendYC", model.AmmYearCode));
 
-                soDt = ParseDate(model.SODate);
-                wef = ParseDate(model.WEF);
-                soclDt = ParseDate(model.SOCloseDate);
-                QDt = ParseDate(model.QDate);
-                AmmEDt = ParseDate(model.AmmEffDate);
-                soconDt = ParseDate(model.SOConfirmDate);
-                soDlDt = ParseDate(model.SODeliveryDate);
+                var soDt = CommonFunc.ParseFormattedDate(model.SODate);
+                var wef = CommonFunc.ParseFormattedDate(model.WEF);
+                var soclDt = CommonFunc.ParseFormattedDate(model.SOCloseDate);
+                var QDt = CommonFunc.ParseFormattedDate(model.QDate);
+                var AmmEDt = CommonFunc.ParseFormattedDate(model.AmmEffDate);
+                var soconDt = CommonFunc.ParseFormattedDate(model.SOConfirmDate);
+                var soDlDt = CommonFunc.ParseFormattedDate(model.SODeliveryDate);
+                var entDt = CommonFunc.ParseFormattedDate(model.EntryDate);
 
 
 
@@ -743,7 +744,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@OrderType", model.OrderType));
                 SqlParams.Add(new SqlParameter("@CustOrderNo", model.CustOrderNo));
                 SqlParams.Add(new SqlParameter("@SONo", model.SONo));
-                SqlParams.Add(new SqlParameter("@ENTRYDATE", ParseDate(model.EntryDate)));
+                SqlParams.Add(new SqlParameter("@ENTRYDATE", entDt));
                 //SqlParams.Add(new SqlParameter("@EntryDate", DateTime.ParseExact(model.EntryDate.ToString(), "dd-mm-yyyy", CultureInfo.InvariantCulture)));
 
                 SqlParams.Add(new SqlParameter("@SODate", soDt == default ? string.Empty : soDt));

@@ -219,11 +219,11 @@ namespace eTactWeb.Data.DAL
                                                         select new MaterialConversionModel
                                                         {
                                                             EntryId = dr["MatConvEntryId"] != DBNull.Value ? Convert.ToInt32(dr["MatConvEntryId"]) : 0,
-                                                            seqno = dr["seqno"] != DBNull.Value ? Convert.ToInt32(dr["seqno"]) : 0,
+                                                            //seqno = dr["seqno"] != DBNull.Value ? Convert.ToInt32(dr["seqno"]) : 0,
                                                             SlipNo = dr["MatConvSlipNo"] != DBNull.Value ? Convert.ToString(dr["MatConvSlipNo"]) : string.Empty,
                                                             SlipDate = dr["MatConvSlipDate"] != DBNull.Value ? Convert.ToDateTime(dr["MatConvSlipDate"]).ToString("dd/MM/yyyy") : string.Empty,
                                                             IssueToStoreWC = dr["StoreWorkcenter"] != DBNull.Value ? Convert.ToString(dr["StoreWorkcenter"]) : string.Empty,
-                                                            Remark = dr["Remark"] != DBNull.Value ? Convert.ToString(dr["Remark"]) : string.Empty,
+                                                            //Remark = dr["Remark"] != DBNull.Value ? Convert.ToString(dr["Remark"]) : string.Empty,
                                                             ApprovedByEmpName = dr["ActualEmployee"] != DBNull.Value ? Convert.ToString(dr["ActualEmployee"]) : string.Empty,
 
                                                             ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(dr["ActualEntryDate"]).ToString("dd/MM/yyyy"): string.Empty,

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -398,9 +399,12 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime fromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
+                    var fromDt = CommonFunc.ParseFormattedDate(Fromdate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
+
                     oCmd.Parameters.AddWithValue("@Flag", "Search");
                     oCmd.Parameters.AddWithValue("@REQNo", REQNo);
                     oCmd.Parameters.AddWithValue("@WCName", WCName);
@@ -409,8 +413,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@partcode", PartCode);
                     oCmd.Parameters.AddWithValue("@itemname", ItemName);
                     oCmd.Parameters.AddWithValue("@branchname", BranchName);
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
 
 
@@ -632,9 +636,11 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime fromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
+                    var fromDt = CommonFunc.ParseFormattedDate(Fromdate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
                     oCmd.Parameters.AddWithValue("@Flag", "GetDetailDashboardData");
                     oCmd.Parameters.AddWithValue("@REQNo", REQNo);
                     oCmd.Parameters.AddWithValue("@WCName", WCName);
@@ -643,8 +649,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@partcode", PartCode);
                     oCmd.Parameters.AddWithValue("@itemname", ItemName);
                     oCmd.Parameters.AddWithValue("@branchname", BranchName);
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
 
 

@@ -232,6 +232,7 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBAtchEditable = dr["AllowBAtchEditable"] != DBNull.Value ? dr["AllowBAtchEditable"].ToString() : string.Empty,
                                                                 AllowBAtchEditablePAssword = dr["AllowBAtchEditablePAssword"] != DBNull.Value ? dr["AllowBAtchEditablePAssword"].ToString() : string.Empty,
                                                                 FIFOBasedBatchInventory = dr["FIFOBasedBatchInventory"] != DBNull.Value ? dr["FIFOBasedBatchInventory"].ToString() : string.Empty,
+                                                                FIFOBasedBatchInventoryInJobWorkIss = dr["FIFOBasedBatchInventoryInJobWorkIss"] != DBNull.Value ? dr["FIFOBasedBatchInventoryInJobWorkIss"].ToString() : string.Empty,
 
 
                                                             }).ToList();
@@ -587,6 +588,7 @@ namespace eTactWeb.Data.DAL
                     model.AllowBAtchEditable = DS.Tables[0].Rows[0]["AllowBAtchEditable"].ToString();
                     model.AllowBAtchEditablePAssword = DS.Tables[0].Rows[0]["AllowBAtchEditablePAssword"].ToString();
                     model.FIFOBasedBatchInventory = DS.Tables[0].Rows[0]["FIFOBasedBatchInventory"].ToString();
+                    model.FIFOBasedBatchInventoryInJobWorkIss = DS.Tables[0].Rows[0]["FIFOBasedBatchInventoryInJobWorkIss"].ToString();
 
                 }
                 if (Type == "RequisitionDetail")
@@ -798,6 +800,7 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@AllowBAtchEditable", model.AllowBAtchEditable));
                         SqlParams.Add(new SqlParameter("@AllowBAtchEditablePAssword", model.AllowBAtchEditablePAssword));
                         SqlParams.Add(new SqlParameter("@FIFOBasedBatchInventory", model.FIFOBasedBatchInventory));
+                        SqlParams.Add(new SqlParameter("@FIFOBasedBatchInventoryInJobWorkIss", model.FIFOBasedBatchInventoryInJobWorkIss));
 
 
                     }

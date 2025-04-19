@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;

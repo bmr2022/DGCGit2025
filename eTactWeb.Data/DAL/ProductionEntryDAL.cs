@@ -1409,11 +1409,14 @@ public class ProductionEntryDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-                oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
                 oCmd.Parameters.AddWithValue("@ProdSlipNo", SlipNo);
                 oCmd.Parameters.AddWithValue("@Itemname", ItemName);
                 oCmd.Parameters.AddWithValue("@PartCode", PartCode);
@@ -1550,11 +1553,11 @@ public class ProductionEntryDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 oCmd.Parameters.AddWithValue("@Flag", "DETAILDASHBOARD");
-                oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
                 oCmd.Parameters.AddWithValue("@ProdSlipNo", SlipNo);
                 oCmd.Parameters.AddWithValue("@FGItemNAme", ItemName);
                 oCmd.Parameters.AddWithValue("@FGPartCode", PartCode);
@@ -1627,11 +1630,14 @@ public class ProductionEntryDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                 oCmd.Parameters.AddWithValue("@Flag", "DETAILDASHBOARD(BatchWise)");
-                oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
                 oCmd.Parameters.AddWithValue("@ProdSlipNo", SlipNo);
                 oCmd.Parameters.AddWithValue("@FGItemNAme", ItemName);
                 oCmd.Parameters.AddWithValue("@FGPartCode", PartCode);
@@ -1709,11 +1715,14 @@ public class ProductionEntryDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                 oCmd.Parameters.AddWithValue("@Flag", "BREAKDOWNDASHBOARD");
-                oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -1764,11 +1773,13 @@ public class ProductionEntryDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 oCmd.Parameters.AddWithValue("@Flag", "OPERATORDASHBOARD");
-                oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -1826,11 +1837,13 @@ public class ProductionEntryDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 oCmd.Parameters.AddWithValue("@Flag", "SCRAPDASHBOARD");
-                oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

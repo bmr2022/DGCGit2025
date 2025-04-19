@@ -710,21 +710,34 @@ internal class SaleScheduleDAL
         var _ResponseResult = new ResponseResult();
         try
         {
-            DateTime EntryDt = new DateTime();
-            DateTime SoDt = new DateTime();
-            DateTime SchDt = new DateTime();
-            DateTime SchAmmDt = new DateTime();
-            DateTime SchAppDate = new DateTime();
-            DateTime SchAmendAppDate = new DateTime();
-            DateTime SchEffFromDt = new DateTime();
-            DateTime SchEffTillDt = new DateTime();
-            DateTime SoCloseDt = new DateTime();
+            //DateTime EntryDt = new DateTime();
+            //DateTime SoDt = new DateTime();
+            //DateTime SchDt = new DateTime();
+            //DateTime SchAmmDt = new DateTime();
+            //DateTime SchAppDate = new DateTime();
+            //DateTime SchAmendAppDate = new DateTime();
+            //DateTime SchEffFromDt = new DateTime();
+            //DateTime SchEffTillDt = new DateTime();
+            //DateTime SoCloseDt = new DateTime();
 
-            EntryDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.EntryDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            SoDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SODate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            SchDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.ScheduleDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            SchAmmDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchAmendmentDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            SoCloseDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SOCloseDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+
+            var SchAppDate ="";
+            var SchAmendAppDate = "";
+            var SchEffFromDt = "";
+            var SchEffTillDt = "";
+
+            var EntryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
+            var SoDt =CommonFunc.ParseFormattedDate(model.SODate);
+            var SchDt = CommonFunc.ParseFormattedDate(model.ScheduleDate);
+            var SchAmmDt = CommonFunc.ParseFormattedDate(model.SchAmendmentDate);
+            var SoCloseDt =CommonFunc.ParseFormattedDate(model.SOCloseDate);
+               
+            //EntryDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.EntryDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            //SoDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SODate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            //SchDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.ScheduleDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            //SchAmmDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchAmendmentDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            //SoCloseDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SOCloseDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+
 
             //EntryDt = DateTime.Parse(ConvertToDesiredFormat(model.EntryDate));
             //SoDt = DateTime.Parse((model.SODate));
@@ -734,53 +747,53 @@ internal class SaleScheduleDAL
 
             if (model.SchApprovalDate == null)
             {
-                SchAppDate = DateTime.Now;
+                SchAppDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
             }
             else
             {
-                SchAppDate = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchApprovalDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+                SchAppDate = CommonFunc.ParseFormattedDate(model.SchApprovalDate);
                 //SchAppDate = ParseDate(model.SchApprovalDate);
             }
 
             if (model.SchAmendApprovalDate == null)
             {
-                SchAmendAppDate = DateTime.Now;
+                SchAmendAppDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy")); ;
             }
             else
             {
-                SchAmendAppDate = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchAmendApprovalDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+                SchAmendAppDate =CommonFunc.ParseFormattedDate(model.SchAmendApprovalDate);
                // SchAmendAppDate = ParseDate(model.SchAmendApprovalDate);
             }
-            SchEffFromDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchEffFromDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            SchEffFromDt =CommonFunc.ParseFormattedDate(model.SchEffFromDate);
             //SchAmendAppDate = DateTime.Parse( ConvertToDesiredFormat(model.SchAmendApprovalDate));
             //SchEffFromDt = DateTime.Parse((model.SchEffFromDate));
-            SchEffTillDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.SchEffTillDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+            SchEffTillDt = CommonFunc.ParseFormattedDate(model.SchEffTillDate);
             //SchEffTillDt = DateTime.Parse((model.SchEffTillDate));
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", model.Mode));
             SqlParams.Add(new SqlParameter("@ID", model.ID));
             SqlParams.Add(new SqlParameter("@EntryID", model.EntryID));
             SqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
-            SqlParams.Add(new SqlParameter("@EntryDate", EntryDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : EntryDt));
+            SqlParams.Add(new SqlParameter("@EntryDate", EntryDt == default ? "" : EntryDt));
             SqlParams.Add(new SqlParameter("@SONO", model.SONO));
             SqlParams.Add(new SqlParameter("@CustomerOrderNo", model.CustomerOrderNo));
             SqlParams.Add(new SqlParameter("@SOYearCode", model.SOYearCode));
-            SqlParams.Add(new SqlParameter("@SODate", SoDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SoDt));
-            SqlParams.Add(new SqlParameter("@SOCloseDate", SoCloseDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SoCloseDt));
+            SqlParams.Add(new SqlParameter("@SODate", SoDt == default ? "" : SoDt));
+            SqlParams.Add(new SqlParameter("@SOCloseDate", SoCloseDt == default ? "" : SoCloseDt));
             SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
             SqlParams.Add(new SqlParameter("@DeliveryAddress", model.DeliveryAddress));
             SqlParams.Add(new SqlParameter("@ScheduleNo", model.ScheduleNo));
 
-            SqlParams.Add(new SqlParameter("@ScheduleDate", SchDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchDt.ToString("dd/MMM/yyyy")));
+            SqlParams.Add(new SqlParameter("@ScheduleDate", SchDt == default ? "": SchDt));
             if (model.Mode == "SSA")
             {
                 SqlParams.Add(new SqlParameter("@SSAmmYearCode", model.AmmYearCode));
                 SqlParams.Add(new SqlParameter("@SchApproved", model.SchApproved));
                 SqlParams.Add(new SqlParameter("@SchAppBy", model.SchAppBy));
-                SqlParams.Add(new SqlParameter("@SchApprovalDate", SchAppDate == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchAppDate));
+                SqlParams.Add(new SqlParameter("@SchApprovalDate", SchAppDate == default ? "" : SchAppDate));
                 SqlParams.Add(new SqlParameter("@SchAmendApproved", model.SchAmendApproved));
                 SqlParams.Add(new SqlParameter("@SchAmendApprovedBy", model.SchAmendAppBy));
-                SqlParams.Add(new SqlParameter("@SchAmendApprovalDate", SchAmendAppDate == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchAmendAppDate));
+                SqlParams.Add(new SqlParameter("@SchAmendApprovalDate", SchAmendAppDate == default ? "" : SchAmendAppDate));
                 SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
             }
             else
@@ -795,14 +808,14 @@ internal class SaleScheduleDAL
 
             }
             SqlParams.Add(new SqlParameter("@SchAmendNo", model.SchAmendmentNo));
-            SqlParams.Add(new SqlParameter("@SchAmendDate", SchAmmDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchAmmDt));
+            SqlParams.Add(new SqlParameter("@SchAmendDate", SchAmmDt));
             SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EnterByMachineName));
 
             SqlParams.Add(new SqlParameter("@ModeOfTransport", model.ModeOfTransport??""));
             SqlParams.Add(new SqlParameter("@TentetiveConfirm", model.TentetiveConfirm));
             SqlParams.Add(new SqlParameter("@OrderPriority", model.OrderPriority));
-            SqlParams.Add(new SqlParameter("@SchEffFromDate", SchEffFromDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchEffFromDt));
-            SqlParams.Add(new SqlParameter("@SchEffTillDate", SchEffTillDt == default ? DateTime.Now.ToString("yyyy/MM/dd") : SchEffTillDt.ToString("dd/MMM/yyyy")));
+            SqlParams.Add(new SqlParameter("@SchEffFromDate", SchEffFromDt == default ?"" : SchEffFromDt));
+            SqlParams.Add(new SqlParameter("@SchEffTillDate", SchEffTillDt == default ? " " : SchEffTillDt));
 
             SqlParams.Add(new SqlParameter("@CC", model.CC));
             SqlParams.Add(new SqlParameter("@DTSSGrid", DTSSGrid));

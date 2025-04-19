@@ -307,16 +307,16 @@ namespace eTactWeb.Data.DAL
 
             try
             {
-                DateTime entryDate = new DateTime();
-                DateTime actualEntryDate = new DateTime();
-                DateTime voucherDate = new DateTime();
-                DateTime InsDate = new DateTime();
+                //DateTime entryDate = new DateTime();
+                //DateTime actualEntryDate = new DateTime();
+                //DateTime voucherDate = new DateTime();
+                //DateTime InsDate = new DateTime();
 
-                entryDate = ParseDate(model.EntryDate);
-                actualEntryDate = ParseDate(model.ActualEntryDate);
-                model.BankRECO = DateTime.Now.ToString();
-                voucherDate = ParseDate(model.VoucherDate);
-                InsDate = ParseDate(model.InsDate);
+                var entryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
+                var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                model.BankRECO = DateTime.Now.ToString("dd/MM/yyyy");
+                var voucherDate = CommonFunc.ParseFormattedDate(model.VoucherDate);
+                var InsDate = CommonFunc.ParseFormattedDate(model.InsDate);
 
                 var sqlParams = new List<dynamic>();
                 if (model.Mode == "U" || model.Mode == "V")

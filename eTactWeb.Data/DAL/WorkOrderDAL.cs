@@ -582,8 +582,8 @@ namespace eTactWeb.Data
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
-                SqlParams.Add(new SqlParameter("@FromDate", ParseDate(FromDate)));
-                SqlParams.Add(new SqlParameter("@Todate", ParseDate(ToDate)));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@Todate", CommonFunc.ParseFormattedDate(ToDate)));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_WorkOrder", SqlParams);
             }
@@ -609,8 +609,11 @@ namespace eTactWeb.Data
                         CommandType = CommandType.StoredProcedure
                     };
                     //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
-                    DateTime FromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime FromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                     oCmd.Parameters.AddWithValue("@Flag", "Search");
                     oCmd.Parameters.AddWithValue("@WONO", WONO);
                     oCmd.Parameters.AddWithValue("@SOno", SONO);
@@ -618,8 +621,8 @@ namespace eTactWeb.Data
                     oCmd.Parameters.AddWithValue("@Accountname", AccountName);
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName);
-                    oCmd.Parameters.AddWithValue("@FromDate", FromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", todt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
 
                     //oCmd.Parameters.AddWithValue("@ItemCategory", model.ItemCategory);
