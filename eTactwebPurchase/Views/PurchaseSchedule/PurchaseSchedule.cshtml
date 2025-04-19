@@ -197,7 +197,7 @@
                                             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
                                         </button>
                                     </div>
-                                    
+
                                 }
                             </div>
                         </div>
@@ -424,21 +424,17 @@
 @section Scripts
 {
     <script>
-        $(function () 
-        {
-            if ($('#Mode').val() != "U" && $('#Mode').val() != "PSA" && $('#Mode').val() != "PSU") 
-            {
+        $(function () {
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "PSA" && $('#Mode').val() != "PSU") {
                 FillEntry();
             }
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "C" || $('#Mode').val() == "V" || $('#Mode').val() == "PSA" || $('#Mode').val() == "PSU") 
-            {
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "C" || $('#Mode').val() == "V" || $('#Mode').val() == "PSA" || $('#Mode').val() == "PSU") {
                 /* //GetPOandYC(); */
                 $('#PONO').append("<option selected value='@Model.PONO'>@Model.PONO</option>");
                 $('#POYearCode').append("<option selected value='@Model.POYearCode'>@Model.POYearCode</option>");
                 GetPOItem(parseInt($('#AccountCode').val()), $('#PONO').val(), parseInt($('#POYearCode').val()));
             }
-            if ($('#Mode').val() == "PSA" || $('#Mode').val() == "PSU")
-            {
+            if ($('#Mode').val() == "PSA" || $('#Mode').val() == "PSU") {
                 GetAmendEntry();
                 $('#AccountCode,#PONO,#POYearCode,#SchAmendmentNo').prop("disabled", true);
             }
@@ -501,7 +497,7 @@
                 dataType: "json",
                 data: { "YearCode": $('#YearCode').val() },
                 success: function (result, status, error) {
-                  /*   //console.log(result); */
+                    /*   //console.log(result); */
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#EntryID').val(obj.Result.Table[0].EntryId);
@@ -518,7 +514,7 @@
                 dataType: "json",
                 data: { "YearCode": $('#AmmYearCode').val() },
                 success: function (result, status, error) {
-                  /*   //console.log(result); */
+                    /*   //console.log(result); */
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#AmmEntryId').val(obj.Result.Table[0].EntryId);
@@ -530,7 +526,7 @@
 
         function FillMRPNo() {
 
-           /*  ; */
+            /*  ; */
             $.ajax({
                 url: '@Url.Action("FillMRPNo", "PurchaseSchedule")',
                 type: 'POST',
@@ -572,7 +568,7 @@
                 success: function (data) {
 
 
-                 /*    // Parse JSON if response is a string */
+                    /*    // Parse JSON if response is a string */
                     if (typeof data === "string") {
                         try {
                             data = JSON.parse(data);
@@ -582,9 +578,9 @@
                         }
                     }
 
-                   /*  // Extract the first result from the array */
+                    /*  // Extract the first result from the array */
                     if (data && data.Result && data.Result.length > 0) {
-                        var Year = data.Result[0];  
+                        var Year = data.Result[0];
                         var EntryId = data.Result[0];
                         $("#MRPNoYearCode").prop("disabled", false).val(Year.YearCode).trigger("input");
                         $("#MRPentryId").prop("disabled", false).val(EntryId.EntryId).trigger("input");
@@ -629,23 +625,23 @@
         });
 
         $(document).ready(function () {
-             
+
             $('#AccountCode').select2();
             GetFormRights();
             LockedFinancialYear();
-          /*   //            $( "#datepicker" ).datepicker({
-            //  dateFormat: "MM d, yy"
-            //}); */
-             
+            /*   //            $( "#datepicker" ).datepicker({
+              //  dateFormat: "MM d, yy"
+              //}); */
+
             if ($('#Mode').val() != "U" && $('#Mode').val() != "PSA" && $('#Mode').val() != "PSU" && $('#Mode').val() != "C") {
-             /*    //Setting entry date to current date */
+                /*    //Setting entry date to current date */
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-              /*   //Setting other dates to current date */
+                /*   //Setting other dates to current date */
                 $('#ScheduleDate,#PODate,#SchEffFromDate,#SchEffTillDate,#DeliveryDate,#SchAmendmentDate,#EntryDate')
                     .datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-              /*   //setting no backDate rule */
+                /*   //setting no backDate rule */
                 $('#ScheduleDate,#PODate,#SchEffFromDate,#SchAmendmentDate,#EntryDate')
                     .datepicker("option", "minDate", 'now');
 
@@ -657,11 +653,14 @@
                 $('#SchEffTillDate').datepicker("setDate", addOneMonth);
                 $('#SchEffTillDate').datepicker("option", "minDate", schEffFromDate);
 
-               /*  //setting deliveryDtae in between schefffromdate to scheffTilldate */
+                /*  //setting deliveryDtae in between schefffromdate to scheffTilldate */
                 var effFromDate = $('#SchEffFromDate').datepicker('getDate');
                 var effToDate = $('#SchEffTillDate').datepicker('getDate');
                 $('#DeliveryDate').datepicker("option", "minDate", $('#SchEffFromDate').val());
                 $('#DeliveryDate').datepicker("option", "maxDate", $('#SchEffTillDate').val());
+
+                    FillEntryDate();
+
             }
             else {
 
@@ -678,26 +677,26 @@
                 updateDates(SchEffFromDate, 'SchEffFromDate');
                 updateDates(SchEffTillDate, 'SchEffTillDate');
 
-             /*    //setting no backDate rule */
+                /*    //setting no backDate rule */
                 $('#ScheduleDate,#SchEffFromDate,#SchAmendmentDate,#EntryDate')
                     .datepicker("option", "minDate", 'now');
                 $('#DeliveryDate')
                     .datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-             /*    //adding one month to schEffTOdate */
+                /*    //adding one month to schEffTOdate */
                 var currentDate = new Date();
                 var addOneMonth = new Date();
                 var schEffFromDate = $('#SchEffFromDate').datepicker('getDate');
                 addOneMonth.setMonth(currentDate.getMonth() + 1);
-            /*     //$('#SchEffTillDate').datepicker("setDate", addOneMonth); */
+                /*     //$('#SchEffTillDate').datepicker("setDate", addOneMonth); */
                 $('#SchEffTillDate').datepicker("option", "minDate", schEffFromDate);
 
-           /*      //setting deliveryDtae in between schefffromdate to scheffTilldate */
+                /*      //setting deliveryDtae in between schefffromdate to scheffTilldate */
                 var effFromDate = $('#SchEffFromDate').datepicker('getDate');
                 var effToDate = $('#SchEffTillDate').datepicker('getDate');
                 $('#DeliveryDate').datepicker("option", "minDate", effFromDate);
                 $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
-                 
 
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val()));
 
             }
             FillMRPNo();
@@ -707,44 +706,42 @@
             });
 
 
-           /*  //$('#ScheduleDate').on("change", function () {
-            //     $('#SchEffFromDate').val('').datepicker("option", { "minDate": $('#ScheduleDate').val() });
-            //  });
+            /*  //$('#ScheduleDate').on("change", function () {
+             //     $('#SchEffFromDate').val('').datepicker("option", { "minDate": $('#ScheduleDate').val() });
+             //  });
 
-            //$('#SchEffFromDate').on("change", function () {
-            //     var ll = $(this).val();
-            //    var bb = $('#SchEffFromDate').val();
-            //    var date = new Date(bb);
-            //    date.setDate(date.getDate() + (+30));
-            //    var dd = String(new Date().getDate()).padStart(2, '0');
-            //    var formattedNextMonth = date.getMonth() + 1;
-            //    const mm = formattedNextMonth > 9 ? formattedNextMonth.toString() : '0' + formattedNextMonth.toString();
-            //    var mm1 = date.toLocaleString('en-US', { month: '2-digit' });
-            //    var y = date.getFullYear();
-            //    var someFormattedDate = dd + '/' + mm + '/' + y;
-            //    var someFormattedDate1 = dd + '/' + mm1 + '/' + y;
-            //    $('#SchEffTillDate').val(someFormattedDate);
-            //    $('#SchEffFromDate').val(someFormattedDate1);
-            //    $('#DeliveryDate').val(someFormattedDate1);
-            //    $('#ScheduleDate').val(someFormattedDate1);
-            //    ClearGrid();
-            //});
+             //$('#SchEffFromDate').on("change", function () {
+             //     var ll = $(this).val();
+             //    var bb = $('#SchEffFromDate').val();
+             //    var date = new Date(bb);
+             //    date.setDate(date.getDate() + (+30));
+             //    var dd = String(new Date().getDate()).padStart(2, '0');
+             //    var formattedNextMonth = date.getMonth() + 1;
+             //    const mm = formattedNextMonth > 9 ? formattedNextMonth.toString() : '0' + formattedNextMonth.toString();
+             //    var mm1 = date.toLocaleString('en-US', { month: '2-digit' });
+             //    var y = date.getFullYear();
+             //    var someFormattedDate = dd + '/' + mm + '/' + y;
+             //    var someFormattedDate1 = dd + '/' + mm1 + '/' + y;
+             //    $('#SchEffTillDate').val(someFormattedDate);
+             //    $('#SchEffFromDate').val(someFormattedDate1);
+             //    $('#DeliveryDate').val(someFormattedDate1);
+             //    $('#ScheduleDate').val(someFormattedDate1);
+             //    ClearGrid();
+             //});
 
-            //$('#SchEffTillDate').on("change", function () {
-            //    $('#DeliveryDate').val('').datepicker("option", { "maxDate": $(this).val() });
-            //    ClearGrid();
-            //}); */
+             //$('#SchEffTillDate').on("change", function () {
+             //    $('#DeliveryDate').val('').datepicker("option", { "maxDate": $(this).val() });
+             //    ClearGrid();
+             //}); */
 
             $('.hasDatepicker').datepicker("option", "showAnim", "clip");
 
             $('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
             /* $('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut(); */
             $('.BtnExcel').fadeOut();
-             
+
             /* $('#SchEffFromDate').change(); */
         });
-
-        FillEntryDate();
 
         $('#sendToExcel').click(function () {
 
@@ -774,7 +771,7 @@
 
 
             var formData = new FormData();
-           /*  //formData.append("excelFile", file); */
+            /*  //formData.append("excelFile", file); */
             formData.append("excelFile", fileInput.prop("files")[0]);
             formData.append("PoNo", $('#PONO').val());
             formData.append("POYearcode", $('#POYearCode').val());
@@ -819,8 +816,8 @@
         }
 
 
-      /*   //$("#EntryDate").on('onkeydown', function (e) { e.preventDefault(); var key = event.keyCode || event.charCode; if (key == 8) { return false } else { return false; } });
-        //by sumu */
+        /*   //$("#EntryDate").on('onkeydown', function (e) { e.preventDefault(); var key = event.keyCode || event.charCode; if (key == 8) { return false } else { return false; } });
+          //by sumu */
         AutoComplete('SaleScheduleMain', 'ModeOfTransport', 'ModeOfTransport', null);
         /* //by sumu
         //$('#ScheduleDate,#SchEffTillDate,#SchEffFromDate,#SchAmendmentDate,#DeliveryDate').on('keydown', function (e) {
@@ -836,7 +833,7 @@
         $('.BtnUploadExl').click(function () {
             $(this).val() != null ? $(this).val('') : null;
         });
-       /*  // upload in excel start here */
+        /*  // upload in excel start here */
         $('.BtnUploadExl').change(function () {
             var fileExtension = ['xls', 'xlsx'];
             var filename = $('.BtnUploadExl').val();
@@ -915,11 +912,11 @@
             ClearGrid();
             var effToDate = $('#SchEffTillDate').datepicker('getDate');
             $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
-        /*     //$('#SchEffTillDate').datepicker("option","minDate",effFromDate); */
+            /*     //$('#SchEffTillDate').datepicker("option","minDate",effFromDate); */
         });
 
         function updateDates(dateString, ID) {
-          /*   //const dateString = '04/Aug/2023'; */
+            /*   //const dateString = '04/Aug/2023'; */
             const dateObject = new Date(dateString);
 
             const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
@@ -958,40 +955,40 @@
                     $.notify(errMsg, { position: "top center", className: "error" });
                 }
             });
-           /*  //$.getJSON
-            //    ({
-            //        url: "@Url.Action("GetPONO")",
-            //        data: { AccountCode: $(this).val() },
-            //        success: function (result, status, xhr) {
-            //            if (result != null) {
-            //                var obj = $.parseJSON(result);
-            //                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-            //                    $('#PONO').empty();
-            //                    $('#PONO').append('<option>-Select-</option>');
-            //                    $.each(obj.Result, function (key, val) {
-            //                        $('#PONO').append('<option value="' + val.PONO + '">' + val.PONO + '</option>');
+            /*  //$.getJSON
+             //    ({
+             //        url: "@Url.Action("GetPONO")",
+             //        data: { AccountCode: $(this).val() },
+             //        success: function (result, status, xhr) {
+             //            if (result != null) {
+             //                var obj = $.parseJSON(result);
+             //                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+             //                    $('#PONO').empty();
+             //                    $('#PONO').append('<option>-Select-</option>');
+             //                    $.each(obj.Result, function (key, val) {
+             //                        $('#PONO').append('<option value="' + val.PONO + '">' + val.PONO + '</option>');
 
-            //                    });
-            //                }
-            //                else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
-            //                    $('#PONO').empty();
-            //                    $('#PONO').append('<option>-Select-</option>');
-            //                }
+             //                    });
+             //                }
+             //                else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
+             //                    $('#PONO').empty();
+             //                    $('#PONO').append('<option>-Select-</option>');
+             //                }
 
-            //                $('#POYearCode').empty();
-            //                $('#POYearCode').append('<option>-Select-</option>');
-            //                // $('#POYearCode').change();
+             //                $('#POYearCode').empty();
+             //                $('#POYearCode').append('<option>-Select-</option>');
+             //                // $('#POYearCode').change();
 
-            //                $('#PODATE,#DeliveryAddress').val('');
-            //                $('#ScheduleDate,#SchEffFromDate,#SchEffTillDate').prop('disabled', true);
+             //                $('#PODATE,#DeliveryAddress').val('');
+             //                $('#ScheduleDate,#SchEffFromDate,#SchEffTillDate').prop('disabled', true);
 
-            //                ClearGrid();
-            //            }
-            //        },
-            //        error: function (result, status, xhr) {
-            //            $.notify(result.responseText, "error");
-            //        }
-            //    }); */
+             //                ClearGrid();
+             //            }
+             //        },
+             //        error: function (result, status, xhr) {
+             //            $.notify(result.responseText, "error");
+             //        }
+             //    }); */
             GetPOandYC();
         });
         function GetPOandYC() {
@@ -1017,7 +1014,7 @@
 
                             $('#POYearCode').empty();
                             $('#POYearCode').append('<option>-Select-</option>');
-                           /*  // $('#POYearCode').change(); */
+                            /*  // $('#POYearCode').change(); */
 
                             $('#PODATE,#DeliveryAddress').val('');
                             $('#ScheduleDate,#SchEffFromDate,#SchEffTillDate').prop('disabled', true);
@@ -1145,7 +1142,7 @@
             var month = newDate.getUTCMonth() + 1;
             var year = newDate.getFullYear();
 
-           /*  // Remove leading zero for day and month if greater than 10 */
+            /*  // Remove leading zero for day and month if greater than 10 */
             var formattedDay = (day < 10) ? "0" + day : day.toString();
             var formattedMonth = (month < 10) ? "0" + month : month.toString();
 
@@ -1154,22 +1151,22 @@
         }
 
         function formatDate(d) {
-           /*  //var newDate = new Date(jsonDate); */
+            /*  //var newDate = new Date(jsonDate); */
             var newDate = new Date(d);
             var day = newDate.getDate();
             var month = newDate.getUTCMonth();
-           /*  //  alert(month); */
+            /*  //  alert(month); */
             var year = newDate.getFullYear();
             finaldate = new Date(year, month, day);
             return finaldate;
         }
 
         function formatcurrDate(d1) {
-          /*   //var newDate = new Date(jsonDate);
-            //   var newDate = new Date(d); */
+            /*   //var newDate = new Date(jsonDate);
+              //   var newDate = new Date(d); */
             var day = d1.getDate();
             var month = d1.getUTCMonth();
-          /*   //  alert(month); */
+            /*   //  alert(month); */
             var year = d1.getFullYear();
             finaldate = new Date(year, month, day);
             return finaldate;
@@ -1185,38 +1182,38 @@
 
             return yyyy + '/' + (mmChars[1] ? mm : "0" + mmChars[0]) + '/' + (ddChars[1] ? dd : "0" + ddChars[0]);
         }
-     /*    // PO Year chage */
+        /*    // PO Year chage */
         $('#POYearCode').change(function () {
             $.getJSON({
                 url: "@Url.Action("GetPODATA")",
                 data: { AccountCode: parseInt($('#AccountCode').val()), PONO: $('#PONO').val(), Year: $(this).val() },
                 success: function (result, status, xhr) {
                     if (result != null) {
-                    /*     //var obj = $.parseJSON(result); */
+                        /*     //var obj = $.parseJSON(result); */
                         var obj = jQuery.parseJSON(result);
-                   /*      // alert(new Date()); //working wala alert */
+                        /*      // alert(new Date()); //working wala alert */
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
 
                             $("#PODate").val(formatJSONDate(obj.Result[0].PODate));
                             $('#POCloseDate').val(formatJSONDate(obj.Result[0].POCLOSEDATE));
                             $('#DeliveryAddress').val(obj.Result[0].DeliveryAddress);
-                          /*   //$('#SchEffFromDate').datepicker({ dateFormat: "'dd-mm-y'" }).datepicker("setDate", new Date());   // nusrat
-                            //$('#SchEffFromDate').datepicker({ dateFormat: "'dd/mm/yy'" }).datepicker("setDate", new Date());
-                            ////alert ("1")
-                            //$('#SchAmendmentDate').datepicker({ dateFormat: "dd/mm/yy'" }).datepicker("setDate", new Date());
-                            //$('#ScheduleDate').datepicker({ dateFormat: "dd/mm/yy'" }).datepicker("setDate", new Date());
-                            //$('#DeliveryDate').datepicker({ dateFormat: "dd/mm/yy'" }).datepicker("setDate", new Date()); */
+                            /*   //$('#SchEffFromDate').datepicker({ dateFormat: "'dd-mm-y'" }).datepicker("setDate", new Date());   // nusrat
+                              //$('#SchEffFromDate').datepicker({ dateFormat: "'dd/mm/yy'" }).datepicker("setDate", new Date());
+                              ////alert ("1")
+                              //$('#SchAmendmentDate').datepicker({ dateFormat: "dd/mm/yy'" }).datepicker("setDate", new Date());
+                              //$('#ScheduleDate').datepicker({ dateFormat: "dd/mm/yy'" }).datepicker("setDate", new Date());
+                              //$('#DeliveryDate').datepicker({ dateFormat: "dd/mm/yy'" }).datepicker("setDate", new Date()); */
                             $('#ScheduleDate,#SchEffFromDate,#SchEffTillDate').prop('disabled', false);
 
-                         /*    //$("#ScheduleDate,#SchEffFromDate,#SchEffTillDate,#SchAmendmentDate").datepicker("option", "maxDate", formatDate(obj.Result[0].POCLOSEDATE));
-                            //$("#ScheduleDate,#SchEffFromDate,#SchEffTillDate,#SchAmendmentDate").datepicker("option", "minDate", formatDate(obj.Result[0].PODate)); */
+                            /*    //$("#ScheduleDate,#SchEffFromDate,#SchEffTillDate,#SchAmendmentDate").datepicker("option", "maxDate", formatDate(obj.Result[0].POCLOSEDATE));
+                               //$("#ScheduleDate,#SchEffFromDate,#SchEffTillDate,#SchAmendmentDate").datepicker("option", "minDate", formatDate(obj.Result[0].PODate)); */
 
                             GetPOItem(parseInt($('#AccountCode').val()), $('#PONO').val(), parseInt($('#POYearCode').val()));
                             $('.BtnExcel').fadeIn();
                             $('#SchEffFromDate').change();
                         }
                         else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
-                         /*    //alert('outside 200'); */
+                            /*    //alert('outside 200'); */
                             $('#CustomerOrderNo,#PODate,#DeliveryAddress').val('');
                             $('#ScheduleDate,#SchEffFromDate,#SchEffTillDate').prop('disabled', true);
                             $('#ItemCode,#PartCode').empty();
@@ -1237,7 +1234,7 @@
                 data: { AccountCode: AC, PONO: PONO, Year: Year },
                 success: await function (result, status, xhr) {
                     if (result != null) {
-                     /*    //  alert ("inside fill item") */
+                        /*    //  alert ("inside fill item") */
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#PartCode').empty();
@@ -1357,8 +1354,8 @@
 
             return true;
         }
-         function BackButtonData(event) {
-              
+        function BackButtonData(event) {
+
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
@@ -1511,7 +1508,7 @@
                 $('.btn-outline-primary').prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i> SUBMIT');
             }
             else {
-              /*   //event.stopPropagation(); // Prevent calling function inside this function. */
+                /*   //event.stopPropagation(); // Prevent calling function inside this function. */
                 var form = $(this);
                 var url = form.attr('action'); //get submit url [replace url here if desired]
                 $("form :input").prop("disabled", false);
@@ -1613,10 +1610,10 @@
                         $('#SeqNo').val(obj[0].SeqNo);
 
                         DeleteItemRow(SeqNo);
-                       /*  //if ($('#divPurchaseScheduleGrid').children().length == 0) {
-                        //    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
-                        //    $('#divPurchaseScheduleGrid').html(NoData);
-                        //} */
+                        /*  //if ($('#divPurchaseScheduleGrid').children().length == 0) {
+                         //    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                         //    $('#divPurchaseScheduleGrid').html(NoData);
+                         //} */
 
                     }
                 },

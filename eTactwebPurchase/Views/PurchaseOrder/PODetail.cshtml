@@ -549,7 +549,19 @@
                 $('#AmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AmendmentDt);
 
             }
-            else {
+            else if ($('#Mode').val() == "POA") {
+                $('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                debugger
+                $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#POCloseDate').val()));
+                $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#WEF').val()));
+                $('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
+                $('#WEF,#POCloseDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+
+                $('#AmmDate').datepicker("option", "minDate", parseDateToFormat($('#WEF').val()));
+                $('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));
+
+            }
+            else if ($('#Mode').val() != "POA") {
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 //$("#PODate,#POCloseDate,#AmmDate,#AmendmentDate").datepicker({
                 //    dateFormat: 'dd/mm/yy',
@@ -564,47 +576,46 @@
                 //$('#PODate').datepicker("option", "maxDate", formattedDate2);
                 //$('#PODate').datepicker("option", "minDate", formattedDate1);
 
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    $('#RefDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    $('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+                    $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+                    $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+                    var today = new (Date);
+                    $("#PODate,#POCloseDate,#AmmDate,#AmendmentDate").datepicker({
+                        dateFormat: 'dd/mm/yy',
+                        minDate: today,
+                    });
 
 
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#RefDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                    $("#RefDate").datepicker({ dateFormat: 'dd/mm/yy', maxDate: today });
+                    $('#PODate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
 
-                $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
-                $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
-                var today = new (Date);
-                $("#PODate,#POCloseDate,#AmmDate,#AmendmentDate").datepicker({
-                    dateFormat: 'dd/mm/yy',
-                    minDate: today,
-                });
+                    $('.AF').fadeOut();
+                    $('.Schedule').fadeOut();
 
+                    $('#WEF').on("change", function () {
+                        $('#AmmDate').val('').datepicker("option", { "minDate": $(this).val() });
+                    });
 
-                $("#RefDate").datepicker({ dateFormat: 'dd/mm/yy', maxDate: today });
-                $('#PODate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+                    var currentDate1 = new Date();
 
-                $('.AF').fadeOut();
-                $('.Schedule').fadeOut();
+                    // Calculate the date one year from now
+                    var oneYearFromNow = new Date();
+                    oneYearFromNow.setFullYear(currentDate1.getFullYear() + 1);
 
-                $('#WEF').on("change", function () {
-                    $('#AmmDate').val('').datepicker("option", { "minDate": $(this).val() });
-                });
+                    // Format the date as dd/mm/yy
+                    var formattedDate11 = $.datepicker.formatDate('dd/mm/yy', oneYearFromNow);
 
-                var currentDate1 = new Date();
-
-                // Calculate the date one year from now
-                var oneYearFromNow = new Date();
-                oneYearFromNow.setFullYear(currentDate1.getFullYear() + 1);
-
-                // Format the date as dd/mm/yy
-                var formattedDate11 = $.datepicker.formatDate('dd/mm/yy', oneYearFromNow);
-
-                // Set the date in the datepicker
-                $('#POCloseDate').datepicker({
-                    dateFormat: 'dd/mm/yy'
-                }).datepicker("setDate", formattedDate11);
+                    // Set the date in the datepicker
+                    $('#POCloseDate').datepicker({
+                        dateFormat: 'dd/mm/yy'
+                    }).datepicker("setDate", formattedDate11);
+                
             }
 
             function checkedIndentDetail() {
@@ -1302,6 +1313,7 @@
 
         $('#POCloseDate').change(function () {
             $('#AmmNo').focus();
+            $('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));
         });
 
         $('#AmmDate').on("keydown", function (event) {

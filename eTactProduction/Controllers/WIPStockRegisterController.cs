@@ -37,11 +37,52 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> GetWIPRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo,string WorkCenter)
+        public async Task<IActionResult> GetWIPRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter, int pageNumber = 1, int pageSize = 500, string SearchBox = "")
         {
             var model = new WIPStockRegisterModel();
-            model = await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, WCID, ReportType, BatchNo, UniqueBatchNo, WorkCenter);
+            var fullList = (await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, WCID, ReportType, BatchNo, UniqueBatchNo, WorkCenter))?.WIPStockRegisterDetail ?? new List<WIPStockRegisterDetail>();
             model.ReportMode= ReportType;
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = fullList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+
+                model.WIPStockRegisterDetail = fullList
+                   .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<WIPStockRegisterDetail> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = fullList.ToList();
+                }
+                else
+                {
+                    filteredResults = fullList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = fullList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.WIPStockRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+           
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -49,14 +90,51 @@ namespace eTactWeb.Controllers
                 Size = 1024,
             };
 
-            //var fullList = (await _IStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, StoreId, ReportType, BatchNo, UniqueBatchNo))?.StockRegisterDetail ?? new List<StockRegisterDetail>();
+            _MemoryCache.Set("KeyWIPStockList", fullList, cacheEntryOptions);
+            return PartialView("_WIPStockRegisterGrid", model);
+        }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 500)
+        {
+            WIPStockRegisterModel model = new WIPStockRegisterModel();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_WIPStockRegisterGrid", new List<WIPStockRegisterModel>());
+            }
 
-            //model.TotalRecords = fullList.Count();
-            //model.PageNumber = pageNumber;
-            //model.StockRegisterDetail = fullList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            //model.PageSize = pageSize;
+            if (!_MemoryCache.TryGetValue("KeyWIPStockList", out IList<WIPStockRegisterDetail> wipRegisterViewModel) || wipRegisterViewModel == null)
+            {
+                return PartialView("_WIPStockRegisterGrid", new List<WIPStockRegisterModel>());
+            }
 
-            //_MemoryCache.Set("KeyStockList", fullList, cacheEntryOptions);
+            List<WIPStockRegisterDetail> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = wipRegisterViewModel.ToList();
+            }
+            else
+            {
+                filteredResults = wipRegisterViewModel
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = wipRegisterViewModel.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.WIPStockRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
             return PartialView("_WIPStockRegisterGrid", model);
         }
         public async Task<JsonResult> GetAllWorkCenter()

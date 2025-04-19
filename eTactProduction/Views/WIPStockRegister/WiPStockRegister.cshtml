@@ -204,7 +204,7 @@
             FillWorkCenter();
             $('#WCID').select2();
             $('#ReportType').select2();
-            /* GetWIPRegisterData(); */
+            GetWIPRegisterData();
             AutoComplete('Item_Master_Type', 'ItemType', 'Type_Item', null);
             AutoComplete('VItemGroupMaster', 'ItemGroup', 'Group_name', null);
             AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
@@ -214,6 +214,37 @@
             AutoCompleteRawMaterial('Raw_Material_Stock_Ledger', 'UniqueBatchNo', 'UniqueBatchNo', null, $('#FromDate').val(), $('#ToDate').val(), 0, $('#StoreId').val());
             $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
         });
+
+        function loadPage(pageNumber) {
+            debugger
+            const data = {
+                FromDate: $('#FromDate').val(),
+                ToDate: $('#ToDate').val(),
+                PartCode: $('#PartCode').val(),
+                ItemName: $('#ItemName').val(),
+                ItemGroup: $('#ItemGroupName').val(),
+                ItemType: $('#ItemType').val(),
+                WCID: $('#WCID').val(),
+                ReportType: $('#ReportType').val(),
+                BatchNo: $('#BatchNo').val(),
+                UniqueBatchNo: $('#UniqueBatchNo').val(),
+                WorkCenter: $('#WCID option:checked').text(),
+                SearchBox: $('#search-box').val(),
+                pageNumber: pageNumber
+            };
+
+            $.ajax({
+                type: 'GET',
+                url: '/WIPStockRegister/GetWIPRegisterData',
+                data: data,
+                success: function (result) {
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+                    countAllTotal();
+                }
+            });
+        }
 
         function GetWIPRegisterData() {
 
@@ -232,6 +263,26 @@
             });
         }
 
+        $("#search-box").on("input", function () {
+
+            var searchString = $(this).val().trim();
+
+            $.ajax({
+                url: "/WIPStockRegister/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString },
+                success: function (data) {
+
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(data);
+                    $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+                    countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
 
         function GetServerDate() {
             $.ajax({
@@ -412,7 +463,7 @@
         }
 
 
-        var currentSearchColumn = null;
+        /* var currentSearchColumn = null;
         $(document).on("click", "th[data-columnno]", function () {
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
@@ -427,7 +478,7 @@
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                 }
             });
-        });
+        }); */
 
 
         $(document).on("click", ".sortCol", function () {
