@@ -1427,6 +1427,9 @@
                 statusCode: {
                     207: function () {
                         $.notify('Duplicate Item...!', "info");
+                        $('#PartCode,#ItemCode').val('0');
+                        $('#SchQty,#PendQty,#AltSchQty,#AltPendQty').val('0');
+                        $('#AltUnit,#PendQty').val('0');
                     }
                 },
                 success: function (result, status, xhr) {
@@ -1592,7 +1595,7 @@
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);
                     if (obj != null && obj.length == 1) {
-
+                        debugger
                         $('#PartCode').val(obj[0].ItemCode).change();
                         $('#Unit').val(obj[0].Unit);
                         $('#SchQty').val(obj[0].SchQty);

@@ -3009,7 +3009,10 @@
                             $('#MachineGroup').append('<option disabled>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
                                 $('#MachineGroup').append('<option selected value="' + val.entryid + '">' + val.MachGroup + '</option>');
-                            })
+                            });
+                            $('#MachineGroup option').filter(function () {
+                                return $(this).text() === "Assembly";
+                            }).first().prop('selected', true);
                         }
                     }
                 }
@@ -3139,7 +3142,10 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#Operation').append('<option selected value="' + val.entryid + '">' + val.StageDescription + '</option>');
                                 $('#ProcessId').val($('#Operation').val());
-                            })
+                            });
+                            $('#Operation option').filter(function () {
+                                return $(this).text() === "Assembly ";
+                            }).first().prop('selected', true);
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                                 var operation = $('#ProcessId').val();

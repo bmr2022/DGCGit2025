@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -506,6 +507,8 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                fromBillDate = fromBillDate != null  ? CommonFunc.ParseFormattedDate(fromBillDate) : string.Empty;
+                toBillDate = toBillDate != null ? CommonFunc.ParseFormattedDate(toBillDate) : string.Empty;
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "PopupData"));
                 SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", DebitNotePurchaseRejection));
@@ -582,6 +585,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@PurchaseRejEntryDate", purchaseRejectionEntryDt == default ? string.Empty : purchaseRejectionEntryDt));
                 SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", model.DebitNotePurchaseRejection));
                 SqlParams.Add(new SqlParameter("@PurchaseRejInvoiceNo", model.PurchaseRejectionInvoiceNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@InvoiceNo", model.PurchaseRejectionInvoiceNo ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@InvoiceDate", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
                 SqlParams.Add(new SqlParameter("@InvoiceTime", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
                 SqlParams.Add(new SqlParameter("@SubVoucherName", model.SubVoucherName ?? string.Empty));
@@ -597,6 +601,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CurrencyId", model.CurrencyId ?? 0));
                 SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerm ?? string.Empty));
+                //SqlParams.Add(new SqlParameter("@PaymentTerm", Convert.ToInt32(!string.IsNullOrEmpty(model.PaymentTerm) ? 1 : 0)));
                 //SqlParams.Add(new SqlParameter("@PaymentCreditDay", model.PaymentCreditDay));
                 SqlParams.Add(new SqlParameter("@GSTNO", model.GSTNO ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", model.DomesticExportNEPZ ?? string.Empty));

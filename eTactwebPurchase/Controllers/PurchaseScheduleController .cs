@@ -72,7 +72,7 @@ public class PurchaseScheduleController : Controller
                 }
                 else
                 {
-                    if (PurchaseScheduleGrid.Where(x => x.ItemCode == model.ItemCode).Any() && PurchaseScheduleGrid.Where(x => ParseDate(x.DeliveryDate) == ParseDate(model.DeliveryDate)).Any())
+                    if (PurchaseScheduleGrid.Where(x => x.ItemCode == model.ItemCode && ParseDate(x.DeliveryDate) == ParseDate(model.DeliveryDate)).Any())
                     {
                         return StatusCode(207, "Duplicate");
                     }
