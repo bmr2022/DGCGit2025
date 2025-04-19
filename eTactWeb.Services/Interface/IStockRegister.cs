@@ -11,7 +11,7 @@ namespace eTactWeb.Services.Interface
     public interface IStockRegister
     {
         Task<StockRegisterModel> GetStockRegisterData(string FromDate, string ToDate,string PartCode,string ItemName, string ItemGroup, string ItemType,int StoreId,string ReportType,string BatchNo,string UniquebatchNo);
-        Task<ResponseResult> GetAllItems();
+        Task<ResponseResult> FillItemName();
         Task<ResponseResult> GetAllItemTypes();
         Task<ResponseResult> GetAllItemGroups();
         Task<ResponseResult> GetAllStores();

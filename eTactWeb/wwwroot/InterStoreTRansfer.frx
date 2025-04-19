@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="04/17/2025 13:29:35" ReportInfo.Modified="04/17/2025 16:06:03" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/17/2025 13:29:35" ReportInfo.Modified="04/18/2025 12:27:27" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSUYaL+HMF2TUZfCbtgHNlmQ==">
-      <TableDataSource Name="Table" Alias="SPReportInterStoreTRansfer" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportInterStoreTRansfer @Flag =N'Detail', @InterStrEntryId=@EntryId,@InterStrYearcode=@YearCode">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSAh9VgiBRTD3Enth8uyJ3pg==">
+      <TableDataSource Name="Table" Alias="SPReportInterStoreTRansfer" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportInterStoreTRansfer @Flag =N'Detail', @InterStrEntryId=1,@InterStrYearcode=2025">
         <Column Name="EntryId" DataType="System.Int64"/>
         <Column Name="Yearcode" DataType="System.Int64"/>
         <Column Name="EntryDate" DataType="System.DateTime"/>
@@ -29,8 +29,8 @@
         <Column Name="MAchineName" DataType="System.String"/>
         <Column Name="ReasonOfTransfer" DataType="System.String"/>
         <Column Name="CompName" DataType="System.String"/>
-        <CommandParameter Name="EntryId" Expression="EntryId"/>
-        <CommandParameter Name="YearCode" Expression="YearCode"/>
+        <CommandParameter Name="entryparam" Expression="entryparam"/>
+        <CommandParameter Name="yearparam" DataType="22" Expression="yearparam"/>
       </TableDataSource>
     </MsSqlDataConnection>
     <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
@@ -59,7 +59,7 @@
       <TextObject Name="Text42" Left="529.2" Top="151.2" Width="170.1" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.ToWCName]" Font="Arial, 10pt"/>
       <TextObject Name="Text43" Left="217.35" Top="75.6" Width="321.3" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.CompName]" Font="Arial, 14pt, style=Bold"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="182.22" Width="718.2" Height="37.8">
+    <PageHeaderBand Name="PageHeader1" Top="183.55" Width="718.2" Height="37.8">
       <LineObject Name="Line5" Left="18.9" Top="37.8" Width="680.4"/>
       <LineObject Name="Line6" Left="18.9" Height="37.8"/>
       <LineObject Name="Line7" Left="699.3" Height="37.8"/>
@@ -79,7 +79,7 @@
       <LineObject Name="Line14" Left="500.85" Height="37.8"/>
       <TextObject Name="Text18" Left="500.85" Top="9.45" Width="141.75" Height="18.9" Text="Reason Of Transfer  " HorzAlign="Center" Font="Arial, 10pt"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="222.68" Width="718.2" Height="47.25" Condition="[SPReportInterStoreTRansfer.Partcode]">
+    <GroupHeaderBand Name="GroupHeader1" Top="225.35" Width="718.2" Height="47.25" Condition="[SPReportInterStoreTRansfer.Partcode]">
       <LineObject Name="Line15" Left="18.9" Height="47.25"/>
       <LineObject Name="Line16" Left="699.3" Height="47.25"/>
       <TextObject Name="Text19" Left="18.9" Width="28.35" Height="47.25" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 10pt"/>
@@ -98,10 +98,10 @@
       <LineObject Name="Line23" Left="642.6" Height="47.25"/>
       <LineObject Name="Line17" Left="47.25" Height="47.25"/>
       <LineObject Name="Line24" Left="18.9" Top="47.25" Width="680.4"/>
-      <DataBand Name="Data1" Top="272.6" Width="718.2" DataSource="Table"/>
-      <GroupFooterBand Name="GroupFooter1" Top="275.27" Width="718.2"/>
+      <DataBand Name="Data1" Top="276.6" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="280.6" Width="718.2"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="318.4" Width="718.2" Height="103.95">
+    <ReportSummaryBand Name="ReportSummary1" Top="326.4" Width="718.2" Height="103.95">
       <LineObject Name="Line35" Left="18.9" Height="85.05"/>
       <LineObject Name="Line36" Left="699.3" Height="85.05"/>
       <LineObject Name="Line37" Left="311.85" Height="18.9"/>
@@ -122,7 +122,7 @@
       <TextObject Name="Text38" Left="481.95" Top="28.35" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.UpdateddBy]" Font="Arial, 10pt"/>
       <TextObject Name="Text39" Left="396.9" Top="56.7" Width="103.95" Height="18.9" Text="Updation Date:" Font="Arial, 10pt"/>
       <TextObject Name="Text40" Left="500.85" Top="56.7" Width="198.45" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportInterStoreTRansfer.LastUpdatetionDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
-      <ChildBand Name="Child1" Top="277.93" Width="718.2" Height="37.8" FillUnusedSpace="true">
+      <ChildBand Name="Child1" Top="284.6" Width="718.2" Height="37.8" FillUnusedSpace="true">
         <LineObject Name="Line25" Left="18.9" Height="37.8"/>
         <LineObject Name="Line26" Left="699.3" Height="37.8"/>
         <LineObject Name="Line27" Left="217.35" Height="37.8"/>

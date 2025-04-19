@@ -19,6 +19,7 @@ namespace eTactWeb.Controllers
 {
     public class InterStoreTransferController : Controller
     {
+        public WebReport webReport;
         public IDataLogic IDataLogic { get; }
         public IMemoryCache IMemoryCache { get; }
         public IInterStoreTransfer IInterStore { get; }
@@ -99,41 +100,29 @@ namespace eTactWeb.Controllers
         }
         public IActionResult PrintReport(int EntryId , int YearCode , string PONO = "")
         {
+          
+
+
+
             string my_connection_string;
             string contentRootPath = IWebHostEnvironment.ContentRootPath;
             string webRootPath = IWebHostEnvironment.WebRootPath;
-            //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
-            var webReport = new WebReport();
-
-            //var ReportName = IPurchaseBill.GetReportName();
-
-            webReport.Report.Load(webRootPath + "\\InterStoreTRansfer.frx");
-           // webReport.Report.Load("E:\\etactweb\\eTactWeb\\wwwroot\\InterStoreTRansfer.frx");
-            //if (ReportName.Result.Result.Rows[0].ItemArray[0] != System.DBNull.Value)
-            //{
-            //    webReport.Report.Load(webRootPath + "\\PurchaseBill.frx"); // from database
-            //}
-            //else
-            //{
-            //    webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
-
-            //}
-            //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
-            webReport.Report.SetParameterValue("EntryId", EntryId);
-            webReport.Report.SetParameterValue("YearCode", YearCode);
-            //webReport.Report.SetParameterValue("ponoparam", PONO);
-
-
+            webReport = new WebReport();
+            
+            ViewBag.EntryId = EntryId;
+            ViewBag.YearCode = YearCode;
+            ViewBag.PONO = PONO;
+            webReport.Report.Load(webRootPath + "\\InterStoreTRansfer.frx"); // default report
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
 
 
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
             return View(webReport);
         }
         public async Task<JsonResult> GetFormRights()

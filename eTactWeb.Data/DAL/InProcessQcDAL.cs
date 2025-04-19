@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -199,13 +200,13 @@ namespace eTactWeb.Data.DAL
             {
 
                 var SqlParams = new List<dynamic>();
-                DateTime QcDate = new DateTime();
-                DateTime entryDate= new DateTime();
-                DateTime updationDate=new DateTime();   
+                //DateTime QcDate = new DateTime();
+                //DateTime entryDate= new DateTime();
+                //DateTime updationDate=new DateTime();   
 
-                QcDate = ParseDate(model.QcCleaningDate);
-                entryDate=ParseDate(model.ActualEntrydate);
-                updationDate=ParseDate(model.UpdatedOn);
+               var QcDate = CommonFunc.ParseFormattedDate(model.QcCleaningDate);
+               var entryDate= CommonFunc.ParseFormattedDate(model.ActualEntrydate);
+               var updationDate= CommonFunc.ParseFormattedDate(model.UpdatedOn);
 
                 if (model.Mode == "U" || model.Mode == "V")
                 {
@@ -246,12 +247,13 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime currentDate = DateTime.Today;
-                DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+                var currentDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                DateTime firstDateOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                var firstDateOfMonthh= CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@FromDate", firstDateOfMonth.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@ToDate", currentDate.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@FromDate", firstDateOfMonthh));
+                SqlParams.Add(new SqlParameter("@ToDate", currentDate));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_InProcessQC", SqlParams);
             }
@@ -365,11 +367,13 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

@@ -60,20 +60,32 @@
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label">Part Code</label>
-                                    <input asp-for="PartCode" class="form-control" />
+                                    <select asp-for="PartCode" class="form-select">
+                                        <option value="@Model.ItemCode">-Select-</option>
+                                    </select>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ItemName" class="form-label">Item Name</label>
-                                    <input asp-for="ItemName" class="form-control" />
+                                    <select asp-for="ItemName" class="form-select">
+                                        <option value="@Model.ItemCode">-Select-</option>
+                                    </select>
                                 </div>
+
+
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="ItemGroup" class="form-label">Item group</label>
-                                    <input asp-for="ItemGroup" class="form-control" />
+                                    <label asp-for="ItemGroupName" class="form-label">Item Group</label>
+                                    <select asp-for="ItemGroupName" class="form-select">
+                                        <option value="@Model.ItemGroupName">-Select-</option>
+                                    </select>
                                 </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ItemType" class="form-label">Item Type</label>
-                                    <input asp-for="ItemType" class="form-control" />
+                                    <select asp-for="ItemType" class="form-select">
+                                        <option value="@Model.ItemType">-Select-</option>
+                                    </select>
                                 </div>
+
+
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
@@ -225,6 +237,7 @@
 {
     <script>
         $(function () {
+
             GetServerDate();
             $('#B_SAGrid').addClass('show');//open accordion on ready
             var currentDate = new Date();
@@ -232,14 +245,20 @@
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             $('#StoreId').select2();
             $('#ReportType').select2();
-            FillItemGroup(); //Filling group
-            FillItemType(); //Filling Type/Category
-            FillStore(); //Filling Stores
+            $('#ItemName').select2();
+            $('#PartCode').select2();
+            $('#ItemGroupName').select2();
+            $('#ItemType').select2();
+            FillItemGroup(); 
+            FillItemType();
+            FillItemName();
+            FillPartCode();
+            FillStore();
             AutoCompleteRawMaterial('Raw_Material_Stock_Ledger', 'BatchNo', 'BatchNo', null, $('#FromDate').val(), $('#ToDate').val(), 0, $('#StoreId').val());
             AutoCompleteRawMaterial('Raw_Material_Stock_Ledger', 'UniqueBatchNo', 'UniqueBatchNo', null, $('#FromDate').val(), $('#ToDate').val(), 0, $('#StoreId').val());
             AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
             AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
-            GetStockRegisterData();//INITIAL - ON LOAD METHOD
+            GetStockRegisterData();
         });
 
         function loadPage(pageNumber) {
@@ -249,7 +268,7 @@
                 ToDate: $('#ToDate').val(),
                 PartCode: $('#PartCode').val(),
                 ItemName: $('#ItemName').val(),
-                ItemGroup: $('#ItemGroup').val(),
+                ItemGroup: $('#ItemGroupName').val(),
                 ItemType: $('#ItemType').val(),
                 StoreId: $('#StoreId').val(),
                 ReportType: $('#ReportType').val(),
@@ -363,7 +382,7 @@
                 type: "GET",
                 url: "@Url.Action("GetStockRegisterData")",
                 async: false,
-                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "PartCode": $('#PartCode').val(), "ItemName": $('#ItemName').val(), "ItemGroup": $('#ItemGroup').val(), "ItemType": $('#ItemType').val(), "StoreId": $('#StoreId').val(), "ReportType": $('#ReportType').val(), "BatchNo": $('#BatchNo').val(), "UniqueBatchNo": $('#UniqueBatchNo').val() },
+                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "PartCode": $('#PartCode').val(), "ItemName": $('#ItemName').val(), "ItemGroup": $('#ItemGroupName').val(), "ItemType": $('#ItemType').val(), "StoreId": $('#StoreId').val(), "ReportType": $('#ReportType').val(), "BatchNo": $('#BatchNo').val(), "UniqueBatchNo": $('#UniqueBatchNo').val() },
                 success: function (result, status, error) {
 
                     $('#divStockMainRegister').empty();
@@ -389,7 +408,7 @@
                 success: function (data) {
 
                     $('#divStockMainRegister').empty();
-                    $('#divStockMainRegister').html(result);
+                    $('#divStockMainRegister').html(data);
                     $('#totalRows').text($('#divStockMainRegister tr').length - 1);
                     countAllTotal();
                 },
@@ -399,35 +418,7 @@
             });
         });
 
-        //function FillItems() {
-        //    $.ajax({
-        //        type: "POST",
-        //        url: "@Url.Action("GetAllItems")",
-        //        async: false,
-        //        dataType: "JSON",
-        //        success: function (result, status, error) {
-        //            if (result != null) {
-        //                var obj = $.parseJSON(result);
-        //                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-        //                    $('#ItemName').prop('checked', false);
-        //                    $('#ItemName,#PartCode').empty();
-        //                    $('#PartCode').append('<option value="0" disabled selected>-Select-</option>');
-        //                    $('#ItemName').append('<option value="0" selected>-Select-</option>');
-        //                    $.each(obj.Result, function (index, val) {
-
-        //                        if ($("#PartCode option[value='" + val.Item_Code + "']").length == 0) {
-        //                            $('#PartCode').append('<option value="' + val.Item_Code +
-        //                                '">' + val.PartCode + '</option>');
-        //                        }
-
-        //                        $('#ItemName').append('<option value="' + val.Item_Code +
-        //                            '">' + val.Item_Name + '</option>');
-        //                    });
-        //                }
-        //            }
-        //        }
-        //    });
-        //}
+      
 
         function FillItemGroup() {
             $.ajax({
@@ -439,10 +430,10 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#ItemGroup').empty();
-                            $('#ItemGroup').append('<option value="0" selected>-Select-</option>');
+                            $('#ItemGroupName').empty();
+                            $('#ItemGroupName').append('<option value="" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#ItemGroup').append('<option value="' + val.Group_Code +
+                                $('#ItemGroupName').append('<option value="' + val.Group_name +
                                     '">' + val.Group_name + '</option>');
                             });
                         }
@@ -452,6 +443,7 @@
         }
 
         function FillItemType() {
+            debugger
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetAllItemTypes")",
@@ -462,15 +454,95 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#ItemType').empty();
-                            $('#ItemType').append('<option value="0" selected>-Select-</option>');
+                            $('#ItemType').append('<option value="" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#ItemType').append('<option value="' + val.Entry_id +
+                                $('#ItemType').append('<option value="' + val.Type_Item +
                                     '">' + val.Type_Item + '</option>');
                             });
                         }
                     }
                 }
             });
+        }
+
+        function FillItemName() {
+            $.ajax({
+                url: '@Url.Action("FillItemName", "StockRegister")', // Action that returns FillGroup data
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+                    var ledgerDropdown = $('#ItemName');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+
+                        ledgerDropdown.append('<option value="' + ledger.Item_Name + '">' + ledger.Item_Name + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        function FillPartCode() {
+            $.ajax({
+                url: '@Url.Action("FillItemName", "StockRegister")', // Action that returns FillGroup data
+                type: 'GET',
+                async: false,
+                success: function (response, status, error) {
+
+                    var ledgerDropdown = $('#PartCode');
+                    var obj = $.parseJSON(response);
+                    ledgerDropdown.empty();
+                    ledgerDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, ledger) {
+
+                        ledgerDropdown.append('<option value="' + ledger.PartCode + '">' + ledger.PartCode + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+            var cntId = e.target.id;
+
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
         }
 
         function FillStore() {

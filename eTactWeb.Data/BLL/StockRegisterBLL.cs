@@ -28,9 +28,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _StockRegisterDAL.GetStockRegisterData(FromDate, ToDate,PartCode,ItemName,ItemGroup,ItemType,StoreId,ReportType,BatchNo,UniqueBatchNo);
         }
-        public async Task<ResponseResult> GetAllItems()
+        public async Task<ResponseResult> FillItemName()
         {
-            return await _StockRegisterDAL.GetAllItems();
+            return await _StockRegisterDAL.FillItemName();
         }
         public async Task<ResponseResult> GetAllItemTypes()
         {
