@@ -39,6 +39,7 @@
                 <div class="accordion shadow-lg" id="accordionItemCategory">
                     @* ItemDetail *@
                     <input type="hidden" id="TypeInput" name="Type" asp-for="Type" value="" />
+                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
                     <div class="accordion-item" id="ItemDetailSection" >
                         @* <h2 class="accordion-header" id="H_ItemCategoryDetail">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
@@ -70,8 +71,8 @@
                             <div class="accordion-body">
                                 <div class="row g-2">
 
-                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
-                                    <input type="hidden" value="@Model.Type" asp-for="Type" />
+
+                                  @*   <input type="hidden" value="@Model.Type" asp-for="Type" /> *@
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:200px;">
                                         <label asp-for="AutoGen_PartCode" class="form-label">AutoGen_PartCode</label>
@@ -397,11 +398,11 @@
                     <div class="accordion-item" id="CommonSection">
                         <h2 class="accordion-header" id="H_SAGrid">
                             <button class="accordion-button collapsed text-light pnl4BG bg-gradient" data-type="CommonDetail" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Common Detail</strong>
+                                <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Batch Detail</strong>
                                 <small class="p-3"></small>
                                 <span style="height:25px; margin-left:800px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                                    Update Common Detail
+                                    Update Batch Detail
                                 </span>
                                 
                             </button>
@@ -447,6 +448,13 @@
                                      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="FIFOBasedBatchInventory" class="form-label">FIFO Based BatchInventory</label>
                                         <select class="form-control" asp-for="FIFOBasedBatchInventory"  style="width:100px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="FIFOBasedBatchInventoryInJobWorkIss" class="form-label">FIFO Based BatchInventory JobIssue</label>
+                                        <select class="form-control" asp-for="FIFOBasedBatchInventoryInJobWorkIss" style="width:100px;">
                                             <option value="Y">Yes</option>
                                             <option value="N">No</option>
                                         </select>
@@ -1243,6 +1251,7 @@
             $('#AccSaleBillManualTaxAllowed').select2();
             $('#AccAllowBackdateVoucherEntry').select2();
             $('#AccAllowToChangeVoucherDateInPurchBill').select2();
+            $('#FIFOBasedBatchInventoryInJobWorkIss').select2();
 
             const fieldsToRemoveRules = [
                 'FlagSelectUpdate', 'Module', 'AutoGen_PartCode', 'DuplicateItemName', 'Allow_PO_Print', 'Po_File_Name',
@@ -1281,18 +1290,22 @@
                 'AccAllowtochangeDocumentinPurchaseBill', 'AccPasswordToChangeDocumentinPurchaseBill',
                 'AccAllowtochangeInvoiceNoDateinPurchaseBill','AccPasswordToAllowManualTax','AccSaleBillManualTaxAllowed',
                 'AccAllowBackdateVoucherEntry','AccBackdateVoucherEntryPassword','AccAllowToChangeVoucherDateInPurchBill',
-                'AccPurchaseVoucherPrintoutFilename', 'AccPurchaseBillInvoicePrintoutFilename'
+                'AccPurchaseVoucherPrintoutFilename', 'AccPurchaseBillInvoicePrintoutFilename', 'FIFOBasedBatchInventoryInJobWorkIss'
             ];
 
             fieldsToRemoveRules.forEach(field => {
                 $('#' + field).rules("remove", "required");
             });
 
-            var mode = $("#Mode").val();
-            var selectedType = localStorage.getItem("selectedType");
-          
-            if (mode === "U") {
+             var mode = $("#Mode").val();
+            // var selectedType = localStorage.getItem("selectedType");
 
+           
+            var selectedType = localStorage.getItem("selectedType");
+            console.log("selectedType:", selectedType)
+            debugger
+            if (mode === "U") {
+                debugger
                 $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection,#VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection,#AccountDetail").hide();
 
                 
@@ -1353,7 +1366,7 @@
                 //FillCostCenterID();
             }
         });
-
+        debugger
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".UpdateButton").forEach(button => {
                 button.addEventListener("click", function (event) {

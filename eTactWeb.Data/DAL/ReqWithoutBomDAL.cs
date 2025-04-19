@@ -669,14 +669,15 @@ namespace eTactWeb.Data.DAL
                     //DateTime FromDt = DateTime.Parse(Fromdate, CultureInfo.InvariantCulture);
                     //DateTime todt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-                    DateTime fromDT = new DateTime();
-                    fromDT = ParseDate(Fromdate);
-                    
-                    DateTime toDT = new DateTime();
-                    toDT = ParseDate(Todate);
+                    //DateTime fromDT = new DateTime();
+                    //fromDT = ParseDate(Fromdate);
+
+                    //DateTime toDT = new DateTime();
+                    //toDT = ParseDate(Todate);
 
 
-
+                    var fromDT = CommonFunc.ParseFormattedDate(Fromdate);
+                    var toDT = CommonFunc.ParseFormattedDate(Todate);
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
                     SqlParams.Add(new SqlParameter("@FromDate", fromDT == default ? string.Empty : fromDT));
                     SqlParams.Add(new SqlParameter("@ToDate", toDT == default ? string.Empty : toDT));

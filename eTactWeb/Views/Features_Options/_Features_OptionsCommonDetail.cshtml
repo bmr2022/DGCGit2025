@@ -23,6 +23,9 @@
                 <th data-columnno="6" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> FIFO Based Batch Inventory
                 </th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> FIFO Based Batch Inventory Job Issue
+                </th>
 
             </tr>
         </thead>
@@ -57,6 +60,7 @@
                                            asp-route-AllowBAtchEditable="@item.AllowBAtchEditable"
                                            asp-route-AllowBAtchEditablePAssword="@item.AllowBAtchEditablePAssword"
                                            asp-route-FIFOBasedBatchInventory="@item.FIFOBasedBatchInventory"
+                                           asp-route-FIFOBasedBatchInventoryInJobWorkIss="@item.FIFOBasedBatchInventoryInJobWorkIss"
                                            onclick="confirmEdit(event)">
 
                                             <span class="fa-stack">
@@ -76,8 +80,7 @@
                             <td>@item.AllowBAtchEditable</td>
                             <td>@item.AllowBAtchEditablePAssword</td>
                             <td>@item.FIFOBasedBatchInventory</td>
-
-
+                            <td>@item.FIFOBasedBatchInventoryInJobWorkIss</td>
 
                         </tr>
                     }

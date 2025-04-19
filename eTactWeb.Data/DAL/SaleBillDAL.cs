@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
+using System.Reflection;
 using static eTactWeb.DOM.Models.Common;
 using Common = eTactWeb.Data.Common;
 
@@ -172,6 +173,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
+               
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     model.LastUpdationDate = DateTime.Now.ToString("dd/MM/yyyy");
@@ -538,8 +540,9 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+               
                 var SqlParams = new List<dynamic>();
-                var date = ParseDate((DateTime.Now).ToString());
+                var date = CommonFunc.ParseFormattedDate((DateTime.Now).ToString("dd/MM/yyyy"));
                 SqlParams.Add(new SqlParameter("@accountName", accountName ?? ""));
                 SqlParams.Add(new SqlParameter("@itemName", itemName ?? ""));
                 SqlParams.Add(new SqlParameter("@partcode", partCode ?? ""));
@@ -565,6 +568,8 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                fromdate = CommonFunc.ParseFormattedDate(fromdate);
+                toDate = CommonFunc.ParseFormattedDate(toDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@SummDetail", summaryDetail));

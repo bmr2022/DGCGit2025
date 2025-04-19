@@ -131,8 +131,9 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime entDt = DateTime.Now;
-
+               // DateTime entDt = DateTime.Now;
+                var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                var entDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 //DateTime? entDt = string.IsNullOrEmpty(model.ActualEntryDate)
                 //         ? (DateTime?)null
                 //         : ParseDate(model.ActualEntryDate);
@@ -141,7 +142,7 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@UpdatedByEmpId", model.UpdatedByEmpId));
-                    SqlParams.Add(new SqlParameter("@Updationdate", DateTime.Today));
+                    SqlParams.Add(new SqlParameter("@Updationdate", upDt));
                     SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
                     SqlParams.Add(new SqlParameter("@GroupAccountCode", model.GroupAccountCode));
                     //SqlParams.Add(new SqlParameter("@DrCr", string.IsNullOrEmpty(model.DrCr) ? "" : model.DrCr));
@@ -159,7 +160,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EntryByMachine", string.IsNullOrEmpty(model.EntryByMachine) ? "" : model.EntryByMachine));
                 SqlParams.Add(new SqlParameter("@Amount", model.PreviousAmount == 0 ? 0 : model.PreviousAmount));
                 SqlParams.Add(new SqlParameter("@DrCr", string.IsNullOrEmpty(model.DrCr) ? "" : model.DrCr));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", (object)entDt));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", entDt));
                 SqlParams.Add(new SqlParameter("@PreviousAmount", model.PreviousAmount == 0 ? 0 : model.PreviousAmount));
                 SqlParams.Add(new SqlParameter("@EntryByEmpId", model.EntryByEmpId == 0 ? 0 : model.EntryByEmpId));
                

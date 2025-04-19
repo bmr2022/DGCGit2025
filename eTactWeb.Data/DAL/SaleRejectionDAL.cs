@@ -1,7 +1,9 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System.Globalization;
+using System.Reflection;
 using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.DAL
@@ -54,6 +56,8 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                 fromdate = CommonFunc.ParseFormattedDate(fromdate);
+                toDate = CommonFunc.ParseFormattedDate(toDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDSUMMARY"));
                 SqlParams.Add(new SqlParameter("@CustInvoiceNo", custInvoiceNo ?? ""));
@@ -384,34 +388,36 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdationDate", DateTime.Today));
+                    SqlParams.Add(new SqlParameter("@LastUpdationDate", upDt));
                 }
                 else
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
 
-                DateTime entDt = new DateTime();
-                DateTime GateDate = new DateTime();
-                DateTime MrnDt = new DateTime();
-                DateTime custInvDate = new DateTime();
-                DateTime custInvTime = new DateTime();
-                DateTime actualEntryDt = new DateTime();
-                DateTime lastUpdateDt = new DateTime();
-                DateTime RemovalTime = new DateTime();
+                //DateTime entDt = new DateTime();
+                //DateTime GateDate = new DateTime();
+                //DateTime MrnDt = new DateTime();
+                //DateTime custInvDate = new DateTime();
+                //DateTime custInvTime = new DateTime();
+                //DateTime actualEntryDt = new DateTime();
+                //DateTime lastUpdateDt = new DateTime();
+                //DateTime RemovalTime = new DateTime();
 
-                entDt = ParseDate(model.SaleRejEntryDate);
-                GateDate = ParseDate(model.GateDate);
-                MrnDt = ParseDate(model.MRNDate);
-                custInvDate = ParseDate(model.CustInvoiceDate);
-                custInvTime = ParseDate(model.CustInvoiceTime);
-                actualEntryDt = ParseDate(model.ActualEntryDate);
-                lastUpdateDt = ParseDate(model.LastUpdationDate);
+                var entDt = CommonFunc.ParseFormattedDate(model.SaleRejEntryDate);
+                var GateDate = CommonFunc.ParseFormattedDate(model.GateDate);
+                var MrnDt = CommonFunc.ParseFormattedDate(model.MRNDate);
+                var custInvDate = CommonFunc.ParseFormattedDate(model.CustInvoiceDate);
+                var custInvTime = CommonFunc.ParseFormattedDate(model.CustInvoiceTime);
+                var actualEntryDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var lastUpdateDt = CommonFunc.ParseFormattedDate(model.LastUpdationDate);
+
                 //RemovalTime = ParseDate(model.RemovalDate);
 
 

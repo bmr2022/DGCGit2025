@@ -35,17 +35,17 @@
 
                                 </div>
                             </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:200px;">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:330px;">
                                     <label asp-for="Type" class="form-label">Type</label>
                                     @* <input type="hidden" asp-for="StateName" class="form-control" /> *@
-                                    <select class="form-control" asp-for="Type" required>
+                                <select class="form-control" asp-for="Type" required style="width:300px;">
                                         <option value="">-Select-</option>
                                         <option value="ItemDetail" selected>ItemDetail</option>
                                         <option value="PurchaseDetail">PurchaseDetail</option>
                                     <option value="SaleOrderDetail">SaleOrderDetail</option>
                                     <option value="GateEntryDetail">GateEntryDetail</option>
                                     <option value="MRNDetail">MRNDetail</option>
-                                    <option value="CommonDetail">CommonDetail</option>
+                                    <option value="CommonDetail">BatchDetail</option>
                                     <option value="RequisitionDetail">RequisitionDetail</option>
                                     <option value="VendJwIssRecDetail">VendJwIssRecDetail</option>
                                     <option value="StockAdjDetail">StockAdjDetail</option>

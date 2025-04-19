@@ -154,6 +154,8 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+                var ledgeropnDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate.ToString());
+                var upDt = CommonFunc.ParseFormattedDate(model.UpdationDate.ToString());
                 var sqlParams = new List<dynamic>();
                 if (model.Mode == "U" || model.Mode == "V")
                 {
@@ -162,9 +164,9 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@OpeningYearCode", model.OpeningYearCode));
                     sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
                     sqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
-                    sqlParams.Add(new SqlParameter("@LedgerOpnEntryDate", model.ActualEntryDate));
+                    sqlParams.Add(new SqlParameter("@LedgerOpnEntryDate", ledgeropnDt));
                     sqlParams.Add(new SqlParameter("@OpeningAmt", model.Balance));
-                    sqlParams.Add(new SqlParameter("@LastUpdatedDate", model.UpdationDate));
+                    sqlParams.Add(new SqlParameter("@LastUpdatedDate", upDt));
                     sqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedByEmp));
                     //sqlParams.Add(new SqlParameter("@SeqNo", model.SrNO));
                     sqlParams.Add(new SqlParameter("@dt", GIGrid));
@@ -176,7 +178,7 @@ namespace eTactWeb.Data.DAL
                     sqlParams.Add(new SqlParameter("@OpeningYearCode", model.OpeningYearCode));
                     sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
                     sqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
-                    sqlParams.Add(new SqlParameter("@LedgerOpnEntryDate", model.ActualEntryDate));
+                    sqlParams.Add(new SqlParameter("@LedgerOpnEntryDate", ledgeropnDt));
                     sqlParams.Add(new SqlParameter("@OpeningAmt", model.Balance));
                     //sqlParams.Add(new SqlParameter("@SeqNo", model.SrNO));
                     //sqlParams.Add(new SqlParameter("@AccBookTransEntryId", model.AccBookTransEntryId));

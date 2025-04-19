@@ -85,6 +85,7 @@ namespace eTactWeb.DOM.Models
         public string CheckPOPendFromPOonlyNotFromAmendment { get; set; }
         public string AllowBackDateReceiveChallanEntry { get; set; }
         public string FIFOBasedBatchInventory { get; set; }
+        public string FIFOBasedBatchInventoryInJobWorkIss { get; set; }
         public string AllowGateRateEnabled { get; set; }
         public string AllowBackDateCustomerJWIssue { get; set; }
         public string IssueViaScanningBarcode { get; set; }
