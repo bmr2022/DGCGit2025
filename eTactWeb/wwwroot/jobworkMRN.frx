@@ -1,5 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="04/18/2025 16:46:44" ReportInfo.Modified="04/18/2025 17:09:04" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/18/2025 16:46:44" ReportInfo.Modified="04/18/2025 19:54:06" ReportInfo.CreatorVersion="2023.2.0.0">
+  <ScriptText>using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Data;
+using FastReport;
+using FastReport.Data;
+using FastReport.Dialog;
+using FastReport.Barcode;
+using FastReport.Table;
+using FastReport.Utils;
+
+namespace FastReport
+{
+  public class ReportScript
+  {
+
+   
+  }
+}
+</ScriptText>
   <Styles Name="Standard">
     <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
     <Style Name="Header" Font="Arial, 10pt, style=Bold"/>
@@ -9,8 +32,8 @@
     <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHE+UVBHO0O0957hJkIVu0s2gqsOYKXH+IkHcEIANOn/f5j6CYuoQEiDFM7MGNOYsneTeupHMrcT0zBNm8CNxrKLsCLVfl59uldkGKFs01QHGclYBwLjW13D+cDajcvxqBqBiIhW6FyLrFt/9p6qVRc00zARAxQn+AaC0JRcL+weCRBbaBcrWbCyz7dVTX2As7pVSahrUfiTt3jQhbrnd2g==">
-      <TableDataSource Name="Table" Alias="spreportJobworkMRN" DataType="System.Int32" Enabled="true" SelectCommand="exec spreportJobworkMRN @Mrn_No='VJW2025/00002',@Year_Code =2025">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHE+UVBHO0O0957hJkIVu0qV/4XWB/GakhEImaBTWf/PBnZ6dVGDHB8wwUUSKt1X0+9L+hn2cza0duTWNIj31Xn0a4szJxIzrVv4haSk4cFb+Fb8v2HulAHt7i8LGtQ5Zm3s1njB4RHDBwWB1TQ6PoT1qlNyi/4RZ0E0JpKN0gasD2SiVPmqqlu2JUtpX3EaftXRoFDp9sKEoufBqfhB8cw==">
+      <TableDataSource Name="Table" Alias="spreportJobworkMRN" DataType="System.Int32" Enabled="true" SelectCommand="exec spreportJobworkMRN @Mrn_No=@mrnnoparam,@Year_Code =@yearcodeparam">
         <Column Name="Year_Code" DataType="System.Int64"/>
         <Column Name="Entry_Id" DataType="System.Int64"/>
         <Column Name="Item_Code" DataType="System.Int64"/>
@@ -41,26 +64,95 @@
         <CommandParameter Name="yearcodeparam" Expression="yearcodeparam"/>
       </TableDataSource>
     </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="56.7">
-      <TextObject Name="Text1" Left="207.9" Top="9.45" Width="321.3" Height="37.8" Text="JOBWORK MRN" Font="Arial, 24pt"/>
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="151.2">
+      <TextObject Name="Text1" Top="9.45" Width="708.75" Height="37.8" Text="Material Receipt Note" HorzAlign="Center" Font="Arial, 24pt"/>
+      <TextObject Name="Text12" Left="103.95" Top="75.6" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Account_Name]" Font="Arial, 10pt"/>
+      <TextObject Name="Text13" Left="103.95" Top="103.95" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.PO_Date]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text14" Left="103.95" Top="132.3" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.ChallanNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="396.9" Top="75.6" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Mrn_No]" Font="Arial, 10pt"/>
+      <TextObject Name="Text16" Left="396.9" Top="132.3" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.ChallanDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text17" Left="396.9" Top="103.95" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Entry_Date]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text18" Top="75.6" Width="94.5" Height="18.9" Text="Supplier" Font="Arial, 10pt"/>
+      <TextObject Name="Text19" Top="103.95" Width="94.5" Height="18.9" Text="PO Date" Font="Arial, 10pt"/>
+      <TextObject Name="Text20" Top="132.3" Width="94.5" Height="18.9" Text="Challan No" Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Left="264.6" Top="75.6" Width="94.5" Height="18.9" Text="MRN No" Font="Arial, 10pt"/>
+      <TextObject Name="Text22" Left="264.6" Top="103.95" Width="94.5" Height="18.9" Text="MRN Date" Font="Arial, 10pt"/>
+      <TextObject Name="Text23" Left="264.6" Top="132.3" Width="94.5" Height="18.9" Text="Challan Date" Font="Arial, 10pt"/>
+      <TextObject Name="Text24" Left="510.3" Top="75.6" Width="66.15" Height="18.9" Text="Gate No" Font="Arial, 10pt"/>
+      <TextObject Name="Text25" Left="585.9" Top="75.6" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Gate_No]" Font="Arial, 10pt"/>
+      <TextObject Name="Text26" Left="510.3" Top="103.95" Width="66.15" Height="18.9" Text="PO No" Font="Arial, 10pt"/>
+      <TextObject Name="Text27" Left="585.9" Top="103.95" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.PO_No]" Font="Arial, 10pt"/>
+      <TextObject Name="Text28" Left="510.3" Top="132.3" Width="66.15" Height="18.9" Text="PO Date" Font="Arial, 10pt"/>
+      <TextObject Name="Text29" Left="585.9" Top="132.3" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.PO_Date]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <LineObject Name="Line1" Top="151.2" Width="718.2"/>
+      <LineObject Name="Line34" Height="151.2"/>
+      <LineObject Name="Line35" Left="718.2" Height="151.2"/>
+      <LineObject Name="Line36" Width="718.2"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="60.55" Width="718.2" Height="28.35">
+    <PageHeaderBand Name="PageHeader1" Top="156.26" Width="718.2" Height="28.35">
       <TextObject Name="Text6" Left="56.7" Width="94.5" Height="18.9" Text="Partcode" Font="Arial, 10pt"/>
-      <TextObject Name="Text7" Left="170.1" Width="132.3" Height="18.9" Text="Item Description" Font="Arial, 10pt"/>
-      <TextObject Name="Text9" Left="283.5" Width="132.3" Height="18.9" Text="Bill Qty" Font="Arial, 10pt"/>
-      <TextObject Name="Text10" Left="387.45" Width="132.3" Height="18.9" Text="Accepted Qty" Font="Arial, 10pt"/>
-      <TextObject Name="Text11" Left="481.95" Width="132.3" Height="18.9" Text="Rejected Qty" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="141.75" Width="103.95" Height="18.9" Text="Item Description" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="274.05" Width="56.7" Height="18.9" Text="Bill Qty" Font="Arial, 10pt"/>
+      <TextObject Name="Text10" Left="359.1" Width="56.7" Height="18.9" Text="Ok Qty" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="425.25" Width="66.15" Height="18.9" Text="Rej. Qty" Font="Arial, 10pt"/>
+      <TextObject Name="Text30" Width="94.5" Height="18.9" Text="SR No" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="576.45" Width="37.8" Height="18.9" Text="Rate" Font="Arial, 10pt"/>
+      <TextObject Name="Text32" Left="652.05" Width="56.7" Height="18.9" Text="Amount" Font="Arial, 10pt"/>
+      <TextObject Name="Text35" Left="500.85" Width="66.15" Height="18.9" Text="Hold Qty" Font="Arial, 10pt"/>
+      <LineObject Name="Line24" Left="132.3" Height="28.35"/>
+      <LineObject Name="Line25" Left="47.25" Height="28.35"/>
+      <LineObject Name="Line26" Height="28.35"/>
+      <LineObject Name="Line27" Left="255.15" Height="28.35"/>
+      <LineObject Name="Line28" Left="349.65" Height="28.35"/>
+      <LineObject Name="Line29" Left="425.25" Height="28.35"/>
+      <LineObject Name="Line30" Left="491.4" Height="28.35"/>
+      <LineObject Name="Line31" Left="567" Height="28.35"/>
+      <LineObject Name="Line32" Left="633.15" Height="28.35"/>
+      <LineObject Name="Line33" Left="718.2" Height="28.35"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="92.74" Width="718.2" Height="37.8" Condition="[spreportJobworkMRN.Part_Code]">
-      <TextObject Name="Text2" Left="47.25" Width="103.95" Height="18.9" Text="[spreportJobworkMRN.Part_Code]" Font="Arial, 10pt"/>
-      <TextObject Name="Text3" Left="170.1" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Item_Name]" Font="Arial, 10pt"/>
-      <TextObject Name="Text4" Left="283.5" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Bill_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text5" Left="387.45" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Accepted_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text8" Left="481.95" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Rejected_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
-      <DataBand Name="Data1" Top="134.39" Width="718.2" EvenStyle="EvenRows" DataSource="Table"/>
+    <GroupHeaderBand Name="GroupHeader1" Top="189.68" Width="718.2" Height="28.35" Condition="[spreportJobworkMRN.Part_Code]">
+      <TextObject Name="Text2" Left="47.25" Width="85.05" Height="18.9" Text="[spreportJobworkMRN.Part_Code]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="132.3" Width="122.85" Height="18.9" Text="[spreportJobworkMRN.Item_Name]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="255.15" Width="94.5" Height="18.9" Text="[spreportJobworkMRN.Bill_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text5" Left="349.65" Width="75.6" Height="18.9" Text="[spreportJobworkMRN.Accepted_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text8" Left="425.25" Width="66.15" Height="18.9" Text="[spreportJobworkMRN.Rejected_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text33" Left="576.45" Width="47.25" Height="18.9" Text="[spreportJobworkMRN.Rate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text34" Left="642.6" Width="66.15" Height="18.9" Text="[spreportJobworkMRN.Amount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text36" Left="500.85" Width="56.7" Height="18.9" Text="[spreportJobworkMRN.Hold_Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <LineObject Name="Line2" Width="718.2"/>
+      <LineObject Name="Line13" Height="28.35"/>
+      <LineObject Name="Line14" Left="47.25" Height="28.35"/>
+      <LineObject Name="Line15" Left="132.3" Height="28.35"/>
+      <LineObject Name="Line16" Left="255.15" Height="28.35"/>
+      <LineObject Name="Line17" Left="349.65" Height="28.35"/>
+      <LineObject Name="Line18" Left="425.25" Height="28.35"/>
+      <LineObject Name="Line19" Left="491.4" Height="28.35"/>
+      <LineObject Name="Line20" Left="567" Height="28.35"/>
+      <LineObject Name="Line21" Left="633.15" Height="28.35"/>
+      <LineObject Name="Line22" Left="718.2" Height="28.35"/>
+      <TextObject Name="Text37" Left="9.45" Width="28.35" Height="18.9" Text="[Row#]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <DataBand Name="Data1" Top="223.09" Width="718.2" CanShrink="true" EvenStyle="EvenRows" DataSource="Table"/>
     </GroupHeaderBand>
-    <PageFooterBand Name="PageFooter1" Top="138.23" Width="718.2"/>
+    <ReportSummaryBand Name="ReportSummary1" Top="271.02" Width="718.2" Height="37.8" PrintOn="FirstPage, LastPage">
+      <LineObject Name="Line3" Width="718.2"/>
+      <TextObject Name="Text38" Top="18.9" Width="94.5" Height="18.9" Text="Prepared By" Font="Arial, 10pt"/>
+      <TextObject Name="Text39" Left="245.7" Top="18.9" Width="94.5" Height="18.9" Text="Checked By" Font="Arial, 10pt"/>
+      <TextObject Name="Text40" Left="604.8" Top="18.9" Width="94.5" Height="18.9" Text="Approved By" Font="Arial, 10pt"/>
+      <ChildBand Name="Child1" Top="228.15" Width="718.2" Height="37.8" BeforePrintEvent="Child1_BeforePrint" FillUnusedSpace="true">
+        <LineObject Name="Line4" Height="37.8"/>
+        <LineObject Name="Line5" Left="47.25" Height="37.8"/>
+        <LineObject Name="Line6" Left="132.3" Height="37.8"/>
+        <LineObject Name="Line7" Left="255.15" Height="37.8"/>
+        <LineObject Name="Line8" Left="349.65" Height="37.8"/>
+        <LineObject Name="Line9" Left="425.25" Height="37.8"/>
+        <LineObject Name="Line10" Left="491.4" Height="37.8"/>
+        <LineObject Name="Line11" Left="567" Height="37.8"/>
+        <LineObject Name="Line12" Left="633.15" Height="37.8"/>
+        <LineObject Name="Line23" Left="718.2" Height="37.8"/>
+      </ChildBand>
+    </ReportSummaryBand>
   </ReportPage>
 </Report>

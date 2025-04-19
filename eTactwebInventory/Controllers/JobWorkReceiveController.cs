@@ -264,7 +264,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
+        public IActionResult PrintReport(string MRNNo = "", int YearCode = 0, string PONO = "")
         {
 
             string my_connection_string;
@@ -276,7 +276,7 @@ namespace eTactWeb.Controllers
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-            webReport.Report.SetParameterValue("mrnnoparam", EntryId);
+            webReport.Report.SetParameterValue("mrnnoparam", MRNNo);
             webReport.Report.SetParameterValue("yearcodeparam", YearCode);
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
