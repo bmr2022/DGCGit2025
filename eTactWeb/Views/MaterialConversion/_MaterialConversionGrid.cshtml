@@ -56,10 +56,11 @@ else
             <td>@item.TotalStock</td>
             <td>@item.OriginalQty</td>
             <td>@item.Unit</td>
-            <td>@item.AltStock</td>
+            
 
             <td>@item.AltPartCode <input type="hidden" asp-for="AltItemCode" class="AltItemCode" value="@item.AltItemCode" /></td>
             <td>@item.AltItemName <input type="hidden" asp-for="AltItemCode" class="AltItemCode" value="@item.AltItemCode" /></td>
+            <td>@item.AltStock</td>
 
             <td>@item.AltStoreName<input type="hidden" asp-for="AltStoreId" value="@item.AltStoreId" /></td>
             <td>@item.AltWorkCenterName<input type="hidden" asp-for="AltWCID" value="@item.AltWCID" /></td>

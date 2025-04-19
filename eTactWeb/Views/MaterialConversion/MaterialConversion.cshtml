@@ -706,6 +706,8 @@
             GetOriginalItemName();
             AltFillStoreName();
             FillAltWorkCenterName();
+            GetAltPartCode();
+            GetAltItemName();
 
             GetUnitAltUnit($('#OriginalItemCode').val());
 
@@ -1017,6 +1019,7 @@
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                         var OriginalPartCode = '@Model.OriginalItemCode';
+                      
                         $('#OriginalPartCode').val(OriginalPartCode);
                     }
                 },
@@ -1129,7 +1132,8 @@
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var GroupCode = '@Model.AltItemCode';
-                        $('#AltPartCode').val(GroupCode).trigger("change");
+                       
+                        $('#AltPartCode').val(GroupCode);
                     }
                 },
                 error: function (xhr, status, error) {
@@ -1189,7 +1193,7 @@
                     });
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var GroupCode = '@Model.AltItemCode';
-                        $('#AltItemName').val(GroupCode).trigger("change");
+                        $('#AltItemName').val(GroupCode);
                     }
                 },
                 error: function (xhr, status, error) {
@@ -1203,7 +1207,9 @@
                 GetAltItemName();
            
           
-        })
+        });
+        GetAltPartCode();
+        GetAltItemName();
         function FillEntryID() {
 
             var YearCode = $('#OpeningYearCode').val();
@@ -1907,6 +1913,7 @@
                      
                     var obj = $.parseJSON(data);
                     if (obj != null) {
+                       
                         EditEachItem = true;
                         
                         $('#OriginalPartCode').val(obj[0].OriginalItemCode).trigger("change");
