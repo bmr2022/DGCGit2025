@@ -456,6 +456,8 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                fromdate = CommonFunc.ParseFormattedDate(fromdate);
+                toDate = CommonFunc.ParseFormattedDate(toDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@SummDetail", summaryDetail));
@@ -505,25 +507,27 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
+                var upDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
                     SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdationDate", DateTime.Today));
+                    SqlParams.Add(new SqlParameter("@LastUpdationDate", upDt));
                 }
                 else
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                 }
 
-                DateTime creditNoteInvoiceDt = new DateTime();
-                DateTime creditNoteVoucherDt = new DateTime();
-                DateTime lastUpdationDt = new DateTime();
-                DateTime actualDt = new DateTime();
+                //DateTime creditNoteInvoiceDt = new DateTime();
+                //DateTime creditNoteVoucherDt = new DateTime();
+                //DateTime lastUpdationDt = new DateTime();
+                //DateTime actualDt = new DateTime();
 
-                creditNoteInvoiceDt = CommonFunc. ParseDate(model.CreditNoteInvoiceDate);
-                creditNoteVoucherDt = CommonFunc.ParseDate(model.CreditNoteVoucherDate);
-                actualDt = CommonFunc.ParseDate(model.ActualEntryDate);
+                var creditNoteInvoiceDt = CommonFunc.ParseFormattedDate(model.CreditNoteInvoiceDate);
+                var creditNoteVoucherDt = CommonFunc.ParseFormattedDate(model.CreditNoteVoucherDate);
+                var actualDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var lastUpdationDt= CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
                 SqlParams.Add(new SqlParameter("@CreditNoteEntryId", model.CreditNoteEntryId));
                 SqlParams.Add(new SqlParameter("@CreditNoteYearCode", model.CreditNoteYearCode));

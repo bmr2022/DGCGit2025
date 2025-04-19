@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
@@ -33,6 +34,9 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+
+                 fromDate = CommonFunc.ParseFormattedDate(fromDate);
+                 toDate = CommonFunc.ParseFormattedDate(toDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "PendingMRNForSaleRejection"));
                 SqlParams.Add(new SqlParameter("@fromDate", fromDate));

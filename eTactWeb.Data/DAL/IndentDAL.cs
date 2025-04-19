@@ -594,18 +594,18 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime StDt = new DateTime();
-                StDt = ParseDate(model.FromDate);
-                DateTime EndDt = new DateTime();
-                EndDt = ParseDate(model.ToDate);
+               // DateTime StDt = new DateTime();
+               var StDt = CommonFunc.ParseFormattedDate(model.FromDate);
+               // DateTime EndDt = new DateTime();
+               var EndDt = CommonFunc.ParseFormattedDate(model.ToDate);
                 DateTime now = DateTime.Now;
                 DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
                 var SqlParams = new List<dynamic>();
                 var Flag = "";
 
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
-                SqlParams.Add(new SqlParameter("@FromDate", StDt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@ToDate", EndDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@FromDate", StDt));
+                SqlParams.Add(new SqlParameter("@ToDate", EndDt));
                 SqlParams.Add(new SqlParameter("@IndentNo", model.IndentNo));
                 SqlParams.Add(new SqlParameter("@DeptName", model.DeptName));
                 SqlParams.Add(new SqlParameter("@PartCode", model.PartCode));

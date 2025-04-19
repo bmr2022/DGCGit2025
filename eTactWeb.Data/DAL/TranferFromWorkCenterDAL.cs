@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
+using System.Reflection;
 
 namespace eTactWeb.Data.DAL
 {
@@ -524,11 +525,13 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                //var currentDate = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 DateTime currentDate = DateTime.Today;
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+                var firstDateOfMonthh = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString()); 
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@FromDate", firstDateOfMonth.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@FromDate", firstDateOfMonthh));
                 SqlParams.Add(new SqlParameter("@ToDate", currentDate.ToString("yyyy/MM/dd")));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_TransferMaterialFromWc", SqlParams);
