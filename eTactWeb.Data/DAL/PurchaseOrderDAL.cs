@@ -447,9 +447,11 @@ public class PurchaseOrderDAL
         {
             DateTime now = DateTime.Now;
             DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+            var firstDt = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
+            var endDt = CommonFunc.ParseFormattedDate(now.ToString("dd/MM/yyyy"));
             SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-            SqlParams.Add(new SqlParameter("@StartDate", firstDayOfMonth));
-            SqlParams.Add(new SqlParameter("@EndDate", DateTime.Today));
+            SqlParams.Add(new SqlParameter("@StartDate", firstDt));
+            SqlParams.Add(new SqlParameter("@EndDate", endDt));
             var Result = await _IDataLogic.ExecuteDataTable("SP_PurchaseOrder", SqlParams);
 
             if (((DataTable)Result.Result).Rows.Count > 0)
@@ -524,10 +526,13 @@ public class PurchaseOrderDAL
             SqlParams.Add(new SqlParameter("@PartCode", model.PartCode));
             SqlParams.Add(new SqlParameter("@Branch", model.CC));
             string format = "yyyy-MM-dd HH:mm:ss.fff";
-            DateTime StartDate = new DateTime();
-            DateTime EndDate = new DateTime();
-            StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //DateTime StartDate = new DateTime();
+            //DateTime EndDate = new DateTime();
+            //StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+           var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
+           var EndDate = CommonFunc.ParseFormattedDate(model.ToDate);
+            
             SqlParams.Add(new SqlParameter("@StartDate", StartDate));
             SqlParams.Add(new SqlParameter("@EndDate", EndDate));
             //SqlParams.Add(new SqlParameter("@StartDate", Convert.ToDateTime(model.FromDate).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
@@ -606,8 +611,8 @@ public class PurchaseOrderDAL
                 oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
                 oCmd.Parameters.AddWithValue("@PONo", model.PONo);
                 oCmd.Parameters.AddWithValue("@branch", model.CC);
-                oCmd.Parameters.AddWithValue("@StartDate", Convert.ToDateTime(model.FromDate).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
-                oCmd.Parameters.AddWithValue("@EndDate", Convert.ToDateTime(model.ToDate).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                oCmd.Parameters.AddWithValue("@StartDate", CommonFunc.ParseFormattedDate(model.FromDate));
+                oCmd.Parameters.AddWithValue("@EndDate", CommonFunc.ParseFormattedDate(model.ToDate));
 
 
                 //oCmd.Parameters.AddWithValue("@ItemCategory", model.ItemCategory);
@@ -695,8 +700,8 @@ public class PurchaseOrderDAL
             SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
             SqlParams.Add(new SqlParameter("@PartCode", model.PartCode));
             SqlParams.Add(new SqlParameter("@Branch", model.CC));
-            SqlParams.Add(new SqlParameter("@StartDate", Convert.ToDateTime(model.FromDate).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
-            SqlParams.Add(new SqlParameter("@EndDate", Convert.ToDateTime(model.ToDate).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
+            SqlParams.Add(new SqlParameter("@StartDate", CommonFunc.ParseFormattedDate(model.FromDate)));
+            SqlParams.Add(new SqlParameter("@EndDate", CommonFunc.ParseFormattedDate(model.ToDate)));
             SqlParams.Add(new SqlParameter("@VendorName", model.VendorName));
 
             var ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseOrder", SqlParams);
@@ -1034,6 +1039,7 @@ public class PurchaseOrderDAL
             var SqlParams = new List<dynamic>();
             DateTime now = DateTime.Now;
             DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+            var firstDt=CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
             SqlParams.Add(new SqlParameter("@Flag", "POAMMCOMPLETED"));
             SqlParams.Add(new SqlParameter("@SummaryDetail", summaryDetail));
             SqlParams.Add(new SqlParameter("@OrderType", ""));
@@ -1043,7 +1049,7 @@ public class PurchaseOrderDAL
             SqlParams.Add(new SqlParameter("@ItemName", ""));
             SqlParams.Add(new SqlParameter("@PartCode", ""));
             SqlParams.Add(new SqlParameter("@Branch", ""));
-            SqlParams.Add(new SqlParameter("@StartDate", firstDayOfMonth));
+            SqlParams.Add(new SqlParameter("@StartDate", firstDt));
             SqlParams.Add(new SqlParameter("@EndDate", endDt));
             SqlParams.Add(new SqlParameter("@VendorName", ""));
 
@@ -1120,10 +1126,14 @@ public class PurchaseOrderDAL
 
         try
         {
-            DateTime StartDate = new DateTime();
-            DateTime EndDate = new DateTime();
-            StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //DateTime StartDate = new DateTime();
+            //DateTime EndDate = new DateTime();
+            //StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+           
+           var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
+           var EndDate = CommonFunc.ParseFormattedDate(model.ToDate);
+           
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "UPDPOAMMDASHBOARD"));
             SqlParams.Add(new SqlParameter("@OrderType", model.OrderType));
@@ -1133,8 +1143,8 @@ public class PurchaseOrderDAL
             SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
             SqlParams.Add(new SqlParameter("@PartCode", model.PartCode));
             SqlParams.Add(new SqlParameter("@Branch", model.PartCode));
-            SqlParams.Add(new SqlParameter("@StartDate", StartDate.ToString("yyyy/MM/dd")));
-            SqlParams.Add(new SqlParameter("@EndDate", EndDate.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@StartDate", StartDate));
+            SqlParams.Add(new SqlParameter("@EndDate", EndDate));
             SqlParams.Add(new SqlParameter("@VendorName", model.VendorName));
 
             var ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseOrder", SqlParams);

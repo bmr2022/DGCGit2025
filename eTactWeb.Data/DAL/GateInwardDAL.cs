@@ -242,9 +242,11 @@ public class GateInwardDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 oCmd.Parameters.AddWithValue("@Flag", "Search");
                 oCmd.Parameters.AddWithValue("@VendorName", VendorName);
                 oCmd.Parameters.AddWithValue("@GateNo", Gateno);
@@ -253,8 +255,8 @@ public class GateInwardDAL
                 oCmd.Parameters.AddWithValue("@DocType", DocName);
                 oCmd.Parameters.AddWithValue("@PONo", PONO);
                 oCmd.Parameters.AddWithValue("@ScheduleNo", ScheduleNo);
-                oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
 
 
@@ -358,9 +360,12 @@ public class GateInwardDAL
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                 oCmd.Parameters.AddWithValue("@Flag", "DETAILDASHBOARD");
                 oCmd.Parameters.AddWithValue("@VendorName", VendorName);
                 oCmd.Parameters.AddWithValue("@GateNo", Gateno);
@@ -369,8 +374,8 @@ public class GateInwardDAL
                 oCmd.Parameters.AddWithValue("@DocType", DocName);
                 oCmd.Parameters.AddWithValue("@PONo", PONO);
                 oCmd.Parameters.AddWithValue("@ScheduleNo", ScheduleNo);
-                oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
 
 

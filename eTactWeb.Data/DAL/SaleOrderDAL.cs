@@ -882,11 +882,15 @@ namespace eTactWeb.Data.DAL
                     {
                         DateTime now = DateTime.Now;
                         DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-
+                       
+                        var firstDt = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
+                        var endDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                        
+                        
                         oCmd.CommandType = CommandType.StoredProcedure;
                         oCmd.Parameters.AddWithValue("@Flag", "AMMDASHBOARD");
-                        oCmd.Parameters.AddWithValue("@StartDate", firstDayOfMonth);
-                        oCmd.Parameters.AddWithValue("@EndDate", DateTime.Today);
+                        oCmd.Parameters.AddWithValue("@StartDate", firstDt);
+                        oCmd.Parameters.AddWithValue("@EndDate", endDt);
                         await myConnection.OpenAsync();
                         using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
                         oDataAdapter.Fill(oDataTable);
@@ -923,10 +927,14 @@ namespace eTactWeb.Data.DAL
                 {
                     using (SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection))
                     {
-                        DateTime StartDate = new DateTime();
-                        DateTime EndDate = new DateTime();
-                        StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                        EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        //DateTime StartDate = new DateTime();
+                        //DateTime EndDate = new DateTime();
+                        //StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                       var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
+                       var EndDate = CommonFunc.ParseFormattedDate(model.ToDate);
+                        
+
                         oCmd.CommandType = CommandType.StoredProcedure;
                         oCmd.Parameters.AddWithValue("@Flag", "AMMSEARCH");
                         oCmd.Parameters.AddWithValue("@Branch", model.CustomerName);
@@ -935,8 +943,8 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@OrderType", model.OrderType);
                         oCmd.Parameters.AddWithValue("@SOType", model.SOType);
                         oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
-                        oCmd.Parameters.AddWithValue("@StartDate", StartDate.ToString("yyyy/MM/dd"));
-                        oCmd.Parameters.AddWithValue("@EndDate", EndDate.ToString("yyyy/MM/dd"));
+                        oCmd.Parameters.AddWithValue("@StartDate", StartDate);
+                        oCmd.Parameters.AddWithValue("@EndDate", EndDate);
                         await myConnection.OpenAsync();
                         using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
                         oDataAdapter.Fill(oDataTable);
@@ -975,10 +983,13 @@ namespace eTactWeb.Data.DAL
                 {
                     using (SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection))
                     {
-                        DateTime StartDate = new DateTime();
-                        DateTime EndDate = new DateTime();
-                        StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                        EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        //DateTime StartDate = new DateTime();
+                        //DateTime EndDate = new DateTime();
+                        //StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                        var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
+                        var EndDate = CommonFunc.ParseFormattedDate(model.ToDate);
                         oCmd.CommandType = CommandType.StoredProcedure;
                         oCmd.Parameters.AddWithValue("@Flag", "UPDATEAMMSEARCH");
                         oCmd.Parameters.AddWithValue("@Branch", model.CustomerName);
@@ -987,8 +998,8 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@OrderType", model.OrderType);
                         oCmd.Parameters.AddWithValue("@SOType", model.SOType);
                         oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
-                        oCmd.Parameters.AddWithValue("@StartDate", StartDate.ToString("yyyy/MM/dd"));
-                        oCmd.Parameters.AddWithValue("@EndDate", EndDate.ToString("yyyy/MM/dd"));
+                        oCmd.Parameters.AddWithValue("@StartDate", StartDate);
+                        oCmd.Parameters.AddWithValue("@EndDate", EndDate);
                         await myConnection.OpenAsync();
                         using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
                         oDataAdapter.Fill(oDataTable);
@@ -1052,12 +1063,13 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+                var CurrentDt = CommonFunc.ParseFormattedDate(CurrentDate);
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
                     using (SqlCommand oCmd = new SqlCommand("getExchangeRate", myConnection))
                     {
                         oCmd.CommandType = CommandType.StoredProcedure;
-                        oCmd.Parameters.AddWithValue("@Date", CurrentDate);
+                        oCmd.Parameters.AddWithValue("@Date", CurrentDt);
                         oCmd.Parameters.AddWithValue("@Currency", Currency);
                         await myConnection.OpenAsync();
                         //var val = await oCmd.ExecuteScalarAsync();
@@ -1101,10 +1113,12 @@ namespace eTactWeb.Data.DAL
                     {
                         DateTime now = DateTime.Now;
                         DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+                        var firstDayOfMonthh = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
+                        var endDT = CommonFunc.ParseFormattedDate(EndDate);
                         oCmd.CommandType = CommandType.StoredProcedure;
                         oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-                        oCmd.Parameters.AddWithValue("@StartDate", firstDayOfMonth);
-                        oCmd.Parameters.AddWithValue("@EndDate", EndDate);
+                        oCmd.Parameters.AddWithValue("@StartDate", firstDayOfMonthh);
+                        oCmd.Parameters.AddWithValue("@EndDate", endDT);
                         await myConnection.OpenAsync();
                         using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
                         oDataAdapter.Fill(oDataTable);
@@ -1203,10 +1217,10 @@ namespace eTactWeb.Data.DAL
                     //DateTime EndDate = new DateTime();
                     //StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    string StartDate,EndDate;
+                   // var StartDate,EndDate;
 
-                    StartDate = ConvertToDesiredFormat(model.FromDate);
-                    EndDate = ConvertToDesiredFormat(model.ToDate);
+                    var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
+                    var EndDate = CommonFunc.ParseFormattedDate(model.ToDate);
 
                     using (SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection))
                     {
@@ -1329,6 +1343,8 @@ namespace eTactWeb.Data.DAL
                     {
                         DateTime now = DateTime.Now;
                         DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+                        var firstDayOfMonthh = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
+                        var endDT = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                         oCmd.CommandType = CommandType.StoredProcedure;
                         oCmd.Parameters.AddWithValue("@Flag", "SOAMMCOMPLETEDSEARCH");
                         oCmd.Parameters.AddWithValue("@Branch", model.CustomerName);
@@ -1337,8 +1353,8 @@ namespace eTactWeb.Data.DAL
                         oCmd.Parameters.AddWithValue("@OrderType", model.OrderType);
                         oCmd.Parameters.AddWithValue("@SOType", model.SOType);
                         oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
-                        oCmd.Parameters.AddWithValue("@StartDate",firstDayOfMonth);
-                        oCmd.Parameters.AddWithValue("@EndDate", DateTime.Today);
+                        oCmd.Parameters.AddWithValue("@StartDate", firstDayOfMonthh);
+                        oCmd.Parameters.AddWithValue("@EndDate", endDT);
                         await myConnection.OpenAsync();
                         using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
                         oDataAdapter.Fill(oDataTable);

@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -35,22 +36,27 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 if (Flag == "True")
                 {
-                    DateTime fromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime fromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                    var fromDt = CommonFunc.ParseFormattedDate(Fromdate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
 
                     SqlParams.Add(new SqlParameter("@Flag", "Dashboard"));
-                    SqlParams.Add(new SqlParameter("@FromDate", fromDt.ToString("yyyy/MM/dd")));
-                    SqlParams.Add(new SqlParameter("@ToDate", toDt.ToString("yyyy/MM/dd")));
+                    SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                    SqlParams.Add(new SqlParameter("@ToDate", toDt));
                     SqlParams.Add(new SqlParameter("@DashTypeSummDetail", "SUMMARY"));
                 }
                 else
                 {
-                    DateTime fromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime fromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var fromDt = CommonFunc.ParseFormattedDate(Fromdate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
 
                     SqlParams.Add(new SqlParameter("@Flag", "Dashboard"));
-                    SqlParams.Add(new SqlParameter("@FromDate", fromDt.ToString("yyyy/MM/dd")));
-                    SqlParams.Add(new SqlParameter("@ToDate", toDt.ToString("yyyy/MM/dd")));
+                    SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                    SqlParams.Add(new SqlParameter("@ToDate", toDt));
                     SqlParams.Add(new SqlParameter("@DashTypeSummDetail", "DETAIL"));
                 }
 

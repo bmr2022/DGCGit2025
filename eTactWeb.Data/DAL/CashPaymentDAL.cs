@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
@@ -358,12 +359,15 @@ namespace eTactWeb.Data.DAL
             var responseResult = new ResponseResult();
             try
             {
+
+                var fromDt = CommonFunc.ParseFormattedDate(ToDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@summDetail", "Summary"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
-                SqlParams.Add(new SqlParameter("@fromdate", FromDate));
-                SqlParams.Add(new SqlParameter("@todate", ToDate));
+                SqlParams.Add(new SqlParameter("@fromdate", fromDt));
+                SqlParams.Add(new SqlParameter("@todate", toDt));
                 responseResult = await _IDataLogic.ExecuteDataSet("AccSpVoucherEntry", SqlParams).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -380,6 +384,8 @@ namespace eTactWeb.Data.DAL
             var model = new CashPaymentModel();
             try
             {
+                var fromDt = CommonFunc.ParseFormattedDate(ToDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand oCmd = new SqlCommand("AccSpVoucherEntry", myConnection)
@@ -389,8 +395,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Detail");
                     oCmd.Parameters.AddWithValue("@VoucherType", "Cash-Payment");
-                    oCmd.Parameters.AddWithValue("@fromdate", DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
-                    oCmd.Parameters.AddWithValue("@todate", DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
+                    oCmd.Parameters.AddWithValue("@fromdate", fromDt);
+                    oCmd.Parameters.AddWithValue("@todate", toDt);
 
 
                     await myConnection.OpenAsync();
@@ -443,6 +449,8 @@ namespace eTactWeb.Data.DAL
             var model = new CashPaymentModel();
             try
             {
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand oCmd = new SqlCommand("AccSpVoucherEntry", myConnection)
@@ -452,8 +460,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Summary");
                     oCmd.Parameters.AddWithValue("@VoucherType", "Cash-Payment");
-                    oCmd.Parameters.AddWithValue("@fromdate", DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
-                    oCmd.Parameters.AddWithValue("@todate", DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd"));
+                    oCmd.Parameters.AddWithValue("@fromdate", fromDt);
+                    oCmd.Parameters.AddWithValue("@todate", toDt);
 
 
                     await myConnection.OpenAsync();

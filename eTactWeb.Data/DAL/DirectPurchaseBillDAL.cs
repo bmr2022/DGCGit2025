@@ -430,7 +430,8 @@ public class DirectPurchaseBillDAL
             {
                 DateTime now = DateTime.Now;
                 DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-                DateTime today = DateTime.Now;
+                var firstdayofMonthh = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
+                var today = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                 SqlCommand oCmd = new SqlCommand("SP_DirectPurchaseBillMainDetail", myConnection)
                 {
                     CommandType = CommandType.StoredProcedure
@@ -447,7 +448,7 @@ public class DirectPurchaseBillDAL
                 oCmd.Parameters.AddWithValue("@DocumentType", string.Empty);
                 oCmd.Parameters.AddWithValue("@HSNNo", string.Empty);
                 oCmd.Parameters.AddWithValue("@TypeITEMSERVASSETS", string.Empty);
-                oCmd.Parameters.AddWithValue("@FromDate", firstDayOfMonth);
+                oCmd.Parameters.AddWithValue("@FromDate", firstdayofMonthh);
                 oCmd.Parameters.AddWithValue("@ToDate",today);
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -512,6 +513,8 @@ public class DirectPurchaseBillDAL
         DataSet? oDataSet = new DataSet();
         try
         {
+            var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+            var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
             using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
             {
                 DateTime now = DateTime.Now;
@@ -532,8 +535,8 @@ public class DirectPurchaseBillDAL
                 oCmd.Parameters.AddWithValue("@TypeITEMSERVASSETS", model.TypeITEMSERVASSETS);
                 oCmd.Parameters.AddWithValue("@DocumentType", model.DocumentType);
                 oCmd.Parameters.AddWithValue("@HSNNo", model.HsnNo);
-                oCmd.Parameters.AddWithValue("@FromDate", Convert.ToDateTime(model.FromDate).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
-                oCmd.Parameters.AddWithValue("@ToDate", Convert.ToDateTime(model.ToDate).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                oCmd.Parameters.AddWithValue("@FromDate",fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate",toDt);
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                 {
@@ -598,6 +601,8 @@ public class DirectPurchaseBillDAL
         var model1 = new DPBDashBoard();
         try
         {
+            var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+            var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
             using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
             {
                 DateTime now = DateTime.Now;
@@ -617,8 +622,8 @@ public class DirectPurchaseBillDAL
                 oCmd.Parameters.AddWithValue("@DocumentType", model.DocumentType);
                 oCmd.Parameters.AddWithValue("@HSNNo", model.HsnNo);
                 oCmd.Parameters.AddWithValue("@GSTType", model.GSTType);
-                oCmd.Parameters.AddWithValue("@FromDate", Convert.ToDateTime(model.FromDate).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
-                oCmd.Parameters.AddWithValue("@ToDate", Convert.ToDateTime(model.ToDate).ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                 {

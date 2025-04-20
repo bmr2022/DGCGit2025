@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using eTactWeb.Data.Common;
+using System.Reflection;
 
 namespace eTactWeb.Data.DAL
 {
@@ -451,6 +452,7 @@ namespace eTactWeb.Data.DAL
             var model = new JournalVoucherModel();
             try
             {
+                var voucherDt = CommonFunc.ParseFormattedDate(DataTable.VoucherDate);
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand oCmd = new SqlCommand("AccSpPopupForPendingVouchersToBeAdjusted", myConnection)
@@ -462,7 +464,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@summDetail", DataTable.SumDetail);
                     oCmd.Parameters.AddWithValue("@Accountcode", DataTable.AccountCode);
                     oCmd.Parameters.AddWithValue("@yearcode", DataTable.YearCode);
-                    oCmd.Parameters.AddWithValue("@VoucherDate", DataTable.VoucherDate);
+                    oCmd.Parameters.AddWithValue("@VoucherDate", voucherDt);
                     oCmd.Parameters.AddWithValue("@AccEntryid", DataTable.AccEntryId);
                     oCmd.Parameters.AddWithValue("@Accyearcode", DataTable.AccYearCode);
                     await myConnection.OpenAsync();
@@ -690,12 +692,13 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var vouchDt = CommonFunc.ParseFormattedDate(VoucherDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "SHOWSOYearFORADVANCEPAYMENT"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
                 SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
                 SqlParams.Add(new SqlParameter("@accountcode", accountcode));
-                SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
+                SqlParams.Add(new SqlParameter("@VoucherDate", vouchDt));
                 SqlParams.Add(new SqlParameter("@SONO", SONO));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);

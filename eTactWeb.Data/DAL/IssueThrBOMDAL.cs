@@ -539,8 +539,11 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);                   
+                    //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);                   
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
+
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARDGRID");
                     oCmd.Parameters.AddWithValue("@DashBoardSearchType", DashboardType);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
@@ -612,8 +615,11 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);                   
+                    //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);                   
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
+
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARDGRID");
                     oCmd.Parameters.AddWithValue("@DashBoardSearchType", DashboardType);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
@@ -693,8 +699,11 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);                   
+                    //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);                   
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
+
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARDGRID");
                     oCmd.Parameters.AddWithValue("@DashBoardSearchType", DashboardType);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
@@ -890,9 +899,12 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                     oCmd.Parameters.AddWithValue("@Flag", "Search");
                     oCmd.Parameters.AddWithValue("@REQNo", ReqNo);
                     oCmd.Parameters.AddWithValue("@WCName", WCName);
@@ -901,8 +913,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@itemname", ItemName);
                     oCmd.Parameters.AddWithValue("@IssueSlipNo", IssueSlipNo);
                     oCmd.Parameters.AddWithValue("@DashBoardSearchType", DashboardType);
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
 
 
@@ -990,17 +1002,22 @@ namespace eTactWeb.Data.DAL
                 {
                     //DateTime FromDt = DateTime.Parse(Fromdate, CultureInfo.InvariantCulture);
                     //DateTime todt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var fromDt = CommonFunc.ParseFormattedDate(Fromdate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
+
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
-                    SqlParams.Add(new SqlParameter("@FromDate", Fromdate));
-                    SqlParams.Add(new SqlParameter("@ToDate", Todate));
+                    SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                    SqlParams.Add(new SqlParameter("@ToDate", toDt));
                 }
                 else
                 {
-                    DateTime FromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime todt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime FromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime todt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var fromDt = CommonFunc.ParseFormattedDate(Fromdate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
-                    SqlParams.Add(new SqlParameter("@FromDate", FromDt.ToString("yyyy/MM/dd")));
-                    SqlParams.Add(new SqlParameter("@ToDate", todt.ToString("yyyy/MM/dd")));
+                    SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                    SqlParams.Add(new SqlParameter("@ToDate", toDt));
                 }
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueWithBOM", SqlParams);
@@ -1019,11 +1036,11 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime frmDt = new DateTime();
-                DateTime toDt = new DateTime();
+                //DateTime frmDt = new DateTime();
+                //DateTime toDt = new DateTime();
 
-                frmDt = ParseDate(FromDate);
-                toDt = ParseDate(ToDate);
+               var frmDt = CommonFunc.ParseFormattedDate(FromDate);
+               var toDt = CommonFunc.ParseFormattedDate(ToDate);
 
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
                 SqlParams.Add(new SqlParameter("@FromDate", frmDt == default ? string.Empty : frmDt));

@@ -93,11 +93,15 @@ namespace eTactWeb.Data.DAL
             try
             {
                 DateTime currentDate = DateTime.Today;
+                //DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+
+                var currDt = CommonFunc.ParseFormattedDate(currentDate.ToString("dd/MM/yyyy"));
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+                var firstDt = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@FromDate", firstDateOfMonth.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@Todate", currentDate.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@FromDate", firstDt));
+                SqlParams.Add(new SqlParameter("@Todate", currDt));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
             }
@@ -440,13 +444,15 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "SEARCH"));
                 SqlParams.Add(new SqlParameter("@vendorName", model.VendorName));
                 SqlParams.Add(new SqlParameter("@PONo", model.PONo));
                 SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
-                SqlParams.Add(new SqlParameter("@StartDate", model.FromDate));
-                SqlParams.Add(new SqlParameter("@EndDate", model.ToDate));
+                SqlParams.Add(new SqlParameter("@StartDate", fromDt));
+                SqlParams.Add(new SqlParameter("@EndDate", toDt));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_JobworkIssue", SqlParams);
             }
             catch (Exception ex)

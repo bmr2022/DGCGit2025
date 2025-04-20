@@ -270,6 +270,8 @@ namespace eTactWeb.Data.DAL
             var model = new HRLeaveOpeningDashBoardModel();
             try
             {
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand oCmd = new SqlCommand("HRSPHRLeaveOpeningMainDetail", myConnection)
@@ -277,8 +279,8 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-                    oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
-                    oCmd.Parameters.AddWithValue("@todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@Fromdate", fromDt);
+                    oCmd.Parameters.AddWithValue("@todate", toDt);
                     oCmd.Parameters.AddWithValue("@ReportType", ReportType);
 
 
