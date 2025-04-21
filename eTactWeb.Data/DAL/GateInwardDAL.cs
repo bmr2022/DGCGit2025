@@ -775,7 +775,7 @@ public class GateInwardDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo,int docTypeId, string InvoiceDate)
+    public async Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo,int docTypeId, string InvoiceDate,string ItemService)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -784,7 +784,7 @@ public class GateInwardDAL
 
             SqlParams.Add(new SqlParameter("@Flag", Flag));
 
-            SqlParams.Add(new SqlParameter("@ItemService", "Item"));
+            SqlParams.Add(new SqlParameter("@ItemService", ItemService));
             SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
             if (Flag == "PURCHSCHEDULE")
             {

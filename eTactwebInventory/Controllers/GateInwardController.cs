@@ -599,9 +599,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPOYearList(string accountCode, string yearCode, string poNo, int docTypeId, string invoiceDate)
+        public async Task<JsonResult> GetPOYearList(string accountCode, string yearCode, string poNo, int docTypeId, string invoiceDate,string ItemService)
         {
-            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PENDINGPOLIST", accountCode, yearCode, poNo,  docTypeId, invoiceDate);
+            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PENDINGPOLIST", accountCode, yearCode, poNo,  docTypeId, invoiceDate, ItemService);
             _logger.LogError(JsonConvert.SerializeObject(JSON));
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -740,9 +740,9 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> GetScheDuleByYearCodeandAccountCode(string accountCode, string Year, string poNo, int docTypeId, string InvoiceDate)
+        public async Task<JsonResult> GetScheDuleByYearCodeandAccountCode(string accountCode, string Year, string poNo, int docTypeId, string InvoiceDate,string ItemService)
         {
-            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PURCHSCHEDULE", accountCode, Year, poNo,  docTypeId,  InvoiceDate);
+            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PURCHSCHEDULE", accountCode, Year, poNo,  docTypeId,  InvoiceDate, ItemService);
             _logger.LogError(JsonConvert.SerializeObject(JSON));
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);

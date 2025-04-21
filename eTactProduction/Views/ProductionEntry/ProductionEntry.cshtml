@@ -1326,7 +1326,7 @@
             FillShiftTime();
             CheckAutoOrManual();
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-                alert("inside");
+                /* alert("inside"); */
                 fillEntryandGate();
 
                 var finFromDate = $('#FinFromDate').val();
@@ -1865,7 +1865,7 @@
                 async: false,
                 success: function (result, status, error) {
                      const serverDate = new Date(result);
-                     alert(serverDate);
+                     /* alert(serverDate); */
                      $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", serverDate);
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", serverDate);
                     
