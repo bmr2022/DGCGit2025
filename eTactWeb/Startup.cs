@@ -1,4 +1,4 @@
-using eTactWeb.Data.BLL;
+﻿using eTactWeb.Data.BLL;
 using eTactWeb.Data.Common;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -68,6 +68,54 @@ namespace eTactWeb
             //        endpoints.MapRazorPages();
             //    }
             //);
+
+
+
+            //OLD WORKING WALA
+
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //    app.UseHsts();
+            //}
+            //loggerFactory.AddFile("Logs/eTactWeb-.log");
+            ////app.UseHttpLogging();
+            ////app.UseMiddleware<SessionCheckMiddleware>();
+            ////app.UseOutputCache();
+            ////app.UseStaticFiles();
+            ////app.UseSession();
+            //app.UseExceptionHandler("/Error");
+            //app.UseHttpsRedirection();
+            //app.UseHttpLogging();
+            //app.UseStaticFiles();
+            //app.UseRouting();
+            //app.UseSession();
+            //app.UseMiddleware<SessionCheckMiddleware>();
+            //app.UseOutputCache();
+            //app.UseFastReport();
+            //app.Use(async (context, next) =>
+            //{
+            //    await next.Invoke();
+            //});
+            //app.UseRouting();
+            //app.UseCookiePolicy();
+            //app.UseAuthentication();
+            //app.UseAuthorization();
+            //app.UseStatusCodePages();
+            //app.UseEndpoints
+            //(
+            //    endpoints =>
+            //    {
+            //        endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Login}/{id?}");
+            //        endpoints.MapRazorPages();
+            //    }
+            //);
+
+            //NEW EXPERIEMNT
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -75,45 +123,34 @@ namespace eTactWeb
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production
-                // scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
-
-
             loggerFactory.AddFile("Logs/eTactWeb-.log");
 
-            app.UseHttpLogging();
-            app.UseSession();
-            app.UseMiddleware<SessionCheckMiddleware>();
-            app.UseOutputCache();
+            // --- Middleware Pipeline ---
+            app.UseHttpsRedirection();       // Redirect HTTP → HTTPS (early)
+            app.UseHttpLogging();            // Log HTTP requests (after HTTPS redirection)
+            app.UseStaticFiles();            // Serve static files (before dynamic middleware)
+            app.UseCookiePolicy();           // Apply cookie policies (before auth)
+            app.UseRouting();                // Enable routing (before auth & session)
 
-            app.UseStaticFiles();
+            app.UseSession();                // Enable session (after routing, before auth)
+            app.UseMiddleware<SessionCheckMiddleware>(); // Custom session check (after UseSession)
+            app.UseAuthentication();        // Enable authentication (before authorization)
+            app.UseAuthorization();         // Enable authorization (before endpoints)
+            app.UseOutputCache();            // Output caching (after auth, before endpoints)
+            app.UseFastReport();             // FastReport middleware (after auth)
 
-            app.UseFastReport();
+            app.UseStatusCodePages();        // Handle status codes (before endpoints)
 
-
-            app.Use(async (context, next) =>
+            app.UseEndpoints(endpoints =>    // Map endpoints (last)
             {
-                await next.Invoke();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Login}/{id?}");
+                endpoints.MapRazorPages();
             });
-
-            app.UseRouting();
-            app.UseCookiePolicy();
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseStatusCodePages();
-
-            app.UseEndpoints
-            (
-                endpoints =>
-                {
-                    endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Login}/{id?}");
-                    endpoints.MapRazorPages();
-                }
-            );
         }
 
         public void ConfigureServices(IServiceCollection services)

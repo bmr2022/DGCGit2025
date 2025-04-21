@@ -1224,7 +1224,9 @@
             $('form').submit();
         });
 
-        $(document).ready(function () {
+        $(document).ready(function ()
+        {
+            debugger
             GetFormRights();
             $('#ReqNodiv').hide();
             $('#ReqYeardiv').hide();
@@ -1324,7 +1326,7 @@
             FillShiftTime();
             CheckAutoOrManual();
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-
+                alert("inside");
                 fillEntryandGate();
 
                 var finFromDate = $('#FinFromDate').val();
@@ -1355,13 +1357,7 @@
                 $('#Rejtransferdiv').hide();
 
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-                /* $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
-                /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                $('#EntryDate').datepicker("option", "minDate", formattedDate1);
-                $('#EntryDate').datepicker("option", "maxDate", formattedDate2); */
-                /*   $('#ActualProdDate').datepicker("option", "minDate", formattedDate1);
-                  $('#ActualProdDate').datepicker("option", "maxDate", formattedDate2); */
-                //$('#ProdPlanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
                 $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#ReWorkEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#QcOfferedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -1601,8 +1597,10 @@
                 $('#altProductionentry').hide();
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-                var ActualProdDate = parseDateToFormat($('#ActualProdDate').val().split(" ")[0]);
-                $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualProdDate);
+
+              /*   var ActualProdDate = parseDateToFormat($('#ActualProdDate').val().split(" ")[0]);
+                $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualProdDate); */
+
                 $('#LastUpdatedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 var QcMandatory = "@Model.QCMandatory";
                 $('#QcMandatory').val(QcMandatory);
@@ -1863,11 +1861,15 @@
         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate", "SaleOrder")",
+                url: "@Url.Action("GetServerDate", "ProductionEntry")",
                 async: false,
                 success: function (result, status, error) {
-                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                     const serverDate = new Date(result);
+                     alert(serverDate);
+                     $('#ActualProdDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", serverDate);
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", serverDate);
+                    
+                     
                 }
             });
         }
@@ -2912,17 +2914,18 @@
                             var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2]
                         }
                         $('#ProdEntryAllowBackDate').val(obj.Result[0].ProdEntryAllowBackDate);
-                        if (obj.Result[0].ProdEntryAllowBackDate == 'Y') {
+                        if (obj.Result[0].ProdEntryAllowBackDate == 'Y') 
+                        {
 
-                            $("#ActualProdDate").datepicker("option", "minDate", result);
-                            $("#ActualProdDate").datepicker("option", "maxDate", formattedDate1);
+                        /*     $("#ActualProdDate").datepicker("option", "minDate", result);
+                            $("#ActualProdDate").datepicker("option", "maxDate", formattedDate1); */
                         }
                         var date = new Date();
                         var formattedDate = String(date.getDate()).padStart(2, '0') + '/' + String(date.getMonth() + 1).padStart(2, '0') + '/' + date.getFullYear()
                         if (obj.Result[0].ProdEntryAllowBackDate == 'N') {
 
-                            $("#ActualProdDate").datepicker("option", "minDate", formattedDate);
-                            $("#ActualProdDate").datepicker("option", "maxDate", formattedDate);
+                        /*     $("#ActualProdDate").datepicker("option", "minDate", formattedDate);
+                            $("#ActualProdDate").datepicker("option", "maxDate", formattedDate); */
                         }
                     }
                 }
