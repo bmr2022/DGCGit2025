@@ -360,7 +360,7 @@ namespace eTactWeb.Controllers
             return PartialView("_GateInwardGrid", MainModel);
         }
 
-        public async Task<IActionResult> GetSearchData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new GateInwardDashboard();
@@ -418,7 +418,7 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyGateInardList", modelList, cacheEntryOptions);
             return PartialView("_GateInwardDashboardGrid", model);
         }
-        public async Task<IActionResult> GetDetailData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+        public async Task<IActionResult> GetDetailData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new GateInwardDashboard();
@@ -475,6 +475,50 @@ namespace eTactWeb.Controllers
             };
 
             _MemoryCache.Set("KeyGateInardList", modelList, cacheEntryOptions);
+            return PartialView("_GateInwardDashboardGrid", model);
+        }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+        {
+            GateInwardDashboard model = new GateInwardDashboard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_GateInwardDashboardGrid", new List<GateInwardDashboard>());
+            }
+
+            if (!_MemoryCache.TryGetValue("KeyGateInardList", out IList<GateInwardDashboard> gateInwardDashboard) || gateInwardDashboard == null)
+            {
+                return PartialView("_GateInwardDashboardGrid", new List<GateInwardDashboard>());
+            }
+
+            List<GateInwardDashboard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = gateInwardDashboard.ToList();
+            }
+            else
+            {
+                filteredResults = gateInwardDashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = gateInwardDashboard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.GateDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
             return PartialView("_GateInwardDashboardGrid", model);
         }
         public async Task<JsonResult> ClearGridAjax(int AccountCode, int docType, int ItemCode)
