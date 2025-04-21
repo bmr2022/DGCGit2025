@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -525,14 +526,16 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
                 var SqlParams = new List<dynamic>();
                 if (model.OpeningType == "CustomerJobwork")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                     SqlParams.Add(new SqlParameter("@FormTypeCustJWNRGP", "CustomerJobworkOpening"));
                     SqlParams.Add(new SqlParameter("@SummDetail", "SUMM"));
-                    SqlParams.Add(new SqlParameter("@FromDate", model.FromDate));
-                    SqlParams.Add(new SqlParameter("@ToDate", model.ToDate));
+                    SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                    SqlParams.Add(new SqlParameter("@ToDate", toDt));
                     SqlParams.Add(new SqlParameter("@Accountname", model.VendoreName));
                     SqlParams.Add(new SqlParameter("@partcode", model.PartCode));
                     SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
@@ -580,14 +583,17 @@ namespace eTactWeb.Data.DAL
             {
                 DateTime currentDate = DateTime.Today;
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+                var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
+
                 var SqlParams = new List<dynamic>();
                 if (model.OpeningType == "CustomerJobwork")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                     SqlParams.Add(new SqlParameter("@FormTypeCustJWNRGP", "CustomerJobworkOpening"));
                     SqlParams.Add(new SqlParameter("@SummDetail", "DETAIL"));
-                    SqlParams.Add(new SqlParameter("@FromDate", model.FromDate));
-                    SqlParams.Add(new SqlParameter("@ToDate", model.ToDate));
+                    SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                    SqlParams.Add(new SqlParameter("@ToDate", toDt));
                     SqlParams.Add(new SqlParameter("@Accountname", model.VendoreName));
                     SqlParams.Add(new SqlParameter("@partcode", model.PartCode));
                     SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));

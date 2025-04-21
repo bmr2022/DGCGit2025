@@ -351,7 +351,7 @@ namespace eTactWeb.Controllers
                             return View("Error", Result);
                         }
                     }
-                    return RedirectToAction(nameof(ProductionEntryDashboard));
+                    return RedirectToAction(nameof(ProductionEntry));
                 }
             }
             catch (Exception ex)
@@ -470,12 +470,14 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                DateTime time = DateTime.Now;
-                string format = "MMM ddd d HH:mm yyyy";
-                string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var time = CommonFunc.ParseFormattedDate( DateTime.Now.ToString());
+                //string format = "MMM ddd d HH:mm yyyy";
+                //string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-                var dt = time.ToString(format);
-                return Json(formattedDate);
+                //var dt = time.ToString(format);
+                //return Json(formattedDate);
+                return Json(DateTime.Now.ToString("yyyy-MM-dd"));
+                //return Json(time);
                 //string apiUrl = "https://worldtimeapi.org/api/ip";
 
                 //using (HttpClient client = new HttpClient())
@@ -1275,8 +1277,10 @@ namespace eTactWeb.Controllers
                 var Result = await _IProductionEntry.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;
 
-                model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
-                model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
+                //model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+                //model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
+                model.FromDate = CommonFunc.ParseFormattedDate(new DateTime(now.Year, now.Month, 1).ToString());
+                model.ToDate = CommonFunc.ParseFormattedDate(new DateTime(DateTime.Today.Year + 1, 3, 31).ToString());
 
                 if (Result != null)
                 {

@@ -86,6 +86,7 @@ namespace eTactWeb.Data.DAL
 
             try
             {
+               
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand command = new SqlCommand("SPReportMinMaxLevel", connection)

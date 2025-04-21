@@ -395,15 +395,17 @@ public class PurchaseScheduleDAL
         try
         {
             var SqlParams = new List<dynamic>();
-            DateTime fromDt = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            DateTime toDt = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //DateTime fromDt = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //DateTime toDt = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+            var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
             SqlParams.Add(new SqlParameter("@Flag", "UPDPSAMMDASHBOARD"));
             SqlParams.Add(new SqlParameter("@vendorName", model.VendorName));
             SqlParams.Add(new SqlParameter("@PONo", model.PONO));
             SqlParams.Add(new SqlParameter("@ScheduleNo", model.SchNo));
             SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
-            SqlParams.Add(new SqlParameter("@StartDate", fromDt.ToString("yyyy/MM/dd")));
-            SqlParams.Add(new SqlParameter("@EndDate", toDt.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@StartDate", fromDt));
+            SqlParams.Add(new SqlParameter("@EndDate", toDt));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_PurchaseSchedule", SqlParams);
         }

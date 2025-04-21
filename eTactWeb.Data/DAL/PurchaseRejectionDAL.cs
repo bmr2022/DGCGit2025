@@ -34,8 +34,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "VIEWBYID"));
-                SqlParams.Add(new SqlParameter("@EntryID", ID));
-                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@PurchaseRejEntryId", ID));
+                SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", YearCode));
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
 
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
@@ -68,35 +68,43 @@ namespace eTactWeb.Data.DAL
             DS.Tables[4].TableName = "AdjustmentDetail";
             int cnt = 0;
 
-            model.PurchaseRejEntryId = DS.Tables[0].Rows[0]["PurchaseRejectionEntryId"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseRejectionEntryId"]) : 0;
-            model.PurchaseRejYearCode = DS.Tables[0].Rows[0]["PurchaseRejectionYearCode"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseRejectionYearCode"]) : 0;
-            model.PurchaseRejectionInvoiceNo = DS.Tables[0].Rows[0]["PurchaseRejectionInvoiceNo"]?.ToString();
-            model.PurchaseRejectionInvoiceDate = DS.Tables[0].Rows[0]["PurchaseRejectionInvoiceDate"]?.ToString();
+            model.PurchaseRejEntryId = DS.Tables[0].Rows[0]["PurchaseRejEntryId"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseRejEntryId"]) : 0;
+            model.PurchaseRejYearCode = DS.Tables[0].Rows[0]["PurchaseRejYearCode"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseRejYearCode"]) : 0;
             model.SubVoucherName = DS.Tables[0].Rows[0]["SubVoucherName"]?.ToString();
-            model.PurchaseRejectionVoucherNo = DS.Tables[0].Rows[0]["PurchaseRejectionVoucherNo"]?.ToString();
+            model.DebitNotePurchaseRejection = DS.Tables[0].Rows[0]["DebitNotePurchaseRejection"]?.ToString();
+            model.PurchaseRejEntryDate = DS.Tables[0].Rows[0]["PurchaseRejEntryDate"]?.ToString();
+            model.PurchaseRejectionInvoiceNo = DS.Tables[0].Rows[0]["InvoiceNo"]?.ToString();
+            model.PurchaseRejectionInvoiceDate = DS.Tables[0].Rows[0]["InvoiceDate"]?.ToString();
+            model.PurchaseRejectionVoucherNo = DS.Tables[0].Rows[0]["PurchaserejVoucherNo"]?.ToString();
+            model.VoucherNo = DS.Tables[0].Rows[0]["VoucherNo"]?.ToString();
             //model.PurchaseRejectionVoucherDate = DS.Tables[0].Rows[0]["PurchaseRejectionVoucherDate"]?.ToString();
             //model.AgainstSalePurchase = DS.Tables[0].Rows[0]["AgainstSalePurchase"]?.ToString();
             model.AccountCode = DS.Tables[0].Rows[0]["AccountCode"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"]) : 0;
-            model.AccountName = DS.Tables[0].Rows[0]["CustVendName"]?.ToString();
-            model.CustVendAddress = DS.Tables[0].Rows[0]["CustVendAddress"]?.ToString();
-            model.StateNameofSupply = DS.Tables[0].Rows[0]["StateNameofSupply"]?.ToString();
+            model.AccountName = DS.Tables[0].Rows[0]["VendorName"]?.ToString();
+            model.CustVendAddress = DS.Tables[0].Rows[0]["VendoreAddress"]?.ToString();
+            model.StateNameofSupply = DS.Tables[0].Rows[0]["StateName"]?.ToString();
             model.StateCode = DS.Tables[0].Rows[0]["StateCode"]?.ToString();
-            model.CityofSupply = DS.Tables[0].Rows[0]["CityofSupply"]?.ToString();
-            model.CountryOfSupply = DS.Tables[0].Rows[0]["CountryOfSupply"]?.ToString();
+            model.CityofSupply = DS.Tables[0].Rows[0]["City"]?.ToString();
+            model.CountryOfSupply = DS.Tables[0].Rows[0]["Country"]?.ToString();
+            model.CurrencyId = !string.IsNullOrEmpty(DS.Tables[0].Rows[0]["CurrencyId"].ToString()) && DS.Tables[0].Rows[0]["CurrencyId"].ToString() !=  "0" ? Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString()) : 0;
+            model.ExchangeRate = DS.Tables[0].Rows[0]["ExchangeRate"].ToString();
             model.PaymentTerm = DS.Tables[0].Rows[0]["PaymentTerm"]?.ToString();
             //model.PaymentCreditDay = DS.Tables[0].Rows[0]["PaymentCreditDay"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentCreditDay"]) : 0;
             model.GSTNO = DS.Tables[0].Rows[0]["GSTNO"]?.ToString();
             //model.GstRegUnreg = DS.Tables[0].Rows[0]["GstRegUnreg"]?.ToString();
+            model.DomesticExportNEPZ = DS.Tables[0].Rows[0]["DomesticExportNEPZ"]?.ToString();
             model.Transporter = DS.Tables[0].Rows[0]["Transporter"]?.ToString();
             model.Vehicleno = DS.Tables[0].Rows[0]["Vehicleno"]?.ToString();
+            model.Distance = DS.Tables[0].Rows[0]["Distance"]?.ToString();
             model.BillAmt = DS.Tables[0].Rows[0]["BillAmt"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["BillAmt"]) : 0;
             model.RoundOffAmt = DS.Tables[0].Rows[0]["RoundOffAmt"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAmt"]) : 0;
             model.RoundoffType = DS.Tables[0].Rows[0]["RoundoffType"]?.ToString();
             model.Taxableamt = DS.Tables[0].Rows[0]["Taxableamt"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["Taxableamt"]) : 0;
             model.ToatlDiscountPercent = DS.Tables[0].Rows[0]["ToatlDiscountPercent"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["ToatlDiscountPercent"]) : 0;
             model.TotalDiscountAmount = DS.Tables[0].Rows[0]["TotalDiscountAmount"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["TotalDiscountAmount"]) : 0;
-            model.NetAmt = DS.Tables[0].Rows[0]["NetAmt"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["NetAmt"]) : 0;
-            model.Remark = DS.Tables[0].Rows[0]["Remark"]?.ToString();
+            model.NetAmt = DS.Tables[0].Rows[0]["InvNetAmt"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["InvNetAmt"]) : 0;
+            model.PurchaserejRemark = DS.Tables[0].Rows[0]["PurchaserejRemark"]?.ToString();
+            model.Remark = DS.Tables[0].Rows[0]["PurchaserejRemark"]?.ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"]?.ToString();
             model.Uid = DS.Tables[0].Rows[0]["Uid"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]) : 0;
             //model.ItemService = DS.Tables[0].Rows[0]["ItemService"]?.ToString();
@@ -104,24 +112,25 @@ namespace eTactWeb.Data.DAL
             model.MachineName = DS.Tables[0].Rows[0]["MachineName"]?.ToString();
             model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"]?.ToString();
             model.ActualEnteredBy = DS.Tables[0].Rows[0]["ActualEnteredBy"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]) : 0;
-            model.ActualEnteredByName = DS.Tables[0].Rows[0]["ActualEntryByEmp"]?.ToString();
+            model.ActualEnteredByName = DS.Tables[0].Rows[0]["ActualEntryByEmpName"]?.ToString();
             model.LastUpdatedBy = DS.Tables[0].Rows[0]["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"]) : 0;
-            model.LastUpdatedByName = DS.Tables[0].Rows[0]["LastUpdatedByEmp"]?.ToString();
+            model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdatedByEmpName"]?.ToString();
             model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdationDate"]?.ToString();
             //model.EntryFreezToAccounts = DS.Tables[0].Rows[0]["EntryFreezToAccounts"]?.ToString();
             model.BalanceSheetClosed = DS.Tables[0].Rows[0]["BalanceSheetClosed"]?.ToString();
             //model.EInvNo = DS.Tables[0].Rows[0]["EInvNo"]?.ToString();
             //model.EinvGenerated = DS.Tables[0].Rows[0]["EinvGenerated"]?.ToString();
-            model.AttachmentFilePath1 = DS.Tables[0].Rows[0]["AttachmentFilePath1"]?.ToString();
-            model.AttachmentFilePath2 = DS.Tables[0].Rows[0]["AttachmentFilePath2"]?.ToString();
-            model.AttachmentFilePath3 = DS.Tables[0].Rows[0]["AttachmentFilePath3"]?.ToString();
+            //model.AttachmentFilePath1 = DS.Tables[0].Rows[0]["AttachmentFilePath1"]?.ToString();
+            //model.AttachmentFilePath2 = DS.Tables[0].Rows[0]["AttachmentFilePath2"]?.ToString();
+            //model.AttachmentFilePath3 = DS.Tables[0].Rows[0]["AttachmentFilePath3"]?.ToString();
 
             if (Mode == "U" || Mode == "V")
             {
-                if (DS.Tables[0].Rows[0]["LastUpdatedByEmp"].ToString() != "")
+                if (DS.Tables[0].Rows[0]["UpdatedByEmpName"].ToString() != "")
                 {
+                    model.EntryByempId = !string.IsNullOrEmpty(DS.Tables[0].Rows[0]["EntryByempId"].ToString()) ? Convert.ToInt32(DS.Tables[0].Rows[0]["EntryByempId"].ToString()) : 0;
                     model.LastUpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString());
-                    model.LastUpdatedByName = DS.Tables[0].Rows[0]["LastUpdatedByEmp"].ToString();
+                    model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdatedByEmpName"].ToString();
                     model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdationDate"].ToString();
                 }
             }
@@ -590,7 +599,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@InvoiceTime", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
                 SqlParams.Add(new SqlParameter("@SubVoucherName", model.SubVoucherName ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@PurchaserejVoucherNo", model.PurchaseRejectionVoucherNo ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@VoucherNo", model.PurchaseRejectionVoucherNo ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@VoucherNo", model.VoucherNo ?? string.Empty));
                 //SqlParams.Add(new SqlParameter("@VoucherDate", purchaseRejectionInvoiceDt == default ? string.Empty : purchaseRejectionInvoiceDt));
                 SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
                 SqlParams.Add(new SqlParameter("@VendoreAddress", model.CustVendAddress ?? string.Empty));

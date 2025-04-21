@@ -252,18 +252,22 @@ internal class SaleScheduleDAL
             {
                 using (SqlCommand oCmd = new SqlCommand("SP_SaleSchedule", myConnection))
                 {
-                    DateTime StartDate = new DateTime();
-                    DateTime EndDate = new DateTime();
-                    StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime StartDate = new DateTime();
+                    //DateTime EndDate = new DateTime();
+                    //StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                   var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
+                   var EndDate = CommonFunc.ParseFormattedDate(model.ToDate);
+                   
+                    
                     oCmd.CommandType = CommandType.StoredProcedure;
                     oCmd.Parameters.AddWithValue("@Flag", "SSAMMDASHBOARD");
                     oCmd.Parameters.AddWithValue("@CustomerName", model.CustomerName);
                     oCmd.Parameters.AddWithValue("@CustomerOrderNo", model.CustomerOrderNo);
                     oCmd.Parameters.AddWithValue("@SONo", model.SONO);
                     oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
-                    oCmd.Parameters.AddWithValue("@StartDate", StartDate.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@EndDate", EndDate.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@StartDate", StartDate);
+                    oCmd.Parameters.AddWithValue("@EndDate", EndDate);
                     await myConnection.OpenAsync();
                     using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
                     oDataAdapter.Fill(oDataTable);
@@ -300,18 +304,20 @@ internal class SaleScheduleDAL
             {
                 using (SqlCommand oCmd = new SqlCommand("SP_SaleSchedule", myConnection))
                 {
-                    DateTime StartDate = new DateTime();
-                    DateTime EndDate = new DateTime();
-                    StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime StartDate = new DateTime();
+                    //DateTime EndDate = new DateTime();
+                    //StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
+                    var EndDate = CommonFunc.ParseFormattedDate(model.ToDate);
                     oCmd.CommandType = CommandType.StoredProcedure;
                     oCmd.Parameters.AddWithValue("@Flag", "UPDAMMSSDASHBOARD");
                     oCmd.Parameters.AddWithValue("@CustomerName", model.CustomerName);
                     oCmd.Parameters.AddWithValue("@CustomerOrderNo", model.CustomerOrderNo);
                     oCmd.Parameters.AddWithValue("@SONo", model.SONO);
                     oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
-                    oCmd.Parameters.AddWithValue("@StartDate", StartDate.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@EndDate", EndDate.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@StartDate", StartDate);
+                    oCmd.Parameters.AddWithValue("@EndDate", EndDate);
                     await myConnection.OpenAsync();
                     using SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd);
                     oDataAdapter.Fill(oDataTable);
@@ -368,10 +374,12 @@ internal class SaleScheduleDAL
         {
             DateTime now = DateTime.Parse(DateTime.Now.ToString("dd/MMM/yyyy"));
             DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+            var firstDt = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
+            var endDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-            SqlParams.Add(new SqlParameter("@StartDate", firstDayOfMonth));
-            SqlParams.Add(new SqlParameter("@EndDate", now));
+            SqlParams.Add(new SqlParameter("@StartDate", firstDt));
+            SqlParams.Add(new SqlParameter("@EndDate", endDt));
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleSchedule", SqlParams);
         }
@@ -421,10 +429,12 @@ internal class SaleScheduleDAL
         {
             DateTime now = DateTime.Now;
             DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+            var firstDt = CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy"));
+            var endDt = CommonFunc.ParseFormattedDate(ToDate);
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "SSAMMDASHBOARD"));
             SqlParams.Add(new SqlParameter("@StartDate", firstDayOfMonth));
-            SqlParams.Add(new SqlParameter("@EndDate", ToDate));
+            SqlParams.Add(new SqlParameter("@EndDate", endDt));
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleSchedule", SqlParams);
         }
@@ -451,11 +461,12 @@ internal class SaleScheduleDAL
             {
                 flag = "SEARCH";
             }
-            DateTime StartDate = new DateTime();
+            //DateTime StartDate = new DateTime();
             DateTime EndDate = new DateTime();
-            StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+           var StartDate = CommonFunc.ParseFormattedDate(model.FromDate);
             EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             EndDate = EndDate.AddDays(1);
+            var EndDt=CommonFunc.ParseFormattedDate(EndDate.ToString("dd/MM/yyyy"));
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", flag));
             SqlParams.Add(new SqlParameter("@CustomerName", model.CustomerName));
@@ -464,8 +475,8 @@ internal class SaleScheduleDAL
             SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
             //SqlParams.Add(new SqlParameter("@StartDate", model.FromDate));
             //SqlParams.Add(new SqlParameter("@EndDate", model.ToDate));
-            SqlParams.Add(new SqlParameter("@StartDate", StartDate.ToString("yyyy/MM/dd")));
-            SqlParams.Add(new SqlParameter("@EndDate", EndDate.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@StartDate", StartDate));
+            SqlParams.Add(new SqlParameter("@EndDate", EndDt));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleSchedule", SqlParams);
         }

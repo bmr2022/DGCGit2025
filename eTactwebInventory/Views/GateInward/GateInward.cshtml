@@ -430,6 +430,7 @@
                                             </thead>
                                             <tbody id="divSaleItemGrid">
                                                 <partial name="_GateInwardGrid" />
+                                               
                                             </tbody>
                                         </table>
                                     </div>
@@ -890,9 +891,9 @@
                 console.log(formattedDate2);
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-
+/* 
                 $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
-                $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+                $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2)); */
             }
             $('#AccountCode').select2();
             $('#PartCode').select2();
@@ -1365,6 +1366,7 @@
             var yearCode = $('#YearCode').val();
             var poNo = $('#PONO').val();
             var docTypeId = $("#docTypeId").val();
+            var ItemService = $("#Types").val();
             
 ;            $('#ItemName,#Unit,#Qty,#Rate,#SchNo,#SchYearCode,#PartCode').empty();
             $('#PODate,#ScheduleDate,#Unit,#Qty,#Rate,#SchNo,#SchYearCode,#AltUnit,#PendQty,#AltQty').val("");
@@ -1372,7 +1374,7 @@
                 type: "POST",
                 url: "@Url.Action("GetPOYearList")",
                 async: false,
-                data: { accountCode: accountCode, invoiceDate: invoiceDate, yearCode: yearCode, poNo: poNo, docTypeId: docTypeId},
+                data: { accountCode: accountCode, invoiceDate: invoiceDate, yearCode: yearCode, poNo: poNo, docTypeId: docTypeId, ItemService: ItemService },
                 dataType: "json",
                 success: function (data, status, error) {
                     if (data != null) {
@@ -1555,11 +1557,11 @@
         }
 
         function EnableandBindSchedule() {
-
+            var ItemService = $("#Types").val();
             $.ajax({
                 url: "@Url.Action("GetScheDuleByYearCodeandAccountCode")",
                 async: false,
-                data: { AccountCode: parseInt($('#AccountCode').val()), PONO: ($('#PONO').val()), Year: $('#PoYear').val() },
+                data: { AccountCode: parseInt($('#AccountCode').val()), PONO: ($('#PONO').val()), Year: $('#PoYear').val(), ItemService: ItemService },
                 success: function (result, status, xhr) {
 
                     if (result != null) {
@@ -2608,6 +2610,7 @@
             }
         }
 
+          
         function PressBack() {
 
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());

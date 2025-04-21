@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 using eTactWeb.Data.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -310,6 +311,8 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
                 var SqlParams = new List<dynamic>();
                 var Flag = "";
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
@@ -319,8 +322,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ToStoreName", model.ToStorename));
                 SqlParams.Add(new SqlParameter("@ToWCName", model.ToWCName));
                 SqlParams.Add(new SqlParameter("@Batchno", model.Batchno));
-                SqlParams.Add(new SqlParameter("@FromDate", model.FromDate));
-                SqlParams.Add(new SqlParameter("@ToDate", model.ToDate));
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_InterStoreTransferMainDetail", SqlParams);
             }

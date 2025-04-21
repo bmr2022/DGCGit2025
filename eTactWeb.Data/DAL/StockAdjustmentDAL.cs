@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 using  eTactWeb.Data.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -206,9 +207,12 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                //DateTime currentDate = DateTime.Today;
+                //DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 DateTime currentDate = DateTime.Today;
+                var currDt = CommonFunc.ParseFormattedDate(currentDate.ToString("dd/MM/yyyy"));
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
-              
+                var firstDt = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
                 var Flag = "";
                 if (model.SummaryDetail == "Detail")
@@ -225,11 +229,14 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@StoreWorkcenter", model.StoreWorkcenter));
                 SqlParams.Add(new SqlParameter("@StoreName", model.StoreName));
                 SqlParams.Add(new SqlParameter("@WorkCenter", model.WorkCenter));
-                string formattedFromDate = ConvertToDDMMMYYYY(model.FromDate);
-                string formattedToDate = ConvertToDDMMMYYYY(model.ToDate);
+                //string formattedFromDate = ConvertToDDMMMYYYY(model.FromDate);
+                //string formattedToDate = ConvertToDDMMMYYYY(model.ToDate);
 
-                SqlParams.Add(new SqlParameter("@StartDate", string.IsNullOrEmpty(formattedFromDate) ? DBNull.Value : (object)formattedFromDate));
-                SqlParams.Add(new SqlParameter("@EndDate", string.IsNullOrEmpty(formattedToDate) ? DBNull.Value : (object)formattedToDate));
+                var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
+
+                SqlParams.Add(new SqlParameter("@StartDate", string.IsNullOrEmpty(fromDt) ? DBNull.Value : (object)fromDt));
+                SqlParams.Add(new SqlParameter("@EndDate", string.IsNullOrEmpty(toDt) ? DBNull.Value : (object)toDt));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_stockAdjustment", SqlParams);
             }

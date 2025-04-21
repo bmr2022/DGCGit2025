@@ -278,8 +278,8 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime currentDate = DateTime.Today;
-                DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+            //    DateTime currentDate = DateTime.Today;
+            //    DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
 

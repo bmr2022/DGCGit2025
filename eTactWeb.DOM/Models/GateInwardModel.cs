@@ -72,7 +72,9 @@ public class GateInwardDashboard
     public string FromDate { get; set; }
     public string ToDate { get; set; }
     public int? NoOfBoxes { get; set; }
-
+    public int TotalRecords { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
     public IList<GateInwardDashboard>? GateDashboard { get; set; }
 }
 [Serializable]
@@ -137,6 +139,7 @@ public class GateInwardItemDetail : TimeStamp
     public decimal? PendQty { get; set; }
     public float? AltPendQty { get; set; }
     public int? AgainstChallanYearcode { get; set; }
+
 }
 
 [Serializable]
@@ -233,7 +236,9 @@ public class GateInwardModel : GateInwardItemDetail
     public string DashboardTypeBack { get; set; }
     public IList<TextValue>? AccountList { get; set; }
     public IList<TextValue>? DocumentList { get; set; }
-
+     public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     public IList<GateInwardItemDetail>? ItemDetailGrid { get; set; }
 
     public IList<TextValue>? PONO { get; set; }

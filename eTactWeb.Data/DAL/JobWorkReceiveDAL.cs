@@ -595,8 +595,11 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
-                    DateTime FromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime todt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime FromDt = DateTime.ParseExact(Fromdate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime todt = DateTime.ParseExact(Todate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    var fromDt = CommonFunc.ParseFormattedDate(Fromdate);
+                    var toDt = CommonFunc.ParseFormattedDate(Todate);
+
                     oCmd.Parameters.AddWithValue("@Flag", "DetailSearch");
                     oCmd.Parameters.AddWithValue("@VendorName", VendorName);
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
@@ -605,8 +608,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@GateNo", GateNo);
                     oCmd.Parameters.AddWithValue("@MRNNo", MRNNo);
                     oCmd.Parameters.AddWithValue("@InvNo", InvNo);
-                    oCmd.Parameters.AddWithValue("@FromDate", FromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", todt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
 
                     //oCmd.Parameters.AddWithValue("@ItemCategory", model.ItemCategory);

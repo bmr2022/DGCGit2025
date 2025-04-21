@@ -3,6 +3,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -455,14 +456,16 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var ToDate = DateTime.Now;
-                DateTime FromDate = new DateTime();
+                var toDt= CommonFunc.ParseFormattedDate(ToDate.ToString("dd/MM/yyyy")); 
+                var FromDate ="";
                 if(model.FromDate == null)
                 {
-                     FromDate = new DateTime(ToDate.Year, ToDate.Month, 1);
+                    var fromdt = new DateTime(ToDate.Year, ToDate.Month, 1);
+                    FromDate = CommonFunc.ParseFormattedDate(fromdt.ToString("dd/MM/yyyy"));
                 }
                 else
                 {
-                    FromDate = ParseDate(model.FromDate);
+                     FromDate = CommonFunc.ParseFormattedDate(model.FromDate);
                 }   
                 var SqlParams = new List<dynamic>();
                 var Flag = "";
@@ -473,8 +476,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@PartCode", model.PartCode));
                 SqlParams.Add(new SqlParameter("@GateNo", model.gateno));
                 SqlParams.Add(new SqlParameter("@ChallanNo", model.ChallanNo));
-                SqlParams.Add(new SqlParameter("@FromDate", FromDate.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@ToDate", ToDate.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ReceiveChallan", SqlParams);
             }

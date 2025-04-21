@@ -15,6 +15,7 @@ using System.Xml.Linq;
 using static eTactWeb.DOM.Models.Common;
  
 using static eTactWeb.DOM.Models.JobWorkIssueModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -176,8 +177,8 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@FromDate", Constants.FYStartDate));
-                SqlParams.Add(new SqlParameter("@Todate", Constants.FYEndDate));
+                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(Constants.FYStartDate.ToString("dd/MM/yyyy"))));
+                SqlParams.Add(new SqlParameter("@Todate", CommonFunc.ParseFormattedDate(Constants.FYEndDate.ToString("dd/MM/yyyy"))));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_JobworkIssue", SqlParams);
             }
@@ -201,16 +202,18 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     oCmd.Parameters.AddWithValue("@Flag", "Search");
                     oCmd.Parameters.AddWithValue("@VendorName", VendorName);
                     oCmd.Parameters.AddWithValue("@ChallanNo", ChallanNo);
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName);
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
 
                     await myConnection.OpenAsync();
@@ -268,17 +271,19 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
                     //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     oCmd.Parameters.AddWithValue("@Flag", "DETAILSEARCH");
                     oCmd.Parameters.AddWithValue("@VendorName", VendorName);
                     oCmd.Parameters.AddWithValue("@ChallanNo", ChallanNo);
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName);
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
-                    oCmd.Parameters.AddWithValue("@FromDate", fromDt.ToString("yyyy/MM/dd"));
-                    oCmd.Parameters.AddWithValue("@ToDate", toDt.ToString("yyyy/MM/dd"));
+                    oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                    oCmd.Parameters.AddWithValue("@ToDate", toDt);
 
 
                     await myConnection.OpenAsync();
@@ -519,13 +524,15 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "SEARCH"));
                 SqlParams.Add(new SqlParameter("@vendorName", model.VendorName));
                 SqlParams.Add(new SqlParameter("@PONo", model.ChallanNo));
                 SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
-                SqlParams.Add(new SqlParameter("@StartDate", model.FromDate));
-                SqlParams.Add(new SqlParameter("@EndDate", model.ToDate));
+                SqlParams.Add(new SqlParameter("@StartDate",fromDt));
+                SqlParams.Add(new SqlParameter("@EndDate", toDt));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_JobworkIssue", SqlParams);
             }
             catch (Exception ex)

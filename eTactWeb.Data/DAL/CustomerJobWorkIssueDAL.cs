@@ -60,18 +60,19 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime FinFromDt = new DateTime();
-                DateTime BillChallanDt = new DateTime();
+                //DateTime FinFromDt = new DateTime();
+                //DateTime BillChallanDt = new DateTime();
 
                 //FinFromDt = ParseDate(FinYearFromDate);
                 //BillChallanDt = ParseDate(billchallandate);
-
+                var entDt = CommonFunc.ParseFormattedDate(EntryDate);
+                var challanDt = CommonFunc.ParseFormattedDate(ChallanDate);
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "JOBWORKISSUESUMMARY"));
                 SqlParams.Add(new SqlParameter("@IssYear", YearCode));
-                SqlParams.Add(new SqlParameter("@FinYearFromDate", EntryDate));
-                SqlParams.Add(new SqlParameter("@billchallandate", ChallanDate));
+                SqlParams.Add(new SqlParameter("@FinYearFromDate", entDt));
+                SqlParams.Add(new SqlParameter("@billchallandate", challanDt));
                 SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("getPendCustomerJobWorkChallanList", SqlParams);
@@ -90,12 +91,13 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-
+                var entDt = CommonFunc.ParseFormattedDate(EntryDate);
+                var challanDt = CommonFunc.ParseFormattedDate(ChallanDate);
                 var SqlParams = new List<dynamic>();
                 //cmd.Parameters.AddWithValue("@Flag", "JOBWORKISSUESUMMARY");
                 SqlParams.Add(new SqlParameter("@yearCode", YearCode));
-                SqlParams.Add(new SqlParameter("@FromFinStartDate", EntryDate));
-                SqlParams.Add(new SqlParameter("@billchallandate", ChallanDate));
+                SqlParams.Add(new SqlParameter("@FromFinStartDate", entDt));
+                SqlParams.Add(new SqlParameter("@billchallandate", challanDt));
                 SqlParams.Add(new SqlParameter("@AccountCode", AccountCode));
                 SqlParams.Add(new SqlParameter("@DTTItemGrid", DTTItemGrid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SpCustomerJobworkAdjustedChallanInGrid", SqlParams);
@@ -393,11 +395,14 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@Reportype", "SUMMARY"));
-                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
-                SqlParams.Add(new SqlParameter("@Todate",ToDate));
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@Todate", toDt));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_CustomerJobworkIssueMainDetail", SqlParams);
             }
@@ -418,14 +423,16 @@ namespace eTactWeb.Data.DAL
                 {
                     using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                     {
-                        SqlCommand oCmd = new SqlCommand("SP_CustomerJobworkIssueMainDetail", myConnection)
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+                    SqlCommand oCmd = new SqlCommand("SP_CustomerJobworkIssueMainDetail", myConnection)
                         {
                             CommandType = CommandType.StoredProcedure
                         };
                         oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                         oCmd.Parameters.AddWithValue("@Reportype", ReportType);
-                        oCmd.Parameters.AddWithValue("@FromDate", FromDate);
-                        oCmd.Parameters.AddWithValue("@Todate", ToDate);
+                        oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                        oCmd.Parameters.AddWithValue("@Todate", toDt);
 
                         await myConnection.OpenAsync();
                         using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

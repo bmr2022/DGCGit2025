@@ -202,6 +202,13 @@ namespace eTactWeb.Controllers
             }
         }
 
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IIssueThrBOM.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         private async Task<IssueThrBom> BindModel(IssueThrBom model)
         {
             var oDataSet = new DataSet();

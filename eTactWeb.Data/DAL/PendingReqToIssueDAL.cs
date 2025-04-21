@@ -1,4 +1,5 @@
-﻿using eTactWeb.Services.Interface;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -158,13 +159,13 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime issDt = DateTime.ParseExact(IssueDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                var todt = CommonFunc.ParseFormattedDate(ToDate);
+                var fromdt = CommonFunc.ParseFormattedDate(FromDate);
+                var issDt = CommonFunc.ParseFormattedDate(IssueDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "ShowDetail"));
-                SqlParams.Add(new SqlParameter("@fromDate", fromdt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@toDate", todt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@fromDate", fromdt));
+                SqlParams.Add(new SqlParameter("@toDate", todt));
                 SqlParams.Add(new SqlParameter("@reqno", ReqNo == null ? "" : ReqNo));
                 SqlParams.Add(new SqlParameter("@yearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@ItemCode", itemCode));

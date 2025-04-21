@@ -86,6 +86,7 @@ namespace eTactWeb.Data.DAL
                         model.WIPStockRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                         select new WIPStockRegisterDetail
                                                         {
+                                                            SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                             ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
                                                             PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
                                                             TransactionType = string.IsNullOrEmpty(dr["TRansactionType"].ToString()) ? "" : dr["TRansactionType"].ToString(),
@@ -96,25 +97,20 @@ namespace eTactWeb.Data.DAL
                                                             BillDate = string.IsNullOrEmpty(dr["SlipDate"].ToString()) ? "" : dr["SlipDate"].ToString(),
                                                             BatchNo = string.IsNullOrEmpty(dr["batchno"].ToString()) ? "" : dr["batchno"].ToString(),
                                                             UniquebatchNo = string.IsNullOrEmpty(dr["Uniquebatchno"].ToString()) ? "" : dr["Uniquebatchno"].ToString(),
-
                                                             ToWC = string.IsNullOrEmpty(dr["ToWC"].ToString()) ? "" : dr["ToWC"].ToString(),
                                                             ToStore = string.IsNullOrEmpty(dr["ToStore"].ToString()) ? "" : dr["ToStore"].ToString(),
-
                                                             WorkCenterName = string.IsNullOrEmpty(dr["WorkCenterName"].ToString()) ? "" : dr["WorkCenterName"].ToString(),
                                                             OpnStk = string.IsNullOrEmpty(dr["OpnStk"].ToString()) ? 0 : Convert.ToDecimal(dr["OpnStk"].ToString()),
                                                             IssQty = string.IsNullOrEmpty(dr["IssQty"].ToString()) ? 0 : Convert.ToDecimal(dr["IssQty"].ToString()),
                                                             RecQty = string.IsNullOrEmpty(dr["RecQty"].ToString()) ? 0 : Convert.ToDecimal(dr["RecQty"].ToString()),
                                                             TotStk = string.IsNullOrEmpty(dr["TotalStock"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalStock"].ToString()),
-                                             
                                                             AltIssQty = string.IsNullOrEmpty(dr["AltIssQty"].ToString()) ? 0 : Convert.ToDecimal(dr["AltIssQty"].ToString()),
                                                             AltRecQty = string.IsNullOrEmpty(dr["AltRecQty"].ToString()) ? 0 : Convert.ToDecimal(dr["AltRecQty"].ToString()),
                                                             AltStock = string.IsNullOrEmpty(dr["AltStock"].ToString()) ? 0 : Convert.ToDecimal(dr["AltStock"].ToString()),
-                                                    
                                                             Unit = string.IsNullOrEmpty(dr["Unit"].ToString()) ? "" : dr["Unit"].ToString(),
                                                             AltUnit = string.IsNullOrEmpty(dr["AltUnit"].ToString()) ? "" : dr["AltUnit"].ToString(),
                                                             //ItemType = string.IsNullOrEmpty(dr["ITEMTYPE"].ToString()) ? "" : dr["ITEMTYPE"].ToString(),
                                                             ItemGroup = string.IsNullOrEmpty(dr["itemgroup"].ToString()) ? "" : dr["itemgroup"].ToString(),
-
                                                             Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToDecimal(dr["Rate"].ToString()),
                                                             Amount = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToDecimal(dr["Rate"].ToString()) * (string.IsNullOrEmpty(dr["TotalStock"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalStock"].ToString())),
                                                             EntryId = string.IsNullOrEmpty(dr["entryId"].ToString()) ? 0 : Convert.ToInt16(dr["entryId"].ToString()),
@@ -130,6 +126,7 @@ namespace eTactWeb.Data.DAL
                         model.WIPStockRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                         select new WIPStockRegisterDetail
                                                         {
+                                                            SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                             ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
                                                             PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
                                                             WorkCenterName = string.IsNullOrEmpty(dr["WorkCenterName"].ToString()) ? "" : dr["WorkCenterName"].ToString(),
@@ -139,15 +136,12 @@ namespace eTactWeb.Data.DAL
                                                             TotStk = string.IsNullOrEmpty(dr["TotalStock"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalStock"].ToString()),
                                                             MinLevel = string.IsNullOrEmpty(dr["MInLvl"].ToString()) ? 0 : Convert.ToDecimal(dr["MInLvl"].ToString()),
                                                             MaximumLevel = string.IsNullOrEmpty(dr["MaximumLevel"].ToString()) ? 0 : Convert.ToDecimal(dr["MaximumLevel"].ToString()),
-
                                                             AltStock = string.IsNullOrEmpty(dr["AltStock"].ToString()) ? 0 : Convert.ToDecimal(dr["AltStock"].ToString()),
                                                             AvgRate = string.IsNullOrEmpty(dr["AvgRate"].ToString()) ? 0 : Convert.ToDecimal(dr["AvgRate"].ToString()),
-
                                                             Unit = string.IsNullOrEmpty(dr["Unit"].ToString()) ? "" : dr["Unit"].ToString(),
                                                             AltUnit = string.IsNullOrEmpty(dr["AltUnit"].ToString()) ? "" : dr["AltUnit"].ToString(),
                                                             //ItemType = string.IsNullOrEmpty(dr["ITEMTYPE"].ToString()) ? "" : dr["ITEMTYPE"].ToString(),
                                                             ItemGroup = string.IsNullOrEmpty(dr["itemgroup"].ToString()) ? "" : dr["itemgroup"].ToString(),
-
                                                             Rate = string.IsNullOrEmpty(dr["AvgRate"].ToString()) ? 0 : Convert.ToDecimal(dr["AvgRate"].ToString()),
                                                             Amount = string.IsNullOrEmpty(dr["AvgRate"].ToString()) ? 0 : Convert.ToDecimal(dr["AvgRate"].ToString()) * (string.IsNullOrEmpty(dr["TotalStock"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalStock"].ToString())),
 

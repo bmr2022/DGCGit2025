@@ -644,43 +644,68 @@ public class ItemMasterController : Controller
             DateTime today = DateTime.Today;
             MRGrid.Rows.Add(
                 new object[]
-                {
-                    0,
-                    Item.PartCode ?? "",
-                    Item.ItemName,
-                    Item.ItemGroupCode,
-                    today.ToString("yyyy-MM-dd").Split(" ")[0],
-                    today.ToString("yyyy-MM-dd").Split(" ")[0],
-                    0,
-                    CC,
-                    Item.Unit,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    "",
-                    Item.ItemCategoryCode,
-                    "",//
-                    "",
-                    Empid,
-                    "",
-                    0,
-                    0,
-                    0,
-                    0,
-                    "",
-                    "",
-                    "","","","",0,"","",0,"",0,0,0,0,"",0,
-                    "Y","Y","",0,"",0,"","","",
-                    Item.HSNNo,
-                    Empid,
-                    today.ToString("yyyy-MM-dd").Split(" ")[0],
-                    0,
-                    today.ToString("yyyy-MM-dd").Split(" ")[0],
-                    "",Item.ItemServAssets
-                });
+                                    {
+                                        0,                          // 1. Item_Code (int)
+                                        Item.PartCode ?? "",         // 2. PartCode (string)
+                                        Item.ItemName,               // 3. Item_Name (string)
+                                        Item.ItemGroupCode,          // 4. ParentCode (int)
+                                        today.ToString("yyyy-MM-dd").Split(" ")[0],  // 5. EntryDate (string)
+                                        today.ToString("yyyy-MM-dd").Split(" ")[0],  // 6. LastUpdatedDate (string)
+                                        0,                           // 7. LeadTime (int)
+                                        CC,                          // 8. CC (string)
+                                        Item.Unit,                   // 9. Unit (string)
+                                        0,                           // 10. SalePrice (float)
+                                        0,                           // 11. PurchasePrice (float)
+                                        0,                           // 12. CostPrice (float)
+                                        0,                           // 13. WastagePercent (float)
+                                        0,                           // 14. WtSingleItem (float)
+                                        0,                           // 15. NoOfPcs (float)
+                                        "Y",                          // 16. QcReq (string)
+                                        Item.ItemCategoryCode,       // 17. ItemType (int)
+                                        "",                          // 18. UploadItemImage (string)
+                                        "",                          // 19. UploadImage (string)
+                                        Empid,                       // 20. UID (int)
+                                        "",                          // 21. DrawingNo (string)
+                                        0,                           // 22. MinimumLevel (float)
+                                        0,                           // 23. MaximumLevel (float)
+                                        0,                           // 24. ReorderLevel (float)
+                                       "2025",                           // 25. YearCode (float)
+                                        "",                          // 26. AlternateUnit (string)
+                                        "",                          // 27. RackID (string)
+                                        "",                          // 28. BinNo (string)
+                                        "",                          // 29. ItemSize (string)
+                                        "",                          // 30. Colour (string)
+                                        "N",                          // 31. NeedPO (string)
+                                        0,                           // 32. StdPacking (float)
+                                        "",                          // 33. PackingType (string)
+                                        "",                          // 34. ModelNo (string)
+                                        0,                           // 35. YearlyConsumedQty (float)
+                                        "",                          // 36. DispItemName (string)
+                                        0,                           // 37. PurchaseAccountcode (int)
+                                        0,                          // 38. SaleAccountcode (string) - MISMATCH (expected int)
+                                        0,                           // 39. MinLevelDays (int)
+                                        0,                           // 40. MaxLevelDays (int)
+                                        "",                          // 41. EmpName (string)
+                                        0,                           // 41. DailyRequirment (float)
+                                        "Y",                         // 42. Stockable (string)
+                                        "Y",                         // 43. WipStockable (string)
+                                        "",                          // 44. Store (string)
+                                        0,                           // 45. ProductLifeInus (float)
+                                        "",                          // 46. ItemDesc (string)
+                                        0,                           // 47. MaxWipStock (float)
+                                        "",                          // 48. NeedSo (string)
+                                        "",                          // 49. BomRequired (string)
+                                        "",                          // 50. JobWorkItem (string)
+                                        Item.HSNNo,                  // 51. HsnNo (string) - EXTRA VALUE
+                                        Empid,                       // 52. CreatedBy (int) - EXTRA VALUE
+                                        today.ToString("yyyy-MM-dd").Split(" ")[0], // 53. CreatedOn (string) - EXTRA VALUE
+                                        0,                           // 54. UpdatedBy (int) - EXTRA VALUE
+                                        today.ToString("yyyy-MM-dd").Split(" ")[0], // 55. UpdatedOn (string) - EXTRA VALUE
+                                        "Y",                          // 56. Active (string) - EXTRA VALUE
+                                        Item.ItemServAssets          // 57. ItemServAssets (string) - EXTRA VALUE
+                                    }
+               
+                );
         }
         MRGrid.Dispose();
         return MRGrid;

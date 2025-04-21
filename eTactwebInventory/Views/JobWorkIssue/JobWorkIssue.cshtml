@@ -1576,11 +1576,11 @@
                 url: "@Url.Action("CheckFeatureOption")",
                 dataType: "json",
                 success: function (result, status, error) {
-                     
+                    debugger 
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var allowOption = obj.Result.Table[0].AllowBackDateJOBWorkIssue;
-                        fifoBatch = obj.Result.Table[0].FIFOBasedBatchInventory;
+                        fifoBatch = obj.Result.Table[0].FIFOBasedBatchInventoryInJobWorkIss;
                         VendJwAllowToSelectBatchNo = obj.Result.Table[0].VendJwAllowToSelectBatchNo;
                         console.log(allowOption);
                         if (allowOption == 'Y') {

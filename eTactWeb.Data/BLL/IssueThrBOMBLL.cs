@@ -17,10 +17,15 @@ namespace eTactWeb.Data.BLL
     {
         private readonly IDataLogic _DataLogicDAL;
         private readonly IssueThrBOMDAL _IssueThrBOMDAL;
+       
         public IssueThrBOMBLL(IConfiguration configuration, IDataLogic iDataLogic)
         {
             _DataLogicDAL = iDataLogic;
             _IssueThrBOMDAL = new IssueThrBOMDAL(configuration, iDataLogic);
+        }
+        public async Task<ResponseResult> GetFormRights(int userID)
+        {
+            return await _IssueThrBOMDAL.GetFormRights(userID);
         }
         public async Task<ResponseResult> GetNewEntry(int YearCode)
         {
