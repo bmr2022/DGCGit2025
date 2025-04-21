@@ -391,7 +391,8 @@ public class PurchaseScheduleController : Controller
             MainModel.Mode = Mode;
             MainModel.ID = ID;
             MainModel = await BindModel(MainModel);
-
+            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
