@@ -145,12 +145,12 @@ public class SaleOrderController : Controller
 	{
 		try
 		{
-			DateTime time = DateTime.Now;
-			string format = "MMM ddd d HH:mm yyyy";
-			string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+			var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
+			//string format = "MMM ddd d HH:mm yyyy";
+			//string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-			var dt = time.ToString(format);
-			return Json(formattedDate);
+			//var dt = time.ToString(format);
+			return Json(time);
 			//string apiUrl = "https://worldtimeapi.org/api/ip";
 
 			//using (HttpClient client = new HttpClient())

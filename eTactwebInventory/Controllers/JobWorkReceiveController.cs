@@ -2,7 +2,9 @@
 using eTactWeb.DOM.Models;
 using eTactWeb.DOM.Models.Master;
 using eTactWeb.Services.Interface;
+using FastReport.Web;
 using Grpc.Core;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -20,16 +22,21 @@ namespace eTactWeb.Controllers
 {
     public class JobWorkReceiveController : Controller
     {
+        public WebReport webReport;
+        private readonly IWebHostEnvironment _IWebHostEnvironment;
+        private readonly IConfiguration _iconfiguration;
         private readonly IDataLogic _IDataLogic;
         private readonly IJobWorkReceive _IJobWorkReceive;
         private readonly ILogger<JobWorkReceiveController> _logger;
         private readonly IMemoryCache _MemoryCache;
-        public JobWorkReceiveController(ILogger<JobWorkReceiveController> logger, IDataLogic iDataLogic, IJobWorkReceive iJobWorkReceive, IMemoryCache iMemoryCache)
+        public JobWorkReceiveController(ILogger<JobWorkReceiveController> logger, IDataLogic iDataLogic, IJobWorkReceive iJobWorkReceive, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IJobWorkReceive = iJobWorkReceive;
             _MemoryCache = iMemoryCache;
+            _IWebHostEnvironment = iWebHostEnvironment;
+            _iconfiguration = configuration;
         }
 
         [Route("{controller}/Index")]
@@ -257,7 +264,24 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public IActionResult PrintReport(string MRNNo = "", int YearCode = 0, string PONO = "")
+        {
 
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            webReport = new WebReport();
+           
+             webReport.Report.Load(webRootPath + "\\jobworkMRN.frx"); // default report
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("mrnnoparam", MRNNo);
+            webReport.Report.SetParameterValue("yearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
         public async Task<IActionResult> JWRDashboard(string FromDate, string Todate, string Flag, string DeleteFlag = "True", string VendorName = "", string ItemName = "", string PartCode = "", string InvNo = "", string MRNNo = "", string GateNo = "", string CC = "", string DashboardType = "")
         {
             try
