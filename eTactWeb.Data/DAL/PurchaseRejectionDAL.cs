@@ -55,14 +55,14 @@ namespace eTactWeb.Data.DAL
         private static AccPurchaseRejectionModel PrepareView(DataSet DS, ref AccPurchaseRejectionModel? model, string Mode)
         {
             var ItemGrid = new List<AccPurchaseRejectionDetail>();
-            var creditNoteGrid = new List<AccPurchaseRejectionDetail>();
-            var creditNoteAgainstBillGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
+            var purchaseRejectionGrid = new List<AccPurchaseRejectionDetail>();
+            var purchaseRejectionAgainstBillGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
             var TaxGrid = new List<TaxModel>();
             var DRCRGrid = new List<DbCrModel>();
             var adjustGrid = new List<AdjustmentModel>();
             DS.Tables[0].TableName = "PurchaseRejectionModel";
             DS.Tables[1].TableName = "PurchaseRejectionDetail";
-            DS.Tables[2].TableName = "PurchaseRejectionAgainstBillGrid";
+            //DS.Tables[2].TableName = "PurchaseRejectionAgainstBillGrid";
             DS.Tables[2].TableName = "PurchaseRejectionTaxDetail";
             DS.Tables[3].TableName = "DRCRDetail";
             DS.Tables[4].TableName = "AdjustmentDetail";
@@ -139,89 +139,95 @@ namespace eTactWeb.Data.DAL
             {
                 foreach (DataRow row in DS.Tables[1].Rows)
                 {
-                    creditNoteGrid.Add(new AccPurchaseRejectionDetail
+                    purchaseRejectionGrid.Add(new AccPurchaseRejectionDetail
                     {
                         ItemCode = row["Itemcode"] != DBNull.Value ? Convert.ToInt32(row["Itemcode"]) : 0,
                         ItemName = row["ItemName"]?.ToString(),
                         PartCode = row["PartCode"]?.ToString(),
                         HSNNo = row["HSNNo"]?.ToString(),
-                        BillQty = row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]) : 0,
+                        BillQty = row["PurchBillQty"] != DBNull.Value ? Convert.ToInt32(row["PurchBillQty"]) : 0,
                         RejectedQty = row["RejectedQty"] != DBNull.Value ? Convert.ToInt32(row["RejectedQty"]) : 0,
                         Unit = row["Unit"]?.ToString(),
                         AltQty = row["AltQty"] != DBNull.Value ? Convert.ToInt32(row["AltQty"]) : 0,
                         AltUnit = row["AltUnit"]?.ToString(),
-                        PRRate = row["PRRate"] != DBNull.Value ? Convert.ToInt32(row["PRRate"]) : 0,
-                        BillRate = row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]) : 0,
+                        PRRate = row["RejRate"] != DBNull.Value ? Convert.ToInt32(row["RejRate"]) : 0,
+                        BillRate = row["PurchBillRate"] != DBNull.Value ? Convert.ToInt32(row["PurchBillRate"]) : 0,
                         UnitRate = row["UnitRate"]?.ToString(),
                         AltRate = row["AltRate"] != DBNull.Value ? Convert.ToInt32(row["AltRate"]) : 0,
                         NoOfCase = row["NoOfCase"] != DBNull.Value ? Convert.ToInt32(row["NoOfCase"]) : 0,
                         CostCenterId = row["CostcenetrId"] != DBNull.Value ? Convert.ToInt32(row["CostcenetrId"]) : 0,
                         DocAccountCode = row["DocAccountCode"] != DBNull.Value ? Convert.ToInt32(row["DocAccountCode"]) : 0,
-                        DocAccountName = row["DocAccountName"]?.ToString(),
+                        DocAccountName = row["DocumentName"]?.ToString(),
                         ItemAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToInt32(row["ItemAmount"]) : 0,
                         DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
                         DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
                         StoreId = row["StoreId"] != DBNull.Value ? Convert.ToInt32(row["StoreId"]) : 0,
-                        //StoreName = row["SchdeliveryDate"]?.ToString(),
+                        StoreName = row["StoreName"]?.ToString(),
+                        //Stockable = row["Stockable"]?.ToString(),
+                        BatchNo = row["BatchNo"]?.ToString(),
+                        UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
+                        //CostCenterName = row["CostCenterName"]?.ToString(),
+                        LotStock = row["LotStock"] != DBNull.Value ? Convert.ToInt32(row["LotStock"]) : 0,
+                        TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToInt32(row["TotalStock"]) : 0,
                         ItemSize = row["itemSize"]?.ToString(),
                         ItemDescription = row["ItemDescription"]?.ToString(),
                         Remark = row["Remark"]?.ToString(),
                     });
                 }
-                creditNoteGrid = creditNoteGrid.OrderBy(item => item.SeqNo).ToList();
-                model.AccPurchaseRejectionDetails = creditNoteGrid;
-                model.ItemDetailGrid = creditNoteGrid;
+                purchaseRejectionGrid = purchaseRejectionGrid.OrderBy(item => item.SeqNo).ToList();
+                model.AccPurchaseRejectionDetails = purchaseRejectionGrid;
+                model.ItemDetailGrid = purchaseRejectionGrid;
             }
 
             if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
             {
                 foreach (DataRow row in DS.Tables[1].Rows)
                 {
-                    creditNoteAgainstBillGrid.Add(new AccPurchaseRejectionAgainstBillDetail
-                    {
+                    //purchaseRejectionAgainstBillGrid.Add(new AccPurchaseRejectionAgainstBillDetail
+                    //{
                         ////PurchaseRejectionInvoiceNo = row["SchdeliveryDate"]?.ToString(),
                         ////PurchaseRejectionVoucherNo = row["SchdeliveryDate"]?.ToString(),
                         
-                        //AgainstSaleBillBillNo = row["AgainstSalebillBillNo"]?.ToString(),
-                        //AgainstSaleBillYearCode = row["AgainstSaleBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillYearCode"]) : 0,
-                        //AgainstSaleBillDate = row["AgainstSaleBilldate"]?.ToString(),
-                        //AgainstSaleBillEntryId = row["AgainstSaleBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillEntryId"]) : 0,
-                        //AgainstSaleBillVoucherNo = row["AgainstSalebillVoucherNo"]?.ToString(),
-                        //SaleBillType = row["SaleBillTYpe"]?.ToString(),
-                        AgainstPurchaseBillBillNo = row["AgainstPurchasebillBillNo"]?.ToString(),
-                        AgainstPurchaseBillYearCode = row["AgainstPurchaseBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstPurchaseBillYearCode"]) : 0,
-                        AgainstPurchaseBillDate = row["AgainstPurchaseBilldate"]?.ToString(),
-                        AgainstPurchaseBillEntryId = row["AgainstPurchaseBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstPurchaseBillEntryId"]) : 0,
-                        AgainstPurchaseVoucherNo = row["AgainstPurchaseVoucherNo"]?.ToString(),
-                        PurchaseBillType = row["PurchaseBilltype"]?.ToString(),
-                        ItemCode = row["BillItemCode"] != DBNull.Value ? Convert.ToInt32(row["BillItemCode"]) : 0,
+                        ////AgainstSaleBillBillNo = row["AgainstSalebillBillNo"]?.ToString(),
+                        ////AgainstSaleBillYearCode = row["AgainstSaleBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillYearCode"]) : 0,
+                        ////AgainstSaleBillDate = row["AgainstSaleBilldate"]?.ToString(),
+                        ////AgainstSaleBillEntryId = row["AgainstSaleBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillEntryId"]) : 0,
+                        ////AgainstSaleBillVoucherNo = row["AgainstSalebillVoucherNo"]?.ToString(),
+                        ////SaleBillType = row["SaleBillTYpe"]?.ToString(),
+                        //AgainstPurchaseBillBillNo = row["AgainstPurchasebillBillNo"]?.ToString(),
+                        //AgainstPurchaseBillYearCode = row["AgainstPurchaseBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstPurchaseBillYearCode"]) : 0,
+                        //AgainstPurchaseBillDate = row["AgainstPurchaseBilldate"]?.ToString(),
+                        //AgainstPurchaseBillEntryId = row["AgainstPurchaseBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstPurchaseBillEntryId"]) : 0,
+                        //AgainstPurchaseVoucherNo = row["AgainstPurchaseVoucherNo"]?.ToString(),
+                        //PurchaseBillType = row["PurchaseBilltype"]?.ToString(),
+                        //ItemCode = row["BillItemCode"] != DBNull.Value ? Convert.ToInt32(row["BillItemCode"]) : 0,
                         ////PartCode = row["SchdeliveryDate"]?.ToString(),
                         ////ItemName = row["BillQty"]?.ToString(),
-                        BillQty = row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]) : 0,
-                        Unit = row["Unit"]?.ToString(),
-                        BillRate = row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]) : 0,
-                        DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
-                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
-                        ItemSize = row["Itemsize"]?.ToString(),
-                        Amount = row["Amount"] != DBNull.Value ? Convert.ToInt32(row["Amount"]) : 0,
-                        PONO = row["PONO"]?.ToString(),
-                        PODate = row["PODate"]?.ToString(),
-                        POEntryId = row["POEntryId"] != DBNull.Value ? Convert.ToInt32(row["POEntryId"]) : 0,
-                        POYearCode = row["POYearCode"] != DBNull.Value ? Convert.ToInt32(row["POYearCode"]) : 0,
-                        PoRate = row["PoRate"] != DBNull.Value ? Convert.ToInt32(row["PoRate"]) : 0,
-                        PoAmmNo = row["poammno"]?.ToString(),
-                        //SONO = row["SONO"]?.ToString(),
-                        //SOYearCode = row["SOYearcode"] != DBNull.Value ? Convert.ToInt32(row["SOYearcode"]) : 0,
-                        //SODate = row["SODate"]?.ToString(),
-                        //CustOrderNo = row["CustOrderNo"]?.ToString(),
-                        //SOEntryId = row["SOEntryId"] != DBNull.Value ? Convert.ToInt32(row["SOEntryId"]) : 0,
-                        BatchNo = row["BatchNo"]?.ToString(),
-                        UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
-                        AltQty = row["AltQty"] != DBNull.Value ? Convert.ToInt32(row["AltQty"]) : 0,
-                        AltUnit = row["AltUnit"]?.ToString(),
-                    });
+                        //BillQty = row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]) : 0,
+                        //Unit = row["Unit"]?.ToString(),
+                        //BillRate = row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]) : 0,
+                        //DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
+                        //DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
+                        //ItemSize = row["Itemsize"]?.ToString(),
+                        //Amount = row["Amount"] != DBNull.Value ? Convert.ToInt32(row["Amount"]) : 0,
+                        //PONO = row["PONO"]?.ToString(),
+                        //PODate = row["PODate"]?.ToString(),
+                        //POEntryId = row["POEntryId"] != DBNull.Value ? Convert.ToInt32(row["POEntryId"]) : 0,
+                        //POYearCode = row["POYearCode"] != DBNull.Value ? Convert.ToInt32(row["POYearCode"]) : 0,
+                        //PoRate = row["PoRate"] != DBNull.Value ? Convert.ToInt32(row["PoRate"]) : 0,
+                        //PoAmmNo = row["poammno"]?.ToString(),
+                        ////SONO = row["SONO"]?.ToString(),
+                        ////SOYearCode = row["SOYearcode"] != DBNull.Value ? Convert.ToInt32(row["SOYearcode"]) : 0,
+                        ////SODate = row["SODate"]?.ToString(),
+                        ////CustOrderNo = row["CustOrderNo"]?.ToString(),
+                        ////SOEntryId = row["SOEntryId"] != DBNull.Value ? Convert.ToInt32(row["SOEntryId"]) : 0,
+                        //BatchNo = row["BatchNo"]?.ToString(),
+                        //UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
+                        //AltQty = row["AltQty"] != DBNull.Value ? Convert.ToInt32(row["AltQty"]) : 0,
+                        //AltUnit = row["AltUnit"]?.ToString(),
+                    //});
                 }
-                model.AccPurchaseRejectionAgainstBillDetails = creditNoteAgainstBillGrid;
+                model.AccPurchaseRejectionAgainstBillDetails = purchaseRejectionAgainstBillGrid ?? new List<AccPurchaseRejectionAgainstBillDetail>();
             }
 
             if (DS.Tables.Count != 0 && DS.Tables[2].Rows.Count > 0)
@@ -233,7 +239,7 @@ namespace eTactWeb.Data.DAL
                         TxSeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
                         TxType = row["Type"]?.ToString(),
                         TxPartName = row["PartCode"]?.ToString(),
-                        TxItemName = row["Item_Name"]?.ToString(),
+                        TxItemName = row["itemNamePartCode"]?.ToString(),
                         TxItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
                         TxTaxTypeName = row["TaxTypeID"]?.ToString(),
                         TxAccountCode = row["TaxAccountCode"] != DBNull.Value ? Convert.ToInt32(row["TaxAccountCode"]) : 0,
@@ -260,8 +266,9 @@ namespace eTactWeb.Data.DAL
                         AdjSeqNo = cnt1,
                         AdjModeOfAdjstment = row["ModOfAdjust"]?.ToString(),
                         //AdjModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
-                        AdjNewRefNo = row["NewrefNo"]?.ToString(),
-                        AdjDescription = row["Description"]?.ToString(),
+                        //AdjNewRefNo = row["NewrefNo"]?.ToString(),
+                        AdjNewRefNo = row["Column1"]?.ToString(),
+                        //AdjDescription = row["Description"]?.ToString(),
                         //AdjDrCrName = row["AccEntryId"]?.ToString(),
                         AdjDrCr = row["DR/CR"]?.ToString(),
                         AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
@@ -270,7 +277,7 @@ namespace eTactWeb.Data.DAL
                         //AdjRemainingAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
                         AdjOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
                         AdjOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
-                        AdjDueDate = string.IsNullOrEmpty(row["DueDate"]?.ToString()) ? new DateTime() : Convert.ToDateTime(row["DueDate"]),
+                        //AdjDueDate = string.IsNullOrEmpty(row["DueDate"]?.ToString()) ? new DateTime() : Convert.ToDateTime(row["DueDate"]),
                         //AdjPurchOrderNo = row["AccEntryId"]?.ToString(),
                         //AdjPOYear = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
                         //AdjPODate = row["AccEntryId"] != DBNull.Value ? Convert.ToDateTime(row["AccEntryId"]) : new DateTime(),
