@@ -336,7 +336,48 @@
                 }
             });
         }
+        function loadPage(pageNumber) {
+            debugger
 
+            var dashboardType = $('#DashboardType').val();
+            var url = '';
+
+            if (dashboardType === "Summary") {
+                url = '@Url.Action("GetSearchData", "GateInward")';
+            } else {
+                url = '@Url.Action("GetDetailData", "GateInward")';
+            }
+            // const data = {
+            //     FromDate: $('#FromDate').val(),
+            //     ToDate: $('#ToDate').val(),
+            //     PartCode: $('#PartCode').val(),
+            //     ItemName: $('#ItemName').val(),
+            //     ItemGroup: $('#ItemGroupName').val(),
+            //     ItemType: $('#ItemType').val(),
+            //     WCID: $('#WCID').val(),
+            //     ReportType: $('#ReportType').val(),
+            //     BatchNo: $('#BatchNo').val(),
+            //     UniqueBatchNo: $('#UniqueBatchNo').val(),
+            //     WorkCenter: $('#WCID option:checked').text(),
+            //     SearchBox: $('#search-box').val(),
+            //     pageNumber: pageNumber
+       
+            // };
+
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#gateDashboardtable tr').length - 1);
+                    //countAllTotal();
+                }
+            });
+        }
         function GetServerDate() {
             $.ajax({
                 type: "GET",
@@ -606,6 +647,7 @@
                 }
             });
         }
+        
 
         $(document).on("click", ".sortCol", function () {
             var $column = $(this).parent().closest("th");
