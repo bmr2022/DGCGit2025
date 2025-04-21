@@ -14,6 +14,8 @@ using eTactWeb.Services.Interface;
 using System.Net;
 using System.Globalization;
 using System.Data;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace eTactWeb.Controllers
 {
@@ -358,20 +360,121 @@ namespace eTactWeb.Controllers
             return PartialView("_GateInwardGrid", MainModel);
         }
 
-        public async Task<IActionResult> GetSearchData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType)
+        public async Task<IActionResult> GetSearchData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, string DashboardType, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new GateInwardDashboard();
             model = await _IGateInward.GetDashboardData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate, DashboardType);
             model.DashboardType = "Summary";
+            var modelList = model?.GateDashboard ?? new List<GateInwardDashboard>();
+
+            model.DashboardType = "Detail";
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.GateDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<GateInwardDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.GateDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyGateInardList", modelList, cacheEntryOptions);
             return PartialView("_GateInwardDashboardGrid", model);
         }
-        public async Task<IActionResult> GetDetailData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new GateInwardDashboard();
             model = await _IGateInward.GetDashboardDetailData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate);
+            // model = (await _IGateInward.GetDashboardDetailData(...))?.GateDashboard ?? new List<GateInwardDashboard>();
+            var modelList = model?.GateDashboard ?? new List<GateInwardDashboard>();
+
             model.DashboardType = "Detail";
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+
+                model.GateDashboard = modelList
+                   .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<GateInwardDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.GateDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyGateInardList", modelList, cacheEntryOptions);
             return PartialView("_GateInwardDashboardGrid", model);
         }
         public async Task<JsonResult> ClearGridAjax(int AccountCode, int docType, int ItemCode)

@@ -100,10 +100,12 @@ public class GateInwardDAL
         {
             DateTime currentDate = DateTime.Today;
             DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+            var firstDt = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString("dd/MM/yyyy"));
+            var currDt= CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-            SqlParams.Add(new SqlParameter("@FromDate", firstDateOfMonth.ToString("yyyy/MM/dd")));
-            SqlParams.Add(new SqlParameter("@ToDate", currentDate.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@FromDate", firstDt));
+            SqlParams.Add(new SqlParameter("@ToDate", currDt));
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GateMainDetail", SqlParams);
         }
@@ -118,6 +120,8 @@ public class GateInwardDAL
     public async Task<ResponseResult> GetSearchData(GateDashboard model)
     {
         var _ResponseResult = new ResponseResult();
+        var fromDt = CommonFunc.ParseFormattedDate(model.FromDate);
+        var toDt = CommonFunc.ParseFormattedDate(model.ToDate);
         try
         {
             var SqlParams = new List<dynamic>();
@@ -125,8 +129,8 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@vendorName", model.VendorName));
             SqlParams.Add(new SqlParameter("@PONo", model.POTypeServItem));
             SqlParams.Add(new SqlParameter("@ItemName", model.ItemName));
-            SqlParams.Add(new SqlParameter("@StartDate", model.FromDate));
-            SqlParams.Add(new SqlParameter("@EndDate", model.ToDate));
+            SqlParams.Add(new SqlParameter("@StartDate", fromDt));
+            SqlParams.Add(new SqlParameter("@EndDate", toDt));
 
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
