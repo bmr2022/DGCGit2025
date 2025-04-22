@@ -11,19 +11,15 @@ namespace eTactWeb.Controllers;
 [Authorize]
 public class TDSController : Controller
 {
-    public TDSController(IMemoryCache imemoryCache, ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ITDSModule iTDSModule)
+    public TDSController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ITDSModule iTDSModule)
     {
-        _MemoryCache = imemoryCache;
         Logger = logger;
         IDataLogic = iDataLogic;
         ITDSModule = iTDSModule;
     }
-
     public IDataLogic IDataLogic { get; }
     public ITDSModule ITDSModule { get; }
     public ILogger<SaleOrderController> Logger { get; }
-    private IMemoryCache _MemoryCache { get; }
-
     public IList<TDSModel> Add2List(TDSModel model, IList<TDSModel> TdsGrid, DataTable CgstSgst)
     {
         var _List = new List<TDSModel>();
@@ -43,7 +39,7 @@ public class TDSController : Controller
 
         return _List;
     }
-    
+
     public IActionResult AddTDSDetail(TDSModel model)
     {
         var isDuplicate = false;
@@ -77,7 +73,12 @@ public class TDSController : Controller
 
         var CgstSgst = ITDSModule.SgstCgst(model.TDSAccountCode);
 
-        _MemoryCache.TryGetValue("KeyTDSGrid", out IList<TDSModel> TdsGrid);
+        string modelJson = HttpContext.Session.GetString("KeyTDSGrid");
+        List<TDSModel> TdsGrid = new List<TDSModel>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            TdsGrid = JsonConvert.DeserializeObject<List<TDSModel>>(modelJson);
+        }
 
         if (HttpContext.Session.GetString(model.TxPageName) != null)
         {
@@ -87,24 +88,40 @@ public class TDSController : Controller
             }
             else if (model.TxPageName == "PurchaseOrder")
             {
-                _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                string Data = HttpContext.Session.GetString("PurchaseOrder");
+                if (!string.IsNullOrEmpty(Data))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                }
             }
             else if (model.TxPageName == "DirectPurchaseBill")
             {
-                _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                string Data = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(Data))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                }
             }
             else if (model.TxPageName == "PurchaseBill")
             {
-                _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                string Data = HttpContext.Session.GetString("PurchaseBill");
+                if (!string.IsNullOrEmpty(Data))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                }
             }
             else if (model.TxPageName == "JobWorkIssue")
             {
-                _MemoryCache.TryGetValue("JobWorkIssue", out MainModel);
+                string Data = HttpContext.Session.GetString("JobWorkIssue");
+                if (!string.IsNullOrEmpty(Data))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                }
             }
             if (TdsGrid != null && TdsGrid.Count > 0)
             {
                 MainModel.TDSDetailGridd = TdsGrid;
-                
+
                 isDuplicate = TdsGrid.Any(a => a.TDSAccountName.Equals(model.TDSAccountName));
             }
 
@@ -203,19 +220,37 @@ public class TDSController : Controller
             }
             else if (TDSModel.TxPageName == "PurchaseOrder")
             {
-                _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                string Data = HttpContext.Session.GetString("PurchaseOrder");
+                if (!string.IsNullOrEmpty(Data))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                }
                 ItemDetailGrid = MainModel.ItemDetailGrid;
             }
             else if (TDSModel.TxPageName == "DirectPurchaseBill")
             {
-                _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                string Data = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(Data))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                }
                 ItemDetailGrid = MainModel.ItemDetailGrid;
             }
             else if (TDSModel.TxPageName == "JobWorkIssue")
             {
-                _MemoryCache.TryGetValue("KeyJobWorkIssue", out MainModel);
+                string Data = HttpContext.Session.GetString("KeyJobWorkIssue");
+                if (!string.IsNullOrEmpty(Data))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                }
                 if (MainModel == null)
-                    _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out MainModel);
+                {
+                    string DataDetail = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                    if (!string.IsNullOrEmpty(DataDetail))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(DataDetail);
+                    }
+                }
                 ItemDetailGrid = MainModel;
                 var _ItemGrid = new List<JobWorkGridDetail>();
                 _ItemGrid = ItemDetailGrid;
@@ -237,28 +272,16 @@ public class TDSController : Controller
 
             if (ItemDetailGrid != null)
             {
-                _MemoryCache.TryGetValue("KeyTDSGrid", out List<TDSModel> TdsGrid);
+                string modelJson = HttpContext.Session.GetString("KeyTDSGrid");
+                List<TDSModel> TdsGrid = new List<TDSModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    TdsGrid = JsonConvert.DeserializeObject<List<TDSModel>>(modelJson);
+                }
 
                 if (TdsGrid != null)
                 {
                     _List = TdsGrid;
-                    //exists = TaxGrid.Select(s1 => s1.TxPartCode).ToList().Intersect(ItemDetailGrid.Select(s2 => s2.PartCode).ToList()).Any();
-
-                    //foreach (var TdsItem in TdsGrid)
-                    //{
-                    //    foreach (var item in ItemDetailGrid)
-                    //    {
-                    //        if (TDSModel.TxPageName == "JobWorkIssue")
-                    //        {
-                    //            if (TdsItem.TxPartCode == item.ItemCode)
-                    //                exists = true;
-                    //            break;
-                    //        }
-                    //        if (TxItem.TxPartCode == item.PartCode)
-                    //            exists = true;
-                    //        break;
-                    //    }
-                    //}
                 }
 
                 if (exists)
@@ -278,9 +301,19 @@ public class TDSController : Controller
                 {
 
                     List<JobWorkGridDetail> tdsGrid1 = new List<JobWorkGridDetail>();
-                    _MemoryCache.TryGetValue("KeyJobWorkIssue", out tdsGrid1);
+                    string jobWorkDetail = HttpContext.Session.GetString("KeyJobWorkIssue");
+                    if (!string.IsNullOrEmpty(jobWorkDetail))
+                    {
+                        tdsGrid1 = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(jobWorkDetail);
+                    }
                     if (tdsGrid1 == null)
-                        _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out tdsGrid1);
+                    {
+                        string jobWorkDetailEdit = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                        if (!string.IsNullOrEmpty(jobWorkDetailEdit))
+                        {
+                            tdsGrid1 = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(jobWorkDetailEdit);
+                        }
+                    }
 
                     if (tdsGrid1 == null)
                     {
@@ -303,73 +336,59 @@ public class TDSController : Controller
                         ItemAmount = item.Amount;
                     }
 
-                    //if (checkContains)
-                    //{
-                    //    //do nothing
-                    //}
-                    //else
-                    //{
                     decimal ItemAmount1 = 0;
                     ItemCnt = ItemCnt + 1;
-                        ItemAmount = item.Amount;
+                    ItemAmount = item.Amount;
 
-                        //if (isExp)
-                        //{
-                        //    ExpTaxAmt = TaxGrid.Where(m => m.TxType == "EXPENSES" && m.TxAdInTxable == "Y").Sum(x => x.TxAmount);
-                        //    //TaxOnExp = ((ItemAmount / BasicTotal) * ExpTaxAmt);
-                        //    TaxOnExp = ItemAmount == 0 && BasicTotal == 0 ? 0 : ExpTaxAmt / BasicTotal * ItemAmount;
-                        //    ItemAmount = TaxOnExp + ItemAmount;
-                        //}
+                    TDSAmount = ItemAmount * TDSModel.TDSPercentg / 100;
 
-                        TDSAmount = ItemAmount * TDSModel.TDSPercentg / 100;
+                    if (TDSModel.TxPageName == "JobWorkIssue")
+                    {
+                        PartCode = item.ItemCode;
+                        PartName = item.PartCode;
+                        ItemCode = item.ItemCode;
+                        ItemText = item.ItemName;
+                    }
+                    else
+                    {
+                        PartCode = item.PartCode;
+                        PartName = item.PartText;
+                        ItemCode = item.ItemCode;
+                        ItemText = item.ItemText;
+                    }
+                    _List.Add(new TDSModel
+                    {
+                        TDSSeqNo = _List.Count + 1,
+                        TDSTaxType = TDSModel.TDSTaxType,
+                        TDSTaxTypeName = TDSModel.TDSTaxTypeName,
+                        TDSAccountCode = TDSModel.TDSAccountCode,
+                        TDSAccountName = TDSModel.TDSAccountName,
+                        TDSPercentg = TDSModel.TDSPercentg,
+                        TDSRoundOff = TDSModel.TDSRoundOff,
+                        TDSAmount = TDSModel.TDSRoundOff == "Y" ? Math.Floor(TDSAmount) : Math.Round(TDSAmount, 2),
+                        TDSRemark = TDSModel.TDSRemark,
+                    });
 
-                        if (TDSModel.TxPageName == "JobWorkIssue")
-                        {
-                            PartCode = item.ItemCode;
-                            PartName = item.PartCode;
-                            ItemCode = item.ItemCode;
-                            ItemText = item.ItemName;
-                        }
-                        else
-                        {
-                            PartCode = item.PartCode;
-                            PartName = item.PartText;
-                            ItemCode = item.ItemCode;
-                            ItemText = item.ItemText;
-                        }
+                    if (CgstSgst.Rows.Count > 0 && TDSModel.TDSAccountName.Contains("CGST"))
+                    {
                         _List.Add(new TDSModel
                         {
                             TDSSeqNo = _List.Count + 1,
                             TDSTaxType = TDSModel.TDSTaxType,
                             TDSTaxTypeName = TDSModel.TDSTaxTypeName,
-                            TDSAccountCode = TDSModel.TDSAccountCode,
-                            TDSAccountName = TDSModel.TDSAccountName,
+                            TDSAccountCode = ToInt32(CgstSgst.Rows[1]["Account_Code"], CI),
+                            TDSAccountName = CgstSgst.Rows[0]["Tax_Name"].ToString().Contains("SGST") ? CgstSgst.Rows[0]["Tax_Name"].ToString() : CgstSgst.Rows[1]["Tax_Name"].ToString(),
                             TDSPercentg = TDSModel.TDSPercentg,
                             TDSRoundOff = TDSModel.TDSRoundOff,
                             TDSAmount = TDSModel.TDSRoundOff == "Y" ? Math.Floor(TDSAmount) : Math.Round(TDSAmount, 2),
                             TDSRemark = TDSModel.TDSRemark,
                         });
+                    }
+                    if (TDSModel.TxPageName == "JobWorkIssue")
+                        partCodeArray.Add(item.PartCode);
+                    else
+                        partCodeArray.Add(item.PartText);
 
-                        if (CgstSgst.Rows.Count > 0 && TDSModel.TDSAccountName.Contains("CGST"))
-                        {
-                            _List.Add(new TDSModel
-                            {
-                                TDSSeqNo = _List.Count + 1,
-                                TDSTaxType = TDSModel.TDSTaxType,
-                                TDSTaxTypeName = TDSModel.TDSTaxTypeName,
-                                TDSAccountCode = ToInt32(CgstSgst.Rows[1]["Account_Code"], CI),
-                                TDSAccountName = CgstSgst.Rows[0]["Tax_Name"].ToString().Contains("SGST") ? CgstSgst.Rows[0]["Tax_Name"].ToString() : CgstSgst.Rows[1]["Tax_Name"].ToString(),
-                                TDSPercentg = TDSModel.TDSPercentg,
-                                TDSRoundOff = TDSModel.TDSRoundOff,
-                                TDSAmount = TDSModel.TDSRoundOff == "Y" ? Math.Floor(TDSAmount) : Math.Round(TDSAmount, 2),
-                                TDSRemark = TDSModel.TDSRemark,
-                            });
-                        }
-                        if (TDSModel.TxPageName == "JobWorkIssue")
-                            partCodeArray.Add(item.PartCode);
-                        else
-                            partCodeArray.Add(item.PartText);
-                    
                 }
                 if (TDSModel.TxPageName == "JobWorkIssue")
                 {
@@ -407,15 +426,6 @@ public class TDSController : Controller
                 }
                 TotalTDSAmt = TotalTDSAmt + MainModel.ItemNetAmount;
                 MainModel.TotalTDSAmt = TotalTDSAmt;
-
-                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                //{
-                //    AbsoluteExpiration = DateTime.Now.AddMinutes(55),
-                //    SlidingExpiration = TimeSpan.FromMinutes(60),
-                //    Size = 1024,
-                //};
-
-                //_MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
 
                 StoreInCache("KeyTDSGrid", TdsGrid);
             }
@@ -464,37 +474,62 @@ public class TDSController : Controller
             }
             else if (SN == "PurchaseOrder")
             {
-                //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
-                _MemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+                string modelJsonData = HttpContext.Session.GetString("PurchaseOrder");
+                PurchaseOrderModel MainModel = new PurchaseOrderModel();
+                if (!string.IsNullOrEmpty(modelJsonData))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJsonData);
+                }
                 ListOfItems = MainModel.ItemDetailGrid;
             }
             else if (SN == "DirectPurchaseBill")
             {
-                //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
-                _MemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel);
+                string modelJsonDirect = HttpContext.Session.GetString("DirectPurchaseBill");
+                DirectPurchaseBillModel MainModel = new DirectPurchaseBillModel();
+                if (!string.IsNullOrEmpty(modelJsonDirect))
+                {
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJsonDirect);
+                }
                 ListOfItems = MainModel.ItemDetailGrid;
             }
             else if (SN == "PurchaseBill")
             {
-                //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
-                _MemoryCache.TryGetValue("PurchaseBill", out PurchaseBillModel MainModel);
-                ListOfItems = MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0 ? MainModel.ItemDetailGrid : MainModel.ItemDetailGridd ;
+                string modelJsonPurchase = HttpContext.Session.GetString("PurchaseBill");
+                PurchaseBillModel MainModel = new PurchaseBillModel();
+                if (!string.IsNullOrEmpty(modelJsonPurchase))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJsonPurchase);
+                }
+                ListOfItems = MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0 ? MainModel.ItemDetailGrid : MainModel.ItemDetailGridd;
             }
             else if (SN == "IssueNRGP")
             {
-                //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
-                _MemoryCache.TryGetValue("IssueNRGP", out IssueNRGPModel MainModel);
+                string modelJsonIssueNRGP = HttpContext.Session.GetString("IssueNRGP");
+                IssueNRGPModel MainModel = new IssueNRGPModel();
+                if (!string.IsNullOrEmpty(modelJsonIssueNRGP))
+                {
+                    MainModel = JsonConvert.DeserializeObject<IssueNRGPModel>(modelJsonIssueNRGP);
+                }
                 ListOfItems = MainModel.IssueNRGPDetailGrid;
             }
             else
             {
                 var JobGrid = new List<JobWorkGridDetail>();
-                _MemoryCache.TryGetValue("KeyJobWorkIssue", out List<JobWorkGridDetail> MainModel);
-
+                string modelJsonJobwork = HttpContext.Session.GetString("KeyJobWorkIssue");
+                List<JobWorkGridDetail> MainModel = new List<JobWorkGridDetail>();
+                if (!string.IsNullOrEmpty(modelJsonJobwork))
+                {
+                    MainModel = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJsonJobwork);
+                }
 
                 if (MainModel == null)
                 {
-                    _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> MainModel1);
+                    string jobWorkData = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                    List<JobWorkGridDetail> MainModel1 = new List<JobWorkGridDetail>();
+                    if (!string.IsNullOrEmpty(jobWorkData))
+                    {
+                        MainModel1 = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(jobWorkData);
+                    }
                     ListOfItems = MainModel1;
 
                 }
@@ -530,8 +565,13 @@ public class TDSController : Controller
                 }
             }
 
-            _MemoryCache.TryGetValue("KeyTDSGrid", out List<TDSModel> TdsGrid);
-            
+            string modelJson = HttpContext.Session.GetString("KeyTDSGrid");
+            List<TDSModel> TdsGrid = new List<TDSModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                TdsGrid = JsonConvert.DeserializeObject<List<TDSModel>>(modelJson);
+            }
+
             Amt = Amt * ToDecimal(TP) / 100;
         }
 
@@ -542,10 +582,9 @@ public class TDSController : Controller
     {
         dynamic MainModel = null;
 
-        MainModel = new TDSModel() ;
-        _MemoryCache.Remove("KeyTDSGrid");
+        MainModel = new TDSModel();
+        HttpContext.Session.Remove("KeyTDSGrid");
         return PartialView("_TDSGrid", MainModel);
-        
     }
 
     public IActionResult DeleteTDSRow(string SeqNo, string SN)
@@ -574,13 +613,18 @@ public class TDSController : Controller
         }
         //MainModel = SN == "ItemList" ? new SaleOrderModel() : new PurchaseOrderModel();
 
-        if (_MemoryCache.TryGetValue("KeyTDSGrid", out List<TDSModel> TdsGrid))
+        string modelJson = HttpContext.Session.GetString("KeyTDSGrid");
+        List<TDSModel> TdsGrid = new List<TDSModel>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            TdsGrid = JsonConvert.DeserializeObject<List<TDSModel>>(modelJson);
+        }
+        if (TdsGrid.Count() > 0)
         {
             bool canDelete = true;
 
             MainModel.TDSDetailGridd = TdsGrid;
             int Indx = ToInt32(SeqNo) - 1;
-
 
             if (canDelete)
             {
@@ -611,7 +655,9 @@ public class TDSController : Controller
                 TotalTDSAmt = TotalTDSAmt + MainModel.ItemNetAmount;
                 MainModel.TotalTDSAmt = TotalTDSAmt;
 
-                _MemoryCache.Set("KeyTDSGrid", TdsGrid, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(TdsGrid);
+                HttpContext.Session.SetString("KeyTDSGrid", serializedGrid);
             }
             else
             {
@@ -626,7 +672,6 @@ public class TDSController : Controller
 
     }
 
-    
     public async Task<IActionResult> GetHsnTDSInfo(int AC, string TxPageName, string RF)
     {
         var isSuccess = string.Empty;
@@ -655,28 +700,36 @@ public class TDSController : Controller
 
             case "PurchaseOrder":
                 HttpContext.Session.Get(TxPageName);
-                _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<object>(modelJson);
+                }
+
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TdsGrid = await GetHSNTaxList(MainModel);
                 break;
             case "DirectPurchaseBill":
                 HttpContext.Session.Get(TxPageName);
-                _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                string modelJson1 = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson1))
+                {
+                    MainModel = JsonConvert.DeserializeObject<object>(modelJson1);
+                }
+
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TdsGrid = await GetHSNTaxList(MainModel);
                 break;
-            //case "IssueNRGP":
-            //    HttpContext.Session.Get(TxPageName);
-            //    _MemoryCache.TryGetValue("IssueNRGP", out MainModel);
-            //    MainModel.AccountCode = AC;
-            //    MainModel.TxPageName = TxPageName;
-            //    IssueTaxGrid = await GetHSNIssueTaxList(MainModel);
-            //    break;
             case "JobWorkIssue":
                 HttpContext.Session.Get(TxPageName);
-                _MemoryCache.TryGetValue("JobWorkIssue", out MainModel);
+                string modelJsondata = HttpContext.Session.GetString("JobWorkIssue");
+                if (!string.IsNullOrEmpty(modelJsondata))
+                {
+                    MainModel = JsonConvert.DeserializeObject<object>(modelJsondata);
+                }
+
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TdsGrid = await GetHSNTaxList(MainModel);
@@ -686,16 +739,8 @@ public class TDSController : Controller
                 Console.WriteLine("No Page Defined.");
                 break;
         }
-        //if (TxPageName == "IssueNRGP")
-        //{
-        //    MainModel.IssueNRGPTaxGrid = IssueTaxGrid;
-        //    StoreInCache("KeyIssueNRGPTaxGrid", MainModel.IssueNRGPTaxGrid);
-        //    return PartialView("_IssueTaxGrid", MainModel);
-        //}
-        //else
-        //{
-            MainModel.TDSDetailGridd = TdsGrid;
-            StoreInCache("KeyTDSGrid", MainModel.TDSDetailGridd);
+        MainModel.TDSDetailGridd = TdsGrid;
+        StoreInCache("KeyTDSGrid", MainModel.TDSDetailGridd);
         //}
 
 
@@ -712,19 +757,24 @@ public class TDSController : Controller
     {
         bool isTDS = false;
         bool isExp = false;
-        _MemoryCache.TryGetValue("KeyTDSGrid", out IList<TDSModel> TdsGrid);
+        string modelJson = HttpContext.Session.GetString("KeyTDSGrid");
+        List<TDSModel> TdsGrid = new List<TDSModel>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            TdsGrid = JsonConvert.DeserializeObject<List<TDSModel>>(modelJson);
+        }
         if (TdsGrid != null && TdsGrid.Count > 0)
             isTDS = true;
 
         return Ok(new { isTDS });
     }
-    
+
     public string GetTDSPercentage(string TDSCode)
     {
         string Result = ITDSModule.GetTDSPercentage("TDSTAXPercentage", TDSCode);
         return Result;
     }
-    
+
     public async Task<IActionResult> FillTDSTaxType(string Flag)
     {
         DataSet oDataSet = await IDataLogic.GetDropDownList(Flag);
@@ -740,7 +790,7 @@ public class TDSController : Controller
                     {
                         Text = dr["TaxType"].ToString(),
                         Value = dr["TaxID"].ToString(),
-                    }).Where(a=> a.Text == "TDS").ToList();
+                    }).Where(a => a.Text == "TDS").ToList();
             }
         }
         return Json(new { TxType });
@@ -806,8 +856,11 @@ public class TDSController : Controller
         var HSNTAXParam = new HSNTAX();
         var TdsGrid = new List<TDSModel>();
         var HSNTaxDetail = new HSNTAXInfo();
-        _MemoryCache.TryGetValue("KeyTDSGrid", out TdsGrid);
-
+        string modelJson = HttpContext.Session.GetString("KeyTDSGrid");
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            TdsGrid = JsonConvert.DeserializeObject<List<TDSModel>>(modelJson);
+        }
 
         if (TdsGrid == null)
             TdsGrid = new List<TDSModel>();
@@ -816,10 +869,19 @@ public class TDSController : Controller
         if (MainModel.TxPageName == "JobWorkIssue")
         {
             var JobGrid = new List<JobWorkGridDetail>();
-            _MemoryCache.TryGetValue("KeyJobWorkIssue", out JobGrid);
-            if(JobGrid==null)
-                _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out JobGrid);
-
+            string jobWorkIssue = HttpContext.Session.GetString("KeyJobWorkIssue");
+            if (!string.IsNullOrEmpty(jobWorkIssue))
+            {
+                JobGrid = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(jobWorkIssue);
+            }
+            if (JobGrid==null)
+            {
+                string jobWorkGrid = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                if (!string.IsNullOrEmpty(jobWorkGrid))
+                {
+                    JobGrid = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(jobWorkGrid);
+                }
+            }
             grid = JobGrid;
         }
         else
@@ -939,7 +1001,8 @@ public class TDSController : Controller
             Size = 1024,
         };
 
-        _MemoryCache.Set(CacheKey, CacheObject, cacheEntryOptions);
+        string serializedGrid = JsonConvert.SerializeObject(CacheObject);
+        HttpContext.Session.SetString(CacheKey, serializedGrid);
     }
 
     private string ValidateHsnTax(dynamic MainModel)

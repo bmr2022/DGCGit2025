@@ -33,14 +33,14 @@ namespace eTactWeb.Controllers
         private readonly IConfiguration iconfiguration;
         private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public ProductionEntryController(ILogger<ProductionEntryController> logger, IDataLogic iDataLogic, IProductionEntry iProductionEntry, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public ProductionEntryController(ILogger<ProductionEntryController> logger, IDataLogic iDataLogic, IProductionEntry iProductionEntry, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IProductionEntry = iProductionEntry;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+            _MemoryCache = iMemoryCache;
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
@@ -112,15 +112,9 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> GetDataForProductionEntry(PendingProductionEntryModel ItemData)
         {
-            _MemoryCache.Remove("KeyProductionEntryDataGrid");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024
-            };
-
-            _MemoryCache.Set("KeyProductionEntryDataGrid", ItemData, cacheEntryOptions);
+            HttpContext.Session.Remove("KeyProductionEntryDataGrid");
+            string serializedGrid = JsonConvert.SerializeObject(ItemData);
+            HttpContext.Session.SetString("KeyProductionEntryDataGrid", serializedGrid);
             return PartialView("_PendingProductionEntry", ItemData);
         }
         public IActionResult GetImage(int EntryId = 0, int YearCode = 0)
@@ -163,10 +157,11 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Production Entry Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyProductionEntryGrid");
-            _MemoryCache.Remove("KeyProductionEntryOperatordetail");
-            _MemoryCache.Remove("KeyProductionEntryBreakdowndetail");
-            _MemoryCache.Remove("KeyProductionEntryScrapdetail");
+            HttpContext.Session.Remove("KeyProductionEntryGrid");
+            HttpContext.Session.Remove("KeyProductionEntryOperatordetail");
+            HttpContext.Session.Remove("KeyProductionEntryBreakdowndetail");
+            HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
+
             var model = await BindModels(null);
             model.FinFromDate = HttpContext.Session.GetString("FromDate");
             model.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -176,14 +171,8 @@ namespace eTactWeb.Controllers
             model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
             model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024
-            };
-
-            _MemoryCache.Set("KeyProductionEntryGrid", model, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(model);
+            HttpContext.Session.SetString("KeyProductionEntryGrid", serializedGrid);
             return View(model);
         }
         [Route("{controller}/Index")]
@@ -202,10 +191,10 @@ namespace eTactWeb.Controllers
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
             MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            _MemoryCache.Remove("KeyProductionEntryGrid");
-            _MemoryCache.Remove("KeyProductionEntryBreakdowndetail");
-            _MemoryCache.Remove("KeyProductionEntryOperatordetail");
-            _MemoryCache.Remove("KeyProductionEntryScrapdetail");
+            HttpContext.Session.Remove("KeyProductionEntryGrid");
+            HttpContext.Session.Remove("KeyProductionEntryBreakdowndetail");
+            HttpContext.Session.Remove("KeyProductionEntryOperatordetail");
+            HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -216,26 +205,23 @@ namespace eTactWeb.Controllers
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyProductionEntryGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
-                _MemoryCache.Set("KeyProductionEntryBreakdowndetail", MainModel.BreakdownDetailGrid, cacheEntryOptions);
-                _MemoryCache.Set("KeyProductionEntryOperatordetail", MainModel.OperatorDetailGrid, cacheEntryOptions);
-                _MemoryCache.Set("KeyProductionEntryScrapdetail", MainModel.ScrapDetailGrid, cacheEntryOptions);
+                string serializedProductionGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyProductionEntryGrid", serializedProductionGrid);
+                string serializedBreakdownGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyProductionEntryBreakdowndetail", serializedBreakdownGrid);
+                string serializedOperatorGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyProductionEntryOperatordetail", serializedOperatorGrid);
+                string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedScrapGrid);
             }
             else
             {
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                string modelJson = HttpContext.Session.GetString("KeyProductionEntryDataGrid");
+                PendingProductionEntryModel PendingProductionEntryModel = new();
+                if (!string.IsNullOrEmpty(modelJson))
                 {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.TryGetValue("KeyProductionEntryDataGrid", out PendingProductionEntryModel PendingProductionEntryModel);
+                    PendingProductionEntryModel = JsonConvert.DeserializeObject<PendingProductionEntryModel>(modelJson);
+                }
                 MainModel = await BindModels(MainModel);
                 if (PendingProductionEntryModel != null)
                 {
@@ -252,7 +238,6 @@ namespace eTactWeb.Controllers
                     MainModel.ProdPlanDate = PendingProductionEntryModel.PlanNoDate;
                     MainModel.BOMNo = PendingProductionEntryModel.BomNo;
                 }
-                //_MemoryCache.Set("KeyMIRGrid", MainModel1, cacheEntryOptions);
             }
             if (Mode != "U")
             {
@@ -290,13 +275,30 @@ namespace eTactWeb.Controllers
                 var BreakDownGrid = new DataTable();
                 var OperatorGrid = new DataTable();
                 var ScrapGrid = new DataTable();
-
-                _MemoryCache.TryGetValue("KeyProductionEntryGrid", out List<ProductionEntryItemDetail> ProductionEntryItemDetail);
-                _MemoryCache.TryGetValue("KeyProductionEntryBreakdowndetail", out List<ProductionEntryItemDetail> ProductionEntryBreakdownDetail);
-                _MemoryCache.TryGetValue("KeyProductionEntryOperatordetail", out List<ProductionEntryItemDetail> ProductionEntryOperatorDetail);
-                _MemoryCache.TryGetValue("KeyProductionEntryScrapdetail", out List<ProductionEntryItemDetail> ProductionEntryScrapDetail);
-
-
+                string serializedProductionGrid = HttpContext.Session.GetString("KeyProductionEntryGrid");
+                List<ProductionEntryItemDetail> ProductionEntryItemDetail = new();
+                if (!string.IsNullOrEmpty(serializedProductionGrid))
+                {
+                    ProductionEntryItemDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedProductionGrid);
+                }
+                string serializedBreakdownGrid = HttpContext.Session.GetString("KeyProductionEntryBreakdowndetail");
+                List<ProductionEntryItemDetail> ProductionEntryBreakdownDetail = new();
+                if (!string.IsNullOrEmpty(serializedBreakdownGrid))
+                {
+                    ProductionEntryBreakdownDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedBreakdownGrid);
+                }
+                string serializedOperatorGrid = HttpContext.Session.GetString("KeyProductionEntryOperatordetail");
+                List<ProductionEntryItemDetail> ProductionEntryOperatorDetail = new();
+                if (!string.IsNullOrEmpty(serializedOperatorGrid))
+                {
+                    ProductionEntryOperatorDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedOperatorGrid);
+                }
+                string serializedScrapGrid = HttpContext.Session.GetString("KeyProductionEntryScrapdetail");
+                List<ProductionEntryItemDetail> ProductionEntryScrapDetail = new();
+                if (!string.IsNullOrEmpty(serializedScrapGrid))
+                {
+                    ProductionEntryScrapDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedScrapGrid);
+                }
                 if (ProductionEntryItemDetail == null && ProductionEntryOperatorDetail == null && ProductionEntryBreakdownDetail == null && ProductionEntryScrapDetail == null)
                 {
                     ModelState.Clear();
@@ -336,7 +338,10 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            _MemoryCache.Remove(GIGrid);
+                            HttpContext.Session.Remove("KeyProductionEntryGrid");
+                            HttpContext.Session.Remove("KeyProductionEntryBreakdowndetail");
+                            HttpContext.Session.Remove("KeyProductionEntryOperatordetail");
+                            HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -378,57 +383,401 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> ClearGridAjax()
         {
-            _MemoryCache.Remove("KeyProductionEntryGrid");
-            _MemoryCache.Remove("KeyProductionEntryBreakdowndetail");
-            _MemoryCache.Remove("KeyProductionEntryOperatordetail");
-            _MemoryCache.Remove("KeyProductionEntryScrapdetail");
+            HttpContext.Session.Remove("KeyProductionEntryGrid");
+            HttpContext.Session.Remove("KeyProductionEntryBreakdowndetail");
+            HttpContext.Session.Remove("KeyProductionEntryOperatordetail");
+            HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
             return Json("done");
         }
-        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType)
+        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new ProductionEntryDashboard();
             model = await _IProductionEntry.GetDashboardData(FromDate, ToDate, SlipNo, ItemName, PartCode, ProdPlanNo, ProdSchNo, ReqNo, DashboardType);
             model.DashboardType = "Summary";
+            var modelList = model?.ProductionDashboard ?? new List<ProductionEntryDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.ProductionDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<ProductionEntryDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.ProductionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyProdList_Summary", modelList, cacheEntryOptions);
             return PartialView("_ProductionEntryDashboardGrid", model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType)
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             var model = new ProductionEntryDashboard();
             model = await _IProductionEntry.GetDashboardDetailData(FromDate, ToDate, SlipNo, ItemName, PartCode, ProdPlanNo, ProdSchNo, ReqNo, DashboardType);
             model.DashboardType = "Detail";
+            var modelList = model?.ProductionDashboard ?? new List<ProductionEntryDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.ProductionDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<ProductionEntryDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.ProductionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyProdList_Detail", modelList, cacheEntryOptions);
             return PartialView("_ProductionEntryDashboardGrid", model);
         }
-        public async Task<IActionResult> GetBatchwiseDetail(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType)
+        public async Task<IActionResult> GetBatchwiseDetail(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new ProductionEntryDashboard();
             model = await _IProductionEntry.GetBatchwiseDetail(FromDate, ToDate, SlipNo, ItemName, PartCode, ProdPlanNo, ProdSchNo, ReqNo, DashboardType);
             model.DashboardType = "DetailWithBatchwise";
+            var modelList = model?.ProductionDashboard ?? new List<ProductionEntryDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.ProductionDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<ProductionEntryDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.ProductionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyProdList_DetailWithBatchwise", modelList, cacheEntryOptions);
             return PartialView("_ProductionEntryDashboardGrid", model);
         }
-        public async Task<IActionResult> GetBreakdownData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetBreakdownData(string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new ProductionEntryDashboard();
             model = await _IProductionEntry.GetBreakdownData(FromDate, ToDate);
             model.DashboardType = "Breakdown";
+            var modelList = model?.ProductionDashboard ?? new List<ProductionEntryDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.ProductionDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<ProductionEntryDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.ProductionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyProdList_Breakdown", modelList, cacheEntryOptions);
             return PartialView("_ProductionEntryDashboardGrid", model);
         }
-        public async Task<IActionResult> GetOperationData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetOperationData(string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new ProductionEntryDashboard();
             model = await _IProductionEntry.GetOperationData(FromDate, ToDate);
             model.DashboardType = "Operator";
+            var modelList = model?.ProductionDashboard ?? new List<ProductionEntryDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.ProductionDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<ProductionEntryDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.ProductionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyProdList_Operator", modelList, cacheEntryOptions);
             return PartialView("_ProductionEntryDashboardGrid", model);
         }
-        public async Task<IActionResult> GetScrapData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetScrapData(string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new ProductionEntryDashboard();
             model = await _IProductionEntry.GetScrapData(FromDate, ToDate);
             model.DashboardType = "Scrap";
+            var modelList = model?.ProductionDashboard ?? new List<ProductionEntryDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.ProductionDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<ProductionEntryDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.ProductionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyProdList_Scrap", modelList, cacheEntryOptions);
+            return PartialView("_ProductionEntryDashboardGrid", model);
+        }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+        {
+            ProductionEntryDashboard model = new ProductionEntryDashboard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_ProductionEntryDashboardGrid", new List<ProductionEntryDashboard>());
+            }
+            string cacheKey = $"KeyProdList_{dashboardType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<ProductionEntryDashboard> productionEntryDashboard) || productionEntryDashboard == null)
+            {
+                return PartialView("_ProductionEntryDashboardGrid", new List<ProductionEntryDashboard>());
+            }
+
+            List<ProductionEntryDashboard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = productionEntryDashboard.ToList();
+            }
+            else
+            {
+                filteredResults = productionEntryDashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = productionEntryDashboard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.ProductionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
             return PartialView("_ProductionEntryDashboardGrid", model);
         }
         public async Task<ProductionEntryModel> BindModels(ProductionEntryModel model)
@@ -438,15 +787,9 @@ namespace eTactWeb.Controllers
                 model = new ProductionEntryModel();
                 model.YearCode = Constants.FinincialYear;
                 model.EntryId = _IDataLogic.GetEntryID("SP_ProductionEntry", Constants.FinincialYear, "PRODEntryId", "PRODYearcode");
-                //model.Date = DateTime.Today;
                 model.EntryTime = DateTime.Now.ToString("hh:mm tt");
 
             }
-            //model.ProcessList = await _IDataLogic.GetDropDownList("ProcessList", "SP_GetDropDownList");
-            //model.pro = await _IDataLogic.GetDropDownList("ProcessList", "SP_GetDropDownList");
-            //model.PONO = await _IDataLogic.GetDropDownList("PENDINGPOLIST","I", "SP_GateMainDetail");
-
-
             return model;
         }
         public async Task<JsonResult> GetFeatureOption()
@@ -471,38 +814,7 @@ namespace eTactWeb.Controllers
             try
             {
                 var time = CommonFunc.ParseFormattedDate( DateTime.Now.ToString());
-                //string format = "MMM ddd d HH:mm yyyy";
-                //string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //var dt = time.ToString(format);
-                //return Json(formattedDate);
                 return Json(DateTime.Now.ToString("yyyy-MM-dd"));
-                //return Json(time);
-                //string apiUrl = "https://worldtimeapi.org/api/ip";
-
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        string content = await response.Content.ReadAsStringAsync();
-                //        JObject jsonObj = JObject.Parse(content);
-
-                //        string datetimestring = (string)jsonObj["datetime"];
-                //        var formattedDateTime = datetimestring.Split(" ")[0];
-
-                //        DateTime parsedDate = DateTime.ParseExact(formattedDateTime, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                //        string formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //        return Json(formattedDate);
-                //    }
-                //    else
-                //    {
-                //        string errorContent = await response.Content.ReadAsStringAsync();
-                //        throw new HttpRequestException($"Failed to fetch server date and time. Status Code: {response.StatusCode}. Content: {errorContent}");
-                //    }
-                //}
             }
             catch (HttpRequestException ex)
             {
@@ -519,7 +831,12 @@ namespace eTactWeb.Controllers
         }
         public IActionResult EditItemRow(int SeqNo)
         {
-            _MemoryCache.TryGetValue("KeyProductionEntryGrid", out IList<ProductionEntryItemDetail> ProductionEntryItemDetail);
+            string serializedProductionGrid = HttpContext.Session.GetString("KeyProductionEntryGrid");
+            List<ProductionEntryItemDetail> ProductionEntryItemDetail = new();
+            if (!string.IsNullOrEmpty(serializedProductionGrid))
+            {
+                ProductionEntryItemDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedProductionGrid);
+            }
             var SSGrid = ProductionEntryItemDetail.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
@@ -527,7 +844,12 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo, string ProdType)
         {
             var MainModel = new ProductionEntryModel();
-            _MemoryCache.TryGetValue("KeyProductionEntryGrid", out List<ProductionEntryItemDetail> ProductionEntryItemDetail);
+            string serializedProductionGrid = HttpContext.Session.GetString("KeyProductionEntryGrid");
+            List<ProductionEntryItemDetail> ProductionEntryItemDetail = new();
+            if (!string.IsNullOrEmpty(serializedProductionGrid))
+            {
+                ProductionEntryItemDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedProductionGrid);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (ProductionEntryItemDetail != null && ProductionEntryItemDetail.Count > 0)
@@ -542,17 +864,9 @@ namespace eTactWeb.Controllers
                     item.SeqNo = Indx;
                 }
                 MainModel.ItemDetailGrid = ProductionEntryItemDetail;
-
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
                 if (ProductionEntryItemDetail.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyProductionEntryGrid");
+                    HttpContext.Session.Remove("KeyProductionEntryGrid");
                 }
                 //_MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
@@ -568,16 +882,15 @@ namespace eTactWeb.Controllers
                 var ProductionEntryDetail = new List<ProductionEntryItemDetail>();
                 var ProductionGrid = new List<ProductionEntryItemDetail>();
                 var SSGrid = new List<ProductionEntryItemDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 var seqNo = 0;
                 foreach (var item in model)
                 {
-                    _MemoryCache.TryGetValue("KeyProductionEntryGrid", out IList<ProductionEntryItemDetail> ProductionEntryItemDetail);
+                    string serializedProductionGrid = HttpContext.Session.GetString("KeyProductionEntryGrid");
+                    List<ProductionEntryItemDetail> ProductionEntryItemDetail = new();
+                    if (!string.IsNullOrEmpty(serializedProductionGrid))
+                    {
+                        ProductionEntryItemDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedProductionGrid);
+                    }
                     if (item != null)
                     {
                         if (ProductionEntryItemDetail == null)
@@ -599,7 +912,8 @@ namespace eTactWeb.Controllers
                         MainModel.ProdType=ProdType;
                         var ProdEntryAllow = item.ProdEntryAllowToAddRMItem;
                         MainModel.ProdEntryAllowToAddRMItem= ProdEntryAllow;
-                        _MemoryCache.Set("KeyProductionEntryGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                        HttpContext.Session.SetString("KeyProductionEntryGrid", serializedGrid);
                     }
                 }
                 return PartialView("_ProductionEntryGrid", MainModel);
@@ -613,18 +927,16 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryGrid", out IList<ProductionEntryItemDetail> ProductionEntryItemDetail);
-
+                string serializedProductionGrid = HttpContext.Session.GetString("KeyProductionEntryGrid");
+                List<ProductionEntryItemDetail> ProductionEntryItemDetail = new();
+                if (!string.IsNullOrEmpty(serializedProductionGrid))
+                {
+                    ProductionEntryItemDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedProductionGrid);
+                }
                 var MainModel = new ProductionEntryModel();
                 var ProductionEntryGrid = new List<ProductionEntryItemDetail>();
                 var ProductionGrid = new List<ProductionEntryItemDetail>();
                 var SSGrid = new List<ProductionEntryItemDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 var seqNo = 0;
 
                 if (modelData != null)
@@ -647,7 +959,8 @@ namespace eTactWeb.Controllers
                     MainModel.ProdType=ProdType;
                     var ProdEntryAllow = modelData.ProdEntryAllowToAddRMItem;
                     MainModel.ProdEntryAllowToAddRMItem= ProdEntryAllow;
-                    _MemoryCache.Set("KeyProductionEntryGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryGrid", serializedGrid);
                 }
 
                 return PartialView("_ProductionEntryGrid", MainModel);
@@ -661,18 +974,16 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryOperatordetail", out IList<ProductionEntryItemDetail> ProductionEntryOperatorDetail);
-
+                string serializedOperatorGrid = HttpContext.Session.GetString("KeyProductionEntryOperatordetail");
+                List<ProductionEntryItemDetail> ProductionEntryOperatorDetail = new();
+                if (!string.IsNullOrEmpty(serializedOperatorGrid))
+                {
+                    ProductionEntryOperatorDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedOperatorGrid);
+                }
                 var MainModel = new ProductionEntryModel();
                 var ProductionEntryGrid = new List<ProductionEntryItemDetail>();
                 var ProductionGrid = new List<ProductionEntryItemDetail>();
                 var SSGrid = new List<ProductionEntryItemDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 if (model != null)
                 {
                     if (ProductionEntryOperatorDetail == null)
@@ -695,8 +1006,8 @@ namespace eTactWeb.Controllers
                         }
                     }
                     MainModel.OperatorDetailGrid = ProductionEntryGrid;
-
-                    _MemoryCache.Set("KeyProductionEntryOperatordetail", MainModel.OperatorDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryOperatordetail", serializedGrid);
                 }
 
                 return PartialView("_ProductionEntryOperatorDetail", MainModel);
@@ -710,18 +1021,18 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryBreakdowndetail", out IList<ProductionEntryItemDetail> ProductionEntryBreakdownDetail);
+                string serializedBreakdownGrid = HttpContext.Session.GetString("KeyProductionEntryBreakdowndetail");
+                List<ProductionEntryItemDetail> ProductionEntryBreakdownDetail = new();
+                if (!string.IsNullOrEmpty(serializedBreakdownGrid))
+                {
+                    ProductionEntryBreakdownDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedBreakdownGrid);
+                }
 
                 var MainModel = new ProductionEntryModel();
                 var ProductionEntryGrid = new List<ProductionEntryItemDetail>();
                 var ProductionGrid = new List<ProductionEntryItemDetail>();
                 var SSGrid = new List<ProductionEntryItemDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+
                 if (model != null)
                 {
                     if (ProductionEntryBreakdownDetail == null)
@@ -744,8 +1055,8 @@ namespace eTactWeb.Controllers
                         }
                     }
                     MainModel.BreakdownDetailGrid = ProductionEntryGrid;
-
-                    _MemoryCache.Set("KeyProductionEntryBreakdowndetail", MainModel.BreakdownDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryBreakdowndetail", serializedGrid);
                 }
 
                 return PartialView("_ProductionEntryBreakdownDetail", MainModel);
@@ -759,18 +1070,18 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryScrapdetail", out IList<ProductionEntryItemDetail> ProductionEntryScrapDetail);
+                string serializedScrapGrid = HttpContext.Session.GetString("KeyProductionEntryScrapdetail");
+                List<ProductionEntryItemDetail> ProductionEntryScrapDetail = new();
+                if (!string.IsNullOrEmpty(serializedScrapGrid))
+                {
+                    ProductionEntryScrapDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedScrapGrid);
+                }
 
                 var MainModel = new ProductionEntryModel();
                 var ProductionEntryGrid = new List<ProductionEntryItemDetail>();
                 var ProductionGrid = new List<ProductionEntryItemDetail>();
                 var SSGrid = new List<ProductionEntryItemDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+
                 if (model != null)
                 {
                     if (ProductionEntryScrapDetail == null)
@@ -790,8 +1101,8 @@ namespace eTactWeb.Controllers
                         ProductionEntryGrid.Add(model);
                     }
                     MainModel.ScrapDetailGrid = ProductionEntryGrid;
-
-                    _MemoryCache.Set("KeyProductionEntryScrapdetail", MainModel.ScrapDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedGrid);
                 }
 
                 return PartialView("_ProductionEntryScrapDetail", MainModel);
@@ -849,13 +1160,8 @@ namespace eTactWeb.Controllers
             {
                 throw ex;
             }
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            _MemoryCache.Set("KeyProductionEntryScrapdetail", model.ScrapDetailGrid, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(model.ScrapDetailGrid);
+            HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedGrid);
             return PartialView("_ProductionEntryScrapDetail", model);
         }
         public async Task<JsonResult> FillShiftTime(int ShiftId)
@@ -1083,7 +1389,12 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteByItemCode(int SeqNo)
         {
             var MainModel = new ProductionEntryModel();
-            _MemoryCache.TryGetValue("KeyProductionGridOnLoad", out List<ProductionEntryItemDetail> EntryItemDetail);
+            string serializedGrid = HttpContext.Session.GetString("KeyProductionGridOnLoad");
+            List<ProductionEntryItemDetail> EntryItemDetail = new();
+            if (!string.IsNullOrEmpty(serializedGrid))
+            {
+                EntryItemDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (EntryItemDetail != null && EntryItemDetail.Count > 0)
@@ -1099,17 +1410,9 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ItemDetailGrid = EntryItemDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-
                 if (EntryItemDetail.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyProductionGridOnLoad");
+                    HttpContext.Session.Remove("KeyProductionGridOnLoad");
                 }
             }
             return View(MainModel);
@@ -1123,7 +1426,8 @@ namespace eTactWeb.Controllers
                 Size = 1024,
             };
             var model = await _IProductionEntry.GetChildData("RMCONSUMPTION", "SpGetBomitemWithWorkcenterStock", WcId, YearCode, ProdQty, ItemCode, ProdDate, BomNo);
-            _MemoryCache.Set("KeyGetChidData", model.ProductionChilDataDetail, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(model.ProductionChilDataDetail);
+            HttpContext.Session.SetString("KeyGetChidData", serializedGrid);
             if (model.ProductionChilDataDetail != null)
             {
                 model.ProductionChilDataDetail = model.ProductionChilDataDetail.ToList();
@@ -1133,7 +1437,13 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteByItem(int SeqNo)
         {
             var MainModel = new ProductionEntryModel();
-            _MemoryCache.TryGetValue("KeyGetChidData", out List<ProductionEntryItemDetail> ProductionChilDataDetail);
+            string serializedGrid = HttpContext.Session.GetString("KeyGetChidData");
+            List<ProductionEntryItemDetail> ProductionChilDataDetail = new();
+            if (!string.IsNullOrEmpty(serializedGrid))
+            {
+                ProductionChilDataDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+            }
+            
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (ProductionChilDataDetail != null && ProductionChilDataDetail.Count > 0)
@@ -1149,17 +1459,9 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ProductionChilDataDetail = ProductionChilDataDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-
                 if (ProductionChilDataDetail.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyGetChidData");
+                    HttpContext.Session.Remove("KeyGetChidData");
                 }
             }
             return PartialView("_ProductionChildDataDetail", MainModel);
@@ -1268,17 +1570,15 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyProductionEntryGrid");
-                _MemoryCache.Remove("KeyProductionEntryOperatordetail");
-                _MemoryCache.Remove("KeyProductionEntryBreakdowndetail");
-                _MemoryCache.Remove("KeyProductionEntryScrapdetail");
+                HttpContext.Session.Remove("KeyProductionEntryGrid");
+                HttpContext.Session.Remove("KeyProductionEntryOperatordetail");
+                HttpContext.Session.Remove("KeyProductionEntryBreakdowndetail");
+                HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
 
                 var model = new ProductionDashboard();
                 var Result = await _IProductionEntry.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;
 
-                //model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
-                //model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
                 model.FromDate = CommonFunc.ParseFormattedDate(new DateTime(now.Year, now.Month, 1).ToString());
                 model.ToDate = CommonFunc.ParseFormattedDate(new DateTime(DateTime.Today.Year + 1, 3, 31).ToString());
 
@@ -1579,7 +1879,13 @@ namespace eTactWeb.Controllers
             var MainModel = new ProductionEntryModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryBreakdowndetail", out List<ProductionEntryItemDetail> BreakdownDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryBreakdowndetail");
+                List<ProductionEntryItemDetail> BreakdownDetailGrid = new();
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    BreakdownDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
+                
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (BreakdownDetailGrid != null && BreakdownDetailGrid.Count > 0)
@@ -1595,19 +1901,18 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.BreakdownDetailGrid = BreakdownDetailGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyProductionEntryBreakdowndetail", MainModel.BreakdownDetailGrid, cacheEntryOptions);
+                    string serializedBreakdownGrid = JsonConvert.SerializeObject(MainModel.BreakdownDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryBreakdowndetail", serializedBreakdownGrid);
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryBreakdowndetail", out List<ProductionEntryItemDetail> BreakdownDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryBreakdowndetail");
+                List<ProductionEntryItemDetail> BreakdownDetailGrid = new();
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    BreakdownDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (BreakdownDetailGrid != null && BreakdownDetailGrid.Count > 0)
@@ -1623,14 +1928,8 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.BreakdownDetailGrid = BreakdownDetailGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyProductionEntryBreakdowndetail", MainModel.BreakdownDetailGrid, cacheEntryOptions);
+                    string serializedBreakdownGrid = JsonConvert.SerializeObject(MainModel.BreakdownDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryBreakdowndetail", serializedBreakdownGrid);
                 }
             }
 
@@ -1641,11 +1940,19 @@ namespace eTactWeb.Controllers
             IList<ProductionEntryItemDetail> BreakdownDetailGrid = new List<ProductionEntryItemDetail>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryBreakdowndetail", out BreakdownDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryBreakdowndetail");
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    BreakdownDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryBreakdowndetail", out BreakdownDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryBreakdowndetail");
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    BreakdownDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
             }
             IEnumerable<ProductionEntryItemDetail> SSBreakdownGrid = BreakdownDetailGrid;
             if (BreakdownDetailGrid != null)
@@ -1660,7 +1967,12 @@ namespace eTactWeb.Controllers
             var MainModel = new ProductionEntryModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryOperatordetail", out List<ProductionEntryItemDetail> OperatorDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryOperatordetail");
+                List<ProductionEntryItemDetail> OperatorDetailGrid = new();
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    OperatorDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (OperatorDetailGrid != null && OperatorDetailGrid.Count > 0)
@@ -1682,13 +1994,18 @@ namespace eTactWeb.Controllers
                         SlidingExpiration = TimeSpan.FromMinutes(55),
                         Size = 1024,
                     };
-
-                    _MemoryCache.Set("KeyProductionEntryOperatordetail", MainModel.OperatorDetailGrid, cacheEntryOptions);
+                    string serializedOperatorGrid = JsonConvert.SerializeObject(MainModel.OperatorDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryOperatordetail", serializedOperatorGrid);
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryOperatordetail", out List<ProductionEntryItemDetail> OperatorDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryOperatordetail");
+                List<ProductionEntryItemDetail> OperatorDetailGrid = new();
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    OperatorDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (OperatorDetailGrid != null && OperatorDetailGrid.Count > 0)
@@ -1704,14 +2021,8 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.OperatorDetailGrid = OperatorDetailGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyProductionEntryOperatordetail", MainModel.OperatorDetailGrid, cacheEntryOptions);
+                    string serializedOperatorGrid = JsonConvert.SerializeObject(MainModel.OperatorDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryOperatordetail", serializedOperatorGrid);
                 }
             }
 
@@ -1722,11 +2033,19 @@ namespace eTactWeb.Controllers
             IList<ProductionEntryItemDetail> OperatorDetailGrid = new List<ProductionEntryItemDetail>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryOperatordetail", out OperatorDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryOperatordetail");
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    OperatorDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryOperatordetail", out OperatorDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryOperatordetail");
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    OperatorDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
             }
             IEnumerable<ProductionEntryItemDetail> SSOperatorGrid = OperatorDetailGrid;
             if (OperatorDetailGrid != null)
@@ -1741,7 +2060,12 @@ namespace eTactWeb.Controllers
             var MainModel = new ProductionEntryModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryScrapdetail", out List<ProductionEntryItemDetail> ScrapDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryScrapdetail");
+                List<ProductionEntryItemDetail> ScrapDetailGrid = new();
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    ScrapDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (ScrapDetailGrid != null && ScrapDetailGrid.Count > 0)
@@ -1757,19 +2081,19 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ScrapDetailGrid = ScrapDetailGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyProductionEntryScrapdetail", MainModel.ScrapDetailGrid, cacheEntryOptions);
+                    string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ScrapDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedScrapGrid);
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryScrapdetail", out List<ProductionEntryItemDetail> ScrapDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryScrapdetail");
+                List<ProductionEntryItemDetail> ScrapDetailGrid = new();
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    ScrapDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
+                
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (ScrapDetailGrid != null && ScrapDetailGrid.Count > 0)
@@ -1792,7 +2116,8 @@ namespace eTactWeb.Controllers
                         Size = 1024,
                     };
 
-                    _MemoryCache.Set("KeyProductionEntryScrapdetail", MainModel.ScrapDetailGrid, cacheEntryOptions);
+                    string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ScrapDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedScrapGrid);
                 }
             }
 
@@ -1803,11 +2128,19 @@ namespace eTactWeb.Controllers
             IList<ProductionEntryItemDetail> ScrapDetailGrid = new List<ProductionEntryItemDetail>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryScrapdetail", out ScrapDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryScrapdetail");
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    ScrapDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyProductionEntryScrapdetail", out ScrapDetailGrid);
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryScrapdetail");
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    ScrapDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
             }
             IEnumerable<ProductionEntryItemDetail> SSScrapGrid = ScrapDetailGrid;
             if (ScrapDetailGrid != null)

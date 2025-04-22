@@ -368,7 +368,7 @@ namespace eTactWeb.Controllers
             model.DashboardType = "Summary";
             var modelList = model?.GateDashboard ?? new List<GateInwardDashboard>();
 
-            model.DashboardType = "Detail";
+            
             if (string.IsNullOrWhiteSpace(SearchBox))
             {
                 model.TotalRecords = modelList.Count();

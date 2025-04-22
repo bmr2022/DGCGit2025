@@ -14,7 +14,6 @@ namespace eTactWeb.Controllers
         {
             _IDataLogic = iDataLogic;
             _IWorkCenterMaster = iWorkCenterMaster;
-
         }
 
         public IActionResult Index()
@@ -39,12 +38,6 @@ namespace eTactWeb.Controllers
             if (mode == "U" || mode == "V")
             {
                 model.WCID = id;
-                //model = await BindProcess(model);
-                //model = await BindUser(model);
-                //model = await BindEmployee(model);
-
-                //var result = await Update(id ,model).ConfigureAwait(true);
-
                 model = await _IWorkCenterMaster.ViewByID(id).ConfigureAwait(true);
                 model.Mode = mode;
             }
@@ -70,7 +63,6 @@ namespace eTactWeb.Controllers
                     existingRecord.WorkCenterType = model.WorkCenterType;
                     existingRecord.Mode = model.Mode;
                     //existingRecord.MachineId = model.MachineId;
-
 
                     // Save the updated record back to the database
                     var updateResult = await _IWorkCenterMaster.SaveData(existingRecord).ConfigureAwait(true);

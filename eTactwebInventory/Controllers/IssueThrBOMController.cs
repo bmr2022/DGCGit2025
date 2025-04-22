@@ -372,7 +372,7 @@ namespace eTactWeb.Controllers
                                 {
                                     if (item.LotStock <= 0 || item.TotalStock <= 0)
                                     {
-                                        return StatusCode(203, "Stock can't be zero");
+                                        return StatusCode(203, $"Stock can't be zero for PartCode: {item.PartCode}");
                                     }
                                 }
                                 item.seqno += seqNo;
@@ -385,7 +385,7 @@ namespace eTactWeb.Controllers
                                 {
                                     if (item.LotStock <= 0 || item.TotalStock <= 0)
                                     {
-                                        return StatusCode(203, "Stock can't be zero");
+                                        return StatusCode(203, $"Stock can't be zero for PartCode: {item.PartCode}");
                                     }
                                 }
                                 if (IssueThrBomDetailGrid.Where(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.uniqueBatchNo == item.uniqueBatchNo).Any())

@@ -14,18 +14,15 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IWIPStockRegister _IWIPStockRegister { get; }
-
         private readonly ILogger<WIPStockRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public WIPStockRegisterController(ILogger<WIPStockRegisterController> logger, IDataLogic iDataLogic, IWIPStockRegister iWIPStockRegister, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public WIPStockRegisterController(ILogger<WIPStockRegisterController> logger, IDataLogic iDataLogic, IWIPStockRegister iWIPStockRegister, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IWIPStockRegister = iWIPStockRegister;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -90,7 +87,8 @@ namespace eTactWeb.Controllers
                 Size = 1024,
             };
 
-            _MemoryCache.Set("KeyWIPStockList", fullList, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(fullList);
+            HttpContext.Session.SetString("KeyWIPStockList", serializedGrid);
             return PartialView("_WIPStockRegisterGrid", model);
         }
         [HttpGet]
@@ -102,7 +100,13 @@ namespace eTactWeb.Controllers
                 return PartialView("_WIPStockRegisterGrid", new List<WIPStockRegisterModel>());
             }
 
-            if (!_MemoryCache.TryGetValue("KeyWIPStockList", out IList<WIPStockRegisterDetail> wipRegisterViewModel) || wipRegisterViewModel == null)
+            string modelJson = HttpContext.Session.GetString("KeyWIPStockList");
+            List<WIPStockRegisterDetail> wipRegisterViewModel = new List<WIPStockRegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                wipRegisterViewModel = JsonConvert.DeserializeObject<List<WIPStockRegisterDetail>>(modelJson);
+            }
+            if ( wipRegisterViewModel == null)
             {
                 return PartialView("_WIPStockRegisterGrid", new List<WIPStockRegisterModel>());
             }

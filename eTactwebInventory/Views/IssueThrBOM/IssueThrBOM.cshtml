@@ -583,8 +583,12 @@
                 for (let i = 1; i <= totalrows; i++) {
                     var batchVal = $('#MainGridBatchNo-' + i).val();
                     var issueqty = $('#MainGridIssueQty-' + i).val();
+                    var totalQty = $('#MainGridTotalStock-' + i).val();
+                    var uniquebatch = $('#MainGridUniqueBatchNo-' + i).val();
 
-                    if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty<=0) {
+
+
+                    if (batchVal === '' || batchVal === '0' || uniquebatch === '' || uniquebatch === '0' || uniquebatch===null || batchVal === null || issueqty <= 0 || totalQty <= 0) {
                         // Change background color of the whole row
                         $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
                     }
@@ -1238,8 +1242,8 @@
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                     }
-                    else if (data === "Stock can't be zero" && (xhr.statusCode === 203 || xhr.responseText === "Stock can't be zero")) {
-                        $.notify('Lot Stock Or Total Stock cannot be zero or less than Req Qty', "info");
+                    else if (xhr.status === 203) {
+                        $.notify(xhr.responseText, "info");
                     }
                     else {
                         $('#divIssueThrBOMGridAdd').html(data);
@@ -1428,8 +1432,11 @@
 
                         var batchVal = $('#MainGridBatchNo-' + i).val();
                         var issueqty = $('#MainGridIssueQty-' + i).val();
+                        var totalQty = $('#MainGridTotalStock-' + i).val();
+                        var uniquebatch = $('#MainGridUniqueBatchNo-' + i).val();
 
-                        if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0) {
+
+                        if (batchVal === '' || batchVal === '0' || uniquebatch === '' || uniquebatch === '0' || uniquebatch === null || batchVal === null || issueqty <= 0 || totalQty <= 0) {
                             // Change background color of the whole row
                             $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
                         }

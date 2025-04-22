@@ -88,7 +88,7 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="GateInward" asp-action="Dashboard">
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ProductionEntry" asp-action="ProductionEntryDashboard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
@@ -245,7 +245,60 @@
         $('#DashboardType').change(function () {
             GetSearchData();
         })
+        function loadPage(pageNumber) {
+            debugger
 
+            var dashboardType = $('#DashboardType').val();
+            var url = '';
+
+            if (dashboardType === "Summary") {
+                url = '@Url.Action("GetSearchData", "ProductionEntry")';
+            }else if (dashboardType === "Detail") {
+                url = '@Url.Action("GetDetailData", "ProductionEntry")';
+            }else if (dashboardType === "DetailWithBatchwise") {
+                url = '@Url.Action("GetBatchwiseDetail", "ProductionEntry")';
+            }else if (dashboardType === "Breakdown") {
+                url = '@Url.Action("GetBreakdownData", "ProductionEntry")';
+            }else if (dashboardType === "Operation") {
+                url = '@Url.Action("GetOperationData", "ProductionEntry")';
+            }else if (dashboardType === "Scrap") {
+                url = '@Url.Action("GetScrapData", "ProductionEntry")';
+            }
+         
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#DashboardType').val();
+            $.ajax({
+                url: "/ProductionEntry/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType },
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
         function GetFormRights() {
 
             $.ajax({
@@ -1207,24 +1260,24 @@
 
         var currentSearchColumn = null;
 
-        $("#search-box").on("keyup", function () {
+        // $("#search-box").on("keyup", function () {
 
-            var value = $(this).val().toLowerCase();
-            $("#gateDashboardtable tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
-            });
-        });
+        //     var value = $(this).val().toLowerCase();
+        //     $("#gateDashboardtable tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
 
 
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        });
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        // });
 
         $('#sendToExcel').click(function () {
             $("#GateDataTable").table2excel({

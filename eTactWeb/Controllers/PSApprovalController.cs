@@ -12,14 +12,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IPSApproval _IPSApproval;
         private readonly ILogger<PSApprovalController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public PSApprovalController(ILogger<PSApprovalController> logger, IDataLogic iDataLogic, IPSApproval iPSApproval, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public PSApprovalController(ILogger<PSApprovalController> logger, IDataLogic iDataLogic, IPSApproval iPSApproval, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IPSApproval = iPSApproval;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
         public IActionResult PSApproval(string type="")
@@ -61,7 +59,7 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowPSDetail(int ID, int YC, string SchNo,string TypeOfApproval)
         {
-            _MemoryCache.Remove("KeyPSApprovalDetail");
+            HttpContext.Session.Remove("KeyPSApprovalDetail");
             var MainModel = new List<PSApprovalDetail>();
             MainModel = await _IPSApproval.ShowPSDetail(ID, YC, SchNo).ConfigureAwait(true);
             return View(MainModel);

@@ -13,17 +13,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IFeatures_Options _IFeatures_Options { get; }
-
         private readonly ILogger<Features_OptionsController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public Features_OptionsController(ILogger<Features_OptionsController> logger, IDataLogic iDataLogic, IFeatures_Options iFeatures_Options, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public Features_OptionsController(ILogger<Features_OptionsController> logger, IDataLogic iDataLogic, IFeatures_Options iFeatures_Options, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IFeatures_Options = iFeatures_Options;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -229,7 +226,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("CompanyGrid");
+                        HttpContext.Session.Remove("CompanyGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {

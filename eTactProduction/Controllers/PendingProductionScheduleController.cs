@@ -12,14 +12,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IPendingProductionSchedule _IPendingProductionSchedule;
         private readonly ILogger<PendingProductionScheduleController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public PendingProductionScheduleController(ILogger<PendingProductionScheduleController> logger, IDataLogic iDataLogic, IPendingProductionSchedule IPendingProductionSchedule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public PendingProductionScheduleController(ILogger<PendingProductionScheduleController> logger, IDataLogic iDataLogic, IPendingProductionSchedule IPendingProductionSchedule, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IPendingProductionSchedule = IPendingProductionSchedule;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
         public async Task<IActionResult> PendingProductionSchedule()
@@ -83,8 +81,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyPendingProductionSchedule");
-                _MemoryCache.TryGetValue("KeyPendingProductionSchedule", out IList<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail);
+                HttpContext.Session.Remove("KeyPendingProductionSchedule");
+                var sessionData = HttpContext.Session.GetString("KeyPendingProductionSchedule");
+                var IssueAgainstProdScheduleDetail = string.IsNullOrEmpty(sessionData)
+    ? new List<IssueAgainstProdScheduleDetail>()
+    : JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(sessionData);
+
                 TempData.Clear();
 
                 var MainModel = new IssueAgainstProdSchedule();
@@ -126,13 +128,17 @@ namespace eTactWeb.Controllers
                             }
 
                             MainModel.ItemDetailGrid = IssueGrid;
-
-                            _MemoryCache.Set("KeyPendingProductionSchedule", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            var jsonData = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                            HttpContext.Session.SetString("KeyPendingProductionSchedule", jsonData);
                         }
                     }
                 }
-                _MemoryCache.TryGetValue("KeyPendingProductionSchedule", out IList<IssueThrBomDetail> grid);
-                _MemoryCache.Set("KeyIssAgainstProduction", MainModel.ItemDetailGrid, cacheEntryOptions);
+                var sessionGridData = HttpContext.Session.GetString("KeyPendingProductionSchedule");
+                var grid = string.IsNullOrEmpty(sessionGridData)
+    ? new List<IssueThrBomDetail>()
+    : JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(sessionGridData);
+                var issueDataJson = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyIssAgainstProduction", issueDataJson);
 
 
                 return Json("done");
