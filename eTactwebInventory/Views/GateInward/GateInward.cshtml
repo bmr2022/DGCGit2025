@@ -1828,6 +1828,14 @@
             else {
                 $('#AltQty').prop("disabled", false);
             }
+            /* monika */
+            if ($('#Rate').val() == 0 ) {
+                $('#Rate').prop("disabled", false);
+            }
+            else {
+                $('#Rate').prop("disabled", true);
+            }
+            /* ---- */
             $('#ItemName').focus();
 
         }
@@ -1868,6 +1876,16 @@
             else {
                 $('#AltQty').prop("disabled", false);
             }
+
+            /* monika */
+            if ($('#Rate').val() == 0) {
+                $('#Rate').prop("disabled", false);
+            }
+            else {
+                $('#Rate').prop("disabled", true);
+            }
+            /* --- */
+
             $('#Unit').focus();
         }
 
@@ -2445,12 +2463,14 @@
                                                 $('#SchYearCode').removeAttr("disabled");
                                                 $("#SaleBillNumber,#SaleBillYear,#SaleBillQnty").css("display", "none");
                                             }
+
                                             if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
                                                 $(".ChallanElements").css("display", "block");
 
                                             } else {
                                                 $(".ChallanElements").css("display", "none");
                                             }
+                                           
                                             updateFormFields(obj);
 
                                             resolve();
