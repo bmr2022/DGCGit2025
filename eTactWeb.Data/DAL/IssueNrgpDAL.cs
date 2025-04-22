@@ -562,6 +562,7 @@ namespace eTactWeb.Data.DAL
                         SEQNo = Convert.ToInt32(row["SeqNo"]),
                         ItemCode = Convert.ToInt32(row["ItemCode"]),
                         PartCode = row["partcode"].ToString(),
+                        RemarkDetail = row["RemarkDetail"].ToString(),
                         ItemName = row["item_Name"].ToString(),
                         HSNNo = Convert.ToInt32(row["HSNNO"].ToString()),
                         Storeid = Convert.ToInt32(row["StoreId"]),
