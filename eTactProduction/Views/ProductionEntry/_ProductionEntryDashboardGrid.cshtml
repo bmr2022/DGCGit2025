@@ -201,7 +201,9 @@ else
                                 </td>
                                 <td class="partcode-@Cntr">@item.FGPartCode</td>
                                 <td class="itemname-@Cntr">@item.FGItemName</td>
-                                <td class="proddate-@Cntr">@item.ProdDate.Split(" ")[0]</td>
+                                <td class="proddate-@Cntr">/* @item.ProdDate.Split(" ")[0] */
+                                    @(string.IsNullOrEmpty(item.ProdDate) ? "" : item.ProdDate.Split(" ")[0])
+                                </td>
                                 <td class="prodslipno-@Cntr">@item.ProdSlipNo</td>
                                 <td class="prodagainst-@Cntr">@item.ProdAgainstPlanManual</td>
                                 <td class="newprod-@Cntr">@item.NewProdRework</td>
@@ -220,26 +222,38 @@ else
                                 <td class="transfertoqc-@Cntr">@item.TransferToQc</td>
                                 <td class="storewc-@Cntr">@item.StoreWC</td>
                                 <td class="bomno-@Cntr">@item.BOMNO</td>
-                                <td class="bomdate-@Cntr">@item.BOMDate.Split(" ")[0]</td>
+                                <td class="bomdate-@Cntr">  @(string.IsNullOrEmpty(item.BOMDate) ? "" : item.BOMDate.Split(" ")[0])</td>
                                 <td class="machinename-@Cntr">@item.MachineName</td>
                                 <td class="qcchecked-@Cntr">@item.QCChecked</td>
                                 <td class="prodplanno-@Cntr">@item.ProdPlanNo</td>
                                 <td class="prodplanyearcode-@Cntr">@item.ProdPlanYearCode</td>
-                                <td class="prodplandate-@Cntr">@item.ProdPlanDate.Split(" ")[0]</td>
+                                <td class="prodplandate-@Cntr">
+                                    @(string.IsNullOrEmpty(item.ProdPlanDate) ? "" : item.ProdPlanDate.Split(" ")[0])
+                                </td>
                                 <td class="prodplanschno-@Cntr">@item.ProdPlanSchNo</td>
                                 <td class="prodplanschyear-@Cntr">@item.ProdPlanSchYearCode</td>
-                                <td class="prodplanschdate-@Cntr">@item.ProdPlanSchDate.Split(" ")[0]</td>
+                                <td class="prodplanschdate-@Cntr">
+                                    @(string.IsNullOrEmpty(item.ProdPlanSchDate) ? "" : item.ProdPlanSchDate.Split(" ")[0])
+                                </td>
                                 <td class="reqno-@Cntr">@item.Reqno</td>
                                 <td class="reqyearcode-@Cntr">@item.ReqThrBOMYearCode</td>
-                                <td class="reqdate-@Cntr">@item.ReqDate.Split(" ")[0]</td>
+                                <td class="reqdate-@Cntr">
+                                    @(string.IsNullOrEmpty(item.ReqDate) ? "" : item.ReqDate.Split(" ")[0])
+                                </td>
                                 <td class="batchno-@Cntr">@item.BatchNo</td>
                                 <td class="uniquebatchno-@Cntr">@item.UniqueBatchNo</td>
-                                <td class="strattime-@Cntr">@item.StartTime.Split(" ")[0]</td>
-                                <td class="totime-@Cntr">@item.ToTime.Split(" ")[0]</td>
+                                <td class="strattime-@Cntr">
+                                    @(string.IsNullOrEmpty(item.StartTime) ? "" : item.StartTime.Split(" ")[0])
+                                </td>
+                                <td class="totime-@Cntr">
+                                    @(string.IsNullOrEmpty(item.ToTime) ? "" : item.ToTime.Split(" ")[0])
+                                </td>
                                 <td class="setuptime-@Cntr">@item.setupTime</td>
                                 <td class="prevwc-@Cntr">@item.PrevWC</td>
                                 <td class="prodentryid-@Cntr">@item.PRODEntryId</td>
-                                <td class="entrydate-@Cntr">@item.Entrydate.Split(" ")[0]</td>
+                                <td class="entrydate-@Cntr">
+                                    @(string.IsNullOrEmpty(item.Entrydate) ? "" : item.Entrydate.Split(" ")[0])
+                                </td>
                                 <td class="prodyearcode-@Cntr">@item.PRODYearcode</td>
                                 <td class="woqty-@Cntr">@item.WOQTY</td>
                                 <td class="pendingqtytoissue-@Cntr">@item.PendingQtyToIssue</td>
@@ -270,21 +284,29 @@ else
                                 <td class="parentprodschyearcode-@Cntr">@item.parentProdSchYearcode</td>
                                 <td class="sono-@Cntr">@item.SONO</td>
                                 <td class="soyearcode-@Cntr">@item.SOYearcode</td>
-                                <td class="sodate-@Cntr">@item.SODate.Split(" ")[0]</td>
+                                <td class="sodate-@Cntr">
+                                    @(string.IsNullOrEmpty(item.SODate) ? "" : item.SODate.Split(" ")[0])
+                                </td>
                                 <td class="sotype-@Cntr">@item.sotype</td>
-                                <td class="qcofferdate-@Cntr">@item.QCOfferDate.Split(" ")[0]</td>
+                                <td class="qcofferdate-@Cntr">
+                                    @(string.IsNullOrEmpty(item.QCOfferDate) ? "" : item.QCOfferDate.Split(" ")[0])
+                                </td>
                                 <td class="qcqty-@Cntr">@item.QCQTy</td>
                                 <td class="okqty-@Cntr">@item.OKQty</td>
                                 <td class="stockqty-@Cntr">@item.StockQTy</td>
                                 <td class="mattransfer-@Cntr">@item.matTransferd</td>
                                 <td class="rewqcyearcode-@Cntr">@item.RewQcYearCode</td>
-                                <td class="rewqcdate-@Cntr">@item.RewQcDate.Split(" ")[0]</td>
+                                <td class="rewqcdate-@Cntr">
+                                    @(string.IsNullOrEmpty(item.RewQcDate) ? "" : item.RewQcDate.Split(" ")[0])
+                                </td>
                                 <td class="shiftclose-@Cntr">@item.shiftclose</td>
                                 <td class="complprod-@Cntr">@item.ComplProd</td>
                                 <td class="cc-@Cntr">@item.CC</td>
                                 <td class="entrybymachine-@Cntr">@item.EntryByMachineNo</td>
                                 <td class="actualentrybyname-@Cntr">@item.ActualEmpByName</td>
-                                <td class="actualentrydate-@Cntr">@item.ActualEntryDate.Split(" ")[0]</td>
+                                <td class="actualentrydate-@Cntr">
+                                    @(string.IsNullOrEmpty(item.ActualEntryDate) ? "" : item.ActualEntryDate.Split(" ")[0])
+                                </td>
                                 <td class="lastupdateby-@Cntr">@item.LastUpdatedByName</td>
                                 <td class="lastupdationdate-@Cntr">@item.LastUpdationDate</td>
                                 <td class="entrydesignation-@Cntr">@item.EntryByDesignation</td>
@@ -298,6 +320,50 @@ else
         </table>
     </div>
     <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+}
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+}
+@if (Model.TotalRecords > 0)
+{
+    <ul class="pagination d-flex align-items-center">
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber - 1)); return false;">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(1); return false;">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="#" onclick="loadPage(@i); return false;">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@totalPages); return false;">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber + 1)); return false;">Next</a>
+            </li>
+        }
+    </ul>
 }
 <style>
     #container {
@@ -335,5 +401,51 @@ else
     .descCol {
         font-size: 15px;
         vertical-align: super;
+    }
+
+    .pagination {
+        display: flex;
+        justify - content: center;
+        align - items: center;
+        list - style: none;
+        padding: 0;
+        margin: 20px auto;
+        gap: 5px; /* Space between buttons */
+        white - space: nowrap; /* Keeps it in a single line */
+    }
+
+    .page - item {
+        display: inline - block;
+    }
+
+    .page - link {
+        display: flex;
+        align - items: center;
+        justify - content: center;
+        width: 40px;
+        height: 40px;
+        text - decoration: none;
+        color: black;
+        border: 1px solid #ddd;
+        font - size: 16px;
+        background - color: white;
+        border - radius: 5px;
+        transition: background 0.3s;
+    }
+
+    .page - item.active.page - link {
+        background - color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .page - item.disabled.page - link {
+        background - color: #f0f0f0;
+        color: #999;
+        cursor: default;
+    }
+
+    .page - link: hover: not(.disabled): not(.active) {
+        background - color: #ddd;
     }
 </style>
